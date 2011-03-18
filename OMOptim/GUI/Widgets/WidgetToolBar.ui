@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WidgetToolBarClass</class>
+ <widget class="QWidget" name="WidgetToolBarClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>530</width>
+    <height>178</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>-370</x>
+     <y>80</y>
+     <width>883</width>
+     <height>53</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="layoutToolBar"/>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

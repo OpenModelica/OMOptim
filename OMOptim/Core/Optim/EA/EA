@@ -1,0 +1,5 @@
+#include "EABase.h"
+#include "EAConfig.h"
+#include "NSGA2.h"
+#include "SPEA2.h"
+#include "SPEA2Adapt.h"

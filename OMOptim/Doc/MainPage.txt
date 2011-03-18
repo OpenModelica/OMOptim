@@ -1,0 +1,38 @@
+/*! \mainpage My Personal Index Page
+
+
+\section Project
+Each session of the user corresponds to a project (class Project). Only one project is loaded at a time. Project instance holds :
+	- List of problems (class Problems)
+	- List of solved problems (class Problems)
+	- Instance of OpenModelica communicator (class MOomc) : one instance spread in entire program through pointer.
+	- Instance of Modelica reader (class ModReader) : one instance spread in entire program through pointer.
+	- Instance of Modelica controller (class ModPlusCtrl) : one instance spread in entire program through pointer.
+	- Instance of Energy Integration reader (class EIReader) : one instance spread in entire program through pointer.
+	- Files paths (project, loaded mo files, loaded mmo files...)
+
+It's from Project that main managing functions are called : save, addProblem, launchProblem...
+	
+\section Problems
+Problems is a MOVector of Problem.
+\subsection Problem
+Problem is an abstract class corresponding to all kind of optimization problem we'll could have. Optimization, OneSimulation and ProblemTarget inherits Problem.
+Main function to implement is Problem::launch.
+
+\section Modelica
+
+\subsection Modelica reader (ModReader)
+ModReader allows to read modelica models information. Current implementation uses openModelica API through corba communication. Also contains finding functions in ModClass hierarchy.
+
+\subsection Modelica controller (ModPlusCtrl)
+ModPlusCtrl allows to compile, simulate, read initial and final variables. It is an abstract class which must be implemented following the software we want to use.
+At this moment, only a Dymola version of ModPlusCtrl is implemented (ModPlusDymolaCtrl). 
+
+\subsection Modelica container
+ModClass is a class used to contain Modelica hierarchy in ModOpt.
+ModClass is a generic modelica container : is inherited by ModComponent, ModModel and ModPackage corresponding to Component, Model and Package in Modelica language.
+ModClassTree is a structure defined by its root ModClass and contains functions for displaying (inheriting QAbstractItemModel)
+
+
+
+ **/

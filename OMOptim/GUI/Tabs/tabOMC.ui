@@ -1,0 +1,19 @@
+<ui version="4.0" >
+ <class>TabOMC_Class</class>
+ <widget class="QWidget" name="TabOMC_Class" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>927</width>
+    <height>748</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" />
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

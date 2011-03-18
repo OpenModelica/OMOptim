@@ -1,0 +1,62 @@
+Libraries and software to install
+*************************************
+- Install OpenModelica
+	: http://www.openmodelica.org/index.php/download
+- Download Qt Libraries (tested with version 4.6.*, didn't work with 4.7RC, 4.7 untested yet)
+	: http://get.qt.nokia.com/qt/source/qt-win-opensource-4.6.2-vs2008.exe
+- Download and build GLPK
+	: http://www.gnu.org/software/glpk/
+- Download and install Omniorb
+	: http://omniorb.sourceforge.net/
+	:  you can download prebuild libraries (omniORB-4.1.4-x86_win32-vs9.zip) if your compiler is win32-2008.
+- Download Paradiseo
+	: http://paradiseo.gforge.inria.fr/
+- Build Paradiseo (Windows, MSVC 2008)
+	: open eo.sln and moeo.sln in folders e.g. C:\ParadisEO1.2\paradiseo-eo\build and C:\ParadisEO1.2\paradiseo-moeo\build
+	: set (in Release mode) runtime libraries to Multithread DLL (\Md) (project properties, C++, code generation).
+	: rebuild eo, eoutils and moeo in release mode
+
+Define the environment
+*************************
+Define environment variables as below :
+
+QTHOME  e.g. C:\Qt\4.6.2
+PARADISEOHOME e.g. C:\ParadisEO
+OPENMODELICAHOME e.g. C:\OpenModelica1.5.0\
+OMNIORBINCLUDE e.g. C:\omniORB-4.1.4\include\
+OMNIORBLIB e.g. C:\omniORB-4.1.4\lib\x86_win32
+GLPKLIB e.g. C:\glpk\w32
+GLPKINCLUDE e.g. C:\glpk\include
+
+
+Two ways to compile OMOPTIM
+
+Using qmake
+********************
+cd build\
+qmake "CONFIG+=release" (or qmake "CONFIG+=debug")
+nmake release (or nmake debug)
+
+Pure visual studio (probably deprecated in near future)
+******************
+- Be sure that for all header files of ModOpt project, code generation (properties windows) is set to "ModOpt QT .h".
+- At first compilation, moc_*.cpp files will be generated and stored in GeneratedFiles folder.
+  Include them in the project and recompile (first compilation should give linking errors because of these missing files)
+
+
+  
+  
+Dymola
+*******
+To use Dymola as simulator, be sure to set Dymola executable path in Settings panel (in ModOpt interface itself)
+
+Execution
+**********
+To be launched, OMOptim.exe needs in its folder some dlls (add letter 'd' at the end for debug version) :
+- QtCore4.dll, QtGui4.dll, QtXml4.dll from Qt directory
+- omniDynamic414_vc9_rt.dll omniDynamic414_vc9_rt.dll omnithread34_vc9_rtd.dll from Omniorb directory
+- glpk_4_44.dll from GLPK directory
+
+Class Documentation
+********************
+A class documentation is available (while incomplete). It should be built using doxygen. File to compile with doxygen is Doc/Doxyfile

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WidgetProgressClass</class>
+ <widget class="QWidget" name="WidgetProgressClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1068</width>
+    <height>47</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelTask">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="styleSheet">
+      <string>QProgressBar {
+     border: 2px solid grey;
+     border-radius: 5px;
+     text-align: center;
+background: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0 #fff,
+stop: 0.4999 #eee,
+stop: 0.5 #ddd,
+stop: 1 #eee );
+ }
+
+QProgressBar::chunk {
+    background: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0 #98f,
+stop: 0.4999 #36b,
+stop: 0.5 #35b,
+stop: 1 #33A );
+
+border: 1px solid black;
+ }</string>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLabel" name="labelTimeLeft">
+     <property name="text">
+      <string>Time left</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QPushButton" name="pushStop">
+     <property name="text">
+      <string>Stop</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

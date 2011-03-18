@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile
+	Name="ModOpt .h et .ui QT"
+	Version="8,00"
+	>
+	<Rules>
+		<CustomBuildRule
+			Name="ModOpt QT .h"
+			DisplayName="ModOpt QT .h"
+			CommandLine="$(QTHOME)\bin\moc.exe -DWIN32 -I &quot;$(ProjectDir)GeneratedFiles&quot; -I &quot;$(ProjectDir)EA;$(ProjectDir)EA\Mutations;$(ProjectDir)EA\Results;$(ProjectDir)Commons&quot; -I &quot;$(MICOINCLUDE)&quot; -I &quot;$(QTHOME)\include&quot;  &quot;$(InputPath)&quot; -o &quot;$(ProjectDir)GeneratedFiles\moc_$(InputName).cpp&quot;"
+			Outputs="&quot;$(ProjectDir)GeneratedFiles\moc_$(InputName).cpp&quot;"
+			AdditionalDependencies="$(QTHOME)\bin\moc.exe;$(InputName).h;$(InputName).ui"
+			FileExtensions="*."
+			ExecutionDescription="Moc&apos;ing $(InputName).h"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+		<CustomBuildRule
+			Name="ModOpt QT .ui"
+			DisplayName="ModOpt QT .ui"
+			CommandLine="&quot;$(QTHOME)\bin\uic.exe&quot; -o &quot;$(ProjectDir)GeneratedFiles\ui_$(InputName).h&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+			Outputs="$(ProjectDir)GeneratedFiles\ui_$(InputName).h"
+			AdditionalDependencies="$(QTHOME)\bin\uic.exe"
+			FileExtensions="*.ui"
+			ExecutionDescription="Uic&apos;ing $(InputName).ui"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+		<CustomBuildRule
+			Name="ModOpt Qt .rc"
+			DisplayName="ModOpt Qt .rc"
+			CommandLine="&quot;$(QTHOME)\bin\rcc.exe&quot; -name &quot;$(InputName).qrc&quot; -no-compress &quot;$(InputPath)&quot; -o &quot;$(ProjectDir)GeneratedFiles\qrc_$(InputName).cpp&quot;"
+			Outputs="&quot;GeneratedFiles\qrc_$(InputName).cpp&quot;"
+			AdditionalDependencies="$(QTHOME)\bin\rcc.exe;"
+			FileExtensions="*."
+			ExecutionDescription="Compiling Qt resource file: $(InputName).qrc..."
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+	</Rules>
+</VisualStudioToolFile>

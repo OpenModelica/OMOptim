@@ -1,0 +1,16 @@
+<RCC>
+  <qresource prefix="icons">
+    <file alias="Undo">icons/Undo.png</file>
+    <file>Mines.PNG</file>
+    <file alias="Search">icons/Search.png</file>
+    <file alias="Play">icons/Play.png</file>
+    <file alias="Refresh">icons/Refresh.png</file>
+    <file alias="Settings">icons/Settings.png</file>
+    <file alias="Save">icons/Save.png</file>
+    <file alias="Sync">icons/Synchronize.png</file>
+    <file alias="Globe">icons/Globe.png</file>
+    <file alias="Folder">icons/Folder.png</file>
+    <file alias="Delete">icons/Delete.png</file>
+    <file alias="Add">icons/Add.png</file>
+  </qresource>
+</RCC>

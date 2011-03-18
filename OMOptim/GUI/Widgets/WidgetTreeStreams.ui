@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WidgetTreeStreamsClass</class>
+ <widget class="QWidget" name="WidgetTreeStreamsClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>972</width>
+    <height>206</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0" rowspan="5" colspan="3">
+    <layout class="QGridLayout" name="layoutTreeStreams"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="pushAddGroup">
+     <property name="text">
+      <string>Add Group</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="5" column="3">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="3">
+    <widget class="QPushButton" name="pushRemove">
+     <property name="text">
+      <string>Remove</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QPushButton" name="pushAddStream">
+     <property name="text">
+      <string>Add Stream</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4" rowspan="6">
+    <layout class="QGridLayout" name="layoutWidgetItem">
+     <property name="verticalSpacing">
+      <number>2</number>
+     </property>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <widget class="QPushButton" name="pushTarget">
+     <property name="text">
+      <string>Target</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QPushButton" name="pushMER">
+     <property name="text">
+      <string>MER</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QCheckBox" name="checkUtilitiesMER">
+     <property name="text">
+      <string>Include utilities in MER</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
