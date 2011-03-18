@@ -559,3 +559,5 @@ SOURCES += ../main.cpp \
 RESOURCES += ../GUI/Resources/mineit.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc
+
+ICON = ../GUI/Resources/icons/omoptim.ico
