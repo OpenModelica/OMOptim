@@ -74,6 +74,7 @@
 #include "MOThreads.h"
 #include "LowTools.h"
 #include "SleeperThread.h"
+#include "../../../Compiler/runtime/config.h"
 
         class Project;
 
@@ -1015,7 +1016,7 @@ bool MOomc::startServer()
             infoSender.send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
         omcPath = QString( omhome ) + "bin/omc.exe";
 #else /* unix */
-        omcPath = (omhome ? QString(omhome)+"bin/omc" : "omc");
+        omcPath = (omhome ? QString(omhome)+"bin/omc" : QString(CONFIG_DEFAULT_OPENMODELICAHOME) + "/bin/omc");
 #endif
 
         // Check the IOR file created by omc.exe
