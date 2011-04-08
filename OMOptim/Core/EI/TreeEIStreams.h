@@ -79,10 +79,12 @@ private :
 	EIReader* eiReader;
 	bool showFields;
 	bool editable;
+bool enabled;
 
 public slots:
 		 void allDataChanged();
 		 void allDataCleared();
+void onRootElementDeleted();
 
 };
 

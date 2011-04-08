@@ -113,7 +113,7 @@ QString ModClass::sFieldName(int iField, int role)
 	}
 }
 
-ModClass* ModClass::getParent()
+ModClass* ModClass::parent()
 {
 		return _parent;
 }
@@ -250,12 +250,12 @@ QString ModClass::name(Modelica::NameFormat type)
 	else
 	{
 		QString fullName = _name;
-		ModClass *curParent = getParent();
+                ModClass *curParent = parent();
 
 		while((curParent!=NULL)&&(curParent->name(Modelica::SHORT)!=""))
 		{
 			fullName.insert(0,curParent->name(Modelica::SHORT)+".");
-			curParent = curParent->getParent();
+                        curParent = curParent->parent();
 		}
 
 		QString dymolaName;
@@ -285,7 +285,7 @@ void ModClass::emitModified()
 int ModClass::depth()
 {
 	QString fullName=_name;
-	ModClass *curParent = getParent();
+        ModClass *curParent = parent();
 
 	if(curParent==NULL)
 		return  0;

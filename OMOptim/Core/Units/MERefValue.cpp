@@ -157,4 +157,16 @@ double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &
 	}
 }
 
+template<class DimValue>
+QString  MERefValue<DimValue>::reference()
+{
+    bool isDouble;
+    _value.toDouble(&isDouble);
+
+    if(!isDouble)
+        return _value.toString();
+    else
+        return QString();
+}
+
 #endif

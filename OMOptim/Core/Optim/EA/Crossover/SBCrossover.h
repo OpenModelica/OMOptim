@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -46,25 +46,31 @@
 
 #include "LowTools.h"
 
+
+/** Description Crossover operation : using SBX described in Sareni & al., Recombination and self-adapation in Multi-objective GA,
+  * Lecture Notes in Computer Science, 2004, Volume 2936/2004, 115-126
+  * Inheriting eoQuadOp : SBCrossover do a crossover between two individuals.
+  *
+*/
+
 template<class EOT>
 class SBCrossover: public eoQuadOp<EOT>
 {
 public:
   /// Ctor
   SBCrossover(EAConfig* _config):eoQuadOp<EOT>() {config = _config;}
-  virtual std::string className() const {return "EA2Crossover";}
+  virtual std::string className() const {return "SBCrossover";}
+
+
 virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 	
-	// for double, int and bool, both eos are modified, new values are taken between two old values)
+        // for double, int and bool, both eos are modified, new values are taken between two old values
 	// !! need to be studied and adapted to specific problems
-
 	bool oneHasChanged = false;
 
 	int iVar;
 	double childValueA, childValueB;
 	double parValueA, parValueB;
-	
-	// using SBX described in Sareni & al., Recombination and self-adapation in Multi-objective GA
 	double beta;
 	double eta=1;
 	double u;
@@ -135,8 +141,6 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 private :
 
 	EAConfig *config;
-
-
 };
 
 #endif

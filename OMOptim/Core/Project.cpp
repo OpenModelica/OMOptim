@@ -69,6 +69,14 @@ Project::~Project()
 
 	delete _problems;
 	delete _solvedProblems;
+
+        terminateOmsThreads();
+        delete _moomc;
+        delete _modReader;
+
+#ifdef USEEI
+        delete _eiReader;
+#endif
 }
 
 QString Project::getFieldName(int iField, int role)
@@ -88,7 +96,11 @@ void Project::clear()
 {
 	_rootModClass->clear();
 	_mapModelPlus.clear();
+
+        // OMC
+        terminateOmsThreads();
 	_moomc->clear();
+
 
 	_problems->reset();
 	_solvedProblems->reset();
@@ -470,7 +482,7 @@ void Project::addNewProblem(Problem::ProblemType problemType, ModModel* modelCon
 		break;
 #ifdef USEEI
 	case Problem::PROBLEMEI:
-		newProblem = new ProblemTarget(this,_eiReader);
+                newProblem = new ProblemTarget(this,_eiReader,_modReader,_moomc);
 		break;
 #endif
 
@@ -763,15 +775,8 @@ void Project::terminateOmsThreads()
 			infoSender.send(Info(msg,ListInfo::NORMAL2));
 			_moomc->getThreads().at(i)->terminate();
 		}
-
-			QSettings settings("MO", "Settings");
-	if(settings.value("stopOMCwhenQuit").toBool())
-		{
-			_moomc->stopServer();
-			_moomc->exit();
 		}
 	}
-}
 
 
 void Project::onProblemStopAsked(Problem* problem)

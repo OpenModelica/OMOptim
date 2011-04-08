@@ -47,7 +47,7 @@ namespace Ui
 	class WidgetEIInputVarsClass;
 }
 
-WidgetEIInputVars::WidgetEIInputVars(Project *project_,MOOptVector *_inputVars, QWidget *parent)
+WidgetEIInputVars::WidgetEIInputVars(Project *project_,MOOptVector *_inputVars,EIItem* _rootEI, QWidget *parent)
 : QWidget(parent),
  ui(new Ui::WidgetEIInputVarsClass)
 {
@@ -57,6 +57,7 @@ WidgetEIInputVars::WidgetEIInputVars(Project *project_,MOOptVector *_inputVars, 
 
 	project = project_;
 	inputVars = _inputVars;
+    rootEI= _rootEI;
 		
 	loadedVarsProxyModel = GuiTools::ModelToViewWithFilter(inputVars,ui->tableLoadedVariables,ui->lineVariableFilter);
 	
@@ -71,6 +72,8 @@ WidgetEIInputVars::WidgetEIInputVars(Project *project_,MOOptVector *_inputVars, 
 	connect(ui->pushClear, SIGNAL(clicked()), this, SLOT(clearInputVars()));
 	connect(ui->pushLoadVariables, SIGNAL(clicked()), this, SLOT(appendInputVars()));
 	connect(ui->pushRefreshList, SIGNAL(clicked()),this,SLOT(fillList()));
+    connect(ui->allReferences, SIGNAL(clicked()),this,SLOT(dispReferences()));
+    connect(ui->missingReferences, SIGNAL(clicked()),this,SLOT(dispMissingReferences()));
 	//Fill list
 	fillList();
 }
@@ -125,4 +128,73 @@ void WidgetEIInputVars::clearInputVars()
 {
 	inputVars->clear();
 	inputVarsModified();
+}
+
+void WidgetEIInputVars::dispReferences()
+{
+    ui->listReferences->clear();
+    ui->listReferencesModel->clear();
+
+    QMap<EIItem*,QStringList> mapRefs = EIValueFiller::getReferences(rootEI,true,project);
+
+    QStringList curItemRefs;
+
+    QStringList refs;
+
+    EIItem* curItem;
+    for(int iK=0;iK<mapRefs.keys().size();iK++)
+    {
+        curItem = mapRefs.keys().at(iK);
+        curItemRefs = mapRefs.value(curItem);
+        for(int iR=0;iR<curItemRefs.size();iR++)
+            refs.push_back(curItemRefs.at(iR));
+
+    }
+    ui->listReferences->addItems(refs);
+
+    QStringList corrModelsNames;
+
+    ModModel* corrModel;
+    for(int i=0;i<refs.size();i++)
+    {
+        corrModel = project->modReader()->modelOf(refs.at(i),project->rootModClass());
+        if(corrModel)
+            corrModelsNames.push_back(corrModel->name());
+    }
+    ui->listReferencesModel->addItems(corrModelsNames);
+
+
+}
+
+void WidgetEIInputVars::dispMissingReferences()
+{
+    ui->listReferences->clear();
+    ui->listReferencesModel->clear();
+    QMap<EIItem*,QStringList> mapRefs = EIValueFiller::getMissingReferences(rootEI,inputVars,true,project);
+
+    QStringList curItemRefs;
+
+    QStringList refs;
+
+
+    EIItem* curItem;
+    for(int iK=0;iK<mapRefs.keys().size();iK++)
+    {
+        curItem = mapRefs.keys().at(iK);
+        curItemRefs = mapRefs.value(curItem);
+        for(int iR=0;iR<curItemRefs.size();iR++)
+            refs.push_back(curItemRefs.at(iR));
+
+    }
+    ui->listReferences->addItems(refs);
+    QStringList corrModelsNames;
+
+    ModModel* corrModel;
+    for(int i=0;i<refs.size();i++)
+    {
+        corrModel = project->modReader()->modelOf(refs.at(i),project->rootModClass());
+        if(corrModel)
+            corrModelsNames.push_back(corrModel->name());
+    }
+    ui->listReferencesModel->addItems(corrModelsNames);
 }

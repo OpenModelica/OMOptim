@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -78,7 +78,7 @@ WidgetCCPlot::WidgetCCPlot(MERResult* _result,QWidget *parent) :
 	ui->comboUnitMERCold->addItem("W",1);
 	ui->comboUnitMERCold->addItem("kW",1E3);
 	ui->comboUnitMERCold->addItem("MW",1E6);
-	ui->comboUnitT->addItem("Â°C","C");
+	ui->comboUnitT->addItem("°C","C");
 	ui->comboUnitT->addItem("K","K");
 
 	//Refresh
@@ -86,7 +86,7 @@ WidgetCCPlot::WidgetCCPlot(MERResult* _result,QWidget *parent) :
 	connect(ui->comboUnitMERCold,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
 	connect(ui->comboUnitT,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
 	connect(result,SIGNAL(updated()),this,SLOT(replot()));
-	//connect(dynamic_cast<ProblemTarget*>(result->problem())->rootEI,SIGNAL(modified()),this,SLOT(relaunch()));
+	//connect(dynamic_cast<ProblemTarget*>(result->problem())->_rootEI,SIGNAL(modified()),this,SLOT(relaunch()));
 
 }
 

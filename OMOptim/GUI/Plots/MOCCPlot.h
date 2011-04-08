@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -59,6 +59,8 @@
 #include "CCTools.h"
 #include "MOPlot.h"
 #include "MOCCCurve.h"
+
+#include "MERResult.h"
 
 
 class MinCCPlot : public MOPlot

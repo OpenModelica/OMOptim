@@ -441,6 +441,15 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
 	_moomc->deleteConnections(blockSub->orgPorts,blockSub->orgConnectedComps,modModelName());
 	
 	ModClass* orgClass = _modReader->findInDescendants(_modModel,blockSub->orgComponent);
+        if(!orgClass)
+        {
+            QString msg;
+            msg.sprintf("Could not apply component substitution : component %s not found",
+                        blockSub->orgComponent.utf16());
+            infoSender.send(Info(msg,ListInfo::WARNING2));
+            return false;
+        }
+
 	ModComponent* orgComp = NULL;
 	if(orgClass->getClassRestr()==Modelica::COMPONENT)
 		orgComp = (ModComponent*)orgClass;

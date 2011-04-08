@@ -91,7 +91,7 @@ void WidgetOptParameters::launch()
 	QString error;
 	bool ok = _problem->checkBeforeComp(error);
 	if(!ok)
-		QMessageBox::critical(this, "Error",error,QMessageBox::Ok,QMessageBox::Ok);		
+                QMessageBox::warning(this, "Error",error,QMessageBox::Ok,QMessageBox::Ok);
 	else
 		_project->launchProblem(_problem->num());
 }

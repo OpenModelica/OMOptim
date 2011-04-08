@@ -123,6 +123,22 @@ public:
 	*/
 	virtual void launch(ProblemConfig config) = 0;
 
+        /**
+        * Description precomputation function : should be launched at beginning
+        * of launch function
+        */
+        //virtual void precompute();
+
+        /**
+        * Description Check if problem parameters, and inputs are correct.
+        * For example, check if min<max.
+        * pure virtual functions : all classes inheriting Problem should have a check function.
+        * @param error : contains list of errors detected.
+        */
+        virtual bool checkBeforeComp(QString & error) = 0;
+
+
+
 	// Managment functions
 	/**
 	* Description Save problem information in XML form.
@@ -131,8 +147,6 @@ public:
 	virtual void store(QString destFolder, QString tempDir);
 	void rename(QString name,bool changeFolder);
 
-	// Check if problem correctly filled
-	virtual bool checkBeforeComp(QString & error) = 0;
 
 	// Get functions
 	int getiCurAlgo();

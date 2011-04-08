@@ -60,6 +60,7 @@
 #endif
 #include <iostream>
 #include "ModModelParameter.h"
+#include <QtCore/QProcess>
 
 class OpenModelica
 {

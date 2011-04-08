@@ -84,7 +84,7 @@ WidgetTableRecVar::~WidgetTableRecVar()
 
 
 
-void WidgetTableRecVar::onSelectionChanged(QList<int>& list)
+void WidgetTableRecVar::onExtSelectionChanged(QList<int>& list)
 {
 	if(list.size()==1)
 	{

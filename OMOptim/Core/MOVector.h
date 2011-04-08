@@ -91,7 +91,7 @@ public:
 	bool removeRows(int index, int count,const QModelIndex &parent = QModelIndex());
 	bool removeRows(QList<int> indexes);
 	int findItem(QString,Qt::CaseSensitivity=Qt::CaseInsensitive);
-	int findItem(QVariant itemFieldValue,int iFieldValue);
+        int findItem(QVariant itemFieldValue,int iField);
 	bool alreadyIn(QString);
 	void replaceIn(MOVector<ItemClass> *);
 

@@ -42,35 +42,56 @@
 
 EIItem::EIItem()
 {
-	parent = NULL;
+        _parent = NULL;
 }
 
 
-EIItem::EIItem(EIItem* _parent,QString _name)
+EIItem::EIItem(EIItem* parent,QString name, QString model)
 {
-	parent = _parent;
-	setName(_name);
-	checked = true;
+        _parent = parent;
+        setName(name);
+        _checked = true;
+        _model = model;
 }
 
-EIItem::EIItem(const EIItem & _item):MOItem(_item)
+EIItem::EIItem(const EIItem & item):MOItem(item)
 {
-	parent = _item.parent;
-	checked = _item.checked;
+        _parent = item._parent;
+        _checked = item._checked;
+        _model = item._model;
 	
-	for(int i=0;i<_item.childCount();i++)
-		addChild(_item.child(i)->clone());
+        for(int i=0;i<item.childCount();i++)
+                addChild(item.child(i)->clone());
+}
+
+EIItem::EIItem(QDomElement & domEl)
+{
+        QDomNamedNodeMap attributes = domEl.attributes();
+        QString fieldName;
+        QString fieldValue;
+
+        for(int i=0;i<attributes.count();i++)
+        {
+                fieldName = attributes.item(i).toAttr().name();
+                fieldName.replace(XMLTools::space()," ");
+                fieldValue = attributes.item(i).toAttr().value();
+                fieldValue.replace(XMLTools::space()," ");
+                MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+        }
+
+        _editableFields << EIItem::NAME;
 }
 
 
 EIItem::~EIItem(void)
 {
+    emit deleted();
 	clear();
 }
 
-EIItem* EIItem::getParent()
+EIItem* EIItem::parent()
 {
-		return parent;
+    return _parent;
 }
 
 EIItem* EIItem::clone()
@@ -91,8 +112,11 @@ QVariant EIItem::getFieldValue(int iField, int role) const
 		return _name;
 		break;
 	case CHECKED:
-		return checked;
+                return _checked;
 		break;
+        case MODEL:
+                return model();
+                break;
 	default :
 		return QVariant();
 		break;
@@ -107,8 +131,11 @@ bool EIItem::setFieldValue(int iField, QVariant value)
 		_name = value.toString();
 		break;
 	case CHECKED:
-		checked = value.toBool();
+                _checked = value.toBool();
 		break;
+        case MODEL:
+                _model = value.toString();
+                break;
 	default :
 		return false;
 	}
@@ -123,7 +150,9 @@ QString EIItem::sFieldName(int iField, int role)
 	case NAME:
 		return "Name";
 	case CHECKED:
-		return "CHECKED";
+                return "Checked";
+        case MODEL:
+                return "Model";
 	default :
 		return "-";
 	}
@@ -135,13 +164,14 @@ QString EIItem::sFieldName(int iField, int role)
 //*****************************
 int EIItem::childCount() const
 {
-	return children.size();
+        return _children.size();
 }
+
 int EIItem::streamChildCount()
 {
 	int nbComp=0;
-	for(int i=0;i<children.size();i++)
-		if(children.at(i)->getEIType()==EI::STREAM)
+        for(int i=0;i<_children.size();i++)
+                if(_children.at(i)->getEIType()==EI::STREAM)
 			nbComp++;
 
 	return nbComp;
@@ -150,8 +180,8 @@ int EIItem::streamChildCount()
 int EIItem::groupChildCount()
 {
 	int nbModel=0;
-	for(int i=0;i<children.size();i++)
-		if(children.at(i)->getEIType()==EI::GROUP)
+        for(int i=0;i<_children.size();i++)
+                if(_children.at(i)->getEIType()==EI::GROUP)
 			nbModel++;
 
 	return nbModel;
@@ -159,8 +189,8 @@ int EIItem::groupChildCount()
 
 EIItem* EIItem::child(int nRow) const
 {
-	if((nRow>-1)&&(nRow<children.count()))
-		return children.at(nRow);
+        if((nRow>-1)&&(nRow<_children.count()))
+                return _children.at(nRow);
 	else
 		return NULL;
 }
@@ -169,50 +199,101 @@ EIItem* EIItem::streamChild(int nRow)
 {
 	int iCurStream=-1;
 	int curIndex=0;
-	while((curIndex<children.size())&&(iCurStream<nRow))
+        while((curIndex<_children.size())&&(iCurStream<nRow))
 	{
-		if(children.at(curIndex)->getEIType()==EI::STREAM)
+                if(_children.at(curIndex)->getEIType()==EI::STREAM)
 			iCurStream++;
 	
 		curIndex++;
 	}
 
 	if(iCurStream==nRow)
-		return children.at(curIndex-1);
+                return _children.at(curIndex-1);
 	else
 		return NULL;
 }
+
+
 
 EIItem* EIItem::groupChild(int nRow)
 {
 	int iCurGroup=-1;
 	int curIndex=0;
-	while((curIndex<children.size())&&(iCurGroup<nRow))
+        while((curIndex<_children.size())&&(iCurGroup<nRow))
 	{
-		if(children.at(curIndex)->getEIType()==EI::GROUP)
+                if(_children.at(curIndex)->getEIType()==EI::GROUP)
 			iCurGroup++;
 	
 		curIndex++;
 	}
 
 	if(iCurGroup==nRow)
-		return children.at(curIndex-1);
+                return _children.at(curIndex-1);
 	else
 		return NULL;
 }
+
+int EIItem::indexInParent()
+{
+    if(parent()==NULL)
+        return -1;
+
+
+    //looking for row number of child in parent
+    int nbBrothers = parent()->childCount();
+    bool found = false;
+    int iC=0;
+
+    while(!found && iC<nbBrothers)
+    {
+        found = (parent()->child(iC)==this);
+        if(!found)
+            iC++;
+    }
+    if(!found)
+        return -1;
+    else
+        return iC;
+}
+
+
 
 void EIItem::removeChild(int i)
 {
 	if((i>-1)&&(i<childCount()))
 	{
 		delete child(i);
-		children.removeAt(i);
+                _children.removeAt(i);
 	}
 }
-void EIItem::removeChild(EIItem * _item)
+void EIItem::removeChild(EIItem * item)
 {
-	int i=children.indexOf(_item);
+        int i=_children.indexOf(item);
 	removeChild(i);
+}
+
+
+int EIItem::findChild(QVariant itemFieldValue, int iField)
+{
+        bool found = false;
+        int i=0;
+        int nbChildren=childCount();
+        QVariant curFieldValue;
+
+        while((!found)&&(i<nbChildren))
+        {
+                curFieldValue=child(i)->getFieldValue(iField);
+                found=(itemFieldValue == curFieldValue);
+                i++;
+        }
+        if(!found)
+        {
+                return -1;
+        }
+        else
+        {
+                return i-1;
+        }
 }
 
 
@@ -224,7 +305,7 @@ void EIItem::emitModified()
 int EIItem::depth()
 {
 	QString fullName=_name;
-	EIItem *curParent = getParent();
+        EIItem *curParent = parent();
 
 	if(curParent==NULL)
 		return  0;
@@ -237,17 +318,17 @@ void EIItem::clear()
 {
 	clearDescendants();
 	emit modified();
-	parent = NULL;
+        _parent = NULL;
 	_name = QString();
 	emit cleared();
 }
 
 void EIItem::clearDescendants()
 {
-	while(children.size()>0)
+        while(_children.size()>0)
 	{
-		delete children.at(0);
-		children.removeAt(0);
+                delete _children.at(0);
+                _children.removeAt(0);
 	}
 	 emit modified();
 }
@@ -261,11 +342,11 @@ bool EIItem::addChild(EIItem *child)
 		child->setParent(this);
 		// verify its name is unique compared to brother
 		QStringList brothersNames;
-		for(int i=0;i<this->children.size();i++)
-			brothersNames.push_back(this->children.at(i)->name());
+                for(int i=0;i<this->_children.size();i++)
+                        brothersNames.push_back(this->_children.at(i)->name());
 
 		child->checkUniqueItemName(brothersNames);
-		children.push_back(child);
+                _children.push_back(child);
 		
 		ok = true;
 
@@ -279,11 +360,11 @@ bool EIItem::addChild(EIItem *child)
 }
 
 
-void EIItem::setParent(EIItem *_parent)
+void EIItem::setParent(EIItem *parent)
 {
-	if(parent != _parent)
+        if(_parent != parent)
 	{
-		parent = _parent;
+                _parent = parent;
 		emit modified();
 	}
 }
@@ -297,28 +378,50 @@ QString EIItem::getStrToolTip()
 
 bool EIItem::isChecked()
 {
-	return checked;
+        return _checked;
 }
 
-void EIItem::setChecked(bool _checked)
+void EIItem::setChecked(bool checked)
 {
-	if(_checked!=checked)
+        if(checked!=_checked)
 	{
-		setFieldValue(CHECKED,_checked);
+                setFieldValue(CHECKED,checked);
 
 		// if false, uncheck children
-		if(!_checked)
+                if(!checked)
 		{
 		for(int i=0;i<childCount();i++)
 			child(i)->setChecked(false);
 		}
 		
 		// if true, check parent
-		if(parent && _checked)
-			parent->setChecked(true),
+                if(_parent && checked)
+                        _parent->setChecked(true),
 		
 		emit modified();
 	}
+}
+
+void  EIItem::setModel(QString model)
+{
+    _model = model;
+}
+
+/**
+  * \brief returns model it is involved in. If is empty, looks for first parent which got a non-empty modelname
+  *
+  */
+QString  EIItem::model()
+{
+    if(!_model.isEmpty())
+        return _model;
+    else
+    {
+        if(parent()==NULL)
+            return _model;
+        else
+            return parent()->model();
+    }
 }
 
 QDomElement EIItem::toXmlData(QDomDocument & doc)
@@ -337,13 +440,20 @@ QString EIItem::name(EI::NameFormat type)
 	else
 	{
 		QString fullName=_name;
-		EIItem *curParent = getParent();
+                EIItem *curParent = parent();
 
-		while((curParent!=NULL)&&(curParent->parent!=NULL))
+                while((curParent!=NULL)&&(curParent->parent()!=NULL))
 		{
 			fullName.insert(0,curParent->name(EI::SHORT)+".");
-			curParent = curParent->parent;
+                        curParent = curParent->parent();
 		}
 		return fullName;
 	}
 }
+
+
+QStringList EIItem::references()
+{
+    return QStringList();
+}
+

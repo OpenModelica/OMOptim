@@ -43,21 +43,8 @@
 #include "MyAlgoUtils.h"
 #include "CSV.h"
 #include "LowTools.h"
-//Optimization::Optimization() : Problem()
-//{
-//
-//	//type = Problem::OPTIMIZATION;
-//	//name="Optimization";
-//	//_optimizedVariables = new MOVector<OptVariable>;
-//	//objectives = new MOVector<OptObjective>;
-//	//blockSubstitutions = new BlockSubstitutions();
-//
-//	algos = MyAlgoUtils::getNewAlgos(this,modReader,modPlusReader,rootModClass);
-//	for(int i=0;i<algos.size();i++)
-//		connect(algos.at(i),SIGNAL(configChanged()),this,SIGNAL(algoConfigsChanged()));
-//
-//	iCurAlgo=0;
-//}
+
+
 Optimization::Optimization(Project* project,ModClass* rootModClass,ModReader* modReader,ModPlusCtrl* modPlusCtrl,ModModelPlus* modModelPlus)
 {
 	setProject(project);
@@ -108,10 +95,13 @@ Optimization::~Optimization()
 	delete _optimizedVariables;
 	delete _objectives;
 	delete _blockSubstitutions;
+
 	clearResult();
 }
 
-
+/** Description : Launch optimization procedure. checkBeforeComp() is not called in this function.
+*   Be sure it has been called previously.
+*/
 bool Optimization::checkBeforeComp(QString & error)
 {
 	bool ok = true;
@@ -205,12 +195,12 @@ bool Optimization::checkBeforeComp(QString & error)
 
 
 
+/** Description : Launch optimization procedure. checkBeforeComp() is not called in this function.
+*   Be sure it has been called previously.
+*/
 void Optimization::launch(ProblemConfig _config)
 {
 	emit begun(this);
-
-	// Optimization::Check must have been called previously
-	// No check is done in this function
 
 	// first create temp dir
 	QDir dir;
@@ -270,6 +260,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 	}
 
 	int iCase=0;
+        bool oneChange;
 	while(!index.isEmpty())
 	{
 		// Display case (for debug)
@@ -310,6 +301,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 		// apply blocksubs
 		BlockSubstitutions *curSubBlocks = new BlockSubstitutions();
 	
+                oneChange = false;
 		for(int i=0; i<index.size();i++)
 		{
 			QString replacedComp = map.uniqueKeys().at(i);
@@ -320,12 +312,15 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 				BlockSubstitution* blockSub = _blockSubstitutions->find(replacedComp,replacingComp);
 				if(blockSub)
 				{
-					newModModelPlus->applyBlockSub(blockSub,true);
+                                        oneChange = oneChange || newModModelPlus->applyBlockSub(blockSub,true);
 					curSubBlocks->push_back(blockSub);
 				}
 			}
 
 		}
+
+                if(oneChange)
+                {
 		bool compiledOk = newModModelPlus->compile();
 		
 		if(compiledOk)
@@ -341,7 +336,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 		{
 			infoSender.send( Info(ListInfo::SUBMODELNOTADDED,newName));
 		}
-
+                }
 		iCase++;
 		index = LowTools::nextIndex(index,maxIndex);
 	}

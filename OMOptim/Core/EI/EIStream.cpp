@@ -40,8 +40,8 @@
   */
 #include "EIStream.h"
 
-EIStream::EIStream(EIItem* _parent, QString _name)
-:EIItem(_parent,_name)
+EIStream::EIStream(EIItem* parent, QString name)
+:EIItem(parent,name)
 {
 	_editableFields << EIStream::NAME << EIStream::TIN_V << EIStream::TIN_U << EIStream::TOUT_V << EIStream::TOUT_U
 		<< EIStream::QFLOW_V << EIStream::QFLOW_U << EIStream::DTMIN2;
@@ -58,6 +58,7 @@ EIStream::EIStream(const EIStream & _stream):EIItem(_stream)
 	Qflow = _stream.Qflow;
 	DTmin2 = _stream.DTmin2;
 }
+
 
 EIItem* EIStream::clone()
 {
@@ -110,7 +111,7 @@ QVariant EIStream::getFieldValue(int ifield, int role) const
 		case DTMIN2 :
 			return DTmin2;
 		case CHECKED :
-			return checked;
+                        return _checked;
 		default :
 			return "unknown field";
 		}
@@ -201,7 +202,7 @@ bool EIStream::setFieldValue(int ifield,QVariant value_)
 				Qflow.setUnit(value_.toInt());
 			break;
 		case CHECKED :
-			checked =value_.toBool();
+                        _checked =value_.toBool();
 			break;
 		case DTMIN2:
 			DTmin2 =value_.toDouble();
@@ -235,5 +236,19 @@ bool EIStream::isHot(MOOptVector* variables)
 {
 	bool okTin,okTout;
 	return Tin.getNumValue(variables,METemperature::K,okTin)>Tout.getNumValue(variables,METemperature::K,okTout);
+}
+
+
+QStringList EIStream::references()
+{
+    QStringList refs;
+
+    refs.push_back(this->Tin.reference());
+    refs.push_back(this->Tout.reference());
+    refs.push_back(this->Qflow.reference());
+
+    refs.removeAll(QString());
+
+    return refs;
 }
 

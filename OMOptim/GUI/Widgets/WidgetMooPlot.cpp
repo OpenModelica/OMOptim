@@ -50,53 +50,21 @@ WidgetMooPlot::WidgetMooPlot(OptimResult* result,QWidget *parent) :
 {
     _ui->setupUi(this);
 	
-
 	_result = result;
 	
 	//***********
 	//PLOT
 	//***********
 	_plot1 = new MOOptPlot();
+    _plot1->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 	_ui->layoutInsidePlot->addWidget(_plot1);
 	_ui->layoutInsidePlot->setContentsMargins(10,10,10,10);
-	//_ui->layoutInsidePlot->setMargin(10);
-	//_ui->layoutInsidePlot->setSizeConstraint(QLayout::SetMinimumSize);
-	//_plot1->setSizePolicy(QSizePolicy::Preferred);
-
-	
-
-	//***********
-	//LIST
-	//***********
-	_listPoints = new WidgetList();
-	_ui->layoutWidgetList->addWidget(_listPoints);
-	//_ui->layoutWidgetList->setSizeConstraint(QLayout::SetMaximumSize);
-	_listPoints->setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred));
-
-	if(_result->optObjectivesResults()->items.size()>0)
-	{
-		for (int i=0;i<_result->optObjectivesResults()->nbPoints();i++)
-		{
-			QListWidgetItem* newItem = new QListWidgetItem(QString::number(i));
-			newItem->setData(Qt::UserRole,QVariant(i));
-			_listPoints->addItem(newItem);
-		}
-	}
-	_listPoints->setSelectionMode(QAbstractItemView::ExtendedSelection);
-
 
 	// connect signals for selection changed
 	connect(_plot1,SIGNAL(selectionChanged(QList<int>&)),
-		_listPoints,SLOT(onExtSelectionChanged(QList<int>&)));
-	connect(_listPoints,SIGNAL(selectionChanged(QList<int>&)),
-		_plot1,SLOT(onExtSelectionChanged(QList<int>&)));
-
-	// reemiting signal (tableRecVar catchs it)
-	connect(_listPoints,SIGNAL(selectionChanged(QList<int>&)),
 		this,SIGNAL(selectionChanged(QList<int>&)));
-	//connect(_listPoints,SIGNAL(selectionChanged(QList<int>&)),
-	//	this,SLOT(selectionChanged(QList<int>&)));
 	
+
 	// Connecting signals and slot
 	connect(_ui->comboAbscissa,SIGNAL(activated(int)),
 	this,SLOT(varSelectionChanged()));
@@ -106,12 +74,6 @@ WidgetMooPlot::WidgetMooPlot(OptimResult* result,QWidget *parent) :
 	// update combos and plot
 	updateCombos();
 	varSelectionChanged();
-
-	//Shown points
-	setOnlyPareto(_ui->pushPareto->isChecked());
-	connect(_ui->pushPareto,SIGNAL(toggled(bool)),this,SLOT(setOnlyPareto(bool)));
-
-
 }
 
 WidgetMooPlot::~WidgetMooPlot()
@@ -120,7 +82,15 @@ WidgetMooPlot::~WidgetMooPlot()
 }
 
 
+void WidgetMooPlot::onExtSelectionChanged(QList<int>& list)
+{
+    _plot1->onExtSelectionChanged(list);
+}
 
+void WidgetMooPlot::onExtShownPointsChanged(QList<int>& list)
+{
+    this->setShownPoints(list);
+}
 
 void WidgetMooPlot::varSelectionChanged()
 {
@@ -197,7 +167,7 @@ void WidgetMooPlot::varSelectionChanged()
 	{
 		//looking in optVariables
 		YVarIndex = _result->optVariablesResults()->findItem(YVarName);
-		if(XVarIndex>-1)
+        if(YVarIndex>-1)
 		{
 		YVarResult = _result->optVariablesResults()->items.at(YVarIndex);
 		YType = 1;
@@ -239,36 +209,6 @@ void WidgetMooPlot::varSelectionChanged()
 	}
 }
 
-//void WidgetMooPlot::onListSelectionChanged(
-//void WidgetMooPlot::onSelectionChanged(QList<int>& _list,QObject* sender)
-//{
-//	setSelectedPoints(_list);
-//
-//	if(sender==(QObject*)_plot1)
-//		emit selectionChanged(_list);
-//}
-//void WidgetMooPlot::setSelectedPoints(QList<int> &_indexes)
-//{
-//
-//	if(selectedPoints != _indexes)
-//	{
-//		selectedPoints = _indexes;
-//		emit selectionChanged(_indexes);
-//
-//		// to improve : must be able to select several rows
-//		if(_indexes.size()>0)
-//			_listPoints->setCurrentRow(_indexes.at(0));
-//		else
-//			_listPoints->clearSelection();
-//	}
-//
-//	if (selectedPoints.size()!=1)
-//		_result->setCurPoint(-1);
-//	else
-//		_result->setCurPoint(selectedPoints.at(0));
-//}
-//
-
 void WidgetMooPlot::updateCombos()
 {
 	// Clear
@@ -300,62 +240,5 @@ void WidgetMooPlot::updateCombos()
 void WidgetMooPlot::setShownPoints(QList<int> _list)
 {
 	_plot1->setShownPoints(_list);
-
-	_listPoints->clear();
-	QList<int> _updatedList = _plot1->getShownPoints();
-
-	for (int i=0;i<_updatedList.size();i++)
-	{
-		_listPoints->addItem(QString::number(_updatedList.at(i)));
 	}
-}
 
-
-void WidgetMooPlot::showOnlyPoints(QList<int> _list)
-{
-	// unselect points which are not shown
-	QList<int> selected = this->_listPoints->getSelectedIndexes();
-	int i=0;
-	while(i<selected.size())
-	{
-		if(!_list.contains(selected.at(i)))
-			selected.removeAt(i);
-		else
-			i++;
-	}
-	this->_listPoints->setSelectedIndexes(selected);
-
-	this->setShownPoints(_list);
-	//WidgetTableRecVar->showOnlyPoints(_list);
-	//widgetOptTable->showOnlyPoints(_list);
-}
-
-void WidgetMooPlot::showAllPoints()
-{
-	// set all points
-	QList<int> list;
-	int nbPoints=0;
-	if(_result->optObjectivesResults()->items.size()>0)
-		nbPoints = _result->optObjectivesResults()->nbPoints();
-
-	for(int i =0;i<nbPoints;i++)
-		list.push_back(i);
-	
-	showOnlyPoints(list);
-}
-
-void WidgetMooPlot::showParetoPoints()
-{
-	// set all points
-	QList<int> list = ParetoDominance::getParetoSet(((Optimization*)_result->problem())->objectives(),_result->optObjectivesResults());
-	
-	showOnlyPoints(list);
-}
-
-void WidgetMooPlot::setOnlyPareto(bool onlyPareto)
-{
-	if(onlyPareto)
-		showParetoPoints();
-	else
-		showAllPoints();
-}

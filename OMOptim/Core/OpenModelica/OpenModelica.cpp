@@ -280,51 +280,21 @@ void OpenModelica::start(QString exeFile)
 	bool cdOk = SetCurrentDirectory(exeDir.utf16());
        
 
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
-
-	ZeroMemory( &si, sizeof(si) );
-	si.cb = sizeof(si);
-	si.cb = sizeof(STARTUPINFO);
-	si.dwFlags = STARTF_USESHOWWINDOW;
-	si.wShowWindow = SW_HIDE;
-
-	ZeroMemory( &pi, sizeof(pi) );
-
 	QString appPath = "\""+exeFile+"\"";
-	//appPath = appPath.replace("/","\\");
-	LPSTR lAppPath = (LPSTR)VQTConvert::QString_To_LPCSTR(appPath);
 	
 
-  /*      LPWSTR test;
-        appPath.toWCharArray(test);*/
-	// Start the child process. 
-//	if( !CreateProcess( NULL,   // No module name (use command line)
-//                appPath.utf16(),        // Command line
-//		NULL,           // Process handle not inheritable
-//		NULL,           // Thread handle not inheritable
-//		FALSE,          // Set handle inheritance to FALSE
-//		CREATE_NO_WINDOW,              // No creation flags
-//		NULL,           // Use parent's environment block
-//		NULL,           // Use parent's starting directory
-//		&si,            // Pointer to STARTUPINFO structure
-//		&pi )           // Pointer to PROCESS_INFORMATION structure
-//		)
-//	{
-//		QString msg("CreateProcess failed (%d).\n");
-//		msg.sprintf(msg.toLatin1().data(),GetLastError());
-//		infoSender.debug(msg);
-//		return;
-//	}
 
-//	// Wait until child process exits.
-//	WaitForSingleObject( pi.hProcess, INFINITE );
 
-//	// Close process and thread handles.
-//	CloseHandle( pi.hProcess );
-//	CloseHandle( pi.hThread );
 
         QProcess simProcess;
+        // add OM path in PATH
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        QString omHome = env.value("OpenModelicaHome");
+        omHome = omHome+QDir::separator()+"bin";
+        env.insert("PATH", env.value("Path") + ";"+omHome);
+        simProcess.setProcessEnvironment(env);
+
+        //start process
         simProcess.start(appPath, QStringList());
         bool ok = simProcess.waitForFinished();
         if(!ok)

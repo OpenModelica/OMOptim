@@ -44,7 +44,7 @@
 
 
 TabOneSim::TabOneSim(Project *project_,OneSimulation *problem_, QWidget *parent) :
-MO2ColTab(problem_,false,parent)
+MO2ColTab(project_->name(),problem_,false,parent)
 {
 	
 

@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -46,11 +46,13 @@ TreeEIStreams::TreeEIStreams(EIItem * _rootElement,bool _showFields,bool _editab
 {
 	eiReader = _eiReader;
 	rootElement = _rootElement;
+    enabled = true;
 
 	// each change in rootElement descendants implicates all tree redraw
 	// to optimize (more signals and index find function from ModClass*)
 	connect(rootElement,SIGNAL(modified()),this,SLOT(allDataChanged()));
 	connect(rootElement,SIGNAL(cleared()),this,SLOT(allDataCleared()));
+    connect(rootElement,SIGNAL(deleted()),this,SLOT(onRootElementDeleted()));
 }
 
 TreeEIStreams::~TreeEIStreams(void)
@@ -64,6 +66,8 @@ int TreeEIStreams::columnCount(const QModelIndex &parent) const
 
 QVariant TreeEIStreams::data(const QModelIndex &index, int role) const
 {
+    if(enabled)
+    {
 	QVariant result;
 
 	if (!index.isValid())
@@ -99,13 +103,16 @@ QVariant TreeEIStreams::data(const QModelIndex &index, int role) const
 		else
 			return Qt::Unchecked;
 	}				
-
 	return QVariant();
+}
+    else
+        return QVariant();
 }
 
 bool TreeEIStreams::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-
+    if(enabled)
+    {
 	if (!index.isValid())
 		return false;
 
@@ -140,12 +147,15 @@ bool TreeEIStreams::setData(const QModelIndex &index, const QVariant &value, int
 	dataChanged(QModelIndex(),QModelIndex());
 	return true;
 }
+    else
+        return false;
+}
 
 Qt::ItemFlags TreeEIStreams::flags(const QModelIndex &index) const
 {
 	Qt::ItemFlags _flags = Qt::NoItemFlags;
-	
-
+    if(enabled)
+    {
 	if(!index.isValid())
 		return _flags;
 
@@ -159,10 +169,14 @@ Qt::ItemFlags TreeEIStreams::flags(const QModelIndex &index) const
 	case EI::GROUP :
 		ok=(index.column()==0);
 		break;
+        case EI::GENERIC :
+            ok=(index.column()==0);
+            break;
 	}
 
 	if(ok)
 	{
+
 		_flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
 		if(editable)
@@ -172,6 +186,9 @@ Qt::ItemFlags TreeEIStreams::flags(const QModelIndex &index) const
 			_flags = _flags | Qt::ItemIsUserCheckable ;
 	}
 	return _flags;
+}
+    else
+        return _flags;
 }
 
 QVariant TreeEIStreams::headerData(int section, Qt::Orientation orientation,
@@ -190,6 +207,8 @@ QVariant TreeEIStreams::headerData(int section, Qt::Orientation orientation,
 QModelIndex TreeEIStreams::index(int row, int column, const QModelIndex &parent)
 const
 {
+    if(enabled)
+    {
 	if(!hasIndex(row,column,parent))
 			return QModelIndex();
 
@@ -201,75 +220,51 @@ const
 			parentComponent = static_cast<EIItem*>(parent.internalPointer());
 
 		// looking in children
-		int nbStreams = parentComponent->streamChildCount();
-		int nbGroups = parentComponent->groupChildCount();
+        int nbChildren = parentComponent->childCount();
 		
-		if((row<0) || (row>= nbStreams+nbGroups))
+        if((row<0) || (row>= nbChildren))
 			return QModelIndex();
 
-		EIItem *childElement = NULL;
-		// start by packages
-		if(row<nbGroups)
-			childElement = parentComponent->groupChild(row);
-		// then models
-		else if (row<nbStreams+nbGroups)
-			childElement = parentComponent->streamChild(row - nbGroups);
-		
-		if (childElement)
+        EIItem* childElement = parentComponent->child(row);
 			return createIndex(row, column, childElement);
+    }
 		else
 			return QModelIndex();
 }
 
 QModelIndex TreeEIStreams::parent(const QModelIndex &index) const
 {
+    if(enabled)
+    {
 		if (!index.isValid())
 			return QModelIndex();
 
 		EIItem *childElement = static_cast<EIItem*>(index.internalPointer());
 		
 		EIItem *parentElement  = NULL;
-		parentElement = childElement->getParent();
+        parentElement = childElement->parent();
 
 		if (parentElement == rootElement)
 			return QModelIndex();
 
-		EIItem *grandParentElement = NULL;
-		grandParentElement = parentElement->getParent();
 
-		//looking for row number of child in parent
-		int nbGroups = grandParentElement->groupChildCount();
-		int nbstreams = grandParentElement->streamChildCount();
-
-		int iC=0;
-		bool found = false;
-		//start by groups
-		while(!found && iC<nbGroups)
-		{
-			found = (grandParentElement->groupChild(iC)==parentElement);	
-			if(!found)
-				iC++;
-		}
-
-		//then streams
-		while(!found && iC<nbGroups+nbstreams)
-		{
-			found = (grandParentElement->streamChild(iC-nbGroups)==parentElement);	
-			if(!found)
-				iC++;
-		}
-
-		if(!found)
+        int iC = parentElement->indexInParent();
+        if(iC==-1)
 		{
 			// ERROR
 			return QModelIndex();
 		}
-
+        else
 		return createIndex(iC, 0, parentElement);
+}
+    else
+        return QModelIndex();
 }
 
 int TreeEIStreams::rowCount(const QModelIndex &parent) const
 {
+    if(enabled)
+    {
 	EIItem *parentElement;
 
 	if (!parent.isValid())
@@ -278,6 +273,9 @@ int TreeEIStreams::rowCount(const QModelIndex &parent) const
 		parentElement =static_cast<EIItem*>(parent.internalPointer());
 
 	return parentElement->childCount();
+}
+    else
+        return 0;
 }
 
 EIItem* TreeEIStreams::findItem(QString _fullName)
@@ -311,4 +309,13 @@ void TreeEIStreams::publicBeginResetModel()
 void TreeEIStreams::publicEndResetModel()
 {
 	endResetModel();
+}
+
+void TreeEIStreams::onRootElementDeleted()
+{
+    enabled = false;
+    //    this->revert();
+    this->beginResetModel();
+    this->reset();
+    this->endResetModel();
 }

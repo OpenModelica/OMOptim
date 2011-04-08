@@ -45,7 +45,7 @@
 
 
 TabEITargetResult::TabEITargetResult(Project *project_,ProblemTarget *problem_, QWidget *parent) :
-MO2ColTab(problem_,false,parent)
+MO2ColTab(project_->name(),problem_,false,parent)
 {
 	type = TABSOLVEDPROBLEM;
 
@@ -53,18 +53,19 @@ MO2ColTab(problem_,false,parent)
 	problem = problem_;
 
 	// Variables
-	widgetEIInputVars = new WidgetEIInputVars(project_,problem->inputVars());
-	widgetTreeStreams = new WidgetTreeStreams(problem->rootEI,true,true,project->eiReader(),problem->inputVars(),this);
+        widgetEIInputVars = new WidgetEIInputVars(project_,problem->inputVars(),problem->_rootEI);
+        widgetTreeStreams = new WidgetTreeStreams(problem->_rootEI,true,true,project->eiReader(),
+                                                  project->modReader(),project->rootModClass(),project->moomc(),problem->inputVars(),this);
 	MERResult* merResult = problem->getMERResult();
 	widgetCCPlot = new WidgetCCPlot(merResult,this);
 	widgetSelPointScan = new WidgetSelPointScan(problem->inputVars(),this);
 	widgetTableConnConstr = new WidgetTableConnConstr(
 		problem->connConstrs(),
-		problem->rootEI,
+                problem->_rootEI,
 		project->eiReader(),
 		true,
 		this);
-	widgetTableEIGroups = new WidgetTableEIGroups(problem->rootEI,false,project->eiReader(),this);
+        widgetTableEIGroups = new WidgetTableEIGroups(problem->_rootEI,false,project->eiReader(),this);
 
 	addDockWidget("Loaded variables",widgetEIInputVars);
 	addDockWidget("Points and Scans",widgetSelPointScan,widgetEIInputVars);

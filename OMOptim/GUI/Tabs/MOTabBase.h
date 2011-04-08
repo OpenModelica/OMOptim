@@ -51,7 +51,7 @@
 class MOTabBase
 {
 public:
-	MOTabBase(MOItem* _mainItem);
+        MOTabBase(QString _projectName,MOItem* _mainItem);
 	virtual ~MOTabBase(void);
 
 
@@ -68,6 +68,7 @@ public:
 
 protected :
 	MOItem* mainItem;
+        QString projectName; //used for GUI saving
 };
 
 #endif

@@ -67,16 +67,6 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
 
     QString scriptText;
 
-    // loading libraries
-    /*for(int i=0; i < libraries->items.size(); i ++)
-	{
-	QString _libPath = libraries->items.at(i)->filePath();
-	QString _libName = libraries->items.at(i)->name(Modelica::FULL);
-	if(QFileInfo(_libPath).exists() && (_libName!="Modelica"))
-	scriptText.append("openModel(\""+_libPath+"\")\n");
-	}*/
-
-
     scriptText.append("openModel(\""+moPath+"\")\n");
     scriptText.append("cd "+storeFolder+"\n");
     scriptText.append("experimentSetupOutput(textual=true)\n");
@@ -211,46 +201,9 @@ void Dymola::start(QString path)
 #ifdef WIN32
     bool cdOk = SetCurrentDirectory(path.utf16());
 		
-//    STARTUPINFO si;
-//    PROCESS_INFORMATION pi;
-
-//    ZeroMemory( &si, sizeof(si) );
-//    si.cb = sizeof(si);
-//    si.cb = sizeof(STARTUPINFO);
-//    si.dwFlags = STARTF_USESHOWWINDOW;
-//    si.wShowWindow = SW_HIDE;
-
-//    ZeroMemory( &pi, sizeof(pi) );
 
    QString appPath = "\""+path+"\\"+"Dymosim.exe\"";
-//	//appPath = appPath.replace("/","\\");
-//	LPSTR lAppPath = (LPSTR)VQTConvert::QString_To_LPCSTR(appPath);
 
-//    // Start the child process.
-//    if( !CreateProcess( NULL,   // No module name (use command line)
-//                        (LPWSTR)appPath.utf16(),        // Command line
-//                        NULL,           // Process handle not inheritable
-//                        NULL,           // Thread handle not inheritable
-//                        FALSE,          // Set handle inheritance to FALSE
-//                        CREATE_NO_WINDOW,              // No creation flags
-//                        NULL,           // Use parent's environment block
-//                        NULL,           // Use parent's starting directory
-//                        &si,            // Pointer to STARTUPINFO structure
-//                        &pi )           // Pointer to PROCESS_INFORMATION structure
-//        )
-//	{
-//		QString msg("CreateProcess failed (%d).\n");
-//        msg.sprintf(msg.toLatin1().data(),GetLastError());
-//        infoSender.debug(msg);
-//        return;
-//    }
-
-//    // Wait until child process exits.
-//    WaitForSingleObject( pi.hProcess, INFINITE );
-
-//    // Close process and thread handles.
-//    CloseHandle( pi.hProcess );
-//    CloseHandle( pi.hThread );
     QProcess simProcess;
     simProcess.start(appPath, QStringList());
     bool ok = simProcess.waitForFinished();
@@ -267,13 +220,6 @@ void Dymola::start(QString path)
 //    delete []wAppPath;
 #endif
 }
-
-//QString Dymola::getPreambleFromDsin(QTextStream *text)
-//{
-//	QString str = text->readAll(); 
-//	int indStartVariables = str.indexOf("#    Names of initial variables");
-//	return str.left(indStartVariables);
-//}
 
 void Dymola::modifyPreamble(QString &allDsinText,MOVector<ModModelParameter> *parameters)
 {
@@ -332,10 +278,6 @@ void Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     }
 
 
-
-
-
-
     nbv=variables->items.size();
 
 
@@ -354,11 +296,7 @@ void Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
             linefields << line.split(" ", QString::SkipEmptyParts);
         }
 
-        //		variables->items[nv]->setType(linefields[0].toInt());
         variables->items[nv]->setValue(linefields[1].toDouble());
-        //		variables->items[nv]->setMin(linefields[2].toDouble());
-        //		variables->items[nv]->setMax(linefields[3].toDouble());
-        //		variables->items[nv]->setCategory(linefields[4].toInt());
         variables->items[nv]->setDataType(linefields[5].toInt()%4); // use %4 to avoid Dymola variable definition bug
 
         line = text->readLine();
@@ -666,55 +604,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
             }
         }
 	
-        //varNamesString += (curVar->name(Modelica::DYMOLA)
 
-        ////Delete file
-        ////QFile::remove(fileName_);
-
-
-        ////Creating new content
-        //for(nv=0;nv<variables->items.size();nv++)
-        //{
-        //	curVar=variables->items.at(nv);
-
-        //	varNamesString += (curVar->name(Modelica::DYMOLA) + "\n");
-        //	if (curVar->name().size()>maxNameSize)
-        //	{maxNameSize=curVar->name().size();}
-
-        //	varDescString += (curVar->getDesc() + "\n");
-        //	if (curVar->getDesc().size()>maxDescSize)
-        //	{maxDescSize=curVar->getDesc().size();}
-
-        //	if(nv==80)
-        //	{
-        //		int a=2;
-        //	}
-        //	varValuesString += (variableToValueLines(curVar) + "\n");
-        //}
-
-        ////First lines of each part
-        //varNamesPreamble = "#    Names of initial variables \n";
-        //varNamesPreamble += "char initialName("+QString::number(variables->items.size());
-        //varNamesPreamble += ","+QString::number(maxNameSize)+")\n";
-
-        //varDescPreamble += "\nchar initialDescription("+QString::number(variables->items.size());
-        //varDescPreamble += ","+QString::number(maxDescSize)+")\n";
-
-        //varValuesPreamble += "\ndouble initialValue("+QString::number(variables->items.size());
-        //varValuesPreamble += ",6)\n";
-
-
-        ////Writing in file
-        //newTextString = "";
-        //newTextString += preambleString;
-        //newTextString += varNamesPreamble;
-        //newTextString += varNamesString;
-        //newTextString += varValuesPreamble;
-        //newTextString += varValuesString;
-        //newTextString += varDescPreamble;
-        //newTextString += varDescString;
-
-		
 
         fileinfo.setFile(fileName);
         file.setFileName(fileinfo.filePath());
@@ -731,31 +621,3 @@ QString Dymola::sciNumRx()
     return rx;
 }
 
-
-//QString Dymola::variableToValueLines(Variable* variable)
-//{
-//	QString line = "";
-//
-//	//First line
-//	line += QString::number(variable->getFieldValue(Variable::TYPE).toInt());
-//	line += "       ";
-//	line += QString::number(variable->getFieldValue(Variable::VALUE).toDouble());
-//	line += "                  ";
-//	line += QString::number(variable->getFieldValue(Variable::MIN).toDouble());
-//	line += "  ";
-//	double max = variable->getFieldValue(Variable::MAX).toDouble();
-//	if(max == 1e100)
-//		line += "1.0E+100";
-//	else
-//		line += QString::number(max);
-//	line += "\n";
-//
-//	//Second line
-//	line += QString::number(variable->getFieldValue(Variable::CATEGORY).toInt());
-//	line += "  ";
-//	line += QString::number(variable->getFieldValue(Variable::DATATYPE).toInt());
-//	line += "  ";
-//	line += ("# " + variable->name(Modelica::DYMOLA));
-//
-//	return line;
-//}

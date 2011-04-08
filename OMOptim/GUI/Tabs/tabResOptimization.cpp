@@ -49,31 +49,66 @@ namespace Ui
 }
 
 TabResOptimization::TabResOptimization(Project *project_,Optimization *problem_, QWidget *parent) :
-MO2ColTab(problem_,false,parent)
+MO2ColTab(project_->name(),problem_,false,parent)
 {
 	type = TABSOLVEDPROBLEM;
-
+        QMainWindow::setDockNestingEnabled(true);
+        QMainWindow::setCorner(Qt::TopLeftCorner,Qt::LeftDockWidgetArea);
 	project = project_;
 	problem = problem_;
 	result = dynamic_cast<OptimResult*>(problem->result());
 
-	WidgetMooPlot* widgetMooPlot = new WidgetMooPlot(result,this);
-	WidgetTableRecVar* widgetTableRecVar = new WidgetTableRecVar(result,this);
-	addDockWidget("Plot",widgetMooPlot);
+
+        widgetMooPointsList = new WidgetMooPointsList(result,this);
+        widgetMooPlot = new WidgetMooPlot(result,this);
+        widgetTableRecVar = new WidgetTableRecVar(result,this);
+        widgetCalculateMooPoints = new WidgetCalculateMooPoints(result,widgetMooPointsList,this);
+
+        // set size policy
+        widgetMooPointsList->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
+        widgetMooPlot->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
+        widgetTableRecVar->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
+        widgetCalculateMooPoints->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Maximum);
+
+
+        addDockWidget("Plot",widgetMooPlot,NULL,Qt::RightDockWidgetArea);
 #ifdef USEBLOCKSUB
-	addDockWidget("Blocks",new WidgetBlocks(project,result,this),widgetMooPlot);
+        addDockWidget("Blocks",new WidgetBlocks(project,result,this),widgetMooPlot,Qt::RightDockWidgetArea);
 #endif
-	addDockWidget("Recomp. vars",widgetTableRecVar,widgetMooPlot);
-	addFixedWidget("Recompute",new WidgetCalculateMooPoints(result,widgetMooPlot,this));
+        addDockWidget("Recomp. vars",widgetTableRecVar,widgetMooPlot,Qt::RightDockWidgetArea);
+        addFixedWidget("Recompute",widgetCalculateMooPoints,Qt::BottomDockWidgetArea);
+        addFixedWidget("Points",widgetMooPointsList,Qt::LeftDockWidgetArea,Qt::Horizontal,false);
 	
+
+        // connect signals for selection changed
 	connect(widgetMooPlot,SIGNAL(selectionChanged(QList<int> &)),
-		widgetTableRecVar,SLOT(onSelectionChanged(QList<int> &)));
+                widgetMooPointsList,SLOT(onExtSelectionChanged(QList<int>&)));
+        connect(widgetMooPlot,SIGNAL(selectionChanged(QList<int>&)),
+                widgetTableRecVar,SLOT(onExtSelectionChanged(QList<int>&)));
+
+        connect(widgetMooPointsList,SIGNAL(selectionChanged(QList<int>&)),
+                widgetTableRecVar,SLOT(onExtSelectionChanged(QList<int>&)));
+        connect(widgetMooPointsList,SIGNAL(selectionChanged(QList<int>&)),
+                widgetMooPlot,SLOT(onExtSelectionChanged(QList<int>&)));
+
+
+        // connect signals for shown points changed
+        connect(widgetMooPointsList,SIGNAL(shownPointsChanged(QList<int>&)),
+                widgetMooPlot,SLOT(onExtShownPointsChanged(QList<int>&)));
+
+        // connect signals for cur scan changed
 	connect(result,SIGNAL(curScanChanged(int &)),widgetTableRecVar,SLOT(onCurScanChanged(int &)));
 
+        // refresh shown points
+         widgetMooPointsList->setOnlyPareto(widgetMooPointsList->_ui->pushPareto->isChecked());
+
+         // restore position
+         readGUIState();
 }
 
 TabResOptimization::~TabResOptimization()
 {
+    int a=2;
 }
 
 

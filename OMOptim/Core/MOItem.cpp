@@ -71,6 +71,7 @@ MOItem::MOItem(QDomElement & domEl)
 
 MOItem::~MOItem(void)
 {
+    emit deleted();
 }
 
 void MOItem::update(QDomElement & domEl)

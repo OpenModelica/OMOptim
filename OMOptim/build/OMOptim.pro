@@ -73,20 +73,13 @@ INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.4-mingw/include \
 }
 #---------End WINDOWS
 
+    DEFINES+= USEBLOCKSUB
+
+
 contains(CONFIG,useei){
 	
 	message("useei enabled : will integrate pinch analysis functions")
 
-        Debug:DESTDIR = ../debugEI/
-        Debug:UI_DIR = ../debugEI/generatedfiles/ui
-        Debug:MOC_DIR = ../debugEI/generatedfiles/moc
-        Debug:RCC_DIR = ../debugEI/generatedfiles/rcc
-
-        Release:DESTDIR = ../releaseEI/
-        Release:UI_DIR = ../releaseEI/generatedfiles/ui
-        Release:MOC_DIR = ../releaseEI/generatedfiles/moc
-        Release:RCC_DIR = ../releaseEI/generatedfiles/rcc
-    
 	# if wants energy integration (pinch analysis)
 	# add CONFIG+=useei in command line
 
@@ -109,6 +102,9 @@ contains(CONFIG,useei){
                 ../Core/EI/EIStream.h \
                 ../Core/EI/EITargetResult.h \
                 ../Core/EI/EITools.h \
+                ../Core/EI/EIModelExtractor.h \
+                ../Core/EI/EILinguist.h \
+                ../Core/EI/ModEIConverter.h \
                 ../Core/EI/MERResult.h \
                 ../Core/EI/TableEIItems.h \
                 ../Core/EI/TreeEIStreams.h \
@@ -123,9 +119,11 @@ contains(CONFIG,useei){
                 ../GUI/Widgets/WidgetCCPlot.h \
 				../GUI/Widgets/WidgetTreeStreams.h \
 				../GUI/Widgets/WidgetTableConnConstr.h \
-				../GUI/Widgets/WidgetTableStreams.h
+                ../GUI/Widgets/WidgetTableStreams.h \
+                ../Core/EI/EIValueFiller.h
     SOURCES +=  ../Core/EI/EITargetResult.cpp \
                 ../GUI/Tabs/tabProblemEI.cpp \
+                ../Core/Problems/ProblemEI.cpp \
                 ../Core/Problems/ProblemTarget.cpp \
                 ../Core/Optim/MILP/MilpTarget.cpp \
                 ../Core/Optim/MILP/SimpleMilpTarget.cpp \
@@ -137,6 +135,9 @@ contains(CONFIG,useei){
                 ../Core/EI/EIReader.cpp \
                 ../Core/EI/EIStream.cpp \
                 ../Core/EI/EITools.cpp \
+                ../Core/EI/EIModelExtractor.cpp \
+                ../Core/EI/ModEIConverter.cpp \
+                ../Core/EI/EIValueFiller.cpp \
                 ../Core/EI/MERResult.cpp \
                 ../Core/EI/TableEIItems.cpp \
                 ../Core/EI/TreeEIStreams.cpp \
@@ -151,6 +152,7 @@ contains(CONFIG,useei){
 				../GUI/Widgets/WidgetTableStreams.cpp \
 		        ../GUI/Widgets/WidgetTreeStreams.cpp \
                 ../GUI/Widgets/WidgetCCPlot.cpp
+
     FORMS +=    ../GUI/Widgets/WidgetTableEIGroups.ui \
                 ../GUI/Widgets/WidgetTableConnConstr.ui \
                 ../GUI/Widgets/WidgetEIInputVars.ui \
@@ -331,7 +333,6 @@ HEADERS += ../config.h \
            ../GUI/Tabs/tabResOneSim.h \
            ../GUI/Tabs/tabResOptimization.h \
            ../GUI/Tabs/tabResOptimization_Config.h \
-           ../GUI/Tabs/tabResOptimization_Plot.h \
            ../GUI/Tools/GuiTools.h \
            ../GUI/Tools/MOGuiTools.h \
            ../GUI/Tools/MOSplitter.h \
@@ -373,7 +374,6 @@ HEADERS += ../config.h \
            ../Core/Optim/EA/Chromosome/EOStd.h \
            ../Core/Optim/EA/Crossover/SBCrossover.h \
            ../Core/Optim/EA/Evaluations/EAStdOptimizationEval.h \
-           ../Core/Optim/EA/Evaluations/EAStdVariableDetEval.h \
            ../Core/Optim/EA/Init/EAAdaptReinitStdDev.h \
            ../Core/Optim/EA/Init/EAStdBounds.h \
            ../Core/Optim/EA/Init/EAStdInitBounded.h \
@@ -394,8 +394,10 @@ HEADERS += ../config.h \
            ../Core/OMC/OMCHelper.h \
            ../Core/OMC/StringHandler.h \
     ../Core/FileData/XML.h \
-    ../Core/VariableType.h
+    ../Core/VariableType.h \
+    ../GUI/Widgets/WidgetMooPointsList.h \
    # ../Core/Problems/OMProblem.h
+
 
 FORMS += ../GUI/MainWindow.ui \
          ../GUI/Dialogs/AboutOMOptim.ui \
@@ -412,7 +414,6 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Tabs/tabProjectInfos.ui \
          ../GUI/Tabs/tabResOptimization.ui \
          ../GUI/Tabs/tabResOptimization_Config.ui \
-         ../GUI/Tabs/tabResOptimization_plot.ui \
          ../GUI/Widgets/WidgetBlocks.ui \
          ../GUI/Widgets/WidgetCalculateMooPoints.ui \
          ../GUI/Widgets/WidgetMOItem.ui \
@@ -427,7 +428,8 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Widgets/WidgetSelectVars.ui \
          ../GUI/Widgets/WidgetSelPointScan.ui \
          ../GUI/Widgets/WidgetTableRecVar.ui \
-         ../GUI/Widgets/WidgetToolBar.ui
+         ../GUI/Widgets/WidgetToolBar.ui \
+    ../GUI/Widgets/WidgetMooPointsList.ui
  
 
 SOURCES += ../main.cpp \
@@ -474,7 +476,6 @@ SOURCES += ../main.cpp \
            ../Core/Problems/OptimResult.cpp \
            ../Core/Problems/Problem.cpp \
            ../Core/Problems/ProblemConfig.cpp \
-           ../Core/Problems/ProblemEI.cpp \
            ../Core/Problems/Problems.cpp \
            ../Core/Problems/Result.cpp \
            ../Core/Problems/Results.cpp \
@@ -518,7 +519,6 @@ SOURCES += ../main.cpp \
            ../GUI/Tabs/tabResOneSim.cpp \
            ../GUI/Tabs/tabResOptimization.cpp \
            ../GUI/Tabs/tabresoptimization_config.cpp \
-           ../GUI/Tabs/tabresoptimization_Plot.cpp \
            ../GUI/Tools/GuiTools.cpp \
            ../GUI/Tools/MOGuiTools.cpp \
            ../GUI/Tools/MOSplitter.cpp \
@@ -554,8 +554,12 @@ SOURCES += ../main.cpp \
            ../Core/Optim/EA/SPEA2Adaptative/SPEA2Adapt.cpp \
             ../Core/OMC/OMCHelper.cpp \
             ../Core/OMC/StringHandler.cpp \
-    ../Core/FileData/XML.cpp
+    ../Core/FileData/XML.cpp \
+    ../GUI/Widgets/WidgetMooPointsList.cpp
+
+
   #  ../Core/Problems/OMProblem.cpp
+
 RESOURCES += ../GUI/Resources/mineit.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc

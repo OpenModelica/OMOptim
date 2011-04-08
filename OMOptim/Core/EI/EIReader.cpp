@@ -108,16 +108,16 @@ void EIReader::addEmptyGroup(EIItem* parent)
 
 void EIReader::removeItem(EIItem* _item)
 {
-	EIItem* parent = _item->getParent();
-	if(parent)
+        EIItem* parentItem = _item->parent();
+        if(parentItem)
 	{
 		int i=0;
-		while((i<parent->childCount())&&(parent->child(i)!=_item))
+                while((i<parentItem->childCount())&&(parentItem->child(i)!=_item))
 			i++;
-		if(i<parent->childCount())
+                if(i<parentItem->childCount())
 		{
-			delete parent->child(i);
-			parent->removeChild(i);
+                        delete parentItem->child(i);
+                        parentItem->removeChild(i);
 		}
 	}
 }
@@ -151,6 +151,12 @@ void EIReader::setItems(QDomElement & domEl,EIItem* rootEI)
 			newEIitem = new EIGroup(domItem);
 			rootEI->addChild(newEIitem);
 		}
+
+                if(node.compare("EIItem",Qt::CaseInsensitive)==0)
+                {
+                        newEIitem = new EIItem(domItem);
+                        rootEI->addChild(newEIitem);
+                }
 
 		//fill children
 		setItems(domItem,newEIitem);
@@ -204,7 +210,8 @@ QList<EIStream*> EIReader::getValidStreams(EIItem*parent,MOOptVector *variables,
 	for(int i=0;i<result.size();i++)
 	{
 		curStream = result.at(i);
-		if(!curStream->isValid(variables,QString()))
+                QString error;
+                if(!curStream->isValid(variables,error))
 			result.removeAt(i);
 
 		if(onlyChecked && !curStream->isChecked())
@@ -264,11 +271,11 @@ void EIReader::getFirstGroupFact(EIItem* item,EIGroupFact* &fact,EIGroup* &group
 {
 	fact = NULL;
 	group = NULL;
-	EIItem* parent=item;
-	while(fact==NULL && parent!=NULL)
+        EIItem* parentItem=item;
+        while(fact==NULL && parent()!=NULL)
 	{
-		parent = parent->getParent();
-		EIGroup* _group = dynamic_cast<EIGroup*>(parent);
+                parentItem = parentItem->parent();
+                EIGroup* _group = dynamic_cast<EIGroup*>(parentItem);
 		if(_group)
 		{
 			if(_group->isFactVariable())

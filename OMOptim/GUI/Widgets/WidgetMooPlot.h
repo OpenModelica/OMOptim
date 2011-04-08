@@ -69,27 +69,21 @@ public:
     virtual ~WidgetMooPlot();
 
 	void updateCombos();
+        void setShownPoints(QList<int>);
 
-	void setShownPoints(QList<int> _list);
-	//void setSelectedPoints(QList<int>&);
 
-private :
-	void showOnlyPoints(QList<int>);
-	void showAllPoints();
-	void showParetoPoints();
 public slots :
-	void setOnlyPareto(bool);
 	void varSelectionChanged();
+        void onExtSelectionChanged(QList<int>&);
+        void onExtShownPointsChanged(QList<int>&);
 
 signals:
 		void selectionChanged(QList<int>&);
+
 public:
     Ui::WidgetMooPlotClass *_ui;
-
 	OptimResult* _result;
 	MOOptPlot *_plot1;
-	//QList<int> selectedPoints;
-	WidgetList *_listPoints;
 };
 
 #endif 

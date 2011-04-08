@@ -45,6 +45,7 @@
 #include "METemperature.h"
 #include "MERefValue.h"
 #include "MEQflow.h"
+#include "MOomc.h"
 
 class EIStream : public EIItem
 {
@@ -67,7 +68,7 @@ public:
 	static const int nbFields = 9;
 	virtual unsigned getNbFields(){return nbFields;};
 
-	EIStream(EIItem* _parent,QString _name="Stream");
+        EIStream(EIItem* parent,QString name=QString());
 	EIStream(const EIStream &);
 	EIStream(QDomElement &);
 	virtual EIItem* clone();
@@ -86,6 +87,7 @@ public:
 	MERefValue<METemperature> Tout;
 	MERefValue<MEQflow> Qflow;
 	double DTmin2;
+        QStringList references();
 
 	
 
@@ -95,9 +97,6 @@ public:
 	static QString sFieldName(int field, int role);
 	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return EIStream::sFieldName(i,role);};
 };
-
-
-
 
 
 #endif

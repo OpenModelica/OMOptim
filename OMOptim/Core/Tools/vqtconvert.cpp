@@ -3,7 +3,9 @@
 #ifdef WIN32
 
 #include <QString>
+#ifdef WIN32
 #include "windows.h"
+#endif
 #undef min  
 #undef max 
 

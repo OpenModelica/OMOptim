@@ -45,7 +45,7 @@
 
 
 TabProblemEI::TabProblemEI(Project *project_,ProblemTarget *problem_, QWidget *parent) :
-MO2ColTab(problem_,false,parent)
+MO2ColTab(project_->name(),problem_,false,parent)
 {
 	type = TABPROBLEM;
 
@@ -53,14 +53,15 @@ MO2ColTab(problem_,false,parent)
 	problem = problem_;
 
 	// Variables
-	widgetEIInputVars = new WidgetEIInputVars(project_,problem->inputVars());
-	widgetTreeStreams = new WidgetTreeStreams(problem->rootEI,true,true,project->eiReader(),problem->inputVars(),this);
+        widgetEIInputVars = new WidgetEIInputVars(project_,problem->inputVars(),problem->_rootEI);
+        widgetTreeStreams = new WidgetTreeStreams(problem->_rootEI,true,true,project->eiReader(),
+                                                  problem->modReader(),project->rootModClass(),project->moomc(),problem->inputVars(),this);
 	MERResult* merResult = problem->getMERResult();
 	widgetCCPlot = new WidgetCCPlot(merResult,this);
 	widgetSelPointScan = new WidgetSelPointScan(problem->inputVars(),this);
 	widgetTableConnConstr = new WidgetTableConnConstr(
 		problem->connConstrs(),
-		problem->rootEI,
+                problem->_rootEI,
 		project->eiReader(),
 		true,
 		this);
@@ -70,15 +71,18 @@ MO2ColTab(problem_,false,parent)
 	addDockWidget("Loaded variables",widgetEIInputVars);
 	addDockWidget("Points and Scans",widgetSelPointScan,widgetEIInputVars);
 	addDockWidget("EI Streams",widgetTreeStreams,widgetEIInputVars);
-	addDockWidget("Composites, MER",widgetCCPlot);
+        addDockWidget("Composites, MER",widgetCCPlot,widgetEIInputVars);
 	addDockWidget("Connections",widgetTableConnConstr,widgetEIInputVars);
 
 	connect(problem,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
 	connect(widgetEIInputVars,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
 	connect(widgetTreeStreams,SIGNAL(targetAsked()),this,SLOT(onTargetAsked()));
 	connect(widgetTreeStreams,SIGNAL(MERAsked(bool)),this,SLOT(onMERAsked(bool)));
+        connect(widgetTreeStreams,SIGNAL(EILoadModelAsked()),this,SLOT(onEILoadModelAsked()));
 	
 	updateSelPointScan();
+
+        readGUIState();
 }
 
 TabProblemEI::~TabProblemEI()
@@ -121,4 +125,15 @@ void TabProblemEI::onMERAsked(bool includeUtilities)
 	cfg.tempDir = tempDir;
 	problem->launchMER(cfg,includeUtilities);
 	
+}
+
+void TabProblemEI::onEILoadModelAsked()
+{
+    WidgetSelectModModel* widgetSelect = new WidgetSelectModModel(project->modReader(),project->rootModClass(),this);
+    if(widgetSelect->exec()==QDialog::Accepted)
+    {
+            ModModel* curModel = widgetSelect->selectedModel;
+
+            problem->loadModel(curModel);
+    }
 }

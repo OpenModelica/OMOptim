@@ -41,16 +41,10 @@
 #include "ProblemTarget.h"
 
 
-ProblemTarget::ProblemTarget(Project* project,EIReader* eiReader)
+ProblemTarget::ProblemTarget(Project* project,EIReader* eiReader,ModReader* modReader,MOomc* moomc)
+    :ProblemEI(project,eiReader,modReader,moomc)
 {
-	_type = Problem::PROBLEMEI;
-	_name="EI";
-
-	_project = project;
-	_eiReader = eiReader;
-	_rootEI = new EIItem();
 	_inputVars = new MOOptVector(false,false);
-
 	_merResult = new MERResult(project,this,eiReader);
 	_connConstrs = new EIConnConstrs(); // connnection constraints
 }
@@ -58,9 +52,8 @@ ProblemTarget::ProblemTarget(Project* project,EIReader* eiReader)
 ProblemTarget::ProblemTarget(const ProblemTarget &problem)
 :ProblemEI(problem)
 {
-	_eiReader = problem._eiReader;
 	_inputVars = problem._inputVars->clone();
-	_rootEI = problem._rootEI->clone();
+
 	if(problem._merResult)
 		_merResult = new MERResult(*problem._merResult);
 
@@ -69,7 +62,6 @@ ProblemTarget::ProblemTarget(const ProblemTarget &problem)
 
 ProblemTarget::~ProblemTarget(void)
 {
-	delete _rootEI;
 }
 
 QDomElement ProblemTarget::toXMLData(QDomDocument & doc)
@@ -103,44 +95,28 @@ bool ProblemTarget::checkBeforeComp(QString & error)
 	return true;
 }
 
-void ProblemTarget::clearInputVars()
-{
-	_inputVars->clear();
-}
-
-void ProblemTarget::updateInputVars(MOOptVector *addedVars)
-{
-	if(addedVars->getUsePoints())
-		_inputVars->setUsePoints(true);
-	
-	if(addedVars->getUseScan())
-		_inputVars->setUseScan(true);
-	
-	_inputVars->append(*addedVars,true);
-
-	emit inputVarsModified();
-}
-
-
-void ProblemTarget::setInputVars(MOOptVector* variables)
-{
-	clearInputVars();
-	updateInputVars(variables);
-}
-
 MERResult* ProblemTarget::getMERResult()
 {
 	return _merResult;
 }
 
-MOOptVector * ProblemTarget::inputVars()
-{
-	return _inputVars;
-}
+
 EIConnConstrs* ProblemTarget::connConstrs()
 {
 	return _connConstrs;
 }
+	
+void ProblemTarget::fillReferencesValue(EIItem* filledEI,bool forceRecompute)
+{
+	
+
+
+    EIValueFiller::getFilledEI(_rootEI,filledEI,_modelsLoaded,_inputVars,_project);
+}
+
+
+
+
 
 void ProblemTarget::launch(ProblemConfig config)
 {
@@ -163,6 +139,10 @@ void ProblemTarget::launch(ProblemConfig config)
 	QDir tempDir(config.tempDir);
 	QString dataFilePath = tempDir.absoluteFilePath(name()+".dat");
 
+        //replace ei references by values
+        EIItem* filledEI = new EIItem();
+        fillReferencesValue(filledEI,false);
+
 	MilpTarget *milpTarget = new MilpTarget(_rootEI,_connConstrs,_eiReader,_inputVars,modFileInfo.absoluteFilePath(),dataFilePath);
 	_result = milpTarget->launch();
 
@@ -175,7 +155,7 @@ void ProblemTarget::launchMER(ProblemConfig config,bool includeUtilities)
 	QList<METemperature> Tk;
 	QList<EIStream*> eiStreams;
 	QList<QList<MEQflow> > Qik;
-	EITools::getTkQik(_eiReader,_inputVars,rootEI,Tk,eiStreams,Qik,!includeUtilities);
+        EITools::getTkQik(_eiReader,_inputVars,_rootEI,Tk,eiStreams,Qik,!includeUtilities);
 	
 
 	CCTools::buildCCfromStreams(Tk,Qik,

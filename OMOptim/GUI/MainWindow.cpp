@@ -326,6 +326,7 @@ void MainWindow::loadProject()
 	{
 		QMessageBox msgBox;
 		msgBox.setText("Project will be loaded. It may take a long time while application will seem freezed.");
+                msgBox.setIcon(QMessageBox::Information);
 		msgBox.exec();
 
 		msgBox.hide();
@@ -914,17 +915,17 @@ void MainWindow::onSelectedModClass(QModelIndex index)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-	/*QSettings settings("MO", "GUI_");
-	settings.setValue(name+"/geometry", saveGeometry());
-	settings.setValue(name+"/windowState", saveState());*/
+        QSettings settings("MO", "GUI_");
+        settings.setValue(QApplication::applicationName()+"/geometry", saveGeometry());
+        settings.setValue(QApplication::applicationName()+"/windowState", saveState());
 	QMainWindow::closeEvent(event);
 }
 
  void MainWindow::readSettings()
  {
-   /*  QSettings settings("MO", "GUI");
-     restoreGeometry(settings.value(name+"/geometry").toByteArray());
-     restoreState(settings.value(name+"/windowState").toByteArray());*/
+     QSettings settings("MO", "GUI");
+     restoreGeometry(settings.value(QApplication::applicationName()+"/geometry").toByteArray());
+     restoreState(settings.value(QApplication::applicationName()+"/windowState").toByteArray());
  }
 
  void MainWindow::dispAboutOMOptim()

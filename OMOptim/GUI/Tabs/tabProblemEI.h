@@ -66,6 +66,7 @@
 #include "WidgetEIInputVars.h"
 #include "WidgetSelPointScan.h"
 #include "WidgetTableConnConstr.h"
+#include "WidgetSelectModModel.h"
 
 class TabProblemEI : public MO2ColTab {
     Q_OBJECT
@@ -81,8 +82,9 @@ public:
 		void actualize();
 		void updateSelPointScan();
 		void onInputVarsModified();
-		void onTargetAsked();
+                void onEILoadModelAsked();
 		void onMERAsked(bool includeUtilities);
+		void onTargetAsked();
 
 private :
 	WidgetEIInputVars* widgetEIInputVars;

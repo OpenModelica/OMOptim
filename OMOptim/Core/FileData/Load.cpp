@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -714,7 +714,7 @@ Problem* Load::newProblemTargetFromFile(QString filePath,Project* project)
 	QDomElement domInfos = domProblem.firstChildElement("Infos");
 	QString problemName = domInfos.attribute("name");
 
-	ProblemTarget* problem= new ProblemTarget(project,project->eiReader());
+        ProblemTarget* problem= new ProblemTarget(project,project->eiReader(),project->modReader(),project->moomc());
 	problem->setEntireSavePath(filePath);
 
 	// Infos
@@ -723,7 +723,7 @@ Problem* Load::newProblemTargetFromFile(QString filePath,Project* project)
 
 	// EI
 	QDomElement domEI = domProblem.firstChildElement("EIItem");
-	project->eiReader()->setItems(domEI,problem->rootEI);
+	project->eiReader()->setItems(domEI,problem->_rootEI);
 
 	// InputVars
 	QDomElement domInputVars = domProblem.firstChildElement("InputVars");
@@ -756,7 +756,7 @@ Problem* Load::newProblemTargetSolvedFromFile(QString filePath,Project* project)
 	QDomElement domInfos = domProblem.firstChildElement("Infos");
 	QString problemName = domInfos.attribute("name");
 		
-	ProblemTarget* problem= new ProblemTarget(project,project->eiReader());
+        ProblemTarget* problem= new ProblemTarget(project,project->eiReader(),project->modReader(),project->moomc());
 	problem->setEntireSavePath(filePath);
 
 	// Infos
@@ -765,7 +765,7 @@ Problem* Load::newProblemTargetSolvedFromFile(QString filePath,Project* project)
 
 	// EI
 	QDomElement domEI = domProblem.firstChildElement("EIItem");
-	project->eiReader()->setItems(domEI,problem->rootEI);
+	project->eiReader()->setItems(domEI,problem->_rootEI);
 
 	// InputVars
 	QDomElement domInputVars = domProblem.firstChildElement("InputVars");

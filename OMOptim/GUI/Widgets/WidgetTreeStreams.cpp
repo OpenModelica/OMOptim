@@ -44,12 +44,16 @@
 
 
 
-WidgetTreeStreams::WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _editable,EIReader* _eiReader,MOOptVector *_variables,QWidget *parent) :
+WidgetTreeStreams::WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _editable,EIReader* _eiReader,
+                                     ModReader* _modReader,ModClass* _rootModClass, MOomc* _moomc,MOOptVector *_variables,QWidget *parent) :
     QWidget(parent),
     ui(new Ui::WidgetTreeStreamsClass)
 {
     ui->setupUi(this);
 	
+        modReader = _modReader;
+        rootModClass = _rootModClass;
+        moomc= _moomc;
 	rootEI = _rootEI;
 	variables = _variables;
 	editable = _editable;
@@ -86,6 +90,7 @@ WidgetTreeStreams::WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _edit
 	connect(ui->pushRemove,SIGNAL(clicked()),this,SLOT(removeItem()));
 	connect(ui->pushTarget,SIGNAL(clicked()),this,SIGNAL(targetAsked()));
 	connect(ui->pushMER,SIGNAL(clicked()),this,SLOT(onMERAsked()));
+        connect(ui->pushLoadModel,SIGNAL(clicked()),this,SIGNAL(EILoadModelAsked()));
 
 	updateCompleters();
 
@@ -132,7 +137,7 @@ WidgetTreeStreams::~WidgetTreeStreams()
 EIItem* WidgetTreeStreams::getGroupParent(QModelIndex index)
 {
 	EIItem* item;
-	EIItem* parent;
+        EIItem* parentItem;
 	if(index.isValid())
 	{
 		item = static_cast<EIItem*>(index.internalPointer());
@@ -140,28 +145,30 @@ EIItem* WidgetTreeStreams::getGroupParent(QModelIndex index)
 	else
 		return rootEI;
 
-	parent = item;
-	while(parent!=rootEI && parent->getEIType()!=EI::GROUP)
-		parent = parent->getParent();
+        parentItem = item;
+        while(parentItem!=rootEI && parentItem->getEIType()!=EI::GROUP)
+                parentItem = parentItem->parent();
 
-	return parent;
+        return parentItem;
 }
 
 void WidgetTreeStreams::addEmptyStream()
 {
 	QModelIndex index = treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
-	EIItem* parent = getGroupParent(index);
-	eiReader->addEmptyStream(parent);
+        EIItem* parentItem = getGroupParent(index);
+        eiReader->addEmptyStream(parentItem);
 	//treeView->expand(index);
 }
+
+
 
 void WidgetTreeStreams::addEmptyGroup()
 {
 	QModelIndex index = treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
-	EIItem* parent = getGroupParent(index);
-	eiReader->addEmptyGroup(parent);
+        EIItem* parentItem = getGroupParent(index);
+        eiReader->addEmptyGroup(parentItem);
 	treeView->expand(index);
 }
 
@@ -187,7 +194,7 @@ void WidgetTreeStreams::removeItem()
 	if(index.isValid())
 	{
 		eiItem = static_cast<EIItem*>(index.internalPointer());
-		eiParent = eiItem->getParent();
+                eiParent = eiItem->parent();
 		treeEIStreams->publicBeginResetModel();
 		if(eiParent)
 			eiParent->removeChild(eiItem);

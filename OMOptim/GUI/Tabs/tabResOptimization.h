@@ -64,6 +64,7 @@
 #include "MO2ColTab.h"
 #include "WidgetBlocks.h"
 #include "WidgetMooPlot.h"
+#include "WidgetMooPointsList.h"
 #include "WidgetOptTable.h"
 #include "WidgetTableRecVar.h"
 #include "WidgetToolBar.h"
@@ -85,31 +86,12 @@ public:
 	Optimization *problem;
 	OptimResult* result;
 
+        WidgetMooPointsList* widgetMooPointsList;
 	WidgetMooPlot* widgetMooPlot;
 	WidgetTableRecVar* widgetTableRecVar;
+        WidgetCalculateMooPoints* widgetCalculateMooPoints;
 
 
-	////Toolbars
-	//QToolBar *plotToolBar;
-	//QToolBar *problemToolBar;
-
-	////UI
-	//Ui::TabResOptimizationClass *ui;
-
-	/*TabOptimization *problemWidget;
-	TabResOptimization_Plot *plotWidget;
-
-	int curView;
-	QStringList viewList;
-
-	public slots :
-		void updateView(int);
-		void actualizeGui();
-		void createToolBar();
-	*/
-
-	
-   
 };
 
 

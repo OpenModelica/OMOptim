@@ -49,7 +49,7 @@ namespace Ui
 }
 
 TabProject::TabProject(Project *project_, QWidget *parent) :
-MOTabSimple(project_),ui(new Ui::TabProject_Class)
+MOTabSimple(project_->name(),project_),ui(new Ui::TabProject_Class)
 {
 	type = TABPROJECT;
 

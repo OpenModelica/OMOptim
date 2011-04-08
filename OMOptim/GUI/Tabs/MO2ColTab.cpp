@@ -40,8 +40,8 @@
 
 #include "MO2ColTab.h"
 
-MO2ColTab::MO2ColTab(MOItem* _mainItem,bool _closable,QWidget *parent)
-:MOTabCplx(_mainItem,parent)
+MO2ColTab::MO2ColTab(QString _projectName,MOItem* _mainItem,bool _closable,QWidget *parent)
+:MOTabCplx(_projectName,_mainItem,parent)
 {
 
 	closable = _closable;
@@ -52,6 +52,8 @@ MO2ColTab::MO2ColTab(MOItem* _mainItem,bool _closable,QWidget *parent)
 		dispTB->setOrientation(Qt::Vertical);
 		addToolBar(Qt::LeftToolBarArea,dispTB);
 	}
+
+
 }
 
 MO2ColTab::~MO2ColTab(void)
@@ -59,12 +61,13 @@ MO2ColTab::~MO2ColTab(void)
 
 }
 
-void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn)
+void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,Qt::DockWidgetArea dockWidgetArea)
 {
 
 	// Widget
 	QDockWidget* dockWidget = new QDockWidget(title,this);
 	dockWidget->setObjectName(title);
+        dockWidget->setSizePolicy(widget->sizePolicy());
 
 	if(closable)
 		dockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
@@ -73,13 +76,14 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn)
 	dockWidget->setLayout(new QGridLayout());
 	dockWidget->setWidget(widget);
 	dockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
+
 	//dockWidget->setStyleSheet("border-width: 1px;\n     border-style: solid;\n     border-color: gray;");
-	QMainWindow::addDockWidget(Qt::TopDockWidgetArea,dockWidget,Qt::Vertical);
+        QMainWindow::addDockWidget(dockWidgetArea,dockWidget);
 	
 
 	// Tabify
-	if(tabifiedOn&&map.key(tabifiedOn,NULL))
-		tabifyDockWidget(map.key(tabifiedOn),dockWidget);
+        if(tabifiedOn && mapDockWidgets.key(tabifiedOn,NULL))
+                tabifyDockWidget(mapDockWidgets.key(tabifiedOn),dockWidget);
 
 
 	dockWidget->show();
@@ -91,10 +95,10 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn)
 		dispTB->addAction(action);
 	}
 
-	map.insert(dockWidget,widget);
+        mapDockWidgets.insert(dockWidget,widget);
 	bool ok = restoreDockWidget(dockWidget);
 }
-void MO2ColTab::addFixedWidget(QString title,QWidget* widget)
+void MO2ColTab::addFixedWidget(QString title,QWidget* widget,Qt::DockWidgetArea dockArea,Qt::Orientation orientation,bool showTitle)
 {
 
 	// Widget
@@ -103,19 +107,26 @@ void MO2ColTab::addFixedWidget(QString title,QWidget* widget)
 	dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
 	dockWidget->setLayout(new QGridLayout());
 	dockWidget->setWidget(widget);
-	//dockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
-	//dockWidget->setStyleSheet("border-width: 1px;\n     border-style: solid;\n     border-color: gray;");
-	QMainWindow::addDockWidget(Qt::TopDockWidgetArea,dockWidget,Qt::Vertical);
+        dockWidget->setSizePolicy(widget->sizePolicy());
 	
+
+        if(!showTitle)
+        {
+            // to hide the title bar completely must replace the default widget with a generic one
+            QWidget* titleWidget = new QWidget(dockWidget);
+            dockWidget->setTitleBarWidget( titleWidget );
+        }
+
+        QMainWindow::addDockWidget(dockArea,dockWidget,orientation);
 	widget->show();
 	dockWidget->show();
-	map.insert(dockWidget,widget);
+        mapDockWidgets.insert(dockWidget,widget);
 	bool ok = restoreDockWidget(dockWidget);
 }
 
 void MO2ColTab::setWidgetVisible(QWidget* _widget,bool _visible)
 {
-	QDockWidget* dock = map.key(_widget,NULL);
+        QDockWidget* dock = mapDockWidgets.key(_widget,NULL);
 	if(dock)
 		dock->setVisible(_visible);
 }

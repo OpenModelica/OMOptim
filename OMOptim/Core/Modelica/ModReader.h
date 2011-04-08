@@ -67,11 +67,15 @@ public:
 	void readFromOmc(ModClass*,int depthMax = 1000, int curDepth = 0);	//Read data and children with OMC calls
 	void readFromOmcV2(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
 	void readFromOmcV3(ModClass*,ModClass* _rootClass,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
+        void readFromOmcV4(ModClass*,ModClass* _rootClass,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls, using OMEdit version
 
 	// Find functions
 	bool isInDescendants(ModClass* parent, QString fullName);
 	ModClass* findInDescendants(ModClass* parent,QString fullName);
 	QList<ModClass*> findCompOfClassInDescendants(ModClass*,QString _className);
+        ModModel* modelOf(ModClass* item);
+        ModModel* modelOf(QString itemName,ModClass* rootModClass);
+
 
 	void childrenInfos(ModClass* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &compsNames,QStringList &compsClasses);
 	//edit functions

@@ -117,6 +117,7 @@ public:
 
 signals:
 	void sendInfo(Info);
+        void deleted();
 
 protected :
 	QString _name;

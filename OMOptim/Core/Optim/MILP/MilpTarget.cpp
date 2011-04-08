@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -39,7 +39,9 @@
 
   */
 #include "MilpTarget.h"
+#ifdef WIN32
 #include <windows.h>
+#endif
 #include <cmath>
 
 
@@ -404,8 +406,8 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 
 	// clone rootEI
 	EITargetResult* result = new EITargetResult();
-	delete result->rootEI;
-	result->rootEI = rootEI->clone();
+	delete result->_rootEI;
+	result->_rootEI = rootEI->clone();
 
 	// read if successfull
 	int status = glp_get_status(glpProblem);

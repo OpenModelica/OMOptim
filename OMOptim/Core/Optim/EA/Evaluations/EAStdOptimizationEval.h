@@ -50,10 +50,12 @@
 	#include "ProblemTarget.h"
 #endif
 
-
-//#include "reportingHook.h"
-
-
+        /** \class EAStdOptimizationEval is a function for evaluating fitness of an individual.
+          * For each individual, it :
+          *    -creates a corresponding OneSimulation problem.
+          *    -set corresponding inputs
+          *    -read results and set corresponding values to objectives
+          */
 
 template<class EOT> class EAStdOptimizationEval : public moeoEvalFunc < EOT >
 {
@@ -61,38 +63,45 @@ template<class EOT> class EAStdOptimizationEval : public moeoEvalFunc < EOT >
 public:
 
 	EAStdOptimizationEval(){};
-	EAStdOptimizationEval(const EAStdOptimizationEval & _EAStdOptimizationEval){
-		problem = _EAStdOptimizationEval.problem;
-		project = _EAStdOptimizationEval.project;
-		modReader = _EAStdOptimizationEval.modReader;
-		modPlusReader = _EAStdOptimizationEval.modPlusReader;
-		rootModClass = _EAStdOptimizationEval.rootModClass;
 
-
-		tempDir = _EAStdOptimizationEval.tempDir;
-		subModels = _EAStdOptimizationEval.subModels;
-		previousSubModel = _EAStdOptimizationEval.previousSubModel;
-		_nbObj = _EAStdOptimizationEval._nbObj;
-		_bObjectives = _EAStdOptimizationEval._bObjectives;
+    /**
+     * \brief Copy constructor
+     */
+    EAStdOptimizationEval(const EAStdOptimizationEval & EAStdOptimizationEval)
+    {
+        _problem = EAStdOptimizationEval._problem;
+        _project = EAStdOptimizationEval._project;
+        _modReader = EAStdOptimizationEval._modReader;
+        _modPlusReader = EAStdOptimizationEval._modPlusReader;
+        _rootModClass = EAStdOptimizationEval._rootModClass;
+        _tempDir = EAStdOptimizationEval._tempDir;
+        _subModels = EAStdOptimizationEval._subModels;
+        _previousSubModel = EAStdOptimizationEval._previousSubModel;
+        _nbObj = EAStdOptimizationEval._nbObj;
+        _bObjectives = EAStdOptimizationEval._bObjectives;
 	};
 
-	EAStdOptimizationEval(Project* _project,Optimization* _problem,QList<ModModelPlus*> _subModels,QString _tempDir
-		,ModReader* _modReader,ModPlusCtrl* _modPlusReader,ModClass* _rootModClass)
-	{
-		project = _project;
-		problem = _problem;
-		modReader = _modReader;
-		modPlusReader = _modPlusReader;
-		rootModClass = _rootModClass;
 
-		tempDir = _tempDir;
-		subModels = _subModels;
-		previousSubModel = -1;
+    /**
+     * \brief Ctor.
+     */
+    EAStdOptimizationEval(Project* project,Optimization* problem,QList<ModModelPlus*> subModels,QString tempDir
+                          ,ModReader* modReader,ModPlusCtrl* modPlusReader,ModClass* rootModClass)
+	{
+        _project = project;
+        _problem = problem;
+        _modReader = modReader;
+        _modPlusReader = modPlusReader;
+        _rootModClass = rootModClass;
+
+        _tempDir = tempDir;
+        _subModels = subModels;
+        _previousSubModel = -1;
 
 		/************************************
 		OBJECTIVE FUNCTIONS DEFINITION
 		************************************/
-		_nbObj = problem->objectives()->items.size();
+        _nbObj = _problem->objectives()->items.size();
 		OptObjective::Direction objDirection;
 
 		for(unsigned int iObj=0;iObj<_nbObj;iObj++)
@@ -111,30 +120,28 @@ public:
 
 	};
 
-	void operator () (EOT & _eo)
+    void operator () (EOT & eo)
 	{
-		if (_eo.invalidObjectiveVector())
+        if (eo.invalidObjectiveVector())
 		{
 			moeoRealObjectiveVector< moeoObjectiveVectorTraits > objVec;
-
-			ModModelPlus* _model;
-
+            ModModelPlus* model;
 			int iSubModel = -1;
-			if(subModels.size()>1)
+            if(_subModels.size()>1)
 			{
-				iSubModel = _eo.intVars.at(_eo.intVars.size()-1);
-				_model = subModels.at(iSubModel);
+                iSubModel = eo.intVars.at(eo.intVars.size()-1);
+                model = _subModels.at(iSubModel);
 			}
 			else
-				_model = problem->modModelPlus();
+                model = _problem->modModelPlus();
 
 			/************************************
 			Creating a new OneSimulation
 			************************************/
-			OneSimulation *oneSim = new OneSimulation(project,rootModClass,modReader,modPlusReader,_model);
+            OneSimulation *oneSim = new OneSimulation(_project,_rootModClass,_modReader,_modPlusReader,model);
 			
 			//Reading chromosome and placing it in overwritedvariables
-			int nbVar = problem->optimizedVariables()->items.size();
+            int nbVar = _problem->optimizedVariables()->items.size();
 			Variable* curVar;
 
 			int iDouble = 0;
@@ -143,55 +150,55 @@ public:
 
 			for(int i=0;i<nbVar;i++)
 			{
-				curVar = new Variable(*problem->optimizedVariables()->items.at(i));
+                curVar = new Variable(*_problem->optimizedVariables()->items.at(i));
 				switch(curVar->getFieldValue(Variable::DATATYPE).toInt())
 				{
                                 case OMREAL :
-					curVar->setValue(_eo.doubleVars.at(iDouble));
+                    curVar->setValue(eo.doubleVars.at(iDouble));
 					iDouble++;
 					break;
                                 case OMBOOLEAN :
-					curVar->setValue(_eo.boolVars.at(iBool));
+                    curVar->setValue(eo.boolVars.at(iBool));
 					iBool++;
 					break;
                                 case OMINTEGER :
-					curVar->setValue(_eo.intVars.at(iInt));
+                    curVar->setValue(eo.intVars.at(iInt));
 					iInt++;
 					break;
 				}
 				oneSim->overwritedVariables()->addItem(curVar);
 			}
 
-			oneSim->scannedVariables()->cloneFromOtherVector(problem->scannedVariables());
+            oneSim->scannedVariables()->cloneFromOtherVector(_problem->scannedVariables());
 
 
 			/************************************
 			Launch OneSimulation
 			************************************/
 			bool refillTempDir = false;
-			QDir _tempDir(tempDir);
-			if(_tempDir.entryList().isEmpty())
+            QDir dir(_tempDir);
+            if(dir.entryList().isEmpty())
 				refillTempDir = true;
 			else
 			{
-				if((subModels.size()>1)&&(iSubModel!=previousSubModel))
+                if((_subModels.size()>1)&&(iSubModel!=_previousSubModel))
 					refillTempDir = true;
 			}
-			ProblemConfig config(tempDir,refillTempDir);
+            ProblemConfig config(_tempDir,refillTempDir);
 			oneSim->launch(config);
 			OneSimResult *result = oneSim->result();
 
-			previousSubModel = iSubModel;
+            _previousSubModel = iSubModel;
 
 			/************************************
 			Launch EI problem
 			************************************/
 			#ifdef USEEI
-			if(problem->useEI())
+            if(_problem->useEI())
 			{
-				if(problem->eiProblem()->getClassName()=="ProblemTarget")
+                if(_problem->eiProblem()->getClassName()=="ProblemTarget")
 				{
-					ProblemTarget* problemTarget = dynamic_cast<ProblemTarget*>(problem->eiProblem());
+                    ProblemTarget* problemTarget = dynamic_cast<ProblemTarget*>(_problem->eiProblem());
 					problemTarget->setInputVars(result->finalVariables());
 					problemTarget->launch(ProblemConfig());
 				}
@@ -208,20 +215,20 @@ public:
 
 			if (!result->isSuccess())
 			{
-				//emit sendInfo( Info(ListInfo::ONESIMULATIONFAILED));
+                infoSender.send(Info(ListInfo::ONESIMULATIONFAILED));
 				resultOk = false;
 			}
 			else
 			{
-				//emit sendInfo( Info(ListInfo::ONESIMULATIONSUCCESS));
+                //infoSender.send(( Info(ListInfo::ONESIMULATIONSUCCESS));
 				//Recover Objective values
-				int nbObj = problem->objectives()->items.size();
+                int nbObj = _problem->objectives()->items.size();
 				int iObj=0;
 				double curObjResult;
 				
 				while(resultOk && (iObj<nbObj))
 				{
-					curObj = problem->objectives()->items.at(iObj);
+                    curObj = _problem->objectives()->items.at(iObj);
 					//looking for its value in finalVariables
 					curObjResult = VariablesManip::calculateObjValue(curObj,result->finalVariables(),resultOk,0);
 					objVec[iObj]=curObjResult;
@@ -236,35 +243,38 @@ public:
 				objVec = worstObjVec();
 			}
 
-			_eo.objectiveVector(objVec);
+            eo.objectiveVector(objVec);
 			delete oneSim;
 		}
 	}
 
+    /** \brief creates the worst objective vector as to be unconsidered in population
+      * In EAStdOptimizationEval, is attributed to all failing simulations
+      */
 	moeoRealObjectiveVector< moeoObjectiveVectorTraits > worstObjVec()
 	{
-		moeoRealObjectiveVector< moeoObjectiveVectorTraits > _objVec;
+        moeoRealObjectiveVector< moeoObjectiveVectorTraits > objVec;
 
 		for(int i=0;i<_nbObj;i++)
 		{
 			if(_bObjectives[i])
-				_objVec[i]=std::numeric_limits<double>::infinity();
+                objVec[i]=std::numeric_limits<double>::infinity();
 			else
-				_objVec[i]=-std::numeric_limits<double>::infinity();
+                objVec[i]=-std::numeric_limits<double>::infinity();
 		}
-		return _objVec;
+        return objVec;
 	}
 
 protected:
-	Optimization* problem;
-	Project* project;
-	ModReader* modReader;
-	ModPlusCtrl* modPlusReader;
-	ModClass* rootModClass;
-	QList<ModModelPlus*> subModels;
-	std::vector<OneSimResult*> *resultPoints;
-	QString tempDir;
-	int previousSubModel;
+    Optimization* _problem;
+    Project* _project;
+    ModReader* _modReader;
+    ModPlusCtrl* _modPlusReader;
+    ModClass* _rootModClass;
+    QList<ModModelPlus*> _subModels;
+    std::vector<OneSimResult*> *_resultPoints;
+    QString _tempDir;
+    int _previousSubModel;
 	int _nbObj;
 	std::vector<bool> _bObjectives;
 };

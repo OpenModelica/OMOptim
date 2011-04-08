@@ -40,8 +40,9 @@
 
 #include "MOTabBase.h"
 
-MOTabBase::MOTabBase(MOItem* _mainItem)
+        MOTabBase::MOTabBase(QString _projectName,MOItem* _mainItem)
 {
+    projectName = _projectName;
 	mainItem = _mainItem;
 	
 	MOItem* item = dynamic_cast<MOItem*>(_mainItem);

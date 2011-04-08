@@ -265,13 +265,9 @@ void MOOptPlot::setSelectionPoints(QList<int>  _selectedPoints)
 
 void MOOptPlot::setShownPoints(QList<int>  _shownPoints)
 {
-	if(_shownPoints != shownPoints)
-	{
 		shownPoints = _shownPoints;
 		refresh(0);
-
 	}
-}
 
 QList<int> MOOptPlot::getSelectedPoints()
 {
@@ -291,6 +287,7 @@ void MOOptPlot::refresh(int iCurve = 0)
 
 	double* _dataX;
 	double* _dataY;
+        int iPoint;
 
  	if((iCurve==0)||(iCurve==1)) 
 	{
@@ -302,8 +299,19 @@ void MOOptPlot::refresh(int iCurve = 0)
 
 		for (int i=0;i<nbPoints;i++)
 		{
+                    iPoint = shownPoints.at(i);
+                    if(iPoint<std::min(xData.size(),yData.size()))
+                    {
 			_dataX[i]=xData.at(shownPoints.at(i));
 			_dataY[i]=yData.at(shownPoints.at(i));
+		}
+                    else
+                    {
+                        QString msg;
+                        msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
+                                    iPoint,std::min(xData.size(),yData.size()));
+                        infoSender.debug(msg);
+                    }
 		}
 		curve1->setRawData(_dataX,_dataY,nbPoints);
 		curve1->setItemAttribute(QwtPlotItem::AutoScale,true);
@@ -318,8 +326,19 @@ void MOOptPlot::refresh(int iCurve = 0)
 
 			for(int i=0;i<selectedPoints.size();i++)
 			{
+                            iPoint = selectedPoints.at(i);
+                            if(iPoint<std::min(xData.size(),yData.size()))
+                            {
 				_dataX[i]=xData.at(selectedPoints.at(i));
 				_dataY[i]=yData.at(selectedPoints.at(i));
+			}
+                            else
+                            {
+                                QString msg;
+                                msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
+                                            iPoint,std::min(xData.size(),yData.size()));
+                                infoSender.debug(msg);
+                            }
 			}
 			curve2->setRawData(_dataX,_dataY,selectedPoints.size());
 			curve2->setItemAttribute(QwtPlotItem::AutoScale,true);
@@ -333,7 +352,6 @@ void MOOptPlot::refresh(int iCurve = 0)
 	replot();
 	if((iCurve==0)||(iCurve==1))
 		zoomer->setZoomBase();
-	
 	
 }
 

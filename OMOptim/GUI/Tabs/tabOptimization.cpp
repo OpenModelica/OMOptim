@@ -51,7 +51,7 @@
 
 
 TabOptimization::TabOptimization(Project *project_,Optimization *problem_, QWidget *parent) :
-MO2ColTab(problem_,false,parent)
+MO2ColTab(project_->name(),problem_,false,parent)
 {
 	if(problem_->isSolved())
 		type = TABSOLVEDPROBLEM;

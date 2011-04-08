@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -59,7 +59,6 @@
 #include "Problem.h"
 #include "OneSimulation.h"
 #include "Optimization.h"
-//#include "VariableDet.h"
 #include "OptimResult.h"
 #include "EAStdResult.h"
 

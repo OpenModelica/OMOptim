@@ -41,8 +41,8 @@
 #include "MOTab.h"
 
 
-MOTabSimple::MOTabSimple(MOItem* _mainItem,QWidget* _parent)
-:MOTabBase(_mainItem),QWidget(_parent)
+MOTabSimple::MOTabSimple(QString _projectName,MOItem* _mainItem,QWidget* _parent)
+:MOTabBase(_projectName,_mainItem),QWidget(_parent)
 {
 }
 
@@ -51,10 +51,10 @@ MOTabSimple::~MOTabSimple(void)
 }
 
 
-MOTabCplx::MOTabCplx(MOItem* _mainItem,QWidget* _parent)
-:QMainWindow(_parent),MOTabBase(_mainItem)
+MOTabCplx::MOTabCplx(QString _projectName,MOItem* _mainItem,QWidget* _parent)
+:QMainWindow(_parent),MOTabBase(_projectName,_mainItem)
 {
-	readGUIState();
+
 }
 
 MOTabCplx::~MOTabCplx(void)
@@ -64,17 +64,15 @@ MOTabCplx::~MOTabCplx(void)
 
 void MOTabCplx::saveGUIState()
 {
+
 	QSettings settings("MO", "GUI_");
-	settings.setValue(name+"/geometry", saveGeometry());
-	settings.setValue(name+"/windowState", saveState());
+        settings.setValue(projectName+"/"+name+"/geometry", saveGeometry());
+        settings.setValue(projectName+"/"+name+"/windowState", saveState());
 }
 
  void MOTabCplx::readGUIState()
  {
      QSettings settings("MO", "GUI_");
-	 QVariant test = settings.value(name+"/geometry");
-	 QByteArray test2 = test.toByteArray();
-	 
-     bool ok = restoreGeometry(settings.value(name+"/geometry").toByteArray());
-     ok = restoreState(settings.value(name+"/windowState").toByteArray());
+     bool ok = restoreGeometry(settings.value(projectName+"/"+name+"/geometry").toByteArray());
+     ok = restoreState(settings.value(projectName+"/"+name+"/windowState").toByteArray());
  }

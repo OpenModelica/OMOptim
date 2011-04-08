@@ -68,6 +68,8 @@ public:
 
 	double getNumValue(MOOptVector *variables,int iUnit,bool &ok);
 
+        QString reference();
+	
 	
 protected :
 	int _unit;

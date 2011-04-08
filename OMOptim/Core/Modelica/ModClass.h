@@ -104,7 +104,7 @@ public:
 	void emitModified();
 
 	// Parent
-	ModClass* getParent();
+        ModClass* parent();
 	void setParent(ModClass *);
 
 	// Local information

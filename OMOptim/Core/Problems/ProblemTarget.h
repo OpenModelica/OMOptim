@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -45,8 +45,8 @@
 #include "MilpTarget.h"
 #include "MERResult.h"
 #include "EIConnConstrs.h"
-
-
+#include "ModModelPlus.h"
+#include "EIValueFiller.h"
 
 /*
  * \brief Class for Target (Energy integration) problem. Target use GLPK for MILP optimization.
@@ -56,7 +56,7 @@ class ProblemTarget : public ProblemEI
 		Q_OBJECT
 
 public:
-	ProblemTarget(Project* _project,EIReader* _eiReader);
+        ProblemTarget(Project*,EIReader*,ModReader*,MOomc*);
 	ProblemTarget(const ProblemTarget &);
 	virtual ~ProblemTarget(void);
 	virtual QString getClassName(){return "ProblemTarget";};
@@ -64,26 +64,28 @@ public:
 	void launch(ProblemConfig _config);
 	void launchMER(ProblemConfig _config,bool includeUtilities);
 
+
 	QDomElement toXMLData(QDomDocument & doc);
 	bool checkBeforeComp(QString & error);
 
-	void clearInputVars();
-	void updateInputVars(MOOptVector *);
-	void setInputVars(MOOptVector*);
+
+
+
 
 	MERResult* getMERResult();
-	MOOptVector * inputVars();
 	EIConnConstrs* connConstrs();
-	EIItem* _rootEI;
 
-signals :
-	void inputVarsModified();
+    private :
+             void fillReferencesValue(EIItem* filledEI,bool forceRecompute);
+
+
 
 protected :
-	MOOptVector * _inputVars;
-	EIReader* _eiReader;
+
 	MERResult *_merResult;
 	EIConnConstrs *_connConstrs; // connnection constraints
+
+
 };
 
 

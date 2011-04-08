@@ -44,40 +44,37 @@
 #include "QtGui/QListWidget"
 
 
-WidgetCalculateMooPoints::WidgetCalculateMooPoints(OptimResult* _result,WidgetMooPlot* _widgetMooPlot, QWidget *parent) :
+WidgetCalculateMooPoints::WidgetCalculateMooPoints(OptimResult* result,WidgetMooPointsList* widgetMooPointsList, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::WidgetCalculateMooPointsClass)
+    _ui(new Ui::WidgetCalculateMooPointsClass)
 {
-    ui->setupUi(this);
+   _ui->setupUi(this);
 	
 
-	result = _result;
-	widgetMooPlot = _widgetMooPlot;
+        _result = result;
+        _widgetMooPointsList = widgetMooPointsList;
 
-	connect(ui->pushCalcSelected,SIGNAL(clicked()),
+        connect(_ui->pushCalcSelected,SIGNAL(clicked()),
 		this,SLOT(recomputeSelectedPoints()));
 
-	connect(ui->pushExport,SIGNAL(clicked()),
+        connect(_ui->pushExport,SIGNAL(clicked()),
 		this,SLOT(exportSelectedPoints()));
 }
 
 WidgetCalculateMooPoints::~WidgetCalculateMooPoints()
 {
-    delete ui;
+    delete _ui;
 }
-
-
-
 
 
 void WidgetCalculateMooPoints::recomputeSelectedPoints()
 {
 	std::vector<int> pointsList;
 
-	pointsList = widgetMooPlot->_listPoints->getSelectedIndexes().toVector().toStdVector();
+        pointsList = _widgetMooPointsList->_listPoints->getSelectedIndexes().toVector().toStdVector();
 
-	bool forceRecompute = ui->checkForceRecompute->isChecked();
-	result->recomputePoints(pointsList,forceRecompute);
+        bool forceRecompute = _ui->checkForceRecompute->isChecked();
+        _result->recomputePoints(pointsList,forceRecompute);
 
 }
 
@@ -93,8 +90,8 @@ void WidgetCalculateMooPoints::exportSelectedPoints()
 	
 	if(!csvPath.isNull())
 	{
-		QList<int> listPoints = widgetMooPlot->_listPoints->getSelectedIndexes();
-		QString csvText = result->buildAllVarsFrontCSV(listPoints);
+                QList<int> listPoints = _widgetMooPointsList->_listPoints->getSelectedIndexes();
+                QString csvText = _result->buildAllVarsFrontCSV(listPoints);
 		
 		QFile frontFile(csvPath);
 		if(frontFile.exists())

@@ -50,6 +50,7 @@
 #include "reportingHook.h"
 
 OneSimulation::OneSimulation()
+    :Problem()
 {
 	_project = NULL;
 	_type = Problem::ONESIMULATION;
@@ -59,6 +60,7 @@ OneSimulation::OneSimulation()
 }
 
 OneSimulation::OneSimulation(Project* project,ModClass* rootModClass,ModReader* modReader,ModPlusCtrl* modPlusCtrl,ModModelPlus* modModelPlus)
+    :Problem()
 {
 	_project = project;
 	_rootModClass = rootModClass;
@@ -78,10 +80,11 @@ OneSimulation::OneSimulation(const OneSimulation &oneSim)
 :Problem(oneSim)
 {
 	_modModelPlus = oneSim._modModelPlus;
-	_overwritedVariables = oneSim._overwritedVariables;
-	_scannedVariables = oneSim._scannedVariables;
 	_neededFiles = oneSim._neededFiles;
 	_filesToCopyNames = oneSim._filesToCopyNames;
+
+        _overwritedVariables = oneSim._overwritedVariables->clone();
+        _scannedVariables = oneSim._scannedVariables->clone();
 
 	if(oneSim.result()!=NULL)
 		_result = new OneSimResult(*((OneSimResult*)oneSim.result())) ;
@@ -92,6 +95,8 @@ OneSimulation::~OneSimulation(void)
 {
 	delete _overwritedVariables;
 	delete _scannedVariables;
+
+        clearResult();
 }
 
 

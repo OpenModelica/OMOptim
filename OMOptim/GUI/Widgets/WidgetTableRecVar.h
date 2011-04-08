@@ -65,7 +65,7 @@ public:
     virtual ~WidgetTableRecVar();
 
 public slots:
-		void onSelectionChanged(QList<int>&);
+                void onExtSelectionChanged(QList<int>&);
 		void onCurScanChanged(int );
 		void onPointsRecomputed();
 

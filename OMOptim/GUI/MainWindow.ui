@@ -474,7 +474,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="Resources/mineit.qrc"/>
-  <include location="Resources/mineit.qrc"/>
  </resources>
  <connections/>
 </ui>

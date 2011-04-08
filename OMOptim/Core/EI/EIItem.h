@@ -44,6 +44,7 @@
 #include "MOVector.h"
 #include "Variable.h"
 
+
 #include "QtCore/QDir"
 #include "LowTools.h"
 
@@ -71,8 +72,10 @@ class EIItem : public MOItem
 
 
 protected:
-	EIItem *parent;
-	QList<EIItem*> children;
+        EIItem *_parent;
+        QList<EIItem*> _children;
+        bool _checked;
+        QString _model; // model : if owned by a model, this is full name of the modelica model
 	
 
 
@@ -81,8 +84,9 @@ protected:
 	//***********************
 public:
 	EIItem();
-	EIItem(EIItem* _parent,QString _name);
+        EIItem(EIItem* parent,QString name,QString model=QString());
 	EIItem(const EIItem &);
+        EIItem(QDomElement & domEl);
 	virtual ~EIItem(void);
 	virtual EI::Type getEIType(){return EI::GENERIC;};	
 	virtual QString getClassName(){return "EIItem";};
@@ -94,14 +98,14 @@ public:
 	{
 		//Modelica fields
 		NAME,
-		CHECKED
+                CHECKED,
+                MODEL
 	};
 
-protected :
-	bool checked;
+
 
 public:
-	static const int nbFields = 2;
+        static const int nbFields = 3;
 	virtual unsigned getNbFields(){return nbFields;};
 
 
@@ -115,7 +119,7 @@ public:
 	void emitModified();
 
 	// Parent
-	EIItem* getParent();
+        EIItem* parent();
 	void setParent(EIItem *);
 
 	// Tree functions
@@ -124,6 +128,13 @@ public:
 	//Checked
 	bool isChecked();
 	void setChecked(bool);
+
+        //Model
+        void setModel(QString);
+        QString model();
+
+        //References
+        virtual QStringList references();
 
 	//*****************************
 	//Children
@@ -136,10 +147,13 @@ public:
 	int childCount() const;
 	void removeChild(int i);
 	void removeChild(EIItem *);
+        int findChild(QVariant itemFieldValue, int iField);
 
 	EIItem* child(int row) const;
 	EIItem* streamChild(int row);
 	EIItem* groupChild(int row);	
+
+        int indexInParent();
 
 
 
@@ -159,6 +173,7 @@ signals:
 	void addedChild(EIItem*);
 	void modified();
 	void cleared();
+        void deleted();
 };
 
 #endif

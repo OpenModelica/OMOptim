@@ -47,8 +47,6 @@
 #include "ModClass.h"
 #include "ModReader.h"
 
-
-
  class ModClassTree : public QAbstractItemModel
  {
 	Q_OBJECT
@@ -72,22 +70,20 @@
 
 	 QStringList mimeTypes() const;
 	 QMimeData* mimeData(const QModelIndexList &indexes) const;
+     QIcon getModelicaNodeIcon(ModClass* modClass);
 
 
  private:
 	 ModClass* rootElement;
 	 ModReader* modReader;
+         bool enabled;
 
 	 bool showOnlyComponents;
 
 	 public slots:
 		 void allDataChanged();
 		 void allDataCleared();
-
-
-
-
-
+                 void onRootDeleted();
  };
 
  #endif

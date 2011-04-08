@@ -21,7 +21,7 @@ public:
 	~EITargetResult(void);
 
 	double totalCost;
-	EIItem* rootEI;
+        EIItem* _rootEI;
 
 	virtual QString getClassName(){return "EITargetResult";};
 

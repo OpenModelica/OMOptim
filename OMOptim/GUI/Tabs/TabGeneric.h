@@ -57,7 +57,7 @@ class TabGeneric : public MOTabSimple
 {
 	Q_OBJECT
 public:
-	TabGeneric(MOItem* _mainItem);
+        TabGeneric(QString _projectName,MOItem* _mainItem);
 	~TabGeneric(void);
 
 	//UI

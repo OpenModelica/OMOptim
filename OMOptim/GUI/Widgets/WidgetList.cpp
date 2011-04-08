@@ -45,6 +45,7 @@ WidgetList::WidgetList(QWidget *_parent):QListWidget(_parent)
 	ignoreChange = false;
 	connect(this,SIGNAL(itemSelectionChanged()),this,
 		SLOT(onIntSelectionChanged()));
+        this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
 }
 
 
@@ -56,7 +57,6 @@ bool WidgetList::setSelectedIndexes(QList<int> _newIndexes)
 			QListWidgetItem tmpItem;
 			QList<QListWidgetItem*> tmpItems;
 			QItemSelectionModel * model = selectionModel();
-
 
 			// clear the selection
 			ignoreChange = true;
@@ -72,7 +72,9 @@ bool WidgetList::setSelectedIndexes(QList<int> _newIndexes)
 				}
 				else
 				{
-					//#TODO : send error msg in debug
+                                    QString msg;
+                                    msg.sprintf("WidgetList : unable to find item %d in list",_newIndexes.at(i));
+                                    infoSender.debug(msg);
 				}
 			}
 			ignoreChange=false;
@@ -103,9 +105,6 @@ void WidgetList::onExtSelectionChanged(QList<int> & _extIndexes)
 
 void WidgetList::onIntSelectionChanged()
 {
-//	if(!ignoreChange)
-//		setSelectedIndexes(getSelectedIndexes());
-
 	if(!ignoreChange) {
     QList<int> indexes = getSelectedIndexes(); // You may not use this directly as temporaries cannot be used as reference...
 		emit selectionChanged(indexes);

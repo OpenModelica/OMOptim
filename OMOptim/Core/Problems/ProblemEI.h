@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -43,17 +43,37 @@
 
 #include "Problem.h"
 #include "EIItem.h"
+#include "EIModelExtractor.h"
+#include "EIReader.h"
+#include "MOomc.h"
 
 class ProblemEI : public Problem
 {
+    Q_OBJECT
 
 public:
-	ProblemEI(void);
+        ProblemEI(Project*,EIReader*,ModReader*,MOomc*);
 	ProblemEI(const ProblemEI &);
 	virtual ~ProblemEI(void);
 
-	EIItem* rootEI;
+        virtual void loadModel(ModModel*);
+        virtual void unloadModel(ModModel*);
 
+        void clearInputVars();
+        void updateInputVars(MOOptVector *);
+        void setInputVars(MOOptVector*);
+        MOOptVector * inputVars();
+
+        QList<ModModel*> _modelsLoaded;
+
+        EIItem* _rootEI;
+        EIReader* _eiReader;
+        MOomc* _moomc;
+        ModReader* _modReader;
+        MOOptVector * _inputVars;
+
+signals :
+        void inputVarsModified();
 };
 
 

@@ -38,25 +38,88 @@
  	@version 0.9 
 
   */
+
 #include "ProblemEI.h"
 
-ProblemEI::ProblemEI(void)
+ProblemEI::ProblemEI(Project* project,EIReader* eiReader,ModReader* modReader,MOomc* moomc)
 {
-	rootEI = NULL;
+    _type = Problem::PROBLEMEI;
+    _name="EI";
+
+    _rootEI = new EIItem();
+    _eiReader = eiReader;
+    _moomc = moomc;
+    _project = project;
+    _modReader = modReader;
 }
 
 ProblemEI::~ProblemEI(void)
 {
+    delete _rootEI;
 }
 
 
 ProblemEI::ProblemEI(const ProblemEI &problem)
 :Problem(problem)
 {
-	if(problem.rootEI==NULL)
+        if(problem._rootEI==NULL)
 	{
-		rootEI=NULL;
+                _rootEI=NULL;
 	}
 	else
-		rootEI = problem.rootEI->clone();
+                _rootEI = problem._rootEI->clone();
+
+        _moomc = problem._moomc;
+        _eiReader = problem._eiReader;
+        _modReader = problem._modReader;
+}
+
+void ProblemEI::loadModel(ModModel* loadedModel)
+{
+    bool eraseExisting=true;
+    EIItem* modelRootEI = EIModelExtractor::extractFromModClass(loadedModel,_modReader,_moomc);
+
+    if(eraseExisting)
+        unloadModel(loadedModel);
+
+     _rootEI->addChild(modelRootEI);
+}
+
+void ProblemEI::unloadModel(ModModel* unloadedModel)
+{
+    int iChild= _rootEI->findChild(unloadedModel->name(),EIItem::MODEL);
+
+    if(iChild>-1)
+        _rootEI->removeChild(iChild);
+}
+
+
+void ProblemEI::clearInputVars()
+{
+        _inputVars->clear();
+}
+
+void ProblemEI::updateInputVars(MOOptVector *addedVars)
+{
+        if(addedVars->getUsePoints())
+                _inputVars->setUsePoints(true);
+
+        if(addedVars->getUseScan())
+                _inputVars->setUseScan(true);
+
+        _inputVars->append(*addedVars,true);
+
+        emit inputVarsModified();
+}
+
+
+void ProblemEI::setInputVars(MOOptVector* variables)
+{
+        clearInputVars();
+        updateInputVars(variables);
+}
+
+MOOptVector * ProblemEI::inputVars()
+{
+        return _inputVars;
 }

@@ -41,8 +41,8 @@
 #include "TabGeneric.h"
 
 
-TabGeneric::TabGeneric(MOItem* _mainItem):
-MOTabSimple(_mainItem),ui(new Ui::TabGenericClass)
+TabGeneric::TabGeneric(QString _projectName,MOItem* _mainItem):
+MOTabSimple(_projectName,_mainItem),ui(new Ui::TabGenericClass)
 {
 	ui->setupUi(this);
 

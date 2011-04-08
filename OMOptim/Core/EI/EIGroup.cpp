@@ -118,7 +118,7 @@ QVariant EIGroup::getFieldValue(int ifield, int role) const
 		case COSTMULT :
 			return costMult;
 		case CHECKED :
-			return checked;
+                        return _checked;
 		default :
 			return "unknown field";
 		}
@@ -180,7 +180,7 @@ bool EIGroup::setFieldValue(int ifield,QVariant value_)
 		costMult = value_.toDouble();
 		break;
 	case CHECKED :
-		checked =value_.toBool();
+                _checked =value_.toBool();
 		break;
 	}
 	if(!_filledFields.contains(ifield))
@@ -189,8 +189,6 @@ bool EIGroup::setFieldValue(int ifield,QVariant value_)
 	emit modified();
 	return ok;
 }
-
-
 
 
 EIGroupFact* EIGroup::getFact()

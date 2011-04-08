@@ -48,6 +48,7 @@
 #include "Project.h"
 #include "MOTab.h"
 #include "WidgetTableStreams.h"
+#include "EIValueFiller.h"
 
 namespace Ui {
     class WidgetEIInputVarsClass;
@@ -57,13 +58,14 @@ class WidgetEIInputVars : public QWidget {
     Q_OBJECT
 
 public:
-    WidgetEIInputVars(Project *project, MOOptVector *, QWidget *parent = 0);
+    WidgetEIInputVars(Project *project, MOOptVector *, EIItem* _rootEI, QWidget *parent = 0);
     ~WidgetEIInputVars();
 
 	Ui::WidgetEIInputVarsClass *ui;
 
 	Project *project;
 	MOOptVector *inputVars;
+        EIItem* rootEI;
 
 	QSortFilterProxyModel *loadedVarsProxyModel;
 
@@ -71,6 +73,9 @@ public slots :
 	void appendInputVars();
 	void clearInputVars();  
 	void fillList();
+
+        void dispReferences();
+        void dispMissingReferences();
 
 signals :
 	void inputVarsModified();

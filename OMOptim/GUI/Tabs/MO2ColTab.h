@@ -54,21 +54,21 @@ class MO2ColTab : public MOTabCplx
     Q_OBJECT
 
 public:
-	MO2ColTab(MOItem* _mainItem,bool closable=false,QWidget *parent = 0);
-	virtual ~MO2ColTab(void);
+        MO2ColTab(QString _projectName,MOItem* _mainItem,bool closable=false,QWidget *parent = 0);
+        ~MO2ColTab(void);
 
 	QVBoxLayout *buttonsLayout;
 	QGridLayout *widgetsLayout;
 	QToolBar *dispTB;
 
 protected :
-	void addDockWidget(QString title,QWidget*,QWidget *tabifiedOn=NULL);
-	void addFixedWidget(QString title,QWidget*);
+        void addDockWidget(QString title,QWidget*,QWidget *tabifiedOn=NULL,Qt::DockWidgetArea dockWidgetArea=Qt::TopDockWidgetArea);
+void addFixedWidget(QString title,QWidget*,Qt::DockWidgetArea dockWidgetArea=Qt::TopDockWidgetArea,Qt::Orientation orientation=Qt::Vertical,bool showTitle=true);
 	void setWidgetVisible(QWidget*,bool _visible);
 
-private :
+protected :
 	bool closable;
-	QMap<QDockWidget*,QWidget*> map;
+        QMap<QDockWidget*,QWidget*> mapDockWidgets;
 
 };
 

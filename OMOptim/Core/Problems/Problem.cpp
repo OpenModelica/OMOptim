@@ -241,6 +241,7 @@ bool Problem::isSolved()
 }
 
 
+
 /**
 * Description Store problem files in destFolder. Is called when a problem resolution is finished.
 * @param destFolder destination folder path.

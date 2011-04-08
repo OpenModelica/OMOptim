@@ -48,6 +48,7 @@ ModClassTree::ModClassTree(ModReader* _modReader,ModClass* _rootElement,QObject 
 {
 	modReader = _modReader;
 	rootElement = _rootElement;
+    enabled = true;
 
 	showOnlyComponents = false;
 
@@ -55,6 +56,7 @@ ModClassTree::ModClassTree(ModReader* _modReader,ModClass* _rootElement,QObject 
 	// to optimize (more signals and index find function from ModClass*)
 	connect(rootElement,SIGNAL(modified()),this,SLOT(allDataChanged()));
 	connect(rootElement,SIGNAL(cleared()),this,SLOT(allDataCleared()));
+    connect(rootElement,SIGNAL(deleted()),this,SLOT(onRootDeleted()));
 }
 
 ModClassTree::~ModClassTree()
@@ -69,6 +71,8 @@ int ModClassTree::columnCount(const QModelIndex &parent) const
 
 QVariant ModClassTree::data(const QModelIndex &index, int role) const
 {
+    if(enabled)
+    {
 		if (!index.isValid())
 			return QVariant();
 
@@ -98,9 +102,16 @@ QVariant ModClassTree::data(const QModelIndex &index, int role) const
 			return QVariant();
 		}
 }
+    else
+        return QVariant();
+}
+
 
 Qt::ItemFlags ModClassTree::flags(const QModelIndex &index) const
 {
+    if(!enabled)
+        return Qt::NoItemFlags;
+
 		if (!index.isValid())
 			return Qt::ItemIsEnabled;
 
@@ -111,6 +122,9 @@ Qt::ItemFlags ModClassTree::flags(const QModelIndex &index) const
 QVariant ModClassTree::headerData(int section, Qt::Orientation orientation,
 									int role) const
 {
+    if(!enabled)
+        return QVariant();
+
 		if(section<0 || section>=ModClass::nbFields)
 			return QVariant();
 
@@ -149,6 +163,9 @@ QVariant ModClassTree::headerData(int section, Qt::Orientation orientation,
 QModelIndex ModClassTree::index(int row, int column, const QModelIndex &parent)
 const
 {
+    if(!enabled)
+        return QModelIndex();
+
 		if(!hasIndex(row,column,parent))
 			return QModelIndex();
 
@@ -187,19 +204,22 @@ const
 
 QModelIndex ModClassTree::parent(const QModelIndex &index) const
 {
+    if(!enabled)
+         return QModelIndex();
+
 		if (!index.isValid())
 			return QModelIndex();
 
 		ModClass *childElement = static_cast<ModClass*>(index.internalPointer());
 		
 		ModClass *parentElement  = NULL;
-		parentElement = childElement->getParent();
+        parentElement = childElement->parent();
 
 		if (parentElement == rootElement)
 			return QModelIndex();
 
 		ModClass *grandParentElement = NULL;
-		grandParentElement = parentElement->getParent();
+        grandParentElement = parentElement->parent();
 
 		//looking for row number of child in parent
 		int nbPacks = grandParentElement->packageChildCount();
@@ -244,6 +264,9 @@ QModelIndex ModClassTree::parent(const QModelIndex &index) const
 
 int ModClassTree::rowCount(const QModelIndex &parent) const
 {
+    if(!enabled)
+        return 0;
+
 		ModClass *parentElement;
 
 		if (parent.column() > 0)
@@ -255,6 +278,7 @@ int ModClassTree::rowCount(const QModelIndex &parent) const
 			parentElement = static_cast<ModClass*>(parent.internalPointer());
 
 		return parentElement->childCount();
+
 }
 
 
@@ -277,4 +301,36 @@ void ModClassTree::allDataCleared()
 	reset();
 	//emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1));
 	//emit layoutChanged();
+}
+
+QIcon ModClassTree::getModelicaNodeIcon(ModClass* modClass)
+{
+    //    switch (modClass->getClassRestr())
+    //    {
+    //    case Modelica::MODEL
+    //    case StringHandler::MODEL:
+    //        return QIcon(":/Resources/icons/model-icon.png");
+    //    case StringHandler::CLASS:
+    //        return QIcon(":/Resources/icons/class-icon.png");
+    //    case StringHandler::CONNECTOR:
+    //        return QIcon(":/Resources/icons/connector-icon.png");
+    //    case StringHandler::RECORD:
+    //        return QIcon(":/Resources/icons/record-icon.png");
+    //    case StringHandler::BLOCK:
+    //        return QIcon(":/Resources/icons/block-icon.png");
+    //    case StringHandler::FUNCTION:
+    //        return QIcon(":/Resources/icons/function-icon.png");
+    //    case StringHandler::PACKAGE:
+    //        return QIcon(":/Resources/icons/package-icon.png");
+    //    case StringHandler::TYPE:
+    //        return QIcon(":/Resources/icons/type-icon.png");
+    //    }
+    return QIcon();
+}
+
+void ModClassTree::onRootDeleted()
+{
+    enabled = false;
+    this->beginResetModel();
+    this->endResetModel();
 }

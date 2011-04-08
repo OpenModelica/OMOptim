@@ -474,7 +474,6 @@ bool MOomc::isComponent(QString name)
     QStringList curNames, curClasses;
     QString parentClass = name.section(".",0,-2);
     getContainedComponents(parentClass,curNames,curClasses);
-
     return (curNames.contains(name));
 }
 

@@ -43,7 +43,7 @@
 EITargetResult::EITargetResult(void)
 :Result()
 {
-	rootEI = new EIItem();
+        _rootEI = new EIItem();
 }
 EITargetResult::EITargetResult(Project* project, Problem* problem)
 :Result()

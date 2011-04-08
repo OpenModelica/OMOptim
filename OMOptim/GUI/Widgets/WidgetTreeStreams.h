@@ -49,6 +49,10 @@
 #include "MOTableView.h"
 #include "GuiTools.h"
 #include "WidgetEIGroup.h"
+#include "WidgetSelectModModel.h"
+#include "ModReader.h"
+#include "ModClass.h"
+#include "EIModelExtractor.h"
 
 namespace Ui {
     class WidgetTreeStreamsClass;
@@ -63,7 +67,8 @@ class WidgetTreeStreams : public QWidget {
 
 
 public:
-	explicit WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _editable,EIReader* _eiReader,MOOptVector *_variables=NULL,QWidget *parent = 0);
+        explicit WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _editable,EIReader* _eiReader,
+                                   ModReader* _modReader,ModClass* _rootModClass,MOomc* _moomc,MOOptVector *_variables=NULL,QWidget *parent = 0);
     virtual ~WidgetTreeStreams();
 
 	void setInputVars(MOOptVector*);
@@ -80,11 +85,17 @@ public:
 		void onMERAsked();
 		void onSelectItemChanged(QModelIndex);
 		
+         signals:
+                void EILoadModelAsked();
+		
 public:
     Ui::WidgetTreeStreamsClass *ui;
 	TreeEIStreams* treeEIStreams;
 	//QSortFilterProxyModel *streamsProxyModel;
 
+        MOomc* moomc;
+        ModReader* modReader;
+        ModClass* rootModClass;
 	QTreeView* treeView;
 	EIItem* rootEI;
 	EIReader* eiReader;

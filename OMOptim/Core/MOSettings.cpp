@@ -78,31 +78,31 @@ void MOSettings::initialize(bool eraseCurrentValues)
 	defaultValues << getenv("MOPATH");
 	types.push_back(FOLDERPATH);
 
-	//*******************************
-	// Default modelica library
-	//*******************************
-	names << QString("path/modLib");
-	descs << QString("Path of modelica library");
-	QString modLibPath(getenv("MOPATH"));
-	modLibPath += QDir::separator();
-	modLibPath += "Modelica";
-	modLibPath += QDir::separator();
-	modLibPath += "Modelica.mo";
-	defaultValues << modLibPath;
-	types.push_back(FILEPATH);
+//	//*******************************
+//	// Default modelica library
+//	//*******************************
+//	names << QString("path/modLib");
+//	descs << QString("Path of modelica library");
+//	QString modLibPath(getenv("MOPATH"));
+//	modLibPath += QDir::separator();
+//	modLibPath += "Modelica";
+//	modLibPath += QDir::separator();
+//	modLibPath += "Modelica.mo";
+//	defaultValues << modLibPath;
+//	types.push_back(FILEPATH);
 
-	//*******************************
-	// Default ei library
-	//*******************************
-	names << QString("path/eiLib");
-	descs << QString("Path of EI library");
-	QString eiLibPath(getenv("MOPATH"));
-	eiLibPath += QDir::separator();
-	eiLibPath += "Modelica";
-	eiLibPath += QDir::separator();
-	eiLibPath += "EI.mo";
-	defaultValues << eiLibPath;
-	types.push_back(FILEPATH);
+//	//*******************************
+//	// Default ei library
+//	//*******************************
+//	names << QString("path/eiLib");
+//	descs << QString("Path of EI library");
+//	QString eiLibPath(getenv("MOPATH"));
+//	eiLibPath += QDir::separator();
+//	eiLibPath += "Modelica";
+//	eiLibPath += QDir::separator();
+//	eiLibPath += "EI.mo";
+//	defaultValues << eiLibPath;
+//	types.push_back(FILEPATH);
 
 	//*******************************
 	// Dymola path
@@ -113,13 +113,13 @@ void MOSettings::initialize(bool eraseCurrentValues)
 	defaultValues << dymolaPath;
 	types.push_back(FILEPATH);
 
-	//*******************************
-	// Quit omc at end of program
-	//*******************************
-	names << QString("stopOMCwhenQuit");
-	descs << QString("Automatically end OMC when quitting");
-	defaultValues << false;
-	types.push_back(BOOL);
+//	//*******************************
+//	// Quit omc at end of program
+//	//*******************************
+//	names << QString("stopOMCwhenQuit");
+//	descs << QString("Automatically end OMC when quitting");
+//        defaultValues << true;
+//	types.push_back(BOOL);
 
 	//*******************************
 	// Model depth read at beginning
