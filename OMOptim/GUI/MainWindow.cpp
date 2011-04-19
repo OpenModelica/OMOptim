@@ -108,8 +108,10 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	this,SLOT(showProblemPopup(const QPoint &)));
 	connect (_ui->treeModClass,SIGNAL(customContextMenuRequested(const QPoint &)),
 	this,SLOT(showModClassTreePopup(const QPoint &)));
-	connect (_tabMain,SIGNAL(customContextMenuRequested(const QPoint &)),
-	this,SLOT(showTabTitlePopup(const QPoint &)));
+
+        // Adeel :: Just commented it out because there is no such slot and it keeps on printing warning
+//	connect (_tabMain,SIGNAL(customContextMenuRequested(const QPoint &)),
+//	this,SLOT(showTabTitlePopup(const QPoint &)));
 
 	// Menus
 	connect( _ui->actionNewProject, SIGNAL( triggered() ),this, SLOT( newProject()));
@@ -296,10 +298,14 @@ void MainWindow::saveProject()
 			_filePath = QFileDialog::getSaveFileName(
 				this,
 				"MO - Save Project",
-				QString::null,
+                                QString::null,
 				"MO project (*.min)" );
 			if(!_filePath.isNull())
 			{
+                            // Adeel :: Kind of Qt bug QfileDioalog::getsavefilename return .min extension on windows but not on linux. So need to hard code it here
+                            #ifndef WIN32
+                                _filePath.append(".min");
+                            #endif
 				_project->setFilePath(_filePath);
 				_project->save();
 			}
@@ -319,8 +325,8 @@ void MainWindow::loadProject()
 	QString filename = QFileDialog::getOpenFileName(
 		this,
 		"MO - Open Project",
-		getLastProjectFolder(),
-		"MO project (*.min)" );
+                getLastProjectFolder(),
+                "MO project (*.min)" );
 
 	if (!filename.isNull())
 	{

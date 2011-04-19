@@ -561,7 +561,7 @@ OptVariable::~OptVariable()
 bool OptVariable::check(QString &error)
 {
 	bool ok=true;
-	error.clear();
+        error.clear();
 	if(_optMin>_optMax)
 	{
 		error.sprintf("Opt min value > max value (%f>%f)",_optMin,_optMax);
@@ -587,6 +587,12 @@ OptVariable::OptVariable(const OptVariable & var):Variable(var)
 {
 	_optMin = var._optMin;
 	_optMax = var._optMax;
+
+        /* Adeel :: Add these values to the _filledFields vector otherwise getFieldValue returns empty QVariant
+           and then eoRealInterval throws exception throw std::logic_error("Void range in eoRealBounds");
+         */
+        _filledFields.push_back(OPTMIN);
+        _filledFields.push_back(OPTMAX);
 }
 
 

@@ -44,6 +44,7 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <QDebug>
 
 #include "MyEoGnuplot.h"
 #ifdef WIN32
@@ -66,13 +67,14 @@ MyEoGnuplot::MyEoGnuplot()
 
 MyEoGnuplot::~MyEoGnuplot()
 {
-    if( gnuplotPipe )
-		  pclose(gnuplotPipe);
+    // Adeel :: better checking
+    if (pipeOpen)
+        if( gnuplotPipe )
+            pclose(gnuplotPipe);
 }
 
 void MyEoGnuplot::gnuplotCommand(const QString & _command)
 {
-
 	if(pipeOpen)
 	{
 		fprintf(gnuplotPipe, _command.toAscii().data());  

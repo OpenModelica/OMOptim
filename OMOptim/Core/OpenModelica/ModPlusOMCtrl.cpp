@@ -48,8 +48,13 @@ ModPlusOMCtrl::ModPlusOMCtrl(ModModelPlus* model,MOomc* moomc,QString mmoFolder,
 
 	_initFile = _modModelName+"_init.txt";
 	_resFile = _modModelName+"_res.csv";
-	_exeFile = _modModelName+".exe";
-	
+
+        // Adeel :: on linux the executables doesn't have .exe postfix :)
+#ifdef WIN32
+        _exeFile = _modModelName+".exe";
+#else /* unix */
+        _exeFile = _modModelName;
+#endif
 	_copyAllMoOfFolder = true;
 
 	_parameters = new MOVector<ModModelParameter>();
