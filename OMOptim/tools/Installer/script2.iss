@@ -11,7 +11,7 @@ AppVerName=OMOptim 0.9
 AppPublisher=Hubert Thieriot (ARMINES)
 DefaultDirName={pf}\OMOptim
 DefaultGroupName=OMOptim
-OutputBaseFilename=setup
+OutputBaseFilename=setupOMOptim
 Compression=lzma
 SolidCompression=yes
 ;WizardImageFile=D:\Documents\MinEIT\Developpement\OMOptim\trunk\files\Resources\icons\Synchronize\Synchronize_256x256.png
@@ -21,25 +21,29 @@ SolidCompression=yes
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: ..\..\build\release\OMOptim.exe; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\bin\OMOptim.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source:  "OMOptim.ico"; DestDir: "{app}";
-Source:  "..\..\build\release\QtCore4.dll"; DestDir: "{app}";
-Source:  "..\..\build\release\QtGui4.dll"; DestDir: "{app}";
-Source:  "..\..\build\release\QtXml4.dll"; DestDir: "{app}";
-Source:  "..\..\build\release\omniDynamic414_vc9_rt.dll"; DestDir: "{app}";
-Source:  "..\..\build\release\omniORB414_vc9_rt.dll"; DestDir: "{app}";
-Source:  "..\..\build\release\omnithread34_vc9_rt.dll"; DestDir: "{app}";
-Source:  "..\..\build\release\glpk_4_44.dll"; DestDir: "{app}";
-
-Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcp90.dll";  DestDir: "{app}"; OnlyBelowVersion: 0,9; Flags: restartreplace uninsneveruninstall sharedfile
-Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcr90.dll";  DestDir: "{app}"; OnlyBelowVersion: 0,9; Flags: restartreplace uninsneveruninstall sharedfile
-Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest";  DestDir: "{app}"; Flags: restartreplace uninsneveruninstall sharedfile
-Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*";  DestDir: "{app}\Microsoft.VC90.CRT"; Flags: restartreplace uninsneveruninstall sharedfile
+Source:  "..\..\bin\QtCore4.dll"; DestDir: "{app}";
+Source:  "..\..\bin\QtGui4.dll"; DestDir: "{app}";
+Source:  "..\..\bin\QtXml4.dll"; DestDir: "{app}";
+Source:  "..\..\bin\omniDynamic414_rt.dll"; DestDir: "{app}";
+Source:  "..\..\bin\omniORB414_rt.dll"; DestDir: "{app}";
+Source:  "..\..\bin\omnithread34_rt.dll"; DestDir: "{app}";
+Source:  "..\..\bin\glpk_4_44.dll"; DestDir: "{app}";
+Source:  "..\..\bin\qwt5.dll"; DestDir: "{app}";
+Source:  "..\..\bin\mingwm10.dll"; DestDir: "{app}";
+Source:  "..\..\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}";
+Source:  "..\..\bin\libstdc++-6.dll"; DestDir: "{app}";
+;Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcp90.dll";  DestDir: "{app}"; OnlyBelowVersion: 0,9; Flags: restartreplace uninsneveruninstall sharedfile
+;Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcr90.dll";  DestDir: "{app}"; OnlyBelowVersion: 0,9; Flags: restartreplace uninsneveruninstall sharedfile
+;Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest";  DestDir: "{app}"; Flags: restartreplace uninsneveruninstall sharedfile
+;Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*";  DestDir: "{app}\Microsoft.VC90.CRT"; Flags: restartreplace uninsneveruninstall sharedfile
 
 
 [Icons]
 Name: "{group}\OMOptim"; Filename: "{app}\OMOptim.exe" ; IconFilename: {app}\OMOptim.ico;
 Name: "{commondesktop}\OMOptim"; Filename: "{app}\OMOptim.exe"; IconFilename: {app}\OMOptim.ico; IconIndex: 0; Tasks: desktopicon
+
 
 [Registry]
 ; Création de la clé primaire

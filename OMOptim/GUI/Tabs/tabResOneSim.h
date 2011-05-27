@@ -75,6 +75,7 @@ class TabResOneSim : public MO2ColTab {
 public:
 	TabResOneSim(Project *project,OneSimulation *problem_,QWidget *parent = 0);
     ~TabResOneSim();
+    TabType tabType(){return TABSOLVEDPROBLEM;};
 
 	Project *project;
 	OneSimulation *problem;

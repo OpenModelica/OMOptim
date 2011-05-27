@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -97,7 +97,7 @@ EIGroup::EIGroup(QDomElement & domEl)
 
 QVariant EIGroup::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+         if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -230,6 +230,9 @@ public :
 	virtual unsigned getNbFields(){return nbFields;};
 	
 	void initOptExtremum();
+
+        double optMin(){return _optMin;};
+        double optMax(){return _optMax;};
 
 protected :
 	// added fields

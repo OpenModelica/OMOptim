@@ -64,7 +64,7 @@
 #include "MO2ColTab.h"
 #include "WidgetBlocks.h"
 #include "WidgetMooPlot.h"
-#include "widgetmoopointslist.h"
+#include "WidgetMooPointsList.h"
 #include "WidgetOptTable.h"
 #include "WidgetTableRecVar.h"
 #include "WidgetToolBar.h"
@@ -81,6 +81,7 @@ class TabResOptimization : public MO2ColTab {
 public:
 	TabResOptimization(Project *project, Optimization *problem_, QWidget *parent = 0);
     ~TabResOptimization();
+    TabType tabType(){return TABSOLVEDPROBLEM;};
 
 	Project *project;
 	Optimization *problem;

@@ -28,9 +28,8 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabProjectInfos.cpp
+        @file WidgetProjectInfos.h
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
@@ -38,58 +37,55 @@
  	@version 0.9 
 */
 
-#include "tabProjectInfos.h"
+#ifndef WIDGETPROJECTINFOS_H
+#define WIDGETPROJECTINFOS_H
+
+#include <QtGui/QWidget>
+#include "OptimResult.h"
+#include "ui_WidgetProjectInfos.h"
+#include <QtGui/QSortFilterProxyModel>
+#include <QtGui/QHeaderView>
+#include "Project.h"
+#include "MOOptPlot.h"
+#include "LowTools.h"
+
+#include <qwt_plot.h>
+#include <qwt_painter.h>
+#include <qwt_plot_canvas.h>
+#include <qwt_plot_marker.h>
+#include <qwt_plot_curve.h>
+#include <qwt_scale_widget.h>
+#include <qwt_legend.h>
+#include <qwt_scale_draw.h>
+#include <qwt_math.h>
+#include <qwt_picker.h>
 
 
-
-namespace Ui
-{
-	class TabProjectInfos_Class;
+namespace Ui {
+    class WidgetProjectInfos_Class;
 }
 
-TabProjectInfos::TabProjectInfos(Project *project_,QWidget *parent) :
-    QWidget(parent), ui(new Ui::TabProjectInfos_Class)
-{
-    ui->setupUi(this);
+class WidgetProjectInfos : public QWidget {
+    Q_OBJECT
 
-	project = project_;
-	connect(ui->pushEdit, SIGNAL(clicked()), this, SLOT(onPushedEdit()));
-}
+public:
+    WidgetProjectInfos(Project *project, QWidget *parent = 0);
+    ~WidgetProjectInfos();
 
-TabProjectInfos::~TabProjectInfos()
-{
-    delete ui;
-}
+    Project *project;
 
-void TabProjectInfos::actualizeGuiFromProject()
-{
+    //UI
+    Ui::WidgetProjectInfos_Class *ui;
 
-	// File names
-	if(project->isDefined())
-	{
-		ui->labelProjectName->setText(project->name());
-		ui->labelProjectFile->setText(project->filePath());
-		
-		QString listMO;
-		for(int i=0;i<project->moFiles().size();i++)
-		{
-			listMO.push_back(project->moFiles().at(i)+"\n");
-		}
-		ui->labelMoFiles->setText(listMO);
-	}
-	else
-	{
-		ui->labelProjectName->setText("-");
-		ui->labelProjectFile->setText("-");
-		ui->labelMoFiles->setText("-");
-	}
-}
 
-void TabProjectInfos::onPushedEdit()
-{
-	bool openFileOk = LowTools::openFile(project->filePath());
-	if(!openFileOk)
-	{
-		LowTools::openFolder(project->folder());
-	}
-}
+    void actualizeGuiFromProject();
+
+public slots:
+    void onPushedEdit();
+
+};
+
+
+
+
+#endif

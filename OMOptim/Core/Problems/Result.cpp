@@ -153,4 +153,14 @@ void Result::setSuccess(bool success)
 }
 
 
+QDir Result::saveFolder()
+{
+    return _saveFolder;
+}
+
+void Result::setSaveFolder(QDir saveFolder)
+{
+    _saveFolder = saveFolder;
+}
+
 

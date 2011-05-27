@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -40,10 +40,9 @@
   */
 #include "TableEIItems.h"
 
-TableEIItems::TableEIItems(EIItem * _rootElement,bool _editable,EIReader* _eiReader,EI::Type _filter,bool _recursive)
+TableEIItems::TableEIItems(EIItem * _rootElement,bool _editable,EI::Type _filter,bool _recursive)
 :editable(_editable)
 {
-	eiReader = _eiReader;
 	rootElement = _rootElement;
 	filter = _filter;
 	recursive = _recursive;
@@ -61,7 +60,7 @@ TableEIItems::~TableEIItems(void)
 void TableEIItems::updateList()
 {
 	eiItems.clear();
-	eiItems = eiReader->getItems(rootElement,recursive,filter);
+    eiItems = EIReader::getItems(rootElement,recursive,filter);
 }
 
 int TableEIItems::columnCount(const QModelIndex &parent) const
@@ -90,8 +89,11 @@ QVariant TableEIItems::data(const QModelIndex &index, int role) const
 
 	EIItem *item = static_cast<EIItem*>(index.internalPointer());
 	if(!item)
-		return 0;
+        return QVariant();
 	
+    if((role==Qt::CheckStateRole) && (index.column()>0))
+        return QVariant();
+
 	switch(role)
 	{
 			case Qt::DisplayRole :
@@ -189,13 +191,12 @@ QVariant TableEIItems::headerData(int section, Qt::Orientation orientation,
 QModelIndex TableEIItems::index(int row, int column, const QModelIndex &parent)
 const
 {
-
 	if((row>-1)&&(row < eiItems.size()))
 	{
 		return createIndex(row,column,eiItems.at(row));
 	}
-
-	return createIndex(row,column);
+    else
+        return QModelIndex();
 }
 
 QModelIndex TableEIItems::parent(const QModelIndex &index) const

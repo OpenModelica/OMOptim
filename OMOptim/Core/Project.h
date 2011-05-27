@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -75,7 +75,7 @@
 #include "EABase.h"
 
 #ifdef USEEI
-	#include "ProblemTarget.h"
+	#include "EITarget.h"
 	#include "EIReader.h"
 #endif
 
@@ -252,15 +252,7 @@ public:
 
 		void modsUpdated();
 
-#ifdef USEEI
-		//****************************
-		// EI functions, parameters
-		//****************************	
-		public :
-			EIReader* eiReader(){return _eiReader;};
-		private :
-			EIReader* _eiReader;
-#endif
+
 };
 
 

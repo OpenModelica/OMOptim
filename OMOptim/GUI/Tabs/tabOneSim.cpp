@@ -43,22 +43,21 @@
 #include "MOOptPlot.h"
 
 
-TabOneSim::TabOneSim(Project *project_,OneSimulation *problem_, QWidget *parent) :
-MO2ColTab(project_->name(),problem_,false,parent)
+TabOneSim::TabOneSim(Project *project,OneSimulation *problem, QWidget *parent) :
+MO2ColTab(project->name(),problem,false,parent)
 {
 	
-
-	project = project_;
-	problem = problem_;
-
-	if(problem_->isSolved())
-		type = TABSOLVEDPROBLEM;
-	else
-		type = TABPROBLEM;
+    _project = project;
+    _problem = problem;
 
 	// Variables
-	addDockWidget("Variables",new WidgetOneSimVars(project,problem,this));
+    _widgetOneSimVars = new WidgetOneSimVars(project,problem,this);
+    addDockWidget("Variables",_widgetOneSimVars);
 		
+    _widgetFilesList = new WidgetFilesList(&problem->_filesToCopy,this);
+    addDockWidget("Files",_widgetFilesList,_widgetOneSimVars);
+		
+    mapDockWidgets.key(_widgetOneSimVars)->raise();
 }
 
 TabOneSim::~TabOneSim()

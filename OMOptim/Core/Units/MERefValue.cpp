@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -127,10 +127,16 @@ unsigned MERefValue<DimValue>::nbUnits() const
 	return dimValue->nbUnits();
 }
 
+
+/** Returns numerical value of instance. If value contains a reference to a variable, it will be looked for in variables.
+  * @param ok is set to true if numerization was successful.
+  * @param modelName is used to add a prefix to reference before looking into variables (is used also without prefix if not found with)
+  */
 template<class DimValue>
-double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &ok)
+double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName)
 {
 	bool isNum;
+    QString refName;
 	double result = _value.toDouble(&isNum);
 	if(isNum)
 	{
@@ -140,8 +146,27 @@ double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &
 	}
 	else
 	{
-		// looking in variables
-		int iVar = variables->findItem(_value.toString());
+        if(variables==NULL)
+        {
+            ok = false;
+            return -1;
+        }
+        //*******************************
+        // looking for reference in variables
+        //*******************************
+        int iVar = -1;
+        //first look with modelName as prefix
+        if(!modelName.isEmpty())
+        {
+            refName = modelName+"."+_value.toString();
+            iVar = variables->findItem(refName);
+        }
+
+        if(iVar==-1) //if not found try without modelName as prefix
+        {
+            iVar = variables->findItem(_value.toString());
+        }
+
 		if(iVar==-1)
 		{
 			ok = false;
@@ -156,6 +181,10 @@ double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &
 		}
 	}
 }
+
+/** If value contains a reference to a variable, returns this variable name.
+  * Otherwise, return an empty string
+  */
 
 template<class DimValue>
 QString  MERefValue<DimValue>::reference()

@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabProjectInfos.h
+        @file WidgetProjectInfos.h
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
@@ -37,12 +37,12 @@
  	@version 0.9 
 */
 
-#ifndef TABPROJECTINFOS_CLASS_H
-#define TABPROJECTINFOS_CLASS_H
+#ifndef WidgetProjectInfos_CLASS_H
+#define WidgetProjectInfos_CLASS_H
 
 #include <QtGui/QWidget>
 #include "OptimResult.h"
-#include "ui_tabProjectInfos.h"
+#include "ui_WidgetProjectInfos.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include "Project.h"
@@ -62,15 +62,15 @@
 
 
 namespace Ui {
-    class TabProjectInfos_Class;
+    class WidgetProjectInfos_Class;
 }
 
-class TabProjectInfos : public QWidget {
+class WidgetProjectInfos : public QWidget {
     Q_OBJECT
 
 public:
-	TabProjectInfos(Project *project, QWidget *parent = 0);
-    ~TabProjectInfos();
+        WidgetProjectInfos(Project *project, QWidget *parent = 0);
+    ~WidgetProjectInfos();
 
 	
 
@@ -78,7 +78,7 @@ public:
 
 
 	//UI
-	Ui::TabProjectInfos_Class *ui;
+        Ui::WidgetProjectInfos_Class *ui;
 
 
 	void actualizeGuiFromProject();
@@ -94,4 +94,4 @@ public:
 
 
 
-#endif // TabProjectInfos_CLASS_H
+#endif // WidgetProjectInfos_CLASS_H

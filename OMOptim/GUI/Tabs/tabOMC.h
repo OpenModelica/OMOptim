@@ -46,7 +46,7 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include <QtGui/QTextEdit>
-#include "MOomc.h"
+#include "MOOmc.h"
 #include "MOOptPlot.h"
 
 #include <qwt_plot.h>
@@ -72,6 +72,7 @@ class TabOMC : public MOTabSimple {
 public:
 	TabOMC(Project *project, QWidget *parent = 0);
     ~TabOMC();
+    TabType tabType(){return TABOTHER;};
 
 	
 

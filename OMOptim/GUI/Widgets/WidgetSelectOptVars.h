@@ -79,6 +79,7 @@ public slots :
 	void deleteOptObjectives();
 	void addScannedVariables();
 	void deleteScannedVariables();
+        void readVariables();
 
 
 

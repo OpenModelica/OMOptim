@@ -57,7 +57,7 @@
 #include <QtXml/QDomDocument>
 #include "WidgetSelectModModel.h"
 #include "AboutOMOptim.h"
-
+#include "OpenModelica.h"
 
 namespace Ui
 {
@@ -145,6 +145,7 @@ public slots :
 	// about dialogs
 	void dispAboutOMOptim();
 	void dispAboutQt();
+        void openUserManual();
 
 signals:
 	void sendInfo(Info);

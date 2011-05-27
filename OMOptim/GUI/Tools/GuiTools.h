@@ -63,6 +63,7 @@
 #include "OptimResult.h"
 #include "ModClassTree.h"
 #include "ModClass.h"
+#include "MyTreeView.h"
 
 
 
@@ -96,6 +97,8 @@ public:
 
 	static void resizeTable(QTableView*);
 	
+        static void resizeTreeViewColumns(MyTreeView*);
+        static void resizeTableViewColumns(QTableView*);
 };
 
 

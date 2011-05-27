@@ -84,7 +84,7 @@ void WidgetMOItem::initializeGui()
 {
 	clearGui();
 	QGridLayout* itemLayout = dynamic_cast<QGridLayout*>(itemWidget->layout());
-
+        QLabel* label;
 	if(item)
 	{
 		ui->groupItem->setTitle(item->name());
@@ -100,7 +100,9 @@ void WidgetMOItem::initializeGui()
 
 
 				// add it to gui
-				itemLayout->addWidget(new QLabel(item->getFieldName(iF),this),iF,0);
+                                label = new QLabel(item->getFieldName(iF),this);
+                                label->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+                                itemLayout->addWidget(label,iF,0);
 				itemLayout->addWidget(curWidget,iF,1);
 
 				// connect change
@@ -139,6 +141,7 @@ void WidgetMOItem::setItem(MOItem* _item)
 	
 	initializeGui();
 	actualizeValues();
+        emit valueChanged();
 	
 }
 void WidgetMOItem::changeValue(QWidget* editor, const QVariant &value)
@@ -148,6 +151,7 @@ void WidgetMOItem::changeValue(QWidget* editor, const QVariant &value)
 	{
 		item->setFieldValue(iF,value);
 		updateWidgetValue(editor,item->getFieldValue(iF));
+                emit valueChanged();
 	}
 }
 

@@ -52,8 +52,8 @@ public:
 	EIConnConstrs* clone();
 
 	
-	EIConnConstrs(QDomElement & domList, EIItem* rootEI, EIReader* eiReader);
-	QMultiMap<EIStream*,EIStream*> getMapStreams(EIReader* eiReader,MOOptVector *variables);
+        EIConnConstrs(QDomElement & domList, EITree* eiTree);
+        QMultiMap<EIStream*,EIStream*> getMapStreams(MOOptVector *variables);
 
 };
 #endif

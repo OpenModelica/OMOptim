@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -48,7 +48,7 @@
 #include "OptObjective.h"
 #include "OptimResult.h"
 #include "ProblemConfig.h"
-#include "ProblemEI.h"
+#include "EIProblem.h"
 
 #include "BlockSubstitution.h"
 #include "BlockSubstitutions.h"
@@ -69,7 +69,7 @@ protected :
 
 	// MER problem
 	bool _useEI;
-	ProblemEI* _eiProblem;
+        EIProblem* _eiProblem;
 	bool _useScan;
 
 
@@ -87,13 +87,13 @@ public:
 	MOVector<OptObjective> *objectives(){return _objectives;};
 	BlockSubstitutions *blockSubstitutions(){return _blockSubstitutions;};
 	bool useEI(){return _useEI;};
-	ProblemEI* eiProblem(){return _eiProblem;};
+	EIProblem* eiProblem(){return _eiProblem;};
 	
 	//overwrited functions
 	bool checkBeforeComp(QString & error);
 	void launch(ProblemConfig _config);
 	void store(QString destFolder, QString tempDir);
-	QDomElement toXMLData(QDomDocument & doc);
+	QDomElement toXmlData(QDomDocument & doc);
 	
 	//specific functions
 	void createSubExecs(QList<ModModelPlus*> & _subMod, QList<BlockSubstitutions*> & _subBlocks);

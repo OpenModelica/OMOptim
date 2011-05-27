@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -96,7 +96,7 @@ Optimization::~Optimization()
 	delete _objectives;
 	delete _blockSubstitutions;
 
-	clearResult();
+        deleteResult();
 }
 
 /** Description : Launch optimization procedure. checkBeforeComp() is not called in this function.
@@ -287,7 +287,8 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 		
 		// clone mo file
 		QFile moFile(_modModelPlus->modModel()->filePath());
-		QString newMoPath = newDir.filePath(moFile.fileName());
+                QFileInfo moFileInfo(moFile);
+                QString newMoPath = newDir.filePath(moFileInfo.fileName());
 		
 		moFile.copy(newMoPath);
 		
@@ -328,7 +329,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 			// store subModel and subBlocks
 			subModels.push_back(newModModelPlus);
 			subBlocks.push_back(curSubBlocks);
-			_foldersToCopyNames << newFolder;
+                        _foldersToCopy << newFolder;
 
 			infoSender.send( Info(ListInfo::SUBMODELADDED,newName));
 		}
@@ -347,29 +348,6 @@ ModModelPlus* Optimization::modModelPlus()
 	return _modModelPlus;
 }
 
-//void Optimization::setEAConfigs(QVector<EAConfig*> _eaConfigs)
-//{
-//	eaConfigs = _eaConfigs;
-//
-//	for(int i=0;i<eaConfigs.size();i++)
-//		eaConfigs.at(i)->setProblem(this);
-//}
-//EAConfig* Optimization::getEAConfig(int _iEA)
-//{
-//	return ((EABase*)algos.at(_iEA))->config;
-//}
-//QVector<EAConfig*> Optimization::getEAConfigs()
-//{
-//	QVector<EAConfig*> configs;
-//	for(int i=0;i<algos.size();i++)
-//		configs.push_back(getEAConfig(i));
-//	return configs;
-//}
-
-
-
-
-
 void Optimization::setBlockSubstitutions(BlockSubstitutions* blockSubstitutions)
 {
 	if(_blockSubstitutions)
@@ -386,7 +364,7 @@ void Optimization::store(QString destFolder, QString tempDir)
 	Problem::store(destFolder,tempDir);
 }
 
-QDomElement Optimization::toXMLData(QDomDocument & doc)
+QDomElement Optimization::toXmlData(QDomDocument & doc)
 {
 	
 	QDomElement cProblem = doc.createElement(getClassName());
@@ -412,8 +390,14 @@ QDomElement Optimization::toXMLData(QDomDocument & doc)
 	cProblem.appendChild(cScanned);
 
 	//BlockSubstitutions
-	QDomElement cBlocks = _blockSubstitutions->toXMLData(doc);
+	QDomElement cBlocks = _blockSubstitutions->toXmlData(doc);
 	cProblem.appendChild(cBlocks);
+
+        // Files to copy
+        QDomElement cFilesToCopy = doc.createElement("FilesToCopy");
+        QDomText cFiles = doc.createTextNode(_filesToCopy.join("\n"));
+        cFilesToCopy.appendChild(cFiles);
+        cProblem.appendChild(cFilesToCopy);
 
 	// ea configuration
 	MyAlgorithm *curAlgo = getCurAlgo();

@@ -58,7 +58,7 @@
 #include <qwt_math.h>
 #include <qwt_picker.h>
 
-
+#include "WidgetFilesList.h"
 #include "WidgetOneSimVars.h"
 #include "MO2ColTab.h"
 #include "WidgetTableVar.h"
@@ -73,11 +73,17 @@ class TabOneSim : public MO2ColTab {
     Q_OBJECT
 
 public:
-	TabOneSim(Project *project,OneSimulation *problem_,QWidget *parent = 0);
+    TabOneSim(Project *project,OneSimulation *problem,QWidget *parent = 0);
     ~TabOneSim();
+    TabType tabType(){return TABPROBLEM;};
 
-	Project *project;
-	OneSimulation *problem;
+    Project *_project;
+    OneSimulation *_problem;
+
+private :
+        WidgetOneSimVars *_widgetOneSimVars;
+        WidgetFilesList *_widgetFilesList;
+
 
 };
 

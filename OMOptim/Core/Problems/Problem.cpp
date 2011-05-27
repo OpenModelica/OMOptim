@@ -57,7 +57,7 @@ Problem::Problem(const Problem &problem)
 	_type = problem._type;
 	_num = problem._num;
 	
-	_filesToCopyNames = problem._filesToCopyNames;
+        _filesToCopy = problem._filesToCopy;
 	
 	_saveFolder = problem._saveFolder;
 	_saveFileName = problem._saveFileName;
@@ -81,7 +81,7 @@ Problem::Problem(const Problem &problem)
 
 Problem::~Problem(void)
 {
-	clearResult();
+        deleteResult();
 }
 
 QString Problem::getFieldName(int field,int role)
@@ -157,6 +157,8 @@ void Problem::setiCurAlgo(int iCurAlgo)
 void Problem::setSaveFolder(QString saveFolder)
 {
 	_saveFolder=saveFolder;
+        if(_result)
+            _result->setSaveFolder(QDir(saveFolder));
 }
 
 void Problem::setDefaultSaveFileName()
@@ -276,20 +278,12 @@ void Problem::store(QString destFolder, QString tempDir)
 		QDir newDir(_saveFolder);
 
 		// copy problem files and folders
-		QStringList fileNames = tmpDir.entryList(_filesToCopyNames);
+                QStringList fileNames = tmpDir.entryList();
 		for(int i=0;i<fileNames.size();i++)
 		{
 			QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_saveFolder + QDir::separator() + fileNames.at(i));
 		}
 
-		for(int i=0;i<_foldersToCopyNames.size();i++)
-		{
-			if(tmpDir.entryList().contains(_foldersToCopyNames.at(i)))
-				LowTools::copyDir(tempDir + QDir::separator() + _foldersToCopyNames.at(i),_saveFolder + QDir::separator() + _foldersToCopyNames.at(i));
-			else
-				LowTools::copyDir(_foldersToCopyNames.at(i),_saveFolder + QDir::separator() + QDir(_foldersToCopyNames.at(i)).dirName());
-		}
-		
 		// copy result files
 		if(isSolved())
 		{
@@ -300,9 +294,11 @@ void Problem::store(QString destFolder, QString tempDir)
 			}
 		}
 	}
+
+        result()->setSaveFolder(QDir(destFolder));
 }
 
-void Problem::clearResult()
+void Problem::deleteResult()
 {
 	if(_result)
 		delete _result;

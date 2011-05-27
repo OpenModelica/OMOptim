@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -52,15 +52,19 @@ public:
 	virtual ~MEDimValue(void);
 
 	QStringList units()  const ;
-	QString unit() const ;
+        virtual QString unit() const ;
 	int iUnit() const ;
 	virtual QString unit(int iUnit) const =0;
 	virtual unsigned nbUnits() const =0;
 	virtual void setValue(double,int iUnit=-1);
 	virtual bool setValue(double,QString unit);
 	virtual void setUnit(int iUnit);
+        virtual bool setUnit(QString iUnit);
 	double value(int iUnit) const;
+        double value() const;
 	
+
+
 
 protected :
 	int _unit;

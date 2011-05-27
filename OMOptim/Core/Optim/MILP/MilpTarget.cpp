@@ -45,15 +45,20 @@
 #include <cmath>
 
 
-MilpTarget::MilpTarget(EIItem* _rootEI,EIConnConstrs *_connConstrs,EIReader *_eiReader,
-								   MOOptVector *_variables,QString _modFilePath, QString _dataFilePath)
+MilpTarget::MilpTarget(EITree* eiTree,EIConnConstrs *connConstrs,
+                       MOOptVector *variables,QDir folder,QString modFileName, QString dataFileName)
 {
-	rootEI = _rootEI;
-	eiReader = _eiReader;
-	variables = _variables;
-	modFilePath =  _modFilePath;
-	dataFilePath = _dataFilePath;
-	connConstrs = _connConstrs;
+    _eiTree = new EITree(*eiTree);
+    _variables = variables;
+    _folder = folder;
+    _modFileName =  modFileName;
+    _dataFileName = dataFileName;
+    _connConstrs = connConstrs;
+
+    _logFileName = "MILPLog.txt";
+    _resFileName = "MILPResult.txt";
+    _sensFileName= "MILPSens.txt";
+
 }
 
 MilpTarget::~MilpTarget(void)
@@ -76,8 +81,9 @@ EITargetResult* MilpTarget::launch()
 	QMap<EIGroupFact*,EIGroupFact*> factsRelation; // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
 	QMap<EIGroupFact*,EIGroup*> factGroupMap;
 
-	EITools::getTkQpkQuk(eiReader,variables,
-		rootEI,Tk,
+
+    EITools::getTkQpkQuk(_variables,
+                         _eiTree->rootElement(),Tk,
 		eiProcessStreams,Qpk,
 		eiUtilityStreams,Quk,
 		factStreamMap,
@@ -85,18 +91,17 @@ EITargetResult* MilpTarget::launch()
 		factGroupMap);
 
 	// write data
+    QString dataFilePath = _folder.absoluteFilePath(_dataFileName);
 	DataToFile(dataFilePath,Tk,eiProcessStreams,Qpk,eiUtilityStreams,Quk,
 		factStreamMap,factsRelation,factGroupMap);
 
-	//data
-	QFileInfo dataInfo(dataFilePath);
-	QString resFilePath = dataInfo.absolutePath() + QDir::separator() + "MILPResult.txt";
 
-	glp_prob* glpProblem = launchGLPK(resFilePath);
+    glp_prob* glpProblem = launchGLPK();
 	EITargetResult* result;
 	if(!glpProblem)
 	{
 		result = new EITargetResult();
+        result->setEITree(_eiTree);
 		result->setSuccess(false);
 	}
 	else
@@ -104,6 +109,11 @@ EITargetResult* MilpTarget::launch()
 		result = readResult(glpProblem);
 		glp_delete_prob(glpProblem);
 	}
+
+    result->_logFileName = _logFileName;
+    result->_resFileName = _resFileName;
+    result->_sensFileName = _sensFileName;
+
 	return result;
 }
 
@@ -154,7 +164,7 @@ void MilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 	{
 		streamName = eiProcessStreams.at(i)->name();
 		procStreams.push_back(streamName);
-		if(eiProcessStreams.at(i)->isHot(variables))
+        if(eiProcessStreams.at(i)->isHot(_variables))
 			hotStreams.push_back(streamName);
 		else
 			coldStreams.push_back(streamName);
@@ -166,7 +176,7 @@ void MilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 	{
 		streamName = eiUtilityStreams.at(i)->name();
 		utStreams.push_back(streamName);
-		if(eiUtilityStreams.at(i)->isHot(variables))
+        if(eiUtilityStreams.at(i)->isHot(_variables))
 			hotStreams.push_back(streamName);
 		else
 			coldStreams.push_back(streamName);
@@ -213,7 +223,7 @@ void MilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 	EIStream* coldStr;
 	
 	//Forbidden <HotStream,ColdStream>
-	QMultiMap<EIStream*,EIStream*> mapConstr = connConstrs->getMapStreams(eiReader,variables);
+    QMultiMap<EIStream*,EIStream*> mapConstr = _connConstrs->getMapStreams(_variables);
 
 	for(int i=0;i<mapConstr.keys().size();i++)
 	{
@@ -243,14 +253,14 @@ void MilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 		for(int iK=0;iK<Qpk.at(iS).size();iK++)
 		{
 			// Absolute value for QFlow with this mod file
-			curValue =  abs(Qpk.at(iS).at(iK).value(MEQflow::KW));
+            curValue =  fabs(Qpk.at(iS).at(iK).value(MEQflow::KW));
 			if(curValue!=0)
 				dataText += "["+eiProcessStreams.at(iS)->name()
 				+"," +QString::number(iK+1)
 				+"] " + QString::number(curValue) + "\n"; 
 		}
 	}
-	dataText +=";";
+    dataText +="; \n";
 
 	//DQuk
 	dataText += "param DQuk := \n";
@@ -259,14 +269,14 @@ void MilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 		for(int iK=0;iK<Quk.at(iS).size();iK++)
 		{
 			// Absolute value for QFlow with this mod file
-			curValue = abs(Quk.at(iS).at(iK).value(MEQflow::KW));
+            curValue = fabs(Quk.at(iS).at(iK).value(MEQflow::KW));
 			if(curValue!=0)
 				dataText += "["+eiUtilityStreams.at(iS)->name()
 				+"," +QString::number(iK+1)
 				+"] " + QString::number(curValue) + "\n"; 
 		}
 	}
-	dataText +=";";
+    dataText +=";\n";
 
 	//fmin, fmax, cost
 	QString strFmax = "param fmax := ";
@@ -310,13 +320,17 @@ void MilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 	file.close();
 }
 
-glp_prob* MilpTarget::launchGLPK(QString resFilePath)
+glp_prob* MilpTarget::launchGLPK()
 {
 
+    //delete log file
+    _folder.remove(_logFileName);
+
 	//delete result file
-	QFile resFile(resFilePath);
-	if(resFile.exists())
-		resFile.remove();
+    _folder.remove(_resFileName);
+
+    //delete sensitivity file
+    _folder.remove(_sensFileName);
 
 
 	glp_prob *glpProblem;
@@ -324,13 +338,13 @@ glp_prob* MilpTarget::launchGLPK(QString resFilePath)
 	int ret;
 	glpProblem = glp_create_prob();
 	tran = glp_mpl_alloc_wksp();
-	ret = glp_mpl_read_model(tran, modFilePath.toLatin1().data(), 1);
+    ret = glp_mpl_read_model(tran, _folder.absoluteFilePath(_modFileName).toLatin1().data(), 1);
 	if (ret != 0)
 	{ 
 		infoSender.send(Info(ListInfo::MILPERRORMODEL));
 		return NULL;
 	}
-	ret = glp_mpl_read_data(tran, dataFilePath.toLatin1().data());
+    ret = glp_mpl_read_data(tran, _folder.absoluteFilePath(_dataFileName).toLatin1().data());
 	if (ret != 0)
 	{ 
 		infoSender.send(Info(ListInfo::MILPERRORDATA));
@@ -351,9 +365,8 @@ glp_prob* MilpTarget::launchGLPK(QString resFilePath)
 		fprintf(stderr, "Error on postsolving model\n");
 	
 	glp_mpl_free_wksp(tran);
-	glp_print_sol(glpProblem, resFilePath.toLatin1().data());
-
-
+    glp_print_sol(glpProblem, _folder.absoluteFilePath(_logFileName).toUtf8().data());
+    glp_print_ranges(glpProblem,0,0,0,_folder.absoluteFilePath(_sensFileName).toUtf8().data());
 
 
 	// get results
@@ -381,15 +394,11 @@ glp_prob* MilpTarget::launchGLPK(QString resFilePath)
 		resText += QString::number(value) +"\n";
 	}
 
-	QFile resFile3(resFilePath+"3");
-	if(resFile3.exists())
-	{
-		resFile3.remove();
-	}
-	resFile3.open(QIODevice::WriteOnly);
-	QTextStream ts( &resFile3 );
+    QFile resFile(_folder.absoluteFilePath(_resFileName));
+    resFile.open(QIODevice::WriteOnly);
+    QTextStream ts( &resFile );
 	ts << resText;
-	resFile3.close();
+    resFile.close();
 
 	
 	return glpProblem;
@@ -404,10 +413,9 @@ glp_prob* MilpTarget::launchGLPK(QString resFilePath)
 EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 {
 
-	// clone rootEI
+    // clone eiTree
 	EITargetResult* result = new EITargetResult();
-	delete result->_rootEI;
-	result->_rootEI = rootEI->clone();
+    result->setEITree(_eiTree);
 
 	// read if successfull
 	int status = glp_get_status(glpProblem);
@@ -421,52 +429,104 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 	}
 
 
+    // read all column names
+    int nbCols = glp_get_num_cols(glpProblem);
+    QStringList colNames;
+    for(int iCol = 1;iCol<=nbCols; iCol++)
+    {
+        colNames.push_back(QString(glp_get_col_name(glpProblem, iCol)));
+    }
+
+    //*************************
+    // extract information
+    //*************************
+
+    QRegExp regExp;
+    QString colName;
+    double value;
+    int iCol;
 
 	// read all VFacMul
 	QMap<QString,double> mapGroupFacMul; //<groupName,value>
-	QString colName;
-	QRegExp regExp("VFactUt[.]*");
-	
-
 	QString groupName,prefix,valueStr;
-	double value;
+    regExp.setPattern("VFactUt\\[([\\w|\.]+)\\][.]*");
 
-	int nbCols = glp_get_num_cols(glpProblem);
-	for(int iCol = 1;iCol<=nbCols; iCol++)
+    iCol=colNames.indexOf(regExp,0);
+    while(iCol>-1)
 	{
-		colName = QString(glp_get_col_name(glpProblem, iCol));
-		if (regExp.indexIn(colName) != -1)
-		{
-			groupName = colName;
+        groupName = colNames.at(iCol);
 			groupName.remove("VFactUt");
 			groupName.remove("[");
 			groupName.remove("\'");
 			groupName.remove("]");
 			groupName.remove(QRegExp("^\\."));
-			value = glp_mip_col_val(glpProblem, iCol);
+        value = glp_mip_col_val(glpProblem, iCol+1); //iCol+1 since glp cols start at 1.
 			mapGroupFacMul.insert(groupName,value);
-		}
-	}
 
-	EIItem* curGroup;
+        iCol = colNames.indexOf(regExp,iCol+1);
+		}
+
+    EIGroup* curGroup;
 	for(int i=0;i<mapGroupFacMul.keys().size();i++)
 	{
 		groupName = mapGroupFacMul.keys().at(i);
-		curGroup = eiReader->findInDescendants(rootEI,groupName);
+        curGroup =result->eiTree()->findItem(groupName);
 		if(curGroup)
 		{
-			dynamic_cast<EIGroup*>(curGroup)->getFact()->value=mapGroupFacMul.value(groupName);
+            value = mapGroupFacMul.value(groupName);
+            curGroup->getFact()->value = value;
+            if(value==0)
+                dynamic_cast<EIGroup*>(curGroup)->setChecked(false);
 		}
 	}
 
 
 	// read TotalCost
+   value = glp_get_obj_val(glpProblem);
+   result->totalCost = value;
 
+
+    // read Qijk
+    regExp.setPattern("Qijk\\[([\\w|\.]+),([\\w|\.]+),(\\d+)\\][.]*");
+
+    QString nameA,nameB;
+    EIStream *streamA,*streamB;
+    int k;
+    EIConn* newEIConn;
+    double qflow;
+
+    iCol=colNames.indexOf(regExp,0);
+    while(iCol>-1)
+    {
+        colName = colNames.at(iCol);
+        if (regExp.indexIn(colName)>-1)
+        {
+            nameA = regExp.cap(1);
+            nameB = regExp.cap(2);
+
+            qflow = glp_get_col_prim(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
+            if(qflow!=0)
+            {
+                streamA = dynamic_cast<EIStream*>(result->eiTree()->findItem(nameA));
+                streamB = dynamic_cast<EIStream*>(result->eiTree()->findItem(nameB));
+
+                if(streamA && streamB)
+                {
+                    newEIConn = new EIConn(result->eiTree());
+                    newEIConn->setA(streamA,METemperature(),METemperature(),1);
+                    newEIConn->setB(streamB,METemperature(),METemperature(),1);
+                    newEIConn->setQFlow(MEQflow(qflow,MEQflow::KW));
+                    result->eiConns()->addItem(newEIConn);
+                }
+            }
+        }
+        iCol = colNames.indexOf(regExp,iCol+1);
+    }
 
 	return result;
 }
 //
-//void MilpTarget::RootEIToTargetMilp(EIItem* rootEI,EIReader *eiReader,MOOptVector *variables)
+//void MilpTarget::RootEIToTargetMilp(EIItem* rootEI,MOOptVector *variables)
 //{
 //
 //	// get temperature intervals, flows, factors...
@@ -479,7 +539,7 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 //	QMap<EIGroupFact*,EIGroupFact*> factsRelation; // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
 //	QMap<EIGroupFact*,EIGroup*> factGroupMap;
 //
-//	EITools::getTkQpkQuk(eiReader,variables,
+//	EITools::getTkQpkQuk(variables,
 //		rootEI,Tk,
 //		eiProcessStreams,Qpk,
 //		eiUtilityStreams,Quk,

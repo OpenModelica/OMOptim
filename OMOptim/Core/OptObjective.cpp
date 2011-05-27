@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -45,9 +45,8 @@ OptObjective::OptObjective()
 {
 	_editableFields.clear();
 	_editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
-	_min = -std::numeric_limits<double>::infinity();
-	_max = std::numeric_limits<double>::infinity();
 	_scanFunction = NONE;
+    initOptExtremum();
 }
 OptObjective::OptObjective(const Variable &var, OptObjective::Direction direction):Variable(var)
 {
@@ -55,6 +54,7 @@ OptObjective::OptObjective(const Variable &var, OptObjective::Direction directio
 	_scanFunction = NONE;
 	_editableFields.clear();
 	_editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    initOptExtremum();
 }
 
 OptObjective::OptObjective(const OptObjective & obj):Variable(obj)
@@ -69,9 +69,9 @@ OptObjective::OptObjective(QDomElement & domEl)
 {
 	_editableFields.clear();
 	_editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
-	_min = -std::numeric_limits<double>::infinity();
-	_max = std::numeric_limits<double>::infinity();
 	_scanFunction = NONE;
+
+    initOptExtremum();
 
 	QDomNamedNodeMap attributes = domEl.attributes();
 	QString fieldName;
@@ -92,6 +92,11 @@ OptObjective::~OptObjective(void)
 {
 }
 
+void OptObjective::initOptExtremum()
+{
+        _min= -std::numeric_limits<double>::max();
+        _max = std::numeric_limits<double>::max();
+}
 
 void OptObjective::setScanFunction(ScanFunction scanFunction)
 {
@@ -175,7 +180,7 @@ QString OptObjective::sFieldName(int ifield, int role)
 
 QVariant OptObjective::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{
@@ -196,8 +201,14 @@ QVariant OptObjective::getFieldValue(int ifield, int role) const
 			else
 				return _direction;
 		case MIN : 
+            if((role == Qt::DisplayRole)&&(_min==-std::numeric_limits<double>::max()))
+                return "-";
+            else
 			return _min;
 		case MAX:
+            if((role == Qt::DisplayRole)&&(_max==std::numeric_limits<double>::max()))
+                return "-";
+            else
 			return _max;
 		case SCANFUNCTION :
 			if(role == Qt::DisplayRole)
@@ -311,7 +322,7 @@ QString OptObjectiveResult::sFieldName(int ifield, int role)
 
 QVariant OptObjectiveResult::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{
@@ -332,8 +343,14 @@ QVariant OptObjectiveResult::getFieldValue(int ifield, int role) const
 			else
 				return _direction;
 		case MIN :
+            if((role == Qt::DisplayRole)&&(_min==-std::numeric_limits<double>::max()))
+                return "-";
+            else
 			return _min;
 		case MAX :
+            if((role == Qt::DisplayRole)&&(_max==std::numeric_limits<double>::max()))
+                return "-";
+            else
 			return _max;
 		case SCANFUNCTION :
 			if(role == Qt::DisplayRole)
@@ -362,7 +379,7 @@ QVariant OptObjectiveResult::getFieldValue(int ifield, int role) const
 
 bool OptObjectiveResult::setFieldValue(int ifield,QVariant value)
 {
-	try{
+    bool isDouble;
 	switch (ifield)
 	{
 		case NAME :
@@ -375,10 +392,14 @@ bool OptObjectiveResult::setFieldValue(int ifield,QVariant value)
 			_direction= (Direction)value.toInt();
 			break;
 		case MIN :
-			_min = value.toDouble();
+        _min = value.toDouble(&isDouble);
+        if(!isDouble)
+            _min = -std::numeric_limits<double>::max();
 			break;
 		case MAX:
-			_max = value.toDouble();
+        _max = value.toDouble(&isDouble);
+        if(!isDouble)
+            _max = std::numeric_limits<double>::max();
 			break;
 		case SCANFUNCTION :
 			_scanFunction= (ScanFunction)value.toInt();
@@ -388,11 +409,6 @@ bool OptObjectiveResult::setFieldValue(int ifield,QVariant value)
 		_filledFields.push_back(ifield);
 	return true;
 	}
-	catch(std::exception &e)
-	{
-		return false;
-	}
-}
 
 std::vector<double> OptObjectiveResult::finalValues() const
 {

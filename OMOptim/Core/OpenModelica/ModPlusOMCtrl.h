@@ -64,7 +64,7 @@ public:
 	bool compile();
 	bool createInitFile();
 	// Simulate function
-	bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars);
+        bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy = QStringList());
 	void setMmoFolder(QString _mmoFolder);
 private :
 	QString _initFile;

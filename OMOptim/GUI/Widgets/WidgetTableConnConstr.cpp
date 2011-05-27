@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -43,16 +43,15 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetTableConnConstr::WidgetTableConnConstr(EIConnConstrs *_constrs, EIItem* _rootEI,EIReader* _eiReader,bool _editable,QWidget *parent)
+WidgetTableConnConstr::WidgetTableConnConstr(EIConnConstrs *_constrs, EITree* _eiTree,bool _editable,QWidget *parent)
 :QWidget(parent),
     ui(new Ui::WidgetTableConnConstrClass)
 {
     ui->setupUi(this);
 	
-	rootEI = _rootEI;
+        eiTree = _eiTree;
 	constrs = _constrs;
 	editable = _editable;
-	eiReader = _eiReader;
 
 	//table model
 	tableView=new MOTableView(this);
@@ -75,6 +74,9 @@ WidgetTableConnConstr::WidgetTableConnConstr(EIConnConstrs *_constrs, EIItem* _r
 	typeNames.push_back(EIConnConstr::strType(EIConnConstr::FORBIDDEN));
 	typeDlg = new GenericDelegate(indexes,typeNames,this);
 	tableView->setItemDelegateForColumn(EIConnConstr::TYPE,typeDlg);
+
+        // resize columns
+        GuiTools::resizeTableViewColumns(tableView);
 }
 
 WidgetTableConnConstr::~WidgetTableConnConstr()
@@ -86,15 +88,15 @@ WidgetTableConnConstr::~WidgetTableConnConstr()
 
 void WidgetTableConnConstr::onPushAdd()
 {
-	constrs->addItem(new EIConnConstr(rootEI,eiReader));
+        constrs->addItem(new EIConnConstr(eiTree));
 }
 
 void WidgetTableConnConstr::updateCompleters()
 {
 	QStringList itemNames;
-	if(rootEI)
+        if(eiTree)
 	{
-		itemNames = eiReader->getAllItemNames(rootEI);
+                itemNames = EIReader::getAllItemNames(eiTree->rootElement());
 	}
 	
 	if(compltDlgA)

@@ -74,9 +74,8 @@ WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* pr
 	
 	connect(_ui->pushAddReplaced,SIGNAL(clicked()), this, SLOT(addReplacedComponent()));
 	connect(_ui->pushAddReplacing,SIGNAL(clicked()), this, SLOT(addReplacingComponent()));
+	connect(_project,SIGNAL(modsUpdated()),this,SLOT(actualizeModTree()));
 
-        // Adeel :: Just commented it out because there is no such slot and it keeps on printing warning
-        //connect(_project,SIGNAL(modsUpdated()),this,SLOT(actualizeModTree()));
 }
 
 WidgetSelectComponents::~WidgetSelectComponents()

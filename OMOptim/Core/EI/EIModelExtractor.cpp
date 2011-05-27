@@ -5,39 +5,102 @@ EIModelExtractor::EIModelExtractor()
 }
 
 
-EIItem* EIModelExtractor::extractFromModClass(ModClass* model,ModReader* modReader,MOomc* moomc)
+EIModelContainer* EIModelExtractor::extractFromModClass(ModClass* model,ModReader* modReader,MOomc* moomc)
 {
-    EIItem* rootEI = new EIItem(NULL,model->name(),model->name());
 
+
+    MOKeepVector<EIItem> listEIItems;
+    QMap<QString,EIItem*> mapFullNames;
+    QMultiMap<QString,EIItem*> mapFullParentNames;
     QList<ModClass*> tmpModEI;
 
-    EIItem* parent = NULL;
+    //create root and add it to list
+    EIModelContainer* rootEI = new EIModelContainer(NULL,model->name(),model->name());
+    listEIItems.addItem(rootEI);
+    mapFullNames.insert(rootEI->name(EI::SHORT),rootEI);
+
+    EIItem* tmpParent= NULL;
+    QString parentName;
+    QString fullName;
+    QString fullParentName;
+    bool ok;
+
+    //Groups
+    tmpModEI =  modReader->findCompOfClassInDescendants(model,EILinguist::getModelicaClassType(EI::GROUP));
+    EIGroup* newEIGroup;
+    for(int i=0;i<tmpModEI.size();i++)
+    {
+        newEIGroup = ModEIConverter::modClassToEIGroup(tmpModEI.at(i),tmpParent,moomc,ok,parentName);
+        if(ok)
+        {
+            // get fullname and fullparentname
+            if(parentName.isEmpty())
+                fullParentName = model->name();
+            else
+                fullParentName = model->name()+"."+parentName;
+
+            fullName = fullParentName+"."+newEIGroup->name(EI::SHORT);
+
+            // add new EIGroup
+            listEIItems.addItem(newEIGroup);
+            mapFullNames.insert(fullName,newEIGroup);
+            mapFullParentNames.insert(fullParentName,newEIGroup);
+        }
+        else
+            delete newEIGroup;
+    }
 
     //Streams
     tmpModEI =  modReader->findCompOfClassInDescendants(model,EILinguist::getModelicaClassType(EI::STREAM));
     EIStream* newEIStream;
-    bool ok;
+
     for(int i=0;i<tmpModEI.size();i++)
     {
-        newEIStream = ModEIConverter::modClassToEIStream(tmpModEI.at(i),rootEI,moomc,ok);
+        newEIStream = ModEIConverter::modClassToEIStream(tmpModEI.at(i),tmpParent,moomc,ok,parentName);
         if(ok)
-            rootEI->addChild(newEIStream);
+        {
+            // get fullname and fullparentname
+            if(parentName.isEmpty())
+                fullParentName = model->name();
+        else
+                fullParentName = model->name()+"."+parentName;
+
+            fullName = fullParentName+"."+newEIStream->name(EI::SHORT);
+
+            // add new EIGroup
+            listEIItems.addItem(newEIStream);
+            mapFullNames.insert(fullName,newEIStream);
+            mapFullParentNames.insert(fullParentName,newEIStream);
+        }
         else
             delete newEIStream;
+
     }
 
+    // add all items
+    EIItem* parentItem;
+    EIItem* curItem;
+    for(int i=0;i<listEIItems.items.size();i++)
+    {
+        curItem = listEIItems.items.at(i);
+        parentItem = mapFullNames.value(mapFullParentNames.key(curItem),NULL);
 
-//    //Groups
-//    tmpModEI =  modReader->findCompOfClassInDescendants(model,EILinguist::getModelicaClassType(EI::GROUP));
-//    EIGroup* newEIGroup;
-//    for(int i=0;i<tmpModEI.size();i++)
-//    {
-//        newEIStream = ModEIConverter::modClassToEIStream(model,parent,moomc,ok);
-//        if(ok)
-//            allEIItems.push_back(newEIGroup);
-//        else
-//            delete newEIGroup;
-//    }
+        if(!parentItem)
+        {
+            if(curItem!=rootEI)
+            {
+                //ERROR
+                QString msg;
+                msg.sprintf("Error reading eiitem %s : could not find parent. Item will not be considered",listEIItems.items.at(i)->name(EI::SHORT).toLatin1().data());
+                infoSender.send(Info(msg,ListInfo::WARNING2));
+            }
+        }
+        else
+        {
+            parentItem->addChild(curItem);
+        }
+    }
+
 
     return rootEI;
 }

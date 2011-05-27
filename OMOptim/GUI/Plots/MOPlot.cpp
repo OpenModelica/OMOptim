@@ -47,9 +47,9 @@ bool MOPlot::zoomIsOn()
 	return (zoomer1->isEnabled());
 }
 
-void MOPlot::enableZoom()
+void MOPlot::enableZoom(bool checked)
 {
-	setEnabledZoom(true);
+        setEnabledZoom(checked);
 }
 void MOPlot::setEnabledZoom(bool on)
 {

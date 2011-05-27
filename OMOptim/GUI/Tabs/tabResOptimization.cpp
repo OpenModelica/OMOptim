@@ -51,7 +51,6 @@ namespace Ui
 TabResOptimization::TabResOptimization(Project *project_,Optimization *problem_, QWidget *parent) :
 MO2ColTab(project_->name(),problem_,false,parent)
 {
-	type = TABSOLVEDPROBLEM;
         QMainWindow::setDockNestingEnabled(true);
         QMainWindow::setCorner(Qt::TopLeftCorner,Qt::LeftDockWidgetArea);
 	project = project_;
@@ -102,13 +101,17 @@ MO2ColTab(project_->name(),problem_,false,parent)
         // refresh shown points
          widgetMooPointsList->setOnlyPareto(widgetMooPointsList->_ui->pushPareto->isChecked());
 
+        // raise pareto
+         widgetMooPlot->raise();
+
          // restore position
          readGUIState();
+
 }
 
 TabResOptimization::~TabResOptimization()
 {
-    int a=2;
+
 }
 
 

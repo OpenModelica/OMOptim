@@ -44,11 +44,9 @@
 #endif
 
 
-SimpleMilpTarget::SimpleMilpTarget(EIItem* _rootEI,EIReader *_eiReader,
-								   MOOptVector *_variables,QString _modFilePath, QString _dataFilePath)
+SimpleMilpTarget::SimpleMilpTarget(EITree* _eiTree,MOOptVector *_variables,QString _modFilePath, QString _dataFilePath)
 {
-	rootEI = _rootEI;
-	eiReader = _eiReader;
+        eiTree = _eiTree ;
 	variables = _variables;
 	modFilePath =  _modFilePath;
 	dataFilePath = _dataFilePath;
@@ -74,8 +72,8 @@ EITargetResult* SimpleMilpTarget::launch()
 	QMap<EIGroupFact*,EIGroupFact*> factsRelation; // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
 	QMap<EIGroupFact*,EIGroup*> factGroupMap;
 
-	EITools::getTkQpkQuk(eiReader,variables,
-		rootEI,Tk,
+        EITools::getTkQpkQuk(variables,
+                eiTree->rootElement(),Tk,
 		eiProcessStreams,Qpk,
 		eiUtilityStreams,Quk,
 		factStreamMap,
@@ -89,8 +87,10 @@ EITargetResult* SimpleMilpTarget::launch()
 	//data
 	QFileInfo dataInfo(dataFilePath);
 	QString resFilePath = dataInfo.absolutePath() + QDir::separator() + "MILPResult.txt";
+        QString logFilePath = dataInfo.absolutePath() + QDir::separator() + "MILPLog.txt";
 
-	glp_prob* glpProblem = launchGLPK(resFilePath);
+
+        glp_prob* glpProblem = launchGLPK(resFilePath,logFilePath);
 	EITargetResult* result;
 	if(!glpProblem)
 	{
@@ -259,7 +259,7 @@ void SimpleMilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk
 	file.close();
 }
 
-glp_prob* SimpleMilpTarget::launchGLPK(QString resFilePath)
+glp_prob* SimpleMilpTarget::launchGLPK(QString resFilePath,QString logFilePath)
 {
 
 	//delete result file
@@ -355,8 +355,7 @@ EITargetResult* SimpleMilpTarget::readResult(glp_prob * glpProblem)
 
 	// clone rootEI
 	EITargetResult* result = new EITargetResult();
-	delete result->_rootEI;
-	result->_rootEI = rootEI->clone();
+        result->setEITree(new EITree(*eiTree));
 
 	// read if successfull
 	int status = glp_get_status(glpProblem);
@@ -398,24 +397,26 @@ EITargetResult* SimpleMilpTarget::readResult(glp_prob * glpProblem)
 	}
 
 	EIItem* curGroup;
+
 	for(int i=0;i<mapGroupFacMul.keys().size();i++)
 	{
 		groupName = mapGroupFacMul.keys().at(i);
-		curGroup = eiReader->findInDescendants(rootEI,groupName);
+                curGroup = eiTree->findItem(groupName);
 		if(curGroup)
 		{
-			dynamic_cast<EIGroup*>(curGroup)->getFact()->value=mapGroupFacMul.value(groupName);
+                    value = mapGroupFacMul.value(groupName);
+                        dynamic_cast<EIGroup*>(curGroup)->getFact()->value=value;
+                        if(value==0)
+                            dynamic_cast<EIGroup*>(curGroup)->setChecked(false);
 		}
 	}
 
 
 	// read TotalCost
-
-
 	return result;
 }
 //
-//void SimpleMilpTarget::RootEIToTargetMilp(EIItem* rootEI,EIReader *eiReader,MOOptVector *variables)
+//void SimpleMilpTarget::RootEIToTargetMilp(EIItem* rootEI,MOOptVector *variables)
 //{
 //
 //	// get temperature intervals, flows, factors...
@@ -428,7 +429,7 @@ EITargetResult* SimpleMilpTarget::readResult(glp_prob * glpProblem)
 //	QMap<EIGroupFact*,EIGroupFact*> factsRelation; // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
 //	QMap<EIGroupFact*,EIGroup*> factGroupMap;
 //
-//	EITools::getTkQpkQuk(eiReader,variables,
+//	EITools::getTkQpkQuk(variables,
 //		rootEI,Tk,
 //		eiProcessStreams,Qpk,
 //		eiUtilityStreams,Quk,

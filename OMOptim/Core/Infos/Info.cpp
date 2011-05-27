@@ -86,7 +86,6 @@ Info::Info(ListInfo::InfoNum infoNum_)
 	}
 	catch(std::exception &e)
 	{
-		int a=2;
 	}
 };
 
@@ -125,7 +124,6 @@ Info::Info(ListInfo::InfoNum infoNum_, QString strSupp)
 	}
 	catch(std::exception &e)
 	{
-		int a=2;
 	}
 }
 
@@ -163,7 +161,6 @@ Info::Info(ListInfo::InfoNum infoNum_, QString strSupp1, QString strSupp2)
 	}
 	catch(std::exception &e)
 	{
-		int a=2;
 	}
 }
 

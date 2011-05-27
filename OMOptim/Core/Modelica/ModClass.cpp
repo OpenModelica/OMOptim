@@ -60,6 +60,7 @@ ModClass::ModClass(MOomc* moomc,ModClass* parent,QString name,QString filePath =
 
 ModClass::~ModClass(void)
 {
+    emit deleted();
 	clearDescendants();
 }
 

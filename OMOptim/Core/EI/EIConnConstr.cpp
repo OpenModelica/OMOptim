@@ -1,9 +1,8 @@
 #include "EIConnConstr.h"
 
-EIConnConstr::EIConnConstr(EIItem* _rootEI, EIReader * _eiReader)
+EIConnConstr::EIConnConstr(EITree* _eiTree)
 {
-	rootEI = _rootEI;
-	eiReader = _eiReader;
+        eiTree = _eiTree;
 	a=NULL;
 	b=NULL;
 	type = FORBIDDEN;
@@ -15,10 +14,9 @@ EIConnConstr::~EIConnConstr(void)
 {
 }
 
-EIConnConstr::EIConnConstr(QDomElement & domEl, EIItem* _rootEI, EIReader * _eiReader)
+EIConnConstr::EIConnConstr(QDomElement & domEl, EITree* _eiTree)
 {
-	rootEI = _rootEI;
-	eiReader = _eiReader;
+        eiTree = _eiTree;
 
 	QDomNamedNodeMap attributes = domEl.attributes();
 	QString fieldName;
@@ -91,10 +89,10 @@ bool EIConnConstr::setFieldValue(int field,QVariant value)
 	switch(field)
 	{
 	case ITEMA :
-		a = eiReader->findInDescendants(rootEI,value.toString());
+                a = eiTree->findItem(value.toString());
 		return a;
 	case ITEMB :
-		b = eiReader->findInDescendants(rootEI,value.toString());
+                b = eiTree->findItem(value.toString());
 		return b;
 	case TYPE :
 		type = (Type)value.toInt();
@@ -105,7 +103,7 @@ bool EIConnConstr::setFieldValue(int field,QVariant value)
 
 EIConnConstr* EIConnConstr::clone()
 {
-	EIConnConstr* cloned = new EIConnConstr(rootEI,eiReader);
+        EIConnConstr* cloned = new EIConnConstr(eiTree);
 	cloned->a = a;
 	cloned->b = b;
 	cloned->type = type;
@@ -119,19 +117,19 @@ bool EIConnConstr::isValid()
 }
 
 
-QMultiMap<EIStream*,EIStream*> EIConnConstr::getMapStreams(EIReader* eiReader,MOOptVector *variables)
+QMultiMap<EIStream*,EIStream*> EIConnConstr::getMapStreams(MOOptVector *variables)
 {
 	QList<EIStream*> aStreams;
 	QList<EIStream*> bStreams;
 	if(a->getEIType()==EI::STREAM)
 		aStreams.push_back((EIStream*)a);
 	else
-		aStreams.append(eiReader->getStreams(a));
+		aStreams.append(EIReader::getStreams(a));
 
 	if(b->getEIType()==EI::STREAM)
 		bStreams.push_back((EIStream*)b);
 	else
-		bStreams.append(eiReader->getStreams(b));
+		bStreams.append(EIReader::getStreams(b));
 
 	QMultiMap<EIStream*,EIStream*> result;
 

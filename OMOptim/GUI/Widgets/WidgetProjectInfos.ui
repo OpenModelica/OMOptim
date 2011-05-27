@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TabProjectInfos_Class</class>
- <widget class="QWidget" name="TabProjectInfos_Class">
+ <class>WidgetProjectInfos_Class</class>
+ <widget class="QWidget" name="WidgetProjectInfos_Class">
   <property name="geometry">
    <rect>
     <x>0</x>

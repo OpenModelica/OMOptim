@@ -48,13 +48,8 @@ ModPlusOMCtrl::ModPlusOMCtrl(ModModelPlus* model,MOomc* moomc,QString mmoFolder,
 
 	_initFile = _modModelName+"_init.txt";
 	_resFile = _modModelName+"_res.csv";
+	_exeFile = _modModelName+".exe";
 
-        // Adeel :: on linux the executables doesn't have .exe postfix :)
-#ifdef WIN32
-        _exeFile = _modModelName+".exe";
-#else /* unix */
-        _exeFile = _modModelName;
-#endif
 	_copyAllMoOfFolder = true;
 
 	_parameters = new MOVector<ModModelParameter>();
@@ -117,6 +112,8 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
 bool ModPlusOMCtrl::compile()
 {
 
+        infoSender.send(Info("Compiling model "+_modModelName,ListInfo::NORMAL2));
+
 	// compile
 	bool success = OpenModelica::compile(_moomc,_moFilePath,_modModelName,_mmoFolder);
 
@@ -151,7 +148,7 @@ bool ModPlusOMCtrl::isCompiled()
 }
 
 
-bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars)
+bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy)
 {
 	// eventually compile model
 	if(!isCompiled())
@@ -165,17 +162,23 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
 	modelTempDir.mkdir(tempFolder);
 
 	// copy files in temp dir (#TODO : optimize with a config.updateTempDir in case of several consecutive launches)
-	QStringList filesToCopy;
-	filesToCopy << _initFile << _exeFile;
-	QDir tempDir = QDir(tempFolder);
+        QStringList allFilesToCopy;
 	QDir mmoDir = QDir(_mmoFolder);
+        allFilesToCopy << mmoDir.filePath(_initFile) << mmoDir.filePath(_exeFile);
+        allFilesToCopy.append(filesToCopy);
 
-	for(int i=0; i< filesToCopy.size();i++)
+        QDir tempDir = QDir(tempFolder);
+        QFileInfo fileToCopyInfo;
+        QFile fileToCopy;
+
+        for(int i=0; i< allFilesToCopy.size();i++)
 	{
-		QFile copiedFile(mmoDir.filePath(filesToCopy.at(i)));
-		tempDir.remove(filesToCopy.at(i));
-		copiedFile.copy(tempDir.filePath(filesToCopy.at(i)));
+            fileToCopy.setFileName(allFilesToCopy.at(i));
+            fileToCopyInfo.setFile(fileToCopy);
+            tempDir.remove(fileToCopyInfo.fileName());
+            fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
 	}
+	
 	
 	// remove previous log files
 	QStringList filesToRemove;
@@ -191,6 +194,8 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
 	// Specifying new Variables values in dymosim input file
 	OpenModelica::setInputVariables(tempInitFile,inputVars,_modModelName,parameters());
 
+        // Info
+        infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));
 	// Launching Dymosim
 	OpenModelica::start(tempExeFile);
 

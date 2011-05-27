@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,64 +29,60 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ProblemTarget.h
- 	@brief File concerning ProblemTarget class
+ 	@file EIModelContainer.h
+ 	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
  	@version 0.9 
 
   */
+#ifndef _EIModelContainer_H
+#define _EIModelContainer_H
 
-#ifndef PROBLEMTARGET_H
-#define PROBLEMTARGET_H
+#include "EIItem.h"
 
-#include "ProblemEI.h"
-#include "MilpTarget.h"
-#include "MERResult.h"
-#include "EIConnConstrs.h"
-#include "ModModelPlus.h"
-#include "EIValueFiller.h"
 
-/*
- * \brief Class for Target (Energy integration) problem. Target use GLPK for MILP optimization.
- */
-class ProblemTarget : public ProblemEI
+class EIModelContainer : public EIItem
 {
-		Q_OBJECT
+public :
+	enum Field
+	{
+		//Modelica fields
+		NAME,
+		CHECKED,
+		MODEL		
+	};
 
-public:
-        ProblemTarget(Project*,EIReader*,ModReader*,MOomc*);
-	ProblemTarget(const ProblemTarget &);
-	virtual ~ProblemTarget(void);
-	virtual QString getClassName(){return "ProblemTarget";};
+	static const int nbFields = 3;
+	virtual unsigned getNbFields(){return nbFields;};
 
-	void launch(ProblemConfig _config);
-	void launchMER(ProblemConfig _config,bool includeUtilities);
+	public:
+		EIModelContainer();
+                EIModelContainer(EIItem* parent,QString name,QString modelName);
+		EIModelContainer(const EIModelContainer &);
+		EIModelContainer(QDomElement &);
+		~EIModelContainer(void);
 
+		EIItem* clone();
 
-	QDomElement toXMLData(QDomDocument & doc);
-	bool checkBeforeComp(QString & error);
+		virtual QString getClassName(){return "EIModelContainer";};
+		virtual EI::Type getEIType(){return EI::MODELCONTAINER;};
 
+                QString model();
 
+		// access and edit functions
+		QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
+		bool setFieldValue(int iField, QVariant value);
+		static QString sFieldName(int field, int role);
+		QString getFieldName(int i, int role = Qt::DisplayRole){return EIModelContainer::sFieldName(i,role);};
 
-
-
-	MERResult* getMERResult();
-	EIConnConstrs* connConstrs();
-
-    private :
-             void fillReferencesValue(EIItem* filledEI,bool forceRecompute);
-
-
-
+		
 protected :
-
-	MERResult *_merResult;
-	EIConnConstrs *_connConstrs; // connnection constraints
-
-
+        QString _model;
 };
+
+
 
 
 #endif

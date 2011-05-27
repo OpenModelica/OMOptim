@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -57,26 +57,25 @@ Project::Project()
 	_rootModClass = new ModClass(_moomc);
 	_modReader = new ModReader(_moomc);
 
-#ifdef USEEI
-	_eiReader = new EIReader();
-#endif
+
 }
 
 Project::~Project()
 {
-	if(_rootModClass)
-		delete _rootModClass;
+
+    terminateOmsThreads();
 
 	delete _problems;
 	delete _solvedProblems;
 
-        terminateOmsThreads();
+
+    if(_rootModClass)
+        delete _rootModClass;
+
         delete _moomc;
         delete _modReader;
 
-#ifdef USEEI
-        delete _eiReader;
-#endif
+
 }
 
 QString Project::getFieldName(int iField, int role)
@@ -481,8 +480,8 @@ void Project::addNewProblem(Problem::ProblemType problemType, ModModel* modelCon
 		newProblem = new Optimization(this,_rootModClass,_modReader,_modPlusCtrl,modModelPlus);
 		break;
 #ifdef USEEI
-	case Problem::PROBLEMEI:
-                newProblem = new ProblemTarget(this,_eiReader,_modReader,_moomc);
+        case Problem::EIPROBLEM:
+                newProblem = new EITarget(this,_modReader,_moomc);
 		break;
 #endif
 
@@ -578,8 +577,8 @@ void Project::launchProblem(int num)
 			launchedProblem = new Optimization(*((Optimization*)curProblem));
 			break;
 #ifdef USEEI
-		case Problem::PROBLEMEI :
-			launchedProblem = new ProblemTarget(*((ProblemTarget*)curProblem));
+                case Problem::EIPROBLEM :
+			launchedProblem = new EITarget(*((EITarget*)curProblem));
 			break;
 #endif
 		}
@@ -621,7 +620,7 @@ void Project::onProblemFinished(Problem* launchedProblem)
 			emit infoSender.send( Info(ListInfo::OPTIMIZATIONFAILED));
 			break;
 #ifdef USEEI
-		case Problem::PROBLEMEI :
+                case Problem::EIPROBLEM :
 			emit infoSender.send( Info(ListInfo::PROBLEMEIFAILED));
 			break;
 #endif
@@ -638,7 +637,7 @@ void Project::onProblemFinished(Problem* launchedProblem)
 			emit infoSender.send( Info(ListInfo::OPTIMIZATIONSUCCESS));
 			break;
 #ifdef USEEI
-		case Problem::PROBLEMEI :
+                case Problem::EIPROBLEM :
 			emit infoSender.send( Info(ListInfo::PROBLEMEISUCCESS));
 			break;
 #endif
@@ -692,7 +691,7 @@ Problem* Project::restoreProblemFromSolvedOne(int numSolved)
 		restoredPb = new Optimization(*((Optimization*)solvedPb));
 		break;
 	}
-	restoredPb->clearResult();
+	restoredPb->deleteResult();
 
 	restoredPb->setName(restoredPb->name().replace(" result",""));
 	

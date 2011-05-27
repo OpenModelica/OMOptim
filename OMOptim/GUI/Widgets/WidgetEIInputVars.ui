@@ -14,28 +14,50 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="7" column="4" rowspan="4">
-    <widget class="QTableView" name="tableLoadedVariables">
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
+   <item row="0" column="0" rowspan="3">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>References</string>
      </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="2" column="0" rowspan="4">
+         <widget class="QListWidget" name="listReferences"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>References</string>
+          </property>
     </widget>
    </item>
-   <item row="9" column="3">
-    <widget class="QPushButton" name="pushClear">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>30</height>
-      </size>
+        <item row="2" column="1" rowspan="4">
+         <widget class="QListWidget" name="listReferencesModel"/>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Corresponding models</string>
      </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QPushButton" name="allReferences">
      <property name="text">
-      <string>Clear</string>
+           <string>allReferences</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="3">
-    <spacer name="verticalSpacer_4">
+        <item row="4" column="2">
+         <widget class="QPushButton" name="missingReferences">
+          <property name="text">
+           <string>missingReferences</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -47,8 +69,8 @@
      </property>
     </spacer>
    </item>
-   <item row="10" column="3">
-    <spacer name="verticalSpacer_5">
+        <item row="5" column="2">
+         <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -60,44 +82,25 @@
      </property>
     </spacer>
    </item>
-   <item row="15" column="1" colspan="4">
-    <layout class="QGridLayout" name="gridLayout_2">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
     </layout>
    </item>
-   <item row="6" column="4">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Filter : </string>
-       </property>
+     </layout>
       </widget>
      </item>
-     <item>
-      <widget class="QLineEdit" name="lineVariableFilter"/>
-     </item>
-    </layout>
-   </item>
-   <item row="8" column="3">
-    <widget class="QPushButton" name="pushLoadVariables">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>30</height>
-      </size>
+   <item row="5" column="0" rowspan="3">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Loading variables</string>
      </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Load</string>
+         <string>Available result variables</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" rowspan="5" colspan="3">
-    <widget class="QListWidget" name="listAvailableVectors"/>
-   </item>
-   <item row="5" column="1">
+      <item row="0" column="1">
     <widget class="QPushButton" name="pushRefreshList">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -114,46 +117,36 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Available result variables</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" rowspan="4" colspan="2">
-    <widget class="QListWidget" name="listReferences"/>
-   </item>
-   <item row="5" column="4">
+      <item row="0" column="2">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Loaded variables</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_4">
+      <item row="0" column="3">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label">
      <property name="text">
-      <string>References</string>
+           <string>Filter : </string>
      </property>
     </widget>
    </item>
-   <item row="2" column="3">
-    <widget class="QPushButton" name="allReferences">
-     <property name="text">
-      <string>allReferences</string>
+        <item>
+         <widget class="QLineEdit" name="lineVariableFilter"/>
+   </item>
+       </layout>
+      </item>
+      <item row="2" column="2" rowspan="4" colspan="2">
+       <widget class="QTableView" name="tableLoadedVariables">
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
      </property>
     </widget>
    </item>
-   <item row="3" column="3">
-    <widget class="QPushButton" name="missingReferences">
-     <property name="text">
-      <string>missingReferences</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="3">
-    <spacer name="verticalSpacer">
+      <item row="2" column="4">
+       <spacer name="verticalSpacer_4">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -165,8 +158,34 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="3">
-    <spacer name="verticalSpacer_2">
+      <item row="3" column="4">
+       <widget class="QPushButton" name="pushLoadVariables">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Load</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="4">
+       <widget class="QPushButton" name="pushClear">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Clear</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="4">
+       <spacer name="verticalSpacer_5">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -178,15 +197,11 @@
      </property>
     </spacer>
    </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Corresponding models</string>
-     </property>
+      <item row="2" column="0" rowspan="4" colspan="2">
+       <widget class="QListWidget" name="listAvailableVectors"/>
+      </item>
+     </layout>
     </widget>
-   </item>
-   <item row="1" column="2" rowspan="4">
-    <widget class="QListWidget" name="listReferencesModel"/>
    </item>
   </layout>
  </widget>

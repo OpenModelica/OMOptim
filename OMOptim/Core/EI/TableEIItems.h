@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -52,12 +52,11 @@ class TableEIItems : public QAbstractItemModel
 	Q_OBJECT
 
 public:
-	TableEIItems(EIItem *_rootElement,bool _editable,EIReader* _eiReader,EI::Type _filter,bool _recursive);
+        TableEIItems(EIItem *_rootElement,bool _editable,EI::Type _filter,bool _recursive);
 	~TableEIItems(void);
 
 private :
 	EIItem* rootElement;
-	EIReader* eiReader;
 	bool editable;
 	EI::Type filter;
 	bool recursive;

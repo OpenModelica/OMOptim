@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -79,6 +79,13 @@ public:
 	static void removeDuplicates(QVector<double> & vector);
 	static void removeWhiteSpaceStrings(QStringList &list);
 
+//        template < class T>
+//        static void removeDuplicates(QList<T> &list)
+//        {
+//            list.iterator iter = std::unique(list.begin(),list.end());
+//            list.erase(iter,list.end());
+//        };
+
 	static QString getValueFromElementInfo(QString elementInfoLine,QString fieldName);
 
 	static int round(double);
@@ -90,6 +97,7 @@ public:
 	static double gaussRandom(double average,double dev);
 
 };
+
 
 
 

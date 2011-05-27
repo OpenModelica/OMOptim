@@ -62,7 +62,7 @@ class WidgetTableEIGroups : public QWidget {
 
 
 public:
-	explicit WidgetTableEIGroups(EIItem* _rootEI,bool _editable,EIReader* _eiReader,QWidget *parent = 0);
+        explicit WidgetTableEIGroups(EIItem* _rootEI,bool _editable,QWidget *parent = 0);
     virtual ~WidgetTableEIGroups();
 
 	public slots:
@@ -74,7 +74,6 @@ public:
 	
 	MOTableView* tableView;
 	EIItem* rootEI;
-	EIReader* eiReader;
 	
 	bool editable;
 

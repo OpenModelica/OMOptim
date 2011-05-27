@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
 @file ModPlusDymolaCtrl.h
 @brief Comments for file documentation.
@@ -45,7 +45,7 @@ public:
 	bool compile();
 	
 	// Simulate function
-	bool simulate(QString tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars);
+        bool simulate(QString tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy=QStringList());
 
 
 private:

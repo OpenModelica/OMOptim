@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -156,7 +156,7 @@ void Save::saveProblem(Problem* problem)
 {
 	// Root element
 	QDomDocument doc("MOProblem");
-	QDomElement root = problem->toXMLData(doc);
+	QDomElement root = problem->toXmlData(doc);
 	doc.appendChild(root);
 
 	// Writing to file
@@ -184,7 +184,7 @@ void Save::saveSolvedProblem(Problem* problem)
 	switch (problem->type())
 	{
 	case Problem::ONESIMULATION:
-	case Problem::PROBLEMEI:
+        case Problem::EIPROBLEM:
 		saveSolvedProblem(problem,true);
 		break;
 	case Problem::OPTIMIZATION:
@@ -200,13 +200,13 @@ void Save::saveSolvedProblem(Problem* problem,bool)
 	//***********************
 	// Problem definition
 	//***********************
-	QDomElement problemRoot = problem->toXMLData(doc);
+	QDomElement problemRoot = problem->toXmlData(doc);
 	doc.appendChild(problemRoot);
 
 	//*********************
 	// Result definition
 	//*********************
-	QDomElement resultRoot = problem->result()->toXMLData(doc);
+	QDomElement resultRoot = problem->result()->toXmlData(doc);
 	problemRoot.appendChild(resultRoot);
 
 	// Writing to file
@@ -236,13 +236,13 @@ void Save::saveSolvedProblem(Optimization* problem)
 	//***********************
 	// Problem definition
 	//***********************
-	QDomElement problemRoot = problem->toXMLData(doc);
+	QDomElement problemRoot = problem->toXmlData(doc);
 	doc.appendChild(problemRoot);
 
 	//*********************
 	// Result definition
 	//*********************
-	QDomElement resultRoot = problem->result()->toXMLData(doc);
+	QDomElement resultRoot = problem->result()->toXmlData(doc);
 	problemRoot.appendChild(resultRoot);
 
 	// Writing to file

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -57,8 +57,14 @@ public:
 	};
 
 	QString unit(int iUnit)  const;
+        QString unit()  const; //should'nt be (should be inherited) but error in compiler otherwise
 	unsigned nbUnits() const;
 	double convert(double value,int orgUnit,int dstUnit) const;
+
+        MEQflow operator-(const MEQflow& b) const;
+        MEQflow operator+(const MEQflow& b) const;
+        MEQflow operator*(const double& fact) const;
+        bool operator==(const MEQflow& b) const;
 };
 
 

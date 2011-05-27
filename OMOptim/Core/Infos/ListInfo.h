@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -100,7 +100,7 @@ namespace ListInfo{
 		SUBMODELNOTADDED,
 		SUBMODELADDED,
 
-		//Problem::PROBLEMEI,
+		//Problem::EIPROBLEM,
 		PROBLEMEIFAILED,
 		PROBLEMEISUCCESS,
 
@@ -186,7 +186,7 @@ namespace ListInfo{
 		{SUBMODELNOTADDED, "Impossible to add submodel %s in optimization",WARNING2},
 		{SUBMODELNOTADDED, "Submodel %s added in optimization",NORMAL2},
 
-		//Problem::PROBLEMEI
+		//Problem::EIPROBLEM
 		{PROBLEMEIFAILED, "Problem EI has failed",ERROR2},
 		{PROBLEMEISUCCESS, "Problem EI has run successfully",NORMAL2},
 

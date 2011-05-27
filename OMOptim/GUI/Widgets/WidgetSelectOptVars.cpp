@@ -101,6 +101,14 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,QWidget *parent):
 	GenericDelegate *scanFunctionDelegate = new GenericDelegate(values,titles,this);
 	_ui->tableObjectives->setItemDelegateForColumn(OptObjective::SCANFUNCTION,scanFunctionDelegate);
 	
+        values.clear();
+        titles.clear();
+        values << OMREAL << OMINTEGER << OMBOOLEAN << OMSTRING ;
+        titles << "Real" << "Integer" << "Boolean" << "String";
+        GenericDelegate *dataTypeDelegate = new GenericDelegate(values,titles,this);
+        _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::DATATYPE,dataTypeDelegate);
+
+
 	//buttons
 	connect(_ui->pushAddVariables, SIGNAL(clicked()), this, SLOT(addOptVariables()));
 	connect(_ui->pushRemoveVariables, SIGNAL(clicked()), this, SLOT(deleteOptVariables()));
@@ -108,6 +116,14 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,QWidget *parent):
 	connect(_ui->pushRemoveObjectives, SIGNAL(clicked()), this, SLOT(deleteOptObjectives()));
 	connect(_ui->pushAddScanned, SIGNAL(clicked()), this, SLOT(addScannedVariables()));
 	connect(_ui->pushRemoveScanned, SIGNAL(clicked()), this, SLOT(deleteScannedVariables()));
+        connect(_ui->pushReadVariables,SIGNAL(clicked()),this,SLOT(readVariables()));
+
+
+        //size tables' columns
+        _ui->tableScannedVariables->resizeColumnsToContents();
+        _ui->tableOptimizedVariables->resizeColumnsToContents();
+        _ui->tableObjectives->resizeColumnsToContents();
+        _ui->tableVariables->resizeColumnsToContents();
 
 }
 
@@ -141,7 +157,7 @@ void WidgetSelectOptVars::addOptVariables()
 		}
 	}
 
-	//_ui->tableOptimizedVariables->resizeColumnsToContents();
+        _ui->tableOptimizedVariables->resizeColumnsToContents();
 }
 
 void WidgetSelectOptVars::deleteOptVariables()
@@ -156,6 +172,8 @@ void WidgetSelectOptVars::deleteOptVariables()
 		rows.push_back(curSourceIndex.row());
 	}
 	_problem->optimizedVariables()->removeRows(rows);
+
+        _ui->tableOptimizedVariables->resizeColumnsToContents();
 
 }
 
@@ -182,7 +200,7 @@ void WidgetSelectOptVars::addScannedVariables()
 		}
 	}
 
-	//_ui->tableOptimizedVariables->resizeColumnsToContents();
+        _ui->tableScannedVariables->resizeColumnsToContents();
 }
 
 void WidgetSelectOptVars::deleteScannedVariables()
@@ -197,6 +215,8 @@ void WidgetSelectOptVars::deleteScannedVariables()
 		rows.push_back(curSourceIndex.row());
 	}
 	_problem->scannedVariables()->removeRows(rows);
+
+        _ui->tableScannedVariables->resizeColumnsToContents();
 }
 
 
@@ -223,7 +243,6 @@ void WidgetSelectOptVars::addOptObjectives()
 			_problem->objectives()->addItem(newObj);
 		}
 	}
-
 	_ui->tableObjectives->resizeColumnsToContents();	
 }
 
@@ -236,6 +255,7 @@ void WidgetSelectOptVars::deleteOptObjectives()
 		rows.push_back(tableIndexes.at(i).row());
 	}
 	_problem->objectives()->removeRows(rows);
+        _ui->tableObjectives->resizeColumnsToContents();
 }
 
 
@@ -280,3 +300,7 @@ void WidgetSelectOptVars::actualizeGui()
 }
 
 
+void WidgetSelectOptVars::readVariables()
+{
+    _problem->modModelPlus()->readVariables();
+}

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -56,32 +56,37 @@ public:
 	EIReader();
 
 	//Copy functions
-	bool copy(EIItem* org,EIItem* dest);
+        static bool copy(EIItem* org,EIItem* dest);
 
 	// Read functions
-	bool isInDescendants(EIItem* parent, QString fullName);
-	EIItem* findInDescendants(EIItem* parent,QString fullName);
+        static bool isInDescendants(EIItem* parent, QString fullName);
+	
+        static EIItem* findInDescendants(EIItem* parent,QString fullName);
+        static EIItem* findInDescendants(EIItem* parent, EI::Type eiType, QVariant itemFieldValue, int iField);
 	
 	// Extract functions
-	QList<EIStream*> getStreams(EIItem* parent);
-	QList<EIItem*> getItems(EIItem* parent,bool recursive,EI::Type filter = EI::GENERIC);
+        static QList<EIStream*> getStreams(EIItem* parent);
+        static QList<EIItem*> getItems(EIItem* parent,bool recursive,EI::Type filter = EI::GENERIC);
 
-	QList<EIStream*> getValidStreams(EIItem*parent,MOOptVector *variables,bool onlyChecked);
-	QStringList getAllItemNames(EIItem* item,EI::Type filter = EI::GENERIC);
+        static QList<EIStream*> getValidStreams(EIItem*parent,MOOptVector *variables,bool onlyChecked);
+        static QStringList getAllItemNames(EIItem* item,EI::Type filter = EI::GENERIC);
 	// Analyse functions
-	void getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables);
+        static void getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables);
 	
-	//Edit functions
-	void addEmptyStream(EIItem* parent);
-	void addEmptyGroup(EIItem* parent);
-	void removeItem(EIItem*);
 
 	// Mult fact
-	void getFirstGroupFact(EIItem*,EIGroupFact* &,EIGroup* &);
+        static void getFirstParentGroupFact(EIItem*,EIGroupFact* &,EIGroup* &);
+
+        // Streams filter and sort functions
+        static QList<EIStream*> getStreamsAboveT(METemperature T,QList<EIStream*> allStreams,MOOptVector* variables);
+        static QList<EIStream*> getStreamsBelowT(METemperature T,QList<EIStream*> allStreams,MOOptVector* variables);
+        static void sortByCp(QList<EIStream*> & allStreams,Qt::SortOrder);
+
+private:
+        static bool CpLowerThan(const EIStream* s1, const EIStream* s2); //comparator used for sorting
+        static bool CpGreaterThan(const EIStream* s1, const EIStream* s2); //comparator used for sorting
 
 
-	//XML functions
-	void setItems(QDomElement & domEl,EIItem* rootEI);
 
 };
 

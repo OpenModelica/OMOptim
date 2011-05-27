@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -44,8 +44,9 @@
 #include <QtGui/QWidget>
 #include<QtGui/QFileDialog>
 
+#include "MyTreeView.h"
 #include "MyDelegates.h"
-#include "TreeEIStreams.h"
+#include "EITree.h"
 #include "MOTableView.h"
 #include "GuiTools.h"
 #include "WidgetEIGroup.h"
@@ -53,6 +54,7 @@
 #include "ModReader.h"
 #include "ModClass.h"
 #include "EIModelExtractor.h"
+
 
 namespace Ui {
     class WidgetTreeStreamsClass;
@@ -67,12 +69,12 @@ class WidgetTreeStreams : public QWidget {
 
 
 public:
-        explicit WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _editable,EIReader* _eiReader,
+        explicit WidgetTreeStreams(EITree* _eiTree,bool _showFields,bool _editable,
                                    ModReader* _modReader,ModClass* _rootModClass,MOomc* _moomc,MOOptVector *_variables=NULL,QWidget *parent = 0);
     virtual ~WidgetTreeStreams();
 
 	void setInputVars(MOOptVector*);
-	EIItem* getGroupParent(QModelIndex index);
+        EIItem* getContainer(QModelIndex index);
 
 	void onSelectGroupChanged(EIGroup*);
 
@@ -82,23 +84,21 @@ public:
 		void updateCompleters();
 		void removeItem();
 		void refreshTree();
-		void onMERAsked();
 		void onSelectItemChanged(QModelIndex);
+                void resizeColumns();
 		
          signals:
                 void EILoadModelAsked();
 		
 public:
     Ui::WidgetTreeStreamsClass *ui;
-	TreeEIStreams* treeEIStreams;
+	EITree* eiTree;
 	//QSortFilterProxyModel *streamsProxyModel;
 
         MOomc* moomc;
         ModReader* modReader;
         ModClass* rootModClass;
-	QTreeView* treeView;
-	EIItem* rootEI;
-	EIReader* eiReader;
+        MyTreeView* treeView;
 	MOOptVector *variables;
 	VarCompleterDelegate *compltDlg1;
 	VarCompleterDelegate *compltDlg2;
@@ -109,10 +109,6 @@ public:
 	GenericDelegate *tinUDlg;
 	GenericDelegate *toutUDlg;
 	GenericDelegate *qUDlg;
-
-signals :
-	void targetAsked();
-	void MERAsked(bool);
 
 private :
 	bool showFields;

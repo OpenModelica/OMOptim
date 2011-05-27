@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -81,7 +81,7 @@ OneSimulation::OneSimulation(const OneSimulation &oneSim)
 {
 	_modModelPlus = oneSim._modModelPlus;
 	_neededFiles = oneSim._neededFiles;
-	_filesToCopyNames = oneSim._filesToCopyNames;
+        _filesToCopy = oneSim._filesToCopy;
 
         _overwritedVariables = oneSim._overwritedVariables->clone();
         _scannedVariables = oneSim._scannedVariables->clone();
@@ -96,7 +96,7 @@ OneSimulation::~OneSimulation(void)
 	delete _overwritedVariables;
 	delete _scannedVariables;
 
-        clearResult();
+        deleteResult();
 }
 
 
@@ -156,7 +156,7 @@ void OneSimulation::launch(ProblemConfig config){
 		VariablesManip::updateScanValues(&updatedVariables,_scannedVariables,indexes);
 		// Simulate
 		curVariables.clear();
-		simSuccess = simSuccess && _modModelPlus->ctrl()->simulate(config.tempDir, &updatedVariables, &curVariables);
+                simSuccess = simSuccess && _modModelPlus->ctrl()->simulate(config.tempDir, &updatedVariables, &curVariables,_filesToCopy);
 
 		if(simSuccess)
 		{
@@ -266,7 +266,7 @@ void OneSimulation::store(QString destFolder, QString tempDir)
 	Problem::store(destFolder,tempDir);
 }
 
-QDomElement OneSimulation::toXMLData(QDomDocument & doc)
+QDomElement OneSimulation::toXmlData(QDomDocument & doc)
 {
 	QDomElement cProblem = doc.createElement(getClassName());
 
@@ -286,6 +286,12 @@ QDomElement OneSimulation::toXMLData(QDomDocument & doc)
 		// Scanned Variables
 	QDomElement cScanVars = _scannedVariables->toXmlData(doc,"ScannedVariables");
 	cProblem.appendChild(cScanVars);
+
+        // Files to copy
+        QDomElement cFilesToCopy = doc.createElement("FilesToCopy");
+        QDomText cFiles = doc.createTextNode(_filesToCopy.join("\n"));
+        cFilesToCopy.appendChild(cFiles);
+        cProblem.appendChild(cFilesToCopy);
 
 	return cProblem;
 }

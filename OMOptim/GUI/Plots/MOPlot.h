@@ -113,7 +113,7 @@ public slots:
 	void setEnabledZoom(bool on);
 	void zoomOut();
 	bool zoomIsOn();
-	void enableZoom();
+        void enableZoom(bool checked);
 
 	// Data picker
 

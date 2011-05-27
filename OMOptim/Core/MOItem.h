@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -81,7 +81,7 @@ public:
 	MOItem(const MOItem &);
 	MOItem(QDomElement & domEl);
 
-	~MOItem(void);
+        virtual ~MOItem(void);
 
 	virtual void update(QDomElement & domEl);
 	// Constructor from saved string

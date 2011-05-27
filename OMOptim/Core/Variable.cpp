@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -127,7 +127,7 @@ void Variable::setDataType(int dataType)
 
 QVariant Variable::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{
@@ -557,7 +557,10 @@ OptVariable::~OptVariable()
 {
 }
 
-
+/**
+* This function is used to check if an OptVariable is correctly filled.
+* @sa MOItem::check()
+*/
 bool OptVariable::check(QString &error)
 {
 	bool ok=true;
@@ -587,19 +590,13 @@ OptVariable::OptVariable(const OptVariable & var):Variable(var)
 {
 	_optMin = var._optMin;
 	_optMax = var._optMax;
-
-        /* Adeel :: Add these values to the _filledFields vector otherwise getFieldValue returns empty QVariant
-           and then eoRealInterval throws exception throw std::logic_error("Void range in eoRealBounds");
-         */
-        _filledFields.push_back(OPTMIN);
-        _filledFields.push_back(OPTMAX);
 }
 
 
 void OptVariable::initOptExtremum()
 {
-	_optMin = -std::numeric_limits<double>::infinity();
-	_optMax = std::numeric_limits<double>::infinity();
+        _optMin = -std::numeric_limits<double>::max();
+        _optMax = std::numeric_limits<double>::max();
 
 	/*if(min < -std::numeric_limits<double>::max())
 	optMin = -std::numeric_limits<double>::max();
@@ -617,7 +614,7 @@ void OptVariable::initOptExtremum()
 
 QVariant OptVariable::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{
@@ -640,8 +637,14 @@ QVariant OptVariable::getFieldValue(int ifield, int role) const
 		case DATATYPE :
 			return _dataType;
 		case OPTMIN :
+                        if((role == Qt::DisplayRole)&&(_optMin==-std::numeric_limits<double>::max()))
+                                return "-";
+                        else
 			return _optMin;
 		case OPTMAX :
+                        if((role == Qt::DisplayRole)&&(_optMax==std::numeric_limits<double>::max()))
+                                return "-";
+                        else
 			return _optMax;
 		default :
 			return "unknown field";
@@ -779,6 +782,10 @@ ScannedVariable::ScannedVariable(const Variable & var):Variable(var)
 	_editableFields << ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP ;
 }
 
+/**
+* This function is used to check if an ScannedVariable is correctly filled.
+* @sa MOItem::check()
+*/
 bool ScannedVariable::check(QString &error)
 {
 	bool ok=true;
@@ -829,7 +836,7 @@ int ScannedVariable::nbScans()
 
 QVariant ScannedVariable::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{
@@ -1157,7 +1164,7 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
 //
 //QVariant FuzzyVariable::getFieldValue(int ifield, int role) const
 //{
-//	if (!_filledFields.contains(ifield))
+//	 if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 //		return QString("-");
 //	else
 //	{

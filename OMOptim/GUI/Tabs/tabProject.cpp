@@ -51,8 +51,6 @@ namespace Ui
 TabProject::TabProject(Project *project_, QWidget *parent) :
 MOTabSimple(project_->name(),project_),ui(new Ui::TabProject_Class)
 {
-	type = TABPROJECT;
-
 	ui->setupUi(this);
 
 	project = project_;
@@ -64,14 +62,14 @@ MOTabSimple(project_->name(),project_),ui(new Ui::TabProject_Class)
 	//ui->comboDisp->addItems(viewList);
 
 	// View widgets
-	tabInfos = new TabProjectInfos(project);
-	ui->myLayout->addWidget(tabInfos);
+        widgetInfos = new WidgetProjectInfos(project);
+        ui->myLayout->addWidget(widgetInfos);
 	//tabVariables = new TabModelVariables(project);
 	//ui->myLayout->addWidget(tabVariables);
 	//tabComponents = new TabModelComponents(project);
 	//ui->myLayout->addWidget(tabComponents);
 
-	tabInfos->show();
+        widgetInfos->show();
 	//tabVariables->hide();
 	//tabComponents->hide();
 
@@ -91,33 +89,5 @@ TabProject::~TabProject()
 
 void TabProject::actualizeGuiFromProject()
 {
-	tabInfos->actualizeGuiFromProject();
-	/*tabVariables->actualizeGuiFromProject();
-	tabComponents->actualizeGuiFromProject();*/
+        widgetInfos->actualizeGuiFromProject();
 }
-//void TabProject::updateView(int newCurView)
-//{
-//	if (newCurView != curView)
-//	{
-//		curView = newCurView;
-//		if (viewList[newCurView] == "Infos")
-//		{
-//
-//			tabInfos->show();
-//			tabVariables->hide();
-//			tabComponents->hide();
-//		}
-//		if (viewList[newCurView] == "Variables")
-//		{
-//			tabInfos->hide();
-//			tabVariables->show();
-//			tabComponents->hide();	
-//		}
-//		if (viewList[newCurView] == "Components")
-//		{
-//			tabInfos->hide();
-//			tabVariables->hide();
-//			tabComponents->show();		
-//		}
-//	}
-//}

@@ -60,7 +60,7 @@
 #include "MOPlot.h"
 #include "MOCCCurve.h"
 
-#include "MERResult.h"
+#include "EIMERResult.h"
 
 
 class MinCCPlot : public MOPlot
@@ -76,20 +76,19 @@ public:
 		ICC
 	};
 
-	inline MinCCPlot(MERResult *);
+    inline MinCCPlot(EIMERResult *);
 	~MinCCPlot(void){};
 
 //	inline int getNearestPointIndex(QwtPlotCurve *,const QwtDoublePoint &);
 	//inline void setStreams(MOVector<EIStream> *);
 	inline void setCCType(int);
 
-	double getTPinch(){return result->TPinch->finalValue(0,0);};
-	double getMER(){return result->MER->finalValue(0,0);};
-	double getMERCold(){return result->MERCold->finalValue(0,0);};
+    inline void setResult(EIMERResult*);
+    inline EIMERResult* result();
 
 private:
 	
-	MERResult* result;
+    EIMERResult* _result;
 
 	int ccType;
 	
@@ -117,9 +116,9 @@ signals :
 };
 
 
-MinCCPlot::MinCCPlot(MERResult* _result)
+MinCCPlot::MinCCPlot(EIMERResult* res)
 {	
-	result = _result;
+    _result = res;
 	
 	// Picker on plot
 	picker1 = new QwtPlotPicker(canvas());
@@ -150,7 +149,7 @@ MinCCPlot::MinCCPlot(MERResult* _result)
 
 	QwtText xtitle;
 	xtitle.setFont(_axisFont);
-	xtitle.setText("Heat load [kW]");
+    xtitle.setText("Heat load [W]");
 
 	QwtText ytitle;
 	ytitle.setFont(_axisFont);
@@ -172,12 +171,20 @@ MinCCPlot::MinCCPlot(MERResult* _result)
 	setCCType(GCC);
 }
 
-
+void MinCCPlot::setResult(EIMERResult* res)
+{
+    _result = res;
+    if(!_result)
+        clear();
+}
 
 void MinCCPlot::relaunch()
 {
-	result->problem()->launch(ProblemConfig());
+    if(_result)
+    {
+        _result->problem()->launch(ProblemConfig());
 	replot();
+}
 }
 
 //void MinCCPlot::setStreams(MOVector<EIStream> *_streams)
@@ -218,9 +225,8 @@ void MinCCPlot::relaunch()
 
 void MinCCPlot::onClicked(const QwtDoublePoint & pos)
 {
+    int selectedPoint = getNearestPointIndex(_result->curveHot,pos);
 	
-	int selectedPoint = getNearestPointIndex(result->curveHot,pos);
-
 }
 
 void MinCCPlot::drawItems (QPainter *painter, const QRect &rect,
@@ -257,7 +263,10 @@ void MinCCPlot::drawItems (QPainter *painter, const QRect &rect,
 
 void MinCCPlot::setCCType(int _type)
 {
-	if(ccType!=_type)
+
+    clear();
+
+    if(_result)
 	{
 		clear();
 		ccType = _type;
@@ -265,11 +274,11 @@ void MinCCPlot::setCCType(int _type)
 		switch(ccType)
 		{
 			case CC :
-				addCurve(result->curveHot);
-				addCurve(result->curveCold);
+            addCurve(_result->curveHot);
+            addCurve(_result->curveCold);
 				break;
 			case GCC :
-				addCurve(result->curveGcc);
+            addCurve(_result->curveGcc);
 				break;
 			default :
 				break;

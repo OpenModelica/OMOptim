@@ -53,16 +53,9 @@
 TabOptimization::TabOptimization(Project *project_,Optimization *problem_, QWidget *parent) :
 MO2ColTab(project_->name(),problem_,false,parent)
 {
-	if(problem_->isSolved())
-		type = TABSOLVEDPROBLEM;
-	else
-		type = TABPROBLEM;
-
-
 	project = project_;
 	problem = problem_;
 
-	
 	
 	widgetSelectOptVars = new WidgetSelectOptVars(problem,this);
 	addDockWidget("Variables",widgetSelectOptVars);
@@ -75,7 +68,13 @@ MO2ColTab(project_->name(),problem_,false,parent)
 	widgetOptParameters = new WidgetOptParameters(project,problem,this);
 	addDockWidget("Optimization",widgetOptParameters,widgetSelectOptVars);
 	
+        widgetFilesList = new WidgetFilesList(&problem->_filesToCopy,this);
+        addDockWidget("Files",widgetFilesList,widgetSelectOptVars);
+
 	actualizeGui();
+
+        //change view to show variables
+        mapDockWidgets.key(widgetSelectOptVars)->raise();
 }
 
 TabOptimization::~TabOptimization()

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -45,6 +45,11 @@ MEDimValue(value,unit)
 {
 }
 
+METemperature::METemperature(const METemperature& temp):
+MEDimValue(temp._value,temp._unit)
+{
+}
+
 METemperature::~METemperature(void)
 {
 }
@@ -61,6 +66,12 @@ QString METemperature::unit(int iUnit) const
 		return "-";
 	}
 }
+
+QString METemperature::unit() const
+{
+        return unit(_unit);
+}
+
 unsigned METemperature::nbUnits() const
 {
 	return 2;
@@ -92,3 +103,39 @@ double METemperature::convert(double value,int orgUnit,int dstUnit) const
 }
 
 
+double METemperature::operator-(const METemperature& b) const
+{
+    double resValue = value(_unit)-b.value(_unit);
+    return resValue;
+}
+
+bool METemperature::operator==(const METemperature& b) const
+{
+    return (value(_unit)==b.value(_unit));
+}
+
+bool METemperature::operator!=(const METemperature& b) const
+{
+    return !(*this==b);
+}
+
+METemperature& METemperature::operator+=(const double& diffTemp)
+{
+    _value += diffTemp;
+    return *this;
+}
+
+METemperature& METemperature::operator-=(const double& diffTemp)
+{
+    _value -= diffTemp;
+    return *this;
+}
+
+bool METemperature::operator<(const METemperature& b) const
+{
+    return value(_unit)<b.value(_unit);
+}
+bool METemperature::operator>(const METemperature& b) const
+{
+    return value(_unit)>b.value(_unit);
+}

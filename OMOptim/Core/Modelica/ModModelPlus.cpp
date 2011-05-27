@@ -217,9 +217,9 @@ void ModModelPlus::addVariable(Variable* var)
 /**
 * Description Returns pointer to variables.
 */
-MOVector<Variable> * ModModelPlus::variables()
+MOVector<Variable> * ModModelPlus::variables(bool readIfNot)
 {
-	if(!_variablesRead)
+        if(!_variablesRead && readIfNot)
 		readVariables();
 	
 	return _variables;

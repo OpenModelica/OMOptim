@@ -54,7 +54,7 @@
 TabOMC::TabOMC(Project *project_,QWidget *parent) :
         MOTabSimple(NULL,NULL), ui(new Ui::TabOMC_Class)
 {
-    type = TABOTHER;
+
     ui->setupUi(this);
 
     project = project_;

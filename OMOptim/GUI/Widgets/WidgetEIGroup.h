@@ -56,6 +56,8 @@ protected :
 
 	QWidget* createEditWidget(MOItem* item, int iField, bool forceEditable);
 	
+protected slots :
+        void onValueChanged();
 };
 
 #endif 

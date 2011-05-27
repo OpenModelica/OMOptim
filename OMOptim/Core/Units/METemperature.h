@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -47,6 +47,7 @@ class METemperature : public MEDimValue
 {
 public:
 	METemperature(double value=0,int unit=0);
+        METemperature(const METemperature&);
 	~METemperature();
 
 	enum Units
@@ -56,8 +57,18 @@ public:
 	};
 
 	QString unit(int iUnit)  const;
+        QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
 	unsigned nbUnits() const;
 	double convert(double value,int orgUnit,int dstUnit) const;
+
+
+        double operator-(const METemperature& b) const; //temperature difference
+        METemperature& operator+=(const double& diffTemp);
+        METemperature& operator-=(const double& diffTemp);
+        bool operator==(const METemperature& b) const;
+        bool operator!=(const METemperature& b) const;
+        bool operator<(const METemperature& b) const;
+        bool operator>(const METemperature& b) const;
 };
 
 

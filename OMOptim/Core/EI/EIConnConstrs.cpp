@@ -19,7 +19,7 @@ EIConnConstrs* EIConnConstrs::clone()
 }
 
 
-EIConnConstrs::EIConnConstrs(QDomElement & domList, EIItem* rootEI, EIReader* eiReader)
+EIConnConstrs::EIConnConstrs(QDomElement & domList, EITree* eiTree)
 {
 	QDomNode n = domList.firstChild();
 	while( !n.isNull() )
@@ -28,20 +28,20 @@ EIConnConstrs::EIConnConstrs(QDomElement & domList, EIItem* rootEI, EIReader* ei
 		QDomAttr domAttr;
 		if( !domItem.isNull() )
 		{
-			EIConnConstr* newItem = new EIConnConstr(domItem,rootEI,eiReader);
+                        EIConnConstr* newItem = new EIConnConstr(domItem,eiTree);
 			addItem(newItem);
 		}
 		n = n.nextSibling();
 	}
 }
 
-QMultiMap<EIStream*,EIStream*> EIConnConstrs::getMapStreams(EIReader* eiReader,MOOptVector *variables)
+QMultiMap<EIStream*,EIStream*> EIConnConstrs::getMapStreams(MOOptVector *variables)
 {
 	QMultiMap<EIStream*,EIStream*> result;
 	QMultiMap<EIStream*,EIStream*> curMap;
 	for(int iMap=0;iMap<items.size();iMap++)
 	{
-		curMap = items.at(iMap)->getMapStreams(eiReader,variables);
+                curMap = items.at(iMap)->getMapStreams(variables);
 		for(int i=0;i<curMap.keys().size();i++)
 			for(int j=0;j<curMap.values(curMap.keys().at(i)).size();j++)
 			result.insert(curMap.keys().at(i),curMap.values(curMap.keys().at(i)).at(j));

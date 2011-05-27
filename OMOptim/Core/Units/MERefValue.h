@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -47,6 +47,13 @@
 #include "MOOptVector.h"
 #include "Variable.h"
 
+
+/** MERefValue is designed to contain value which could be either numerical or referential.
+  * A referential value is a value which contains a variable name of a model.
+  * Values concerned here are dimensioned values (\sa DimValue)
+  */
+
+
 template<class DimValue>
 class MERefValue
 {
@@ -66,7 +73,7 @@ public:
 	int iUnit() const;
 	virtual QString unit(int iUnit) const;
 
-	double getNumValue(MOOptVector *variables,int iUnit,bool &ok);
+        double getNumValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName=QString());
 
         QString reference();
 	

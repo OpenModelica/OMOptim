@@ -54,6 +54,7 @@ ui(new Ui::WidgetSelectModModelClass)
 	ui->treeView->setModel(modClassTree);
 	connect(ui->treeView, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModClass(QModelIndex)));
 	connect(ui->pushValidate,SIGNAL(clicked()),this,SLOT(accept()));
+        connect(ui->pushCancel,SIGNAL(clicked()),this,SLOT(reject()));
 	setSelectedModModel(NULL);
 }
 

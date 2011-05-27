@@ -388,3 +388,65 @@ void GuiTools::resizeTable(QTableView* table)
  
 	table->resize(maxW+2,maxH+40);
 }
+
+
+void GuiTools::resizeTreeViewColumns(MyTreeView* treeView)
+{
+
+    //    // resizing window
+    //    int count = treeView->model()->columnCount();
+
+    //    QList<int> colsSize;
+    //    int allColsSize=0;
+    //    int curColSize;
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        curColSize = treeView->getColHintSize(i);
+    //        colsSize.push_back(curColSize);
+    //        allColsSize += curColSize;
+    //    }
+
+    //    int contentWidth = treeView->contentsRect().width();
+    //    double fact = 1;
+    //    if(allColsSize<contentWidth)
+    //        fact = (double)contentWidth/(double)allColsSize;
+
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        treeView->setColumnWidth(i,colsSize.at(i)*fact);
+    //    }
+
+    int count = treeView->model()->columnCount();
+    for (int i = 0; i < count; i++)
+    {
+        treeView->resizeColumnToContents(i);
+    }
+
+}
+
+void GuiTools::resizeTableViewColumns(QTableView* tableView)
+{
+
+    // resizing window
+    int nbCols = tableView->model()->columnCount();
+
+    int colsWidth=0;
+    for (int i = 0; i < nbCols; i++)
+    {
+        tableView->resizeColumnToContents(i);
+        colsWidth += tableView->columnWidth(i);
+    }
+
+    int contentWidth = tableView->verticalHeader()->width();
+
+    if(colsWidth<contentWidth)
+    {
+        double fact = (double)contentWidth/(double)colsWidth;
+        int curColWidth;
+        for (int i = 0; i < nbCols; i++)
+        {
+            curColWidth = tableView->columnWidth(i);
+            tableView->setColumnWidth(i,curColWidth*fact);
+        }
+    }
+}

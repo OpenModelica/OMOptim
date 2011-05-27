@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -56,14 +56,14 @@
 class MilpTarget
 {
 public:
-	MilpTarget(EIItem* rootEI,EIConnConstrs *_connConstrs,EIReader *eiReader,MOOptVector *variables,QString modFilePath, QString dataFilePath);
+        MilpTarget(EITree* eiTree,EIConnConstrs *_connConstrs,MOOptVector *variables,QDir folder,QString modFilePath, QString dataFilePath);
 	~MilpTarget(void);
 
 	EITargetResult* launch();
 	
 
 private :
-	glp_prob * launchGLPK(QString resFilePath);
+        glp_prob * launchGLPK();
 	void DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 	QList<EIStream*> &eiProcessStreams,
 	QList<QList<MEQflow> > &Qpk, //.at(iStream).at(iDTk)
@@ -76,12 +76,15 @@ private :
 	EITargetResult* readResult(glp_prob *);
 
 
-	EIItem* rootEI;
-	EIReader *eiReader;
-	MOOptVector *variables;
-	QString modFilePath;
-	QString dataFilePath;
-	EIConnConstrs *connConstrs;
+        EITree* _eiTree;
+        MOOptVector *_variables;
+        QDir _folder;
+        QString _modFileName;
+        QString _dataFileName;
+        QString _resFileName;
+        QString _logFileName;
+        QString _sensFileName;
+        EIConnConstrs *_connConstrs;
 
 };
 

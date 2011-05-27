@@ -1,10 +1,10 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkopings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkoping, Sweden.
  *
  * All rights reserved.
  *
@@ -44,6 +44,7 @@
 #include "MOSettings.h"
 #include "MOStyleSheet.h"
 
+
 #include "config.h"
 
 #define HAVE_QAPPLICATION_H
@@ -57,13 +58,15 @@
 CORBA::ORB_var orb;
 
 
+
+
 int main(int argc, char *argv[])
 {
-
 
 	// Register Info as a metaType
 	// Needed for Info communication between threads
 	int a = qRegisterMetaType<Info>();
+
 
 	// Application
 	QApplication *app = new QApplication(argc,argv);
@@ -91,6 +94,7 @@ int main(int argc, char *argv[])
 	// Starting
 	MainWindow w(project);
 	app->connect( app, SIGNAL( lastWindowClosed() ), &w, SLOT( quit() ) );
+     
     w.show();
 
 
@@ -98,9 +102,9 @@ int main(int argc, char *argv[])
 	{
 		app->exec();
 	}
-	catch(char* c)
+        catch(std::exception &e)
 	{
-		QString msg(c);
+                QString msg(e.what());
 		infoSender.debug(msg);
 //#ifdef _DEBUG
 		logStream.flush();
@@ -113,4 +117,3 @@ int main(int argc, char *argv[])
 }
 
 
-	

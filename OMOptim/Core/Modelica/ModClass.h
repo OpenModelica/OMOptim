@@ -57,7 +57,12 @@ class ModClass : public MOItem
 {
 	Q_OBJECT
 
-
+    /**
+    * \brief ModClass is a class corresponding to a Modelica item (like a Model, a Component, a Block, a Record...)
+    *
+    * A ModClass can correspond to any modelica item. It is inherited by specific classes (like ModModel for modelica models, ModPackage for modelica packages).
+    * This class provides basic structure and functions of Modelica items.
+    */
 
 	//***********************
 	// Attributes

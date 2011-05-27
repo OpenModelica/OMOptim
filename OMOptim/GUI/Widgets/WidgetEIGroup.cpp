@@ -44,6 +44,7 @@
 WidgetEIGroup::WidgetEIGroup(MOItem *_item,bool _forceEditable,QWidget *parent):
 WidgetMOItem(_item,_forceEditable,parent)
 {
+    connect(this,SIGNAL(valueChanged()),this,SLOT(onValueChanged()));
 }
 
 WidgetEIGroup::~WidgetEIGroup()
@@ -71,4 +72,20 @@ QWidget* WidgetEIGroup::createEditWidget(MOItem* item, int iField, bool forceEdi
 	default :
 		return NULL;
 	}
+}
+
+void WidgetEIGroup::onValueChanged()
+{
+
+    EIGroup* eiGroup = dynamic_cast<EIGroup*>(item);
+
+    if(eiGroup)
+    {
+        bool factIsVariable = eiGroup->getFieldValue(EIGroup::FACTISVARIABLE).toBool();
+
+        fieldEditWidget.value(EIGroup::FACT)->setEnabled(factIsVariable);
+        fieldEditWidget.value(EIGroup::FACTMAX)->setEnabled(factIsVariable);
+        fieldEditWidget.value(EIGroup::FACTMIN)->setEnabled(factIsVariable);
+        fieldEditWidget.value(EIGroup::COSTMULT)->setEnabled(factIsVariable);
+    }
 }

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -51,7 +51,7 @@
 #include "OptimResult.h"
 #include "ui_widgetCCPlot.h"
 #include "WidgetTreeStreams.h"
-#include "TreeEIStreams.h"
+#include "EITree.h"
 
 namespace Ui {
     class WidgetCCPlotClass;
@@ -66,12 +66,12 @@ class WidgetCCPlot : public QWidget {
 
 
 public:
-	WidgetCCPlot(MERResult* _result,QWidget *parent = 0);
+	WidgetCCPlot(EIMERResult* _result,QWidget *parent = 0);
     virtual ~WidgetCCPlot();
 	 Ui::WidgetCCPlotClass *ui;
 
 private :
-	MERResult* result;
+	EIMERResult* result;
 	WidgetTreeStreams* widgetTreeStreams;
 	MinCCPlot *plot1;
 
@@ -82,7 +82,8 @@ public slots:
 	void setViewCC(bool checked);
 	void setViewGCC(bool checked);
 	void actualizeGui();
-	//void showStreams();
+        void setMERResult(EIMERResult*);
+        void clear();
 
 signals:
 	void selectionChanged(QList<int>&);

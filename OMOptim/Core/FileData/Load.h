@@ -63,10 +63,11 @@
 #include "MOThreads.h"
 #include "Info.h"
 #include "Dymola.h"
+#include "EIControler.h"
 //#include "XML.h"
 
 #ifdef USEEI
-	#include "ProblemTarget.h"
+	#include "EITarget.h"
 	#include "EITargetResult.h"
 #endif
 
@@ -87,8 +88,6 @@ public:
 	static bool loadModModelPlus(Project*, QString mmoFilePath);
 	static void loadOptimValuesFromFrontFile(OptimResult*,QString);
 
-	Project* project;
-
 
 private:
 	
@@ -98,10 +97,6 @@ private:
 	static Problem* newOneSimulationSolvedFromFile(QString,Project*);
 	static Problem* newOptimizationSolvedFromFile(QString,Project*);
 	
-#ifdef USEEI
-	static Problem* newProblemTargetFromFile(QString,Project*);
-	static Problem* newProblemTargetSolvedFromFile(QString,Project*);
-#endif
 
 signals:
 	void sendInfo(Info*);

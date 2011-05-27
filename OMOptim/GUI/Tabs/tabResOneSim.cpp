@@ -46,8 +46,6 @@
 TabResOneSim::TabResOneSim(Project *project_,OneSimulation *problem_, QWidget *parent) :
 MO2ColTab(project_->name(),problem_,false,parent)
 {
-	type = TABSOLVEDPROBLEM;
-
 	project = project_;
 	problem = problem_;
 

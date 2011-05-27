@@ -47,6 +47,7 @@
 #include "WidgetOptParameters.h"
 #include "WidgetSelectOptVars.h"
 #include "WidgetSelectComponents.h"
+#include "WidgetFilesList.h"
 
 
 class TabOptimization : public MO2ColTab {
@@ -55,6 +56,7 @@ class TabOptimization : public MO2ColTab {
 public:
 	TabOptimization(Project *project, Optimization *problem_, QWidget *parent);
     ~TabOptimization();
+    TabType tabType(){return TABPROBLEM;};
 
 	Project *project;
 	Optimization *problem;
@@ -63,7 +65,7 @@ public:
 	WidgetOptParameters *widgetOptParameters;
 	WidgetSelectOptVars *widgetSelectOptVars;
 	WidgetSelectComponents *widgetSelectComponents;
-
+        WidgetFilesList *widgetFilesList;
 
 
 	void actualizeGui();

@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -55,11 +55,12 @@ class EIValueFiller
 public:
     EIValueFiller();
 
-    static void getFilledEI(EIItem* referencedEI, EIItem* filledEI, QList<ModModel*> models,MOOptVector* finalVars,
-                             Project*);
+    static EITree* getFilledEI(EITree* referencedEI,MOOptVector* variables,Project*);
 
     static QMap<EIItem*,QStringList> getReferences(EIItem*, bool onlyChecked,Project* project);
     static QMap<EIItem*,QStringList> getMissingReferences(EIItem*,MOOptVector*,bool onlyChecked,Project* project);
+private :
+    static QList<ModModel*> corrModels(QMap<EIItem*,QStringList> mapRefs,Project* project);
 };
 
 #endif // EIVALUEFILLER_H

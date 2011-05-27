@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -117,7 +117,7 @@ void MOMainTab::removeTab(MOTabBase::TabType type,QString name)
 	{
 		curTab = dynamic_cast<MOTabBase*>(widget(iTab));
 
-		if(((int)curTab->type==type)&&(tabText(iTab)==name))
+                if((curTab->tabType()==type)&&(tabText(iTab)==name))
 			found = true;
 		else
 			iTab++;
@@ -165,10 +165,10 @@ void MOMainTab::addProblemTab(Project *project, Problem * problem)
 			break;
 		}
 #ifdef USEEI
-	case Problem::PROBLEMEI:
+	case Problem::EIPROBLEM:
 		{
 			//adding tab
-			TabProblemEI* newTab = new TabProblemEI(project,(ProblemTarget*)problem,this);
+                        TabEITarget* newTab = new TabEITarget(project,(EITarget*)problem,this);
 			newTab->setBackgroundRole(QPalette::Window);
 			newTab->setAutoFillBackground(true);
 			newTab->setWindowTitle(problem->name());
@@ -217,10 +217,10 @@ switch(problem->type())
 		}
 
 #ifdef USEEI
-	case Problem::PROBLEMEI:
+	case Problem::EIPROBLEM:
 		{
 			//adding tab
-			TabEITargetResult* newTab = new TabEITargetResult(project,(ProblemTarget*)problem,this);
+                        TabEITargetResult* newTab = new TabEITargetResult(project,(EITarget*)problem,this);
 			newTab->setBackgroundRole(QPalette::Window);
 			newTab->setAutoFillBackground(true);
 			newTab->setWindowTitle(problem->name());

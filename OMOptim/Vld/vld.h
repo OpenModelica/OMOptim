@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  $Id: vld.h,v 1.15.2.1 2005/08/03 23:13:47 dmouldin Exp $
+//  $Id$
 //
 //  Visual Leak Detector (Version 1.0)
 //  Copyright (c) 2005 Dan Moulding

@@ -48,12 +48,11 @@
 #include <QtXml/QDomDocument>
 #include "MOItem.h"
 
+
+
 class MOTabBase
 {
 public:
-        MOTabBase(QString _projectName,MOItem* _mainItem);
-	virtual ~MOTabBase(void);
-
 
 	enum TabType
 	{
@@ -62,9 +61,16 @@ public:
 		TABSOLVEDPROBLEM,
 		TABOTHER
 	};
+
+
+        MOTabBase(QString _projectName,MOItem* _mainItem);
+	virtual ~MOTabBase(void);
+        virtual TabType tabType()=0;
+
+
+
 	MOItem* getItem();
 	QString name;
-	TabType type;
 
 protected :
 	MOItem* mainItem;

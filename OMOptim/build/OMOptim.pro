@@ -91,74 +91,103 @@ contains(CONFIG,useei){
     HEADERS +=  ../Core/Optim/MILP/GLPKTools.h \
                 ../Core/Optim/MILP/MilpTarget.h \
                 ../Core/Optim/MILP/SimpleMilpTarget.h \
-                ../Core/Problems/ProblemTarget.h \
-                ../Core/Problems/ProblemEI.h \
+                ../Core/Optim/MILP/MilpHEN1.h \
+                ../Core/Problems/EITarget.h \
+                ../Core/Problems/EIProblem.h \
+                ../Core/EI/EIConn.h \
                 ../Core/EI/EIConnConstr.h \
                 ../Core/EI/EIConnConstrs.h \
                 ../Core/EI/EIGroup.h \
                 ../Core/EI/EIGroupFact.h \
                 ../Core/EI/EIItem.h \
                 ../Core/EI/EIReader.h \
+                ../Core/EI/EIControler.h \
                 ../Core/EI/EIStream.h \
                 ../Core/EI/EITargetResult.h \
                 ../Core/EI/EITools.h \
                 ../Core/EI/EIModelExtractor.h \
                 ../Core/EI/EILinguist.h \
                 ../Core/EI/ModEIConverter.h \
-                ../Core/EI/MERResult.h \
+                ../Core/Problems/EIMER.h\
+                ../Core/EI/EIMERResult.h \
                 ../Core/EI/TableEIItems.h \
-                ../Core/EI/TreeEIStreams.h \
+                ../Core/EI/EITree.h \
                 ../Core/Tools/CCTools.h \
                 ../GUI/Plots/MOCCCurve.h \
                 ../GUI/Plots/MOCCPlot.h \
-                ../GUI/Tabs/tabProblemEI.h \
+                ../GUI/Tabs/TabEITarget.h \
                 ../GUI/Widgets/WidgetEIGroup.h \
                 ../GUI/Widgets/WidgetEIInputVars.h \
-                ../GUI/Tabs/TabEITargetResult.h \
+                ../GUI/Tabs/tabEITargetResult.h \
                 ../GUI/Widgets/WidgetTableEIGroups.h \
                 ../GUI/Widgets/WidgetCCPlot.h \
 				../GUI/Widgets/WidgetTreeStreams.h \
 				../GUI/Widgets/WidgetTableConnConstr.h \
                 ../GUI/Widgets/WidgetTableStreams.h \
-                ../Core/EI/EIValueFiller.h
+                ../Core/EI/EIValueFiller.h \
+                ../GUI/Widgets/WidgetLaunchTarget.h \
+                ../Core/Problems/EIHEN1.h \
+                ../Core/EI/EIHEN1Functions.h \
+                ../Core/EI/EIModelContainer.h \
+                ../Core/EI/EIConns.h \
+                ../GUI/Widgets/WidgetEIConns.h \
+                ../GUI/Widgets/WidgetEITargetResult.h \
+				    ../Core/EI/EIHEN1Result.h
+
     SOURCES +=  ../Core/EI/EITargetResult.cpp \
-                ../GUI/Tabs/tabProblemEI.cpp \
-                ../Core/Problems/ProblemEI.cpp \
-                ../Core/Problems/ProblemTarget.cpp \
+                ../GUI/Tabs/TabEITarget.cpp \
+                ../Core/Problems/EIProblem.cpp \
+                ../Core/Problems/EITarget.cpp \
                 ../Core/Optim/MILP/MilpTarget.cpp \
                 ../Core/Optim/MILP/SimpleMilpTarget.cpp \
+                ../Core/Optim/MILP/MilpHEN1.cpp \
+                ../Core/EI/EIConn.cpp \
                 ../Core/EI/EIConnConstr.cpp \
                 ../Core/EI/EIConnConstrs.cpp \
                 ../Core/EI/EIGroup.cpp \
                 ../Core/EI/EIGroupFact.cpp \
                 ../Core/EI/EIItem.cpp \
                 ../Core/EI/EIReader.cpp \
+                ../Core/EI/EIControler.cpp \
                 ../Core/EI/EIStream.cpp \
                 ../Core/EI/EITools.cpp \
                 ../Core/EI/EIModelExtractor.cpp \
                 ../Core/EI/ModEIConverter.cpp \
                 ../Core/EI/EIValueFiller.cpp \
-                ../Core/EI/MERResult.cpp \
+                ../Core/EI/EIMERResult.cpp \
                 ../Core/EI/TableEIItems.cpp \
-                ../Core/EI/TreeEIStreams.cpp \
+                ../Core/EI/EITree.cpp \
                 ../GUI/Plots/MOCCCurve.cpp \
                 ../GUI/Plots/MOCCPlot.cpp \
-                ../GUI/Tabs/TabEITargetResult.cpp \
+                ../GUI/Tabs/tabEITargetResult.cpp \
                 ../Core/Tools/CCTools.cpp \
+                ../Core/Problems/EIMER.cpp\
 				../GUI/Widgets/WidgetEIGroup.cpp \
 				../GUI/Widgets/WidgetEIInputVars.cpp \
 				../GUI/Widgets/WidgetTableConnConstr.cpp \
 				../GUI/Widgets/WidgetTableEIGroups.cpp \
 				../GUI/Widgets/WidgetTableStreams.cpp \
 		        ../GUI/Widgets/WidgetTreeStreams.cpp \
-                ../GUI/Widgets/WidgetCCPlot.cpp
+                ../GUI/Widgets/WidgetCCPlot.cpp \
+                ../GUI/Widgets/WidgetLaunchTarget.cpp \
+                ../GUI/Widgets/WidgetEITargetResult.cpp \
+                ../Core/Problems/EIHEN1.cpp \
+                ../Core/EI/EIHEN1Functions.cpp \
+                ../Core/EI/EIModelContainer.cpp \
+                ../Core/EI/EIConns.cpp \
+                ../GUI/Widgets/WidgetEIConns.cpp \
+				../Core/EI/EIHEN1Result.cpp
+
 
     FORMS +=    ../GUI/Widgets/WidgetTableEIGroups.ui \
                 ../GUI/Widgets/WidgetTableConnConstr.ui \
                 ../GUI/Widgets/WidgetEIInputVars.ui \
                 ../GUI/Widgets/WidgetTableStreams.ui  \
                 ../GUI/Widgets/WidgetCCPlot.ui \
-				../GUI/Widgets/WidgetTreeStreams.ui
+                ../GUI/Widgets/WidgetTreeStreams.ui \
+                ../GUI/Widgets/WidgetLaunchTarget.ui \
+                ../GUI/Widgets/WidgetEIConns.ui \
+                ../GUI/Widgets/WidgetEITargetResult.ui
 }
 
 DEPENDPATH += . \
@@ -197,6 +226,7 @@ DEPENDPATH += . \
               ../Core/Optim/EA/Results \
               ../Core/Optim/EA/SPEA2 \
               ../Core/Optim/EA/SPEA2Adaptative
+			  
 INCLUDEPATH += . \
               .. \
               ../Core \
@@ -329,7 +359,6 @@ HEADERS += ../config.h \
            ../GUI/Tabs/tabOneSim.h \
            ../GUI/Tabs/tabOptimization.h \
            ../GUI/Tabs/tabProject.h \
-           ../GUI/Tabs/tabProjectInfos.h \
            ../GUI/Tabs/tabResOneSim.h \
            ../GUI/Tabs/tabResOptimization.h \
            ../GUI/Tabs/tabResOptimization_Config.h \
@@ -396,7 +425,15 @@ HEADERS += ../config.h \
     ../Core/FileData/XML.h \
     ../Core/VariableType.h \
     ../GUI/Widgets/WidgetMooPointsList.h \
+    ../Core/MOKeepVector.h \
+    ../GUI/Tools/MyTreeView.h \
+    ../GUI/Widgets/WidgetProjectInfos.h \
+    ../GUI/Widgets/WidgetFilesList.h 
+
    # ../Core/Problems/OMProblem.h
+
+
+
 
 
 FORMS += ../GUI/MainWindow.ui \
@@ -411,7 +448,6 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Tabs/tabOMC.ui \
          ../GUI/Tabs/tabOptimization.ui \
          ../GUI/Tabs/tabProject.ui \
-         ../GUI/Tabs/tabProjectInfos.ui \
          ../GUI/Tabs/tabResOptimization.ui \
          ../GUI/Tabs/tabResOptimization_Config.ui \
          ../GUI/Widgets/WidgetBlocks.ui \
@@ -429,7 +465,11 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Widgets/WidgetSelPointScan.ui \
          ../GUI/Widgets/WidgetTableRecVar.ui \
          ../GUI/Widgets/WidgetToolBar.ui \
-    ../GUI/Widgets/WidgetMooPointsList.ui
+    ../GUI/Widgets/WidgetMooPointsList.ui \
+    ../GUI/Widgets/WidgetProjectInfos.ui \
+    ../GUI/Widgets/WidgetFilesList.ui
+ 
+
  
 
 SOURCES += ../main.cpp \
@@ -515,7 +555,6 @@ SOURCES += ../main.cpp \
            ../GUI/Tabs/tabOneSim.cpp \
            ../GUI/Tabs/tabOptimization.cpp \
            ../GUI/Tabs/tabProject.cpp \
-           ../GUI/Tabs/tabProjectInfos.cpp \
            ../GUI/Tabs/tabResOneSim.cpp \
            ../GUI/Tabs/tabResOptimization.cpp \
            ../GUI/Tabs/tabresoptimization_config.cpp \
@@ -555,7 +594,13 @@ SOURCES += ../main.cpp \
             ../Core/OMC/OMCHelper.cpp \
             ../Core/OMC/StringHandler.cpp \
     ../Core/FileData/XML.cpp \
-    ../GUI/Widgets/WidgetMooPointsList.cpp
+            ../GUI/Widgets/WidgetMooPointsList.cpp \
+            ../GUI/Widgets/WidgetProjectInfos.cpp \
+    ../GUI/Widgets/WidgetFilesList.cpp
+
+
+
+
 
 
   #  ../Core/Problems/OMProblem.cpp
@@ -563,5 +608,3 @@ SOURCES += ../main.cpp \
 RESOURCES += ../GUI/Resources/mineit.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc
-
-ICON = ../GUI/Resources/omoptim.icns

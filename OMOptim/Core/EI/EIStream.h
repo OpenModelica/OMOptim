@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -50,7 +50,6 @@
 class EIStream : public EIItem
 {
 public:
-
 	enum Field
 	{
 		//Modelica fields
@@ -83,11 +82,23 @@ public:
 	virtual EI::Type getEIType(){return EI::STREAM;};	
 	virtual QString getEITypeName(){return "EIStream";};
 	
-	MERefValue<METemperature> Tin;
-	MERefValue<METemperature> Tout;
-	MERefValue<MEQflow> Qflow;
+    MERefValue<METemperature> TinRef; /** Reference value of inlet temperature.
+                Note that could contain a numerical value (without reference) @sa MERefValue */
+    MERefValue<METemperature> ToutRef; /** Reference value of outlet temperature.
+                Note that could contain a numerical value (without reference) @sa MERefValue */
+    MERefValue<MEQflow> QflowRef; /** Reference value of heat flow.
+                Note that could contain a numerical value (without reference) @sa MERefValue */
+
+    METemperature TinNum; /** Numerical value of TinRef. Only pertinent when _numerized==true*/
+    METemperature ToutNum; /** Numerical value of ToutRef. Only pertinent when _numerized==true*/
+    MEQflow QflowNum; /** Numerical value of QflowRef. Only pertinent when _numerized==true*/
+
+
 	double DTmin2;
+
         QStringList references();
+    bool numerize(MOOptVector* variables);
+    double Cp(bool &ok,MOOptVector* variables=NULL) const;
 
 	
 
@@ -96,6 +107,12 @@ public:
 	
 	static QString sFieldName(int field, int role);
 	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return EIStream::sFieldName(i,role);};
+
+    bool numerized();
+    void resetNumerize();
+
+private :
+        bool _numerized;
 };
 
 

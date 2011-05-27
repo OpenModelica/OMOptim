@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -105,6 +105,9 @@ public:
 	virtual QString toSavingString();
 	virtual QDomElement toXmlData(QDomDocument & doc,QString listTitle);
 
+protected :
+        bool _deleteContentAfter; //should content be deleted with vector
+
 };
 
 
@@ -114,7 +117,7 @@ public:
 template<class ItemClass>
 MOVector<ItemClass>::MOVector() : QAbstractTableModel()
 {
-	//items = new std::vector<ItemClass*>;
+    _deleteContentAfter = true;
 }
 
 
@@ -160,6 +163,7 @@ MOVector<ItemClass>::MOVector(QDomElement & domList)
 template<class ItemClass>
 MOVector<ItemClass>::~MOVector() 
 {
+    if(_deleteContentAfter)
 	//delete contents
 	clear();
 }

@@ -112,7 +112,7 @@ void ModelicaModifier::setComponent(ModClass *component)
 
 QVariant ModelicaModifier::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{

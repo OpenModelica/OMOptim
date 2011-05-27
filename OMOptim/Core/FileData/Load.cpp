@@ -392,19 +392,21 @@ Problem* Load::newSolvedProblemFromFile(QString filePath,Project* _project)
 	QDomElement root = doc.documentElement();
 	QString problemType = root.tagName();
 
+
 	if (problemType=="OneSimulation")
 		newProblem = newOneSimulationSolvedFromFile(filePath,_project);
 	if (problemType=="Optimization")
 		newProblem = newOptimizationSolvedFromFile(filePath,_project);
 
 #ifdef USEEI
-	if (problemType=="ProblemTarget")
-		newProblem = newProblemTargetSolvedFromFile(filePath,_project);
+    if (problemType=="EITarget")
+        newProblem = new EITarget(_project,_project->modReader(),_project->moomc(),root);
 #endif
 
 	if(newProblem != NULL)
 	{
 		newProblem->setProject(_project);
+        newProblem->setEntireSavePath(filePath);
 	}
 
 	return newProblem;
@@ -440,8 +442,10 @@ Problem* Load::newProblemFromFile(QString filePath,Project* _project)
 		newProblem = newOptimizationFromFile(filePath,_project);
 
 #ifdef USEEI
-	if (problemType=="ProblemTarget")
-		newProblem = newProblemTargetFromFile(filePath,_project);
+    if (problemType=="EITarget")
+    {
+        newProblem = new EITarget(_project,_project->modReader(),_project->moomc(),root);
+    }
 #endif
 
 	if(newProblem != NULL)
@@ -449,6 +453,7 @@ Problem* Load::newProblemFromFile(QString filePath,Project* _project)
 		newProblem->setProject(_project);
 		newProblem->setEntireSavePath(filePath);
 	}
+
 
 	return newProblem;
 }
@@ -505,6 +510,11 @@ Problem* Load::newOneSimulationFromFile(QString filePath,Project* _project)
 	// Overwrited Variables
 	QDomElement domOverVars = domProblem.firstChildElement("OverwritedVariables");
 	problem->overwritedVariables()->setItems(domOverVars);
+
+    // Files to copy
+    QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
+    QString text = cFilesToCopy.text();
+    problem->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
 
 	// addOverWritedCVariables
 	// make their value editable
@@ -567,6 +577,11 @@ Problem* Load::newOneSimulationSolvedFromFile(QString filePath,Project* _project
 	QDomElement domScanVars = domProblem.firstChildElement("ScannedVariables");
 	problem->scannedVariables()->setItems(domScanVars);
 
+    // Files to copy
+    QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
+    QString text = cFilesToCopy.text();
+    problem->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
+
 	//**********
 	// Result
 	//**********
@@ -580,29 +595,6 @@ Problem* Load::newOneSimulationSolvedFromFile(QString filePath,Project* _project
 	QDomElement domFinalVars = domResult.firstChildElement("FinalVariables");
 	result->finalVariables()->setItems(domFinalVars);
 
-
-
-	//eventually load variables from dsin and dsres
-	//if(result->inputVariables->items.size() == 0)
-	//{
-	//	QFileInfo dsinInfo = QFileInfo(fileInfo.absoluteDir(),"dsin.txt");
-	//	if(dsinInfo.exists())
-	//		Dymola::getVariablesFromDsFile(dsinInfo.absoluteFilePath(), result->inputVariables,modelName);
-	//}
-	//if(result->finalVariables->items.size() == 0)
-	//{
-	//	QFileInfo dsresInfo = QFileInfo(fileInfo.absoluteDir(),"dsres.txt");
-	//	if(dsresInfo.exists())
-	//	{
-	//		MOVector<Variable> curVariables;
-	//		Dymola::getFinalVariablesFromDsFile(dsresInfo.absoluteFilePath(),curVariables,modelName);
-	//		
-	//	}
-	//}
-
-	//cloning eiStreams in results
-	//	result->eiStreams->cloneFromOtherTableEIStreams(_project->getModel()->getTableEIStreams());
-//	result->updateEiStreams();
 
 	return problem;
 }
@@ -668,6 +660,11 @@ Problem* Load::newOptimizationFromFile(QString filePath,Project* project)
 	QDomElement domScann = domProblem.firstChildElement("ScannedVariables");
 	problem->scannedVariables()->setItems(domScann);
 
+    // Files to copy
+    QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
+    QString text = cFilesToCopy.text();
+    problem->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
+
 
 	// BlockSubstitutions
 	QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
@@ -689,190 +686,6 @@ Problem* Load::newOptimizationFromFile(QString filePath,Project* project)
 	return problem;
 }
 
-#ifdef USEEI
-Problem* Load::newProblemTargetFromFile(QString filePath,Project* project)
-{
-	//Open file
-	QDomDocument doc( "MOProblem" );
-	QFileInfo fileInfo(filePath);
-	QFile file(filePath);
-	if( !file.open( QIODevice::ReadOnly ) )
-	{
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-		return NULL;
-	}
-	if( !doc.setContent( &file ) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-		return NULL;
-	}
-	file.close();
-
-	// Read model
-	QDomElement domProblem = doc.firstChildElement("ProblemTarget");
-	QDomElement domInfos = domProblem.firstChildElement("Infos");
-	QString problemName = domInfos.attribute("name");
-
-        ProblemTarget* problem= new ProblemTarget(project,project->eiReader(),project->modReader(),project->moomc());
-	problem->setEntireSavePath(filePath);
-
-	// Infos
-	problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
-	problem->setName(problemName);
-
-	// EI
-	QDomElement domEI = domProblem.firstChildElement("EIItem");
-	project->eiReader()->setItems(domEI,problem->_rootEI);
-
-	// InputVars
-	QDomElement domInputVars = domProblem.firstChildElement("InputVars");
-	problem->inputVars()->setItems(domInputVars);
-
-	return problem;
-}
-
-Problem* Load::newProblemTargetSolvedFromFile(QString filePath,Project* project)
-{
-	//Open file
-	QDomDocument doc( "MOSolvedProblem" );
-	QFileInfo fileInfo(filePath);
-	QFile file(filePath);
-	if( !file.open( QIODevice::ReadOnly ) )
-	{
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-		return NULL;
-	}
-	if( !doc.setContent( &file ) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-		return NULL;
-	}
-	file.close();
-
-	// Read model
-	QDomElement domProblem = doc.firstChildElement("ProblemTarget");
-	QDomElement domInfos = domProblem.firstChildElement("Infos");
-	QString problemName = domInfos.attribute("name");
-		
-        ProblemTarget* problem= new ProblemTarget(project,project->eiReader(),project->modReader(),project->moomc());
-	problem->setEntireSavePath(filePath);
-
-	// Infos
-	problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
-	problem->setName(problemName);
-
-	// EI
-	QDomElement domEI = domProblem.firstChildElement("EIItem");
-	project->eiReader()->setItems(domEI,problem->_rootEI);
-
-	// InputVars
-	QDomElement domInputVars = domProblem.firstChildElement("InputVars");
-	problem->inputVars()->setItems(domInputVars);
-
-	//**************
-	// Result
-	//**************
-	EITargetResult* result = new EITargetResult(project,problem);
-	problem->setResult(result);
-	result->setSuccess(true);
-	
-	return problem;
-}
-
-#endif
-
-//Problem* Load::newVariableDetFromFile(QString filePath,Project* project)
-//{
-//	VariableDet* problem= new VariableDet(project,project->getModel());
-//	problem->setEntireSavePath(filePath);
-//
-//	QDomDocument doc( "MOProblem" );
-//	QFile file(filePath);
-//	if( !file.open( QIODevice::ReadOnly ) )
-//	{
-//		//infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-//		return NULL;
-//	}
-//
-//
-//	if( !doc.setContent( &file ) )
-//	{
-//		file.close();
-//		//infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-//		return NULL;
-//	}
-//	file.close();
-//
-//	QDomElement root = doc.documentElement();
-//	QDomNode n1 = root.firstChild();
-//	while( !n1.isNull() )
-//	{
-//		QDomElement e1 = n1.toElement();
-//		if( !e1.isNull() )
-//		{
-//			//**********
-//			// Problem
-//			//**********
-//			if( e1.tagName() == "Problem" )
-//			{
-//				QDomNode n2 = n1.firstChild();
-//				
-//				while( !n2.isNull() )
-//				{
-//					QDomElement e2 = n2.toElement();
-//				
-//					if( e2.tagName() == "Infos" )
-//					{
-//						problem->setName(e2.attribute("name", "" ));
-//						problem->setType(e2.attribute("type", "" ).toInt());
-//					}
-//
-//					if( e2.tagName() == "FuzzyVariables" )
-//					{
-//						QString varsString = e2.text();
-//						CSV::linesToFuzzyVarsTable(project->getModel(),problem->fuzzyVars,varsString);
-//					}
-//				
-//					if( e2.tagName() == "EA" )
-//					{
-//						QDomElement e3 = e2.firstChildElement();
-//
-//						while( !e3.isNull() )
-//						{
-//							qDebug(e3.tagName().toLatin1().data());
-//
-//							if( e3.tagName() == "Infos" )
-//							{
-//							problem->setiCurAlgo(e3.attribute("num", "" ).toInt());
-//							}
-//							if( e3.tagName() == "Parameters")
-//							{
-//								if(problem->getCurAlgo())
-//								{
-//									QString paramString = e3.text();
-//									problem->getCurAlgo()->config->parameters = new MOVector<AlgoParameter>(paramString);
-//								}
-//							}
-//							e3 = e3.nextSiblingElement();
-//						}
-//					}
-//					n2 = n2.nextSibling();
-//				}
-//			}
-//		}
-//		n1 = n1.nextSibling();
-//	}
-//	return problem;
-//}
-
-
-
-
-
-
-
 
 
 
@@ -880,6 +693,7 @@ Problem* Load::newProblemTargetSolvedFromFile(QString filePath,Project* project)
 Problem* Load::newOptimizationSolvedFromFile(QString filePath,Project* project)
 {
 	
+
 	//Open file
 	QDomDocument doc( "MOSolvedProblem" );
 	QFileInfo fileInfo(filePath);
@@ -896,6 +710,7 @@ Problem* Load::newOptimizationSolvedFromFile(QString filePath,Project* project)
 		return NULL;
 	}
 	file.close();
+
 
 	// Read model
 	QDomElement domProblem = doc.firstChildElement("Optimization");
@@ -938,6 +753,10 @@ Problem* Load::newOptimizationSolvedFromFile(QString filePath,Project* project)
 	QDomElement domScann = domProblem.firstChildElement("ScannedVariables");
 	problem->scannedVariables()->setItems(domScann);
 
+    // Files to copy
+    QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
+    QString text = cFilesToCopy.text();
+    problem->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
 
 	// BlockSubstitutions
 	QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");

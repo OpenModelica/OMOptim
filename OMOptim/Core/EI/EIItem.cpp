@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -46,19 +46,17 @@ EIItem::EIItem()
 }
 
 
-EIItem::EIItem(EIItem* parent,QString name, QString model)
+EIItem::EIItem(EIItem* parent,QString name)
 {
         _parent = parent;
         setName(name);
         _checked = true;
-        _model = model;
 }
 
 EIItem::EIItem(const EIItem & item):MOItem(item)
 {
         _parent = item._parent;
         _checked = item._checked;
-        _model = item._model;
 	
         for(int i=0;i<item.childCount();i++)
                 addChild(item.child(i)->clone());
@@ -114,9 +112,6 @@ QVariant EIItem::getFieldValue(int iField, int role) const
 	case CHECKED:
                 return _checked;
 		break;
-        case MODEL:
-                return model();
-                break;
 	default :
 		return QVariant();
 		break;
@@ -133,9 +128,6 @@ bool EIItem::setFieldValue(int iField, QVariant value)
 	case CHECKED:
                 _checked = value.toBool();
 		break;
-        case MODEL:
-                _model = value.toString();
-                break;
 	default :
 		return false;
 	}
@@ -151,8 +143,6 @@ QString EIItem::sFieldName(int iField, int role)
 		return "Name";
 	case CHECKED:
                 return "Checked";
-        case MODEL:
-                return "Model";
 	default :
 		return "-";
 	}
@@ -258,20 +248,54 @@ int EIItem::indexInParent()
 
 
 
-void EIItem::removeChild(int i)
+bool EIItem::removeChild(int i)
 {
 	if((i>-1)&&(i<childCount()))
 	{
 		delete child(i);
                 _children.removeAt(i);
+                return true;
 	}
+        else
+            return false;
 }
-void EIItem::removeChild(EIItem * item)
+bool EIItem::removeChild(EIItem * item)
 {
         int i=_children.indexOf(item);
+
+        if(i>-1)
+        {
 	removeChild(i);
+            return true;
+}
+        else
+            return false;
 }
 
+bool EIItem::removeDescendant(EIItem* item)
+{
+    bool ok = removeChild(item);
+    int iChild=0;
+
+    while(!ok && (iChild<childCount()))
+    {
+        ok = child(iChild)->removeChild(item);
+        iChild++;
+    }
+    return ok;
+}
+
+void EIItem::removeUncheckedDescendants()
+{
+    int i=0;
+    while(i<childCount())
+    {
+        if(!child(i)->isChecked())
+            removeChild(i);
+        else
+            i++;
+    }
+}
 
 int EIItem::findChild(QVariant itemFieldValue, int iField)
 {
@@ -402,31 +426,29 @@ void EIItem::setChecked(bool checked)
 	}
 }
 
-void  EIItem::setModel(QString model)
-{
-    _model = model;
-}
-
-/**
-  * \brief returns model it is involved in. If is empty, looks for first parent which got a non-empty modelname
-  *
-  */
-QString  EIItem::model()
-{
-    if(!_model.isEmpty())
-        return _model;
-    else
-    {
-        if(parent()==NULL)
-            return _model;
-        else
-            return parent()->model();
-    }
-}
+///**
+//  * \brief returns model it is involved in. If is empty, looks for first parent which got a non-empty modelname
+//  *
+//  */
+//QString  EIItem::model()
+//{
+//    if(getEIType()==EI::MODELCONTAINER)
+//        return this->getFieldValue(EIModelContainer::MODEL);
+//    else
+//    {
+//        if(parent()==NULL)
+//            return _model;
+//        else
+//            return parent()->model();
+//    }
+//}
 
 QDomElement EIItem::toXmlData(QDomDocument & doc)
 {
 	QDomElement result = MOItem::toXmlData(doc);
+        //replace full name with short name
+        result.setAttribute(getFieldName(EIItem::NAME),name(EI::SHORT));
+
 	for(int i=0;i<childCount();i++)
 		result.appendChild(child(i)->toXmlData(doc));
 
@@ -451,9 +473,38 @@ QString EIItem::name(EI::NameFormat type)
 	}
 }
 
+bool EIItem::isValid(MOOptVector* variables, QString &errMsg)
+{
+    return true;
+}
 
+
+QString EIItem::model()
+{
+    if(parent()==NULL)
+        return QString();
+    else
+        return parent()->model();
+}
+
+
+/**
+* This function is used to get references involved this EIItem.
+* For generic EIItem, there is no reference.
+* This is virtual since references can come from specific fields (e.g. from EIStream)
+*/
 QStringList EIItem::references()
 {
     return QStringList();
+}
+
+/**
+* This function is used to replace reference by its numerical value extracted from variables vector.
+* Be careful : this functions introduces a lost of information since reference name is replaced by its numerical value.
+* This is a virtual function since all inheriting class have different fields.
+*/
+bool EIItem::numerize(MOOptVector* variables)
+{
+    return true;
 }
 

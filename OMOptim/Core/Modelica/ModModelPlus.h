@@ -64,7 +64,9 @@ class Project;
 
 /**
 * \brief ModModelPlus is a class dedicated to information storage concerning Modelica models.
-There shoud be one instance of ModModelPlus per ModModel but each one is created only when needed (when data should be stored).
+*
+* Each ModModelPlus is associated to a ModModel. ModModelPlus contains informations that are used within OMOptim and which concern corresponding ModModel.
+* These informations are variables, connections, modifiers (deprecated), dependencies...
 */
 class ModModelPlus : public MOItem
 {
@@ -158,7 +160,7 @@ public:
 	//************************
 	//  Variables
 	//************************
-	MOVector<Variable>* variables();
+        MOVector<Variable>* variables(bool readIfNot=false);
 	MOVector<Variable>* variables(ModClass*);
 
 	//************************

@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabProblemEI.h
+ 	@file WidgetEITargetResult.h
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
@@ -37,64 +37,41 @@
  	@version 0.9 
 */
 
-#ifndef TabEITarget_H
-#define TabEITarget_H
+#ifndef WidgetEITargetResult_H
+#define WidgetEITargetResult_H
 
+#include <QtGui/QDialog>
 #include <QtGui/QWidget>
-#include "ProblemTarget.h"
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QHeaderView>
-#include "Project.h"
-#include "MOOptPlot.h"
+#include <QDesktopServices>
 
-#include <qwt_plot.h>
-#include <qwt_painter.h>
-#include <qwt_plot_canvas.h>
-#include <qwt_plot_marker.h>
-#include <qwt_plot_curve.h>
-#include <qwt_scale_widget.h>
-#include <qwt_legend.h>
-#include <qwt_scale_draw.h>
-#include <qwt_math.h>
-#include <qwt_picker.h>
+#include "EITargetResult.h"
+#include "ui_WidgetEITargetResult.h"
 
 
-#include "WidgetOneSimVars.h"
-#include "MO2ColTab.h"
-#include "WidgetTableVar.h"
-#include "WidgetCCPlot.h"
-#include "WidgetEIInputVars.h"
-#include "WidgetSelPointScan.h"
-#include "WidgetTableConnConstr.h"
-#include "WidgetSelectModModel.h"
 
-class TabProblemEI : public MO2ColTab {
+
+namespace Ui {
+    class WidgetEITargetResultClass;
+}
+
+
+
+class WidgetEITargetResult : public QWidget
+{
+
     Q_OBJECT
-
 public:
-	TabProblemEI(Project *project,ProblemTarget *problem_,QWidget *parent = 0);
-    ~TabProblemEI();
+    WidgetEITargetResult(EITargetResult* result,QWidget *parent = 0);
+    virtual ~WidgetEITargetResult();
 
-	Project *project;
-	ProblemTarget *problem;
 
-	public slots :
-		void actualize();
-		void updateSelPointScan();
-		void onInputVarsModified();
-                void onEILoadModelAsked();
-		void onMERAsked(bool includeUtilities);
-		void onTargetAsked();
+   Ui::WidgetEITargetResultClass *_ui;
+    EITargetResult* _result;
 
-private :
-	WidgetEIInputVars* widgetEIInputVars;
-	WidgetTreeStreams* widgetTreeStreams;
-	WidgetCCPlot* widgetCCPlot;
-	WidgetSelPointScan* widgetSelPointScan;
-	WidgetTableConnConstr* widgetTableConnConstr;
+public slots :
+    void onResultAsked();
+    void onLogAsked();
+    void onSensitivityAsked();
 };
 
-
-
-
-#endif // TabEITarget_H
+#endif 

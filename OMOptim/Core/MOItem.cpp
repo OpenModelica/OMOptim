@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -124,13 +124,13 @@ QString MOItem::name()
 }
 
 //All fields
-QVariant MOItem::getFieldValue(int iField, int role) const
+QVariant MOItem::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(iField))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{
-		switch (iField)
+                switch (ifield)
 		{
 		case NAME :
 			return _name;
@@ -224,12 +224,21 @@ QString MOItem::toSavingString()
 	return savingString;
 }
 
+/**
+* Virtual function used to check (used by inheriting classes).
+* @param error Contains error message
+* @return true if there is an error, false otherwise.
+*/
 bool MOItem::check(QString &error)
 {
 	error.clear();
 	return true;
 }
 
+/**
+* This function exports item information in XML format.
+* @param doc QDomDocument from which XML node should be created.
+*/
 QDomElement MOItem::toXmlData(QDomDocument & doc)
 {
 	QDomElement cItem = doc.createElement(this->getClassName());

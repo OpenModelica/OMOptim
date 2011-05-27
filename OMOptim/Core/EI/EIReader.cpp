@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -87,83 +87,32 @@ EIItem* EIReader::findInDescendants(EIItem* parent,QString fullName)
 			return findInDescendants(curChild,fullName);
 	}
 	return NULL;
-
 }
 
-void EIReader::addEmptyStream(EIItem* parent)
+/**
+* Description Find an item in descendants where fieldvalue of field iField == itemFieldValue.
+* @warning if iField = Name : findInDescendants will compare with short name !! use findInDescendants instead.
+* @sa findInDescendants
+*/
+EIItem* EIReader::findInDescendants(EIItem* parent, EI::Type eiType, QVariant itemFieldValue, int iField)
 {
-	EIStream* newStream = new EIStream(parent);
-	bool ok = parent->addChild(newStream);
-	if(!ok)
-		delete newStream;
-}
 
-void EIReader::addEmptyGroup(EIItem* parent)
-{
-	EIGroup* newGroup = new EIGroup();
-	bool ok = parent->addChild(newGroup);
-	if(!ok)
-		delete newGroup;
-}
+    // check if it is this item
+    if((parent->getEIType()==eiType) && (parent->getFieldValue(iField) == itemFieldValue))
+        return parent;
 
-void EIReader::removeItem(EIItem* _item)
+     // looking in children
+    int iChild=0;
+    EIItem* foundItem=NULL;
+    while(!foundItem && iChild<parent->childCount())
 {
-        EIItem* parentItem = _item->parent();
-        if(parentItem)
-	{
-		int i=0;
-                while((i<parentItem->childCount())&&(parentItem->child(i)!=_item))
-			i++;
-                if(i<parentItem->childCount())
-		{
-                        delete parentItem->child(i);
-                        parentItem->removeChild(i);
+        foundItem = findInDescendants(parent->child(iChild),eiType,itemFieldValue,iField);
+        iChild++;
 		}
+    return foundItem;
 	}
-}
-void EIReader::setItems(QDomElement & domEl,EIItem* rootEI)
-{
-	rootEI->clearDescendants();
 
-	int curDepth=0;
-	QDomNode n;
-	QDomElement domItem;
-	QString parentName;
-	bool curDepthFound = true;
-	EIItem* newEIitem;
 
-	n = domEl.firstChild();
-	while( !n.isNull() )
-	{
-		// curLevel elements
-		domItem = n.toElement();
-
-		QString node = domItem.nodeName();
-		
-		if(node.compare("EIStream",Qt::CaseInsensitive)==0)
-		{
-			newEIitem = new EIStream(domItem);
-			rootEI->addChild(newEIitem);
-		}
-
-		if(node.compare("EIGroup",Qt::CaseInsensitive)==0)
-		{
-			newEIitem = new EIGroup(domItem);
-			rootEI->addChild(newEIitem);
-		}
-
-                if(node.compare("EIItem",Qt::CaseInsensitive)==0)
-                {
-                        newEIitem = new EIItem(domItem);
-                        rootEI->addChild(newEIitem);
-                }
-
-		//fill children
-		setItems(domItem,newEIitem);
-
-		n = n.nextSibling();
-	}
-}
 
 QList<EIStream*> EIReader::getStreams(EIItem* parent)
 {
@@ -207,15 +156,17 @@ QList<EIStream*> EIReader::getValidStreams(EIItem*parent,MOOptVector *variables,
 	QList<EIStream*> result = getStreams(parent);
 	
 	EIStream* curStream;
-	for(int i=0;i<result.size();i++)
+    bool keep;
+    int i=0;
+    while(i<result.size())
 	{
 		curStream = result.at(i);
                 QString error;
-                if(!curStream->isValid(variables,error))
+        keep = !onlyChecked || curStream->isChecked();
+        keep = keep && curStream->isValid(variables,error);
+        if(!keep)
 			result.removeAt(i);
-
-		if(onlyChecked && !curStream->isChecked())
-			result.removeAt(i);			
+        else i++;
 	}
 	return result;
 }
@@ -225,68 +176,77 @@ void EIReader::getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector 
 	QList<EIStream*> streams = getValidStreams(parent,variables,true);
 
 	EIStream* curStream;
-	double TinProv,ToutProv,DTmin2prov; // Temperature in Kelvin
-	QList<double> allT; // in Kelvin
+    double DTmin2prov; // Temperature in Kelvin
 	
-	bool ok1,ok2;
+    bool ok1,ok2,ok;
+    QString msg;
 	
+    Tk.clear();
+
+    METemperature TinCorr,ToutCorr;
+
 	for(int i=0;i<streams.size();i++)
 	{
 		curStream = streams.at(i);
-		TinProv = curStream->Tin.getNumValue(variables,METemperature::K,ok1);
-		ToutProv = curStream->Tout.getNumValue(variables,METemperature::K,ok2);
 		DTmin2prov = curStream->getFieldValue(EIStream::DTMIN2).toDouble();
-		assert(TinProv!=ToutProv);
-		if(TinProv<ToutProv)
+        TinCorr = curStream->TinNum;
+        ToutCorr = curStream->ToutNum;
+        if(curStream->TinNum==curStream->ToutNum)
 		{
+            msg.clear();
+            msg.sprintf("In stream %s, Tin = Tout. This stream won't be considered",curStream->name().utf16());
+            infoSender.send(Info(msg,ListInfo::WARNING2));
+            ok=false;
+        }
+
+        if(curStream->TinNum<curStream->ToutNum)
+        {
 			//Cold stream
-			TinProv += DTmin2prov;
-			ToutProv += DTmin2prov;
+            TinCorr += DTmin2prov;
+            ToutCorr += DTmin2prov;
 		}
 		else
 		{
 			//Hot stream
-			TinProv += -DTmin2prov;
-			ToutProv += -DTmin2prov;
+            TinCorr+= -DTmin2prov;
+            ToutCorr += -DTmin2prov;
 		}
 
-		allT.push_back(TinProv);
-		allT.push_back(ToutProv);
+        Tk.push_back(TinCorr);
+        Tk.push_back(ToutCorr);
 	}
+
 
 	//sort
-	qSort(allT.begin(),allT.end());
-	//remove duplicates
-	std::unique(allT.begin(),allT.end());
-	
-	//fill result with dimensional values
-	Tk.clear();
-	for(int i=0;i<allT.size();i++)
-	{
-		Tk.push_back(METemperature(allT.at(i),METemperature::K));
-	}
-}
+    qSort(Tk.begin(),Tk.end());
 
-void EIReader::getFirstGroupFact(EIItem* item,EIGroupFact* &fact,EIGroup* &group)
+	//remove duplicates
+    QList<METemperature>::iterator iter = std::unique(Tk.begin(),Tk.end());
+    Tk.erase(iter,Tk.end());
+	}
+
+/**
+* Description Look in item hierarchy for the first group with a variable factor.
+*/
+void EIReader::getFirstParentGroupFact(EIItem* item,EIGroupFact* &fact,EIGroup* &group)
 {
 	fact = NULL;
 	group = NULL;
         EIItem* parentItem=item;
-        while(fact==NULL && parent()!=NULL)
+    while(fact==NULL && parentItem!=NULL)
 	{
                 parentItem = parentItem->parent();
                 EIGroup* _group = dynamic_cast<EIGroup*>(parentItem);
 		if(_group)
 		{
+            group = _group;
 			if(_group->isFactVariable())
 			{
 				fact = _group->getFact();
-				group = _group;
 			}
 		}
 	}
 }
-
 
 QStringList EIReader::getAllItemNames(EIItem* item,EI::Type filter)
 {
@@ -303,3 +263,57 @@ QStringList EIReader::getAllItemNames(EIItem* item,EI::Type filter)
 	}
 	return itemNames;
 }
+
+
+
+// Streams filter and sort functions
+QList<EIStream*> EIReader::getStreamsAboveT(METemperature T,QList<EIStream*> allStreams,MOOptVector* variables)
+{
+    QList<EIStream*> list;
+    EIStream* curStream;
+
+    for(int i=0;i<allStreams.size();i++)
+    {
+        curStream = allStreams.at(i);
+
+        if((curStream->TinNum>T)||(curStream->ToutNum>T))
+            list.push_back(curStream);
+    }
+    return list;
+}
+
+QList<EIStream*> EIReader::getStreamsBelowT(METemperature T,QList<EIStream*> allStreams,MOOptVector* variables)
+{
+    QList<EIStream*> list;
+    EIStream* curStream;
+
+    for(int i=0;i<allStreams.size();i++)
+    {
+        curStream = allStreams.at(i);
+
+        if((curStream->TinNum<T)||(curStream->ToutNum<T))
+            list.push_back(curStream);
+    }
+    return list;
+
+}
+
+void EIReader::sortByCp(QList<EIStream*> & allStreams,Qt::SortOrder order)
+{
+    if(order==Qt::AscendingOrder)
+        qSort(allStreams.begin(),allStreams.end(),EIReader::CpLowerThan);
+    else
+        qSort(allStreams.begin(),allStreams.end(),EIReader::CpGreaterThan);
+}
+
+bool EIReader::CpLowerThan(const EIStream* s1, const EIStream* s2)
+{
+    bool ok1,ok2;
+    return s1->Cp(ok1) < s1->Cp(ok2);
+}
+
+bool EIReader::CpGreaterThan(const EIStream* s1, const EIStream* s2)
+{
+   return !CpLowerThan(s1,s2);
+}
+

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -43,20 +43,30 @@
 EITargetResult::EITargetResult(void)
 :Result()
 {
-        _rootEI = new EIItem();
+        _eiTree = new EITree();
+        _eiConns = new EIConns();
 }
 EITargetResult::EITargetResult(Project* project, Problem* problem)
 :Result()
 {
 	_project = project;
 	_problem = problem;
+
+        _eiTree = new EITree();
+        _eiConns = new EIConns();
+
 }
 
 EITargetResult::~EITargetResult(void)
 {
+
+    delete _eiTree;
+
+    _eiConns->clear();
+    delete _eiConns;
 }
 
-QDomElement EITargetResult::toXMLData(QDomDocument & doc)
+QDomElement EITargetResult::toXmlData(QDomDocument & doc)
 {
 	// Root element
 	QDomElement cResult = doc.createElement("Result");
@@ -67,6 +77,50 @@ QDomElement EITargetResult::toXMLData(QDomDocument & doc)
 	cInfos.setAttribute("type", problemType());
 	cResult.appendChild(cInfos);
 
+        // Root EI
+        QDomElement cEI = _eiTree->toXmlData(doc);
+        cResult.appendChild(cEI);
+
+        // Total cost
+        QDomElement cValues = doc.createElement("Values");
+        cValues.setAttribute("TotalCost",totalCost);
+        cResult.appendChild(cValues);
+
+        // files
+        QDomElement cFiles = doc.createElement("Files");
+        cFiles.setAttribute("LogFile",_logFileName);
+        cFiles.setAttribute("ResFile",_resFileName);
+        cFiles.setAttribute("SensFile",_sensFileName);
+        cResult.appendChild(cFiles);
+
+        // HLD
+        QDomElement cEIConns = _eiConns->toXmlData(doc,"EIConns");
+        cResult.appendChild(cEIConns);
 
 	return cResult;
+}
+
+EITree* EITargetResult::eiTree()
+{
+    return _eiTree;
+}
+
+
+void EITargetResult::setEITree(EITree * eiTree)
+{
+    if(_eiTree && (_eiTree!=eiTree))
+        delete _eiTree;
+    _eiTree = eiTree;
+}
+
+EIConns* EITargetResult::eiConns()
+{
+    return _eiConns;
+}
+
+void EITargetResult::setEIConns(EIConns * eiConns)
+{
+    if(_eiConns && (_eiConns!=eiConns))
+        delete _eiConns;
+    _eiConns = eiConns;
 }

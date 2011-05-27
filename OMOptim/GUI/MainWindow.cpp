@@ -87,6 +87,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	// text log
 	_textLog=new MyTextLog();
 	_ui->layoutTextLog->addWidget(_textLog);
+        _textLog->setOpenExternalLinks(true);
 	
 	//Error, msg and progress
 	_widgetProgress = new WidgetProgress(this);
@@ -108,10 +109,8 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	this,SLOT(showProblemPopup(const QPoint &)));
 	connect (_ui->treeModClass,SIGNAL(customContextMenuRequested(const QPoint &)),
 	this,SLOT(showModClassTreePopup(const QPoint &)));
-
-        // Adeel :: Just commented it out because there is no such slot and it keeps on printing warning
-//	connect (_tabMain,SIGNAL(customContextMenuRequested(const QPoint &)),
-//	this,SLOT(showTabTitlePopup(const QPoint &)));
+	connect (_tabMain,SIGNAL(customContextMenuRequested(const QPoint &)),
+	this,SLOT(showTabTitlePopup(const QPoint &)));
 
 	// Menus
 	connect( _ui->actionNewProject, SIGNAL( triggered() ),this, SLOT( newProject()));
@@ -127,6 +126,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	connect( _ui->actionClearRecent, SIGNAL(triggered()), this, SLOT(clearRecentFilesMenu()));
 	connect( _ui->actionLoadMoFile,  SIGNAL(triggered()), this, SLOT(loadMoFile()));
 	connect( _ui->actionLoadModelicaLibrary,  SIGNAL(triggered()), this, SLOT(loadModelicaLibrary()));
+        connect( _ui->actionHelp, SIGNAL(triggered()),this, SLOT(openUserManual()));
 	
 	//*********************************
 	// Signals for project, infos
@@ -302,10 +302,6 @@ void MainWindow::saveProject()
 				"MO project (*.min)" );
 			if(!_filePath.isNull())
 			{
-                            // Adeel :: Kind of Qt bug QfileDioalog::getsavefilename return .min extension on windows but not on linux. So need to hard code it here
-                            #ifndef WIN32
-                                _filePath.append(".min");
-                            #endif
 				_project->setFilePath(_filePath);
 				_project->save();
 			}
@@ -423,7 +419,7 @@ void MainWindow::newProblemEI()
 {
 	if(_project->isDefined())
 	{
-		_project->addNewProblem(Problem::PROBLEMEI,NULL);
+                _project->addNewProblem(Problem::EIPROBLEM,NULL);
 	}
 }
 void MainWindow::newOMCShell()
@@ -468,7 +464,7 @@ void MainWindow::enableProblemTab(QModelIndex index)
 			bool found = false;
 			while(i<_tabMain->count() && !found)
 			{
-				if((_tabMain->tabText(i)==name)&&(((MOTabBase*)_tabMain->widget(i))->type==MOTabBase::TABPROBLEM))
+                                if((_tabMain->tabText(i)==name)&&(((MOTabBase*)_tabMain->widget(i))->tabType()==MOTabBase::TABPROBLEM))
 					found =true;
 				else
 					i++;
@@ -494,7 +490,7 @@ void MainWindow::enableSolvedProblemTab(QModelIndex index)
 			bool found = false;
 			while(i<_tabMain->count() && !found)
 			{
-				if((_tabMain->tabText(i)==name)&&(((MOTabBase*)_tabMain->widget(i))->type==MOTabBase::TABSOLVEDPROBLEM))
+                                if((_tabMain->tabText(i)==name)&&(((MOTabBase*)_tabMain->widget(i))->tabType()==MOTabBase::TABSOLVEDPROBLEM))
 					found =true;
 				else
 					i++;
@@ -891,14 +887,26 @@ void MainWindow::onProblemStopAsked()
 
 void MainWindow::loadMoFile()
 {
+    //get last .mo folder
+    QSettings settings("OMOptim", "Settings");
+    QString lastMoFolder = settings.value("LastMoFolder").toString();
+
 	QStringList fileNames = QFileDialog::getOpenFileNames(
 		this,
 		"MO - Add .mo file to project",
-		QString::null,
+            lastMoFolder,
 		"Modelica file (*.mo)" );
 
 	for(int i=0;i<fileNames.size();i++)
 		_project->loadMoFile(fileNames.at(i));
+
+    // save last .mo folder
+    if(fileNames.size())
+    {
+        QFileInfo loaded(fileNames.at(0));
+        lastMoFolder = loaded.absoluteDir().absolutePath();
+        settings.setValue("LastMoFolder",lastMoFolder);
+}
 }
 
 void MainWindow::loadModelicaLibrary()
@@ -943,4 +951,18 @@ void MainWindow::closeEvent(QCloseEvent *event)
  void MainWindow::dispAboutQt()
  {
 	QMessageBox::aboutQt(this,"About Qt");
+ }
+
+ void MainWindow::openUserManual()
+ {
+     QUrl userManualPath;
+     // since in MAC OS X the url adds extra quotes to it, so we need to handle it differently.
+     //#ifdef Q_OS_MAC
+     //    userManualPath = QUrl(QString("file:///").append(QString(getenv("OPENMODELICAHOME")))
+     //                         .append("/share/doc/omedit/OMEdit-UserManual.pdf"));
+     //#else
+     userManualPath = QUrl(QString("file:///").append(OpenModelica::home().replace("\\", "/"))
+                           .append("/share/doc/omoptim/OMOptim-UsersGuide.pdf"));
+     //#endif
+     QDesktopServices::openUrl(userManualPath);
  }

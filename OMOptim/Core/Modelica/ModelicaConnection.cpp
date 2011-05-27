@@ -110,7 +110,7 @@ QString ModelicaConnection::sFieldName(int ifield, int role)
 
 QVariant ModelicaConnection::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{

@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -131,14 +131,13 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
 		dsinFile = _mmoFolder+QDir::separator()+_dsinFile;
 	}
 	initVariables->clear();
-	QFileInfo dsinInfo = QFileInfo(dsinFile);
 	
-	if(!dsinInfo.exists()&&authorizeRecreate)
+        if(!QFile::exists(dsinFile) && authorizeRecreate)
 	{
 		createDsin();
 	}
 
-	if(!dsinInfo.exists())
+        if(!QFile::exists(dsinFile))
 	{
 		infoSender.send(Info("Unable to create DsinFile",ListInfo::ERROR2));
 		return false;
@@ -146,63 +145,15 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
 	else
 	{
 		Dymola::getVariablesFromDsFile(dsinFile,initVariables,_modModelName);
-		//sendInfo (new Info(ListInfo::READVARIABLESSUCCESS));
+                infoSender.send(Info(ListInfo::READVARIABLESSUCCESS));
 		return true;
 	}
 }
 
 bool ModPlusDymolaCtrl::compile()
 {
-	//// dir
-	//QDir dir(mmoFolder);
-	//
-	//// Copy .mo file in model folder
-	//QFileInfo orgMoFileInfo(moFilePath);
-	//QString copiedMoPath = dir.absoluteFilePath(orgMoFileInfo.fileName());
-	//QFile orgMoFile(moFilePath);
-	//QFile dstMoFile(copiedMoPath);
-	//if(dstMoFile.exists())
-	//	dstMoFile.remove();
-	//orgMoFile.copy(copiedMoPath);
 
-
-	//// copy dependencies
-	//QStringList depFileNames = moomc->getDependenciesPaths(moFilePath,false);
-	//for(int i=0;i<depFileNames.size();i++)
-	//{
-	//	// check if file exists
-	//	QFileInfo depFileInfo(depFileNames.at(i));
-	//	QString depFilePath;
-	//	if(!depFileInfo.exists())
-	//	{
-	//		// check in folder
-	//		depFileInfo = QFileInfo(moFilePath+QDir::separator()+depFileNames.at(i));
-	//	}
-
-	//	// copy
-	//	if(depFileInfo.exists())
-	//	{
-	//		QFile depFile(depFileInfo.absoluteFilePath());
-	//		depFile.copy(dir.absoluteFilePath(depFileInfo.fileName()));
-	//	}
-	//}
-
-	////copy mo files situated in same folder
-	//if(copyAllMoOfFolder)
-	//{
-	//	QDir orgDir = orgMoFileInfo.absoluteDir();
-	//	QStringList filters;
-	//	filters << "*.mo";
-	//	QStringList annexMoFiles = orgDir.entryList(filters);
-
-	//	QFile annexMoFile;
-	//	for(int i=0;i<annexMoFiles.size();i++)
-	//	{
-	//		annexMoFile.setFileName(orgDir.filePath(annexMoFiles.at(i)));
-	//		annexMoFile.copy(dir.absoluteFilePath(annexMoFiles.at(i)));
-	//	}
-
-	//}
+        infoSender.send(Info("Compiling model "+_modModelName,ListInfo::NORMAL2));
 
 	// compile
 	bool success = Dymola::firstRun(_moFilePath,_modModelName,_mmoFolder);
@@ -230,14 +181,13 @@ bool ModPlusDymolaCtrl::isCompiled()
 	for(int i=0;i<filesNeeded.size();i++)
 	{
 		filePath = _mmoFolder+QDir::separator()+filesNeeded.at(i);
-		QFile file(filePath);
-		filesExist = filesExist && file.exists();
+                filesExist = filesExist && QFile::exists(filePath);
 	}
 	return filesExist;
 }
 
 
-bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars)
+bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy)
 {
 	// eventually compile model
 	if(!isCompiled())
@@ -255,16 +205,21 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
 	modelTempDir.mkdir(tempFolder);
 
 	// copy files in temp dir (#TODO : optimize with a config.updateTempDir in case of several consecutive launches)
-	QStringList filesToCopy;
-	filesToCopy << "dsin.txt" << "dymosim.exe";
-	QDir tempDir = QDir(tempFolder);
+        QStringList allFilesToCopy;
 	QDir mmoDir = QDir(_mmoFolder);
+        allFilesToCopy << mmoDir.filePath("dsin.txt") << mmoDir.filePath("dymosim.exe");
+        allFilesToCopy.append(filesTocopy);
 
-	for(int i=0; i< filesToCopy.size();i++)
+	QDir tempDir = QDir(tempFolder);
+        QFileInfo fileToCopyInfo;
+        QFile fileToCopy;
+
+        for(int i=0; i< allFilesToCopy.size();i++)
 	{
-		QFile copiedFile(mmoDir.filePath(filesToCopy.at(i)));
-		tempDir.remove(filesToCopy.at(i));
-		copiedFile.copy(tempDir.filePath(filesToCopy.at(i)));
+            fileToCopy.setFileName(allFilesToCopy.at(i));
+            fileToCopyInfo.setFile(fileToCopy);
+            tempDir.remove(fileToCopyInfo.fileName());
+            fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
 	}
 	
 	// remove previous dymola log files
@@ -279,6 +234,9 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
 	
 	// Specifying new Variables values in dymosim input file
 	Dymola::setVariablesToDsin(tempDsin,_modModelName,updatedVars,_parameters);
+
+        // Info
+        infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));
 
 	// Launching Dymosim
 	Dymola::start(tempFolder);

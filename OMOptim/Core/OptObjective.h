@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -81,6 +81,7 @@ public:
 	virtual QString getClassName(){return "OptObjective";};
 
 
+        void initOptExtremum();
 
 	void setDirection(Direction);
 	void setScanFunction(ScanFunction);
@@ -101,6 +102,8 @@ public:
 	virtual unsigned getNbFields(){return nbFields;};
 
 	
+        double min(){return _min;};
+        double max(){return _max;};
 
 protected:
 	ScanFunction _scanFunction;

@@ -1,5 +1,5 @@
 ﻿// $Id$
-/**
+        /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
@@ -28,65 +28,55 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file TreeEIStreams.h
+ 	@file WidgetEITargetResult.cpp
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
  	@version 0.9 
+*/
 
-  */
-#ifndef _TreeEIStreams_H
-#define _TreeEIStreams_H
+#include "WidgetEITargetResult.h"
 
-#include "TableEIItems.h"
-#include "MOCCCurve.h"
-#include "MOVector.h"
-#include "CCTools.h"
-#include "EIReader.h"
-#include "EIItem.h"
-
-class TreeEIStreams : public QAbstractItemModel
+namespace Ui
 {
+    class WidgetEITargetResultClass;
+}
 
-	Q_OBJECT
+WidgetEITargetResult::WidgetEITargetResult(EITargetResult *result,QWidget *parent)
+    : QWidget(parent), _ui(new Ui::WidgetEITargetResultClass)
+{
+    _ui->setupUi(this);
+    _result = result;
 
-public:
-	TreeEIStreams(EIItem *_rootElement,bool _showFields,bool _editable,EIReader* _eiReader);
-	~TreeEIStreams(void);
+    _ui->labelTotalCost->setText(QString::number(result->totalCost));
 
-	// abstract model functions
-	QVariant data(const QModelIndex &index, int role) const;
-	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-	QVariant headerData(int section, Qt::Orientation orientation,
-		int role = Qt::DisplayRole) const;
-	QModelIndex index(int row, int column,
-		const QModelIndex &parent = QModelIndex()) const;
-	QModelIndex parent(const QModelIndex &index) const;
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
-	int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    connect(_ui->pushLog,SIGNAL(clicked()),this,SLOT(onLogAsked()));
+    connect(_ui->pushResult,SIGNAL(clicked()),this,SLOT(onResultAsked()));
+    connect(_ui->pushSensitivity,SIGNAL(clicked()),this,SLOT(onSensitivityAsked()));
+}
 
-	EIItem* findItem(QString);
-	bool isCheckable(const QModelIndex) const;
+WidgetEITargetResult::~WidgetEITargetResult()
+{
+    delete _ui;
+}
 
-	void publicBeginResetModel();
-	void publicEndResetModel();
+void WidgetEITargetResult::onResultAsked()
+{
+    QString filePath = _result->saveFolder().absoluteFilePath(_result->_resFileName);
+    QUrl fileUrl(QString("file:///").append(filePath));
 
-private :
-	EIItem* rootElement;
-	EIReader* eiReader;
-	bool showFields;
-	bool editable;
-bool enabled;
+    bool ok = QDesktopServices::openUrl(fileUrl);
+}
 
-public slots:
-		 void allDataChanged();
-		 void allDataCleared();
-void onRootElementDeleted();
+void WidgetEITargetResult::onLogAsked()
+{
+    QDesktopServices::openUrl(_result->saveFolder().absoluteFilePath(_result->_logFileName));
+}
 
-};
-
-
-#endif
+void WidgetEITargetResult::onSensitivityAsked()
+{
+    QDesktopServices::openUrl(_result->saveFolder().absoluteFilePath(_result->_sensFileName));
+}

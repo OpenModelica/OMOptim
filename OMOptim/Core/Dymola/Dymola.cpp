@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
 @file Dymola.cpp
 @brief Comments for file documentation.
@@ -21,6 +21,7 @@ http://www-cep.ensmp.fr/english/
 #include <QtCore/QFileInfo>
 #include <QtCore/QTextStream>
 #include <QtCore/QAbstractTableModel>
+#include <QtCore/QProcess>
 #include <stdio.h>
 #ifdef WIN32
 #include <windows.h>
@@ -88,28 +89,27 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
     }
     else
     {
-        QString command("\" \""+dymolaPath+"\" \""+filePath+"\" \"");
-        //QString command("\""+filePath+"\"");
-        command.replace("/","\\");
-        //command.replace("\"","\\\"");
-        //command.append(" >> C:\\log.txt");
-
-        char* ccommand = command.toLatin1().data();
-        std::cout << ccommand;
-        char* ccommand2 = command.toAscii().data();
-        std::cout << ccommand2;
-
-
         // delete previous dymosim.exe
         QFile dymoFile(storeFolder+QDir::separator()+"dymosim.exe");
         if(dymoFile.exists())
             dymoFile.remove();
 
         // launch script
-        system(command.toAscii().data());
+        QProcess scriptProcess;
+        QStringList args;
+        args.push_back(filePath);
 
-        // move file to storeFolder (dymola always compile in .mo folder)
-
+        //start process
+        infoSender.send(Info("Launching Dymola..."));
+        scriptProcess.start(dymolaPath,args);
+        bool ok = scriptProcess.waitForFinished(-1);
+        if(!ok)
+        {
+            QString msg("CreateProcess failed (%d).\n");
+            msg.sprintf(msg.toLatin1().data(),GetLastError());
+            infoSender.debug(msg);
+            return;
+        }
 
         //look if it succeed
         bool success = dymoFile.exists();
@@ -142,13 +142,11 @@ bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
 
     // Run script
     QString dymolaPath = MOSettings::getValue("path/dymolaExe").toString();
-    QString command("\" \""+dymolaPath+"\" \""+filePath+"\" \"");
-    command.replace("/","\\");
 
-    char* ccommand = command.toLatin1().data();
-    std::cout << ccommand;
-    char* ccommand2 = command.toAscii().data();
-    std::cout << ccommand2;
+
+    QProcess simProcess;
+    QStringList args;
+    args.push_back(filePath);
 
 
     // delete previous dsin file
@@ -157,7 +155,16 @@ bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
         dsinFile.remove();
 
     // launch script
-    system(command.toAscii().data());
+    infoSender.send(Info("Launching Dymola..."));
+    simProcess.start(dymolaPath, args);
+    bool ok = simProcess.waitForFinished(-1);
+    if(!ok)
+    {
+        QString msg("CreateProcess failed (%d).\n");
+        msg.sprintf(msg.toLatin1().data(),GetLastError());
+        infoSender.debug(msg);
+        return;
+    }
 
     //look if it succeed
     bool success = dsinFile.exists();
@@ -177,7 +184,6 @@ QString Dymola::getExecutablePath()
 
 	QString subkey("SOFTWARE\\Classes\\Applications\\Dymola.exe\\shell\\Run\\command");
     
-
 	if( RegOpenKey(HKEY_LOCAL_MACHINE,VQTConvert::QString_To_LPCTSTR(subkey),&hKey) == ERROR_SUCCESS)
     {
         dwType = REG_SZ;
@@ -206,7 +212,7 @@ void Dymola::start(QString path)
 
     QProcess simProcess;
     simProcess.start(appPath, QStringList());
-    bool ok = simProcess.waitForFinished();
+    bool ok = simProcess.waitForFinished(-1);
     if(!ok)
     {
                     QString msg("CreateProcess failed (%d).\n");

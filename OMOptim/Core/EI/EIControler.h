@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MERResult.h
+ 	@file EIControler.h
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
@@ -37,55 +37,37 @@
  	@version 0.9 
 
   */
-#ifndef MERRESULT_H
-#define MERRESULT_H
+#ifndef _EIControler_H
+#define _EIControler_H
 
-#include "Result.h"
-#include "MOCCCurve.h"
+
+#include "EIItem.h"
+#include "EIStream.h"
+#include "EIGroup.h"
 #include "EIReader.h"
-#include "MOOptVector.h"
+#include "MOSettings.h"
+#include "EIModelContainer.h"
 
-
-class ProblemTarget;
-
-class MERResult : public Result
+class EIControler : public QObject
 {
 	Q_OBJECT
 
 public:
-	MERResult();
-	MERResult(const MERResult &);
-	MERResult(Project*, ProblemTarget*,EIReader*);
-	~MERResult(void);
-	QString getClassName(){return "MERResult";};
 
-	int problemType();
-	QDomElement toXMLData(QDomDocument &);
+	EIControler();
+	
+	//Edit functions
+        static void addEmptyStream(EIItem* parent);
+        static void addEmptyGroup(EIItem* parent);
+        static void removeItem(EIItem*);
+        static void resetProcessFacts(EIItem*);
+        static QList<EIStream*> splitStream(EIStream* toSplit,double firstFraction);
 
-	void initVars();
+	//XML functions
+        static void setItems(QDomElement & domEl,EIItem* rootEI);
 
-public :
-
-	//Results
-	VariableResult* TPinch;
-	VariableResult* MER;
-	VariableResult* MERCold;
-
-	//MOOptVector* resultVars;
-
-	MOCCCurve *curveHot;
-	MOCCCurve *curveCold;
-	MOCCCurve *curveGcc;
-
-	QList<double>  xDataHot;
-	QList<double>  yDataHot;
-	QList<double>  xDataCold;
-	QList<double>  yDataCold;
-
-	void emitUpdated();
-
-signals :
-	void updated();
 };
+
+
 
 #endif

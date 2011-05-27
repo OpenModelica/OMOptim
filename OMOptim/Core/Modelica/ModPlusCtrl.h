@@ -52,6 +52,15 @@ class ModModelPlus;
 
 class ModPlusCtrl :public QObject
 {
+    /*! \class ModPlusCtrl
+    * \brief Class providing control functions for ModModelPlus.
+    *
+    *  Nearly all functions defined in this class are pure virtual.
+    *  They concern reading variables, simulation and parameters.
+    *  This class should be inherited and implemented for each software used to simulate Modelica models.
+    *  Currently, two inheriting classes exist : ModPlusOMCtrl working with OpenModelica and ModPlusDymolaCtrl working with Dymola.
+    */
+
 	public:
 
 	enum Type
@@ -78,7 +87,7 @@ class ModPlusCtrl :public QObject
 	virtual ModPlusCtrl::Type type() = 0;
 	
 	// Simulate function
-	virtual bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars) = 0;
+        virtual bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy = QStringList()) = 0;
 
 	virtual void setMmoFolder(QString);
 	void setMoFilePath(QString);

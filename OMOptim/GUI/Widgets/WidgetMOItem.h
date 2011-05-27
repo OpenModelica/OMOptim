@@ -94,6 +94,9 @@ protected :
 		void onValueChanged(const QString &);
 		void onCheckChanged(int state);
 		void actualizeValues();
+
+signals :
+        void valueChanged();
 };
 
 #endif 

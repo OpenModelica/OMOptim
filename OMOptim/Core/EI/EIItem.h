@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -48,11 +48,14 @@
 #include "QtCore/QDir"
 #include "LowTools.h"
 
+#include <QtGui/QStandardItem>
+
 namespace EI
 {
 	enum Type{
 		GROUP,
 		STREAM,
+            MODELCONTAINER,
 		GENERIC
 	};
 
@@ -62,21 +65,26 @@ namespace EI
 	};
 };
 
+//class EITree;
+
 class EIItem : public MOItem
 {
 	Q_OBJECT
 
-		//***********************
-		// Attributes
-		//***********************
+    /**
+    * \brief EIItem is a class corresponding to a Energy Integration item (like a group or a stream)
+    *
+    * A EIItem can correspond to any energy integration item. It is inherited by specific classes (currently EIGroup or EIStream).
+    * This class provides basic structure and functions of Energy Integration items.
+    */
 
-
+  //  friend class EITree;
 protected:
-        EIItem *_parent;
-        QList<EIItem*> _children;
-        bool _checked;
-        QString _model; // model : if owned by a model, this is full name of the modelica model
+        EIItem *_parent; /** if has no parent, set to NULL*/
+        QList<EIItem*> _children; /** list of children */
+        bool _checked; /** is this item enabled or not */
 	
+
 
 
 	//***********************
@@ -84,7 +92,7 @@ protected:
 	//***********************
 public:
 	EIItem();
-        EIItem(EIItem* parent,QString name,QString model=QString());
+        EIItem(EIItem* parent,QString name);
 	EIItem(const EIItem &);
         EIItem(QDomElement & domEl);
 	virtual ~EIItem(void);
@@ -94,18 +102,18 @@ public:
 	virtual EIItem* clone();
 	QString name(EI::NameFormat = EI::FULL);
 
+
 	enum Field
 	{
 		//Modelica fields
 		NAME,
-                CHECKED,
-                MODEL
+                CHECKED
 	};
 
 
 
 public:
-        static const int nbFields = 3;
+        static const int nbFields = 2;
 	virtual unsigned getNbFields(){return nbFields;};
 
 
@@ -129,12 +137,11 @@ public:
 	bool isChecked();
 	void setChecked(bool);
 
-        //Model
-        void setModel(QString);
-        QString model();
-
         //References
         virtual QStringList references();
+        virtual bool numerize(MOOptVector* variables);
+        virtual bool isValid(MOOptVector* variables, QString &errMsg);
+        virtual QString model(); /** returns a QString if item is included in a model container*/
 
 	//*****************************
 	//Children
@@ -145,8 +152,10 @@ public:
 	int streamChildCount();
 	int groupChildCount();
 	int childCount() const;
-	void removeChild(int i);
-	void removeChild(EIItem *);
+        bool removeChild(int i);
+        bool removeChild(EIItem *);
+        bool removeDescendant(EIItem*);
+        void removeUncheckedDescendants();
         int findChild(QVariant itemFieldValue, int iField);
 
 	EIItem* child(int row) const;

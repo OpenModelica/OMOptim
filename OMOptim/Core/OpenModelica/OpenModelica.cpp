@@ -86,14 +86,8 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
 	ts << scriptText;
 	file.close();
 
-        // Adeel :: changed the hard coded exe path doesn't work in linux
-#ifdef WIN32
-        QFile modelExeFile(storeFolder+QDir::separator()+modelToConsider+".exe");
-#else /* unix */
-        QFile modelExeFile(storeFolder+QDir::separator()+modelToConsider);
-#endif
         // delete previous model .exe
-//	QFile modelExeFile(storeFolder+QDir::separator()+modelToConsider+".exe");
+    QFile modelExeFile(storeFolder+QDir::separator()+modelToConsider+".exe");
 	if(modelExeFile.exists())
 		modelExeFile.remove();
 
@@ -280,51 +274,51 @@ void OpenModelica::setInputVariables(QString fileName_, MOVector<Variable> *vari
 
 void OpenModelica::start(QString exeFile)
 {
-    // Adeel :: Commenting the #ifdef WIN32 because I have fixed the exeFile issue in ModPlusOMCtrl constructor
-//#ifdef WIN32
+#ifdef WIN32
 	QFileInfo exeFileInfo(exeFile);
 	QString exeDir = exeFileInfo.absolutePath();
+    bool cdOk = SetCurrentDirectory(exeDir.utf16());
 
-        /* Adeel :: why do you need to setcurrentdirectory here? Actually i don't know why do you need
-           to run the executable again. Since you are using the simulate command of OMC. So simulate
-           command creates the executable and run it and the result file is automatically created.
 
-           Anyways i changed SetCurrentDirectory to QProcess::setWorkingDirectory :)
-        */
+    QString appPath = "\""+exeFile+"\"";
 
-        //bool cdOk = SetCurrentDirectory(exeDir.utf16());
        
-        //QString appPath = "\""+exeFile+"\"";
 	
+
+
         QProcess simProcess;
         // add OM path in PATH
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        // Adeel :: ask OpenModelica about its home :)
-        //QString omHome = env.value("OpenModelicaHome");
-        QString omHome = OMCHelper::OpenModelicaHome;
+    QString omHome = env.value("OpenModelicaHome");
         omHome = omHome+QDir::separator()+"bin";
         env.insert("PATH", env.value("Path") + ";"+omHome);
         simProcess.setProcessEnvironment(env);
-        // Adeel :: replacement for SetCurrentDirectory
-        simProcess.setWorkingDirectory(exeDir);
 
         //start process
-        simProcess.start(exeFile, QStringList());
-        bool ok = simProcess.waitForFinished();
+    simProcess.start(appPath, QStringList());
+    bool ok = simProcess.waitForFinished(-1);
         if(!ok)
         {
-            // Adeel :: use QProcess::errorString to get the last error message.
-            QString msg = QString("CreateProcess failed ").append(simProcess.errorString()).append("\n");
-//            QString msg("CreateProcess failed (%d).\n");
-//            msg.sprintf(msg.toLatin1().data(),GetLastError());
+        QString msg("CreateProcess failed (%d).\n");
+        msg.sprintf(msg.toLatin1().data(),GetLastError());
             infoSender.debug(msg);
             return;
         }
-//#endif
+
+
+#endif
 }
 
 QString OpenModelica::sciNumRx()
 {
 	QString rx = "([+-]?[0-9]*\\.?[0-9]+|[+-]?[0-9]+\\.?[0-9]*[eE][+-]?[0-9]+)";
 	return rx;
+}
+
+
+QString OpenModelica::home()
+{
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    QString omHome = env.value("OpenModelicaHome");
+    return omHome;
 }

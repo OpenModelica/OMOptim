@@ -60,7 +60,7 @@
 #include <qwt_math.h>
 #include <qwt_picker.h>
 
-#include "tabProjectInfos.h"
+#include "WidgetProjectInfos.h"
 #include "tabModelVariables.h"
 #include "tabModelComponents.h"
 #include "MOTab.h"
@@ -75,6 +75,7 @@ class TabProject : public MOTabSimple {
 public:
 	TabProject(Project *project,QWidget *parent = 0);
     ~TabProject();
+    TabType tabType(){return TABPROJECT;};
 
 	Project *project;
 
@@ -82,7 +83,7 @@ public:
 	//UI
 	Ui::TabProject_Class *ui;
 
-	TabProjectInfos *tabInfos;
+        WidgetProjectInfos *widgetInfos;
 	//TabModelComponents *tabComponents;
 	//TabModelVariables *tabVariables;
 

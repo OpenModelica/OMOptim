@@ -62,7 +62,7 @@ class WidgetTableConnConstr : public QWidget {
 
 
 public:
-	explicit WidgetTableConnConstr(EIConnConstrs *constrs, EIItem* _rootEI,EIReader* _eiReader,bool _editable,QWidget *parent = 0);
+        explicit WidgetTableConnConstr(EIConnConstrs *constrs, EITree* _eiTree,bool _editable,QWidget *parent = 0);
     virtual ~WidgetTableConnConstr();
 
 	public slots:
@@ -73,8 +73,7 @@ public:
     Ui::WidgetTableConnConstrClass *ui;
 	EIConnConstrs* constrs;
 	MOTableView* tableView;
-	EIItem* rootEI;
-	EIReader* eiReader;
+        EITree* eiTree;
 	
 	VarCompleterDelegate *compltDlgA;
 	VarCompleterDelegate *compltDlgB;

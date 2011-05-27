@@ -43,6 +43,7 @@
 #include "MOItem.h"
 #include "EIItem.h"
 #include "EIReader.h"
+#include "EITree.h"
 
 /*! \class EIConnConstr
    * \brief Each instance of this class corresponds to a connexion constraint
@@ -67,9 +68,9 @@ class EIConnConstr : public MOItem
 	static const int nbFields = 3;
 
 
-	EIConnConstr(EIItem* rootEI, EIReader * eiReader);
+        EIConnConstr(EITree*);
 	~EIConnConstr(void);
-	EIConnConstr(QDomElement &, EIItem* , EIReader *);
+        EIConnConstr(QDomElement &, EITree*);
 
 	
 	static QString strType(Type);
@@ -84,7 +85,7 @@ class EIConnConstr : public MOItem
 	void setType(Type _type);
 	EIConnConstr* clone();
 	bool isValid();
-	QMultiMap<EIStream*,EIStream*> getMapStreams(EIReader* eiReader,MOOptVector *variables);
+        QMultiMap<EIStream*,EIStream*> getMapStreams(MOOptVector *variables);
 
 	// access and edit functions
 	QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
@@ -96,8 +97,7 @@ protected:
 	EIItem* a;
 	EIItem* b;
 	Type type;
-	EIItem* rootEI;
-	EIReader * eiReader;
+        EITree* eiTree;
 };
 
 #endif

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -45,6 +45,20 @@ EIStream::EIStream(EIItem* parent, QString name)
 {
 	_editableFields << EIStream::NAME << EIStream::TIN_V << EIStream::TIN_U << EIStream::TOUT_V << EIStream::TOUT_U
 		<< EIStream::QFLOW_V << EIStream::QFLOW_U << EIStream::DTMIN2;
+
+        QMap<int,QVariant> defaultValues;
+        defaultValues.insert(EIStream::TIN_V,0);
+        defaultValues.insert(EIStream::TIN_U,METemperature::C);
+        defaultValues.insert(EIStream::TOUT_V,0);
+        defaultValues.insert(EIStream::TOUT_U,METemperature::C);
+        defaultValues.insert(EIStream::QFLOW_V,0);
+        defaultValues.insert(EIStream::QFLOW_U,MEQflow::W);
+        defaultValues.insert(EIStream::DTMIN2,0);
+
+        for(int i=0;i<defaultValues.count();i++)
+            setFieldValue(defaultValues.keys().at(i),defaultValues.values().at(i));
+
+        _numerized = false;
 }
 
 EIStream::~EIStream(void)
@@ -53,10 +67,16 @@ EIStream::~EIStream(void)
 
 EIStream::EIStream(const EIStream & _stream):EIItem(_stream)
 {
-	Tin = _stream.Tin;
-	Tout = _stream.Tout;
-	Qflow = _stream.Qflow;
+        TinRef = _stream.TinRef;
+        ToutRef = _stream.ToutRef;
+        QflowRef = _stream.QflowRef;
 	DTmin2 = _stream.DTmin2;
+
+        TinNum = _stream.TinNum;
+        ToutNum = _stream.ToutNum;
+        QflowNum = _stream.QflowNum;
+
+        _numerized = _stream._numerized;
 }
 
 
@@ -88,7 +108,7 @@ EIStream::EIStream(QDomElement & domEl)
 
 QVariant EIStream::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{
@@ -97,17 +117,17 @@ QVariant EIStream::getFieldValue(int ifield, int role) const
 		case NAME :
 			return _name;
 		case TIN_V :
-			return Tin.value();
+                        return TinRef.value();
 		case TIN_U :
-			return Tin.unit();
+                        return TinRef.unit();
 		case TOUT_V :
-			return Tout.value();
+                        return ToutRef.value();
 		case TOUT_U :
-			return Tout.unit();
+                        return ToutRef.unit();
 		case QFLOW_V :
-			return Qflow.value();
+                        return QflowRef.value();
 		case QFLOW_U :
-			return Qflow.unit();
+                        return QflowRef.unit();
 		case DTMIN2 :
 			return DTmin2;
 		case CHECKED :
@@ -175,31 +195,31 @@ bool EIStream::setFieldValue(int ifield,QVariant value_)
 			_name=value_.toString();
 			break;
 		case TIN_V :
-			Tin.setValue(value_);
+                        TinRef.setValue(value_);
 			break;
 		case TIN_U :
 			if(value_.type()==QVariant::String)
-				ok=Tin.setUnit(value_.toString());
+                                ok=TinRef.setUnit(value_.toString());
 			else
-				Tin.setUnit(value_.toInt());
+                                TinRef.setUnit(value_.toInt());
 			break;
 		case TOUT_V :
-			Tout.setValue(value_);
+                        ToutRef.setValue(value_);
 			break;
 		case TOUT_U :
 			if(value_.type()==QVariant::String)
-				ok=Tout.setUnit(value_.toString());
+                                ok=ToutRef.setUnit(value_.toString());
 			else
-				Tout.setUnit(value_.toInt());
+                                ToutRef.setUnit(value_.toInt());
 			break;
 		case QFLOW_V :
-			Qflow.setValue(value_);
+                        QflowRef.setValue(value_);
 			break;
 		case QFLOW_U :
 			if(value_.type()==QVariant::String)
-				ok=Qflow.setUnit(value_.toString());
+                                ok=QflowRef.setUnit(value_.toString());
 			else
-				Qflow.setUnit(value_.toInt());
+                                QflowRef.setUnit(value_.toInt());
 			break;
 		case CHECKED :
                         _checked =value_.toBool();
@@ -215,16 +235,20 @@ bool EIStream::setFieldValue(int ifield,QVariant value_)
 	return ok;
 }
 
-
+/**
+* @brief This function is used to check if this EIStream is valid or not.
+* Checks if Tin, Tout and Qflow references are found in variables, that Tin != Tout and QFlow >0
+* @return true if this EIStream is valid
+*/
 bool EIStream::isValid(MOOptVector* variables, QString &errMsg)
 {
 	//#TODO : do not recheck every times, store valid state
 	bool okTin,okTout,okQflow;
 	double numTin,numTout,numQFlow;
 
-	numTin = this->Tin.getNumValue(variables,METemperature::K,okTin);
-	numTout = this->Tout.getNumValue(variables,METemperature::K,okTout);
-	numQFlow = this->Qflow.getNumValue(variables,MEQflow::W,okQflow);
+        numTin = this->TinRef.getNumValue(variables,METemperature::K,okTin,model());
+        numTout = this->ToutRef.getNumValue(variables,METemperature::K,okTout,model());
+        numQFlow = this->QflowRef.getNumValue(variables,MEQflow::W,okQflow,model());
 		
 	bool okDT = (numTin!=numTout);
 	bool okQPos = (numQFlow>=0);
@@ -235,20 +259,89 @@ bool EIStream::isValid(MOOptVector* variables, QString &errMsg)
 bool EIStream::isHot(MOOptVector* variables)
 {
 	bool okTin,okTout;
-	return Tin.getNumValue(variables,METemperature::K,okTin)>Tout.getNumValue(variables,METemperature::K,okTout);
+        return TinRef.getNumValue(variables,METemperature::K,okTin,model())>ToutRef.getNumValue(variables,METemperature::K,okTout,model());
 }
 
 
+/**
+* This function is used to replace reference by its numerical value extracted from variables vector.
+* @return a list of references involved in Tin, Tout and Qflow.
+*/
 QStringList EIStream::references()
 {
     QStringList refs;
 
-    refs.push_back(this->Tin.reference());
-    refs.push_back(this->Tout.reference());
-    refs.push_back(this->Qflow.reference());
+    refs.push_back(this->TinRef.reference());
+    refs.push_back(this->ToutRef.reference());
+    refs.push_back(this->QflowRef.reference());
 
     refs.removeAll(QString());
 
     return refs;
+}
+
+/**
+* This function is used to fill numerical values from references and variables.
+* In EIStream, this function concerns TinNum, ToutNum and QflowNum fields.
+* @return true if all references have been found in variables (or if there were no references), false otherwise
+* After a successfull numerization, _numerized is set to true, otherwise to false.
+*/
+bool EIStream::numerize(MOOptVector* variables)
+{
+    bool ok1,ok2,ok3;
+    TinNum.setValue(TinRef.getNumValue(variables,METemperature::K,ok1,model()),METemperature::K);
+    ToutNum.setValue(ToutRef.getNumValue(variables,METemperature::K,ok2,model()),METemperature::K);
+    QflowNum.setValue(QflowRef.getNumValue(variables,MEQflow::W,ok3,model()),MEQflow::W);
+
+    _numerized = (ok1 && ok2 && ok3);
+
+    if(!_numerized)
+    {
+        QString msg;
+        msg.sprintf("Failed to numerize EIStream %s. Missing references values",name().utf16());
+        infoSender.send(Info(msg,ListInfo::WARNING2));
+    }
+    return _numerized;
+}
+
+bool EIStream::numerized()
+{
+    return _numerized;
+}
+
+void EIStream::resetNumerize()
+{
+    TinNum.setValue(0,0);
+    ToutNum.setValue(0,0);
+    QflowNum.setValue(0,0);
+    _numerized = false;
+}
+
+
+/**
+* Returns numerical value of Cp. Need numerization first. If numerization is not done, this function will do it
+* (using variables parameter)
+* If failed to numerize, ok is set to false, and returns -1.
+*/
+double EIStream::Cp(bool &ok,MOOptVector* variables) const
+{
+    // try to numerize if not done
+    // if failure, return -1;
+    if(!numerized()&&!numerize(variables))
+    {
+        ok=false;
+        return -1;
+    }
+
+    double tinval,toutval,qflowval;
+
+    tinval = TinNum.value(METemperature::K);
+    toutval = ToutNum.value(METemperature::K);
+    qflowval = QflowNum.value(MEQflow::W);
+
+    if(tinval==toutval)
+        return std::numeric_limits<double>::max();
+    else
+        return fabs(qflowval/fabs(toutval-tinval));
 }
 

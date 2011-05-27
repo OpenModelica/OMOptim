@@ -45,29 +45,76 @@ EIValueFiller::EIValueFiller()
 {
 }
 
-void EIValueFiller::getFilledEI(EIItem* referencedEI, EIItem* filledEI, QList<ModModel*> models,MOOptVector* inputVars,
+
+
+/**
+* This function is used to get a EIItem (with its children) where references are replaced by their corresponding values.
+* If references are not found in variables, corresponding models will be simulated.
+* @param referencedEI is the EIItem* root. It will not be modified.
+* @param variables where it will be looked for references values.
+* @return Result is a copy of referencedEI where references haves been replaced by their corresponding values.
+*/
+EITree* EIValueFiller::getFilledEI(EITree* referencedEI,MOOptVector* variables,
                                 Project* project)
 {
 
+    EITree* filledEI = new EITree(*referencedEI);
+
+    filledEI->removeUnchecked();
+
     // get references
-    QMap<EIItem*,QStringList> mapRef = getReferences(referencedEI,true,project);
-    QMap<EIItem*,QStringList> mapMissingRef = getMissingReferences(referencedEI,inputVars,true,project);
+    QMap<EIItem*,QStringList> mapMissingRef = getMissingReferences(filledEI->rootElement(),variables,true,project);
+    QMap<EIItem*,QStringList> mapAllRefs = getReferences(filledEI->rootElement(),true,project);
 
 
-    // Models missing
+    // Get Models missing
+    QStringList refs;
+    QList<QStringList> tmpRefs = mapMissingRef.values();
+    ModModel* corrModel;
+    ModModelPlus* corrModModelPlus;
+    QList<ModModel*> missingModels;
 
-    // remove those already known
-    ModModel* test;
+    missingModels = corrModels(mapMissingRef,project);
 
-    ModModelPlus* modPlus = project->modModelPlus(test);
-//    OneSimulation oneSim(project,rootModClass,modReader,modPlusCtrl,modPlus);
+    // Simulate models missing and add onesim outputVars in target inputVars
+    for(int iModel=0;iModel<missingModels.size();iModel++)
+    {
+        corrModModelPlus = project->modModelPlus(missingModels.at(iModel));
+        OneSimulation oneSim(project,project->rootModClass(),project->modReader(),project->modPlusCtrl(),corrModModelPlus);
 
-//    oneSim.launch(ProblemConfig());
+        oneSim.launch(ProblemConfig());
+
+        if(oneSim.result()->isSuccess())
+        {
+            variables->append(*oneSim.result()->finalVariables(),true);
+        }
+    }
 
 
+    // fill values and remove those still incomplete
+    QList<EIItem*> referenceItems = mapAllRefs.uniqueKeys();
+    EIItem* curEIItem;
+    bool numerizeOk;
+    for(int i=0;i<referenceItems.size();i++)
+    {
+        curEIItem = referenceItems.at(i);
+        numerizeOk = curEIItem->numerize(variables);
+        if(!numerizeOk)
+        {
+            infoSender.send(Info("Removing EIItem "+curEIItem->name()+" because contains an unsolved reference",ListInfo::WARNING2));
+            filledEI->removeItem(curEIItem);
+}
+    }
+
+    return filledEI;
 }
 
 
+/**
+* This function is used to get map of references involved in referencedEI and its children.
+* @param onlyChecked specifies if only checked EIItem 's should be considered.
+* @return A map where keys are EIItems with references and corresponding values are corresponding lists of references.
+*/
 QMap<EIItem*,QStringList> EIValueFiller::getReferences(EIItem* referencedEI, bool onlyChecked,Project* project)
 {
     QMap<EIItem*,QStringList> mapRefs;
@@ -122,7 +169,13 @@ QMap<EIItem*,QStringList> EIValueFiller::getReferences(EIItem* referencedEI, boo
 }
 
 
-QMap<EIItem*,QStringList> EIValueFiller::getMissingReferences(EIItem* referencedEI,MOOptVector* inputVars,bool onlyChecked,Project* project)
+/**
+* This function is used to get map of missing references involved in referencedEI and its children.
+* A missing reference is a reference which could not be found in variables.
+* @param onlyChecked specifies if only checked EIItem 's should be considered.
+* @return A map where keys are EIItems with missing references and corresponding values are corresponding lists of missing references.
+*/
+QMap<EIItem*,QStringList> EIValueFiller::getMissingReferences(EIItem* referencedEI,MOOptVector* variables,bool onlyChecked,Project* project)
 {
     QMap<EIItem*,QStringList> mapRef = EIValueFiller::getReferences(referencedEI,onlyChecked,project);
     QMap<EIItem*,QStringList> mapMissingRefs;
@@ -138,7 +191,7 @@ QMap<EIItem*,QStringList> EIValueFiller::getMissingReferences(EIItem* referenced
         curMissingRefs.clear();
         for(int iRef=0;iRef<curRefs.size();iRef++)
         {
-            if(!inputVars->alreadyIn(curRefs.at(iRef)))
+            if(!variables->alreadyIn(curRefs.at(iRef)))
                 curMissingRefs.push_back(curRefs.at(iRef));
         }
 
@@ -146,4 +199,33 @@ QMap<EIItem*,QStringList> EIValueFiller::getMissingReferences(EIItem* referenced
             mapMissingRefs.insert(curItem,curMissingRefs);
     }
     return mapMissingRefs;
+}
+
+/**
+* This function is returns corresponding models of references indicated in mapRefs.
+* @param mapRefs is a map of EIItem* and corresponding references.
+* @return A map where keys are EIItems with missing references and corresponding values are corresponding lists of missing references.
+*/
+QList<ModModel*> EIValueFiller::corrModels(QMap<EIItem*,QStringList> mapRefs,Project* project)
+{
+
+    QStringList refsNames;
+    QList<QStringList> tmpRefs = mapRefs.values();
+    QList<ModModel*> models;
+    ModModel* corrModel;
+
+    for(int iK=0;iK<tmpRefs.size();iK++)
+    {
+        refsNames.append(tmpRefs.at(iK));
+    }
+    LowTools::removeDuplicates(refsNames);
+
+    for(int i=0;i<refsNames.size();i++)
+    {
+        corrModel = project->modReader()->modelOf(refsNames.at(i),project->rootModClass());
+        if(corrModel && !models.contains(corrModel))
+            models.push_back(corrModel);
+    }
+
+    return models;
 }

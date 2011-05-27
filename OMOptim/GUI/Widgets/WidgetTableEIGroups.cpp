@@ -44,7 +44,7 @@
 
 
 
-WidgetTableEIGroups::WidgetTableEIGroups(EIItem* _rootEI,bool _editable,EIReader* _eiReader,QWidget *parent) :
+WidgetTableEIGroups::WidgetTableEIGroups(EIItem* _rootEI,bool _editable,QWidget *parent) :
 
     QWidget(parent),
     ui(new Ui::WidgetTableEIGroupsClass)
@@ -53,18 +53,17 @@ WidgetTableEIGroups::WidgetTableEIGroups(EIItem* _rootEI,bool _editable,EIReader
 	
 	rootEI = _rootEI;
 	editable = _editable;
-	eiReader = _eiReader;
 
 	//table model
-	tableEIGroups = new TableEIItems(rootEI,editable,eiReader,EI::GROUP,true);
+        tableEIGroups = new TableEIItems(rootEI,editable,EI::GROUP,true);
 	tableView=new MOTableView(this);
 	tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	tableView->setModel(tableEIGroups);
 	ui->layoutTable->addWidget(tableView);
 	//GuiTools::minimizeTableSize(tableView);
 
-	connect(ui->pushAdd,SIGNAL(clicked()),this,SLOT(onPushedAdd()));
-	connect(ui->pushRemove,SIGNAL(clicked()),this,SLOT(onPushedRemove()));
+//	connect(ui->pushAdd,SIGNAL(clicked()),this,SLOT(onPushedAdd()));
+//	connect(ui->pushRemove,SIGNAL(clicked()),this,SLOT(onPushedRemove()));
 
 
 }

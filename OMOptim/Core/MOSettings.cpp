@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -137,6 +137,13 @@ void MOSettings::initialize(bool eraseCurrentValues)
 	defaultValues << false;
 	types.push_back(BOOL);
 
+//        //*******************************
+//        // Show dymosim window
+//        //*******************************
+//        names << QString("bool/showDymosim");
+//        descs << QString("Show Dymosim");
+//        defaultValues << false;
+//        types.push_back(BOOL);
 
 	//*******************************
 	// Gnuplot path

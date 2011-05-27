@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -76,7 +76,7 @@ public :
 		UNDEFINED = -1,
 		ONESIMULATION,
 		OPTIMIZATION,
-		PROBLEMEI
+                EIPROBLEM
 		//VARIABLEDETERMINATION
 	};
 
@@ -89,8 +89,8 @@ protected :
 	int _num; //rank in problem vector
 
 	// Files informations
-	QStringList _filesToCopyNames;
-	QStringList _foldersToCopyNames;
+
+        QStringList _foldersToCopy;
 	QStringList _neededFiles;
 	QString _saveFolder;
 	QString _saveFileName;
@@ -115,6 +115,8 @@ public:
 	virtual QString getFieldName(int iField,int iRole);
 	virtual unsigned getNbFields();
 	virtual QString getClassName(){return "Problem";};
+
+        QStringList _filesToCopy;
 
 	// Execution
 	/**
@@ -143,7 +145,7 @@ public:
 	/**
 	* Description Save problem information in XML form.
 	*/
-	virtual QDomElement toXMLData(QDomDocument & doc) = 0;
+	virtual QDomElement toXmlData(QDomDocument & doc) = 0;
 	virtual void store(QString destFolder, QString tempDir);
 	void rename(QString name,bool changeFolder);
 
@@ -176,10 +178,9 @@ public:
 	void setResult(Result*);
 	void setiCurAlgo(int);
 		
-
 public slots:
 	void openFolder();
-	void clearResult();
+        void deleteResult();
 
 signals:
 	void algoConfigsChanged();

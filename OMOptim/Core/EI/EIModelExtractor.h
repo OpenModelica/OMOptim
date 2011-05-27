@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -48,13 +48,15 @@
 #include "ModEIConverter.h"
 #include "EIStream.h"
 #include "EIGroup.h"
+#include "EIModelContainer.h"
+#include "MOKeepVector.h"
 
 class EIModelExtractor
 {
 public:
     EIModelExtractor();
 
-   static EIItem* extractFromModClass(ModClass*,ModReader*,MOomc*);
+   static EIModelContainer* extractFromModClass(ModClass*,ModReader*,MOomc*);
 
 
 

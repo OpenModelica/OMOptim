@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -85,15 +85,16 @@ protected :
 	Problem* _problem;
 	MyAlgorithm *_algo;
 	QStringList _filesToCopyNames;
+        QDir _saveFolder;
 
 public:
 	Result();
 	Result(Project*, ModModelPlus*, Problem*,ModReader*,ModPlusCtrl*);
 	Result(const Result &r);
-	~Result(void);
+        virtual ~Result(void);
 
 	virtual int problemType()=0;
-	virtual QDomElement toXMLData(QDomDocument &)=0;
+	virtual QDomElement toXmlData(QDomDocument &)=0;
 
 
 	virtual QString getFieldName(int iField,int iRole);
@@ -106,6 +107,8 @@ public:
 	Problem* problem();
 	bool isSuccess();
 
+        QDir saveFolder();
+        void setSaveFolder(QDir);
 
 	void setName(QString);
 	void setModModelPlus(ModModelPlus*);
@@ -115,7 +118,6 @@ public:
 	void setAlgo(MyAlgorithm*);
 	void setSuccess(bool);
 
-	
 };
 
 

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -63,6 +63,12 @@ QString MEQflow::unit(int iUnit) const
 		return "-";
 	}
 }
+
+QString MEQflow::unit() const
+{
+    return unit(_unit);
+}
+
 unsigned MEQflow::nbUnits() const
 {
 	return 3;
@@ -99,4 +105,26 @@ double MEQflow::convert(double value,int orgUnit,int dstUnit) const
 	return result;
 }
 
+MEQflow MEQflow::operator-(const MEQflow& b) const
+{
+    double resValue = value(_unit)-b.value(_unit);
+    return MEQflow(resValue,_unit);
+}
+
+MEQflow MEQflow::operator+(const MEQflow& b) const
+{
+    double resValue = value(_unit)+b.value(_unit);
+    return MEQflow(resValue,_unit);
+}
+
+MEQflow MEQflow::operator*(const double& fact) const
+{
+    double resValue = value(_unit)*fact;
+    return MEQflow(resValue,_unit);
+}
+
+bool MEQflow::operator==(const MEQflow& b) const
+{
+    return (value(_unit)==b.value(_unit));
+}
 

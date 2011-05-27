@@ -55,14 +55,14 @@
 class SimpleMilpTarget
 {
 public:
-	SimpleMilpTarget(EIItem* rootEI,EIReader *eiReader,MOOptVector *variables,QString modFilePath, QString dataFilePath);
+        SimpleMilpTarget(EITree* eiTree,MOOptVector *variables,QString modFilePath, QString dataFilePath);
 	~SimpleMilpTarget(void);
 
 	EITargetResult* launch();
 	
 
 private :
-	glp_prob * launchGLPK(QString resFilePath);
+        glp_prob * launchGLPK(QString resFilePath,QString logFilePath);
 	void DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 	QList<EIStream*> &eiProcessStreams,
 	QList<QList<MEQflow> > &Qpk, //.at(iStream).at(iDTk)
@@ -75,8 +75,7 @@ private :
 	EITargetResult* readResult(glp_prob *);
 
 
-	EIItem* rootEI;
-	EIReader *eiReader;
+        EITree* eiTree;
 	MOOptVector *variables;
 	QString modFilePath;
 	QString dataFilePath;

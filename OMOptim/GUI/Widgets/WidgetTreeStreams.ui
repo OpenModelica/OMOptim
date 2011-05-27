@@ -14,17 +14,23 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0" rowspan="7" colspan="4">
+   <item row="1" column="0" rowspan="8" colspan="2">
     <layout class="QGridLayout" name="layoutTreeStreams"/>
    </item>
-   <item row="2" column="4">
+   <item row="2" column="2">
     <widget class="QPushButton" name="pushAddGroup">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Add Group</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="4">
+   <item row="1" column="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -37,7 +43,7 @@
      </property>
     </spacer>
    </item>
-   <item row="7" column="4">
+   <item row="8" column="2">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -50,52 +56,56 @@
      </property>
     </spacer>
    </item>
-   <item row="3" column="4">
+   <item row="3" column="2">
     <widget class="QPushButton" name="pushAddStream">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Add Stream</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="5" rowspan="8">
+   <item row="0" column="3" rowspan="9">
     <layout class="QGridLayout" name="layoutWidgetItem">
      <property name="verticalSpacing">
       <number>2</number>
      </property>
     </layout>
    </item>
-   <item row="8" column="1">
-    <widget class="QPushButton" name="pushTarget">
-     <property name="text">
-      <string>Target</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="2">
-    <widget class="QPushButton" name="pushMER">
-     <property name="text">
-      <string>MER</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="3">
-    <widget class="QCheckBox" name="checkUtilitiesMER">
-     <property name="text">
-      <string>Include utilities in MER</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="4">
+   <item row="5" column="2">
     <widget class="QPushButton" name="pushLoadModel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Load Model...</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="4">
+   <item row="6" column="2">
     <widget class="QPushButton" name="pushRemove">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Remove</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="QPushButton" name="pushResize">
+     <property name="text">
+      <string>resize</string>
      </property>
     </widget>
    </item>

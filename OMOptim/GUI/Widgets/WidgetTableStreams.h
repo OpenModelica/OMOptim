@@ -62,7 +62,7 @@ class WidgetTableStreams : public QWidget {
 
 
 public:
-	explicit WidgetTableStreams(EIItem* _rootEI,bool _editable,EIReader* _eiReader,MOVector<Variable> *_variables=NULL,QWidget *parent = 0);
+        explicit WidgetTableStreams(EIItem* _rootEI,bool _editable,MOVector<Variable> *_variables=NULL,QWidget *parent = 0);
     virtual ~WidgetTableStreams();
 
 	public slots:
@@ -76,7 +76,6 @@ public:
 
 	MOTableView* tableView;
 	EIItem* rootEI;
-	EIReader* eiReader;
 	MOVector<Variable> *variables;
 	VarCompleterDelegate *compltDlg1;
 	VarCompleterDelegate *compltDlg2;

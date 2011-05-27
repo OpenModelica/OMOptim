@@ -483,7 +483,7 @@ ModModel* ModReader::modelOf(ModClass* item)
         return NULL;
 
     if(item->getClassRestr()==Modelica::MODEL)
-        return dynamic_cast<ModModel*>(item);
+        return item;
     else
         return modelOf(item->parent());
 }

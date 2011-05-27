@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -47,7 +47,7 @@
 #include "float.h"
 
 #ifdef USEEI
-	#include "ProblemTarget.h"
+#include "EITarget.h"
 #endif
 
         /** \class EAStdOptimizationEval is a function for evaluating fitness of an individual.
@@ -139,6 +139,7 @@ public:
 			Creating a new OneSimulation
 			************************************/
             OneSimulation *oneSim = new OneSimulation(_project,_rootModClass,_modReader,_modPlusReader,model);
+            oneSim->_filesToCopy = _problem->_filesToCopy;
 			
 			//Reading chromosome and placing it in overwritedvariables
             int nbVar = _problem->optimizedVariables()->items.size();
@@ -196,11 +197,11 @@ public:
 			#ifdef USEEI
             if(_problem->useEI())
 			{
-                if(_problem->eiProblem()->getClassName()=="ProblemTarget")
+                if(_problem->eiProblem()->getClassName()=="EITarget")
 				{
-                    ProblemTarget* problemTarget = dynamic_cast<ProblemTarget*>(_problem->eiProblem());
-					problemTarget->setInputVars(result->finalVariables());
-					problemTarget->launch(ProblemConfig());
+                    EITarget* eiTarget = dynamic_cast<EITarget*>(_problem->eiProblem());
+                    eiTarget->setInputVars(result->finalVariables());
+                    eiTarget->launch(ProblemConfig());
 				}
 			}
 			#endif

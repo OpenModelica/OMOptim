@@ -78,8 +78,8 @@ void EAStdBounds::setBounds(Optimization *_problem, QList<ModModelPlus*> _subMod
 	for(int i=0; i<nbVar; i++)
 	{
 		curVar = _problem->optimizedVariables()->items.at(i);
-		min = curVar->getFieldValue(OptVariable::OPTMIN).toDouble();
-		max = curVar->getFieldValue(OptVariable::OPTMAX).toDouble();
+                min = curVar->optMin();
+                max = curVar->optMax();
 
 		switch(curVar->getFieldValue(OptVariable::DATATYPE).toInt())
 		{
@@ -109,96 +109,6 @@ void EAStdBounds::setBounds(Optimization *_problem, QList<ModModelPlus*> _subMod
 		nbInt++;
 	}
 }
-
-//
-//void EAStdBounds::setBounds(VariableDet* _problem, QVector<QVector< int> > &index,
-//					  std::vector<eoRealInterval> &doubleBounds,
-//						std::vector<eoIntInterval> &intBounds,
-//						int &nbDouble,int &nbInt,int &nbBool)
-//{
-//
-//	int nbVars = _problem->fuzzyVars->getNbVars();
-//
-//	FuzzyVariable* curVar;
-//	eoRealInterval* realInterval;
-//	double min,max;
-//	double curAbsPrec;
-//	double curValue;
-//
-//	int nbPoints = _problem->fuzzyVars->nbPoints();
-//	int iDouble=0;
-//
-//	for(int iVar=0; iVar<nbVars; iVar++)
-//	{
-//
-//		// Point independent vars
-//		if(_problem->fuzzyVars->getStatus(iVar)==FuzzyVariable::POINTINDEP)
-//		{
-//			// get interval
-//			curValue = _problem->fuzzyVars->getValue(iVar);
-//			curAbsPrec = _problem->fuzzyVars->getAbsPrecValue(iVar,0);
-//
-//			min = curValue - fabs(curAbsPrec);
-//			max = curValue + fabs(curAbsPrec);
-//
-//			if(min<max)
-//			{
-//			// add interval
-//			realInterval = new eoRealInterval(min,max);
-//			doubleBounds.push_back(*realInterval);
-//
-//			// fill index table
-//			index.push_back(QVector<int>(nbPoints,iDouble));
-//			iDouble++;
-//			}
-//			else
-//			{
-//				// curAbsPrec = 0, fixed var -> no interval
-//				index.push_back(QVector<int>(nbPoints,-1));
-//			}
-//		}
-//
-//		// Point dependent vars
-//		if(_problem->fuzzyVars->getStatus(iVar)==FuzzyVariable::POINTDEP)
-//		{
-//			QVector<int> varIndex;
-//			for(int iPoint=0;iPoint<nbPoints;iPoint++)
-//			{
-//				// get interval
-//				curValue = _problem->fuzzyVars->getValue(iVar,iPoint);
-//				curAbsPrec = _problem->fuzzyVars->getAbsPrecValue(iVar,iPoint);
-//				
-//				min = curValue - fabs(curAbsPrec);
-//				max = curValue + fabs(curAbsPrec);
-//
-//				// add interval
-//				if(min<max)
-//				{
-//					realInterval = new eoRealInterval(min,max);
-//					doubleBounds.push_back(*realInterval);
-//					// fill index table
-//					varIndex.push_back(iDouble);
-//					iDouble++;
-//				}
-//				else
-//				{
-//					// var absPrec = 0;
-//					varIndex.push_back(-1);
-//				}				
-//			}
-//			index.push_back(varIndex);
-//		}
-//	}
-//	nbDouble = iDouble;
-//	nbInt = 0;
-//	nbBool = 0;
-//}
-
-
-
-
-
-
 
 
 #endif

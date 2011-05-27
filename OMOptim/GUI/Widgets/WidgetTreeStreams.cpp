@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -44,7 +44,7 @@
 
 
 
-WidgetTreeStreams::WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _editable,EIReader* _eiReader,
+WidgetTreeStreams::WidgetTreeStreams(EITree* _eiTree, bool _showFields,bool _editable,
                                      ModReader* _modReader,ModClass* _rootModClass, MOomc* _moomc,MOOptVector *_variables,QWidget *parent) :
     QWidget(parent),
     ui(new Ui::WidgetTreeStreamsClass)
@@ -54,16 +54,16 @@ WidgetTreeStreams::WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _edit
         modReader = _modReader;
         rootModClass = _rootModClass;
         moomc= _moomc;
-	rootEI = _rootEI;
+
 	variables = _variables;
 	editable = _editable;
 	showFields = _showFields;
-	eiReader = _eiReader;
 
 	//tree model
-	treeEIStreams = new TreeEIStreams(rootEI,showFields,editable,eiReader);
+        //eiTree = new EITree(rootEI,showFields,editable);
+        eiTree =_eiTree;
 	/*streamsProxyModel = new QSortFilterProxyModel();
-	streamsProxyModel->setSourceModel(treeEIStreams);
+	streamsProxyModel->setSourceModel(eiTree);
 	*/
 	//buttons
 	if(!editable)
@@ -74,11 +74,13 @@ WidgetTreeStreams::WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _edit
 	}
 	
 
-	treeView=new QTreeView(this);
+        treeView=new MyTreeView(this);
 	//treeView->setModel(streamsProxyModel);
-	treeView->setModel(treeEIStreams);
+	treeView->setModel(eiTree);
 	treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	ui->layoutTreeStreams->addWidget(treeView);
+        treeView->expandAll();
+        treeView->resizeColumnToContents(0);
 
 	/*streamsProxyModel->setFilterKeyColumn(0);
 	streamsProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -88,10 +90,8 @@ WidgetTreeStreams::WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _edit
 	connect(ui->pushAddStream,SIGNAL(clicked()),this,SLOT(addEmptyStream()));
 	connect(ui->pushAddGroup,SIGNAL(clicked()),this,SLOT(addEmptyGroup()));
 	connect(ui->pushRemove,SIGNAL(clicked()),this,SLOT(removeItem()));
-	connect(ui->pushTarget,SIGNAL(clicked()),this,SIGNAL(targetAsked()));
-	connect(ui->pushMER,SIGNAL(clicked()),this,SLOT(onMERAsked()));
         connect(ui->pushLoadModel,SIGNAL(clicked()),this,SIGNAL(EILoadModelAsked()));
-
+        connect(ui->pushResize,SIGNAL(clicked()),this,SLOT(resizeColumns()));
 	updateCompleters();
 
 
@@ -127,6 +127,9 @@ WidgetTreeStreams::WidgetTreeStreams(EIItem* _rootEI,bool _showFields,bool _edit
 	ui->layoutWidgetItem->addWidget(widgetEIGroup);
 	connect(treeView,SIGNAL(clicked(QModelIndex)),
 		this,SLOT(onSelectItemChanged(QModelIndex)));
+
+        //resize columns
+        GuiTools::resizeTreeViewColumns(treeView);
 }
 
 WidgetTreeStreams::~WidgetTreeStreams()
@@ -134,7 +137,7 @@ WidgetTreeStreams::~WidgetTreeStreams()
     delete ui;
 }
 
-EIItem* WidgetTreeStreams::getGroupParent(QModelIndex index)
+EIItem* WidgetTreeStreams::getContainer(QModelIndex index)
 {
 	EIItem* item;
         EIItem* parentItem;
@@ -143,10 +146,10 @@ EIItem* WidgetTreeStreams::getGroupParent(QModelIndex index)
 		item = static_cast<EIItem*>(index.internalPointer());
 	}
 	else
-		return rootEI;
+                return eiTree->rootElement();
 
         parentItem = item;
-        while(parentItem!=rootEI && parentItem->getEIType()!=EI::GROUP)
+        while(parentItem!=eiTree->rootElement() && parentItem->getEIType()!=EI::GROUP && parentItem->getEIType()!=EI::GENERIC)
                 parentItem = parentItem->parent();
 
         return parentItem;
@@ -156,9 +159,11 @@ void WidgetTreeStreams::addEmptyStream()
 {
 	QModelIndex index = treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
-        EIItem* parentItem = getGroupParent(index);
-        eiReader->addEmptyStream(parentItem);
-	//treeView->expand(index);
+        EIItem* parentItem = getContainer(index);
+        EIControler::addEmptyStream(parentItem);
+
+        treeView->expand(eiTree->indexOf(parentItem));
+        treeView->resizeColumnToContents(0);
 }
 
 
@@ -167,9 +172,11 @@ void WidgetTreeStreams::addEmptyGroup()
 {
 	QModelIndex index = treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
-        EIItem* parentItem = getGroupParent(index);
-        eiReader->addEmptyGroup(parentItem);
+        EIItem* parentItem = getContainer(index);
+        EIControler::addEmptyGroup(parentItem);
+
 	treeView->expand(index);
+        treeView->resizeColumnToContents(0);
 }
 
 void WidgetTreeStreams::updateCompleters()
@@ -190,26 +197,18 @@ void WidgetTreeStreams::removeItem()
 {
 	QModelIndex index = treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
-	EIItem* eiItem,*eiParent;
-	if(index.isValid())
-	{
-		eiItem = static_cast<EIItem*>(index.internalPointer());
-                eiParent = eiItem->parent();
-		treeEIStreams->publicBeginResetModel();
-		if(eiParent)
-			eiParent->removeChild(eiItem);
-		treeEIStreams->publicEndResetModel();
+        eiTree->removeItem(index);
+
 	}
-}
 
 void WidgetTreeStreams::refreshTree()
 {
 	treeView->setModel(NULL);
 	treeView->viewport()->update();
 	//treeView->setModel(streamsProxyModel);
-	treeView->setModel(treeEIStreams);
+	treeView->setModel(eiTree);
 
-	for(int i=0;i<treeEIStreams->columnCount();i++)
+	for(int i=0;i<eiTree->columnCount();i++)
 	{
 		treeView->resizeColumnToContents(i);
 	}
@@ -263,7 +262,9 @@ void WidgetTreeStreams::onSelectGroupChanged(EIGroup* group)
 		widgetEIGroup->show();
 }
 
-void WidgetTreeStreams::onMERAsked()
+
+
+void WidgetTreeStreams::resizeColumns()
 {
-	emit MERAsked(ui->checkUtilitiesMER->checkState()==Qt::Checked);
+    GuiTools::resizeTreeViewColumns(treeView);
 }

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -451,7 +451,7 @@ QString OptimResult::buildAllVarsFrontCSV(QList<int> listVars, QList<int> listPo
 	return csv;
 }
 
-QDomElement OptimResult::toXMLData(QDomDocument & doc)
+QDomElement OptimResult::toXmlData(QDomDocument & doc)
 {
 
 	// Root element
@@ -472,7 +472,7 @@ QDomElement OptimResult::toXMLData(QDomDocument & doc)
 	QDomElement cAllBlocks = doc.createElement("AllBlockSubstitutions");
 	for(int i=0;i<_subBlocks.size();i++)
 	{
-		QDomElement cBlocks = _subBlocks.at(i)->toXMLData(doc);
+		QDomElement cBlocks = _subBlocks.at(i)->toXmlData(doc);
 		cBlocks.setTagName("BlockSubstitutions"+QString::number(i));
 		cAllBlocks.appendChild(cBlocks);
 	}

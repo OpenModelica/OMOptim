@@ -40,6 +40,7 @@
 #ifndef _MODELICA_H
 #define _MODELICA_H
 
+
 namespace Modelica
 {
 	enum ClassRestr{

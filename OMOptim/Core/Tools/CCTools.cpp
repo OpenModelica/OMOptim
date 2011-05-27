@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -72,14 +72,16 @@ void CCTools::buildCCfromStreams(QList<METemperature> & Tk,
 
 	double curHCold, curHHot;
 
-
+        curHHot=0;
+        curHCold=0;
 
 	for(int iK=0;iK<Tk.size()-1;iK++)
 	{
 		Tall.push_back(Tk.at(iK).value(METemperature::K));
+
 		for(int iS=0;iS<Qik.size();iS++)
 		{
-			curQik = Qik.at(iS).at(iK).value(MEQflow::KW);
+                        curQik = Qik.at(iS).at(iK).value(MEQflow::W);
 
 			if(curQik>0)
 				curHCold += curQik;
@@ -92,7 +94,8 @@ void CCTools::buildCCfromStreams(QList<METemperature> & Tk,
 	Tall.push_back(Tk.at(Tk.size()-1).value(METemperature::K));
 
 	// looking for Tpinch
-	double TPinch, dHPinch;
+        METemperature TPinch;
+        double dHPinch;
 	getPinch(Tall,HCold,HHot,TPinch,dHPinch);
 
 
@@ -136,7 +139,7 @@ void CCTools::buildGCCfromStreams(QList<METemperature> & Tk,
 
 
 
-void CCTools::getPinch(QVector<double>  Tall,QVector<double>  HCold,QVector<double>  HHot, double & TPinch, double & dHPinch)
+void CCTools::getPinch(QVector<double>  Tall,QVector<double>  HCold,QVector<double>  HHot, METemperature & TPinch, double & dHPinch)
 {
 
 	QVector<double> HColdAll, HHotAll;
@@ -168,7 +171,7 @@ void CCTools::getPinch(QVector<double>  Tall,QVector<double>  HCold,QVector<doub
 
 void CCTools::getValues(QList<METemperature> & Tk,
 						QList<QList<MEQflow> > & Qik,
-						double &TPinch, double &MER, double &MERCold)
+                                                METemperature &TPinch, MEQflow &MER, MEQflow &MERCold)
 {
 
 	MOCCCurve *hotCurve = new MOCCCurve(MOCCCurve::CCHOT);
@@ -187,27 +190,27 @@ void CCTools::getValues(QList<METemperature> & Tk,
 	getPinch(Tall,HHot,HCold,TPinch,dHPinch);
 
 
-	MER = 0;
-	MERCold = 0;
+        MER.setValue(0);
+        MERCold.setValue(0);
 
 	if((HHot.size()==0)&&(HCold.size()>0))
 	{
-		MER = HCold.at(HCold.size()-1)-HCold.at(0);
-		MERCold = 0;
+            MER.setValue(HCold.at(HCold.size()-1)-HCold.at(0),MEQflow::W);
+                MERCold.setValue(0);
 		return;
 	}
 
 	if((HHot.size()>0)&&(HCold.size()==0))
 	{
-		MER = 0;
-		MERCold = HHot.at(HHot.size()-1)-HHot.at(0);
+                MER.setValue(0);
+                MERCold.setValue(HHot.at(HHot.size()-1)-HHot.at(0),MEQflow::W);
 		return;
 	}
 
 	if((HHot.size()>0)&&(HCold.size()>0))
 	{
-		MERCold = HCold.at(0)-HHot.at(0);
-		MER = HCold.at(HCold.size()-1)-HHot.at(HHot.size()-1);
+            MERCold.setValue(HCold.at(0)-HHot.at(0),MEQflow::W);
+            MER.setValue(HCold.at(HCold.size()-1)-HHot.at(HHot.size()-1),MEQflow::W);
 		return;
 	}
 

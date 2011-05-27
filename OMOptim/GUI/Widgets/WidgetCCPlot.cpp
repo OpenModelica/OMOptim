@@ -44,7 +44,7 @@
 
 
 
-WidgetCCPlot::WidgetCCPlot(MERResult* _result,QWidget *parent) :
+WidgetCCPlot::WidgetCCPlot(EIMERResult* _result,QWidget *parent) :
     QWidget(parent),
     ui(new Ui::WidgetCCPlotClass)
 {
@@ -66,28 +66,30 @@ WidgetCCPlot::WidgetCCPlot(MERResult* _result,QWidget *parent) :
 	//*****************
 	connect(ui->radioCC,SIGNAL(toggled(bool)),this,SLOT(setViewCC(bool)));
 	connect(ui->radioGCC,SIGNAL(toggled(bool)),this,SLOT(setViewGCC(bool)));
-	connect(ui->pushZoom,SIGNAL(clicked()),plot1,SLOT(enableZoom()));
+    connect(ui->pushZoom,SIGNAL(clicked(bool)),plot1,SLOT(enableZoom(bool)));
 	ui->radioGCC->setChecked(true);
 
 	//*****************
 	//UNITS COMBOS
 	//*****************
-	ui->comboUnitMER->addItem("W",1);
-	ui->comboUnitMER->addItem("kW",1E3);
-	ui->comboUnitMER->addItem("MW",1E6);
-	ui->comboUnitMERCold->addItem("W",1);
-	ui->comboUnitMERCold->addItem("kW",1E3);
-	ui->comboUnitMERCold->addItem("MW",1E6);
-	ui->comboUnitT->addItem("°C","C");
-	ui->comboUnitT->addItem("K","K");
+    ui->comboUnitMER->addItem("W",MEQflow::W);
+    ui->comboUnitMER->addItem("kW",MEQflow::KW);
+    ui->comboUnitMER->addItem("MW",MEQflow::MW);
+    ui->comboUnitMERCold->addItem("W",MEQflow::W);
+    ui->comboUnitMERCold->addItem("kW",MEQflow::KW);
+    ui->comboUnitMERCold->addItem("MW",MEQflow::MW);
+    ui->comboUnitT->addItem("°C",METemperature::C);
+    ui->comboUnitT->addItem("K",METemperature::K);
 
-	//Refresh
+    //Connect actions
 	connect(ui->comboUnitMER,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
 	connect(ui->comboUnitMERCold,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
 	connect(ui->comboUnitT,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
 	connect(result,SIGNAL(updated()),this,SLOT(replot()));
-	//connect(dynamic_cast<ProblemTarget*>(result->problem())->_rootEI,SIGNAL(modified()),this,SLOT(relaunch()));
+    connect(result,SIGNAL(deleted()),this,SLOT(clear()));
 
+    // gui
+    actualizeGui();
 }
 
 WidgetCCPlot::~WidgetCCPlot()
@@ -102,16 +104,39 @@ void WidgetCCPlot::actualizeGui()
 	plot1->replot();
 }
 
+void WidgetCCPlot::clear()
+{
+    plot1->clear();
+}
+
 void WidgetCCPlot::setViewCC(bool checked)
 {
 	if(checked)
+    {
 		plot1->setCCType(MinCCPlot::CC);
+        if(!ui->radioCC->isChecked())
+            ui->radioCC->setChecked(true);
+}
 }
 
 void WidgetCCPlot::setViewGCC(bool checked)
 {
 	if(checked)
+    {
 		plot1->setCCType(MinCCPlot::GCC);
+        if(!ui->radioGCC->isChecked())
+            ui->radioGCC->setChecked(true);
+}
+}
+
+void WidgetCCPlot::setMERResult(EIMERResult* result_)
+{
+    result = result_;
+    connect(result,SIGNAL(updated()),this,SLOT(replot()));
+    connect(result,SIGNAL(deleted()),this,SLOT(clear()));
+    plot1->setResult(result);
+    replot();
+    setViewCC(true);
 }
 
 
@@ -123,16 +148,22 @@ void WidgetCCPlot::replot()
 
 void WidgetCCPlot::unitChanged()
 {
-	double merRatio = ui->comboUnitMER->itemData(ui->comboUnitMER->currentIndex()).toDouble();
-	double merColdRatio = ui->comboUnitMERCold->itemData(ui->comboUnitMERCold->currentIndex()).toDouble();
-	QString unitT = ui->comboUnitT->itemData(ui->comboUnitT->currentIndex()).toString();
+    if(result)
+    {
+        int unitT = ui->comboUnitT->itemData(ui->comboUnitT->currentIndex()).toInt();
+        int unitMER =  ui->comboUnitMER->itemData(ui->comboUnitMER->currentIndex()).toInt();
+        int unitMERCold =  ui->comboUnitMERCold->itemData(ui->comboUnitMERCold->currentIndex()).toInt();
 
-	ui->labelMER->setText(QString::number(result->MER->finalValue(0,0)/merRatio));
-	ui->labelMERCold->setText(QString::number(result->MERCold->finalValue(0,0)/merColdRatio));
+        ui->labelTPinch->setText(QString::number(result->TPinch.value(unitT)));
+        ui->labelMER->setText(QString::number(result->MER.value(unitMER)));
+        ui->labelMERCold->setText(QString::number(result->MERCold.value(unitMERCold)));
 
-	if(unitT=="C")
-		ui->labelTPinch->setText(QString::number(result->TPinch->finalValue(0,0)-273.15));
+    }
 	else
-		ui->labelTPinch->setText(QString::number(result->TPinch->finalValue(0,0)));
+    {
+        ui->labelMER->setText("-");
+        ui->labelMERCold->setText("-");
+        ui->labelTPinch->setText("-");
+}
 }
 

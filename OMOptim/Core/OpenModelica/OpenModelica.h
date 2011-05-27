@@ -85,6 +85,7 @@ public:
 	static void setInputVariables(QString, MOVector<Variable> *,QString _modModelName,MOVector<ModModelParameter> *parameters=NULL);
 	static void start(QString exeFile);
 	static QString sciNumRx();
+        static QString home();
 
 	// Parameters
 	enum OMParameters{STOPVALUE};

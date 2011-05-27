@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -50,7 +50,7 @@ EITools::~EITools(void)
 
 
 
-void EITools::getTkQik(EIReader* eiReader,MOOptVector *variables,
+void EITools::getTkQik(MOOptVector *variables,
 					   EIItem* rootEI,QList<METemperature> & Tk,
 					   QList<EIStream*> & eiStreams, QList<QList<MEQflow> > & Qik, bool onlyProcess)
 {
@@ -65,7 +65,7 @@ void EITools::getTkQik(EIReader* eiReader,MOOptVector *variables,
 	QMap<EIGroupFact*,EIGroup*> factGroupMap;
 
 
-	getTkQpkQuk(eiReader,variables,rootEI,Tk,eiProcessStreams, Qpk,
+    getTkQpkQuk(variables,rootEI,Tk,eiProcessStreams, Qpk,
 						  eiUtilityStreams, Quk, factStreamMap, factRelation, factGroupMap);
 
 	Qik = Qpk;
@@ -94,7 +94,7 @@ void EITools::getTkQik(EIReader* eiReader,MOOptVector *variables,
 	}
 }
 
-void EITools::getTkQpkQuk(EIReader* eiReader,MOOptVector *variables,
+void EITools::getTkQpkQuk(MOOptVector *variables,
 						  EIItem* rootEI,QList<METemperature> & Tk,
 						  QList<EIStream*> & eiProcessStreams, QList<QList<MEQflow> > & Qpk,// Qpk.at(iStream).at(iDTk)
 						  QList<EIStream*> & eiUtilityStreams, QList<QList<MEQflow> > & Quk,// Quk.at(iStream).at(iDTk)
@@ -107,12 +107,12 @@ void EITools::getTkQpkQuk(EIReader* eiReader,MOOptVector *variables,
 	//***************
 	// get Tk
 	//***************
-	eiReader->getValidTk(rootEI,Tk,variables);
+    EIReader::getValidTk(rootEI,Tk,variables);
 
 	//*************************
 	// get Quk,Qpk and streams
 	//*************************
-	QList<EIStream*> streams = eiReader->getValidStreams(rootEI,variables,true);
+    QList<EIStream*> streams = EIReader::getValidStreams(rootEI,variables,true);
 	EIStream* curStream;
 	EIGroupFact* curGroupFact;
 	EIGroupFact* curGroupFact2;
@@ -122,18 +122,27 @@ void EITools::getTkQpkQuk(EIReader* eiReader,MOOptVector *variables,
 	bool ok1;
 	bool ok2;
 	bool ok3;
+    bool ok;
 	double TinProv,ToutProv,QflowProv,DTmin2prov;
 	QList<MEQflow> DQprov;
+    QString msg;
 
 	for(int iS=0;iS<streams.size();iS++)
 	{
 		curStream = streams.at(iS);
-		TinProv = curStream->Tin.getNumValue(variables,METemperature::K,ok1);
-		ToutProv = curStream->Tout.getNumValue(variables,METemperature::K,ok2);
-		QflowProv  = curStream->Qflow.getNumValue(variables,MEQflow::W,ok3);
+        TinProv = curStream->TinNum.value(METemperature::K);
+        ToutProv = curStream->ToutNum.value(METemperature::K);
+        QflowProv  = curStream->QflowNum.value(MEQflow::W);
 		DTmin2prov = curStream->getFieldValue(EIStream::DTMIN2).toDouble();
 
-		assert(TinProv!=ToutProv);
+        if(TinProv==ToutProv)
+        {
+            msg.clear();
+            msg.sprintf("In stream %s, Tin = Tout. This stream won't be considered",curStream->name().utf16());
+            infoSender.send(Info(msg,ListInfo::WARNING2));
+            ok=false;
+        }
+
 		if(TinProv<ToutProv)
 		{
 			//Cold stream
@@ -147,7 +156,6 @@ void EITools::getTkQpkQuk(EIReader* eiReader,MOOptVector *variables,
 			ToutProv += -DTmin2prov;
 		}
 
-		assert(ok1&&ok2&&ok3);
 		DQprov.clear();
 		double DT;
 		for(int iT=0;iT<Tk.size()-1;iT++)
@@ -172,7 +180,7 @@ void EITools::getTkQpkQuk(EIReader* eiReader,MOOptVector *variables,
 			}
 		}
 		// utility/process stream
-		eiReader->getFirstGroupFact(curStream,curGroupFact,curGroup);
+        EIReader::getFirstParentGroupFact(curStream,curGroupFact,curGroup);
 
 		// if is part of a utility
 		if(curGroupFact)
@@ -183,7 +191,7 @@ void EITools::getTkQpkQuk(EIReader* eiReader,MOOptVector *variables,
 			factGroupMap.insert(curGroupFact,curGroup);
 
 			// check if utility group is part of another utility group
-			eiReader->getFirstGroupFact(curGroup,curGroupFact2,curGroup2);
+            EIReader::getFirstParentGroupFact(curGroup,curGroupFact2,curGroup2);
 			if(curGroupFact2)
 				factRelation.insert(curGroupFact,curGroupFact2); //add relation in order to be taken into account
 		}

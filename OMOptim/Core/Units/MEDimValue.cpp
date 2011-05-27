@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -54,6 +54,11 @@ double MEDimValue::value(int iUnit) const
 	return convert(_value,_unit,iUnit);
 }
 
+double MEDimValue::value() const
+{
+        return _value;
+}
+
 void MEDimValue::setValue(double value,int iUnit)
 {
 	_value = value; 
@@ -66,6 +71,16 @@ void MEDimValue::setUnit(int iUnit)
 	_unit = iUnit;
 }
 
+bool MEDimValue::setUnit(QString unit)
+{
+    int iUnit = units().indexOf(unit);
+    if(iUnit==-1)
+        return false;
+    else
+        setUnit(iUnit);
+    return true;
+
+}
 bool MEDimValue::setValue(double value,QString unit)
 {
 	int iUnit = units().indexOf(unit);
@@ -96,3 +111,6 @@ int MEDimValue::iUnit() const
 {
 	return _unit;
 }
+
+
+

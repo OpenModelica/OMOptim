@@ -44,7 +44,7 @@
 
 
 
-WidgetTableStreams::WidgetTableStreams(EIItem* _rootEI,bool _editable,EIReader* _eiReader,MOVector<Variable> *_variables,QWidget *parent) :
+WidgetTableStreams::WidgetTableStreams(EIItem* _rootEI,bool _editable,MOVector<Variable> *_variables,QWidget *parent) :
 
     QWidget(parent),
     ui(new Ui::WidgetTableStreamsClass)
@@ -54,10 +54,10 @@ WidgetTableStreams::WidgetTableStreams(EIItem* _rootEI,bool _editable,EIReader* 
 	rootEI = _rootEI;
 	variables = _variables;
 	editable = _editable;
-	eiReader = _eiReader;
+
 
 	//table model
-	tableEIStreams = new TableEIItems(rootEI,editable,eiReader,EI::STREAM,true);
+        tableEIStreams = new TableEIItems(rootEI,editable,EI::STREAM,true);
 	tableView=new MOTableView(this);
 	streamsProxyModel = GuiTools::ModelToViewWithFilter(tableEIStreams,tableView,ui->lineStreamsFilter);
 	tableView->setModel(streamsProxyModel);

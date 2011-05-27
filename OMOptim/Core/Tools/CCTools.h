@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -60,11 +60,11 @@ public:
 		QList<QList<MEQflow> > & Qik,
 		MOCCCurve *gccCurve);
 
-	static void getPinch(QVector<double>  Tall,QVector<double>  HCold,QVector<double>  HHot, double & TPinch, double & dHPinch);
+        static void getPinch(QVector<double>  Tall,QVector<double>  HCold,QVector<double>  HHot, METemperature & TPinch, double & dHPinch);
 
 	static void getValues(QList<METemperature> & Tk,
 		QList<QList<MEQflow> > & Qik,
-		double &TPinch, double &MER, double &MERCold);
+                METemperature &TPinch, MEQflow &MER, MEQflow &MERCold);
 
 private :
 	static void projectHonT(QVector<double> &newT,QVector<double> &newH,QVector<double> &oldT, QVector<double> &oldH);

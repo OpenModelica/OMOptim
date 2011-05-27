@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -200,12 +200,12 @@ bool BlockSubstitutions::removeBlocks(QString replacedName)
 
 
 
-QDomElement BlockSubstitutions::toXMLData(QDomDocument & _doc)
+QDomElement BlockSubstitutions::toXmlData(QDomDocument & _doc)
 {
 	QDomElement cBlocks = _doc.createElement("BlockSubstitutions");
 	for(int i=0;i<size();i++)
 	{
-		QDomElement cBlock = at(i)->toXMLData(_doc);
+		QDomElement cBlock = at(i)->toXmlData(_doc);
 		cBlocks.appendChild(cBlock);
 	}
 

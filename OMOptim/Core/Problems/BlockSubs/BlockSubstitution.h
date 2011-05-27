@@ -46,7 +46,7 @@ public :
 	BlockSubstitution* clone();
 	void copyFrom(BlockSubstitution*);
 
-	QDomElement toXMLData(QDomDocument & doc);
+	QDomElement toXmlData(QDomDocument & doc);
 
 	Project *project;
 	ModModelPlus* model;

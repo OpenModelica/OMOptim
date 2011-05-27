@@ -158,7 +158,7 @@ bool AlgoParameter::setFieldValue(int ifield,QVariant value)
 
 QVariant AlgoParameter::getFieldValue(int ifield, int role) const
 {
-	if (!_filledFields.contains(ifield))
+ if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
 		return QString("-");
 	else
 	{

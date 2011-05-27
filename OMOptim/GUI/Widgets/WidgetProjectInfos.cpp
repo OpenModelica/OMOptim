@@ -1,4 +1,4 @@
-// $Id$
+﻿// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -28,53 +28,68 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ProblemEI.h
+        @file WidgetProjectInfos.cpp
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
  	@version 0.9 
+*/
 
-  */
+#include "WidgetProjectInfos.h"
 
-#ifndef PROBLEMEI_H
-#define PROBLEMEI_H
 
-#include "Problem.h"
-#include "EIItem.h"
-#include "EIModelExtractor.h"
-#include "EIReader.h"
-#include "MOomc.h"
 
-class ProblemEI : public Problem
+namespace Ui
 {
-    Q_OBJECT
+        class WidgetProjectInfos_Class;
+}
 
-public:
-        ProblemEI(Project*,EIReader*,ModReader*,MOomc*);
-	ProblemEI(const ProblemEI &);
-	virtual ~ProblemEI(void);
+WidgetProjectInfos::WidgetProjectInfos(Project *project_,QWidget *parent) :
+    QWidget(parent), ui(new Ui::WidgetProjectInfos_Class)
+{
+    ui->setupUi(this);
 
-        virtual void loadModel(ModModel*);
-        virtual void unloadModel(ModModel*);
+	project = project_;
+	connect(ui->pushEdit, SIGNAL(clicked()), this, SLOT(onPushedEdit()));
+}
 
-        void clearInputVars();
-        void updateInputVars(MOOptVector *);
-        void setInputVars(MOOptVector*);
-        MOOptVector * inputVars();
+WidgetProjectInfos::~WidgetProjectInfos()
+{
+    delete ui;
+}
 
-        QList<ModModel*> _modelsLoaded;
+void WidgetProjectInfos::actualizeGuiFromProject()
+{
 
-        EIItem* _rootEI;
-        EIReader* _eiReader;
-        MOomc* _moomc;
-        ModReader* _modReader;
-        MOOptVector * _inputVars;
+	// File names
+	if(project->isDefined())
+	{
+		ui->labelProjectName->setText(project->name());
+		ui->labelProjectFile->setText(project->filePath());
+		
+		QString listMO;
+		for(int i=0;i<project->moFiles().size();i++)
+		{
+			listMO.push_back(project->moFiles().at(i)+"\n");
+		}
+		ui->labelMoFiles->setText(listMO);
+	}
+	else
+	{
+		ui->labelProjectName->setText("-");
+		ui->labelProjectFile->setText("-");
+		ui->labelMoFiles->setText("-");
+	}
+}
 
-signals :
-        void inputVarsModified();
-};
-
-
-#endif
+void WidgetProjectInfos::onPushedEdit()
+{
+	bool openFileOk = LowTools::openFile(project->filePath());
+	if(!openFileOk)
+	{
+		LowTools::openFolder(project->folder());
+	}
+}
