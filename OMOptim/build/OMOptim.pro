@@ -7,6 +7,8 @@ CONFIG += qt warn_off
 # if wants energy integration (pinch analysis)
 # add CONFIG useei in command line
 
+QMAKE_CXXFLAGS+=-fpermissive
+
 # WINDOWS
 win32 {
 DEFINES += __x86__ \
@@ -20,9 +22,6 @@ DEFINES += __x86__ \
     _WIN32_WINNT=0x0400 \
     _MBCS \
     QWT_DLL
-
-QMAKE_CXXFLAGS+=-fpermissive
-
 
 CONFIG(debug, debug|release){
     LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \

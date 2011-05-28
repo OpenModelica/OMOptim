@@ -57,6 +57,7 @@ void Dymola::verifyInstallation()
 
 bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder)
 {
+#ifdef WIN32
     // Create Dymola script
     QString filePath = storeFolder+QDir::separator()+"MOFirstRun.mos";
     QFile file(filePath);
@@ -116,10 +117,12 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
 
         return success;
     }
+#endif
 }
 
 bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
 {
+#ifdef WIN32
     // Create Dymola script
     QString filePath = folder+QDir::separator()+"MOFirstRun.mos";
     QFile file(filePath);
@@ -169,6 +172,7 @@ bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
     //look if it succeed
     bool success = dsinFile.exists();
     return success;
+#endif
 }
 
 
