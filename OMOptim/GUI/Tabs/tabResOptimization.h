@@ -64,7 +64,7 @@
 #include "MO2ColTab.h"
 #include "WidgetBlocks.h"
 #include "WidgetMooPlot.h"
-#include "widgetmoopointslist.h"
+#include "WidgetMooPointslist.h"
 #include "WidgetOptTable.h"
 #include "WidgetTableRecVar.h"
 #include "WidgetToolBar.h"
