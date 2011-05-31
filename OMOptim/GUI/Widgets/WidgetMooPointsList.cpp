@@ -38,7 +38,7 @@
         @version 0.9
 */
 
-#include "widgetmoopointslist.h"
+#include "WidgetMooPointsList.h"
 #include "ui_WidgetMooPointsList.h"
 #include <QtGui/QErrorMessage>
 
