@@ -83,7 +83,6 @@ public :
 protected :
 	MOVector<Variable> *_variables;
 	ModModel *_modModel;
-	ModClass *_rootModClass;
 	ModelicaConnections *_connections;
 	MOVector<ModelicaModifier> *_modifiers;
 	QStringList _neededFiles;
@@ -91,7 +90,7 @@ protected :
 
 	MOomc* _moomc;
 	Project* _project; // project or database (for signal emitting)
-	ModReader* _modReader;
+        ModClassTree* _modClassTree;
 
 
 	//**************************************
@@ -113,7 +112,7 @@ protected :
 
 public:
 
-	ModModelPlus(MOomc*,Project*,ModReader*,ModModel*,ModClass* rootModClass);
+        ModModelPlus(MOomc*,Project*,ModClassTree*,ModModel*);
 	~ModModelPlus(void);
 	virtual QString getClassName(){return "ModModelPlus";};
 	

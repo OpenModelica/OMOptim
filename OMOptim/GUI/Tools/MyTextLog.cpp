@@ -42,6 +42,7 @@
 #include <QDesktopServices>
 MyTextLog::MyTextLog(void):QTextBrowser()
 {
+    connect(this,SIGNAL(anchorClicked(QUrl)),this,SLOT(openURL(QUrl)));
 }
 
 MyTextLog::~MyTextLog(void)
@@ -49,12 +50,8 @@ MyTextLog::~MyTextLog(void)
 }
 
 
-void MyTextLog::setSource ( const QString & name ){
-	if ( name.indexOf( "file:///" )>-1 ) {
-		QDesktopServices::openUrl(QUrl(name));
-		// Simulate showing a pdf file
-		/// qDebug( QString( "Loading PDF viewer on \"%1\"" ).arg( name ) );
+void MyTextLog::setSource ( const QUrl & name )
+{
+                QDesktopServices::openUrl(name);
 	}
-	else
-		QTextBrowser::setSource( name );
-}
+

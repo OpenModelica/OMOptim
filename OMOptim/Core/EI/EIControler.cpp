@@ -104,6 +104,19 @@ void EIControler::resetProcessFacts(EIItem* root)
     }
 }
 
+void EIControler::resetAllDTMin_2(EIItem* root,double value)
+{
+    QList<EIItem*> streams = EIReader::getItems(root,true,EI::STREAM);
+    EIStream* curStream;
+    for(int i=0;i<streams.size();i++)
+    {
+        curStream = ((EIStream*)streams.at(i));
+        curStream->setFieldValue(EIStream::DTMIN2,value);
+    }
+}
+
+
+
 void EIControler::setItems(QDomElement & domEl,EIItem* rootEI)
 {
     rootEI->clearDescendants();

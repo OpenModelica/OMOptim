@@ -73,7 +73,7 @@ class TabProject : public MOTabSimple {
     Q_OBJECT
 
 public:
-	TabProject(Project *project,QWidget *parent = 0);
+    TabProject(Project *project,QList<QAction*> recentProjActions,QWidget *parent = 0);
     ~TabProject();
     TabType tabType(){return TABPROJECT;};
 
@@ -82,19 +82,12 @@ public:
 
 	//UI
 	Ui::TabProject_Class *ui;
-
         WidgetProjectInfos *widgetInfos;
-	//TabModelComponents *tabComponents;
-	//TabModelVariables *tabVariables;
-
-	int curView;
-	//QStringList viewList;
-
 	void actualizeGuiFromProject();
 
-
-	public slots :
-	//	void updateView(int);
+signals:
+    void newProject();
+    void loadProject();
 };
 
 

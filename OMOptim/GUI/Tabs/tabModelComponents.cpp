@@ -82,7 +82,8 @@ void TabModelComponents::actualizeComponentTree()
 		// Model components
 		if(_project->curModModel())
 		{
-			GuiTools::ModClassToTreeView(_project->modReader(),_project->curModModel(),_ui->treeComponents,_componentsTreeModel);
+                    _ui->treeComponents->setModel(_project->modClassTree());
+                        //GuiTools::ModClassToTreeView(_project->modReader(),_project->curModModel(),_ui->treeComponents,_componentsTreeModel);
 		}
 		else
 		{

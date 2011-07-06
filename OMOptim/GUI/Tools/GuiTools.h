@@ -64,7 +64,7 @@
 #include "ModClassTree.h"
 #include "ModClass.h"
 #include "MyTreeView.h"
-
+#include "Project.h"
 
 
 
@@ -80,7 +80,7 @@ public:
 
 	static QSortFilterProxyModel * ModelToViewWithFilter(QAbstractItemModel *, QAbstractItemView *,QLineEdit*);
 	static void ModelToView(QAbstractItemModel *, QAbstractItemView *);
-	static void ModClassToTreeView(ModReader*,ModClass*,QTreeView* _treeView,ModClassTree* &_treeModel);
+     //   static void ModClassToTreeView(ModReader*,ModClass*,QTreeView* _treeView,ModClassTree* _treeModel);
 
 	//ModClass popup menus
 	static QMenu* newModClassPopupMenu(Project*,const QPoint &,ModClass*); 
@@ -88,7 +88,7 @@ public:
 	static void addCommonActions(QMenu*,Project*,const QPoint &,ModClass*); 
 	
 	
-	static QMenu* createSolvedProblemPopupMenu(Project*,QWidget*,const QPoint &,Problem*,int numProblem); 
+        static QMenu* createResultPopupMenu(Project*,QWidget*,const QPoint &,Result*,int numResult);
 	static QMenu* createProblemPopupMenu(Project*,QWidget*,const QPoint &,Problem*,int numProblem); 
 	
 

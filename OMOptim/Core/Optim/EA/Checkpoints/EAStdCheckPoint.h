@@ -56,11 +56,11 @@
 #include <utils/moeoArchiveObjectiveVectorSavingUpdater.h>
 #include <utils/moeoBinaryMetricSavingUpdater.h>
 
-#include "EAConfig.h"
+
 #include "Project.h"
 #include <QtCore/QObject>
 #include "EAUpdaterDispObjGUI.h"
-
+#include "MOParameter.h"
 
 bool testDirRes(std::string _dirName, bool _erase);
 
@@ -76,7 +76,7 @@ bool testDirRes(std::string _dirName, bool _erase);
 template < class MOEOT >
 eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _state, eoEvalFuncCounter < MOEOT > & _eval,
 											 eoContinue < MOEOT > & _continue, eoPop < MOEOT > & _pop, moeoArchive < MOEOT > & _archive,
-											 Project* _project, EAConfig *_config,QString tempDir)
+                                                       Project* _project, MOParameters *_parameters,QString tempDir)
 {
   eoCheckPoint < MOEOT > & checkpoint = _state.storeFunctor(new eoCheckPoint < MOEOT > (_continue));
   /* the objective vector type */
@@ -91,8 +91,8 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
   QString bestStatsSaveFilePath = tempDir+QDir::separator() + "bestStats";
   
   
-  unsigned int saveFreq = _config->getParameterValue("SaveFrequency",50);
-   unsigned int maxIter = _config->getParameterValue("MaxIterations",50);
+    unsigned int saveFreq = _parameters->value("SaveFrequency",50).toInt();
+    unsigned int maxIter = _parameters->value("MaxIterations",50).toInt();
 
 
  

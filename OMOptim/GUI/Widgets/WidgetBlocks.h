@@ -63,7 +63,7 @@ class WidgetBlocks : public QDialog {
 
 
 public:
-    explicit WidgetBlocks(Project* ,OptimResult*,QWidget *parent = 0);
+    explicit WidgetBlocks(Project* ,OptimResult*,QWidget *parent);
     virtual ~WidgetBlocks();
 
 public slots:

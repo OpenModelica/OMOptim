@@ -69,7 +69,7 @@
 #include "WidgetTableRecVar.h"
 #include "WidgetToolBar.h"
 #include "WidgetCalculateMooPoints.h"
-
+#include "WidgetOptimActions.h"
 
 namespace Ui {
     class TabResOptimizationClass;
@@ -79,18 +79,19 @@ class TabResOptimization : public MO2ColTab {
     Q_OBJECT
 
 public:
-	TabResOptimization(Project *project, Optimization *problem_, QWidget *parent = 0);
-    ~TabResOptimization();
+        TabResOptimization(Project *project, OptimResult *result, QWidget *parent = 0);
+        virtual ~TabResOptimization();
     TabType tabType(){return TABSOLVEDPROBLEM;};
 
-	Project *project;
-	Optimization *problem;
-	OptimResult* result;
+        Project *_project;
+        Optimization *_problem;
+        OptimResult* _result;
 
         WidgetMooPointsList* widgetMooPointsList;
 	WidgetMooPlot* widgetMooPlot;
 	WidgetTableRecVar* widgetTableRecVar;
         WidgetCalculateMooPoints* widgetCalculateMooPoints;
+        WidgetOptimActions *widgetOptimActions;
 
 
 };

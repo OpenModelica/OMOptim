@@ -50,6 +50,7 @@
 #include "EITargetResult.h"
 #include "InfoSender.h"
 #include "EIConnConstrs.h"
+#include "MilpVariableResult.h"
 
 
 

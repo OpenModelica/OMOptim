@@ -52,7 +52,8 @@
 
 #ifdef USEEI
 #include "TabEITargetResult.h"
-#include "TabEITarget.h"
+#include "tabEIHEN1Result.h"
+#include "TabEIProblem.h"
 #endif
 
 class MainWindow;
@@ -63,10 +64,10 @@ class MOMainTab :public QTabWidget
 
 public:
 	MOMainTab(QWidget *_mainWindow,Project* _project);
-	~MOMainTab(void);
+        virtual ~MOMainTab(void);
 
 	void addProblemTab(Project *project, Problem * problem);
-	void addSolvedProblemTab(Project *project, Problem * problem);
+        void addResultTab(Project *project, Result * result);
 	void removeTab(MOTabBase::TabType,QString name);
 	void removeTab(int);
 	
@@ -74,11 +75,11 @@ public:
 public slots:
 	void contextMenuEvent(QContextMenuEvent* pEvent);
 	void onProblemRenamed(QString);
+        void onTabCloseRequested(int index);
 
 private :
 	Project* project;
 	QWidget* mainWindow;
-
 };
 
 #endif

@@ -54,8 +54,7 @@
 
 #include "ModModelPlus.h"
 #include "MOItem.h"
-#include "Problems.h"
-#include "Results.h"
+#include "OMCases.h"
 #include "MOomc.h"
 #include "Software.h"
 #include "ModPlusCtrl.h"
@@ -73,15 +72,17 @@
 #include "Load.h"
 #include "MOThreads.h"
 #include "EABase.h"
+#include "ModClassTree.h"
 
 #ifdef USEEI
 	#include "EITarget.h"
 	#include "EIReader.h"
+        #include "EIHEN1.h"
 #endif
 
 
 /*
- * \brief Main class managing problems, solved problems, models,
+ * \brief Main class managing problems, results, models,
  * paths information, save/load main functions, threads.
  */
 class Project: public MOItem
@@ -113,13 +114,13 @@ private:
 	QStringList _moFiles;
 	QStringList _mmoFiles;
 
-	Problems* _problems;
-	Problems* _solvedProblems;
+        OMCases* _problems;
+        OMCases* _results;
 	
 
 	ModReader* _modReader;
 	ModPlusCtrl* _modPlusCtrl;
-	ModClass* _rootModClass;
+        ModClassTree* _modClassTree;
 	QMap<ModModel*,ModModelPlus*> _mapModelPlus;
 
 
@@ -156,13 +157,15 @@ public:
 	//Problem managment
 	//****************************	
 	void addNewProblem(Problem::ProblemType, ModModel*);
-	void addSolvedProblem(Problem *);
+        void addResult(Result *);
 	void addProblem(Problem *);
-	void addSolvedProblem(QString filePath);
+        void addResult(QString filePath);
 	void addProblem(QString filePath);
-	void launchProblem(int);
-	void removeSolvedProblem(int num);
+        void launchProblem(Problem*);
+        void removeResult(int num);
 	void removeProblem(int num);
+
+
 
 	//****************************
 	// Get/Set functions
@@ -170,7 +173,7 @@ public:
 	bool isDefined(){return _isdefined;};
 	QString modModelPlusFolder();
 	QString problemsFolder();
-	QString solvedProblemsFolder();
+        QString resultsFolder();
 	QString filePath();
 	QString folder();
 	QString tempPath();
@@ -183,11 +186,12 @@ public:
 	QStringList mmoFiles();
 	
 	MOomc* moomc(){return _moomc;};
-	Problems* problems(){return _problems;};
-	Problems* solvedProblems(){return _solvedProblems;};
+        OMCases* problems(){return _problems;};
+        OMCases* results(){return _results;};
 	ModReader* modReader(){return _modReader;};
 	ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
-	ModClass* rootModClass(){return _rootModClass;};
+        ModClassTree* modClassTree(){return _modClassTree;};
+        ModClass* rootModClass(){return _modClassTree->rootElement();};
 	QMap<ModModel*,ModModelPlus*> mapModelPlus(){return _mapModelPlus;};
 	
 
@@ -208,16 +212,22 @@ public:
 	// Slots
 	//****************************	
 	public slots :
-		void removeSolvedProblem();
+                void removeResult();
 		void removeProblem();
-		Problem* restoreProblemFromSolvedOne(int numSolved);
+                Problem* restoreProblemFromResult(int numSolved);
 		bool renameProblem(int, QString);
-		bool renameSolvedProblem(int, QString);
+                bool renameResult(int, QString);
 
-		void onProblemFinished(Problem*);
+                void onProblemFinished(Result*);
 		void onProblemStopAsked(Problem*);
 
 		void onModClassSelectionChanged(QList<ModClass*> &classes);
+
+                void addNewOptimization();
+                void addNewOneSimulation();
+                void addNewEIProblem();
+
+
 
 
 		//****************************
@@ -226,11 +236,11 @@ public:
 	signals:
 		void sendProgress(float);
 		void sendProgress(float,int,int);
-		void projectReset();
+                void projectAboutToBeReset();
 		void projectChanged();
 
 		void addedProblem(Problem*);
-		void addedSolvedProblem(Problem*);
+                void addedResult(Result*);
 		//void addedLibrary(ModClass*);
 
 		void databasesUpdated();
@@ -238,7 +248,7 @@ public:
 		void modifiersUpdated();
 		void componentsUpdated();
 		void connectionsUpdated();
-		void beforeRemoveSolvedProblem(int);
+                void beforeRemoveResult(int);
 		void beforeRemoveProblem(int);
 
 

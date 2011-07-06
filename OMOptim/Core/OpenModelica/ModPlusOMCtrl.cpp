@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -52,7 +52,7 @@ ModPlusOMCtrl::ModPlusOMCtrl(ModModelPlus* model,MOomc* moomc,QString mmoFolder,
 
 	_copyAllMoOfFolder = true;
 
-	_parameters = new MOVector<ModModelParameter>();
+	_parameters = new MOParameters();
 	setDefaultParameters();
 }
 
@@ -68,7 +68,8 @@ ModPlusCtrl::Type ModPlusOMCtrl::type()
 // Parameters
 void ModPlusOMCtrl::setDefaultParameters()
 {
-	_parameters->addItem(new ModModelParameter(OpenModelica::STOPVALUE,"stop value","Stop value",1,"double",0,1E100));
+    _parameters->addItem(new MOParameter(OpenModelica::STOPVALUE,"stop value","Stop value",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+    _parameters->addItem(new MOParameter((int)OpenModelica::MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
 }
 
 bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString resFile)
@@ -115,6 +116,7 @@ bool ModPlusOMCtrl::compile()
         infoSender.send(Info("Compiling model "+_modModelName,ListInfo::NORMAL2));
 
 	// compile
+        QString logFile = _mmoFolder+_modModelName+".log";
 	bool success = OpenModelica::compile(_moomc,_moFilePath,_modModelName,_mmoFolder);
 
 	// Inform
@@ -124,7 +126,7 @@ bool ModPlusOMCtrl::compile()
 	else
 		iMsg = ListInfo::MODELCOMPILATIONFAIL;
 
-	infoSender.send(Info(iMsg,_modModelName,_moFilePath));
+        infoSender.send(Info(iMsg,_modModelName,logFile));
 
 	return success;
 }
@@ -196,8 +198,14 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
 
         // Info
         infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));
-	// Launching Dymosim
-	OpenModelica::start(tempExeFile);
+
+        // Launching oepnmodelica
+        int maxNSec=-1;
+        int iParam = _parameters->findItem((int)OpenModelica::MAXSIMTIME,MOParameter::INDEX);
+        if(iParam>-1)
+            maxNSec=_parameters->items.at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
+
+        OpenModelica::start(tempExeFile,maxNSec);
 
 		//getting results
 	//Checking if successed

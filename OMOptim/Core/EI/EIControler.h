@@ -61,6 +61,10 @@ public:
         static void addEmptyGroup(EIItem* parent);
         static void removeItem(EIItem*);
         static void resetProcessFacts(EIItem*);
+        static void resetAllDTMin_2(EIItem*,double value=0);
+
+
+
         static QList<EIStream*> splitStream(EIStream* toSplit,double firstFraction);
 
 	//XML functions

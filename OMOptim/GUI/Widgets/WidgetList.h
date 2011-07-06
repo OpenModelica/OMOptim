@@ -50,7 +50,8 @@ class WidgetList :
 {
 	Q_OBJECT
 public:
-	WidgetList(QWidget* _parent = 0);
+        WidgetList(QWidget* _parent);
+        virtual ~WidgetList(){};
 
 	bool setSelectedIndexes(QList<int>);
 	QList<int> getSelectedIndexes();

@@ -65,7 +65,7 @@ class WidgetMooPlot : public QWidget {
 
 
 public:
-    explicit WidgetMooPlot(OptimResult* ,QWidget *parent = 0);
+    explicit WidgetMooPlot(OptimResult* ,QWidget *parent);
     virtual ~WidgetMooPlot();
 
 	void updateCombos();

@@ -51,7 +51,7 @@ WidgetEITargetResult::WidgetEITargetResult(EITargetResult *result,QWidget *paren
     _ui->setupUi(this);
     _result = result;
 
-    _ui->labelTotalCost->setText(QString::number(result->totalCost));
+    _ui->labelTotalCost->setText(QString::number(result->_totalCost));
 
     connect(_ui->pushLog,SIGNAL(clicked()),this,SLOT(onLogAsked()));
     connect(_ui->pushResult,SIGNAL(clicked()),this,SLOT(onResultAsked()));
@@ -65,18 +65,21 @@ WidgetEITargetResult::~WidgetEITargetResult()
 
 void WidgetEITargetResult::onResultAsked()
 {
-    QString filePath = _result->saveFolder().absoluteFilePath(_result->_resFileName);
+    QString filePath = _result->saveFolder()+QDir::separator()+_result->_resFileName;
     QUrl fileUrl(QString("file:///").append(filePath));
-
     bool ok = QDesktopServices::openUrl(fileUrl);
 }
 
 void WidgetEITargetResult::onLogAsked()
 {
-    QDesktopServices::openUrl(_result->saveFolder().absoluteFilePath(_result->_logFileName));
+    QString filePath = _result->saveFolder()+QDir::separator()+_result->_logFileName;
+    QUrl fileUrl(QString("file:///").append(filePath));
+    bool ok = QDesktopServices::openUrl(fileUrl);
 }
 
 void WidgetEITargetResult::onSensitivityAsked()
 {
-    QDesktopServices::openUrl(_result->saveFolder().absoluteFilePath(_result->_sensFileName));
+    QString filePath = _result->saveFolder()+QDir::separator()+_result->_sensFileName;
+    QUrl fileUrl(QString("file:///").append(filePath));
+    bool ok = QDesktopServices::openUrl(fileUrl);
 }

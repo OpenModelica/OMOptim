@@ -45,7 +45,7 @@
 #include "ModModel.h"
 #include <QtGui/QListWidget>
 
-WidgetMOItem::WidgetMOItem(MOItem *_item,bool _forceEditable,QWidget *parent):
+WidgetMOItem::WidgetMOItem(MOItem *_item,QWidget *parent,bool _forceEditable):
 QWidget(parent),
 ui(new Ui::WidgetMOItemClass)
 {

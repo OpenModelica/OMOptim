@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -192,7 +192,7 @@ bool OpenModelica::getFinalVariablesFromFile(QTextStream *text, MOVector<Variabl
 	return true;
 }
 
-void OpenModelica::setInputVariables(QString fileName_, MOVector<Variable> *variables,QString _modModelName,MOVector<ModModelParameter> *parameters)
+void OpenModelica::setInputVariables(QString fileName_, MOVector<Variable> *variables,QString _modModelName,MOParameters *parameters)
 {
 	QFileInfo fileinfo = QFileInfo(fileName_);
 	if (fileinfo.exists())
@@ -233,17 +233,26 @@ void OpenModelica::setInputVariables(QString fileName_, MOVector<Variable> *vari
 			}
 		}
 
-		// Parameters
+        // Parameters to write in init file
+
 		if(parameters)
 		{
+            QList<OMParameters> initParameters; // parameters to specify in init file
+            initParameters << STOPVALUE;
+
+
 			QVariant paramValue;
 			QString paramName;
-			ModModelParameter * curParam;
-			for(int iP=0;iP<parameters->items.size();iP++)
+            MOParameter * curParam;
+            int iP;
+            for(int i=0;i<initParameters.size();i++)
 			{
+                iP = parameters->findItem((int)initParameters.at(i),MOParameter::INDEX);
+                if(iP>-1)
+                {
 				curParam = parameters->items.at(iP);
 				paramName = curParam->name();
-				paramValue = curParam->getFieldValue(ModModelParameter::VALUE);
+                    paramValue = curParam->getFieldValue(MOParameter::VALUE);
 				rxLine.setPattern(sciNumRx()+"\\s*(//[\\w*|\\s*]*//|//)\\s*"+paramName);
 				index = rxLine.indexIn(allText);
 
@@ -261,6 +270,7 @@ void OpenModelica::setInputVariables(QString fileName_, MOVector<Variable> *vari
 				}
 			}
 		}
+        }
 
 
 		fileinfo.setFile(fileName_);
@@ -272,7 +282,7 @@ void OpenModelica::setInputVariables(QString fileName_, MOVector<Variable> *vari
 	}
 }
 
-void OpenModelica::start(QString exeFile)
+void OpenModelica::start(QString exeFile,int maxnsec)
 {
 #ifdef WIN32
 	QFileInfo exeFileInfo(exeFile);
@@ -296,7 +306,12 @@ void OpenModelica::start(QString exeFile)
 
         //start process
     simProcess.start(appPath, QStringList());
-    bool ok = simProcess.waitForFinished(-1);
+    int nmsec;
+    if(maxnsec==-1)
+        nmsec = -1;
+    else
+        nmsec = maxnsec*1000;
+    bool ok = simProcess.waitForFinished(nmsec);
         if(!ok)
         {
         QString msg("CreateProcess failed (%d).\n");

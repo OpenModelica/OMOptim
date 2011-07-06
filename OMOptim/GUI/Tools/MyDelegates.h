@@ -46,7 +46,8 @@
 #include <QtCore/QObject>
 #include <QtCore/QSize>
 #include <QtGui/QComboBox>
-#include "OptimResult.h"
+#include <QtGui/QLineEdit>
+#include <QtGui/QDoubleSpinBox>
 
 
 
@@ -134,6 +135,34 @@ public:
 	}
 private:
 	QStringList list;
+};
+
+
+
+class DoubleSpinBoxDelegate : public QStyledItemDelegate
+{
+public :
+    DoubleSpinBoxDelegate(int decimals, double min, double max,QObject *parent = 0)
+    : QStyledItemDelegate(parent),_decimals(decimals),_min(min),_max(max)
+    {
+
+    }
+
+    QWidget *DoubleSpinBoxDelegate::createEditor(QWidget *parent,
+                                                 const QStyleOptionViewItem &/* option */,
+                                                 const QModelIndex &/* index */) const
+    {
+        QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
+        editor->setMinimum(_min);
+        editor->setMaximum(_max);
+        editor->setDecimals(_decimals);
+
+        return editor;
+    }
+
+    double _min;
+    double _max;
+    int _decimals;
 };
 
 /*class FuzzyStatusDelegate : public QStyledItemDelegate

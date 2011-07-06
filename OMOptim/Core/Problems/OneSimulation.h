@@ -50,20 +50,26 @@ class OneSimulation : public Problem
 {
 
 public:
-	OneSimulation(void);
-	OneSimulation(Project*,ModClass* rootModelClass,ModReader*,ModPlusCtrl*,ModModelPlus*);
+        //OneSimulation(void);
+        OneSimulation(Project*,ModClassTree*,ModPlusCtrl*,ModModelPlus*);
 	OneSimulation(const OneSimulation &s);
+        Problem* clone();
 	~OneSimulation(void);
-	virtual QString getClassName(){return "OneSimulation";};
+
+        static QString className(){return "OneSimulation";};
+        virtual QString getClassName(){return OneSimulation::className();};
 
 
+        // Model controler
+        ModPlusCtrl* _modPlusCtrl; /** Pointer to ModModelPlus controler */
 
 	void setModModelPlus(ModModelPlus*);
+        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
 
 
 	//overwrited functions
 	bool checkBeforeComp(QString & error);
-	void launch(ProblemConfig _config);
+        Result* launch(ProblemConfig _config);
 	void store(QString destFolder, QString tempDir);
 	QDomElement toXmlData(QDomDocument & doc);
 
@@ -74,13 +80,14 @@ public:
 	// get functions
 	MOVector<Variable> *overwritedVariables(){return _overwritedVariables;};
 	MOVector<ScannedVariable> *scannedVariables(){return _scannedVariables;};
-	OneSimResult* result() const;
+        //OneSimResult* result() const;
 	ModModelPlus* modModelPlus();
 
 protected :
 	ModModelPlus* _modModelPlus;
 	MOVector<Variable> *_overwritedVariables;
 	MOVector<ScannedVariable> *_scannedVariables;
+
 };
 
 

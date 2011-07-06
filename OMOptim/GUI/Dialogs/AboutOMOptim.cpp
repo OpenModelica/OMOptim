@@ -47,7 +47,7 @@
 #include <QtGui/QErrorMessage>
 #include "Software.h"
 #include "ModModel.h"
-
+#include "version.h"
 #include <QtGui/QListWidget>
 
 AboutOMOptim::AboutOMOptim( QWidget *parent) :
@@ -55,6 +55,10 @@ AboutOMOptim::AboutOMOptim( QWidget *parent) :
     ui(new Ui::AboutOMOptimClass)
 {
     ui->setupUi(this);
+
+    //Version
+    QString version = QString::number(Version::MAJOR)+"."+QString::number(Version::MINOR)+"."+QString::number(Version::REVISION);
+    ui->labelVersion->setText("Version : "+version);
 }
 
 AboutOMOptim::~AboutOMOptim()

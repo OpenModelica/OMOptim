@@ -65,7 +65,7 @@ class WidgetProgress : public QWidget {
 
 
 public:
-    explicit WidgetProgress(QWidget *parent = 0);
+    explicit WidgetProgress(QWidget *parent);
     virtual ~WidgetProgress();
 
 	void updateCombos();

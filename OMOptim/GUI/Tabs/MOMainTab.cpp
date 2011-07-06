@@ -48,6 +48,9 @@ MOMainTab::MOMainTab(QWidget* _mainWindow,Project* _project):QTabWidget(_mainWin
 	setMovable(true);
 
 	setContentsMargins(2,0,2,0);
+        setTabsClosable(false);
+
+        connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(onTabCloseRequested(int)));
 }
 
 MOMainTab::~MOMainTab(void)
@@ -84,7 +87,7 @@ void MOMainTab::contextMenuEvent(QContextMenuEvent* pEvent)
 
   MOItem* _item = curTab->getItem();
   
-  int iProblem,iSolvedProblem;
+  int iProblem,iResult;
 
   // Try Problem
   Problem* selProblem = dynamic_cast<Problem*>(_item);
@@ -96,17 +99,22 @@ void MOMainTab::contextMenuEvent(QContextMenuEvent* pEvent)
 		  QMenu* problemMenu = GuiTools::createProblemPopupMenu(project,mainWindow, mapToGlobal(pEvent->pos()),selProblem,iProblem); 
 		  problemMenu->exec(this->mapToGlobal(pEvent->pos()));
 	  }
-	  else
+  }
+
+  // Try Result
+  Result* selResult = dynamic_cast<Result*>(_item);
+  if(selResult)
 	  {
-		  iSolvedProblem = project->solvedProblems()->items.indexOf(selProblem);
-		  if(iSolvedProblem>-1)
+      iResult = project->results()->items.indexOf(selResult);
+      if(iResult>-1)
 		  {
-			  QMenu* solvedProblemMenu = GuiTools::createSolvedProblemPopupMenu(project,mainWindow,mapToGlobal(pEvent->pos()),selProblem,iSolvedProblem); 
-			  solvedProblemMenu->exec(this->mapToGlobal(pEvent->pos()));
+          QMenu* resultMenu = GuiTools::createResultPopupMenu(project,mainWindow, mapToGlobal(pEvent->pos()),selResult,iResult);
+          resultMenu->exec(this->mapToGlobal(pEvent->pos()));
 		  }
 	  }
+
+
   }
-}
 
 void MOMainTab::removeTab(MOTabBase::TabType type,QString name)
 {
@@ -130,7 +138,16 @@ void MOMainTab::removeTab(MOTabBase::TabType type,QString name)
 
 void MOMainTab::removeTab(int index)
 {
+    if(index < this->count())
+    {
+        QWidget* tabWidget =  this->widget(index);
+
+        // remove tab
 	((QTabWidget*)this)->removeTab(index);
+
+        // delete widget
+        tabWidget->deleteLater();
+}
 }
 
 void MOMainTab::addProblemTab(Project *project, Problem * problem)
@@ -141,7 +158,7 @@ void MOMainTab::addProblemTab(Project *project, Problem * problem)
 	case Problem::ONESIMULATION:
 		{
 			//adding tab
-			TabOneSim* newTab = new TabOneSim(project,(OneSimulation*)problem);
+                        TabOneSim* newTab = new TabOneSim(project,(OneSimulation*)problem,this);
 			newTab->setBackgroundRole(QPalette::Window);
 			newTab->setAutoFillBackground(true);
 			newTab->setWindowTitle(problem->name());
@@ -154,7 +171,7 @@ void MOMainTab::addProblemTab(Project *project, Problem * problem)
 	case Problem::OPTIMIZATION:
 		{
 			//adding tab
-			TabOptimization* newTab = new TabOptimization(project,(Optimization*)problem,NULL);
+                        TabOptimization* newTab = new TabOptimization(project,(Optimization*)problem,this);
 			newTab->setBackgroundRole(QPalette::Window);
 			newTab->setAutoFillBackground(true);
 			newTab->setWindowTitle(problem->name());
@@ -166,12 +183,16 @@ void MOMainTab::addProblemTab(Project *project, Problem * problem)
 		}
 #ifdef USEEI
 	case Problem::EIPROBLEM:
+        case Problem::EITARGET:
+        case Problem::EIHEN1 :
+        case Problem::EIMER :
 		{
 			//adding tab
-                        TabEITarget* newTab = new TabEITarget(project,(EITarget*)problem,this);
+                        TabEIProblem* newTab = new TabEIProblem(project,(EITarget*)problem,this);
 			newTab->setBackgroundRole(QPalette::Window);
 			newTab->setAutoFillBackground(true);
 			newTab->setWindowTitle(problem->name());
+
 
 			//Adding tab
 			addTab(newTab,problem->name());
@@ -183,53 +204,67 @@ void MOMainTab::addProblemTab(Project *project, Problem * problem)
 
 }
 
-void MOMainTab::addSolvedProblemTab(Project *project, Problem * problem)
+void MOMainTab::addResultTab(Project *project, Result * result)
 {
 
-	connect(problem,SIGNAL(renamed(QString)),this,SLOT(onProblemRenamed(QString)));
-switch(problem->type())
+        connect(result,SIGNAL(renamed(QString)),this,SLOT(onProblemRenamed(QString)));
+switch(result->problemType())
 	{
 	case Problem::ONESIMULATION:
 		{
 			//adding table
-			TabResOneSim* newTab = new TabResOneSim(project,(OneSimulation*)problem);
+                        TabResOneSim* newTab = new TabResOneSim(project,(OneSimResult*)result,this);
 			newTab->setBackgroundRole(QPalette::Window);
 			newTab->setAutoFillBackground(true);
-			newTab->setWindowTitle(problem->name());
+                        newTab->setWindowTitle(result->name());
 
 			//Adding tab
-			addTab(newTab,problem->name());
+                        addTab(newTab,result->name());
 			setCurrentWidget(newTab);
 			break;
 		}
 	case Problem::OPTIMIZATION:
 		{
 			//adding table
-			TabResOptimization* newTab = new TabResOptimization(project,(Optimization*)problem);
+                        TabResOptimization* newTab = new TabResOptimization(project,(OptimResult*)result,this);
 			newTab->setBackgroundRole(QPalette::Window);
 			newTab->setAutoFillBackground(true);
-			newTab->setWindowTitle(problem->name());
+                        newTab->setWindowTitle(result->name());
 
 			//Adding tab
-			addTab(newTab,problem->name());
+                        addTab(newTab,result->name());
 			setCurrentWidget(newTab);
 			break;
 		}
 
 #ifdef USEEI
-	case Problem::EIPROBLEM:
+        case Problem::EITARGET:
 		{
 			//adding tab
-                        TabEITargetResult* newTab = new TabEITargetResult(project,(EITarget*)problem,this);
+                        TabEITargetResult* newTab = new TabEITargetResult(project,(EITargetResult*)result,this);
 			newTab->setBackgroundRole(QPalette::Window);
 			newTab->setAutoFillBackground(true);
-			newTab->setWindowTitle(problem->name());
+                        newTab->setWindowTitle(result->name());
 
 			//Adding tab
-			addTab(newTab,problem->name());
+                        addTab(newTab,result->name());
 			setCurrentWidget(newTab);
 			break;
 		}
+
+        case Problem::EIHEN1:
+                {
+                        //adding tab
+                        TabEIHEN1Result* newTab = new TabEIHEN1Result(project,(EIHEN1Result*)result,this);
+                        newTab->setBackgroundRole(QPalette::Window);
+                        newTab->setAutoFillBackground(true);
+                        newTab->setWindowTitle(result->name());
+
+                        //Adding tab
+                        addTab(newTab,result->name());
+                        setCurrentWidget(newTab);
+                        break;
+                }
 #endif
 	}
 }
@@ -258,4 +293,10 @@ void MOMainTab::onProblemRenamed(QString newName)
 
 	if(found)
 		setTabText(iTab,newName);
+}
+
+
+void MOMainTab::onTabCloseRequested(int index)
+{
+    this->removeTab(index);
 }

@@ -51,6 +51,7 @@ WidgetTableRecVar::WidgetTableRecVar(OptimResult* result,QWidget *parent) :
     _ui->setupUi(this);
 	
 	_result = result;
+        Optimization* problem = dynamic_cast<Optimization*>(_result->problem());
 	
 	// recomputed table
 	_tableVariables = new MOTableView(this);
@@ -65,9 +66,9 @@ WidgetTableRecVar::WidgetTableRecVar(OptimResult* result,QWidget *parent) :
 	connect(_ui->spinScan,SIGNAL(valueChanged(int)),this,SLOT(onCurScanChanged(int)));
 	
 	_ui->sliderScan->setMinimum(0);
-	_ui->sliderScan->setMaximum(_result->nbScans()-1);
+        _ui->sliderScan->setMaximum(problem->nbScans()-1);
 	_ui->spinScan->setMinimum(0);
-	_ui->spinScan->setMaximum(_result->nbScans()-1);
+        _ui->spinScan->setMaximum(problem->nbScans()-1);
 	
 	bool show = _result->recomputedVariables()->getUseScan();
 	_ui->groupBox->setVisible(show);

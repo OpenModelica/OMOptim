@@ -56,6 +56,8 @@ with probability p_change per variable
 \ingroup parameteric
 */
 
+#include "MOParameter.h"
+
 template<class EOT> class EAStdMutation: public eoMonOp<EOT>
 {
 public:
@@ -68,11 +70,11 @@ public:
 	EAStdMutation(
 		std::vector<eoRealInterval> & _doubleBounds,
 		std::vector<eoIntInterval> & _intBounds,
-		EAConfig *_config
+                MOParameters *_parameters
 		):
 	doubleBounds(_doubleBounds), intBounds(_intBounds)
 	{
-		config = _config;
+                parameters = _parameters;
 	}
 
 	/// The class name.
@@ -95,8 +97,9 @@ public:
 		//************************
 		// mutation for double
 		//************************
-		double doublePMut = config->getParameterValue("doublePMut",0.35);
-		double doubleMutEpsilon = config->getParameterValue("doubleMutEpsilon",0.01);
+                double doublePMut = parameters->value("doublePMut",0.35).toDouble();
+                double doubleMutEpsilon = parameters->value("doubleMutEpsilon",0.01).toDouble();
+
 		for (unsigned lieu=0; lieu<_eo.doubleVars.size(); lieu++)
 		{
 			if (rng.flip(doublePMut))
@@ -115,7 +118,8 @@ public:
 		//************************
 		// mutation for int
 		//************************
-		double intPMut = config->getParameterValue("intPMut",0.35);
+
+                double intPMut = parameters->value("intPMut",0.35).toDouble();
 
 		for (unsigned lieu=0; lieu<_eo.intVars.size(); lieu++)
 		{
@@ -136,7 +140,7 @@ public:
 		//************************
 		// mutation for bool
 		//************************
-		double boolPMut = config->getParameterValue("boolPMut",0.35);
+                double boolPMut = parameters->value("boolPMut",0.35).toDouble();
 		for (unsigned lieu=0; lieu<_eo.boolVars.size(); lieu++)
 		{
 			if (rng.flip(boolPMut))
@@ -152,7 +156,7 @@ private:
 	std::vector<eoRealInterval> doubleBounds;
 	std::vector<eoIntInterval> intBounds;
 
-	EAConfig *config;
+        MOParameters *parameters;
 };
 
 #endif

@@ -43,12 +43,13 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,QWidget *parent):
+WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,QWidget *parent):
     QWidget(parent),
     _ui(new Ui::WidgetSelectOptVarsClass)
 {
     _ui->setupUi(this);
 	_problem = problem;
+        _isEditable = isEditable;
 
 	
 	// tables' model
@@ -107,6 +108,22 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,QWidget *parent):
         titles << "Real" << "Integer" << "Boolean" << "String";
         GenericDelegate *dataTypeDelegate = new GenericDelegate(values,titles,this);
         _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::DATATYPE,dataTypeDelegate);
+
+
+        DoubleSpinBoxDelegate* minDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* maxDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::OPTMIN,minDelegate);
+        _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::OPTMIN,maxDelegate);
+
+        DoubleSpinBoxDelegate* minObjDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* maxObjDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        _ui->tableObjectives->setItemDelegateForColumn(OptObjective::MIN,minDelegate);
+        _ui->tableObjectives->setItemDelegateForColumn(OptObjective::MAX,maxDelegate);
+
+        DoubleSpinBoxDelegate* minScanDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* maxScanDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANMIN,minScanDelegate);
+        _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANMAX,maxScanDelegate);
 
 
 	//buttons
@@ -265,8 +282,8 @@ void WidgetSelectOptVars::actualizeGui()
 {
 	// list of widgets to hide when problem is solved
 	QWidgetList unsolvedWidgets;
-	unsolvedWidgets << _ui->pushAddObjectives << _ui->pushAddVariables;
-	unsolvedWidgets << _ui->pushRemoveObjectives << _ui->pushRemoveVariables;
+        unsolvedWidgets << _ui->pushAddObjectives << _ui->pushAddVariables << _ui->pushAddScanned;
+        unsolvedWidgets << _ui->pushRemoveObjectives << _ui->pushRemoveVariables << _ui->pushRemoveScanned;
 	
 	// list of widgets to hide when problem is unsolved
 	QWidgetList solvedWidgets;
@@ -275,7 +292,7 @@ void WidgetSelectOptVars::actualizeGui()
 	tables << _ui->tableObjectives << _ui->tableOptimizedVariables << _ui->tableVariables ;
 
 	// if problem is solved
-	if(_problem->isSolved())
+        if(!_isEditable)
 	{
 		for(int i=0; i < unsolvedWidgets.size(); i++)
 			unsolvedWidgets.at(i)->hide();

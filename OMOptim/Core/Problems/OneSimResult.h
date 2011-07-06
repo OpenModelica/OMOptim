@@ -63,10 +63,12 @@ class OneSimResult :
 
 public:
 	OneSimResult(void);
-	OneSimResult(Project* _project, ModModelPlus* _modModelPlus, OneSimulation* _problem,ModReader*,ModPlusCtrl*);
+        OneSimResult(Project* _project, ModModelPlus* _modModelPlus, OneSimulation* _problem,ModClassTree*,ModPlusCtrl*);
 	~OneSimResult(void);
 
-	virtual QString getClassName(){return "OneSimResult";};
+        static QString className(){return "OneSimResult";};
+        virtual QString getClassName(){return OneSimResult::className();};
+
 	MOVector<Variable> *inputVariables(){return _inputVariables;};
 	MOOptVector *finalVariables(){return _finalVariables;};
 
@@ -84,6 +86,11 @@ protected :
 	//******************
 	MOVector<Variable> *_inputVariables;
 	MOOptVector *_finalVariables;
+
+         //Model
+        ModModelPlus* _modModelPlus;
+        ModPlusCtrl* _modPlusCtrl;
+        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
 
 signals:
 	void valuesChanged();

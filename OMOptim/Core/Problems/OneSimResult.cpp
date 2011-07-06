@@ -47,17 +47,20 @@ OneSimResult::OneSimResult(void)
 	_finalVariables = new MOOptVector(true,false); //can have several scans but not several points
 
 	// files to copy
-	_filesToCopyNames << "dsin.txt";
+        _filesToCopy << "dsin.txt";
 }
 
-OneSimResult::OneSimResult(Project* project, ModModelPlus* model, OneSimulation* problem,ModReader* modReader,ModPlusCtrl* modPlusReader)
-:Result(project,model,(Problem*)problem,modReader,modPlusReader)
+OneSimResult::OneSimResult(Project* project, ModModelPlus* model, OneSimulation* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
+:Result(project,modClassTree,(Problem*)problem)
 {
+    _modModelPlus = model;
+    _modPlusCtrl = modPlusCtrl;
+
 	_inputVariables = new MOVector<Variable>;
 	_finalVariables = new MOOptVector(true,false); //can have several scans but not several points
 	
 	// files to copy
-	_filesToCopyNames << "dsin.txt";
+        _filesToCopy << "dsin.txt";
 }
 
 OneSimResult::~OneSimResult(void)
@@ -68,8 +71,9 @@ OneSimResult::~OneSimResult(void)
 
 QDomElement OneSimResult::toXmlData(QDomDocument & doc)
 {
-	// Root element
-	QDomElement cResult = doc.createElement("Result");
+    QDomElement cRoot = doc.createElement("OMResult");
+    QDomElement cResult = doc.createElement(this->getClassName());
+    cRoot.appendChild(cResult);
 
 	// Problem definition
 	QDomElement cInfos = doc.createElement("Infos");

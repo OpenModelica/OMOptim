@@ -49,12 +49,13 @@
 #include "ModModelPlus.h"
 #include "Result.h"
 #include "ProblemConfig.h"
-#include "MyAlgorithm.h"
+#include "OptimAlgo.h"
 #include "ModClass.h"
-#include "ModReader.h"
+#include "ModClassTree.h"
 #include "ModPlusCtrl.h"
 #include "InfoSender.h"
-
+#include "MOParameter.h"
+#include "OMCase.h"
 
 
 
@@ -67,7 +68,7 @@ class Project;
 /**
 * \brief Problem is an abstract class to be inherited by problem you want to solve.
 */
-class Problem: public MOItem
+class Problem: public OMCase
 {
 	Q_OBJECT
 
@@ -76,61 +77,49 @@ public :
 		UNDEFINED = -1,
 		ONESIMULATION,
 		OPTIMIZATION,
-                EIPROBLEM
-		//VARIABLEDETERMINATION
+                EIPROBLEM,
+                EITARGET,
+                EIMER,
+                EIHEN1
 	};
 
 protected :
 
 	// General information
-	Project* _project;
-	Result* _result;
 	ProblemType _type;
-	int _num; //rank in problem vector
 
-	// Files informations
-
-        QStringList _foldersToCopy;
-	QStringList _neededFiles;
-	QString _saveFolder;
-	QString _saveFileName;
-
-	// Model controlers
-	ModReader* _modReader;
-	ModPlusCtrl* _modPlusCtrl;
-	ModClass* _rootModClass;
-
-	// Algorithm information
-	QList<MyAlgorithm*> _algos;
-	int _iCurAlgo;
+        MOParameters* _parameters;
 
 public:
 	
 	// CTOR
-	Problem();
+        Problem(Project*,ModClassTree*);
 	Problem(const Problem & s);
 	virtual ~Problem(void);
+	
+        virtual Problem* clone()=0;
 	
 	// MO Item overwriting
 	virtual QString getFieldName(int iField,int iRole);
 	virtual unsigned getNbFields();
 	virtual QString getClassName(){return "Problem";};
 
-        QStringList _filesToCopy;
+
+        // Infos
+        static QString infos();
 
 	// Execution
 	/**
 	* Description Launch problem resolution.
 	* This function should be reimplemented for each kind of problem.
 	*/
-	virtual void launch(ProblemConfig config) = 0;
+        virtual Result* launch(ProblemConfig config) = 0;
 
         /**
         * Description precomputation function : should be launched at beginning
         * of launch function
         */
         //virtual void precompute();
-
         /**
         * Description Check if problem parameters, and inputs are correct.
         * For example, check if min<max.
@@ -147,50 +136,26 @@ public:
 	*/
 	virtual QDomElement toXmlData(QDomDocument & doc) = 0;
 	virtual void store(QString destFolder, QString tempDir);
-	void rename(QString name,bool changeFolder);
-
+        void setDefaultSaveFileName();
 
 	// Get functions
-	int getiCurAlgo();
-	MyAlgorithm* getCurAlgo();
-	AlgoConfig* getCurAlgoConfig();
-	QStringList getAlgoNames();
-	bool isSolved();
-	QString saveFolder();
-	QString saveFileName();
-	QString entireSavePath();
-	int num(){return _num;};
 	ProblemType type(){return _type;};
-	Result* result() const {return _result;};
-	Project* project(){return _project;};
-	ModReader* modReader(){return _modReader;};
-	ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
-	ModClass* rootModClass(){return _rootModClass;};
+        MOParameters* parameters(){return _parameters;};
 
 	// Set functions
-	void setName(QString);
-	void setNum(int);
 	void setType(ProblemType);
-	void setSaveFolder(QString);
-	void setDefaultSaveFileName();
-	void setEntireSavePath(QString);
-	void setProject(Project*);
-	void setResult(Result*);
-	void setiCurAlgo(int);
 		
-public slots:
-	void openFolder();
-        void deleteResult();
+
+		
 
 signals:
-	void algoConfigsChanged();
 	void finished(Problem*);
 	void newProgress(float);
 	void newProgress(float,int,int);
 	void begun(Problem*);
-	void renamed(QString);
-	void sentInfo(Info);
 };
+
+
 
 
 

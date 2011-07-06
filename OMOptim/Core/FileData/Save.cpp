@@ -47,6 +47,7 @@
 #include "CSV.h"
 #include "EABase.h"
 #include "OptimResult.h"
+#include "version.h"
 
 Save::Save(void)
 {
@@ -155,11 +156,18 @@ Save::~Save(void)
 void Save::saveProblem(Problem* problem)
 {
 	// Root element
-	QDomDocument doc("MOProblem");
-	QDomElement root = problem->toXmlData(doc);
-	doc.appendChild(root);
+    QDomDocument doc("OMCase");
+    QDomElement caseRoot = doc.createElement("OMCase");
+    doc.appendChild(caseRoot);
+
+    QDomElement problemRoot = doc.createElement("OMProblem");
+    QDomElement problemEl = problem->toXmlData(doc);
+    caseRoot.appendChild(problemRoot);
+    problemRoot.appendChild(problemEl);
 
 	// Writing to file
+    if(!problem->saveFileName().isEmpty())
+    {
 	QFile file(problem->entireSavePath());
 	QFileInfo fileInfo(problem->entireSavePath());
 	QDir dir = fileInfo.absoluteDir();
@@ -174,44 +182,58 @@ void Save::saveProblem(Problem* problem)
 	ts << doc.toString();
 	file.close();
 }
+}
 
 
 
 
 
-void Save::saveSolvedProblem(Problem* problem)
+void Save::saveResult(Result* result)
 {
-	switch (problem->type())
+    switch (result->problemType())
 	{
-	case Problem::ONESIMULATION:
-        case Problem::EIPROBLEM:
-		saveSolvedProblem(problem,true);
-		break;
 	case Problem::OPTIMIZATION:
-		saveSolvedProblem((Optimization*) problem);
+        saveOptimResult((OptimResult*) result);
 		break;
+    default :
+            saveStdResult(result);
+    break;
+
 	}
 }
-void Save::saveSolvedProblem(Problem* problem,bool)
+void Save::saveStdResult(Result* result)
 {
 	// Root element
-	QDomDocument doc("MOSolvedProblem");
+    QDomDocument doc("OMCase");
+    QDomElement caseRoot = doc.createElement("OMCase");
+    doc.appendChild(caseRoot);
 	
 	//***********************
 	// Problem definition
 	//***********************
-	QDomElement problemRoot = problem->toXmlData(doc);
-	doc.appendChild(problemRoot);
+    // Root element
+    QDomElement problemRoot = doc.createElement("OMProblem");
+    QDomElement problemEl;
 
+    if(result->problem())
+    {
+        problemEl = result->problem()->toXmlData(doc);
+        problemRoot.appendChild(problemEl);
+        caseRoot.appendChild(problemRoot);
+    }
 	//*********************
 	// Result definition
 	//*********************
-	QDomElement resultRoot = problem->result()->toXmlData(doc);
-	problemRoot.appendChild(resultRoot);
+    QDomElement resultRoot = doc.createElement("OMResult");
+    QDomElement resultEl = result->toXmlData(doc);
+    resultRoot.appendChild(resultEl);
+    caseRoot.appendChild(resultRoot);
 
 	// Writing to file
-	QFile file(problem->entireSavePath());
-	QFileInfo fileInfo(problem->entireSavePath());
+    if(!result->saveFileName().isEmpty())
+    {
+        QFile file(result->entireSavePath());
+        QFileInfo fileInfo(result->entireSavePath());
 	QDir dir = fileInfo.absoluteDir();
 	dir.mkpath(dir.absolutePath());
 	if(file.exists())
@@ -222,32 +244,42 @@ void Save::saveSolvedProblem(Problem* problem,bool)
 	QTextStream ts( &file );
 	ts << doc.toString();
 	file.close();
+    }
 
 }
 
 
 
-void Save::saveSolvedProblem(Optimization* problem)
+void Save::saveOptimResult(OptimResult* result)
 {
 	// Root element
-	QDomDocument doc("MOSolvedProblem");
-
+    QDomDocument doc("OMCase");
+    QDomElement caseRoot = doc.createElement("OMCase");
+    doc.appendChild(caseRoot);
 
 	//***********************
 	// Problem definition
 	//***********************
-	QDomElement problemRoot = problem->toXmlData(doc);
-	doc.appendChild(problemRoot);
+    QDomElement problemRoot = doc.createElement("OMProblem");
+    QDomElement problemEl;
+    if(result->problem())
+    {
+        problemEl= result->problem()->toXmlData(doc);
+        caseRoot.appendChild(problemRoot);
+        problemRoot.appendChild(problemEl);
+    }
 
 	//*********************
 	// Result definition
 	//*********************
-	QDomElement resultRoot = problem->result()->toXmlData(doc);
-	problemRoot.appendChild(resultRoot);
+    QDomElement resultRoot = doc.createElement("OMResult");
+    QDomElement resultEl = result->toXmlData(doc);
+    resultRoot.appendChild(resultEl);
+    caseRoot.appendChild(resultRoot);
 
 	// Writing to file
-	QFile file(problem->entireSavePath());
-	QFileInfo fileInfo(problem->entireSavePath());
+    QFile file(result->entireSavePath());
+    QFileInfo fileInfo(result->entireSavePath());
 	QDir dir = fileInfo.absoluteDir();
 	dir.mkpath(dir.absolutePath());
 
@@ -264,11 +296,11 @@ void Save::saveSolvedProblem(Optimization* problem)
 	// Writing points in Front File
 	//*********************************
 	
-	QString optVarsfrontFileName = ((OptimResult*)problem->result())->_optVarsFrontFileName;
-	QString allVarsfrontFileName = ((OptimResult*)problem->result())->_allVarsFrontFileName;
+    QString optVarsfrontFileName = result->_optVarsFrontFileName;
+    QString allVarsfrontFileName = result->_allVarsFrontFileName;
 
-	((OptimResult*)problem->result())->exportFrontCSV(dir.absoluteFilePath(optVarsfrontFileName), false);
-	((OptimResult*)problem->result())->exportFrontCSV(dir.absoluteFilePath(allVarsfrontFileName), true);
+    result->exportFrontCSV(dir.absoluteFilePath(optVarsfrontFileName), false);
+    result->exportFrontCSV(dir.absoluteFilePath(allVarsfrontFileName), true);
 }
 
 
@@ -280,6 +312,7 @@ void Save::saveProject(Project* project)
 	QDomDocument doc("MOProjectXML");
 	QDomElement root = doc.createElement( "MOProject" );
 	doc.appendChild( root );
+    root.setAttribute("Version",Version::version());
 
 	// Project info
 	QDir projectDir(project->folder());
@@ -320,26 +353,26 @@ void Save::saveProject(Project* project)
 	// Project problems
 	if(project->problems()->items.size()>0)
 	{
-		QDomElement cProblems = doc.createElement( "Problems" );
+        QDomElement cOMCases = doc.createElement( "Problems" );
 		for (int nr=0;nr<project->problems()->items.size();nr++)
 		{
 			QDomElement cProblem = doc.createElement( "Problem" );
 			QString relPath = projectDir.relativeFilePath(project->problems()->items.at(nr)->entireSavePath());
 			cProblem.setAttribute("path",relPath);
-			cProblems.appendChild(cProblem);
+            cOMCases.appendChild(cProblem);
 		}
-		root.appendChild(cProblems);
+        root.appendChild(cOMCases);
 	}
 
-	// Project solved problems
-	if(project->solvedProblems()->items.size()>0)
+    // Project results
+    if(project->results()->items.size()>0)
 	{
-		QDomElement cResults = doc.createElement( "SolvedProblems" );
+        QDomElement cResults = doc.createElement( "Results" );
 
-		for (int nr=0;nr<project->solvedProblems()->items.size();nr++)
+        for (int nr=0;nr<project->results()->items.size();nr++)
 		{
-			QDomElement cResult = doc.createElement( "SolvedProblem" );;
-			cResult.setAttribute("path",projectDir.relativeFilePath(project->solvedProblems()->items.at(nr)->entireSavePath()));
+            QDomElement cResult = doc.createElement( "Result" );;
+            cResult.setAttribute("path",projectDir.relativeFilePath(project->results()->items.at(nr)->entireSavePath()));
 			cResults.appendChild(cResult);
 		}
 		root.appendChild(cResults);
@@ -361,13 +394,13 @@ void Save::saveProject(Project* project)
 	ts << doc.toString();
 	file.close();
 
-	// Saving solved Problems
-	for (int nr=0;nr<project->solvedProblems()->items.size();nr++)
+    // Saving solved OMCases
+    for (int nr=0;nr<project->results()->items.size();nr++)
 	{
-		Save::saveSolvedProblem(project->solvedProblems()->items.at(nr));
+        Save::saveResult(project->results()->items.at(nr));
 	}
 
-	// Saving Problems
+    // Saving OMCases
 	for (int nr=0;nr<project->problems()->items.size();nr++)
 	{
 		Save::saveProblem(project->problems()->items.at(nr));

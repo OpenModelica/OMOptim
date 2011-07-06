@@ -41,12 +41,11 @@
 #define _EABASE_H
 
 #include <QtCore/QObject>
-#include "EAConfig.h"
 #include "ProblemConfig.h"
-#include "MyAlgorithm.h"
-#include "ModReader.h"
+#include "OptimAlgo.h"
+#include "ModClassTree.h"
 #include "ModPlusCtrl.h"
-#include "ModClass.h"
+
 
 class Project;
 class Problem;
@@ -55,20 +54,20 @@ class Result;
 class BlockSubstitutions;
 class ModModelPlus;
 
-class EABase : public MyAlgorithm
+class EABase : public OptimAlgo
 {
 	Q_OBJECT
 
 public:
 	EABase(void);
-	EABase(Project* project,Problem* problem,ModReader*,ModPlusCtrl*,ModClass*);
+        EABase(Project* project,Problem* problem,ModClassTree*,ModPlusCtrl*);
 	EABase(const EABase &);
 	
-	~EABase(void);
+        virtual ~EABase(void);
 
 	virtual EABase* clone() = 0;
 	virtual Result* launch(QString tempDir) = 0;
-	virtual void setDefaultParameters() = 0;
+	
 	
 	// subModels (for Optimization problems)
 	bool _useSubModels;
@@ -76,9 +75,8 @@ public:
 
 protected:
 
-	ModReader* _modReader;
-	ModPlusCtrl* _modPlusReader;
-	ModClass* _rootModClass;
+        ModPlusCtrl* _modPlusCtrl;
+        ModClassTree* _modClassTree;
 
 	// for Optimization problems
 	QList<ModModelPlus*> _subModels;

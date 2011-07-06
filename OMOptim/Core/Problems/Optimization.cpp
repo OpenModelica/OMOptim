@@ -40,20 +40,17 @@
   */
 #include "Optimization.h"
 #include "EA"
-#include "MyAlgoUtils.h"
+#include "OptimAlgoUtils.h"
 #include "CSV.h"
 #include "LowTools.h"
 
 
-Optimization::Optimization(Project* project,ModClass* rootModClass,ModReader* modReader,ModPlusCtrl* modPlusCtrl,ModModelPlus* modModelPlus)
+Optimization::Optimization(Project* project,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,ModModelPlus* modModelPlus)
+    :Problem(project,modClassTree)
 {
-	setProject(project);
-	_rootModClass = rootModClass;
 	_modModelPlus = modModelPlus;
-	_modReader = modReader;
 	_modPlusCtrl = modPlusCtrl;
 
-	
 	_type = Problem::OPTIMIZATION;
 	_name="Optimization";
 	_optimizedVariables = new MOVector<OptVariable>;
@@ -61,7 +58,7 @@ Optimization::Optimization(Project* project,ModClass* rootModClass,ModReader* mo
 	_objectives = new MOVector<OptObjective>;
 	_blockSubstitutions = new BlockSubstitutions();
 
-	_algos = MyAlgoUtils::getNewAlgos(this,_modReader,_modPlusCtrl,_rootModClass);
+        _algos = OptimAlgoUtils::getNewAlgos(this,_modClassTree,_modPlusCtrl);
 	for(int i=0;i<_algos.size();i++)
 		connect(_algos.at(i),SIGNAL(configChanged()),this,SIGNAL(algoConfigsChanged()));
 
@@ -80,11 +77,23 @@ Optimization::Optimization(const Optimization &optim)
 	_objectives = optim._objectives->clone();
 	_blockSubstitutions = optim._blockSubstitutions->clone();
 
-	if(optim.result())
-		_result = new OptimResult(*((OptimResult*)optim.result())) ;
-
 	_useEI = optim._useEI;
 	//eiProblem(optim.eiProblem);
+
+        //cloning algos
+        for(int i=0;i<optim._algos.size();i++)
+        {
+                _algos.push_back(optim._algos.at(i)->clone());
+                _algos.at(i)->setProblem(this);
+}
+
+        _iCurAlgo = optim._iCurAlgo;
+
+}
+
+Problem* Optimization::clone()
+{
+    return new Optimization(*this);
 }
 
 Optimization::~Optimization()
@@ -96,7 +105,6 @@ Optimization::~Optimization()
 	delete _objectives;
 	delete _blockSubstitutions;
 
-        deleteResult();
 }
 
 /** Description : Launch optimization procedure. checkBeforeComp() is not called in this function.
@@ -198,7 +206,7 @@ bool Optimization::checkBeforeComp(QString & error)
 /** Description : Launch optimization procedure. checkBeforeComp() is not called in this function.
 *   Be sure it has been called previously.
 */
-void Optimization::launch(ProblemConfig _config)
+Result* Optimization::launch(ProblemConfig _config)
 {
 	emit begun(this);
 
@@ -214,17 +222,159 @@ void Optimization::launch(ProblemConfig _config)
 
 	createSubExecs(_subModels,_subBlocks);
 
-	/*EABase* _ea = EAUtils::getNewEA(project,this,curEA);
-	_ea->config = eaConfigs.at(curEA);
-	_ea->setSubModels(_subModels,_subBlocks);*/
+        OptimResult* result = ((EABase*)getCurAlgo())->launch(_config.tempDir);
 
-	_result = ((EABase*)getCurAlgo())->launch(_config.tempDir);
+        //fill problem in result
+        if(result->problem()==NULL)
+            result->setProblem(this->clone());
+
+        result->setName(this->name()+" result");
 
 	emit finished(this);
+        return result;
 }
 
 
+void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool forceRecompute)
+{
 
+    int iPoint;
+    int nbPoints = iPoints.size();
+
+    //Info
+    infoSender.send( Info(ListInfo::RECOMPUTINGPOINTS,QString::number(nbPoints)));
+
+    //Execution
+    QString resultFolder = result->saveFolder();
+    QString pointSaveFolder;
+
+    for(int i=0;i<nbPoints;i++)
+    {
+        iPoint = iPoints.at(i);
+
+
+        if (!result->recomputedPoints().contains(iPoint) || forceRecompute)
+        {
+
+            //****************************************************
+            //Deleting point dir
+            //****************************************************
+            pointSaveFolder = resultFolder+QDir::separator()+"point_"+QString::number(iPoint);
+            QDir dir = QDir(pointSaveFolder);
+            // if dir already exists, deleting it
+            if (dir.exists())
+            {
+                bool removed,tempBool;
+
+                QStringList files = dir.entryList();
+                QString provFile;
+                for (int indf=0;indf<files.size();indf++)
+                {
+                    provFile = files[indf];
+                    tempBool = dir.remove(provFile);
+                }
+                bool temp = dir.cdUp();
+                dir.refresh();
+                removed = dir.rmdir(pointSaveFolder);
+                if (!removed)
+                {
+                    infoSender.send (Info(ListInfo::FOLDERUNREMOVABLE,pointSaveFolder));
+                }
+            }
+
+            //*************************************************************
+            //Creating a new OneSimulation problem based on same model
+            //and specifying overwrited variables from optimized variable values
+            //*************************************************************
+            OneSimulation *oneSim = new OneSimulation(_project,result->modClassTree(),result->modPlusCtrl(),result->modModelPlus());
+            Variable* overVar;
+            for(int iOverVar=0;iOverVar < result->optVariablesResults()->items.size();iOverVar++)
+            {
+                overVar = new Variable();
+                for(int iField=0;iField<Variable::nbFields;iField++)
+                {
+                    overVar->setFieldValue(iField,result->optVariablesResults()->items.at(iOverVar)->getFieldValue(iField));
+                }
+                overVar->setFieldValue(Variable::VALUE,result->optVariablesResults()->items.at(iOverVar)->finalValue(0,iPoint));
+                oneSim->overwritedVariables()->items.push_back(overVar);
+            }
+
+            // Add scannedVariables
+            oneSim->scannedVariables()->cloneFromOtherVector(this->scannedVariables());
+
+            //****************************************************
+            // Launch simulation
+            //****************************************************
+            ProblemConfig config(_project->tempPath(),true);
+            OneSimResult *oneSimRes = oneSim->launch(config);
+
+            if(!oneSimRes->isSuccess())
+            {
+                infoSender.send( Info(ListInfo::RECOMPUTINGPOINTFAILED,QString::number(iPoint)));
+            }
+            else
+            {
+                infoSender.send( Info(ListInfo::RECOMPUTINGPOINTSUCCESS,QString::number(iPoint)));
+
+                //****************************************************
+                // Filing recomputedVariables values
+                //****************************************************
+                VariableResult* newVariableResult;
+                VariableResult* curFinalVariable;
+                int iRecVar;
+                for(int iVar=0;iVar<oneSimRes->finalVariables()->items.size();iVar++)
+                {
+                    curFinalVariable = oneSimRes->finalVariables()->items.at(iVar);
+                    // look in recomputed variables
+                    iRecVar = result->recomputedVariables()->findItem(curFinalVariable->name());
+                    if(iRecVar>-1)
+                    {
+                        result->recomputedVariables()->items.at(iRecVar)->setFinalValuesAtPoint(iPoint,
+                                                                                       curFinalVariable->finalValuesAtPoint(0));
+                    }
+                    else
+                    {
+                        // copy from a Variable cast to avoid finalValues copying
+                        newVariableResult =  new VariableResult(*dynamic_cast<Variable*>(curFinalVariable));
+                        newVariableResult->setFinalValuesAtPoint(iPoint,
+                                                                 curFinalVariable->finalValuesAtPoint(0));
+                        result->recomputedVariables()->addItem(newVariableResult);
+
+                        QString msg;
+                        msg.sprintf("Variable %s added in recomputed variables list",
+                                    newVariableResult->name().toLatin1().data());
+                        infoSender.debug(msg);
+                    }
+                    // update objective value if necessary (should'nt be the case, but if model has been changed)
+                    int iObj = result->optObjectivesResults()->findItem(curFinalVariable->name());
+                    if(iObj>-1)
+                    {
+                        bool objOk=false;
+                        double objValue = VariablesManip::calculateObjValue(this->objectives()->items.at(iObj),oneSimRes->finalVariables(),objOk);
+                        result->optObjectivesResults()->items.at(iObj)->setFinalValue(0,iPoint,objValue,objOk);
+                    }
+                }
+                //*****************************
+                //Saving results into csv file
+                //*****************************
+                //update scan folders
+                dir.mkdir(pointSaveFolder);
+                QFile file(pointSaveFolder+QDir::separator()+"resultVar.csv");
+                file.open(QIODevice::WriteOnly);
+                QTextStream ts( &file );
+                ts << CSV::variableResultToValueLines(result->recomputedVariables(),iPoint);
+                file.close();
+
+                delete oneSimRes;
+            }
+        }
+        else
+        {
+            QString msg = "Point " + QString::number(iPoint)+" already computed. Won't be recomputed";
+            infoSender.send(Info(msg,ListInfo::NORMAL2));
+        }
+    }
+}
 
 
 void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockSubstitutions*> & subBlocks)
@@ -296,7 +446,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 		ModModel* newModModel = new ModModel(_project->moomc(),_project->rootModClass(),_modModelPlus->modModelName(),newMoPath);
 		
 		// create new modModelPlus
-		ModModelPlus* newModModelPlus = new ModModelPlus(_project->moomc(),_project,_project->modReader(),newModModel,_project->rootModClass());
+                ModModelPlus* newModModelPlus = new ModModelPlus(_project->moomc(),_project,_project->modClassTree(),newModModel);
 		newModModelPlus->setMmoFilePath(newMmoFilePath);
 
 		// apply blocksubs
@@ -400,7 +550,7 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
         cProblem.appendChild(cFilesToCopy);
 
 	// ea configuration
-	MyAlgorithm *curAlgo = getCurAlgo();
+        OptimAlgo *curAlgo = getCurAlgo();
 
 	if(curAlgo)
 	{
@@ -411,7 +561,7 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
 		cEAInfos.setAttribute("num",getiCurAlgo());
 		cEA.appendChild(cEAInfos);
 
-		QDomElement cAlgoParameters = curAlgo->_config->parameters->toXmlData(doc,"Parameters");
+                QDomElement cAlgoParameters = curAlgo->_parameters->toXmlData(doc,"Parameters");
 		cEA.appendChild(cAlgoParameters);
 	}
 
@@ -428,4 +578,33 @@ int Optimization::nbScans()
 		nbScans = nbScans*_scannedVariables->items.at(i)->nbScans();
 
 	return nbScans;
+}
+
+
+int Optimization::getiCurAlgo()
+{
+        return _iCurAlgo;
+}
+
+OptimAlgo* Optimization::getCurAlgo()
+{
+        if((_iCurAlgo>-1)&&(_iCurAlgo<_algos.size()))
+                return _algos.at(_iCurAlgo);
+        else
+                return NULL;
+}
+
+
+QStringList Optimization::getAlgoNames()
+{
+        QStringList names;
+        for(int i=0;i<_algos.size();i++)
+                names.push_back(_algos.at(i)->name());
+        return names;
+
+}
+
+void Optimization::setiCurAlgo(int iCurAlgo)
+{
+        _iCurAlgo = iCurAlgo;
 }

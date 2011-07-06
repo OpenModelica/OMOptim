@@ -45,24 +45,41 @@
 #include <cmath>
 
 
-MilpHEN1::MilpHEN1(EITree* eiTree,EIConnConstrs *connConstrs,
+MilpHEN1::MilpHEN1(EITree* eiTree,MOParameters *parameters,EIConnConstrs *connConstrs,
                        MOOptVector *variables,QDir folder,QString modFileName, QString dataFileName)
 {
     _eiTree = new EITree(*eiTree);
-    _variables = variables;
+    _variables = new MOOptVector(*variables);
+    _connConstrs = new EIConnConstrs(*connConstrs);
+    _parameters = new MOParameters(*parameters);
+
     _folder = folder;
     _modFileName =  modFileName;
     _dataFileName = dataFileName;
-    _connConstrs = connConstrs;
+
 
     _logFileName = "MILPLog.txt";
     _resFileName = "MILPResult.txt";
     _sensFileName= "MILPSens.txt";
 
+
+    _QFlowUnit = MEQflow::W;
+    _TempUnit = METemperature::K;
 }
 
 MilpHEN1::~MilpHEN1(void)
 {
+    delete _eiTree;
+    delete _variables;
+    delete _parameters;
+    delete _connConstrs;
+}
+
+int MilpHEN1::hook(void *info, const char *s)
+{
+    QString msg(s);
+    infoSender.send(Info("GLPK : "+msg));
+    return 1;
 }
 
 
@@ -72,7 +89,6 @@ EIHEN1Result * MilpHEN1::launch()
     // get data
     //***********************
     // get temperature intervals, flows, factors...
-    QList<METemperature> Tk;
     QList<EIStream*> eiProcessStreams;
     QList<QList<MEQflow> > Qpk; //.at(iStream).at(iDTk)
     QList<EIStream*> eiUtilityStreams;
@@ -83,7 +99,7 @@ EIHEN1Result * MilpHEN1::launch()
 
 
     EITools::getTkQpkQuk(_variables,
-                         _eiTree->rootElement(),Tk,
+                         _eiTree->rootElement(),_Tk,
                          eiProcessStreams,Qpk,
                          eiUtilityStreams,Quk,
                          factStreamMap,
@@ -92,7 +108,7 @@ EIHEN1Result * MilpHEN1::launch()
 
     // write data
     QString dataFilePath = _folder.absoluteFilePath(_dataFileName);
-    DataToFile(dataFilePath,Tk,eiProcessStreams,Qpk,eiUtilityStreams,Quk,
+    DataToFile(dataFilePath,eiProcessStreams,Qpk,eiUtilityStreams,Quk,
                factStreamMap,factsRelation,factGroupMap);
 
 
@@ -119,7 +135,7 @@ EIHEN1Result * MilpHEN1::launch()
 
 
 
-void MilpHEN1::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
+void MilpHEN1::DataToFile(QString dataFilePath,
                             QList<EIStream*> &eiProcessStreams,
                             QList<QList<MEQflow> > &Qpk, //.at(iStream).at(iDTk)
                             QList<EIStream*> &eiUtilityStreams,
@@ -128,6 +144,22 @@ void MilpHEN1::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
                             QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
                             QMap<EIGroupFact*,EIGroup*> &factGroupMap)
 {
+
+    //configuration                
+    bool allInB = _parameters->value((int)EIHEN1Parameters::ALLOWSEVERAL,QVariant(true)).toBool(); // if true, more than one heat exchanger is permitted between each couple of streams
+    bool allInNI = _parameters->value((int)EIHEN1Parameters::ALLOWNI,QVariant(true)).toBool();// if true, non-isothermal connections are allowed for every streams
+    bool allSplitsAllowed = _parameters->value((int)EIHEN1Parameters::ALLOWSPLITS,QVariant(true)).toBool(); // if true, splits are allowed for all streams
+    int kmax = _parameters->value((int)EIHEN1Parameters::KMAX,QVariant(10)).toInt();
+
+
+
+    //sort Tk in descending order !!! (check)
+    qSort(_Tk.begin(),_Tk.end(),METemperature::ThoterThan); //T(0) > T(1) > T(2)...
+
+    QString zone("z1");
+
+
+
     // Create Data File
     QFile file(dataFilePath);
     if(file.exists())
@@ -138,182 +170,447 @@ void MilpHEN1::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 
     // Create text
     QString dataText;
-    dataText.append("data;");
+    dataText.append("data;\n");
+
+    // filter streams
+    QList<EIStream*> hotStreams = EIReader::getHotStreams(eiProcessStreams);
+    hotStreams.append(EIReader::getHotStreams(eiUtilityStreams));
+    QList<EIStream*> coldStreams = EIReader::getColdStreams(eiProcessStreams);
+    coldStreams.append(EIReader::getColdStreams(eiUtilityStreams));
+    QList<EIStream*> huStreams = EIReader::getHotStreams(eiUtilityStreams);
+    QList<EIStream*> cuStreams = EIReader::getColdStreams(eiUtilityStreams);
+
+    //*************
+    // param ndt
+    //*************
+    MilpParam0D paramndt("ndt");
+    paramndt.addItem(QString::number(_Tk.size()-1));
+    dataText.append(paramndt.toString());
+    dataText.append("\n\n");
 
     //*************
     // sets
     //*************
-    QList<double> doubleSet;
-    // STk
-    for(int i=0;i<Tk.size();i++)
+
+    //Si : hot streams
+    MilpSet0D setSi("Si");
+    for(int i=0;i<hotStreams.size();i++)
+        setSi.addItem(hotStreams.at(i)->name());
+    dataText.append(setSi.toString());
+    dataText.append("\n");
+
+
+    //Sj : cold streams
+    MilpSet0D setSj("Sj");
+    for(int i=0;i<coldStreams.size();i++)
+        setSj.addItem(coldStreams.at(i)->name());
+    dataText.append(setSj.toString());
+    dataText.append("\n");
+
+
+    //HU : hot utility streams
+    MilpSet0D setHU("HU");
+
+    for(int i=0;i<huStreams.size();i++)
+        setHU.addItem(huStreams.at(i)->name());
+    dataText.append(setHU.toString());
+    dataText.append("\n");
+
+    //CU : cold utility streams
+    MilpSet0D setCU("CU");
+
+    for(int i=0;i<cuStreams.size();i++)
+        setCU.addItem(cuStreams.at(i)->name());
+    dataText.append(setCU.toString());
+    dataText.append("\n");
+
+    // Sz : zones
+    MilpSet0D setSz("Sz");
+    setSz.addItem(zone);
+    dataText.append(setSz.toString());
+    dataText.append("\n");
+
+    // P : connections allowed
+    // all combinations + removing forbidden ones
+    // get forbidden <HotStream,ColdStream>
+    QMultiMap<EIStream*,EIStream*> mapForbidden = _connConstrs->getMapStreams(_variables);
+
+    MilpSet0D setP("P");
+    for(int iH=0;iH<hotStreams.size();iH++)
     {
-        doubleSet.push_back(Tk.at(i).value(METemperature::K));
+        for(int iC=0;iC<coldStreams.size();iC++)
+        {
+            //check if not forbidden
+            if(!mapForbidden.values(hotStreams.at(iH)).contains(coldStreams.at(iC)))
+                setP.addItem("("+hotStreams.at(iH)->name()+","+coldStreams.at(iC)->name()+")");
     }
-    dataText += GlpkTools::listToSet("STk",doubleSet);
+    }
+    dataText.append(setP.toString());
+    dataText.append("\n");
 
-    QStringList hotStreams;
-    QStringList coldStreams;
-    QStringList procStreams;
-    QStringList utStreams;
-    QStringList allStreams;
-    QStringList groups;
-    QString streamName;
+    // SB : several connexions possible between streams
+    MilpSet0D setB("B");
+    //if allInB, add all allowed combinations
+    if(allInB)
+        setB.setItems(setP.items());
+    dataText.append(setB.toString());
+    dataText.append("\n");
 
-    // SProcStreams
-    for(int i=0;i<eiProcessStreams.size();i++)
+    // SH : splits are allowed for hot streams
+    MilpSet0D setSH("SH");
+    if(allSplitsAllowed)
+        setSH.setItems(setSi.items());
+    dataText.append(setSH.toString());
+    dataText.append("\n");
+
+    // SC : splits are allowed for cold streams
+    MilpSet0D setSC("SC");
+    if(allSplitsAllowed)
+        setSC.setItems(setSj.items());
+    dataText.append(setSC.toString());
+    dataText.append("\n");
+
+    // NIH and NIC : non-isothermal connexions allowed
+    MilpSet0D setNIH("NIH");
+    MilpSet0D setNIC("NIC");
+    if(allInNI)
     {
-        streamName = eiProcessStreams.at(i)->name();
-        procStreams.push_back(streamName);
-        if(eiProcessStreams.at(i)->isHot(_variables))
-            hotStreams.push_back(streamName);
-        else
-            coldStreams.push_back(streamName);
+        //if allInNI, add all streams
+        for(int iH=0;iH<hotStreams.size();iH++)
+        {
+            setNIH.addItem(hotStreams.at(iH)->name());
     }
-    dataText += GlpkTools::listToSet("SProcStreams",procStreams);
+        for(int iC=0;iC<coldStreams.size();iC++)
+        {
+            setNIC.addItem(coldStreams.at(iC)->name());
+        }
+    }
+    dataText.append(setNIH.toString()+"\n");
+    dataText.append(setNIC.toString()+"\n");
 
-    // SUtStreams
-    for(int i=0;i<eiUtilityStreams.size();i++)
+
+
+    //Hz : hot streams in z
+    MilpSet1D setHz("Hz");
+    for(int i=0;i<hotStreams.size();i++)
+        setHz.addItem(zone,hotStreams.at(i)->name());
+    dataText.append(setHz.toString());
+    dataText.append("\n");
+
+    //HUz : hot utility streams in z
+    MilpSet1D setHUz("HUz");
+    for(int i=0;i<huStreams.size();i++)
     {
-        streamName = eiUtilityStreams.at(i)->name();
-        utStreams.push_back(streamName);
-        if(eiUtilityStreams.at(i)->isHot(_variables))
-            hotStreams.push_back(streamName);
-        else
-            coldStreams.push_back(streamName);
+        setHUz.addItem(zone,huStreams.at(i)->name());
     }
+    dataText.append(setHUz.toString());
+    dataText.append("\n");
 
-    allStreams = utStreams + procStreams;
+    //Hmz : hot streams of zone z in temperature interval m
+    MilpSet2D setHmz("Hmz");
+    QList<EIStream*> hmzStreams;
+    for(int idT=0;idT<_Tk.size()-1;idT++)
+    {
+        hmzStreams = EIReader::getStreamsPresentInDT(_Tk.at(idT),_Tk.at(idT+1),hotStreams);
+        for(int iH=0;iH<hmzStreams.size();iH++)
+        {
+            setHmz.addItem(QString::number(idT+1),zone,hmzStreams.at(iH)->name());
+        }
+    }
+    dataText.append(setHmz.toString());
+    dataText.append("\n");
 
-    dataText += GlpkTools::listToSet("SStreams",allStreams);
-    dataText += GlpkTools::listToSet("SUtStreams",utStreams);
+    //Cz : cold streams in z
+    MilpSet1D setCz("Cz");
+    for(int i=0;i<coldStreams.size();i++)
+        setCz.addItem(zone,coldStreams.at(i)->name());
+    dataText.append(setCz.toString());
+    dataText.append("\n");
 
-    dataText += GlpkTools::listToSet("SHotStreams",hotStreams);
-    dataText += GlpkTools::listToSet("SColdStreams",coldStreams);
+    //CUz : cold utility streams in z
+    MilpSet1D setCUz("CUz");
+    for(int i=0;i<cuStreams.size();i++)
+    {
+        setCUz.addItem(zone,cuStreams.at(i)->name());
+    }
+    dataText.append(setCUz.toString());
+    dataText.append("\n");
 
+    //Cnz : cold streams of zone z in temperature interval n
+    MilpSet2D setCnz("Cnz");
+    QList<EIStream*> cnzStreams;
+    for(int idT=0;idT<_Tk.size()-1;idT++)
+    {
+        cnzStreams = EIReader::getStreamsPresentInDT(_Tk.at(idT),_Tk.at(idT+1),coldStreams);
+        for(int iH=0;iH<cnzStreams.size();iH++)
+        {
+            setCnz.addItem(QString::number(idT+1),zone,cnzStreams.at(iH)->name());
+        }
+    }
+    dataText.append(setCnz.toString());
+    dataText.append("\n");
 
 
     // SUtGroups
+    MilpSet0D setSUtGroups("SUtGroups");
     for(int i=0;i<factGroupMap.values().size();i++)
-        groups.push_back(factGroupMap.values().at(i)->name());
-    dataText += GlpkTools::listToSet("SUtGroups",groups);
+        setSUtGroups.addItem(factGroupMap.values().at(i)->name());
+    dataText.append(setSUtGroups.toString());
+    dataText.append("\n");
 
     // SUtStrGroups
+    MilpSet0D setSUtStrGroups("SUtStrGroups");
     EIGroupFact* curGroupFact;
     EIGroup* curGroup;
     EIStream* curStream;
-    QString setUtStrGrText = "set SUtStrGroups := ";
     for(int iFact=0;iFact<factStreamMap.uniqueKeys().size();iFact++)
     {
         curGroupFact = factStreamMap.uniqueKeys().at(iFact);
         curGroup = factGroupMap.value(curGroupFact);
-
         for(int iS=0;iS<factStreamMap.values(curGroupFact).size();iS++)
         {
             curStream = factStreamMap.values(curGroupFact).at(iS);
-            setUtStrGrText+="("+curGroup->name()+","+curStream->name()+") ";
+            setSUtStrGroups.addItem("("+curGroup->name()+","+curStream->name()+") ");
         }
     }
-    setUtStrGrText += "; \n";
-    dataText += setUtStrGrText;
+    dataText.append(setSUtStrGroups.toString());
+    dataText.append("\n");
 
 
-    // SUtStrGroups
-    QString setSForbConn = "set SForbConn := ";
-    EIStream* hotStr;
-    EIStream* coldStr;
 
-    //Forbidden <HotStream,ColdStream>
-    QMultiMap<EIStream*,EIStream*> mapConstr = _connConstrs->getMapStreams(_variables);
+    //Mz : list of temperature interval in zone
+    MilpSet1D setMz("Mz");
+    for(int i=0;i<_Tk.size()-1;i++)
+        setMz.addItem(zone,QString::number(i+1));
+    dataText.append(setMz.toString());
+    dataText.append("\n");
 
-    for(int i=0;i<mapConstr.keys().size();i++)
+
+    //Mi0 : set of initial temperature interval of hot streams
+    //Mif : set of final...
+    //Miz temperature intervals where hot stream i is present
+    MilpSet1D setMi0("mi0");
+    MilpSet1D setMif("mif");
+    MilpSet2D setMiz("Miz");
+    int i0;
+    int ifinal;
+    QList<int> listiTconcerned;
+    for(int i=0;i<hotStreams.size();i++)
     {
-        hotStr = mapConstr.keys().at(i);
-        for(int j=0;j<mapConstr.values(hotStr).size();j++)
+        // !!! HEN1 does not consider corrected temperatures !!
+        // -> use false as argument in getTIntervalsConcerned
+        listiTconcerned = EIReader::getTIntervalsConcerned(_Tk,hotStreams.at(i),false);
+        if(listiTconcerned.size()>0)
         {
-            coldStr = mapConstr.values(hotStr).at(j);
-            setSForbConn+="("+hotStr->name(EI::FULL)+","+coldStr->name(EI::FULL)+") \n";
+            i0 = listiTconcerned.first();
+            ifinal = listiTconcerned.last();
+
+            setMi0.addItem(hotStreams.at(i)->name(),QString::number(i0+1));
+            setMif.addItem(hotStreams.at(i)->name(),QString::number(ifinal+1));
+
+            for(int j=0;j<listiTconcerned.size();j++)
+                setMiz.addItem(hotStreams.at(i)->name(),zone,QString::number(listiTconcerned.at(j)+1));
         }
     }
-    setSForbConn += "; \n";
-    dataText += setSForbConn;
+    dataText.append(setMi0.toString()+"\n");
+    dataText.append(setMif.toString()+"\n");
+    dataText.append(setMiz.toString()+"\n");
 
-
-    //*************
-    // param
-    //*************
-    dataText += "param nbTemperatures := "+QString::number(Tk.size())+"; \n";
-    dataText += "param nbUtGroups := "+QString::number(factGroupMap.values().size())+"; \n";
-
-
-    //DQpk
-    dataText += "param DQpk := \n";
-    double curValue;
-    for(int iS=0;iS<Qpk.size();iS++)
+    //Nj0 : set of initial temperature interval of cold streams
+    //Njf : set of final...
+    //Njz : temperature intervals where cold stream j is present
+    MilpSet1D setNj0("nj0");
+    MilpSet1D setNjf("njf");
+    MilpSet2D setNjz("Njz");
+    int j0;
+    int jfinal;
+    for(int i=0;i<coldStreams.size();i++)
     {
-        for(int iK=0;iK<Qpk.at(iS).size();iK++)
+        // !!! HEN1 does not consider corrected temperatures !!
+        // -> use false as argument in getTIntervalsConcerned
+        listiTconcerned = EIReader::getTIntervalsConcerned(_Tk,coldStreams.at(i),false);
+        if(listiTconcerned.size()>0)
         {
-            // Absolute value for QFlow with this mod file
-            curValue =  fabs(Qpk.at(iS).at(iK).value(MEQflow::KW));
-            if(curValue!=0)
-                dataText += "["+eiProcessStreams.at(iS)->name()
-                +"," +QString::number(iK+1)
-                +"] " + QString::number(curValue) + "\n";
+            j0 = listiTconcerned.first();
+            jfinal = listiTconcerned.last();
+
+            setNj0.addItem(coldStreams.at(i)->name(),QString::number(j0+1));
+            setNjf.addItem(coldStreams.at(i)->name(),QString::number(jfinal+1));
+
+            for(int j=0;j<listiTconcerned.size();j++)
+                setNjz.addItem(coldStreams.at(i)->name(),zone,QString::number(listiTconcerned.at(j)+1));
         }
     }
-    dataText +="; \n";
+    dataText.append(setNj0.toString()+"\n");
+    dataText.append(setNjf.toString()+"\n");
+    dataText.append(setNjz.toString()+"\n");
 
-    //DQuk
-    dataText += "param DQuk := \n";
-    for(int iS=0;iS<Quk.size();iS++)
+
+    // authorized connections within temperature interval
+    MilpSet2D setPimH("PimH");
+    QStringList tempIntervals;
+    QString hotStreamName,coldStreamName;
+    for(int iH=0;iH<hotStreams.size();iH++)
     {
-        for(int iK=0;iK<Quk.at(iS).size();iK++)
+        hotStreamName = hotStreams.at(iH)->name();
+        tempIntervals = setMiz.items().values(MilpKey2D(hotStreamName,zone));
+
+        for(int iT=0;iT<tempIntervals.size();iT++)
         {
-            // Absolute value for QFlow with this mod file
-            curValue = fabs(Quk.at(iS).at(iK).value(MEQflow::KW));
-            if(curValue!=0)
-                dataText += "["+eiUtilityStreams.at(iS)->name()
-                +"," +QString::number(iK+1)
-                +"] " + QString::number(curValue) + "\n";
+            for(int iC=0;iC<coldStreams.size();iC++)
+            {
+                coldStreamName = coldStreams.at(iC)->name();
+                //check if not forbidden
+                if(!mapForbidden.values(hotStreams.at(iH)).contains(coldStreams.at(iC)))
+                    setPimH.addItem(hotStreamName,tempIntervals.at(iT),coldStreamName);
         }
     }
-    dataText +=";\n";
+    }
+    dataText.append(setPimH.toString()+"\n");
 
-    //fmin, fmax, cost
-    QString strFmax = "param fmax := ";
-    QString strFmin = "param fmin := ";
-    QString strCostFix = "param costFix := ";
-    QString strCostMult = "param costMult := ";
+    // authorized connections within temperature interval
+    MilpSet2D setPjnC("PjnC");
+    for(int iC=0;iC<coldStreams.size();iC++)
+    {
+        coldStreamName = coldStreams.at(iC)->name();
+        tempIntervals = setNjz.items().values(MilpKey2D(coldStreamName,zone));
+
+        for(int iT=0;iT<tempIntervals.size();iT++)
+        {
+            for(int iH=0;iH<hotStreams.size();iH++)
+            {
+                hotStreamName = hotStreams.at(iH)->name();
+                //check if not forbidden
+                if(!mapForbidden.values(hotStreams.at(iH)).contains(coldStreams.at(iC)))
+                    setPjnC.addItem(coldStreamName,tempIntervals.at(iT),hotStreamName);
+        }
+    }
+    }
+    dataText.append(setPjnC.toString()+"\n");
+
+
+    //****************************
+    // Parameters
+    //****************************
+    //kmax
+    MilpParam0D paramKmax("kmax");
+    paramKmax.addItem(QString::number(kmax));
+    dataText.append(paramKmax.toString()+"\n");
+
+
+    //Utility groups parameters
+
+
+    MilpParam1D paramFixUtCost("FixUtCost");
+    MilpParam1D paramVarUtCost("VarUtCost");
+    MilpParam1D paramUtFactMax("UtFactMax");
+    MilpParam1D paramUtFactMin("UtFactMin");
 
     for(int iFact=0;iFact<factGroupMap.uniqueKeys().size();iFact++)
     {
         curGroupFact = factGroupMap.uniqueKeys().at(iFact);
         curGroup = factGroupMap.value(curGroupFact);
 
-        strFmax += "["+curGroup->name()+"] "
-                   + QString::number(curGroupFact->max)+"\n";
-        strFmin += "["+curGroup->name()+"] "
-                   + QString::number(curGroupFact->min)+"\n";
-        strCostFix += "["+curGroup->name()+"] "
-                      + curGroup->getFieldValue(EIGroup::COSTFIX).toString()+"\n";
-        strCostMult += "["+curGroup->name()+"] "
-                       + curGroup->getFieldValue(EIGroup::COSTMULT).toString()+"\n";
+        paramUtFactMax.addItem(curGroup->name(),QString::number(curGroupFact->max));
+        paramUtFactMin.addItem(curGroup->name(),QString::number(curGroupFact->min));
+        paramFixUtCost.addItem(curGroup->name(),curGroup->getFieldValue(EIGroup::COSTFIX).toString());
+        paramVarUtCost.addItem(curGroup->name(),curGroup->getFieldValue(EIGroup::COSTMULT).toString());
     }
-
-    strFmax += "; \n";
-    strFmin += "; \n";
-    strCostFix += "; \n";
-    strCostMult += "; \n";
-
-
-    dataText+= strFmax;
-    dataText+= strFmin;
-    dataText+= strCostFix;
-    dataText+= strCostMult;
+    dataText.append(paramFixUtCost.toString()+"\n");
+    dataText.append(paramVarUtCost.toString()+"\n");
+    dataText.append(paramUtFactMax.toString()+"\n");
+    dataText.append(paramUtFactMin.toString()+"\n");
 
 
 
+
+
+    //DHimzH
+    MilpParam3D paramDHimzH("DHimzH");
+    tempIntervals = setMz.items().values(zone);
+    MEQflow dQ;
+    for(int iH=0;iH<hotStreams.size();iH++)
+    {
+        hotStreamName = hotStreams.at(iH)->name();
+
+        for(int iT=0;iT<tempIntervals.size();iT++)
+        {
+            dQ = EIReader::getIntervalQFlow(_Tk.at(tempIntervals.at(iT).toInt()-1),_Tk.at(tempIntervals.at(iT).toInt()),hotStreams.at(iH));
+            paramDHimzH.addItem(hotStreamName,tempIntervals.at(iT),zone,QString::number(dQ.value(_QFlowUnit)));
+        }
+    }
+    dataText.append(paramDHimzH.toString()+"\n");
+
+    //DHjnzC
+    MilpParam3D paramDHjnzC("DHjnzC");
+    tempIntervals = setMz.items().values(zone);
+    for(int iC=0;iC<coldStreams.size();iC++)
+    {
+        coldStreamName = coldStreams.at(iC)->name();
+
+        for(int iT=0;iT<tempIntervals.size();iT++)
+        {
+            dQ = EIReader::getIntervalQFlow(_Tk.at(tempIntervals.at(iT).toInt()-1),_Tk.at(tempIntervals.at(iT).toInt()),coldStreams.at(iC));
+            paramDHjnzC.addItem(coldStreamName,tempIntervals.at(iT),zone,QString::number(dQ.value(_QFlowUnit)));
+        }
+    }
+    dataText.append(paramDHjnzC.toString()+"\n");
+
+
+    //DTi
+    METemperature dT;
+    MilpParam1D paramDTi("DTi");
+    for(int iH=0;iH<hotStreams.size();iH++)
+    {
+        dT = hotStreams.at(iH)->TinNum - hotStreams.at(iH)->ToutNum;
+        paramDTi.addItem(hotStreams.at(iH)->name(),QString::number(dT.value()));
+    }
+    dataText.append(paramDTi.toString()+"\n");
+
+    //DTj
+    MilpParam1D paramDTj("DTj");
+    for(int iC=0;iC<coldStreams.size();iC++)
+    {
+        dT = coldStreams.at(iC)->ToutNum - coldStreams.at(iC)->TinNum;
+        paramDTj.addItem(coldStreams.at(iC)->name(),QString::number(dT.value()));
+    }
+    dataText.append(paramDTj.toString()+"\n");
+
+    //TmL TmU
+    MilpParam1D paramTmL("TmL");
+    MilpParam1D paramTmU("TmU");
+    for(int iT=0;iT<_Tk.size()-1;iT++)
+    {
+        paramTmU.addItem(QString::number(iT+1),QString::number(_Tk.at(iT).value(_TempUnit)));
+        paramTmL.addItem(QString::number(iT+1),QString::number(_Tk.at(iT+1).value(_TempUnit)));
+    }
+    dataText.append(paramTmL.toString()+"\n");
+    dataText.append(paramTmU.toString()+"\n");
+
+    //DTmnML
+    MilpParam2D paramdTlm("DTmnML");
+    double dT1;
+    double dT2;
+    double dTlm;
+    for(int iT1=0;iT1<_Tk.size()-1;iT1++)
+    {
+
+        for(int iT2=0;iT2<iT1;iT2++)
+        {
+            dTlm=0;
+            paramdTlm.addItem(QString::number(iT1+1),QString::number(iT2+1),QString::number(dTlm));
+        }
+
+        for(int iT2=iT1;iT2<_Tk.size()-1;iT2++)
+        {
+            dT1 = _Tk.at(iT1).value()-_Tk.at(iT2).value();
+            dT2 = _Tk.at(iT1+1).value()-_Tk.at(iT2+1).value();
+            dTlm = EITools::DTlm(dT1,dT2);
+            paramdTlm.addItem(QString::number(iT1+1),QString::number(iT2+1),QString::number(dTlm));
+        }
+    }
+    dataText.append(paramdTlm.toString()+"\n");
     dataText +="end;";
-
 
     QTextStream ts( &file );
     ts << dataText;
@@ -331,6 +628,11 @@ glp_prob* MilpHEN1::launchGLPK()
 
     //delete sensitivity file
     _folder.remove(_sensFileName);
+
+    //Hook
+    // redirect terminal output
+    glp_term_hook(hook, NULL);
+
 
 
     glp_prob *glpProblem;
@@ -400,14 +702,11 @@ glp_prob* MilpHEN1::launchGLPK()
     ts << resText;
     resFile.close();
 
+    // resume terminal output
+    glp_term_hook(NULL, NULL);
 
     return glpProblem;
 }
-
-
-
-
-
 
 
 EIHEN1Result* MilpHEN1::readResult(glp_prob * glpProblem)
@@ -443,28 +742,14 @@ EIHEN1Result* MilpHEN1::readResult(glp_prob * glpProblem)
 
     QRegExp regExp;
     QString colName;
+    QString groupName;
     double value;
     int iCol;
 
-    // read all VFacMul
-    QMap<QString,double> mapGroupFacMul; //<groupName,value>
-    QString groupName,prefix,valueStr;
-    regExp.setPattern("VFactUt\\[([\\w|\.]+)\\][.]*");
-
-    iCol=colNames.indexOf(regExp,0);
-    while(iCol>-1)
-    {
-        groupName = colNames.at(iCol);
-        groupName.remove("VFactUt");
-        groupName.remove("[");
-        groupName.remove("\'");
-        groupName.remove("]");
-        groupName.remove(QRegExp("^\\."));
-        value = glp_mip_col_val(glpProblem, iCol+1); //iCol+1 since glp cols start at 1.
-        mapGroupFacMul.insert(groupName,value);
-
-        iCol = colNames.indexOf(regExp,iCol+1);
-    }
+    // read all UtFact
+    MilpVariableResult1D varUtFact("UtFact");
+    varUtFact.fill(glpProblem,colNames);
+    QMap<QString,double> mapGroupFacMul = varUtFact.values();
 
     EIGroup* curGroup;
     for(int i=0;i<mapGroupFacMul.keys().size();i++)
@@ -475,257 +760,183 @@ EIHEN1Result* MilpHEN1::readResult(glp_prob * glpProblem)
         {
             value = mapGroupFacMul.value(groupName);
             curGroup->getFact()->value = value;
-            if(value==0)
-                dynamic_cast<EIGroup*>(curGroup)->setChecked(false);
         }
     }
 
+    // read all UtEnabled
+    MilpVariableResult1D varUtEnabled("UtEnabled");
+    varUtEnabled.fill(glpProblem,colNames);
+    QMap<QString,double> mapGroupEnabled = varUtEnabled.values();
+
+    for(int i=0;i<mapGroupEnabled.keys().size();i++)
+    {
+        groupName = mapGroupEnabled.keys().at(i);
+        curGroup =result->eiTree()->findItem(groupName);
+        if(curGroup)
+        {
+            curGroup->setChecked((bool)mapGroupEnabled.value(groupName));
+        }
+    }
 
     // read TotalCost
-   value = glp_get_obj_val(glpProblem);
-   result->totalCost = value;
+    MilpVariableResult0D varTotalCost("TotalCost");
+    varTotalCost.fill(glpProblem,-1,colNames);
+    result->_totalCost = varTotalCost.value();
+
+    // read TotalArea
+    MilpVariableResult0D varTotalArea("TotalArea");
+    varTotalArea.fill(glpProblem,-1,colNames);
+    result->_totalArea = varTotalArea.value();
 
 
-    // read Qijk
-    regExp.setPattern("Qijk\\[([\\w|\.]+),([\\w|\.]+),(\\d+)\\][.]*");
+    // read HENumber
+    MilpVariableResult0D varHENumber("HENumber");
+    varHENumber.fill(glpProblem,-1,colNames);
+    result->_HENumber = varHENumber.value();
 
-    QString nameA,nameB;
-    EIStream *streamA,*streamB;
-    int k;
-    EIConn* newEIConn;
-    double qflow;
 
-    iCol=colNames.indexOf(regExp,0);
-    while(iCol>-1)
-    {
-        colName = colNames.at(iCol);
-        if (regExp.indexIn(colName)>-1)
-        {
-            nameA = regExp.cap(1);
-            nameB = regExp.cap(2);
+    result->setEIConns(readEIConns(glpProblem,colNames));
 
-            qflow = glp_get_col_prim(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
-            if(qflow!=0)
-            {
-                streamA = dynamic_cast<EIStream*>(result->eiTree()->findItem(nameA));
-                streamB = dynamic_cast<EIStream*>(result->eiTree()->findItem(nameB));
-
-                if(streamA && streamB)
-                {
-                    newEIConn = new EIConn(result->eiTree());
-                    newEIConn->setA(streamA,METemperature(),METemperature(),1);
-                    newEIConn->setB(streamB,METemperature(),METemperature(),1);
-                    newEIConn->setQFlow(MEQflow(qflow,MEQflow::KW));
-                    result->eiConns()->addItem(newEIConn);
-                }
-            }
-        }
-        iCol = colNames.indexOf(regExp,iCol+1);
-    }
 
     return result;
 }
-//
-//void MilpHEN1::RootEIToTargetMilp(EIItem* rootEI,MOOptVector *variables)
-//{
-//
-//	// get temperature intervals, flows, factors...
-//	QList<METemperature> Tk;
-//	QList<EIStream*> eiProcessStreams;
-//	QList<QList<MEQflow> > Qpk; //.at(iStream).at(iDTk)
-//	QList<EIStream*> eiUtilityStreams;
-//	QList<QList<MEQflow> > Quk;//.at(iStream).at(iDTk)
-//	QMultiMap<EIGroupFact*,EIStream*> factStreamMap; // multimap <unit multiplier, Streams concerned>,
-//	QMap<EIGroupFact*,EIGroupFact*> factsRelation; // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
-//	QMap<EIGroupFact*,EIGroup*> factGroupMap;
-//
-//	EITools::getTkQpkQuk(variables,
-//		rootEI,Tk,
-//		eiProcessStreams,Qpk,
-//		eiUtilityStreams,Quk,
-//		factStreamMap,
-//		factsRelation,
-//		factGroupMap);
-//
-//	QList<EIGroupFact*> facts = factStreamMap.uniqueKeys();
-//
-//	//*****************************************************
-//	// sets
-//	//*****************************************************
-//	int nbFacts = facts.size();
-//	MP_set SDTk(Tk.size()-1); // temperatures' intervals
-//	MP_set STk(Tk.size()); // temperatures
-//	MP_set SProcStreams(eiProcessStreams.size());
-//	MP_set SUtStreams(eiUtilityStreams.size());
-//	MP_set SUtilities(nbFacts);
-//	
-//	//*****************************************************
-//	// Data
-//	//*****************************************************
-//	
-//	//Declaration
-//	MP_data DQpk(SProcStreams,SDTk);
-//	MP_data DQuk(SUtStreams,SDTk);
-//	MP_data FactOfStr(SUtStreams);
-//	MP_data zero;
-//	MP_data Identity(SUtilities);
-//	MP_data fmin(SUtilities);
-//	MP_data fmax(SUtilities);
-//	MP_data costFix(SUtilities);
-//	MP_data costMult(SUtilities);
-//	
-//
-//	//Filling
-//	zero()=0;
-//
-//	// fill DQpk and DQuk (kW)
-//	for(int iDT=0;iDT<Tk.size()-1;iDT++)
-//	{
-//		for(int iUS=0;iUS<eiUtilityStreams.size();iUS++)
-//		{
-//			DQuk(iUS,iDT)=Quk.at(iUS).at(iDT).value(MEQflow::KW);
-//		}
-//		for(int iPS=0;iPS<eiProcessStreams.size();iPS++)
-//		{
-//			DQpk(iPS,iDT)=Qpk.at(iPS).at(iDT).value(MEQflow::KW);
-//		}
-//	}
-//
-//	// fill FactOfStr(SUtStreams)
-//	EIStream* curStream;
-//	EIGroupFact* curGroupFact;
-//	int iFact;
-//	for(int iUS=0;iUS<eiUtilityStreams.size();iUS++)
-//	{
-//		curStream = eiUtilityStreams.at(iUS);
-//		curGroupFact = factStreamMap.key(curStream,NULL);
-//		if(curGroupFact)
-//		{
-//			iFact = facts.indexOf(curGroupFact);
-//			FactOfStr(iUS)=iFact;
-//		}
-//	}
-//
-//	// fill Identity, fmin, fmax, costFix, costMult (SUtilities)
-//	EIGroup* curGroup;
-//	for(int i=0;i<nbFacts;i++)
-//	{
-//		Identity(i)=i;
-//		curGroupFact = facts.at(i);
-//		curGroup = factGroupMap.value(facts.at(i),NULL);
-//		if(curGroupFact)
-//		{
-//			assert(curGroupFact==curGroup->getFact());
-//
-//			fmin(i) = curGroupFact->min;
-//			fmax(i) = curGroupFact->max;
-//			costFix(i) = curGroup->getFieldValue(EIGroup::COSTFIX).toDouble();
-//			costMult(i) = curGroup->getFieldValue(EIGroup::COSTMULT).toDouble();
-//		}
-//	}
-//
-//
-//
-//	//*****************************************************
-//	// Variables
-//	//*****************************************************
-//	MP_variable VFactUt(SUtilities); //utility multiplication factors
-//	MP_variable VRk(STk);
-//
-//
-//	//*****************************************************
-//	// Expressions
-//	//*****************************************************
-//	
-//	
-//	//*****************************************************
-//	// Constraints
-//	//*****************************************************
-//	MP_index ik;
-//	MP_index is;
-//	MP_index iu;
-//	MP_constraint
-//		CDQk(SDTk),
-//		CRk(SDTk),
-//		CR1,
-//		CRkn;
-//
-//	// temperature interval heat equation
-//
-//	CDQk(ik) =
-//		// sum fw * sum(qwk)
-//		sum(SUtilities(iu),VFactUt(iu)*sum(SUtStreams(is),DQuk(is,ik).such_that(Identity(iu) == FactOfStr(is))))
-//		// sum Qik
-//		+sum(SProcStreams,DQpk(SProcStreams,ik))
-//		// + Rk+1 - Rk
-//		+ VRk(ik+1)-VRk(ik)
-//		//==0
-//		==zero(0);
-//
-//	// no heat propagation from cold to hot temperature zone
-//	CRk(SDTk) = VRk(SDTk) >= zero(0);
-//
-//	// all needs provided
-//	CR1() = VRk(0) == zero(0);
-//	CRkn() = VRk(SDTk+1) == zero(0);
-//
-//	// multiplication factors
-//	for(int iFact=0;iFact<nbFacts;iFact++)
-//	{
-//		VFactUt.lowerLimit(iFact) = facts.at(iFact)->min;
-//		VFactUt.upperLimit(iFact) = facts.at(iFact)->max;
-//	}
-//
-//
-//	// relation between multiplication factors
-//	//(when utility groups are included in utility groups)
-//	EIGroupFact* childFact;
-//	EIGroupFact* parentFact;
-//	MP_constraint facRel(SUtilities);
-//	for(int iFact=0;iFact<factsRelation.keys().size();iFact++)
-//	{
-//		childFact = factsRelation.keys().at(iFact);
-//		parentFact = factsRelation.values().at(iFact);
-//		
-//		int iChildFac = facts.indexOf(childFact);
-//		int iParentFac = facts.indexOf(parentFact);
-//		if((iChildFac>-1)&&(iParentFac>-1))
-//		{
-//			facRel(iChildFac)= VFactUt(iParentFac)*facts.at(iFact)->max - VFactUt(iChildFac) >=zero(0);
-//			facRel(iChildFac)= VFactUt(iParentFac)*facts.at(iFact)->min - VFactUt(iChildFac) <=zero(0);
-//		}
-//	}
-//
-//	//*****************************************************
-//	// Objective
-//	//*****************************************************
-//	MP_variable totalCost;
-//	MP_constraint totalCostDef;
-//	totalCostDef() = totalCost() == sum(SUtilities(iu),costFix(iu)+costMult(iu)*VFactUt(iu));
-//
-//	//*****************************************************
-//	// Model
-//	//*****************************************************
-//	FlopMessenger flopMessenger;
-//	MP_model M(new OsiCbcSolverInterface,&flopMessenger);
-//	M.minimize(totalCost());
-//	totalCost.display("totalCost");
-//	VFactUt.display("VFactUt");
-//	double _facMul = VFactUt.level(0);
-//	double _totalCost = totalCost.level(0); 
-//	M.Solver->writeLp("MILPProblem","txt");
-//
-//	//*****************************************************
-//	// Display
-//	//*****************************************************
-//	MP_model::MP_status status = M.getStatus();
-//}
-//
-//
-//
+
+
+
+EIConns* MilpHEN1::readEIConns(glp_prob * glpProblem,QStringList colNames)
+    {
+    EIConns* conns = new EIConns();
+
+    // KijmzH
+    MilpVariableResult4D varKijmzH("KijmzH");
+    varKijmzH.fill(glpProblem,colNames);
+
+    // KijmzH
+    MilpVariableResult4D varKijnzC("KijnzC");
+    varKijnzC.fill(glpProblem,colNames);
+
+    // KeijmzH
+    MilpVariableResult4D varKeijmzH("KeijmzH");
+    varKeijmzH.fill(glpProblem,colNames);
+
+    // KeijmzH
+    MilpVariableResult4D varKeijnzC("KeijnzC");
+    varKeijnzC.fill(glpProblem,colNames);
+
+    // QijmzH
+    MilpVariableResult4D varQijmzH("QijmzH");
+    varQijmzH.fill(glpProblem,colNames);
+
+
+    // get heat exchanger begin keys
+    QList<MilpKey4D> beginHKeys = varKijmzH.values().keys(1);
+    QList<MilpKey4D> beginCKeys = varKijnzC.values().keys(1);
+
+
+    // get heat exchanger endkeys
+    QList<MilpKey4D> endHKeys = varKeijmzH.values().keys(1);
+    QList<MilpKey4D> endCKeys = varKeijnzC.values().keys(1);
 
 
 
 
+
+    MilpKey4D curBHKey,curEHKey,curBCKey,curECKey;
+    int iEH,iBC,iEC;
+    int kBH,kEH,kBC,kEC;
+    bool okBH,okEH,okBC,okEC;
+    bool found;
+    QString strHot,strCold;
+    MEQflow qflow;
+    // for each hot beginning
+    for(int iBH=0;iBH<beginHKeys.size();iBH++)
+        {
+        curBHKey=beginHKeys.at(iBH);
+        strHot = curBHKey.i1();
+        strCold = curBHKey.i2();
+
+        // find hot end
+
+        iEH=0;
+        found=false;
+        while((iEH<endHKeys.size())&&(!found))
+            {
+               if((endHKeys.at(iEH).i1()==strHot)&&(endHKeys.at(iEH).i2()==strCold))
+                   found=true;
+               else
+                   iEH++;
+        }
+        if(!found)
+            infoSender.debug("Error HEN: could not found HEN hot end (i1="+strHot+",i2="+strCold+")");
+        else
+        {
+            curEHKey = endHKeys.at(iEH);
+
+            // find cold begining
+            found = false;
+            iBC=0;
+
+            while((iBC<beginCKeys.size())&&(!found))
+                {
+                   if((beginCKeys.at(iBC).i1()==strHot)&&(beginCKeys.at(iBC).i2()==strCold))
+                       found=true;
+                   else
+                       iBC++;
+                }
+            if(!found)
+                infoSender.debug("Error HEN: could not found HEN cold begin (i1="+strHot+",i2="+strCold+")");
+            else
+            {
+                // find cold end
+                found = false;
+                iEC=0;
+
+                while((iEC<endCKeys.size())&&(!found))
+                {
+                       if((endCKeys.at(iEC).i1()==strHot)&&(endCKeys.at(iEC).i2()==strCold))
+                           found=true;
+                       else
+                           iEC++;
+            }
+                if(!found)
+                    infoSender.debug("Error HEN: could not found HEN cold end (i1="+strHot+",i2="+strCold+")");
+                else
+                {
+                    //Create connection
+
+
+                    EIConn *newConn = new EIConn(_eiTree);
+                    // still does not support mass fractions -> set to 1
+
+                    kBH = curBHKey.i3().toInt(&okBH);
+                    kEH = curEHKey.i3().toInt(&okEH);
+                    kBC = curBCKey.i3().toInt(&okBC);
+                    kEC = curECKey.i3().toInt(&okEC);
+
+                    Q_ASSERT(okBH && okEH && okBC && okEC);
+
+                    Q_ASSERT(kBC<=kEC); // to check, don't know order yet!
+
+                    newConn->setA(_eiTree->findItem(strHot),_Tk.at(kBH-1),_Tk.at(kEH),1);
+                    newConn->setB(_eiTree->findItem(strCold),_Tk.at(kBC),_Tk.at(kEC-1),1);
+
+                    //calculate qflow
+                    MilpKey4D curKey;
+                    qflow.setValue(0);
+                    for(int k=kBH;k<=kEH;k++)
+                    {
+                        curKey=MilpKey4D(curBHKey.i1(),curBHKey.i2(),QString::number(k),curBHKey.i4());
+                        qflow += MEQflow(varQijmzH.values().value(curKey,0),_QFlowUnit);
+        }
+                    newConn->setQFlow(qflow);
+                    conns->addItem(newConn);
+    }
+}
+        }
+    }
+
+
+    return conns;
+}
 
 

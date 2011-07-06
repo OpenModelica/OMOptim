@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -43,7 +43,7 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,QWidget *parent):
+WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,bool isResult,QWidget *parent):
     QWidget(parent),
     _ui(new Ui::WidgetOptParametersClass)
 {
@@ -51,19 +51,13 @@ WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,
 	
 	_project = project;
 	_problem = problem;
+        _isResult = isResult;
 
 
-	connect(_ui->pushLaunch, SIGNAL(clicked()), this, SLOT(launch()));
 	connect(_ui->pushEAParameters, SIGNAL(clicked()), this, SLOT(openAlgoParameters()));
-	connect(_ui->pushRestore,SIGNAL(clicked()), this, SLOT(restoreProblem()));
-	connect(_ui->pushPursue, SIGNAL(clicked()), this, SLOT(pursueMoo()));
-	connect(_ui->pushSelectStartFile,SIGNAL(clicked()),this,SLOT(selectStartFile()));
-	connect(_ui->checkUseStartFile,SIGNAL(stateChanged(int)),this,SLOT(onChangedCheckUseSartFile()));
 
 	//changed algorithm
 	connect(_ui->comboAlgo, SIGNAL(currentIndexChanged(int)),this, SLOT(changedAlgorithm()));
-	connect(_problem,SIGNAL(algoConfigsChanged()),this,SLOT(onAlgosConfigChanged()));
-	connect(_ui->lineStartFile,SIGNAL( textChanged ( const QString &)),this,SLOT(onTextStartFileChanged( const QString &)));
 
 	//Algorithm box
 	QStringList _algoNames = _problem->getAlgoNames();
@@ -73,7 +67,7 @@ WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,
 		_ui->comboAlgo->setCurrentIndex(iCurAlgo);
 
 	// actualize gui
-	onAlgosConfigChanged();
+//	onAlgosConfigChanged();
 
 
 	
@@ -85,102 +79,53 @@ WidgetOptParameters::~WidgetOptParameters()
 }
 
 
-void WidgetOptParameters::launch()
-{
-
-	QString error;
-	bool ok = _problem->checkBeforeComp(error);
-	if(!ok)
-                QMessageBox::warning(this, "Error",error,QMessageBox::Ok,QMessageBox::Ok);
-	else
-		_project->launchProblem(_problem->num());
-}
-
 void WidgetOptParameters::changedAlgorithm()
 {
 	int iAlgo = _ui->comboAlgo->currentIndex();
 	_problem->setiCurAlgo(iAlgo);
 }
 
-void WidgetOptParameters::onChangedCheckUseSartFile()
-{
-	int iEA = _ui->comboAlgo->currentIndex();
 	
-	bool _useStartFile = _ui->checkUseStartFile->isChecked();
-	((EAConfig*)_problem->getCurAlgoConfig())->setUseStartFile(_useStartFile);
-}
-
 void WidgetOptParameters::openAlgoParameters()
 {
 	if(_problem->getCurAlgo())
 	{
-		EAConfig* _EAConfig = (EAConfig*)_problem->getCurAlgo()->_config;
-		EAConfigDialog *eaConfigDlg = new EAConfigDialog(_EAConfig);
-		eaConfigDlg->exec();
+            MOParametersDlg dlg(_problem->getCurAlgo()->_parameters);
+            dlg.exec();
 	}
 }
 
 
 
-void WidgetOptParameters::restoreProblem()
-{
-	int iSolved = _project->solvedProblems()->findItem(_problem->name());
+//void WidgetOptParameters::restoreProblem()
+//{
+//        int iSolved = _project->results()->findItem(_problem->name());
 
-	if(iSolved>-1)
-		_project->restoreProblemFromSolvedOne(iSolved);
-}
+//	if(iSolved>-1)
+//                _project->restoreProblemFromResult(iSolved);
+//}
 
-void WidgetOptParameters::pursueMoo()
-{
+//void WidgetOptParameters::pursueMoo()
+//{
 
-	QString filename = QFileDialog::getOpenFileName(
-		this,
-		"MO - Choose start file",
-		_problem->saveFolder(),
-		"Iterations files (iteration.*);;All files (*.*)" );
+//	QString filename = QFileDialog::getOpenFileName(
+//		this,
+//		"MO - Choose start file",
+//		_problem->saveFolder(),
+//		"Iterations files (iteration.*);;All files (*.*)" );
 
-	if(!filename.isEmpty())
-	{
+//	if(!filename.isEmpty())
+//	{
 		
-		int iSolved = _project->solvedProblems()->findItem(_problem->name());
-		if(iSolved>-1)
-		{
-			Optimization* newPb = (Optimization*)_project->restoreProblemFromSolvedOne(iSolved);
-			((EAConfig*)newPb->getCurAlgoConfig())->setReloadFilePath(filename);
-			((EAConfig*)newPb->getCurAlgoConfig())->setUseStartFile(true);
-		}
-	}
-}
-
-void WidgetOptParameters::selectStartFile()
-{
-	QString openedPath = _project->solvedProblemsFolder();
-	QString filename = QFileDialog::getOpenFileName(
-		this,
-		"MO - Choose start file",
-		openedPath,
-		"Archive files (iteration*.sav);;All files (*.*)" );
-
-	if(!filename.isEmpty())
-		_ui->lineStartFile->setText(filename);
-
-}
-
-void WidgetOptParameters::onTextStartFileChanged(const QString &newText)
-{
-	int iEA = _ui->comboAlgo->currentIndex();
-	
-	QString _newText = newText;
-	((EAConfig*)_problem->getCurAlgoConfig())->setReloadFilePath(_newText);
-}
-
-
-
-void WidgetOptParameters::onAlgosConfigChanged()
-{
-	_ui->lineStartFile->setText(((EAConfig*)_problem->getCurAlgoConfig())->getReloadFilePath());
-	_ui->checkUseStartFile->setChecked(((EAConfig*)_problem->getCurAlgoConfig())->getUseSartFile());
-}
+//                int iSolved = _project->results()->findItem(_problem->name());
+//		if(iSolved>-1)
+//		{
+//                        Optimization* newPb = (Optimization*)_project->restoreProblemFromResult(iSolved);
+//			((EAConfig*)newPb->getCurAlgoConfig())->setReloadFilePath(filename);
+//			((EAConfig*)newPb->getCurAlgoConfig())->setUseStartFile(true);
+//		}
+//	}
+//}
 
 
 
@@ -190,14 +135,14 @@ void WidgetOptParameters::actualizeGui()
 	
 	// list of widgets to hide when problem is solved
 	QWidgetList unsolvedWidgets;
-	unsolvedWidgets << _ui->pushLaunch << _ui->pushSelectStartFile;
+       // unsolvedWidgets <<  _ui->pushSelectStartFile;
 
 	// list of widgets to hide when problem is unsolved
 	QWidgetList solvedWidgets;
-	solvedWidgets << _ui->pushRestore  << _ui->pushPursue ;
+
 
 	// if problem is solved
-	if(_problem->isSolved())
+        if(_isResult)
 	{
 		for(int i=0; i < unsolvedWidgets.size(); i++)
 			unsolvedWidgets.at(i)->hide();
@@ -209,10 +154,6 @@ void WidgetOptParameters::actualizeGui()
 		_ui->comboAlgo->setCurrentIndex(_problem->getiCurAlgo());
 		_ui->comboAlgo->setEnabled(false);
 
-		// start file
-		_ui->checkUseStartFile->setEnabled(false);
-		_ui->lineStartFile->setEnabled(false);
-		
 	}
 	else
 	{
@@ -226,8 +167,5 @@ void WidgetOptParameters::actualizeGui()
 		_ui->comboAlgo->setCurrentIndex(_problem->getiCurAlgo());
 		_ui->comboAlgo->setEnabled(true);
 
-		// start file
-		_ui->checkUseStartFile->setEnabled(true);
-		_ui->lineStartFile->setEnabled(true);	
 	}
 }

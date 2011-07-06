@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -58,22 +58,21 @@
 #include "ModPlusCtrl.h"
 #include "ModPlusOMCtrl.h"
 #include "ModPlusDymolaCtrl.h"
-#include "ModModelParametersDlg.h"
+#include "MOParametersDlg.h"
 
 
 using std::vector;
 
 
 
-ModModelPlus::ModModelPlus(MOomc* moomc, Project* project,ModReader* modReader,ModModel* modModel_,ModClass* rootModClass)
+ModModelPlus::ModModelPlus(MOomc* moomc, Project* project,ModClassTree* modClassTree,ModModel* modModel_)
 {
 	_project = project;
 	_moomc = moomc;
-	_modReader = modReader;
+        _modClassTree = modClassTree;
 	_modModel = modModel_;
-	_rootModClass = rootModClass;
 	_variables = new MOVector<Variable>;
-	_connections = new ModelicaConnections(modReader);
+        _connections = new ModelicaConnections(modClassTree);
 	_modifiers = new MOVector<ModelicaModifier>;
 
 	_isDefined = false;
@@ -398,7 +397,7 @@ void ModModelPlus::openMoFile()
 
 void ModModelPlus::openParametersDlg()
 {
-	ModModelParametersDlg *parametersDlg = new ModModelParametersDlg(ctrl()->parameters());
+	MOParametersDlg *parametersDlg = new MOParametersDlg(ctrl()->parameters());
 	parametersDlg->exec();
 }
 
@@ -440,7 +439,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
 	// delete org connections
 	_moomc->deleteConnections(blockSub->orgPorts,blockSub->orgConnectedComps,modModelName());
 	
-	ModClass* orgClass = _modReader->findInDescendants(_modModel,blockSub->orgComponent);
+        ModClass* orgClass = _modClassTree->findInDescendants(blockSub->orgComponent,_modModel);
         if(!orgClass)
         {
             QString msg;

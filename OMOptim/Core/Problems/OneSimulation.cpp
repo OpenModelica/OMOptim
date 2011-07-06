@@ -49,23 +49,20 @@
 #include "CSV.h"
 #include "reportingHook.h"
 
-OneSimulation::OneSimulation()
-    :Problem()
-{
-	_project = NULL;
-	_type = Problem::ONESIMULATION;
-	_name="One Simulation";
-	_overwritedVariables = new MOVector<Variable>;
-	_scannedVariables = new MOVector<ScannedVariable>;
-}
+//OneSimulation::OneSimulation()
+//    :Problem()
+//{
+//	_project = NULL;
+//	_type = Problem::ONESIMULATION;
+//	_name="One Simulation";
+//	_overwritedVariables = new MOVector<Variable>;
+//	_scannedVariables = new MOVector<ScannedVariable>;
+//}
 
-OneSimulation::OneSimulation(Project* project,ModClass* rootModClass,ModReader* modReader,ModPlusCtrl* modPlusCtrl,ModModelPlus* modModelPlus)
-    :Problem()
+OneSimulation::OneSimulation(Project* project,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,ModModelPlus* modModelPlus)
+    :Problem(project,modClassTree)
 {
-	_project = project;
-	_rootModClass = rootModClass;
 	_modModelPlus = modModelPlus;
-	_modReader = modReader;
 	_modPlusCtrl = modPlusCtrl;
 	_type = Problem::ONESIMULATION;
 	_name="One Simulation";
@@ -86,17 +83,22 @@ OneSimulation::OneSimulation(const OneSimulation &oneSim)
         _overwritedVariables = oneSim._overwritedVariables->clone();
         _scannedVariables = oneSim._scannedVariables->clone();
 
-	if(oneSim.result()!=NULL)
-		_result = new OneSimResult(*((OneSimResult*)oneSim.result())) ;
+
+//	if(oneSim.result()!=NULL)
+//		_result = new OneSimResult(*((OneSimResult*)oneSim.result())) ;
 }
 
+Problem* OneSimulation::clone()
+{
+    return new OneSimulation(*this);
+}
 
 OneSimulation::~OneSimulation(void)
 {
 	delete _overwritedVariables;
 	delete _scannedVariables;
 
-        deleteResult();
+       // deleteResult();
 }
 
 
@@ -110,7 +112,7 @@ OneSimulation::~OneSimulation(void)
 //
 //	modelTempDir.mkdir(tempDir);
 //	
-//	modPlusReader->copyFilesToTempDir(modModelPlus,tempDir);
+//	modPlusCtrl->copyFilesToTempDir(modModelPlus,tempDir);
 //}
 
 bool OneSimulation::checkBeforeComp(QString & error)
@@ -119,15 +121,19 @@ bool OneSimulation::checkBeforeComp(QString & error)
 	return ok;
 }
 
-void OneSimulation::launch(ProblemConfig config){
+Result* OneSimulation::launch(ProblemConfig config){
 
 	emit begun(this);
 
 	// Creating a variables instance containing updated variables
 	//MOVector<Variable> inputVariables(*modModelPlus->variables());
 	//inputVariables.replaceIn(overwritedVariables);
-	
+        ModPlusCtrl* ctrl;
 	MOVector<Variable> updatedVariables(*_overwritedVariables);
+	
+        OneSimResult* result = new OneSimResult(_project,_modModelPlus,this,_modClassTree,_modPlusCtrl);
+        result->setName(this->name()+" result");
+
 	
 	// loop indexes on scannVariables
 	QList<int> indexes,maxIndexes;
@@ -142,60 +148,64 @@ void OneSimulation::launch(ProblemConfig config){
 		updatedVariables.addItem(clonedVar);
 	}
 
-	if(_result)
-		delete _result;
-	_result = new OneSimResult(_project,_modModelPlus,this,_modReader,_modPlusCtrl);
-	_result->setName(this->name());
 	
-	OneSimResult* thisResult = dynamic_cast<OneSimResult*>(_result);
+
 	MOVector<Variable> curVariables;
-	bool simSuccess=true;
+        bool allSimSuccess=true;
+        bool curSimSuccess;
 	do
 	{
 		// Update values
 		VariablesManip::updateScanValues(&updatedVariables,_scannedVariables,indexes);
 		// Simulate
 		curVariables.clear();
-                simSuccess = simSuccess && _modModelPlus->ctrl()->simulate(config.tempDir, &updatedVariables, &curVariables,_filesToCopy);
+                ctrl = _modModelPlus->ctrl();
+                curSimSuccess = ctrl->simulate(config.tempDir, &updatedVariables, &curVariables,_filesToCopy);
+                allSimSuccess = allSimSuccess && curSimSuccess;
 
-		if(simSuccess)
+                if(allSimSuccess)
 		{
 			// Add values
 			double curValue;
 			//if it is first scan, finalvariables is an empy vector -> fill with curVariables
-			if(thisResult->finalVariables()->items.isEmpty())
+                        if(result->finalVariables()->items.isEmpty())
 			{
 				for(int i=0;i<curVariables.items.size();i++)
 				{
-					thisResult->finalVariables()->addItem(new VariableResult(*curVariables.items.at(i)));
+                                        result->finalVariables()->addItem(new VariableResult(*curVariables.items.at(i)));
 					curValue = curVariables.items.at(i)->getFieldValue(Variable::VALUE).toDouble();
-					thisResult->finalVariables()->items.at(i)->appendScanValue(curValue,true);
+                                        result->finalVariables()->items.at(i)->appendScanValue(curValue,true);
 				}
 			}
 			else
 			{
 				// append scan values
 				int iVar;
-				for(int i=0;i<thisResult->finalVariables()->items.size();i++)
+                                for(int i=0;i<result->finalVariables()->items.size();i++)
 				{
-					iVar = curVariables.findItem(thisResult->finalVariables()->items.at(i)->name());
+                                        iVar = curVariables.findItem(result->finalVariables()->items.at(i)->name());
 					if(iVar>-1)
 					{
 						curValue = curVariables.items.at(iVar)->getFieldValue(Variable::VALUE).toDouble();
-						thisResult->finalVariables()->items.at(i)->appendScanValue(curValue,true);
+                                                result->finalVariables()->items.at(i)->appendScanValue(curValue,true);
 					}
 					else
-						thisResult->finalVariables()->items.at(i)->appendScanValue(-1,false);
+                                                result->finalVariables()->items.at(i)->appendScanValue(-1,false);
 				}
 			}
 		}
 		
 		indexes = LowTools::nextIndex(indexes,maxIndexes);
 	}
-	while(!indexes.isEmpty() && simSuccess);
+        while(!indexes.isEmpty() && allSimSuccess);
 
-	_result->setSuccess(simSuccess);
+        result->setSuccess(allSimSuccess);
+        //fill problem in result
+        if(result->problem()==NULL)
+            result->setProblem(this->clone());
+
 	emit finished(this);
+        return result;
 }
 //
 //void OneSimulation::readResults(QString dirPath)
@@ -218,7 +228,7 @@ void OneSimulation::launch(ProblemConfig config){
 //		// Getting result variables values from dymosim output file
 //		QString dsresFile = dirPath + QDir::separator() + "dsres.txt";
 //		MOVector<Variable> *curVariables = new MOVector<Variable>();
-//		modPlusReader->readFinalVariables(modModelPlus,curVariables,dsresFile);
+//		modPlusCtrl->readFinalVariables(modModelPlus,curVariables,dsresFile);
 //
 //
 //		// Adding values
@@ -256,10 +266,10 @@ void OneSimulation::launch(ProblemConfig config){
 //	}
 //}
 
-OneSimResult* OneSimulation::result() const
-{
-	return (OneSimResult*)_result;
-}
+//OneSimResult* OneSimulation::result() const
+//{
+//	return (OneSimResult*)_result;
+//}
 
 void OneSimulation::store(QString destFolder, QString tempDir)
 {

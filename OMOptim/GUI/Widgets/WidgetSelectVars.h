@@ -61,7 +61,7 @@ class WidgetSelectVars : public QWidget {
 
 
 public:
-	explicit WidgetSelectVars(MOVector<Variable> *_variables,MOVector<Variable> *_selectedVariables = NULL,QWidget *parent = 0);
+        explicit WidgetSelectVars(MOVector<Variable> *_variables,QWidget *parent,MOVector<Variable> *_selectedVariables = NULL);
     virtual ~WidgetSelectVars();
 
 	

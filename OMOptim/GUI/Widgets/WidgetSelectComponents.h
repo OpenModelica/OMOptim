@@ -63,7 +63,7 @@ class WidgetSelectComponents : public QWidget {
 
 
 public:
-	explicit WidgetSelectComponents(Project* _project,Optimization *_problem,QWidget *parent = 0);
+        explicit WidgetSelectComponents(Project* _project,Optimization *_problem,bool isResult,QWidget *parent);
     virtual ~WidgetSelectComponents();
 
 public:
@@ -79,6 +79,7 @@ public slots :
 private :
 	Project* _project;
 	Optimization *_problem;
+        bool _isResult;
 
 	BlockSubsScene *_blockScene;
 	ModClassTree *_treeLibrary;

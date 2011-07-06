@@ -42,46 +42,46 @@
 #include "LowTools.h"
 #include "EABase.h"
 
-Problem::Problem()
+Problem::Problem(Project* project,ModClassTree* modClassTree)
+    :OMCase(project,modClassTree)
 {
-	_num = -1;
 	_type = UNDEFINED;
-
-	_result = NULL;
-	connect(this,SIGNAL(sentInfo(Info)),&infoSender,SIGNAL(sent(Info)));
+        _parameters = new MOParameters();
 }
 
 Problem::Problem(const Problem &problem)
+:OMCase(problem)
 {
-	_name = problem._name;
+//	_name = problem._name;
 	_type = problem._type;
-	_num = problem._num;
 	
-        _filesToCopy = problem._filesToCopy;
 	
-	_saveFolder = problem._saveFolder;
-	_saveFileName = problem._saveFileName;
+        _parameters = problem._parameters->clone();
+  //      _filesToCopy = problem._filesToCopy;
 
-	_project = problem._project;
-	_modReader = problem._modReader;
-	_rootModClass = problem._rootModClass;
+//	_saveFolder = problem._saveFolder;
+//	_saveFileName = problem._saveFileName;
 	
-	_result = NULL; //(need to be created in subclasses copy constructors)
+//	_project = problem._project;
+//        _modClassTree = problem._modClassTree;
 
-	//copying algos
-	for(int i=0;i<problem._algos.size();i++)
-	{
-		_algos.push_back(problem._algos.at(i)->clone());
-		_algos.at(i)->setProblem(this);
-	}
 
-	_iCurAlgo = problem._iCurAlgo;
-	connect(this,SIGNAL(sentInfo(Info)),&infoSender,SIGNAL(sent(Info)));
+
 }
 
 Problem::~Problem(void)
 {
-        deleteResult();
+    qDebug("deleting Problem");
+    delete _parameters;
+
+}
+
+void Problem::setDefaultSaveFileName()
+{
+	if(_name.isEmpty())
+		_saveFileName= "problem.mpb";
+	else
+		_saveFileName = _name + ".mpb";
 }
 
 QString Problem::getFieldName(int field,int role)
@@ -93,154 +93,13 @@ unsigned Problem::getNbFields()
 	return 1;
 }
 
-int Problem::getiCurAlgo()
-{
-	return _iCurAlgo;
-}
 
-MyAlgorithm* Problem::getCurAlgo()
-{
-	if((_iCurAlgo>-1)&&(_iCurAlgo<_algos.size()))
-		return _algos.at(_iCurAlgo);
-	else
-		return NULL;
-}
-AlgoConfig* Problem::getCurAlgoConfig()
-{
-	if((_iCurAlgo>-1)&&(_iCurAlgo<_algos.size()))
-		return _algos.at(_iCurAlgo)->_config;
-	else
-		return NULL;
-}
-
-QStringList Problem::getAlgoNames()
-{
-	QStringList names;
-	for(int i=0;i<_algos.size();i++)
-		names.push_back(_algos.at(i)->name());
-	return names;
-
-}
-void Problem::setName(QString name)
-{
-	_name=name;
-	emit renamed(_name);
-
-	if(_saveFileName.isEmpty())
-		setDefaultSaveFileName();
-}
-void Problem::setNum(int num)
-{
-	_num=num;
-}
 
 void Problem::setType(ProblemType type)
 {
 	_type=type;
 }
 
-
-void Problem::setProject(Project* project)
-{
-	_project=project;
-}
-
-void Problem::setResult(Result* result)
-{
-	_result = result;
-}
-void Problem::setiCurAlgo(int iCurAlgo)
-{
-	_iCurAlgo = iCurAlgo;
-}
-
-void Problem::setSaveFolder(QString saveFolder)
-{
-	_saveFolder=saveFolder;
-        if(_result)
-            _result->setSaveFolder(QDir(saveFolder));
-}
-
-void Problem::setDefaultSaveFileName()
-{
-	if(_name.isEmpty())
-		_saveFileName= "problem.mpb";
-	else
-		_saveFileName = _name + ".mpb";
-}
-
-void Problem::setEntireSavePath(QString savePath)
-{
-	QFileInfo fInfo(savePath);
-	setSaveFolder(fInfo.canonicalPath());
-	_saveFileName = fInfo.fileName();
-}
-
-QString Problem::saveFolder()
-{
-	return _saveFolder;
-}
-
-QString Problem::saveFileName()
-{
-	return _saveFileName;
-}
-
-QString Problem::entireSavePath()
-{
-	return _saveFolder + QDir::separator() + _saveFileName;
-}
-
-
-
-//
-//void Problem::updateSavePath(QString problemPath)
-//{
-//	QDir dir = QDir(problemPath);
-//
-//	if (!dir.exists())
-//	{
-//		dir.mkdir(problemPath);
-//	}
-//
-//	QString folderName,tempFolderName;
-//
-//	folderName = name;
-//	folderName.replace("(","");
-//	folderName.replace(")","");
-//	folderName.replace(" ","_");
-//
-//	QString fileName = folderName;
-//
-//	tempFolderName=folderName;
-//
-//	QStringList folderList=dir.entryList(QDir::Dirs);
-//
-//	int i=2;
-//	while(folderList.contains(folderName))
-//	{
-//		folderName = tempFolderName + "_" + QString::number(i);
-//		i++;
-//	}
-//
-//	dir.mkdir(folderName);
-//
-//	savePath = QString(problemPath+QDir::separator()
-//		+folderName+QDir::separator()
-//		+fileName);	
-//}
-
-
-
-void Problem::openFolder()
-{
-	LowTools::openFolder(_saveFolder);
-}
-
-bool Problem::isSolved()
-{
-	return ((_result!=NULL) && (_result->isSuccess()));
-}
 
 
 
@@ -251,95 +110,8 @@ bool Problem::isSolved()
 */
 void Problem::store(QString destFolder, QString tempDir)
 {
-
-	// update save paths
-	setSaveFolder(destFolder);
-	setDefaultSaveFileName();
-
-	QString savePath = _saveFolder + QDir::separator() + _saveFileName;
-
-
-	QDir dir = QDir(_saveFolder);
-
-	if (!dir.exists())
-	{
-		dir.mkpath(_saveFolder);
-	}
-	else
-	{
-		LowTools::removeDir(_saveFolder);
-		dir.mkdir(_saveFolder);
+    OMCase::store(destFolder,tempDir);
 	}
 
-	//copy needed path from old place to new one
-	if(tempDir != "")
-	{
-		QDir tmpDir(tempDir);
-		QDir newDir(_saveFolder);
 
-		// copy problem files and folders
-                QStringList fileNames = tmpDir.entryList();
-		for(int i=0;i<fileNames.size();i++)
-		{
-			QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_saveFolder + QDir::separator() + fileNames.at(i));
-		}
-
-		// copy result files
-		if(isSolved())
-		{
-			QStringList fileNames = tmpDir.entryList(_result->filesToCopyNames());
-			for(int i=0;i<fileNames.size();i++)
-			{
-				QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_saveFolder + QDir::separator() + fileNames.at(i));
-			}
-		}
-	}
-
-        result()->setSaveFolder(QDir(destFolder));
-}
-
-void Problem::deleteResult()
-{
-	if(_result)
-		delete _result;
-	_result = NULL;
-}
-
-/**
-* Description Rename problem
-* @param newName new problem name
-* @param changeFolder if yes, rename folder also
-*/
-void Problem::rename(QString newName, bool changeFolder)
-{
-	QString oldName = _name;
-	setName(newName);
-
-	if(changeFolder)
-	{
-		QString oldSaveFolder = saveFolder();
-		QString newSaveFolder = oldSaveFolder;
-		newSaveFolder.replace(oldName,newName);
-
-		QString oldSaveFileName = saveFileName();
-		QString newSaveFileName = oldSaveFileName;
-		newSaveFileName.replace(oldName,newName);
-
-		QDir newDir(newSaveFolder);
-		if(newDir.exists())
-		{
-			newDir.cd("..");
-			newDir.rmdir(newSaveFolder);
-			newDir.setCurrent(newSaveFolder);
-		}
-
-		LowTools::copyDir(oldSaveFolder,newSaveFolder);
-		LowTools::removeDir(oldSaveFolder);
-
-		newDir.rename(oldSaveFileName,newSaveFileName);
-
-		setSaveFolder(newSaveFolder);
-		_saveFileName = newSaveFileName;
-	}
-}
 

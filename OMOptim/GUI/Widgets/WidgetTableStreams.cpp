@@ -44,7 +44,7 @@
 
 
 
-WidgetTableStreams::WidgetTableStreams(EIItem* _rootEI,bool _editable,MOVector<Variable> *_variables,QWidget *parent) :
+WidgetTableStreams::WidgetTableStreams(EIItem* _rootEI,bool _editable,QWidget *parent,MOVector<Variable> *_variables) :
 
     QWidget(parent),
     ui(new Ui::WidgetTableStreamsClass)

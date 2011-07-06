@@ -60,7 +60,7 @@ class BlockSubsScene : public QGraphicsScene
 	Q_OBJECT
 
 public:
-	BlockSubsScene(BlockSubstitutions *, ModModel* ,ModClass* ,ModReader* , bool _isEditable);
+        BlockSubsScene(BlockSubstitutions *, ModModel* ,ModClassTree*, bool _isEditable);
 	~BlockSubsScene(void);
 
 
@@ -93,10 +93,8 @@ public :
 
 private:
 
-
-	ModReader* modReader;
 	ModModel* model;
-	ModClass* rootModClass;
+        ModClassTree* modClassTree;
 
 
 	bool isEditable;

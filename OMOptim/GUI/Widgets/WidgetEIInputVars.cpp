@@ -85,24 +85,23 @@ WidgetEIInputVars::~WidgetEIInputVars()
 
 void WidgetEIInputVars::fillList()
 {
-	Problem *curProblem;
 	Result *curResult;
 	QListWidgetItem* item;
 	ui->listAvailableVectors->clear();
 
-	for(int i=0;i<project->solvedProblems()->items.size();i++)
+    for(int i=0;i<project->results()->items.size();i++)
 	{
-		curProblem = project->solvedProblems()->items.at(i);
-		curResult = curProblem->result();
-		switch(curProblem->type())
+        curResult = project->results()->items.at(i);
+
+        switch(curResult->problemType())
 		{
 		case Problem::OPTIMIZATION :
-				item = new QListWidgetItem(project->solvedProblems()->items.at(i)->name());
+            item = new QListWidgetItem(curResult->name());
 				map.insert(item,dynamic_cast<OptimResult*>(curResult)->recomputedVariables());
 				ui->listAvailableVectors->addItem(item);
 				break;
 		case Problem::ONESIMULATION :
-				item = new QListWidgetItem(project->solvedProblems()->items.at(i)->name());
+            item = new QListWidgetItem(curResult->name());
 				map.insert(item,dynamic_cast<OneSimResult*>(curResult)->finalVariables());
 				ui->listAvailableVectors->addItem(item);
 				break;
@@ -157,7 +156,7 @@ void WidgetEIInputVars::dispReferences()
     ModModel* corrModel;
     for(int i=0;i<refs.size();i++)
     {
-        corrModel = project->modReader()->modelOf(refs.at(i),project->rootModClass());
+        corrModel = project->modClassTree()->modelOf(refs.at(i));
         if(corrModel)
             corrModelsNames.push_back(corrModel->name());
     }
@@ -192,7 +191,7 @@ void WidgetEIInputVars::dispMissingReferences()
     ModModel* corrModel;
     for(int i=0;i<refs.size();i++)
     {
-        corrModel = project->modReader()->modelOf(refs.at(i),project->rootModClass());
+        corrModel = project->modClassTree()->modelOf(refs.at(i));
         if(corrModel)
             corrModelsNames.push_back(corrModel->name());
     }

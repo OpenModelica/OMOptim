@@ -45,6 +45,7 @@
 #include "EIItem.h"
 #include "EIModelContainer.h"
 #include "EIModelExtractor.h"
+#include "EIConnConstrs.h"
 #include "EIReader.h"
 #include "MOomc.h"
 #include "EITree.h"
@@ -54,12 +55,19 @@ class EIProblem : public Problem
     Q_OBJECT
 
 public:
-        EIProblem(Project*,ModReader*,MOomc*);
+        EIProblem(Project*,ModClassTree*,MOomc*);
 	EIProblem(const EIProblem &);
 	virtual ~EIProblem(void);
 
         virtual void loadModel(ModModel*);
         virtual void unloadModel(ModModel*,bool &ok);
+
+        // functions below should be pure virtual but for GUI reasons,
+        // we need to instantiate som EIProblems. To improve !!
+        virtual QDomElement toXmlData(QDomDocument &doc){};
+        virtual Problem* clone(){return new EIProblem(*this);};
+        virtual Result* launch(ProblemConfig){return NULL;};
+        virtual bool checkBeforeComp(QString&){return false;};
 
         void clearInputVars();
         void updateInputVars(MOOptVector *);
@@ -72,13 +80,18 @@ public:
         QList<ModModel*> _modelsLoaded;
 
         MOomc* _moomc;
-        ModReader* _modReader;
         MOOptVector * _inputVars;
+
+
+        EIConnConstrs* connConstrs();
+        void setConnConstrs(EIConnConstrs*);
 
 
 
 protected :
+        EIConnConstrs *_connConstrs; // connnection constraints
             EITree* _eiTree;
+
 
 
 signals :

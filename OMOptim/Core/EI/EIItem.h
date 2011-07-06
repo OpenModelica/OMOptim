@@ -182,7 +182,7 @@ signals:
 	void addedChild(EIItem*);
 	void modified();
 	void cleared();
-        void deleted();
+        //void deleted();
 };
 
 #endif

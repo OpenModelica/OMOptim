@@ -64,7 +64,7 @@ class WidgetMooPointsList : public QWidget {
 
 
 public:
-    explicit WidgetMooPointsList(OptimResult* ,QWidget *parent = 0);
+    explicit WidgetMooPointsList(OptimResult* ,QWidget *parent);
     virtual ~WidgetMooPointsList();
 
 

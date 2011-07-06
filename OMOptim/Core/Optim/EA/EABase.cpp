@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -44,38 +44,37 @@
 EABase::EABase(void)
 {
 	_project = NULL;
-	_config = new EAConfig(NULL);
-	connect(_config,SIGNAL(changed()),this,SIGNAL(configChanged()));
 	_stop = false;
+        _parameters = new MOParameters();
 }
 
 
-EABase::EABase(Project* project,Problem* problem,ModReader* modReader,ModPlusCtrl* modPlusReader,ModClass* rootModClass)
+EABase::EABase(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
 {
 	_project = project;
 	_problem = problem;
-	_modReader = modReader;
-	_modPlusReader = modPlusReader;
-	_rootModClass = rootModClass;
-	_config = new EAConfig((QObject*)problem);
+        _modClassTree = modClassTree;
+        _modPlusCtrl = modPlusCtrl;
 	_stop = false;
-	connect(_config,SIGNAL(changed()),this,SIGNAL(configChanged()));
+        _parameters = new MOParameters();
 
 }
 
-EABase::EABase(const EABase & eaBase):MyAlgorithm(eaBase)
+EABase::EABase(const EABase & eaBase):OptimAlgo(eaBase)
 {
-	_modReader = eaBase._modReader;
-	_modPlusReader = eaBase._modPlusReader;
-	_rootModClass = eaBase._rootModClass;
+        _modClassTree = eaBase._modClassTree;
+        _modPlusCtrl = eaBase._modPlusCtrl;
 	_subModels = eaBase._subModels;
 	_subBlocks = eaBase._subBlocks;
 	_index = eaBase._index;
 	_stop = eaBase._stop;
+
+        _parameters = eaBase._parameters->clone();
 }
 
 EABase::~EABase(void)
 {
+
 }
 
 void EABase::setSubModels(QList<ModModelPlus*> subModels,QList<BlockSubstitutions*> subBlocks)

@@ -78,8 +78,15 @@ public:
         static void getFirstParentGroupFact(EIItem*,EIGroupFact* &,EIGroup* &);
 
         // Streams filter and sort functions
-        static QList<EIStream*> getStreamsAboveT(METemperature T,QList<EIStream*> allStreams,MOOptVector* variables);
-        static QList<EIStream*> getStreamsBelowT(METemperature T,QList<EIStream*> allStreams,MOOptVector* variables);
+        static QList<EIStream*> getStreamsAboveT(METemperature T,QList<EIStream*> allStreams);
+        static QList<EIStream*> getStreamsBelowT(METemperature T,QList<EIStream*> allStreams);
+        static QList<EIStream*> getStreamsPresentInDT(METemperature Thot,METemperature Tcold,QList<EIStream*> allStreams);
+        static MEQflow getIntervalQFlow(METemperature Thot,METemperature Tcold,EIStream* stream,bool useCorrectedT = true);
+        static QList<int> getTIntervalsConcerned(const QList<METemperature> & Tk,EIStream* stream,bool useCorrectedT = true);
+
+
+        static QList<EIStream*> getColdStreams(QList<EIStream*> allStreams);
+        static QList<EIStream*> getHotStreams(QList<EIStream*> allStreams);
         static void sortByCp(QList<EIStream*> & allStreams,Qt::SortOrder);
 
 private:

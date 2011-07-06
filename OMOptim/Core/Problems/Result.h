@@ -38,7 +38,7 @@
 
   */
 /*!
- * \file Results.h
+ * \file Result.h
  * \brief File containing Results class description.
  * \author Hubert Thieriot (CEP-Armines)
  * \version 0.1
@@ -49,6 +49,7 @@
 
 #include "ModModelPlus.h"
 #include "ModPlusCtrl.h"
+#include "ModClassTree.h"
 #include "Problem.h"
 #include "MOVector.h"
 #include "QtCore/QTime"
@@ -57,11 +58,12 @@
 #include <QtCore/QFileInfo>
 #include "Info.h"
 #include <QtXml/QDomDocument>
-#include "MyAlgorithm.h"
+#include "OptimAlgo.h"
+#include "OMCase.h"
 
 class Problem;
 
-class Result: public MOItem
+class Result: public OMCase
 {
 	Q_OBJECT
 	
@@ -78,44 +80,31 @@ public :
 protected :
 	bool _success;
 
-	ModModelPlus* _modModelPlus;
-	ModReader* _modReader;
-	ModPlusCtrl* _modPlusReader;
-	Project* _project;
-	Problem* _problem;
-	MyAlgorithm *_algo;
-	QStringList _filesToCopyNames;
-        QDir _saveFolder;
+
+        Problem* _problem; //cloned version of original problem
+
 
 public:
 	Result();
-	Result(Project*, ModModelPlus*, Problem*,ModReader*,ModPlusCtrl*);
+        Result(Project*,ModClassTree*,Problem* = NULL);
 	Result(const Result &r);
         virtual ~Result(void);
 
 	virtual int problemType()=0;
 	virtual QDomElement toXmlData(QDomDocument &)=0;
 
+        void setDefaultSaveFileName();
+
 
 	virtual QString getFieldName(int iField,int iRole);
 	virtual unsigned getNbFields();
 
-	QStringList filesToCopyNames();
-	Project* project();
-	ModModelPlus* modModelPlus();
-	ModModel* modModel();
+
+
 	Problem* problem();
 	bool isSuccess();
 
-        QDir saveFolder();
-        void setSaveFolder(QDir);
-
-	void setName(QString);
-	void setModModelPlus(ModModelPlus*);
-	void setProject(Project*);
-
 	void setProblem(Problem*);
-	void setAlgo(MyAlgorithm*);
 	void setSuccess(bool);
 
 };

@@ -60,7 +60,7 @@ class WidgetEIConns : public QWidget {
 
 
 public:
-        explicit WidgetEIConns(EIConns *eiConns,QWidget *parent = 0);
+        explicit WidgetEIConns(EIConns *eiConns,QWidget *parent);
     virtual ~WidgetEIConns();
 
 

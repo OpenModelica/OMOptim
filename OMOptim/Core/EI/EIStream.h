@@ -75,7 +75,7 @@ public:
 	virtual QString getClassName(){return "EIStream";};
 
 	bool isValid(MOOptVector*, QString &errMsg);
-	bool isHot(MOOptVector* variables);
+    bool isHot(MOOptVector* variables=NULL);
 
 public:
 

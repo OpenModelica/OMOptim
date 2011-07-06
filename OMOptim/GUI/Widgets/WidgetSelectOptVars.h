@@ -62,7 +62,7 @@ class WidgetSelectOptVars : public QWidget {
 
 
 public:
-	explicit WidgetSelectOptVars(Optimization *_problem,QWidget *parent = 0);
+        explicit WidgetSelectOptVars(Optimization *problem,bool isEditable,QWidget *parent);
     virtual ~WidgetSelectOptVars();
 
 	
@@ -86,6 +86,7 @@ public slots :
 private:
 
 	Optimization* _problem;
+        bool _isEditable;
 
 	QSortFilterProxyModel *_variableProxyModel;
 	QSortFilterProxyModel *_optVariableProxyModel;

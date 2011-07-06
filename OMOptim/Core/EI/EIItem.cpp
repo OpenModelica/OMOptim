@@ -83,6 +83,8 @@ EIItem::EIItem(QDomElement & domEl)
 
 EIItem::~EIItem(void)
 {
+    QString msg = "deleted EIItem"+name();
+    qDebug(msg.toLatin1().data());
     emit deleted();
 	clear();
 }
@@ -293,8 +295,11 @@ void EIItem::removeUncheckedDescendants()
         if(!child(i)->isChecked())
             removeChild(i);
         else
+        {
+            child(i)->removeUncheckedDescendants();
             i++;
     }
+}
 }
 
 int EIItem::findChild(QVariant itemFieldValue, int iField)

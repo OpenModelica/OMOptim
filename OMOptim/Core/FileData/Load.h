@@ -80,22 +80,26 @@ public:
 	Load(void);
 	~Load(void);
 
-	//static Result* newResultFromFile(QString,Project*);
-	static Problem* newSolvedProblemFromFile(QString,Project*);
-	static Problem* newProblemFromFile(QString,Project*);
 	
+        static Result* newResult(QString filePath,Project*);
+        static Result* newResult(QDomElement resultDom,Project*,Problem*,QString filePath);
+        static Problem* newProblem(QString filePath,Project*);
+        static Problem* newProblem(QDomElement problemDom,Project*);
+
 	static bool loadProject(QString,Project*);
 	static bool loadModModelPlus(Project*, QString mmoFilePath);
 	static void loadOptimValuesFromFrontFile(OptimResult*,QString);
 
 
+
+
 private:
 	
 	
-	static Problem* newOneSimulationFromFile(QString,Project*);
-	static Problem* newOptimizationFromFile(QString,Project*);
-	static Problem* newOneSimulationSolvedFromFile(QString,Project*);
-	static Problem* newOptimizationSolvedFromFile(QString,Project*);
+        static Problem* newOneSimulation(QDomElement,Project*);
+        static Problem* newOptimization(QDomElement,Project*);
+        static Result* newOneSimulationResult(QDomElement,Project*,OneSimulation*);
+        static Result* newOptimizationResult(QDomElement,Project*,Optimization*,QDir resultDir);
 	
 
 signals:

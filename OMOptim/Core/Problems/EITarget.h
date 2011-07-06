@@ -41,6 +41,7 @@
 #ifndef PROBLEMTARGET_H
 #define PROBLEMTARGET_H
 
+#include "EITargetParameters.h"
 #include "EIProblem.h"
 #include "MilpTarget.h"
 #include "EIMERResult.h"
@@ -57,26 +58,22 @@ class EITarget : public EIProblem
         Q_OBJECT
 
 public:
-        EITarget(Project*,ModReader*,MOomc*);
-        EITarget(Project*,ModReader*,MOomc*,QDomElement domProblem);
+        EITarget(Project*,ModClassTree*,MOomc*);
+        EITarget(Project*,ModClassTree*,MOomc*,QDomElement domProblem);
 
         EITarget(const EITarget &);
-        virtual ~EITarget(void);
-        virtual QString getClassName(){return "EITarget";};
+        Problem* clone();
 
-	void launch(ProblemConfig _config);
+        virtual ~EITarget(void);
+        static QString className(){return "EITarget";};
+        virtual QString getClassName(){return EITarget::className();};
+
+        Result* launch(ProblemConfig _config);
 
 	QDomElement toXmlData(QDomDocument & doc);
 	bool checkBeforeComp(QString & error);
 
-	EIConnConstrs* connConstrs();
 
-
-
-protected :
-
-
-	EIConnConstrs *_connConstrs; // connnection constraints
 
 
 };

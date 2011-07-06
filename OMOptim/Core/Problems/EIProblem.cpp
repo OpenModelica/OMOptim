@@ -41,7 +41,8 @@
 
 #include "EIProblem.h"
 
-EIProblem::EIProblem(Project* project,ModReader* modReader,MOomc* moomc)
+EIProblem::EIProblem(Project* project,ModClassTree* modClassTree,MOomc* moomc)
+    :Problem(project,modClassTree)
 {
     _type = Problem::EIPROBLEM;
     _name="EI";
@@ -49,15 +50,15 @@ EIProblem::EIProblem(Project* project,ModReader* modReader,MOomc* moomc)
     _eiTree = new EITree();
 
     _moomc = moomc;
-    _project = project;
-    _modReader = modReader;
-
-
+    _connConstrs = new EIConnConstrs();
+    _inputVars = new MOOptVector(false,false);
 }
 
 EIProblem::~EIProblem(void)
 {
     delete _eiTree;
+    delete _connConstrs;
+    delete _inputVars;
 }
 
 
@@ -74,13 +75,17 @@ EIProblem::EIProblem(const EIProblem &problem)
 
 
     _moomc = problem._moomc;
-    _modReader = problem._modReader;
+    _modClassTree = problem._modClassTree;
+
+    _connConstrs = problem._connConstrs->clone();
+    _inputVars = problem._inputVars->clone();
+    _parameters = problem._parameters->clone();
 }
 
 void EIProblem::loadModel(ModModel* loadedModel)
 {
     bool eraseExisting=true;
-    EIItem* modelRootEI = EIModelExtractor::extractFromModClass(loadedModel,_modReader,_moomc);
+    EIItem* modelRootEI = EIModelExtractor::extractFromModClass(loadedModel,_modClassTree,_moomc);
 
     bool unloadOk;
     if(eraseExisting)
@@ -104,6 +109,18 @@ void EIProblem::unloadModel(ModModel* unloadedModel, bool &ok)
     }
 }
 
+EIConnConstrs* EIProblem::connConstrs()
+{
+    return _connConstrs;
+}
+
+void EIProblem::setConnConstrs(EIConnConstrs* connConstr)
+{
+    if(connConstr!=_connConstrs)
+        delete _connConstrs;
+
+    _connConstrs = connConstr;
+}
 
 void EIProblem::clearInputVars()
 {
@@ -126,8 +143,10 @@ void EIProblem::updateInputVars(MOOptVector *addedVars)
 
 void EIProblem::setInputVars(MOOptVector* variables)
 {
-    clearInputVars();
-    updateInputVars(variables);
+    if(_inputVars!=variables)
+        delete _inputVars;
+
+    _inputVars = variables;
 }
 
 MOOptVector * EIProblem::inputVars()
@@ -142,7 +161,7 @@ EITree* EIProblem::eiTree()
 
 void EIProblem::setEITree(EITree* eiTree)
 {
-    if(_eiTree)
+    if(_eiTree != eiTree)
         delete _eiTree;
 
     _eiTree = eiTree;

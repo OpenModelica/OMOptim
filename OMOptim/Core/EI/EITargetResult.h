@@ -15,20 +15,25 @@ http://www-cep.ensmp.fr/english/
 #include "EITree.h"
 #include "EIConns.h"
 #include "MOVector.h"
+#include "EIControler.h"
+
+class EITarget;
 
 class EITargetResult : public Result
 {
 public:
-	EITargetResult(Project*, Problem*);
+        EITargetResult(Project*, ModClassTree*, Problem*);
+        EITargetResult(Project* project,ModClassTree*,QDomElement domResult,EITarget* problem);
 	EITargetResult(void);
 	~EITargetResult(void);
 
-	double totalCost;
+        double _totalCost;
 
 
-	virtual QString getClassName(){return "EITargetResult";};
+        static QString className(){return "EITargetResult";};
+        virtual QString getClassName(){return EITargetResult::className();};
 
-        int problemType(){return Problem::EIPROBLEM;};
+        int problemType(){return Problem::EITARGET;};
         QDomElement toXmlData(QDomDocument &);
 
         EITree* eiTree();

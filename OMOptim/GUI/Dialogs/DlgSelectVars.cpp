@@ -51,7 +51,7 @@ DlgSelectVars::DlgSelectVars(MOVector<Variable>* _variables,MOVector<Variable>* 
 	QGridLayout* allLayout = new QGridLayout(this);
 	QGridLayout* varLayout = new QGridLayout(this);
 	
-	widgetSelectVars = new WidgetSelectVars(variables,_alreadySelected,this);
+        widgetSelectVars = new WidgetSelectVars(variables,this,_alreadySelected);
 	varLayout->addWidget(widgetSelectVars);
 
 	pushOk = new QPushButton("Ok",this);

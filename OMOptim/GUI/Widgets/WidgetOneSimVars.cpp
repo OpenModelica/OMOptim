@@ -79,6 +79,16 @@ WidgetOneSimVars::WidgetOneSimVars(Project *project,OneSimulation *problem, QWid
 	
 	_ui->tableScannedVariables->resizeColumnsToContents();
 
+        //delegates
+        DoubleSpinBoxDelegate* valueDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* scanValueDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* scanMinDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* scanMaxDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        _ui->tableOverwritedVariables->setItemDelegateForColumn(Variable::VALUE,valueDelegate);
+        _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::VALUE,scanValueDelegate);
+        _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANMIN,scanMinDelegate);
+        _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANMAX,scanMaxDelegate);
+
 	//buttons
 	connect(_ui->pushAddOver, SIGNAL(clicked()), this, SLOT(addModVariables()));
 	connect(_ui->pushRemoveOver, SIGNAL(clicked()), this, SLOT(deleteModVariables()));
@@ -179,5 +189,5 @@ void WidgetOneSimVars::deleteScannedVariables()
 
 void WidgetOneSimVars::simulate()
 {
-	_project->launchProblem(_problem->num());
+        _project->launchProblem(_problem);
 }

@@ -43,7 +43,7 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *_variables,MOVector<Variable> *_selectedVariables,QWidget *parent):
+WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *_variables,QWidget *parent,MOVector<Variable> *_selectedVariables):
     QWidget(parent),
     ui(new Ui::WidgetSelectVarsClass)
 {

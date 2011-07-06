@@ -339,7 +339,10 @@ std::vector<double> VariableResult::finalValuesAtPoint(int iPoint)
 }
 std::vector<double> VariableResult::finalValuesAtScan(int iScan)
 {
+    if(iScan<_finalValues.size())
 	return _finalValues.at(iScan);
+    else
+        return std::vector<double>();
 }
 
 

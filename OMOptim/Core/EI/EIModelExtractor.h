@@ -43,7 +43,7 @@
 #define EIMODELEXTRACTOR_H
 
 #include "ModModel.h"
-#include "ModReader.h"
+#include "ModClassTree.h"
 #include "EILinguist.h"
 #include "ModEIConverter.h"
 #include "EIStream.h"
@@ -56,7 +56,7 @@ class EIModelExtractor
 public:
     EIModelExtractor();
 
-   static EIModelContainer* extractFromModClass(ModClass*,ModReader*,MOomc*);
+   static EIModelContainer* extractFromModClass(ModClass*,ModClassTree*,MOomc*);
 
 
 

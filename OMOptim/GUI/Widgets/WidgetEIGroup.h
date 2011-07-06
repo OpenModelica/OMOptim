@@ -49,8 +49,8 @@ class WidgetEIGroup : public WidgetMOItem {
 
 
 public:
-    WidgetEIGroup(MOItem *_item,bool _forceEditable=false,QWidget *parent = 0);
-    ~WidgetEIGroup();
+    WidgetEIGroup(MOItem *_item,QWidget *parent,bool _forceEditable=false);
+    virtual ~WidgetEIGroup();
 
 protected :
 

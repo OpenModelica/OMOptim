@@ -46,6 +46,7 @@
 #include "EIConnConstrs.h"
 #include "ModModelPlus.h"
 #include "EIValueFiller.h"
+#include "EIMERParameters.h"
 
 /*
  * \brief Class for Target (Energy integration) problem. Target use GLPK for MILP optimization.
@@ -55,22 +56,18 @@ class EIMER : public EIProblem
         Q_OBJECT
 
 public:
-    EIMER(Project*,ModReader*,MOomc*);
+    EIMER(Project*,ModClassTree*,MOomc*);
     EIMER(const EIMER &);
 	virtual ~EIMER(void);
 	virtual QString getClassName(){return "EIMER";};
 
-	void launch(ProblemConfig _config);
+    Problem* clone();
+        Result* launch(ProblemConfig _config);
 
 
 	QDomElement toXmlData(QDomDocument & doc);
 	bool checkBeforeComp(QString & error);
 	
-        void setIncludeUtilities(bool);
- 
-protected :
-	bool _includeUtilities;
-
 };
 
 

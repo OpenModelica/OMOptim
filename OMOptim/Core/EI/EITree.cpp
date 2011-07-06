@@ -199,7 +199,7 @@ Qt::ItemFlags EITree::flags(const QModelIndex &index) const
     EIItem* item = static_cast<EIItem*>(index.internalPointer());
 
     if(item==_rootElement)
-        return  Qt::NoItemFlags;
+        return  Qt::ItemIsEnabled;
 
     bool ok;
     switch(item->getEIType())
@@ -326,18 +326,7 @@ EIItem* EITree::findItem(EI::Type eiType,QVariant itemFieldValue, int iField)
 }
 
 
-void EITree::allDataChanged()
-{
-    emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1));
-    emit layoutChanged();
-}
 
-void EITree::allDataCleared()
-{
-    reset();
-    //emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1));
-    //emit layoutChanged();
-}
 
 bool EITree::isCheckable(const QModelIndex _index) const
 {
@@ -378,7 +367,9 @@ bool EITree::removeChildren(EIItem* parent)
 
 void EITree::removeUnchecked()
 {
+    beginResetModel();
     _rootElement->removeUncheckedDescendants();
+    endResetModel();
 }
 
 bool EITree::removeRows ( int row, int count, const QModelIndex & parent )
@@ -412,6 +403,19 @@ void EITree::onRootElementDeleted()
     this->beginResetModel();
     this->reset();
     this->endResetModel();
+}
+
+void EITree::allDataChanged()
+{
+    emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1));
+    emit layoutChanged();
+}
+
+void EITree::allDataCleared()
+{
+    reset();
+    //emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1));
+    //emit layoutChanged();
 }
 
 QDomElement EITree::toXmlData(QDomDocument & doc)

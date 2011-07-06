@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -61,6 +61,8 @@
 #include "EAAdaptReinitStdDev.h"
 #include "EOAdapt.h"
 
+#include "SPEA2AdaptParameters.h"
+
 
 /********************************************************
 SPEA2Adapt use SPEA2 algorithm but is auto-adaptive
@@ -71,27 +73,28 @@ class SPEA2Adapt : public EABase
 {
 public : 
 	SPEA2Adapt();
-	SPEA2Adapt(Project*,Problem*,ModReader*,ModPlusCtrl*,ModClass* _rootClass);
-	SPEA2Adapt(Project*,Problem*,ModReader*,ModPlusCtrl*,ModClass* _rootClass,EAConfig*);
+        SPEA2Adapt(Project*,Problem*,ModClassTree*,ModPlusCtrl*);
+        SPEA2Adapt(Project*,Problem*,ModClassTree*,ModPlusCtrl*,MOParameters*);
 	SPEA2Adapt(const SPEA2Adapt &);
 	SPEA2Adapt* clone();
 
-	QList<int> compatibleProblems();
+	QList<int> compatibleOMCases();
 	Result* launch(QString tempDir);
 	QString name();
 	void setDefaultParameters();
 
 private :
-	inline Result* buildResult(moeoUnboundedArchive<EOAdapt> &, EAConfig* );
+        inline Result* buildResult(moeoUnboundedArchive<EOAdapt> & );
 };
 
-Result* SPEA2Adapt::buildResult(moeoUnboundedArchive<EOAdapt> & arch, EAConfig* config)
+Result* SPEA2Adapt::buildResult(moeoUnboundedArchive<EOAdapt> & arch)
 {
 	Result* result;
 	switch(_problem->type())
 	{
 	case Problem::OPTIMIZATION :
-		result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,_modReader,_modPlusReader,arch,config);
+                result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,
+                                                                         _subBlocks,_modClassTree,_modPlusCtrl,arch,_parameters);
 		break;
 	}
 	return result;

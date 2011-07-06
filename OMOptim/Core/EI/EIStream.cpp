@@ -298,7 +298,7 @@ bool EIStream::numerize(MOOptVector* variables)
     if(!_numerized)
     {
         QString msg;
-        msg.sprintf("Failed to numerize EIStream %s. Missing references values",name().utf16());
+        msg.sprintf("Failed to numerize EIStream %s. Missing references values",name().toLatin1().data());
         infoSender.send(Info(msg,ListInfo::WARNING2));
     }
     return _numerized;

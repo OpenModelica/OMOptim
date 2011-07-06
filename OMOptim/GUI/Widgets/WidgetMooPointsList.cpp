@@ -57,10 +57,10 @@
     //***********
     //LIST
     //***********
-    _listPoints = new WidgetList();
+    _listPoints = new WidgetList(this);
     _ui->layoutWidgetList->addWidget(_listPoints);
     //_ui->layoutWidgetList->setSizeConstraint(QLayout::SetMaximumSize);
-    _listPoints->setSizePolicy(QSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred));
+    _listPoints->setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred));
 
     if(_result->optObjectivesResults()->items.size()>0)
     {

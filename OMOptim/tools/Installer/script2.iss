@@ -7,15 +7,20 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{2C27A169-E374-4967-BBE3-B488F2F412AA}
 AppName=OMOptim
-AppVerName=OMOptim 0.9
+AppVerName=OMOptim {code:GetAppCurrentVersion|''}
+AppVersion={code:GetAppCurrentVersion|''}
 AppPublisher=Hubert Thieriot (ARMINES)
 DefaultDirName={pf}\OMOptim
+VersionInfoVersion=1.2.3.4
 DefaultGroupName=OMOptim
 OutputBaseFilename=setupOMOptim
 Compression=lzma
 SolidCompression=yes
 ;WizardImageFile=D:\Documents\MinEIT\Developpement\OMOptim\trunk\files\Resources\icons\Synchronize\Synchronize_256x256.png
 ;WizardSmallImageFile=D:\Documents\MinEIT\Developpement\OMOptim\trunk\files\Resources\icons\Synchronize\Synchronize_32x32.png
+ChangesAssociations=yes
+
+
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
@@ -34,11 +39,9 @@ Source:  "..\..\bin\qwt5.dll"; DestDir: "{app}";
 Source:  "..\..\bin\mingwm10.dll"; DestDir: "{app}";
 Source:  "..\..\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}";
 Source:  "..\..\bin\libstdc++-6.dll"; DestDir: "{app}";
-;Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcp90.dll";  DestDir: "{app}"; OnlyBelowVersion: 0,9; Flags: restartreplace uninsneveruninstall sharedfile
-;Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcr90.dll";  DestDir: "{app}"; OnlyBelowVersion: 0,9; Flags: restartreplace uninsneveruninstall sharedfile
-;Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest";  DestDir: "{app}"; Flags: restartreplace uninsneveruninstall sharedfile
-;Source: "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*";  DestDir: "{app}\Microsoft.VC90.CRT"; Flags: restartreplace uninsneveruninstall sharedfile
+Source:  "..\..\..\..\Documentation\OMDoc\OMOptim\OMOptimUsersGuide.pdf"; DestDir: "{app}\doc";
 
+Source: "..\..\build\version.txt"; DestDir: {tmp}; Flags: dontcopy
 
 [Icons]
 Name: "{group}\OMOptim"; Filename: "{app}\OMOptim.exe" ; IconFilename: {app}\OMOptim.ico;
@@ -51,8 +54,13 @@ Root: HKCU; Subkey: Software\OMOptim; Flags: uninsdeletekey
 ; Inscription des valeurs de clés secondaires
 Root: HKCU; Subkey: Software\OMOptim\Setup; ValueType: string; ValueName: "Version"; ValueData: "0.1"
 
-; add mineit path in environment variables
+; add OMOptim path in environment variables
 Root: HKCU; Subkey: Environment; ValueType: string; ValueName: "OMOptimPATH"; ValueData:  {app}
+
+Root: HKCR; Subkey: ".min"; ValueType: string; ValueName: ""; ValueData: "OMOptimFile"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "OMOptimFile"; ValueType: string; ValueName: ""; ValueData: "OMOptimFile"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "OMOptimFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\OMOptim.exe,0"
+Root: HKCR; Subkey: "OMOptimFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\OMOptim.exe"" ""%1"""
 
 ; etc.
 
@@ -61,6 +69,17 @@ Name: {app}\Modelica
 Name: {app}\Microsoft.VC90.CRT
 
 [Code]
+
+function GetAppCurrentVersion(param: String): String;
+var
+		Version: String;
+	begin
+		ExtractTemporaryFile('version.txt');
+		LoadStringFromFile(ExpandConstant('{tmp}\version.txt'), Version);
+		Result := Version;
+	end;
+
+	
 var
 
   LightMsgPage: TOutputMsgWizardPage;

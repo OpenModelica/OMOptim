@@ -45,7 +45,7 @@ BlockSubstitutions::BlockSubstitutions(void)
 {
 }
 
-BlockSubstitutions::BlockSubstitutions(Project* _project,ModModelPlus* _model,QDomElement _el,ModClass* _modelRoot,ModReader* _modReader)
+BlockSubstitutions::BlockSubstitutions(Project* _project,ModModelPlus* _model,QDomElement _el,ModClassTree* _modClassTree)
 {
 	QDomElement e2 = _el.firstChildElement();	
 	while( !e2.isNull() )
@@ -54,7 +54,7 @@ BlockSubstitutions::BlockSubstitutions(Project* _project,ModModelPlus* _model,QD
 
 		if(e2.tagName()=="BlockSubstitution")
 		{
-			BlockSubstitution* _newBlock = new BlockSubstitution(_project,_model,_model->connections(),e2,_modelRoot,_modReader);
+                        BlockSubstitution* _newBlock = new BlockSubstitution(_project,_model,_model->connections(),e2,_modClassTree);
 			add(_newBlock);
 		}
 		e2 = e2.nextSiblingElement();

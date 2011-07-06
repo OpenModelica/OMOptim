@@ -68,8 +68,15 @@ public:
         bool operator==(const METemperature& b) const;
         bool operator!=(const METemperature& b) const;
         bool operator<(const METemperature& b) const;
+        bool operator<=(const METemperature& b) const;
         bool operator>(const METemperature& b) const;
+        bool operator>=(const METemperature& b) const;
+
+        static bool TcolderThan(const METemperature T1, const METemperature T2){return T1<T2;};
+        static bool ThoterThan(const METemperature T1, const METemperature T2){return T1>T2;};
 };
+
+
 
 
 #endif

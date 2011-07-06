@@ -58,8 +58,8 @@ class WidgetEIInputVars : public QWidget {
     Q_OBJECT
 
 public:
-    WidgetEIInputVars(Project *project, MOOptVector *, EIItem* _rootEI, QWidget *parent = 0);
-    ~WidgetEIInputVars();
+    WidgetEIInputVars(Project *project, MOOptVector *, EIItem* _rootEI, QWidget *parent);
+    virtual ~WidgetEIInputVars();
 
 	Ui::WidgetEIInputVarsClass *ui;
 

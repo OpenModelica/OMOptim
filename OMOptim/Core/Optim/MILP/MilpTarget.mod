@@ -36,7 +36,7 @@ var VRik 'heat residual' {SHotStreams,k} >=0;
 var Qijk 'heatexchange' {SHotStreams,SColdStreams,dk};
 var QHik 'hot load' {SHotStreams,dk};
 var QCjk 'cold load' {SColdStreams,dk};
-
+var TotalCost 'total cost';
 
 ###  CONSTRAINTS  ###
 # temperature interval heat equation
@@ -91,9 +91,11 @@ s.t. factMin{iUt in SUtGroups} : VFactUt[iUt] - fmin[iUt] , >=0;
 s.t. factMax{iUt in SUtGroups} : VFactUt[iUt] - fmax[iUt] , <=0;
 
 ###  OBJECTIVES  ###
+s.t. eqTotalCost :
+TotalCost ,= sum{iu in SUtGroups}(costFix[iu]+costMult[iu] * VFactUt[iu]);
 
 minimize totalCost:
-	sum{iu in SUtGroups}(costFix[iu]+costMult[iu] * VFactUt[iu]);
+	TotalCost;	
        
 solve;
 	   

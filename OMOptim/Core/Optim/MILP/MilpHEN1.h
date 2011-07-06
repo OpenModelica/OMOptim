@@ -47,16 +47,21 @@
 #include "EIStream.h"
 #include "EITools.h"
 #include "GlpkTools.h"
-#include "EIHEN1Result.h"
+
 #include "InfoSender.h"
 #include "EIConnConstrs.h"
-
+#include "MilpSet.h"
+#include "MilpParam.h"
+#include "MilpVariableResult.h"
+#include "EIHEN1Parameters.h"
+#include "EIHEN1Result.h"
+#include "EIConns.h"
 
 
 class MilpHEN1
 {
 public:
-        MilpHEN1(EITree* eiTree,EIConnConstrs *_connConstrs,MOOptVector *variables,QDir folder,QString modFilePath, QString dataFilePath);
+        MilpHEN1(EITree* eiTree,MOParameters *parameters,EIConnConstrs *_connConstrs,MOOptVector *variables,QDir folder,QString modFilePath, QString dataFilePath);
 	~MilpHEN1(void);
 
         EIHEN1Result* launch();
@@ -64,7 +69,7 @@ public:
 
 private :
         glp_prob * launchGLPK();
-	void DataToFile(QString dataFilePath, QList<METemperature> &Tk,
+        void DataToFile(QString dataFilePath,
 	QList<EIStream*> &eiProcessStreams,
 	QList<QList<MEQflow> > &Qpk, //.at(iStream).at(iDTk)
 	QList<EIStream*> &eiUtilityStreams,
@@ -74,6 +79,9 @@ private :
 	QMap<EIGroupFact*,EIGroup*> &factGroupMap);
 
         EIHEN1Result* readResult(glp_prob *);
+        EIConns* readEIConns(glp_prob *,QStringList colNames);
+
+        static int hook(void *info, const char *s);
 
 
         EITree* _eiTree;
@@ -85,6 +93,11 @@ private :
         QString _logFileName;
         QString _sensFileName;
         EIConnConstrs *_connConstrs;
+        MOParameters *_parameters;
+        QList<METemperature> _Tk;
+
+        int _QFlowUnit;
+        int _TempUnit;
 
 };
 

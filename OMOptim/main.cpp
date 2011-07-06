@@ -43,7 +43,7 @@
 #include "MainWindow.h"
 #include "MOSettings.h"
 #include "MOStyleSheet.h"
-
+#include "version.h"
 
 #include "config.h"
 
@@ -70,6 +70,10 @@ int main(int argc, char *argv[])
 
 	// Application
 	QApplication *app = new QApplication(argc,argv);
+        // Setting the Application version
+        //app->setApplicationVersion(APP_VERSION);
+        QString version = QString::number(Version::MAJOR)+"."+QString::number(Version::MINOR)+"."+QString::number(Version::REVISION);
+        app->setApplicationVersion(version);
 
 	// Settings
 	MOSettings::initialize(false);
@@ -97,6 +101,13 @@ int main(int argc, char *argv[])
      
     w.show();
 
+        //load file
+        if(argc>1)
+        {
+            QString fileName(argv[1]);
+            fileName = fileName.remove("\"");
+            project->load(fileName);
+        }
 
 	try
 	{

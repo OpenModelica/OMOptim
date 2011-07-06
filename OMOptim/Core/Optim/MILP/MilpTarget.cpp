@@ -441,30 +441,14 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
     // extract information
     //*************************
 
-    QRegExp regExp;
-    QString colName;
+    QString groupName;
     double value;
     int iCol;
 
-	// read all VFacMul
-	QMap<QString,double> mapGroupFacMul; //<groupName,value>
-	QString groupName,prefix,valueStr;
-    regExp.setPattern("VFactUt\\[([\\w|\.]+)\\][.]*");
-
-    iCol=colNames.indexOf(regExp,0);
-    while(iCol>-1)
-	{
-        groupName = colNames.at(iCol);
-			groupName.remove("VFactUt");
-			groupName.remove("[");
-			groupName.remove("\'");
-			groupName.remove("]");
-			groupName.remove(QRegExp("^\\."));
-        value = glp_mip_col_val(glpProblem, iCol+1); //iCol+1 since glp cols start at 1.
-			mapGroupFacMul.insert(groupName,value);
-
-        iCol = colNames.indexOf(regExp,iCol+1);
-		}
+    // read all VFacUt
+    MilpVariableResult1D varUtFact("VFactUt");
+    varUtFact.fill(glpProblem,colNames);
+    QMap<QString,double> mapGroupFacMul = varUtFact.values();
 
     EIGroup* curGroup;
 	for(int i=0;i<mapGroupFacMul.keys().size();i++)
@@ -480,14 +464,14 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 		}
 	}
 
-
 	// read TotalCost
-   value = glp_get_obj_val(glpProblem);
-   result->totalCost = value;
-
+    MilpVariableResult0D varTotalCost("TotalCost");
+    varTotalCost.fill(glpProblem,-1,colNames);
+    result->_totalCost = varTotalCost.value();
 
     // read Qijk
-    regExp.setPattern("Qijk\\[([\\w|\.]+),([\\w|\.]+),(\\d+)\\][.]*");
+    QRegExp regExp("Qijk\\[([\\w|\.]+),([\\w|\.]+),(\\d+)\\][.]*");
+    QString colName;
 
     QString nameA,nameB;
     EIStream *streamA,*streamB;

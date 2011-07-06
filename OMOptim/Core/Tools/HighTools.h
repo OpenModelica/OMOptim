@@ -60,8 +60,8 @@ public:
 	~HighTools(void);
 
 
-	static void checkUniqueProblemName(Project*,Problem *,Problems *);
-	static void checkUniqueResultName(Result *,Results *);
+	static void checkUniqueProblemName(Project*,Problem *,OMCases *);
+        static void checkUniqueResultName(Project*, Result *,OMCases *);
 	//static void checkUniqueModelName(Model *,MOVector<Model> *);
 
 };

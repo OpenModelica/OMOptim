@@ -46,7 +46,7 @@
 #include<QtGui/QFileDialog>
 
 #include "OptimResult.h"
-#include "WidgetMooPointsList.h"
+#include "widgetmoopointslist.h"
 
 namespace Ui {
     class WidgetCalculateMooPointsClass;
@@ -61,7 +61,7 @@ class WidgetCalculateMooPoints : public QDialog {
 
 
 public:
-    explicit WidgetCalculateMooPoints(OptimResult*,WidgetMooPointsList*,QWidget *parent = 0);
+    explicit WidgetCalculateMooPoints(OptimResult*,WidgetMooPointsList*,QWidget *parent);
     virtual ~WidgetCalculateMooPoints();
 
 

@@ -45,6 +45,7 @@
 #include <math.h>
 
 #include "LowTools.h"
+#include "MOParameter.h"
 
 
 /** Description Crossover operation : using SBX described in Sareni & al., Recombination and self-adapation in Multi-objective GA,
@@ -58,7 +59,7 @@ class SBCrossover: public eoQuadOp<EOT>
 {
 public:
   /// Ctor
-  SBCrossover(EAConfig* _config):eoQuadOp<EOT>() {config = _config;}
+    SBCrossover(MOParameters* _parameters):eoQuadOp<EOT>() {parameters = _parameters;}
   virtual std::string className() const {return "SBCrossover";}
 
 
@@ -140,7 +141,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 }
 private :
 
-	EAConfig *config;
+        MOParameters *parameters;
 };
 
 #endif

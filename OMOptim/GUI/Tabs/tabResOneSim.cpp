@@ -43,19 +43,19 @@
 #include "MOOptPlot.h"
 
 
-TabResOneSim::TabResOneSim(Project *project_,OneSimulation *problem_, QWidget *parent) :
-MO2ColTab(project_->name(),problem_,false,parent)
+TabResOneSim::TabResOneSim(Project *project,OneSimResult *result, QWidget *parent) :
+MO2ColTab(project->name(),result,false,parent)
 {
-	project = project_;
-	problem = problem_;
+        _project = project;
+        _result = result;
 
-	OneSimResult* _result=problem->result();
+        OneSimulation* problem = dynamic_cast<OneSimulation*>(_result->problem());
 	
 	// add combos
 
 	// Variables
 	addDockWidget("Input Variables",new WidgetTableVar(_result->inputVariables(),this));
-	addDockWidget("Overwrited Variables",new WidgetTableVar(problem_->overwritedVariables(),this));
+        addDockWidget("Overwrited Variables",new WidgetTableVar(problem->overwritedVariables(),this));
 	addDockWidget("Final Variables",new WidgetTableVar(_result->finalVariables(),this,true));
 		
 	//// Adding view list in combo

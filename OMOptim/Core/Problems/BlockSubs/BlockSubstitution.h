@@ -11,8 +11,7 @@
 #if !defined(_BLOCKSUBSTITUTION_H)
 #define _BLOCKSUBSTITUTION_H
 
-#include "ModReader.h"
-#include "ModClass.h"
+#include "ModClassTree.h"
 #include <QtCore/QStringList>
 #include <QtXml/QDomDocument>
 #include "ModelicaConnections.h"
@@ -23,12 +22,12 @@ class BlockSubstitution
 {
 public:
 	
-	BlockSubstitution(Project* _project,ModModelPlus* _model, ModReader* _modReader,ModClass* _modRoot, QString _orgComponent, QString _subComponent,
+        BlockSubstitution(Project* _project,ModModelPlus* _model, ModClassTree* _modClassTree,QString _orgComponent, QString _subComponent,
 									 QStringList _orgPorts,QList<QStringList> _orgConnectedComps,
 									 QStringList _subPorts,QList<QStringList> _subConnectedComps);
 
-	BlockSubstitution(Project*,ModModelPlus*,ModelicaConnections*,QString _orgComponent,QString _subComponent,ModClass* _modelRoot,ModReader* _modReader,bool doAutoConnect, bool &ok);
-	BlockSubstitution(Project*,ModModelPlus*,ModelicaConnections*,QDomElement _domEl,ModClass* ,ModReader* );
+        BlockSubstitution(Project*,ModModelPlus*,ModelicaConnections*,QString _orgComponent,QString _subComponent,ModClassTree* _modClassTree,bool doAutoConnect, bool &ok);
+        BlockSubstitution(Project*,ModModelPlus*,ModelicaConnections*,QDomElement _domEl,ModClassTree* );
 
 	
 	~BlockSubstitution(void);
@@ -36,7 +35,7 @@ public:
 	void setSubComponent(QString _subComponent,bool doAutoConnect);
 
 private :
-	bool init(Project*,ModModelPlus*,ModelicaConnections*,QString _orgComponent,QString _subComponent,ModClass* _modelRoot,ModReader* _modReader);
+        bool init(Project*,ModModelPlus*,ModelicaConnections*,QString _orgComponent,QString _subComponent,ModClassTree* _modClassTree);
 
 public :
 	void autoConnect();
@@ -50,8 +49,7 @@ public :
 
 	Project *project;
 	ModModelPlus* model;
-	ModReader* modReader;
-	ModClass* modRoot;
+        ModClassTree* modClassTree;
 
 	QString orgComponent;
 	QString subComponent;

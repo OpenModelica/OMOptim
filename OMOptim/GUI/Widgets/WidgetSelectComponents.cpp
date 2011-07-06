@@ -43,7 +43,7 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* problem,QWidget *parent):
+WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* problem,bool isResult,QWidget *parent):
     QWidget(parent),
     _ui(new Ui::WidgetSelectComponentsClass)
 {
@@ -51,19 +51,20 @@ WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* pr
 
 	_project = project;
 	_problem = problem;
-
+        _isResult = isResult;
 
 	_treeModel = NULL;
 	_treeLibrary = NULL;
 
 
 	//Tree components
-	ModClassTree* modClassTree = new ModClassTree(_project->modReader(),_project->rootModClass(),this);
-	GuiTools::ModClassToTreeView(_project->modReader(),_project->rootModClass(),_ui->treeLibrary,modClassTree);
+        // #CHECK if one model could be connected to several treeView !!
+        _ui->treeLibrary->setModel(project->modClassTree());
+        //GuiTools::ModClassToTreeView(_project->modReader(),_project->rootModClass(),_ui->treeLibrary,modClassTree);
 
 	// Diagram of blocks
 	_blockScene = new BlockSubsScene(_problem->blockSubstitutions(),_problem->modModelPlus()->modModel(),
-		_project->rootModClass(),_project->modReader(),true);
+                _project->modClassTree(),true);
 	_ui->graphBlocks->setScene(_blockScene);
 	_ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
 	connect(_blockScene, SIGNAL(zoomRect(QRectF)),
@@ -99,7 +100,7 @@ void WidgetSelectComponents::addReplacedComponent()
 	if(!alreadyReplaced.contains(replacedCompName))
 	{
 		BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
-			replacedCompName,QString(),_problem->modModelPlus()->modModel(),_project->modReader(),true,ok);
+                        replacedCompName,QString(),_project->modClassTree(),true,ok);
 
 		if(ok)
 			_problem->blockSubstitutions()->add(newBlockSub);
@@ -130,7 +131,7 @@ void WidgetSelectComponents::addReplacingComponent()
 		bool ok;
 		BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
 			replacedCompNames.at(0),replacingCompName,
-			_project->rootModClass(),_project->modReader(),true,ok);
+                        _project->modClassTree(),true,ok);
 
 		if(!ok)
 			delete newBlockSub;
@@ -170,8 +171,8 @@ void WidgetSelectComponents::doZoomRect(QRectF _rect)
 
 void WidgetSelectComponents::actualizeGui()
 {
-	GuiTools::ModClassToTreeView(_project->modReader(),_problem->modModelPlus()->modModel(),_ui->treeComponents,_treeModel);
-		
+        //GuiTools::ModClassToTreeView(_project->modReader(),_problem->modModelPlus()->modModel(),_ui->treeComponents,_treeModel);
+        _ui->treeComponents->setModel(_project->modClassTree());
 	// list of widgets to hide when problem is solved
 	QWidgetList unsolvedWidgets;
 	unsolvedWidgets << _ui->pushAddReplaced << _ui->pushAddReplacing ;
@@ -183,7 +184,7 @@ void WidgetSelectComponents::actualizeGui()
 
 
 	// if problem is solved
-	if(_problem->isSolved())
+        if(_isResult)
 	{
 		for(int i=0; i < unsolvedWidgets.size(); i++)
 			unsolvedWidgets.at(i)->hide();

@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -41,7 +41,7 @@
 #include "tabResOptimization_Config.h"
 #include <QtGui/QSortFilterProxyModel>
 #include "MOOptPlot.h"
-#include "MyAlgoUtils.h"
+#include "OptimAlgoUtils.h"
 #include "GuiTools.h"
 #include "MOTableView.h"
 
@@ -77,12 +77,4 @@ void TabResOptimization_Config::actualizeGui()
 	_ui->labelCompTime->setText(_result->_computationTime.toString());
 	_ui->labelDate->setText(_result->_hour.toString() + " on " + _result->_date.toString());
 
-
-	/*try{
-	if(result->eaConfig && result->eaConfig->parameters)
-		GuiTools::ModelToView(result->eaConfig->parameters,tableAlgoParameters);
 	}
-	catch(std::exception &e)
-	{
-	}*/
-}

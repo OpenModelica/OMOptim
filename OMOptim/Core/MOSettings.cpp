@@ -107,7 +107,7 @@ void MOSettings::initialize(bool eraseCurrentValues)
 	//*******************************
 	// Dymola path
 	//*******************************
-	names << QString("path/dymolaExe");
+        names << QString("Dymola/dymolaExe");
 	descs << QString("Path of Dymola executable");
 	QString dymolaPath = Dymola::getExecutablePath();
 	defaultValues << dymolaPath;
@@ -125,17 +125,25 @@ void MOSettings::initialize(bool eraseCurrentValues)
 	// Model depth read at beginning
 	//*******************************
 	names << QString("DepthReadWhileLoadingModModel");
-	descs << QString("Requires time at beginning but less while using (-1 : entire model)");
+        descs << QString("Default reading depth in Modelica hierarchy (-1 : entire model)");
 	defaultValues << 2;
 	types.push_back(INT);
 	
 	//*******************************
-	// Gnuplot enabling
+        // Max number of digits in dsin
 	//*******************************
-	names << QString("bool/useGnuplot");
-	descs << QString("Use gnuplot for moo temp results");
-	defaultValues << false;
-	types.push_back(BOOL);
+        names << QString("Dymola/MaxDigitsDsin");
+        descs << QString("Maximum number of digits in dsin.txt");
+        defaultValues << 5;
+        types.push_back(INT);
+
+//        //*******************************
+//	// Gnuplot enabling
+//	//*******************************
+//	names << QString("bool/useGnuplot");
+//	descs << QString("Use gnuplot for moo temp results");
+//	defaultValues << false;
+//	types.push_back(BOOL);
 
 //        //*******************************
 //        // Show dymosim window
@@ -145,23 +153,24 @@ void MOSettings::initialize(bool eraseCurrentValues)
 //        defaultValues << false;
 //        types.push_back(BOOL);
 
-	//*******************************
-	// Gnuplot path
-	//*******************************
-	names << QString("path/pgnuplotEXE");
-	descs << QString("Path of pgnuplot executable");
-	defaultValues << "pgnuplot.exe";
-	types.push_back(FILEPATH);
+//	//*******************************
+//	// Gnuplot path
+//	//*******************************
+//	names << QString("path/pgnuplotEXE");
+//	descs << QString("Path of pgnuplot executable");
+//	defaultValues << "pgnuplot.exe";
+//	types.push_back(FILEPATH);
 
 	//*******************************
-	// Gnuplot path
+        // Milp files path
 	//*******************************
+#ifdef USEEI
 	names << QString("path/MILPFolder");
-	descs << QString("Path of Milp models folder");
+        descs << QString("Folder of Milp models");
 	QString MOPath(getenv("MOPATH"));
 	defaultValues << MOPath+QDir::separator()+"Milp";
 	types.push_back(FOLDERPATH);
-	
+#endif
 	for(int i=0; i<names.size();i++)
 	{
 		if(eraseCurrentValues || settings.value(names.at(i))==QVariant())

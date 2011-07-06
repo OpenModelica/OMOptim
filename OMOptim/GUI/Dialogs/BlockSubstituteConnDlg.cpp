@@ -104,7 +104,7 @@ void BlockSubstituteConnDlg::validate()
 	//else
 	//{
 	//	QErrorMessage *errorMessageDialog = new QErrorMessage(this);
-	//	errorMessageDialog->showMessage("Problems in block replacement definition");
+	//	errorMessageDialog->showMessage("OMCases in block replacement definition");
 	//}
 }
 

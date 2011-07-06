@@ -59,7 +59,7 @@ class WidgetOptTable : public QDialog {
 
 
 public:
-    explicit WidgetOptTable(OptimResult* ,QWidget *parent = 0);
+    explicit WidgetOptTable(OptimResult* ,QWidget *parent);
     virtual ~WidgetOptTable();
 
 	void fillOptTable();

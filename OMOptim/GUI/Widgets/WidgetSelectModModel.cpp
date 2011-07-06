@@ -43,14 +43,13 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetSelectModModel::WidgetSelectModModel(ModReader* _modReader,ModClass* root,QWidget *parent ):
+        WidgetSelectModModel::WidgetSelectModModel(ModClassTree* modClassTree,QWidget *parent ):
 QDialog(parent),
 ui(new Ui::WidgetSelectModModelClass)
 {
 	ui->setupUi(this);
+    _modClassTree = modClassTree;
 
-	modReader = _modReader;
-	modClassTree = new ModClassTree(modReader,root,this);
 	ui->treeView->setModel(modClassTree);
 	connect(ui->treeView, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModClass(QModelIndex)));
 	connect(ui->pushValidate,SIGNAL(clicked()),this,SLOT(accept()));
@@ -62,8 +61,8 @@ void WidgetSelectModModel::onSelectedModClass(QModelIndex index)
 {
 	if(index.isValid())
 	{
-		ModClass* _modClass = static_cast<ModClass*>(index.internalPointer());
-		setSelectedModModel(_modClass);
+        ModClass* modClass = static_cast<ModClass*>(index.internalPointer());
+        setSelectedModModel(modClass);
 	}
 	else
 		setSelectedModModel(NULL);
@@ -72,15 +71,17 @@ void WidgetSelectModModel::onSelectedModClass(QModelIndex index)
 WidgetSelectModModel::~WidgetSelectModModel()
 {
 	delete ui;
-	delete modClassTree;
 }
 
-void WidgetSelectModModel::setSelectedModModel(ModClass* _modClass)
+void WidgetSelectModModel::setSelectedModModel(ModClass* modClass)
 {
-		selectedModel = dynamic_cast<ModModel*>(_modClass);
+    selectedModel = dynamic_cast<ModModel*>(modClass);
 		
 		if(selectedModel)
+    {
 			ui->pushValidate->setEnabled(true);
+        ui->pushValidate->setFocus();
+    }
 		else
 			ui->pushValidate->setEnabled(false);
 }

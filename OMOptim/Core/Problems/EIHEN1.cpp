@@ -41,21 +41,29 @@
 #include "EIHEN1.h"
 
 
-        EIHEN1::EIHEN1(Project* project,ModReader* modReader,MOomc* moomc)
-            :EIProblem(project,modReader,moomc)
+EIHEN1::EIHEN1(Project* project,ModClassTree* modClassTree,MOomc* moomc)
+    :EIProblem(project,modClassTree,moomc)
 {
-    _inputVars = new MOOptVector(false,false);
+    _type = Problem::EIHEN1;
+    EIHEN1Parameters::setDefaultParameters(_parameters);
 }
 
 EIHEN1::EIHEN1(const EIHEN1 &problem)
     :EIProblem(problem)
 {
-    _inputVars = problem._inputVars->clone();
+     _type = Problem::EIHEN1;
+}
+
+Problem* EIHEN1::clone()
+{
+    Problem* problem = new EIHEN1(*this);
+    return problem;
 }
 
 EIHEN1::~EIHEN1(void)
 {
 }
+
 
 QDomElement EIHEN1::toXmlData(QDomDocument & doc)
 {
@@ -76,6 +84,10 @@ QDomElement EIHEN1::toXmlData(QDomDocument & doc)
     QDomElement cResultVars = _inputVars->toXmlData(doc,"ResultVars");
     cProblem.appendChild(cResultVars);
 
+    // Parameters
+    QDomElement cParameters = _parameters->toXmlData(doc,"Parameters");
+    cProblem.appendChild(cParameters);
+
     return cProblem;
 }
 
@@ -84,7 +96,18 @@ bool EIHEN1::checkBeforeComp(QString & error)
     return true;
 }
 
-void EIHEN1::launch(ProblemConfig config)
+QString EIHEN1::infos()
+{
+    QString infos;
+    infos += "EIHEN1 solves a Heat Exchanger Network problem. Algorithm is based on following article : \n";
+    infos += "Barbaro, A. & Bagajewicz, M. J. New rigorous one-step MILP formulation for heat exchanger network synthesis,";
+    infos += "Computers & Chemical Engineering, 2005, 29, 1945-1976. \n \n";
+
+    infos+= "- unchecked streams or groups are removed\n";
+    infos+= "- DTmin/2 are not considered : original temperatures are considered in problem, not corrected\n";
+}
+
+Result* EIHEN1::launch(ProblemConfig config)
 {
 
     // copy .mod file
@@ -111,17 +134,23 @@ void EIHEN1::launch(ProblemConfig config)
     // set within process groups facts to 1
     EIControler::resetProcessFacts(filledEI->rootElement());
 
-    MilpHEN1 *milpHEN1 = new MilpHEN1(filledEI,_connConstrs,inputVars(),tempDir,modFileInfo.absoluteFilePath(),dataFilePath);
-    _result = milpHEN1->launch();
+    // reset DTmin/2 to 0
+    EIControler::resetAllDTMin_2(filledEI->rootElement());
 
-    delete filledEI;
+    // remove unchecked eiitems
+    filledEI->removeUnchecked();
+
+    //replace eiTree wiyh filledEI
+    setEITree(filledEI);
+
+    MilpHEN1 *milpHEN1 = new MilpHEN1(filledEI,_parameters,_connConstrs,inputVars(),tempDir,modFileInfo.absoluteFilePath(),dataFilePath);
+    EIHEN1Result* result = milpHEN1->launch();
+    result->setProblem(this->clone());
+
+
     emit finished(this);
 
 
-    emit finished(this);
+   return result;
 }
 
-void EIHEN1::setIncludeUtilities(bool includeUtilities)
-{
-    _includeUtilities= includeUtilities;
-}

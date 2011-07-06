@@ -102,16 +102,26 @@ namespace MOThreads
 //	}
 
 
-	LaunchProblem::LaunchProblem(Problem* _problem,ProblemConfig _config)
+    LaunchProblem::LaunchProblem(Problem* problem,ProblemConfig config)
 	{
-		problem = _problem;
-		config = _config;
+        _problem = problem;
+        _config = config;
+        _result = NULL;
 	}
 
 	void LaunchProblem::run()
 	{
-		problem->launch(config);
+        QString msg = "Launching problem : name = "+_problem->name()+" ; type = "+_problem->getClassName();
+        infoSender.send(Info(msg));
+        _result = _problem->launch(_config);
+        emit finished(_result);
 	}
+
+    Result* LaunchProblem::result()
+    {
+        return _result;
+    }
+
 	void LaunchProblem::publicExec()
 	{
 		exec();

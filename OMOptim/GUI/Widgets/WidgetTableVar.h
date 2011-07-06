@@ -56,8 +56,8 @@ class WidgetTableVar : public QWidget
 
 
 public:
-    WidgetTableVar(MOVector<Variable> *,QWidget *parent = 0,bool addFilter=true);
-    WidgetTableVar(MOOptVector *,QWidget *parent = 0,bool addFilter=true);
+    WidgetTableVar(MOVector<Variable> *,QWidget *parent,bool addFilter=true);
+    WidgetTableVar(MOOptVector *,QWidget *parent,bool addFilter=true);
 
   
 public:

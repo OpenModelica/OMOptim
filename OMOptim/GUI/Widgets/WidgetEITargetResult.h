@@ -61,7 +61,7 @@ class WidgetEITargetResult : public QWidget
 
     Q_OBJECT
 public:
-    WidgetEITargetResult(EITargetResult* result,QWidget *parent = 0);
+    WidgetEITargetResult(EITargetResult* result,QWidget *parent);
     virtual ~WidgetEITargetResult();
 
 

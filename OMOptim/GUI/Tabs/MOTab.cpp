@@ -48,6 +48,7 @@ MOTabSimple::MOTabSimple(QString _projectName,MOItem* _mainItem,QWidget* _parent
 
 MOTabSimple::~MOTabSimple(void)
 {
+
 }
 
 

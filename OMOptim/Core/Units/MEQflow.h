@@ -63,6 +63,7 @@ public:
 
         MEQflow operator-(const MEQflow& b) const;
         MEQflow operator+(const MEQflow& b) const;
+        MEQflow& operator+=(const MEQflow& b);
         MEQflow operator*(const double& fact) const;
         bool operator==(const MEQflow& b) const;
 };

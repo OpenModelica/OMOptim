@@ -64,8 +64,8 @@ class WidgetMOItem : public QWidget {
 
 
 public:
-    WidgetMOItem(MOItem *_item,bool _forceEditable=false,QWidget *parent = 0);
-    ~WidgetMOItem();
+    WidgetMOItem(MOItem *_item,QWidget *parent,bool _forceEditable=false);
+    virtual ~WidgetMOItem();
 
 
     Ui::WidgetMOItemClass *ui;

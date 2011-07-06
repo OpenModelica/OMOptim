@@ -117,24 +117,24 @@ bool Load::loadProject(QString filePath,Project* _project)
 
 	// Problems to load
 	QStringList problemsPaths;
-	QDomElement domProblems = root.firstChildElement("Problems");
-	QDomNodeList listProblems = domProblems.elementsByTagName("Problem");
-	for(int i=0;i<listProblems.size();i++)
+    QDomElement domOMCases = root.firstChildElement("Problems");
+    QDomNodeList listOMCases = domOMCases.elementsByTagName("Problem");
+    for(int i=0;i<listOMCases.size();i++)
 	{
-		tmpPath = listProblems.at(i).toElement().attribute("path", "" );
+        tmpPath = listOMCases.at(i).toElement().attribute("path", "" );
 		QFileInfo problemFileInfo(projectDir,tmpPath);
 		problemsPaths.push_back(problemFileInfo.canonicalFilePath());
 	}
 
-	// Solved Problems to load
-	QStringList solvedProblemsPaths;
-	QDomElement domSolvedProblems = root.firstChildElement("SolvedProblems");
-	QDomNodeList listSolvedProblems = domSolvedProblems.elementsByTagName("SolvedProblem");
-	for(int i=0;i<listSolvedProblems.size();i++)
+    // Results to load
+    QStringList resultsPaths;
+    QDomElement domResults = root.firstChildElement("Results");
+    QDomNodeList listResults = domResults.elementsByTagName("Result");
+    for(int i=0;i<listResults.size();i++)
 	{
-		tmpPath = listSolvedProblems.at(i).toElement().attribute("path", "" );
+        tmpPath = listResults.at(i).toElement().attribute("path", "" );
 		QFileInfo solvedFileInfo(projectDir,tmpPath);
-		solvedProblemsPaths.push_back(solvedFileInfo.canonicalFilePath());
+        resultsPaths.push_back(solvedFileInfo.canonicalFilePath());
 	}
 			
 
@@ -165,16 +165,16 @@ bool Load::loadProject(QString filePath,Project* _project)
 	}
 
 	//**************************************
-	// Reading Problems
+    // Reading problems
 	//**************************************
 	for(int i=0;i<problemsPaths.size();i++)
 		_project->addProblem(problemsPaths.at(i));
 
 	//**************************************
-	// Reading Solved Problems
+    // Reading results
 	//**************************************
-	for(int i=0;i<solvedProblemsPaths.size();i++)
-		_project->addSolvedProblem(solvedProblemsPaths.at(i));
+    for(int i=0;i<resultsPaths.size();i++)
+        _project->addResult(resultsPaths.at(i));
 
 	_project->setIsDefined(true);
 
@@ -369,12 +369,11 @@ bool Load::loadProject(QString filePath,Project* _project)
 ////	return result;
 ////}
 
-Problem* Load::newSolvedProblemFromFile(QString filePath,Project* _project)
+Result* Load::newResult(QString filePath,Project* project)
 {
-	Problem* newProblem = NULL;
 	QString error;
 
-	QDomDocument doc( "MOSolvedProblem" );
+    QDomDocument doc( "OMCase" );
 	QFile file(filePath);
 	if( !file.open( QIODevice::ReadOnly ) )
 	{
@@ -389,35 +388,61 @@ Problem* Load::newSolvedProblemFromFile(QString filePath,Project* _project)
 	}
 	file.close();
 
-	QDomElement root = doc.documentElement();
-	QString problemType = root.tagName();
+    QDomElement domCase = doc.firstChildElement("OMCase");
+    // create problem
+    QDomElement domProblem = domCase.firstChildElement("OMProblem");
+    Problem* problem = newProblem(domProblem,project);
+
+    // create result
+    QDomElement domResult = domCase.firstChildElement("OMResult");
+    Result* result = newResult(domResult,project,problem,filePath);
+
+    // attribute problem to result
+    if(result)
+        result->setProblem(problem);
+
+    // attribute file path to result
+    result->setEntireSavePath(filePath);
 
 
-	if (problemType=="OneSimulation")
-		newProblem = newOneSimulationSolvedFromFile(filePath,_project);
-	if (problemType=="Optimization")
-		newProblem = newOptimizationSolvedFromFile(filePath,_project);
-
-#ifdef USEEI
-    if (problemType=="EITarget")
-        newProblem = new EITarget(_project,_project->modReader(),_project->moomc(),root);
-#endif
-
-	if(newProblem != NULL)
-	{
-		newProblem->setProject(_project);
-        newProblem->setEntireSavePath(filePath);
-	}
-
-	return newProblem;
+    return result;
 }
 
-Problem* Load::newProblemFromFile(QString filePath,Project* _project)
+Result* Load::newResult(QDomElement domResult,Project* project,Problem* problem,QString filePath)
 {
-	Problem* newProblem = NULL;
+
+    if(domResult.isNull())
+        return NULL;
+
+    Q_ASSERT(domResult.tagName()=="OMResult");
+
+    Result* result = NULL;
+
+    QDomElement resultRoot = domResult.firstChild().toElement();
+    QString resultType = resultRoot.tagName();
+
+    QFileInfo fileInfo(filePath);
+
+    // read result
+    if (resultType==OneSimResult::className())
+        result = newOneSimulationResult(resultRoot,project,problem);
+    if (resultType==OptimResult::className())
+        result = newOptimizationResult(resultRoot,project,problem,fileInfo.absoluteDir());
+
+#ifdef USEEI
+    if (resultType==EITargetResult::className())
+        result = new EITargetResult(project,project->modClassTree(),resultRoot,problem);
+#endif
+
+
+    return result;
+}
+
+Problem* Load::newProblem(QString filePath,Project* project)
+{
 	QString error;
 
-	QDomDocument doc( "MOProblem" );
+    QDomDocument doc( "OMCase" );
 	QFile file(filePath);
 	if( !file.open( QIODevice::ReadOnly ) )
 	{
@@ -432,72 +457,73 @@ Problem* Load::newProblemFromFile(QString filePath,Project* _project)
 	}
 	file.close();
 
-	QDomElement root = doc.documentElement();
-	QString problemType = root.tagName();
+    // create problem
+    QDomElement domCase = doc.firstChildElement("OMCase");
+    QDomElement domProblem = domCase.firstChildElement("OMProblem");
+    Problem* problem = newProblem(domProblem,project);
 
-	if (problemType=="OneSimulation")
-		newProblem = newOneSimulationFromFile(filePath,_project);
+    // attribute filepath and project to problem
+    if(problem)
+    {
+        problem->setProject(project);
+        problem->setEntireSavePath(filePath);
+    }
 
-	if (problemType=="Optimization")
-		newProblem = newOptimizationFromFile(filePath,_project);
+    return problem;
+	}
+
+Problem* Load::newProblem(QDomElement domProblem,Project* project)
+{
+
+    if(domProblem.isNull())
+        return NULL;
+
+    Q_ASSERT(domProblem.tagName()=="OMProblem");
+
+    Problem* problem = NULL;
+
+    QDomElement problemRoot = domProblem.firstChildElement();
+    QString problemType = problemRoot.tagName();
+
+    if (problemType==OneSimulation::className())
+        problem = newOneSimulation(problemRoot,project);
+
+    if (problemType==Optimization::className())
+        problem = newOptimization(problemRoot,project);
 
 #ifdef USEEI
-    if (problemType=="EITarget")
-    {
-        newProblem = new EITarget(_project,_project->modReader(),_project->moomc(),root);
+    if (problemType==EITarget::className())
+{
+        problem = new EITarget(project,project->modClassTree(),project->moomc(),problemRoot);
     }
 #endif
 
-	if(newProblem != NULL)
-	{
-		newProblem->setProject(_project);
-		newProblem->setEntireSavePath(filePath);
+    return problem;
 	}
 
 
-	return newProblem;
-}
 
-
-
-
-
-
-
-Problem* Load::newOneSimulationFromFile(QString filePath,Project* _project)
-{
-
-	//Open file
-	QDomDocument doc( "MOProblem" );
-	QFile file(filePath);
-	if( !file.open( QIODevice::ReadOnly ) )
+Problem* Load::newOneSimulation(QDomElement domProblem,Project* project)
 	{
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+    if(domProblem.isNull())
 		return NULL;
-	}
-	if( !doc.setContent( &file ) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-		return NULL;
-	}
-	file.close();
 
-	// Read model
-	QDomElement domProblem = doc.firstChildElement("OneSimulation");
+    Q_ASSERT(domProblem.tagName()==OneSimulation::className());
+
+
 	QDomElement domInfos = domProblem.firstChildElement("Infos");
 	QString modelName = domInfos.attribute("model");
 
 	// Find model
-	ModModel* _modModel = _project->findModModel(modelName);
-	if(_modModel == NULL)
+    ModModel* modModel = project->findModModel(modelName);
+    if(modModel == NULL)
 	{
 		return NULL;
 	}
 
-	ModModelPlus* _modModelPlus = _project->modModelPlus(_modModel);
-	OneSimulation* problem= new OneSimulation(_project,_project->rootModClass(),
-		_project->modReader(),_project->modPlusCtrl(),_modModelPlus);
+    ModModelPlus* modModelPlus = project->modModelPlus(modModel);
+    OneSimulation* problem= new OneSimulation(project,project->modClassTree(),
+                                              project->modPlusCtrl(),modModelPlus);
 
 	// Infos
 	problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
@@ -524,70 +550,16 @@ Problem* Load::newOneSimulationFromFile(QString filePath,Project* _project)
 	return problem;
 }
 
-Problem* Load::newOneSimulationSolvedFromFile(QString filePath,Project* _project)
+Result* Load::newOneSimulationResult(QDomElement domResult,Project* project,OneSimulation *problem)
 {
-
-	//Open file
-	QDomDocument doc( "MOSolvedProblem" );
-	QFileInfo fileInfo(filePath);
-	QFile file(filePath);
-	if( !file.open( QIODevice::ReadOnly ) )
-	{
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+    if(domResult.isNull())
 		return NULL;
-	}
-	if( !doc.setContent( &file ) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-		return NULL;
-	}
-	file.close();
 
-	// Read model
-	QDomElement domProblem = doc.firstChildElement("OneSimulation");
-	QDomElement domInfos = domProblem.firstChildElement("Infos");
-	QString modelName = domInfos.attribute("model");
+    OneSimResult* result = new OneSimResult(project,problem->modModelPlus(),problem,project->modClassTree(),problem->modPlusCtrl());
 
-	// Find model
-	ModModel* _modModel = _project->findModModel(modelName);
-	if(_modModel == NULL)
-	{
-		return NULL;
-	}
-
-	ModModelPlus* _modModelPlus = _project->modModelPlus(_modModel);
-	OneSimulation* problem= new OneSimulation(_project,_project->rootModClass(),
-	_project->modReader(),_project->modPlusCtrl(),_modModelPlus);
-
-	OneSimResult *result = new OneSimResult(_project,_modModelPlus,problem,_project->modReader(),_project->modPlusCtrl());
-	problem->setResult(result);
-
-	problem->setEntireSavePath(filePath);
+    Q_ASSERT(domResult.tagName()==OneSimResult::className());
 
 	// Infos
-	problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
-	problem->setName(domInfos.attribute("name", "" ));
-
-	// Overwrited Variables
-	QDomElement domOverVars = domProblem.firstChildElement("OverwritedVariables");
-	problem->overwritedVariables()->setItems(domOverVars);
-
-	// Scanned Variables
-	QDomElement domScanVars = domProblem.firstChildElement("ScannedVariables");
-	problem->scannedVariables()->setItems(domScanVars);
-
-    // Files to copy
-    QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
-    QString text = cFilesToCopy.text();
-    problem->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
-
-	//**********
-	// Result
-	//**********
-	QDomElement domResult = domProblem.firstChildElement("Result");
-
-	//Infos
 	QDomElement domResInfos = domResult.firstChildElement("Infos");
 	result->setName(domResInfos.attribute("name", "" ));
 
@@ -596,34 +568,21 @@ Problem* Load::newOneSimulationSolvedFromFile(QString filePath,Project* _project
 	result->finalVariables()->setItems(domFinalVars);
 
 
-	return problem;
+    return result;
 }
 
 
 
 
 
-Problem* Load::newOptimizationFromFile(QString filePath,Project* project)
+Problem* Load::newOptimization(QDomElement domProblem,Project* project)
 {
-	//Open file
-	QDomDocument doc( "MOProblem" );
-	QFileInfo fileInfo(filePath);
-	QFile file(filePath);
-	if( !file.open( QIODevice::ReadOnly ) )
-	{
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+    if(domProblem.isNull())
 		return NULL;
-	}
-	if( !doc.setContent( &file ) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-		return NULL;
-	}
-	file.close();
 
-	// Read model
-	QDomElement domProblem = doc.firstChildElement("Optimization");
+    Q_ASSERT(domProblem.tagName()==Optimization::className());
+
+
 	QDomElement domInfos = domProblem.firstChildElement("Infos");
 	QString modelName = domInfos.attribute("model");
 	QString problemName = domInfos.attribute("name");
@@ -638,12 +597,8 @@ Problem* Load::newOptimizationFromFile(QString filePath,Project* project)
 
 	// Create problem
 	ModModelPlus* _modModelPlus = project->modModelPlus(_modModel);
-	Optimization* problem= new Optimization(project,project->rootModClass(),
-		project->modReader(),project->modPlusCtrl(),_modModelPlus);
-
-	problem->setEntireSavePath(filePath);
-
-
+    Optimization* problem= new Optimization(project,project->modClassTree(),
+                                            project->modPlusCtrl(),_modModelPlus);
 	// Infos
 	problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
 	problem->setName(problemName);
@@ -668,7 +623,7 @@ Problem* Load::newOptimizationFromFile(QString filePath,Project* project)
 
 	// BlockSubstitutions
 	QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
-	problem->setBlockSubstitutions(new BlockSubstitutions(project,_modModelPlus,domBlockSubs,project->rootModClass(),project->modReader()));
+    problem->setBlockSubstitutions(new BlockSubstitutions(project,_modModelPlus,domBlockSubs,project->modClassTree()));
 
 	// EA
 	QDomElement domEA = domProblem.firstChildElement("EA");
@@ -680,7 +635,7 @@ Problem* Load::newOptimizationFromFile(QString filePath,Project* project)
 	QDomElement domEAParameters = domEA.firstChildElement("Parameters");
 	if(!domEAParameters.isNull())
 	{
-		problem->getCurAlgo()->_config->parameters->update(domEAParameters);
+        problem->getCurAlgo()->_parameters->update(domEAParameters);
 	}
 
 	return problem;
@@ -690,113 +645,36 @@ Problem* Load::newOptimizationFromFile(QString filePath,Project* project)
 
 
 
-Problem* Load::newOptimizationSolvedFromFile(QString filePath,Project* project)
+Result* Load::newOptimizationResult(QDomElement domResult,Project* project,Optimization* optimization,QDir resultDir)
 {
 	
-
-	//Open file
-	QDomDocument doc( "MOSolvedProblem" );
-	QFileInfo fileInfo(filePath);
-	QFile file(filePath);
-	if( !file.open( QIODevice::ReadOnly ) )
-	{
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+    if(domResult.isNull())
 		return NULL;
-	}
-	if( !doc.setContent( &file ) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+
+    if(optimization==NULL)
 		return NULL;
-	}
-	file.close();
 
+    Q_ASSERT(domResult.tagName()==OptimResult::className());
 
-	// Read model
-	QDomElement domProblem = doc.firstChildElement("Optimization");
-	QDomElement domInfos = domProblem.firstChildElement("Infos");
-	QString modelName = domInfos.attribute("model");
-	QString problemName = domInfos.attribute("name");
-
-	// Find model
-	ModModel* _modModel = project->findModModel(modelName);
-	if(_modModel == NULL)
-	{
-		infoSender.send( Info(ListInfo::PROBLEMMODELNOTFOUND,modelName,problemName));
-		return NULL;
-	}
-
-	// Create problem
-	ModModelPlus* _modModelPlus = project->modModelPlus(_modModel);
-	Optimization* problem= new Optimization(project,project->rootModClass(),
-		project->modReader(),project->modPlusCtrl(),_modModelPlus);
-
-	OptimResult* result = new OptimResult(project,_modModelPlus,problem,project->modReader(),project->modPlusCtrl());
-	problem->setResult(result);
+    OptimResult* result = new OptimResult(project,optimization->modModelPlus(),optimization,project->modClassTree(),optimization->modPlusCtrl(),optimization->getCurAlgo());
 	result->setSuccess(true);
-	problem->setEntireSavePath(filePath);
-
-
-	// Infos
-	problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
-	problem->setName(problemName);
-
-	// Optimized Variables
-	QDomElement domOptVars = domProblem.firstChildElement("OptimizedVariables");
-	problem->optimizedVariables()->setItems(domOptVars);
-
-	// Objectives
-	QDomElement domObj = domProblem.firstChildElement("Objectives");
-	problem->objectives()->setItems(domObj);
-
-	// Scanned Variables
-	QDomElement domScann = domProblem.firstChildElement("ScannedVariables");
-	problem->scannedVariables()->setItems(domScann);
-
-    // Files to copy
-    QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
-    QString text = cFilesToCopy.text();
-    problem->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
-
-	// BlockSubstitutions
-	QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
-	problem->setBlockSubstitutions(new BlockSubstitutions(project,_modModelPlus,domBlockSubs,project->rootModClass(),project->modReader()));
-
-	// EA
-	QDomElement domEA = domProblem.firstChildElement("EA");
-	QDomElement domEAInfos = domEA.firstChildElement("Infos");
-	if(!domEAInfos.isNull())
-	{
-		problem->setiCurAlgo(domEAInfos.attribute("num", "" ).toInt());		
-	}
-	QDomElement domEAParameters = domEA.firstChildElement("Parameters");
-	if(!domEAParameters.isNull())
-	{
-		problem->getCurAlgo()->_config->parameters->update(domEAParameters);
-	}
-
-
 
 	//**********
 	// Result
 	//**********
 	// OptVarResult from optVar, OptObjResult from OptObj...
 	result->optVariablesResults()->clear();
-	for(int i=0;i<problem->optimizedVariables()->items.size();i++)
+    for(int i=0;i<optimization->optimizedVariables()->items.size();i++)
 	{
-		result->optVariablesResults()->addItem(new VariableResult(*problem->optimizedVariables()->items.at(i)));
+        result->optVariablesResults()->addItem(new VariableResult(*optimization->optimizedVariables()->items.at(i)));
 	}
 
 	result->optObjectivesResults()->clear();
-	for(int i=0;i<problem->objectives()->items.size();i++)
+    for(int i=0;i<optimization->objectives()->items.size();i++)
 	{
-		result->optObjectivesResults()->addItem(new VariableResult(*problem->objectives()->items.at(i)));
+        result->optObjectivesResults()->addItem(new VariableResult(*optimization->objectives()->items.at(i)));
 	}
 	
-	
-	QDomElement domResult = domProblem.firstChildElement("Result");
-	if(!domResult.isNull())
-	{
 		//Infos
 		QDomElement domResInfos = domResult.firstChildElement("Infos");
 		result->setName(domResInfos.attribute("name", "" ));
@@ -814,34 +692,32 @@ Problem* Load::newOptimizationSolvedFromFile(QString filePath,Project* project)
 				number.remove(QRegExp("[\\D]*"));
 				domBlock.setTagName("BlockSubstitutions");
 
-				result->_subBlocks.push_back(new BlockSubstitutions(project,_modModelPlus,domBlock,project->rootModClass(),project->modReader()));
+            result->_subBlocks.push_back(new BlockSubstitutions(project,result->modModelPlus(),domBlock,project->modClassTree()));
 			}
 			domBlock = domBlock.nextSiblingElement();
 		}
 
 		// Filling and Sizing recomputed variables (without values)
-		if(_modModelPlus->variables()->items.isEmpty())
-			_modModelPlus->readVariables();
+    if(result->modModelPlus()->variables()->items.isEmpty())
+        result->modModelPlus()->readVariables();
 
-		for (int i=0;i<	_modModelPlus->variables()->items.size();i++)
+    for (int i=0;i<result->modModelPlus()->variables()->items.size();i++)
 		{
-			result->recomputedVariables()->addItem(new VariableResult(*_modModelPlus->variables()->items.at(i)));
+        result->recomputedVariables()->addItem(new VariableResult(*result->modModelPlus()->variables()->items.at(i)));
 		}
 
 		// Filling final values from frontFile (csv)
-		QDir dir = fileInfo.absoluteDir();
-		QFileInfo frontFileInfo(dir,result->_optVarsFrontFileName);
+
+
+    QFileInfo frontFileInfo(resultDir,result->_optVarsFrontFileName);
 		if(frontFileInfo.exists())
 			loadOptimValuesFromFrontFile(result,frontFileInfo.absoluteFilePath());
 
 		// Filling recomputed values from folder point_ (csv)
                 result->updateRecomputedPointsFromFolder();
 
+    return result;
 	}
-        return problem;
-}
-
-
 
 
 
@@ -972,8 +848,8 @@ bool Load::loadModModelPlus(Project* project,QString mmoFilePath)
 		return false;
 	else
 	{
-		ModModelPlus* newModelPlus = new ModModelPlus(project->moomc(),project,project->modReader(),
-			_modModel,project->rootModClass());
+        ModModelPlus* newModelPlus = new ModModelPlus(project->moomc(),project,project->modClassTree(),
+                                                      _modModel);
 		// Other files
 		QDomElement domOtherFiles = root.firstChildElement("OtherFiles");
 		QString allOtherFiles = domOtherFiles.attribute( "list", "" );

@@ -69,16 +69,14 @@ EIMERResult::EIMERResult(const EIMERResult &result)
 	yDataCold = result.yDataCold;
 }
 
-EIMERResult::EIMERResult(Project* project, EITarget* problem,EIReader*)
+EIMERResult::EIMERResult(Project* project, EIProblem * clonedProblem)
 {
 	curveHot = new MOCCCurve(MOCCCurve::CCHOT);
 	curveCold = new MOCCCurve(MOCCCurve::CCCOLD);
 	curveGcc = new MOCCCurve(MOCCCurve::GCC);
 
 	_project = project;
-	_problem = (Problem*)problem;
-
-
+        _problem = clonedProblem;
 }
 
 EIMERResult::~EIMERResult(void)
@@ -88,7 +86,6 @@ EIMERResult::~EIMERResult(void)
     delete curveHot;
     delete curveCold;
     delete curveGcc;
-
 }
 
 

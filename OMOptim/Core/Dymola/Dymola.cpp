@@ -55,9 +55,8 @@ void Dymola::verifyInstallation()
 }
 
 
-bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder)
+bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder,QString logFilePath)
 {
-#ifdef WIN32
     // Create Dymola script
     QString filePath = storeFolder+QDir::separator()+"MOFirstRun.mos";
     QFile file(filePath);
@@ -69,10 +68,12 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
 
     QString scriptText;
 
+
     scriptText.append("openModel(\""+moPath+"\")\n");
     scriptText.append("cd "+storeFolder+"\n");
     scriptText.append("experimentSetupOutput(textual=true)\n");
     scriptText.append("checkModel(\""+modelToConsider+"\",simulate=true)\n");
+    scriptText.append("savelog(\""+logFilePath+"\")\n");
     scriptText.append("exit\n");
 
     QTextStream ts( &file );
@@ -117,12 +118,10 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
 
         return success;
     }
-#endif
 }
 
 bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
 {
-#ifdef WIN32
     // Create Dymola script
     QString filePath = folder+QDir::separator()+"MOFirstRun.mos";
     QFile file(filePath);
@@ -172,7 +171,6 @@ bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
     //look if it succeed
     bool success = dsinFile.exists();
     return success;
-#endif
 }
 
 
@@ -206,7 +204,7 @@ QString Dymola::getExecutablePath()
 }
 
 
-void Dymola::start(QString path)
+void Dymola::start(QString path,int maxNSec)
 {
 #ifdef WIN32
     bool cdOk = SetCurrentDirectory(path.utf16());
@@ -216,12 +214,20 @@ void Dymola::start(QString path)
 
     QProcess simProcess;
     simProcess.start(appPath, QStringList());
-    bool ok = simProcess.waitForFinished(-1);
+
+    int nmsec;
+    if(maxNSec==-1)
+        nmsec = -1;
+    else
+        nmsec = maxNSec*1000;
+
+    bool ok = simProcess.waitForFinished(nmsec);
     if(!ok)
     {
                     QString msg("CreateProcess failed (%d).\n");
                     msg.sprintf(msg.toLatin1().data(),GetLastError());
                     infoSender.debug(msg);
+        simProcess.close();
                     return;
     }
 
@@ -231,7 +237,7 @@ void Dymola::start(QString path)
 #endif
 }
 
-void Dymola::modifyPreamble(QString &allDsinText,MOVector<ModModelParameter> *parameters)
+void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
 {
 	QString newLine;
 
@@ -244,15 +250,46 @@ void Dymola::modifyPreamble(QString &allDsinText,MOVector<ModModelParameter> *pa
     }
 
 
-	int iPStopTime = parameters->findItem((int)Dymola::STOPTIME,ModModelParameter::INDEX);
+    int iPStopTime = parameters->findItem((int)Dymola::STOPTIME,MOParameter::INDEX);
 	int iLStopTime = lines.indexOf(QRegExp(".* # StopTime .*"));
     if((iLStopTime>-1) && (iPStopTime>-1))
     {
 		newLine =  "       "
-			+parameters->items.at(iPStopTime)->getFieldValue(ModModelParameter::VALUE).toString()
+                   +parameters->items.at(iPStopTime)->getFieldValue(MOParameter::VALUE).toString()
 			+"                   # StopTime     Time at which integration stops";
         lines.replace(iLStopTime,newLine);
     }
+
+    int iPTolerance = parameters->findItem((int)Dymola::TOLERANCE,MOParameter::INDEX);
+    int iLTolerance = lines.indexOf(QRegExp(".*  # Tolerance .*"));
+    if((iLTolerance>-1) && (iPTolerance>-1))
+    {
+        newLine =  "       "
+                   +parameters->items.at(iPTolerance)->getFieldValue(MOParameter::VALUE).toString()
+                   +"                   # nInterval    Relative precision of signals for \n                            #              simulation, linearization and trimming";
+        lines.replace(iLTolerance,newLine);
+    }
+
+    int iPnInterval = parameters->findItem((int)Dymola::NINTERVAL,MOParameter::INDEX);
+    int iLnInterval = lines.indexOf(QRegExp(".*  # nInterval .*"));
+    if((iLnInterval>-1) && (iPnInterval>-1))
+    {
+        newLine =  "       "
+                   +parameters->items.at(iPnInterval)->getFieldValue(MOParameter::VALUE).toString()
+                   +"                   # nInterval    Number of communication intervals, if > 0";
+        lines.replace(iLnInterval,newLine);
+    }
+
+    int iPSolver = parameters->findItem((int)Dymola::SOLVER,MOParameter::INDEX);
+    int iLSolver = lines.indexOf(QRegExp(".*  # Algorithm .*"));
+    if((iLSolver>-1) && (iPSolver>-1))
+    {
+        newLine =  "       "
+                   +parameters->items.at(iPSolver)->getFieldValue(MOParameter::VALUE).toString()
+                   +"                   # Algorithm    Integration algorithm as integer";
+        lines.replace(iLSolver,newLine);
+    }
+
 	allDsinText = lines.join("\n");
 }
 
@@ -543,7 +580,7 @@ void Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
 }
 
 
-void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Variable> *variables,MOVector<ModModelParameter> *parameters)
+void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Variable> *variables,MOParameters *parameters)
 {
 
     //Reading Preamble
@@ -557,7 +594,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         file.close();
        
 		// change preamble
-        modifyPreamble(allText,parameters);
+        writeParameters(allText,parameters);
 
         // change variable values
         QRegExp rxLine;
@@ -570,8 +607,11 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         QString smallText;
         QStringList capLines;
         int index2;
+        int prec=MOSettings::getValue("Dymola/MaxDigitsDsin").toInt(); //number of decimals
+        QString value;
         for(int iV=0;iV<variables->items.size();iV++)
         {
+
             curVar = variables->items.at(iV);
             varName = curVar->name(Modelica::FULL);
             varName = varName.remove(modelName+".");
@@ -590,13 +630,14 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
             index = rxLine.indexIn(smallText);
             if(index>-1)
             {
+                char format = 'E';
+
+                value = QString::number(curVar->getFieldValue(Variable::VALUE).toDouble(),format,prec);
                 fields = rxLine.capturedTexts();
-                capLines = rxLine.cap(0).split("\n");
-                newLine1 = fields.at(1)+"\t"+curVar->getFieldValue(Variable::VALUE).toString() +"\t";
+                capLines = rxLine.cap(0).split("\n",QString::SkipEmptyParts);
+                newLine1 = fields.at(1)+"\t"+ value +"\t";
                 newLine1 += fields.at(3)+"\t"+fields.at(4);
                 newLine2 = fields.at(5)+"\t"+fields.at(6)+"\t"+" # "+fields.at(7);
-                int test1 = allText.indexOf(capLines.at(0));
-                int test2 = allText.indexOf(capLines.at(1));
                 if(capLines.size()>1)
                 {
                     allText = allText.replace(capLines.at(0)+"\n"+capLines.at(1),newLine1+"\n"+newLine2);

@@ -51,7 +51,7 @@ ModPlusDymolaCtrl::ModPlusDymolaCtrl(ModModelPlus* model,MOomc* moomc,QString mm
 	_copyAllMoOfFolder = true;
 	_outputReadMode = DSFINAL;
 
-	_parameters = new MOVector<ModModelParameter>();
+    _parameters = new MOParameters();
 	setDefaultParameters();
 }
 
@@ -66,7 +66,17 @@ ModPlusCtrl::Type ModPlusDymolaCtrl::type()
 
 void ModPlusDymolaCtrl::setDefaultParameters()
 {
-	_parameters->addItem(new ModModelParameter((int)Dymola::STOPTIME,"stop time","Stop time",1,"double",0,1E100));
+    _parameters->addItem(new MOParameter((int)Dymola::STOPTIME,"stop time","Stop time",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+    _parameters->addItem(new MOParameter((int)Dymola::TOLERANCE,"tolerance","Tolerance",1E-4,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+    _parameters->addItem(new MOParameter((int)Dymola::NINTERVAL,"nInterval","nInterval",500,MOParameter::INT,0,std::numeric_limits<int>::max()));
+
+
+    QMap<int,QString> mapSolvers;
+    mapSolvers.insert(Dymola::DASSL,"Dassl");
+    mapSolvers.insert(Dymola::EULER,"Euler");
+
+    _parameters->addItem( new MOParameterListed((int)Dymola::SOLVER,"Solver","Solver",Dymola::DASSL,mapSolvers));
+    _parameters->addItem(new MOParameter((int)Dymola::MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
 }
 
 bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString folder)
@@ -103,8 +113,6 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariab
 {
 	finalVariables->clear();
 	
-
-
 	if(dsresFile.isEmpty())
 	{
 		dsresFile = _mmoFolder+QDir::separator()+_dsresFile;
@@ -155,8 +163,10 @@ bool ModPlusDymolaCtrl::compile()
 
         infoSender.send(Info("Compiling model "+_modModelName,ListInfo::NORMAL2));
 
+    QString logFilePath = _mmoFolder+QDir::separator()+"log.html";
+
 	// compile
-	bool success = Dymola::firstRun(_moFilePath,_modModelName,_mmoFolder);
+    bool success = Dymola::firstRun(_moFilePath,_modModelName,_mmoFolder,logFilePath);
 
 	// Inform
 	ListInfo::InfoNum iMsg;
@@ -165,10 +175,11 @@ bool ModPlusDymolaCtrl::compile()
 	else
 		iMsg = ListInfo::MODELCOMPILATIONFAIL;
 
-	infoSender.send(Info(iMsg,_modModelName,_moFilePath));
+    infoSender.send(Info(iMsg,_modModelName,logFilePath));
 
 	return success;
 }
+
 
 
 bool ModPlusDymolaCtrl::isCompiled()
@@ -187,10 +198,12 @@ bool ModPlusDymolaCtrl::isCompiled()
 }
 
 
+
+
 bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy)
 {
 	// eventually compile model
-	if(!isCompiled())
+    if(!this->isCompiled())
 	{
 		bool compileOk = compile();
 		if(!compileOk)
@@ -239,14 +252,27 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
         infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));
 
 	// Launching Dymosim
-	Dymola::start(tempFolder);
+    int maxNSec=-1;
+    int iParam = _parameters->findItem((int)Dymola::MAXSIMTIME,MOParameter::INDEX);
+    if(iParam>-1)
+        maxNSec=_parameters->items.at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
+    Dymola::start(tempFolder,maxNSec);
+
+    QString logFile = tempDir.absoluteFilePath("dslog.txt");
 
 		//getting results
 	//Checking if successed
 	bool success=QFile::exists(tempDir.absoluteFilePath("success"));
 	
 	if(!success)
+    {
+        infoSender.send(Info(ListInfo::ONESIMULATIONFAILED,logFile));
 		return false;
+    }
+    else
+    {
+        infoSender.send(Info(ListInfo::ONESIMULATIONSUCCESS,logFile));
+    }
 
 	bool readOk = readOutputVariables(outputVars,tempFolder);
 	return readOk;

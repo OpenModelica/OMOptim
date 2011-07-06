@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -59,7 +59,7 @@
 #include <windows.h>
 #endif
 #include <iostream>
-#include "ModModelParameter.h"
+#include "MOParameter.h"
 #include <QtCore/QProcess>
 
 class OpenModelica
@@ -82,13 +82,13 @@ public:
 	static void getInputVariablesFromFile(MOomc *_omc,QTextStream *, MOVector<Variable> *,QString _modelName);
 	static bool getFinalVariablesFromFile(QString, MOVector<Variable> *,QString _modelName);
 	static bool getFinalVariablesFromFile(QTextStream *, MOVector<Variable> *,QString _modelName);
-	static void setInputVariables(QString, MOVector<Variable> *,QString _modModelName,MOVector<ModModelParameter> *parameters=NULL);
-	static void start(QString exeFile);
+	static void setInputVariables(QString, MOVector<Variable> *,QString _modModelName,MOParameters *parameters=NULL);
+        static void start(QString exeFile,int maxnsec);
 	static QString sciNumRx();
         static QString home();
 
 	// Parameters
-	enum OMParameters{STOPVALUE};
+        enum OMParameters{STOPVALUE,MAXSIMTIME};
 
 };
 

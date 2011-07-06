@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -85,9 +85,9 @@
 // General EA headers
 #include "SBCrossover.h"
 #include "EAStdBounds.h"
-#include "MyEAEvalFuncCounter.h"
-#include "MyEAProgress.h"
-#include "MyEAEvalContinue.h"
+#include "OMEAEvalFuncCounter.h"
+#include "OMEAProgress.h"
+#include "OMEAEvalContinue.h"
 #include "EAStdCheckPoint.h"
 #include "MyEoGnuplot1DMonitor.h"
 #include "EAStdOptimizationEval.h"
@@ -99,17 +99,17 @@ SPEA2Adapt::SPEA2Adapt():EABase()
 	setDefaultParameters();
 }
 
-SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModReader* modReader,ModPlusCtrl* modPlusReader,ModClass* rootClass)
-:EABase(project,problem,modReader,modPlusReader,rootClass)
+SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
+:EABase(project,problem,modClassTree,modPlusCtrl)
 {
 	setDefaultParameters();
 };
 
 
-SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModReader* modReader,ModPlusCtrl* modPlusReader,ModClass* rootClass,EAConfig* eaConfig)
-:EABase(project,problem,modReader,modPlusReader,rootClass)
+SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,MOParameters* parameters)
+:EABase(project,problem,modClassTree,modPlusCtrl)
 {
-	_config = eaConfig;	
+        _parameters = parameters->clone();
 };
 
 SPEA2Adapt::SPEA2Adapt(const SPEA2Adapt & ea):EABase(ea)
@@ -129,14 +129,10 @@ QString SPEA2Adapt::name()
 
 void SPEA2Adapt::setDefaultParameters()
 {
-	_config->parameters->addItem(new AlgoParameter("PopulationSize","Population size",50,"int",1,1000));
-	_config->parameters->addItem(new AlgoParameter("OffspringRate","OffSpring size/PopulationSize",3,"double",1,1000));
-	_config->parameters->addItem(new AlgoParameter("MaxGen","Max Generations",100,"int",1,10000));
-	_config->parameters->addItem(new AlgoParameter("SaveFrequency","Population saving frequency (# generations, 0 = save only final state)",1,"int",0,10000000));
-	_config->parameters->addItem(new AlgoParameter("ReinitStdDev","Reinitialize StdDeviation (for pursuing optimization only)",0,"int",0,1));
+    SPEA2AdaptParameters::setDefaultParameters(_parameters);
 }
 
-QList<int> SPEA2Adapt::compatibleProblems()
+QList<int> SPEA2Adapt::compatibleOMCases()
 {
 	QList<int> problems;
 	problems.push_back(Problem::OPTIMIZATION);
@@ -174,14 +170,14 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	/************************************
 	PROGRESS AND CONTINUATOR
 	************************************/
-	unsigned initPopSize = _config->getParameterValue("PopulationSize",20);
-	unsigned offSpringRate = _config->getParameterValue("OffspringRate",0);
-	unsigned nTotalGen = _config->getParameterValue("MaxGen",0);
+        unsigned initPopSize = _parameters->value(SPEA2AdaptParameters::POPULATIONSIZE,20).toInt();
+        unsigned offSpringRate = _parameters->value(SPEA2AdaptParameters::OFFSPRINGRATE,3).toInt();
+        unsigned nTotalGen = _parameters->value(SPEA2AdaptParameters::MAXGENERATIONS,100).toInt();
 	unsigned nTotalEvals = initPopSize + initPopSize*nTotalGen*offSpringRate;
 
-	MyEAProgress myEAProgress;
-	connect(&myEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
-	connect(&myEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
+	OMEAProgress OMEAProgress;
+	connect(&OMEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
+	connect(&OMEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
 			
 	eoGenContinue < EOAdapt > genContinuator(nTotalGen);
 
@@ -193,10 +189,10 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	{
 	case Problem::OPTIMIZATION :
 		plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
-			_modReader,_modPlusReader,_rootModClass);
+                        _modClassTree,_modPlusCtrl);
 		break;
 	}
-	MyEAEvalFuncCounter<EOAdapt>* eval = new MyEAEvalFuncCounter<EOAdapt> (* plainEval,&myEAProgress,nTotalEvals);
+	OMEAEvalFuncCounter<EOAdapt>* eval = new OMEAEvalFuncCounter<EOAdapt> (* plainEval,&OMEAProgress,nTotalEvals);
 
 
 	
@@ -211,10 +207,10 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	///************************************
 	//CROSSOVER AND MUTATION
 	//************************************/
-	SBCrossover<EOAdapt> *xover = new SBCrossover <EOAdapt>((EAConfig*)_config);
+        SBCrossover<EOAdapt> *xover = new SBCrossover <EOAdapt>(_parameters);
 	//state.storeFunctor(xover);
 
-	EAAdapt1Mutation<EOAdapt> *mutation = new EAAdapt1Mutation<EOAdapt>(doubleBounds,intBounds,(EAConfig*)_config);
+        EAAdapt1Mutation<EOAdapt> *mutation = new EAAdapt1Mutation<EOAdapt>(doubleBounds,intBounds,_parameters);
 	//state.storeFunctor(mutation);
 
 	eoSequentialOp<EOAdapt> *op = new eoSequentialOp<EOAdapt>;
@@ -228,8 +224,12 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	//eoPop<EOAdapt>& pop = state.takeOwnership(eoPop<EOAdapt>());
 	eoPop<EOAdapt> pop;
 	bool loadFailed=false;
-	if(((EAConfig*)_config)->getUseSartFile() && ((EAConfig*)_config)->getReloadFilePath()!="" && QFileInfo(((EAConfig*)_config)->getReloadFilePath()).exists())
+        bool useStartFile = _parameters->value(SPEA2AdaptParameters::USESTARTFILE,false).toBool();
+        QString reloadFilePath = _parameters->value(SPEA2AdaptParameters::STARTFILEPATH).toString();
+
+        if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
 	{
+
 		// create another state for reading
 		eoState inState;		// a state for loading - WITHOUT the parser
 		// register the rng and the pop in the state, so they can be loaded,
@@ -238,8 +238,8 @@ Result* SPEA2Adapt::launch(QString tempDir)
 		inState.registerObject(pop);
 		inState.registerObject(rng);
 		
-		QString path = ((EAConfig*)_config)->getReloadFilePath();
-		std::string str = path.toLatin1().data();
+
+                std::string str = reloadFilePath.toLatin1().data();
 		try{
 			inState.load(str);
 		}
@@ -248,8 +248,8 @@ Result* SPEA2Adapt::launch(QString tempDir)
                     infoSender.send(Info("Loading start file failed :"+QString(e.what()),ListInfo::WARNING2));
 			loadFailed = true;
 		}
-		unsigned resetStdDev = _config->getParameterValue("ReinitStdDev",0);
-		if(resetStdDev)
+                bool reinitStdDev= _parameters->value(SPEA2AdaptParameters::REINITSTDDEV).toBool();
+                if(reinitStdDev)
 		{
 			EAAdaptReinitStdDev<EOAdapt>::reinitDblStdDev(pop,doubleBounds,initPopSize);
 		}
@@ -286,7 +286,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	/************************************
 	OUTPUT
 	************************************/
-	eoCheckPoint<EOAdapt>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,(EAConfig*)_config,tempDir);
+        eoCheckPoint<EOAdapt>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir);
 
 	/************************************
 	MONITOR
@@ -320,7 +320,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	///************************************
 	//BUILD SPEAAdapt1
 	//************************************/
-	double rate = _config->getParameterValue("OffspringRate",3);
+        double rate = _parameters->value(SPEA2AdaptParameters::OFFSPRINGRATE,3).toDouble();
 	SPEA2Algo<EOAdapt> spea2(checkpoint,*eval,*xover,1,*mutation,1,arch,initPopSize,rate,true);
 
 	///************************************
@@ -341,7 +341,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	///************************************
 	//GETTING RESULT FROM FINAL ARCHIVE
 	//************************************/
-	Result* result = buildResult(arch,(EAConfig*)_config);
+        Result* result = buildResult(arch);
 
 	result->_hour = beginTime;
 	result->_computationTime = compTime;

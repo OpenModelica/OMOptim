@@ -60,8 +60,16 @@ class Optimization : public Problem
 {
 	Q_OBJECT
 
+
+
 protected :
+
+
+        //Model
 	ModModelPlus* _modModelPlus;
+        ModPlusCtrl* _modPlusCtrl;
+
+
 	MOVector<ScannedVariable> *_scannedVariables;
 	MOVector<OptVariable> *_optimizedVariables;
 	MOVector<OptObjective> *_objectives;
@@ -72,16 +80,23 @@ protected :
         EIProblem* _eiProblem;
 	bool _useScan;
 
+        // Algorithm information
+        QList<OptimAlgo*> _algos;
+        int _iCurAlgo;
 
 public:
 	//Optimization(void);
-	Optimization(Project*,ModClass* _rootModelClass,ModReader*,ModPlusCtrl*,ModModelPlus* _mainModelPlus);
+        Optimization(Project*,ModClassTree*,ModPlusCtrl*,ModModelPlus* _mainModelPlus);
 	Optimization(const Optimization &);
+        Problem* clone();
 	~Optimization(void);
-	virtual QString getClassName(){return "Optimization";};
+
+        static QString className(){return "Optimization";};
+        virtual QString getClassName(){return Optimization::className();};
 
 	//Get functions
 	ModModelPlus* modModelPlus();
+        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
 	MOVector<ScannedVariable> *scannedVariables(){return _scannedVariables;};
 	MOVector<OptVariable> *optimizedVariables(){return _optimizedVariables;};
 	MOVector<OptObjective> *objectives(){return _objectives;};
@@ -91,32 +106,29 @@ public:
 	
 	//overwrited functions
 	bool checkBeforeComp(QString & error);
-	void launch(ProblemConfig _config);
+        Result* launch(ProblemConfig _config);
 	void store(QString destFolder, QString tempDir);
 	QDomElement toXmlData(QDomDocument & doc);
 	
 	//specific functions
 	void createSubExecs(QList<ModModelPlus*> & _subMod, QList<BlockSubstitutions*> & _subBlocks);
 
+        //algo functions
+        int getiCurAlgo();
+        OptimAlgo* getCurAlgo();
+        QStringList getAlgoNames();
+        void setiCurAlgo(int);
+
+
 	//block substitution
 	void setBlockSubstitutions(BlockSubstitutions*);
 
 	int nbScans();
 
-	//void setEAConfigs(QVector<EAConfig*>);
-	//EAConfig* getEAConfig(int iEA);
-	//QVector<EAConfig*> getEAConfigs();
+        // recompute points
+        void recomputePoints(OptimResult*, std::vector<int>,bool forceRecompute = false);
 	
-protected:
-	//QVector<EAConfig*> eaConfigs;
 	
-	public slots:
-	//	void onEAConfigChanged();
-
-signals:
-	//	void EAConfigChanged();
-	
-
 };
 
 

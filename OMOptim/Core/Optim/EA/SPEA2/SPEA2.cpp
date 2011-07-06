@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -83,9 +83,9 @@
 #include "EAStdCheckPoint.h"
 
 #include "EAStdBounds.h"
-#include "MyEAEvalFuncCounter.h"
-#include "MyEAProgress.h"
-#include "MyEAEvalContinue.h"
+#include "OMEAEvalFuncCounter.h"
+#include "OMEAProgress.h"
+#include "OMEAEvalContinue.h"
 
 #include "EAStdOptimizationEval.h"
 //#include "EAStdVariableDetEval.h"
@@ -97,17 +97,17 @@ SPEA2::SPEA2():EABase()
 	setDefaultParameters();
 }
 
-SPEA2::SPEA2(Project* project,Problem* problem,ModReader* modReader,ModPlusCtrl* modPlusReader,ModClass* rootClass)
-:EABase(project,problem,modReader,modPlusReader,rootClass)
+SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
+:EABase(project,problem,modClassTree,modPlusCtrl)
 {
 	setDefaultParameters();
 };
 
 
-SPEA2::SPEA2(Project* project,Problem* problem,ModReader* modReader,ModPlusCtrl* modPlusReader,ModClass* rootClass,EAConfig* eaConfig)
-:EABase(project,problem,modReader,modPlusReader,rootClass)
+SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,MOParameters* parameters)
+:EABase(project,problem,modClassTree,modPlusCtrl)
 {
-	_config = eaConfig;	
+        _parameters = parameters->clone();
 };
 
 
@@ -128,19 +128,11 @@ SPEA2* SPEA2::clone()
 
 void SPEA2::setDefaultParameters()
 {
-	_config->parameters->addItem(new AlgoParameter("PopulationSize","Population size",50,"int",1,1000));
-	_config->parameters->addItem(new AlgoParameter("MaxIterations","Max Iterations",100,"int",1,1000));
-	_config->parameters->addItem(new AlgoParameter("DoubleMutEpsilon","Epsilon for real variables mutation",0.01,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("DoublePMut","Mutation probability for real variables",0.35,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("DoublePCross","Crossover probability for real variables",0.25,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("IntPMut","Mutation probability for integer variables",0.35,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("IntPCross","Crossover probability for integer variables",0.25,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("BoolPMut","Mutation probability for boolean variables",0.35,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("BoolPCross","Crossover probability for boolean variables",0.25,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("SaveFrequency","Population saving frequency (# generations, 0 = save only final state)",0,"int",0,10000000));
+
+    SPEA2Parameters::setDefaultParameters(_parameters);
 }
 
-QList<int> SPEA2::compatibleProblems()
+QList<int> SPEA2::compatibleOMCases()
 {
 	QList<int> _problems;
 	_problems.push_back(Problem::OPTIMIZATION);
@@ -180,11 +172,13 @@ Result* SPEA2::launch(QString tempDir)
 	/************************************
 	PROGRESS
 	************************************/
-	MyEAProgress* myEAProgress = new MyEAProgress();
-	connect(myEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
-	connect(myEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
+        OMEAProgress* omEAProgress = new OMEAProgress();
+        connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
+        connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
 	
-	int totalEval = _config->getParameterValue("MaxIterations",50);
+        int totalEval = _parameters->value(SPEA2Parameters::MAXITERATIONS,50).toInt();
+
+
 
 	/************************************
 	FITNESS EVALUATION
@@ -194,10 +188,10 @@ Result* SPEA2::launch(QString tempDir)
 	{
 	case Problem::OPTIMIZATION :
 		plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,
-			_modReader,_modPlusReader,_rootModClass);
+                        _modClassTree,_modPlusCtrl);
 		break;
 	}
-	MyEAEvalFuncCounter<EOStd>* eval = new MyEAEvalFuncCounter<EOStd> (* plainEval,myEAProgress,totalEval);
+        OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
 	state.storeFunctor(eval);
 
 	//************************************
@@ -209,10 +203,10 @@ Result* SPEA2::launch(QString tempDir)
 	///************************************
 	//CROSSOVER AND MUTATION
 	//************************************/
-	SBCrossover<EOStd> *xover = new SBCrossover<EOStd>((EAConfig*)_config);
+        SBCrossover<EOStd> *xover = new SBCrossover<EOStd>(_parameters);
 	state.storeFunctor(xover);
 
-	EAStdMutation<EOStd> *mutation = new EAStdMutation<EOStd>(doubleBounds,intBounds,(EAConfig*)_config);
+        EAStdMutation<EOStd> *mutation = new EAStdMutation<EOStd>(doubleBounds,intBounds,_parameters);
 	state.storeFunctor(mutation);
 
 	eoSequentialOp<EOStd> *op = new eoSequentialOp<EOStd>;
@@ -226,7 +220,10 @@ Result* SPEA2::launch(QString tempDir)
 	************************************/
 	eoPop<EOStd> pop;
 	bool loadFailed=false;
-	if(((EAConfig*)_config)->getUseSartFile() && ((EAConfig*)_config)->getReloadFilePath()!="" && QFileInfo(((EAConfig*)_config)->getReloadFilePath()).exists())
+        bool useStartFile = _parameters->value(SPEA2Parameters::USESTARTFILE,false).toBool();
+        QString reloadFilePath = _parameters->value(SPEA2Parameters::STARTFILEPATH).toString();
+
+        if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
 	{
 		// create another state for reading
 		eoState inState;		// a state for loading - WITHOUT the parser
@@ -236,8 +233,7 @@ Result* SPEA2::launch(QString tempDir)
 		inState.registerObject(pop);
 		inState.registerObject(rng);
 		
-		QString path = ((EAConfig*)_config)->getReloadFilePath();
-		std::string str = path.toLatin1().data();
+                std::string str = reloadFilePath.toLatin1().data();
 		try{
 			inState.load(str);
 		}
@@ -256,7 +252,7 @@ Result* SPEA2::launch(QString tempDir)
 
 	}
 	
-	int popSize = _config->getParameterValue("PopulationSize",20);
+        int popSize = _parameters->value(SPEA2Parameters::POPULATIONSIZE,20).toInt();
 	if(pop.size() < popSize)
 	{
 		pop.append(popSize-pop.size(),*init);
@@ -284,7 +280,7 @@ Result* SPEA2::launch(QString tempDir)
 	/************************************
 	OUTPUT
 	************************************/
-	eoCheckPoint<EOStd>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,(EAConfig*)_config,tempDir);
+        eoCheckPoint<EOStd>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir);
 
 
 	///************************************
@@ -310,7 +306,7 @@ Result* SPEA2::launch(QString tempDir)
 	///************************************
 	//GETTING RESULT FROM FINAL ARCHIVE
 	//************************************/
-	Result* result = buildResult(arch,(EAConfig*)_config);
+        Result* result = buildResult(arch);
 
 	result->_hour = beginTime;
 	result->_computationTime = compTime;

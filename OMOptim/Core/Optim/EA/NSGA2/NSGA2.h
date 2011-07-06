@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -65,6 +65,8 @@
 
 #include "EOStd.h"
 
+#include "NSGA2Parameters.h"
+
 /********************************************************
 First multi-objective genetic algorithm implementation.
 NSGA2 use NSGAII algorithm.
@@ -76,19 +78,19 @@ class NSGA2 : public EABase
 {
 public : 
 	NSGA2();
-	NSGA2(Project*,Problem*,ModReader*,ModPlusCtrl*,ModClass* _rootClass);
-	NSGA2(Project*,Problem*,ModReader*,ModPlusCtrl*,ModClass* _rootClass,EAConfig*);
+        NSGA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*);
+        NSGA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*,MOParameters*);
 	NSGA2(const NSGA2 &);
 	NSGA2* clone();
 
-	QList<int> compatibleProblems();
+	QList<int> compatibleOMCases();
 
 	Result* launch(QString tempDir);
 	QString name();
 	void setDefaultParameters();
 
 private :
-	inline Result* buildResult(moeoUnboundedArchive<EOStd> &, EAConfig* );
+        inline Result* buildResult(moeoUnboundedArchive<EOStd> & );
 
 
 
@@ -96,14 +98,14 @@ private :
 
 
 
-Result* NSGA2::buildResult(moeoUnboundedArchive<EOStd> & arch, EAConfig* config)
+Result* NSGA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
 {
 	Result* result;
 	switch(_problem->type())
 	{
 	case Problem::OPTIMIZATION :
 		result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,
-			_modReader,_modPlusReader,arch,config);
+                        _modClassTree,_modPlusCtrl,arch,_parameters);
 		break;
 	}
 	return result;

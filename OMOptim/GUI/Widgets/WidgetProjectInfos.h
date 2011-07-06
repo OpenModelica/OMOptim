@@ -69,8 +69,8 @@ class WidgetProjectInfos : public QWidget {
     Q_OBJECT
 
 public:
-    WidgetProjectInfos(Project *project, QWidget *parent = 0);
-    ~WidgetProjectInfos();
+    WidgetProjectInfos(Project *project, QList<QAction*> recentProjActions,QWidget *parent);
+    virtual ~WidgetProjectInfos();
 
     Project *project;
 
@@ -80,8 +80,9 @@ public:
 
     void actualizeGuiFromProject();
 
-public slots:
-    void onPushedEdit();
+signals:
+    void newProject();
+    void loadProject();
 
 };
 

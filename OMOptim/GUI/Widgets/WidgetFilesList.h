@@ -59,7 +59,7 @@ class WidgetFilesList : public QWidget {
 
 
 public:
-	explicit WidgetFilesList(QStringList *filesList,QWidget *parent = 0);
+        explicit WidgetFilesList(QStringList *filesList,QWidget *parent);
     virtual ~WidgetFilesList();
 
 	

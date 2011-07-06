@@ -47,30 +47,28 @@ Project::Project()
 	_curProblem = -1;
 	
 
-	_problems = new Problems();
-	_solvedProblems = new Problems();
+        _problems = new OMCases("Problems");
+        _results = new OMCases("Results");
 	_curLaunchedProblem = NULL;
 	setCurModClass(NULL);
 
 	_moomc = new MOomc("OMOptim",true);
-	
-	_rootModClass = new ModClass(_moomc);
 	_modReader = new ModReader(_moomc);
-
-
+        _modClassTree = new ModClassTree(_modReader,_moomc);
 }
 
 Project::~Project()
 {
 
+    qDebug("deleting Project");
     terminateOmsThreads();
 
 	delete _problems;
-	delete _solvedProblems;
+    delete _results;
 
 
-    if(_rootModClass)
-        delete _rootModClass;
+    if(_modClassTree)
+        delete _modClassTree;
 
         delete _moomc;
         delete _modReader;
@@ -93,7 +91,11 @@ unsigned Project::getNbFields()
 */
 void Project::clear()
 {
-	_rootModClass->clear();
+    // delete GUI tabs...
+    emit projectAboutToBeReset();
+
+
+        _modClassTree->clear();
 	_mapModelPlus.clear();
 
         // OMC
@@ -102,7 +104,7 @@ void Project::clear()
 
 
 	_problems->reset();
-	_solvedProblems->reset();
+        _results->reset();
 	
 	_isdefined=false;
 	_filePath.clear();
@@ -114,8 +116,7 @@ void Project::clear()
 	_moFiles.clear();
 	_mmoFiles.clear();
 
-	// delete GUI tabs...
-	emit projectReset();
+
 }
 
 void Project::setName(QString name)
@@ -147,9 +148,10 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
 	if(storePath && !_moFiles.contains(moFilePath))
 		_moFiles.push_back(moFilePath);
 
-	// load moFile and read it
-	_modReader->readMoFile(_rootModClass,moFilePath,_mapModelPlus,forceLoad);
+        // load moFile ...
+        _modReader->loadMoFile(rootModClass(),moFilePath,_mapModelPlus,forceLoad);
 
+        // and read it add class in ModClassTree
 	refreshAllMod();
 }
 
@@ -171,7 +173,7 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
 	}
 
 	// load _moFiles and read them
-	_modReader->readMoFiles(_rootModClass,moFilePaths,_mapModelPlus,forceLoad);
+        _modReader->loadMoFiles(rootModClass(),moFilePaths,_mapModelPlus,forceLoad);
 
 	refreshAllMod();
 }
@@ -226,7 +228,7 @@ void Project::storeMmoFilePath(QString mmoFilePath)
 void Project::refreshAllMod()
 {
 	QStringList omcClasses = _moomc->getClassNames();
-	QStringList loadedClasses = _rootModClass->getChildrenNames();
+        QStringList loadedClasses = rootModClass()->getChildrenNames();
 	QMap<QString,ModModelPlus*> strMapModelPlus;
 
 	// Copy map information (using string instead of ModModel*)
@@ -237,11 +239,11 @@ void Project::refreshAllMod()
 		strMapModelPlus.insert(curModModel->name(Modelica::FULL),_mapModelPlus.value(curModModel));
 	}
 
-	_rootModClass->clear();
+        _modClassTree->clear();
 
 	for(int iO=0;iO<omcClasses.size();iO++)
 	{
-		_modReader->addModClass(_rootModClass,omcClasses.at(iO),_moomc->getFileOfClass(omcClasses.at(iO)));
+                _modClassTree->addModClass(rootModClass(),omcClasses.at(iO),_moomc->getFileOfClass(omcClasses.at(iO)));
 	}
 
 	// refreshing map
@@ -251,7 +253,7 @@ void Project::refreshAllMod()
 	for(int iP=0;iP<listModPlus.size();iP++)
 	{
 		curModModelPlus = listModPlus.at(iP);
-		curModModel = dynamic_cast<ModModel*>(_modReader->findInDescendants(_rootModClass,strMapModelPlus.key(curModModelPlus)));
+                curModModel = dynamic_cast<ModModel*>(_modClassTree->findInDescendants(strMapModelPlus.key(curModModelPlus)));
 		if(curModModel)
 		{
 			_mapModelPlus.insert(curModModel,curModModelPlus);
@@ -282,7 +284,7 @@ ModModel* Project::curModModel()
 */
 ModModel* Project::findModModel(QString modelName)
 {
-	ModClass* modModel = _modReader->findInDescendants(_rootModClass,modelName);
+        ModClass* modModel = _modClassTree->findInDescendants(modelName);
 
 	if(!modModel || modModel->getClassRestr()!=Modelica::MODEL)
 		return NULL;
@@ -345,7 +347,7 @@ ModModelPlus* Project::modModelPlus(ModModel* model)
 ModModelPlus* Project::newModModelPlus(ModModel* model)
 {
 	// Create ModModelFile
-	ModModelPlus* newModModelPlus = new ModModelPlus(_moomc,this,_modReader,model,_rootModClass);
+        ModModelPlus* newModModelPlus = new ModModelPlus(_moomc,this,_modClassTree,model);
 	
 	// Add to map
 	_mapModelPlus.insert(model,newModModelPlus);
@@ -454,9 +456,9 @@ QString Project::problemsFolder()
 	return folder()+QDir::separator()+"Problems";
 }
 
-QString Project::solvedProblemsFolder()
+QString Project::resultsFolder()
 {
-	return folder()+QDir::separator()+"SolvedProblems";
+        return folder()+QDir::separator()+"Results";
 }
 
 void Project::addNewProblem(Problem::ProblemType problemType, ModModel* modelConcerned)
@@ -474,14 +476,14 @@ void Project::addNewProblem(Problem::ProblemType problemType, ModModel* modelCon
 	switch(problemType)
 	{
 	case Problem::ONESIMULATION :
-		newProblem  = new OneSimulation(this,_rootModClass,_modReader,_modPlusCtrl,modModelPlus);
+                newProblem  = new OneSimulation(this,modClassTree(),_modPlusCtrl,modModelPlus);
 		break;
 	case Problem::OPTIMIZATION :
-		newProblem = new Optimization(this,_rootModClass,_modReader,_modPlusCtrl,modModelPlus);
+                newProblem = new Optimization(this,modClassTree(),_modPlusCtrl,modModelPlus);
 		break;
 #ifdef USEEI
         case Problem::EIPROBLEM:
-                newProblem = new EITarget(this,_modReader,_moomc);
+                newProblem = new EIProblem(this,modClassTree(),_moomc);
 		break;
 #endif
 
@@ -489,44 +491,36 @@ void Project::addNewProblem(Problem::ProblemType problemType, ModModel* modelCon
 
 	HighTools::checkUniqueProblemName(this,newProblem,_problems);
 
-	if(!newProblem->isSolved())
-	{
-		_problems->addProblem(newProblem);
+                _problems->addCase(newProblem);
 		emit addedProblem(newProblem);
 	}
-	else
-	{
-		_solvedProblems->addProblem(newProblem);
-		emit addedSolvedProblem(newProblem);
-	}
-}
 
 
 
-void Project::addSolvedProblem(Problem *solvedProblem)
+void Project::addResult(Result *result)
 {	
-	_solvedProblems->addProblem(solvedProblem);
+        _results->addCase(result);
 	
 	// Saving result into file
 	//Save::saveResult(result_);
 
 	//update GUI
 	emit projectChanged();
-	emit addedSolvedProblem(solvedProblem);
+        emit addedResult(result);
 }
 
-void Project::addSolvedProblem(QString filePath)
+void Project::addResult(QString filePath)
 {
-	Problem* newSolvedProblem = Load::newSolvedProblemFromFile(filePath,this);
-	if(newSolvedProblem)
-		addSolvedProblem(newSolvedProblem);
+        Result* newResult = Load::newResult(filePath,this);
+        if(newResult)
+                addResult(newResult);
 }
 
 
 
 void Project::addProblem(Problem *problem)
 {
-	_problems->addProblem(problem);
+        _problems->addCase(problem);
 	
 	// Saving result into file
 //	Save::saveProblem(problem);
@@ -540,7 +534,7 @@ void Project::addProblem(Problem *problem)
 
 void Project::addProblem(QString filePath)
 {
-	Problem* newProblem = Load::newProblemFromFile(filePath,this);
+        Problem* newProblem = Load::newProblem(filePath,this);
 	if (newProblem)
 		addProblem(newProblem);
 }
@@ -556,7 +550,7 @@ void Project::createTempDir()
 }
 
 
-void Project::launchProblem(int num)
+void Project::launchProblem(Problem* problem)
 {
 	if(!_problemLaunchMutex.tryLock())
 	{
@@ -565,51 +559,63 @@ void Project::launchProblem(int num)
 	else
 	{
 		//Copy launched problem from selected one
-		Problem* curProblem;
-		curProblem = _problems->items.at(num); 
 		Problem* launchedProblem;
-		switch(curProblem->type())
+                switch(problem->type())
 		{
 		case Problem::ONESIMULATION :
-			launchedProblem = new OneSimulation(*((OneSimulation*)curProblem));
+                        launchedProblem = new OneSimulation(*((OneSimulation*)problem));
 			break;
 		case Problem::OPTIMIZATION :
-			launchedProblem = new Optimization(*((Optimization*)curProblem));
+                        launchedProblem = new Optimization(*((Optimization*)problem));
 			break;
 #ifdef USEEI
-                case Problem::EIPROBLEM :
-			launchedProblem = new EITarget(*((EITarget*)curProblem));
+                case Problem::EITARGET :
+                        launchedProblem = new EITarget(*((EITarget*)problem));
 			break;
+
+                case Problem::EIHEN1 :
+                        launchedProblem = new EIHEN1(*((EIHEN1*)problem));
+                        break;
 #endif
+                default :
+                        infoSender.send(Info("Unknown kind of problem",ListInfo::ERROR2));
+                        return;
 		}
 
-		// connect signal
-		connect(launchedProblem,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
+
+
+
 		connect(launchedProblem,SIGNAL(finished(Problem*)),this,SIGNAL(problemFinished(Problem*)));
-		connect(launchedProblem,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
-		connect(launchedProblem,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
-		connect(launchedProblem,SIGNAL(finished(Problem*)),this,SLOT(onProblemFinished(Problem*)));
 		
+
 		// Create temporary directory where calculations are performed
 		createTempDir();
 
 		// store temp problem
 		_curLaunchedProblem = launchedProblem;
 
-		//Launch problem
+                //Create problem thread
 		ProblemConfig config(tempPath());
 		MOThreads::LaunchProblem* launchThread = new MOThreads::LaunchProblem(launchedProblem,config);
+
+                // connect signal
+                connect(launchedProblem,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
+
+                connect(launchedProblem,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
+                connect(launchedProblem,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
+                connect(launchThread,SIGNAL(finished(Result*)),this,SLOT(onProblemFinished(Result*)));
+
 		launchThread->start();
 	}
 }
 
-void Project::onProblemFinished(Problem* launchedProblem)
+void Project::onProblemFinished(Result* result)
 {
 	//Results
-	if(!launchedProblem->isSolved())
+        if(!result->isSuccess())
 	{
 		QString logFile;
-		switch(launchedProblem->type())
+                switch(result->problemType())
 		{
 		case Problem::ONESIMULATION :
 			logFile = tempPath()+QDir::separator()+"dslog.txt";
@@ -620,15 +626,18 @@ void Project::onProblemFinished(Problem* launchedProblem)
 			emit infoSender.send( Info(ListInfo::OPTIMIZATIONFAILED));
 			break;
 #ifdef USEEI
-                case Problem::EIPROBLEM :
+                case Problem::EITARGET :
 			emit infoSender.send( Info(ListInfo::PROBLEMEIFAILED));
 			break;
+                case Problem::EIHEN1 :
+                        emit infoSender.send( Info(ListInfo::PROBLEMEIFAILED));
+                        break;
 #endif
 		}
 	}
 	else
 	{
-		switch(launchedProblem->type())
+                switch(result->problemType())
 		{
 		case Problem::ONESIMULATION :
 			emit infoSender.send( Info(ListInfo::ONESIMULATIONSUCCESS));
@@ -637,17 +646,23 @@ void Project::onProblemFinished(Problem* launchedProblem)
 			emit infoSender.send( Info(ListInfo::OPTIMIZATIONSUCCESS));
 			break;
 #ifdef USEEI
-                case Problem::EIPROBLEM :
+                case Problem::EITARGET :
 			emit infoSender.send( Info(ListInfo::PROBLEMEISUCCESS));
 			break;
+                case Problem::EIHEN1 :
+                        emit infoSender.send( Info(ListInfo::PROBLEMEISUCCESS));
+                        break;
 #endif
 		}
 
-		launchedProblem->setName(launchedProblem->name()+" result");
-		HighTools::checkUniqueProblemName(this,launchedProblem,_solvedProblems);
+                if(result->name().isEmpty())
+                    result->setName(result->problem()->name()+" result");
+                //launchedProblem->setName(launchedProblem->name()+" result");
+                HighTools::checkUniqueResultName(this,result,_results);
 		
-		launchedProblem->store(QString(solvedProblemsFolder()+QDir::separator()+launchedProblem->name()),tempPath());
-		addSolvedProblem(launchedProblem);
+
+                result->store(QString(resultsFolder()+QDir::separator()+result->name()),tempPath());
+                addResult(result);
 
 		save();
 	}
@@ -664,34 +679,32 @@ void Project::removeProblem()
 	{
 		removeProblem(action->data().toInt());
 	}
-	
 }
 
-void Project::removeSolvedProblem()
+void Project::removeResult()
 {
 	// SLOT : sender is menu, data is containing problem number
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (action)
 	{
-		removeSolvedProblem(action->data().toInt());
+                removeResult(action->data().toInt());
 	}
 }
 
-Problem* Project::restoreProblemFromSolvedOne(int numSolved)
+Problem* Project::restoreProblemFromResult(int numResult)
 {
-	Problem* solvedPb = _solvedProblems->items.at(numSolved);
+        Result* result = _results->items.at(numResult);
 	Problem* restoredPb;
 
-	switch(solvedPb->type())
+        switch(result->problemType())
 	{
 	case Problem::ONESIMULATION :
-		restoredPb = new OneSimulation(*((OneSimulation*)solvedPb));
+                restoredPb = new OneSimulation(*((OneSimulation*)result->problem()));
 		break;
 	case Problem::OPTIMIZATION :
-		restoredPb = new Optimization(*((Optimization*)solvedPb));
+                restoredPb = new Optimization(*((Optimization*)result->problem()));
 		break;
 	}
-	restoredPb->deleteResult();
 
 	restoredPb->setName(restoredPb->name().replace(" result",""));
 	
@@ -702,15 +715,15 @@ Problem* Project::restoreProblemFromSolvedOne(int numSolved)
 }
 
 
-void Project::removeSolvedProblem(int num)
+void Project::removeResult(int num)
 {
 	// result to be removed
-	emit beforeRemoveSolvedProblem(num);
+        emit beforeRemoveResult(num);
 
 	// remove folder and data
-	QString folder = QDir(_solvedProblems->items.at(num)->saveFolder()).absolutePath();
+        QString folder = QDir(_results->items.at(num)->saveFolder()).absolutePath();
 	LowTools::removeDir(folder);
-	_solvedProblems->removeRow(num);
+        _results->removeRow(num);
 
 	save();
 }
@@ -746,18 +759,18 @@ bool Project::renameProblem(int i,QString newName)
 	return true;
 }	
 
-bool Project::renameSolvedProblem(int i,QString newName)
+bool Project::renameResult(int i,QString newName)
 {
 	// test if name already exists
-	if(_solvedProblems->findItem(newName)>-1)
+        if(_results->findItem(newName)>-1)
 		return false;
 
 	// test if index is valid
-	if((i<0) || (i>_solvedProblems->rowCount()))
+        if((i<0) || (i>_results->rowCount()))
 		return false;
 
 	// change name
-	_solvedProblems->items.at(i)->rename(newName,true);
+        _results->items.at(i)->rename(newName,true);
 	save();
 	return true;
 }
@@ -786,6 +799,23 @@ void Project::onProblemStopAsked(Problem* problem)
 	}
 }
 
+void Project::addNewOptimization()
+{
+    if(curModModel())
+        this->addNewProblem(Problem::OPTIMIZATION,curModModel());
+}
+
+void Project::addNewOneSimulation()
+{
+    if(curModModel())
+        this->addNewProblem(Problem::ONESIMULATION,curModModel());
+}
+
+void Project::addNewEIProblem()
+{
+    if(curModModel())
+        this->addNewProblem(Problem::EIPROBLEM,curModModel());
+}
 
 Problem* Project::curLaunchedProblem()
 {

@@ -48,37 +48,20 @@ namespace Ui
 	class TabProject_Class;
 }
 
-TabProject::TabProject(Project *project_, QWidget *parent) :
+TabProject::TabProject(Project *project_, QList<QAction*> recentProjActions,QWidget *parent) :
 MOTabSimple(project_->name(),project_),ui(new Ui::TabProject_Class)
 {
 	ui->setupUi(this);
 
 	project = project_;
-
-
-
-	// Adding view list in combo
-	//viewList << "Infos" << "Variables" << "Components" ;
-	//ui->comboDisp->addItems(viewList);
-
 	// View widgets
-        widgetInfos = new WidgetProjectInfos(project);
+        widgetInfos = new WidgetProjectInfos(project,recentProjActions,this);
         ui->myLayout->addWidget(widgetInfos);
-	//tabVariables = new TabModelVariables(project);
-	//ui->myLayout->addWidget(tabVariables);
-	//tabComponents = new TabModelComponents(project);
-	//ui->myLayout->addWidget(tabComponents);
 
         widgetInfos->show();
-	//tabVariables->hide();
-	//tabComponents->hide();
 
-	//curView = -1; // to force actualization
-	//updateView(0);
-
-	// Connect signals and slots
-	//connect(ui->comboDisp,SIGNAL(activated(int)),
-	//	this,SLOT(updateView(int)));
+        connect(widgetInfos,SIGNAL(newProject()),this,SIGNAL(newProject()));
+        connect(widgetInfos,SIGNAL(loadProject()),this,SIGNAL(loadProject()));
 }
 
 TabProject::~TabProject()

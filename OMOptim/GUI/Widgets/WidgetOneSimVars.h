@@ -57,8 +57,8 @@ class WidgetOneSimVars : public QWidget {
     Q_OBJECT
 
 public:
-    WidgetOneSimVars(Project *project, OneSimulation *problem, QWidget *parent = 0);
-    ~WidgetOneSimVars();
+    WidgetOneSimVars(Project *project, OneSimulation *problem, QWidget *parent);
+    virtual ~WidgetOneSimVars();
 
 	Ui::WidgetOneSimVarsClass *_ui;
 

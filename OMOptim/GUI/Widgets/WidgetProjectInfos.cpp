@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -47,13 +47,31 @@ namespace Ui
         class WidgetProjectInfos_Class;
 }
 
-WidgetProjectInfos::WidgetProjectInfos(Project *project_,QWidget *parent) :
+WidgetProjectInfos::WidgetProjectInfos(Project *project_,QList<QAction*> recentProjActions,QWidget *parent) :
     QWidget(parent), ui(new Ui::WidgetProjectInfos_Class)
 {
     ui->setupUi(this);
 
 	project = project_;
-	connect(ui->pushEdit, SIGNAL(clicked()), this, SLOT(onPushedEdit()));
+    connect(ui->pushNewProject, SIGNAL(clicked()), this, SIGNAL(newProject()));
+    connect(ui->pushLoadProject, SIGNAL(clicked()), this, SIGNAL(loadProject()));
+
+//    ui->layoutRecents->setAlignment(Qt::AlignLeft);
+//    for(int i=0;i<recentProjActions.size();i++)
+//    {
+
+//        QWidget* test = new QWidget(this);
+//        test->addAction(recentProjActions.at(i));
+//        ui->layoutRecents->addWidget(test);
+//    }
+
+//    QToolBar* toolBar = new QToolBar(this);
+//    toolBar->setToolButtonStyle(Qt::ToolButtonTextOnly);
+//    toolBar->setOrientation(Qt::Vertical);
+//    toolBar->addActions(recentProjActions);
+//    toolBar->setStyleSheet("QToolBar { border: 0px }");
+//    ui->layoutRecents->addWidget(toolBar);
+
 }
 
 WidgetProjectInfos::~WidgetProjectInfos()
@@ -67,29 +85,23 @@ void WidgetProjectInfos::actualizeGuiFromProject()
 	// File names
 	if(project->isDefined())
 	{
+        ui->widgetInfos->show();
+        ui->widgetBeginning->hide();
 		ui->labelProjectName->setText(project->name());
 		ui->labelProjectFile->setText(project->filePath());
 		
-		QString listMO;
+        QStringList listMO;
 		for(int i=0;i<project->moFiles().size();i++)
 		{
-			listMO.push_back(project->moFiles().at(i)+"\n");
+            listMO.push_back(project->moFiles().at(i));
 		}
-		ui->labelMoFiles->setText(listMO);
+        ui->labelMoFiles->setText(listMO.join("\n"));
 	}
 	else
 	{
-		ui->labelProjectName->setText("-");
-		ui->labelProjectFile->setText("-");
-		ui->labelMoFiles->setText("-");
+        ui->widgetInfos->hide();
+        ui->widgetBeginning->show();
+
 	}
 }
 
-void WidgetProjectInfos::onPushedEdit()
-{
-	bool openFileOk = LowTools::openFile(project->filePath());
-	if(!openFileOk)
-	{
-		LowTools::openFolder(project->folder());
-	}
-}

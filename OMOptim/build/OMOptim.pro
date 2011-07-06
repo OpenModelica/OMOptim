@@ -2,12 +2,19 @@ TEMPLATE = app
 TARGET = OMOptim
 
 QT +=  core gui svg xml
-VERSION = 0.9
+
+
+
+
+
+# Define the preprocessor macro to get the application version in our application.
+#DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+
+
+
 CONFIG += qt warn_off
 # if wants energy integration (pinch analysis)
 # add CONFIG useei in command line
-
-QMAKE_CXXFLAGS+=-fpermissive
 
 # WINDOWS
 win32 {
@@ -22,6 +29,18 @@ DEFINES += __x86__ \
     _WIN32_WINNT=0x0400 \
     _MBCS \
     QWT_DLL
+
+QMAKE_CXXFLAGS+=-fpermissive
+
+# Version numbering (independent from OpenModelica)
+VERSION_HEADER = ../version.h
+versiontarget.target = $$VERSION_HEADER
+versiontarget.commands = UpdateRevision.bat
+versiontarget.depends += FORCE
+PRE_TARGETDEPS += $$VERSION_HEADER
+QMAKE_EXTRA_TARGETS += versiontarget
+
+
 
 CONFIG(debug, debug|release){
     LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
@@ -114,27 +133,36 @@ contains(CONFIG,useei){
                 ../Core/Tools/CCTools.h \
                 ../GUI/Plots/MOCCCurve.h \
                 ../GUI/Plots/MOCCPlot.h \
-                ../GUI/Tabs/TabEITarget.h \
+                ../GUI/Tabs/TabEIProblem.h \
                 ../GUI/Widgets/WidgetEIGroup.h \
                 ../GUI/Widgets/WidgetEIInputVars.h \
-                ../GUI/Tabs/tabEITargetResult.h \
+                ../GUI/Tabs/TabEITargetResult.h \
                 ../GUI/Widgets/WidgetTableEIGroups.h \
                 ../GUI/Widgets/WidgetCCPlot.h \
 				../GUI/Widgets/WidgetTreeStreams.h \
 				../GUI/Widgets/WidgetTableConnConstr.h \
                 ../GUI/Widgets/WidgetTableStreams.h \
                 ../Core/EI/EIValueFiller.h \
-                ../GUI/Widgets/WidgetLaunchTarget.h \
+                ../GUI/Widgets/WidgetLaunchEI.h \
                 ../Core/Problems/EIHEN1.h \
+                ../Core/EI/EIHEN1Parameters.h \
+                ../Core/EI/EIMERParameters.h \
+                ../Core/EI/EITargetParameters.h \
                 ../Core/EI/EIHEN1Functions.h \
                 ../Core/EI/EIModelContainer.h \
                 ../Core/EI/EIConns.h \
                 ../GUI/Widgets/WidgetEIConns.h \
                 ../GUI/Widgets/WidgetEITargetResult.h \
-				    ../Core/EI/EIHEN1Result.h
+				../GUI/Widgets/WidgetEIHEN1Result.h \
+                                    ../Core/EI/EIHEN1Result.h \
+    ../GUI/Tabs/tabEIHEN1Result.h \
+    ../Core/Optim/MILP/MilpSet.h \
+    ../Core/Optim/MILP/MilpTools.h \
+    ../Core/Optim/MILP/MilpParam.h \
+    ../Core/Optim/MILP/MilpVariableResult.h
 
     SOURCES +=  ../Core/EI/EITargetResult.cpp \
-                ../GUI/Tabs/TabEITarget.cpp \
+                ../GUI/Tabs/TabEIProblem.cpp \
                 ../Core/Problems/EIProblem.cpp \
                 ../Core/Problems/EITarget.cpp \
                 ../Core/Optim/MILP/MilpTarget.cpp \
@@ -158,7 +186,7 @@ contains(CONFIG,useei){
                 ../Core/EI/EITree.cpp \
                 ../GUI/Plots/MOCCCurve.cpp \
                 ../GUI/Plots/MOCCPlot.cpp \
-                ../GUI/Tabs/tabEITargetResult.cpp \
+                ../GUI/Tabs/TabEITargetResult.cpp \
                 ../Core/Tools/CCTools.cpp \
                 ../Core/Problems/EIMER.cpp\
 				../GUI/Widgets/WidgetEIGroup.cpp \
@@ -168,14 +196,21 @@ contains(CONFIG,useei){
 				../GUI/Widgets/WidgetTableStreams.cpp \
 		        ../GUI/Widgets/WidgetTreeStreams.cpp \
                 ../GUI/Widgets/WidgetCCPlot.cpp \
-                ../GUI/Widgets/WidgetLaunchTarget.cpp \
+                ../GUI/Widgets/WidgetLaunchEI.cpp \
                 ../GUI/Widgets/WidgetEITargetResult.cpp \
+				../GUI/Widgets/WidgetEIHEN1Result.cpp \
                 ../Core/Problems/EIHEN1.cpp \
                 ../Core/EI/EIHEN1Functions.cpp \
                 ../Core/EI/EIModelContainer.cpp \
                 ../Core/EI/EIConns.cpp \
                 ../GUI/Widgets/WidgetEIConns.cpp \
-				../Core/EI/EIHEN1Result.cpp
+                                ../Core/EI/EIHEN1Result.cpp \
+    ../GUI/Tabs/tabEIHEN1Result.cpp \
+    ../Core/Optim/MILP/MilpSet.cpp \
+    ../Core/Optim/MILP/MilpTools.cpp \
+    ../Core/Optim/MILP/MilpParam.cpp \
+    ../Core/Optim/MILP/MilpVariableResult.cpp
+
 
 
     FORMS +=    ../GUI/Widgets/WidgetTableEIGroups.ui \
@@ -184,9 +219,10 @@ contains(CONFIG,useei){
                 ../GUI/Widgets/WidgetTableStreams.ui  \
                 ../GUI/Widgets/WidgetCCPlot.ui \
                 ../GUI/Widgets/WidgetTreeStreams.ui \
-                ../GUI/Widgets/WidgetLaunchTarget.ui \
+                ../GUI/Widgets/WidgetLaunchEI.ui \
                 ../GUI/Widgets/WidgetEIConns.ui \
-                ../GUI/Widgets/WidgetEITargetResult.ui
+                ../GUI/Widgets/WidgetEITargetResult.ui \
+                                ../GUI/Widgets/WidgetEIHEN1Result.ui
 }
 
 DEPENDPATH += . \
@@ -298,7 +334,7 @@ HEADERS += ../config.h \
            ../Core/Modelica/ModelicaModifier.h \
            ../Core/Modelica/ModExecution.h \
            ../Core/Modelica/ModModel.h \
-           ../Core/Modelica/ModModelParameter.h \
+           ../Core/Modelica/MOParameter.h \
            ../Core/Modelica/ModModelPlus.h \
            ../Core/Modelica/ModPackage.h \
            ../Core/Modelica/ModPlusCtrl.h \
@@ -317,9 +353,8 @@ HEADERS += ../config.h \
            ../Core/Problems/OptimResult.h \
            ../Core/Problems/Problem.h \
            ../Core/Problems/ProblemConfig.h \
-           ../Core/Problems/Problems.h \
+           ../Core/Problems/OMCases.h \
            ../Core/Problems/Result.h \
-           ../Core/Problems/Results.h \
            ../Core/Tools/HighTools.h \
            ../Core/Tools/LowTools.h \
            ../Core/Tools/reportingHook.h \
@@ -334,9 +369,8 @@ HEADERS += ../config.h \
            ../GUI/Dialogs/BlockSubstituteConnDlg.h \
            ../GUI/Dialogs/DlgSelectVars.h \
            ../GUI/Dialogs/DlgSettings.h \
-           ../GUI/Dialogs/EAConfigDialog.h \
            ../GUI/Dialogs/HelpDlg.h \
-           ../GUI/Dialogs/ModModelParametersDlg.h \
+           ../GUI/Dialogs/MOParametersDlg.h \
            ../GUI/Dialogs/newprojectform.h \
            ../GUI/Plots/MOOptPlot.h \
            ../GUI/Plots/MOPlot.h \
@@ -387,13 +421,12 @@ HEADERS += ../config.h \
            ../Core/Optim/EA/AlgoConfig.h \
            ../Core/Optim/EA/AlgoParameter.h \
            ../Core/Optim/EA/EABase.h \
-           ../Core/Optim/EA/EAConfig.h \
-           ../Core/Optim/EA/MyAlgorithm.h \
-           ../Core/Optim/EA/MyAlgoUtils.h \
-           ../Core/Optim/EA/MyEAEvalContinue.h \
-           ../Core/Optim/EA/MyEAEvalFuncCounter.h \
-           ../Core/Optim/EA/MyEAProgress.h \
-           ../Core/Optim/EA/MyListAlgos.h \
+           ../Core/Optim/EA/OptimAlgo.h \
+           ../Core/Optim/EA/OptimAlgoUtils.h \
+           ../Core/Optim/EA/OMEAEvalContinue.h \
+           ../Core/Optim/EA/OMEAEvalFuncCounter.h \
+           ../Core/Optim/EA/OMEAProgress.h \
+           ../Core/Optim/EA/OptimAlgosList.h \
            ../Core/Problems/BlockSubs/BlockSubstitution.h \
            ../Core/Problems/BlockSubs/BlockSubstitutions.h \
            ../Core/Optim/EA/Checkpoints/EAStdCheckPoint.h \
@@ -427,9 +460,15 @@ HEADERS += ../config.h \
     ../Core/MOKeepVector.h \
     ../GUI/Tools/MyTreeView.h \
     ../GUI/Widgets/WidgetProjectInfos.h \
-    ../GUI/Widgets/WidgetFilesList.h 
+    ../GUI/Widgets/WidgetFilesList.h \ 
+    ../GUI/Widgets/WidgetOptimActions.h \
+    ../Core/Problems/OMCase.h \
+    ../version.h \
+    ../Core/Optim/EA/NSGA2/NSGA2Parameters.h \
+    ../Core/Optim/EA/SPEA2/SPEA2Parameters.h \
+    ../Core/Optim/EA/SPEA2Adaptative/SPEA2AdaptParameters.h
 
-   # ../Core/Problems/OMProblem.h
+   # ../Core/OMCasesOMProblem.h
 
 
 
@@ -466,7 +505,8 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Widgets/WidgetToolBar.ui \
     ../GUI/Widgets/WidgetMooPointsList.ui \
     ../GUI/Widgets/WidgetProjectInfos.ui \
-    ../GUI/Widgets/WidgetFilesList.ui
+    ../GUI/Widgets/WidgetFilesList.ui \
+    ../GUI/Widgets/WidgetOptimActions.ui
  
 
  
@@ -498,7 +538,7 @@ SOURCES += ../main.cpp \
            ../Core/Modelica/ModelicaModifier.cpp \
            ../Core/Modelica/ModExecution.cpp \
            ../Core/Modelica/ModModel.cpp \
-           ../Core/Modelica/ModModelParameter.cpp \
+           ../Core/Modelica/MOParameter.cpp \
            ../Core/Modelica/ModModelPlus.cpp \
            ../Core/Modelica/ModPackage.cpp \
            ../Core/Modelica/ModPlusCtrl.cpp \
@@ -515,9 +555,8 @@ SOURCES += ../main.cpp \
            ../Core/Problems/OptimResult.cpp \
            ../Core/Problems/Problem.cpp \
            ../Core/Problems/ProblemConfig.cpp \
-           ../Core/Problems/Problems.cpp \
+           ../Core/Problems/OMCases.cpp \
            ../Core/Problems/Result.cpp \
-           ../Core/Problems/Results.cpp \
            ../Core/Tools/HighTools.cpp \
            ../Core/Tools/LowTools.cpp \
            ../Core/Tools/reportingHook.cpp \
@@ -531,9 +570,8 @@ SOURCES += ../main.cpp \
            ../GUI/Dialogs/BlockSubstituteConnDlg.cpp \
            ../GUI/Dialogs/DlgSelectVars.cpp \
            ../GUI/Dialogs/DlgSettings.cpp \
-           ../GUI/Dialogs/EAConfigDialog.cpp \
            ../GUI/Dialogs/HelpDlg.cpp \
-           ../GUI/Dialogs/ModModelParametersDlg.cpp \
+           ../GUI/Dialogs/MOParametersDlg.cpp \
            ../GUI/Dialogs/newprojectform.cpp \
            ../GUI/Plots/MOPlot.cpp \
            ../GUI/Plots/MyQwtPlotPicker.cpp \
@@ -582,7 +620,7 @@ SOURCES += ../main.cpp \
            ../GUI/Widgets/WidgetToolBar.cpp \
            ../Core/Optim/EA/AlgoParameter.cpp \
            ../Core/Optim/EA/EABase.cpp \
-           ../Core/Optim/EA/MyAlgorithm.cpp \
+           ../Core/Optim/EA/OptimAlgo.cpp \
            ../Core/Problems/BlockSubs/BlockSubstitution.cpp \
            ../Core/Problems/BlockSubs/BlockSubstitutions.cpp \
            ../Core/Optim/EA/Monitor/MyEoGnuplot.cpp \
@@ -595,14 +633,15 @@ SOURCES += ../main.cpp \
     ../Core/FileData/XML.cpp \
             ../GUI/Widgets/WidgetMooPointsList.cpp \
             ../GUI/Widgets/WidgetProjectInfos.cpp \
-    ../GUI/Widgets/WidgetFilesList.cpp
+    ../GUI/Widgets/WidgetFilesList.cpp \
+    ../GUI/Widgets/WidgetOptimActions.cpp \
+    ../Core/Problems/OMCase.cpp
 
 
 
 
 
-
-  #  ../Core/Problems/OMProblem.cpp
+  #  ../Core/OMCasesOMProblem.cpp
 
 RESOURCES += ../GUI/Resources/mineit.qrc
 

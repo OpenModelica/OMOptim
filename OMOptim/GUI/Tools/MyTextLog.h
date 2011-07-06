@@ -44,15 +44,15 @@
 #include <QtGui/QTextBrowser>
 
 
-class MyTextLog :
-	public QTextBrowser
+class MyTextLog : public QTextBrowser
 {
+    Q_OBJECT
 public:
 	MyTextLog(void);
 	~MyTextLog(void);
 
-	virtual void setSource ( const QString & name );
-
+    public slots :
+        virtual void setSource ( const QUrl & name );
 
 };
 

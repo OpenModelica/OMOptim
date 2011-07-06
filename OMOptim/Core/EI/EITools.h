@@ -67,6 +67,8 @@ public:
 		QMap<EIGroupFact*,EIGroup*> &factGroupMap
 		);
 
+        static double DTlm(METemperature T1in,METemperature T1out,METemperature T2in,METemperature T2out);
+        static double DTlm(double dT1,double dT2);
 
 	
 };

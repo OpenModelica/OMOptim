@@ -46,7 +46,7 @@
 #include "ModModel.h"
 #include "ModComponent.h"
 #include "MOSettings.h"
-#include "ModModelParameter.h"
+#include "MOParameter.h"
 
 class ModModelPlus;
 
@@ -92,7 +92,7 @@ class ModPlusCtrl :public QObject
 	virtual void setMmoFolder(QString);
 	void setMoFilePath(QString);
 
-	MOVector<ModModelParameter>* parameters();
+        MOParameters* parameters();
 
 protected:
 	ModModelPlus* _modModelPlus;
@@ -100,7 +100,7 @@ protected:
 	QString _moFilePath;
 	QString _modModelName;
 	bool _copyAllMoOfFolder;
-	MOVector<ModModelParameter> *_parameters;
+        MOParameters *_parameters;
 	MOomc* _moomc;
 
 };

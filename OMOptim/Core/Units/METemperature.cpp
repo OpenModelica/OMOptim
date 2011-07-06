@@ -139,3 +139,12 @@ bool METemperature::operator>(const METemperature& b) const
 {
     return value(_unit)>b.value(_unit);
 }
+
+bool METemperature::operator<=(const METemperature& b) const
+{
+    return value(_unit)<=b.value(_unit);
+}
+bool METemperature::operator>=(const METemperature& b) const
+{
+    return value(_unit)>=b.value(_unit);
+}

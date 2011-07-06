@@ -46,6 +46,7 @@
 
 #include "ModClass.h"
 #include "ModReader.h"
+#include "MOomc.h"
 
  class ModClassTree : public QAbstractItemModel
  {
@@ -53,16 +54,56 @@
 
  public:
 
-     ModClassTree(ModReader* _modReader,ModClass*, QObject *parent = 0);
-     ~ModClassTree();
 
 
+
+
+
+     ModClassTree(ModReader* _modReader,MOomc* moomc,QObject *parent = 0);
+     virtual ~ModClassTree();
+     ModClass* rootElement(){return _rootElement;}
+
+
+     // Read and fullfill functions
+     void readFromOmc(ModClass*,int depthMax = 1000, int curDepth = 0);	//Read data and children with OMC calls
+     void readFromOmcV2(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
+     void readFromOmcV3(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
+     void readFromOmcV4(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls, using OMEdit version
+
+
+     // add functions
+     bool addModClass(ModClass* parent,QString className,QString filePath="");
+     bool addChild(ModClass* parent,ModClass* child);
+
+     // Find functions
+     bool isInDescendants(QString fullName,ModClass* parent=NULL);
+     ModClass* findInDescendants(QString fullName,ModClass* parent=NULL);
+     QList<ModClass*> findCompOfClassInDescendants(QString _className,ModClass* parent=NULL);
+
+     ModModel* modelOf(ModClass* item);
+     ModModel* modelOf(QString itemName);
+
+     void childrenInfos(ModClass* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &compsNames,QStringList &compsClasses);
+
+     //*****************************
+     //Ports
+     //*****************************
+     QList<ModClass*> getPorts(ModClass* parent);
+     QStringList getPorts(ModClass* parent,Modelica::NameFormat format);
+
+     // remove functions
+     void clear();
+
+
+
+     // QAbstractItemModel functions
      QVariant data(const QModelIndex &index, int role) const;
      Qt::ItemFlags flags(const QModelIndex &index) const;
      QVariant headerData(int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole) const;
      QModelIndex index(int row, int column,
                        const QModelIndex &parent = QModelIndex()) const;
+     QModelIndex indexOf(ModClass*,int column=0);
      QModelIndex parent(const QModelIndex &index) const;
      int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	 int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -74,11 +115,12 @@
 
 
  private:
-	 ModClass* rootElement;
-	 ModReader* modReader;
-         bool enabled;
+         ModClass* _rootElement;
+         ModReader* _modReader;
+         bool _enabled;
+         MOomc* _moomc;
 
-	 bool showOnlyComponents;
+         bool _showOnlyComponents;
 
 	 public slots:
 		 void allDataChanged();

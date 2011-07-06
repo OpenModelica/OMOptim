@@ -46,6 +46,7 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QMainWindow>
 #include <QtCore/QSettings>
+#include <QtCore/QString>
 
 #include "MOTabBase.h"
 
@@ -55,7 +56,7 @@ class MOTabSimple : public QWidget,public MOTabBase
 
 public:
         MOTabSimple(QString _projectName,MOItem* _mainItem,QWidget* parent=0);
-	~MOTabSimple(void);
+        virtual  ~MOTabSimple(void);
 
 
 };
@@ -66,7 +67,7 @@ class MOTabCplx : public QMainWindow,public MOTabBase
 
 public:
         MOTabCplx(QString _projectName,MOItem* _mainItem,QWidget* parent);
-	~MOTabCplx(void);
+        virtual  ~MOTabCplx(void);
 	void readGUIState();
 
 protected :

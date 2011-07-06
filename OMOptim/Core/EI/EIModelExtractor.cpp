@@ -5,7 +5,7 @@ EIModelExtractor::EIModelExtractor()
 }
 
 
-EIModelContainer* EIModelExtractor::extractFromModClass(ModClass* model,ModReader* modReader,MOomc* moomc)
+EIModelContainer* EIModelExtractor::extractFromModClass(ModClass* model,ModClassTree* modClassTree,MOomc* moomc)
 {
 
 
@@ -26,7 +26,7 @@ EIModelContainer* EIModelExtractor::extractFromModClass(ModClass* model,ModReade
     bool ok;
 
     //Groups
-    tmpModEI =  modReader->findCompOfClassInDescendants(model,EILinguist::getModelicaClassType(EI::GROUP));
+    tmpModEI =  modClassTree->findCompOfClassInDescendants(EILinguist::getModelicaClassType(EI::GROUP),model);
     EIGroup* newEIGroup;
     for(int i=0;i<tmpModEI.size();i++)
     {
@@ -51,7 +51,7 @@ EIModelContainer* EIModelExtractor::extractFromModClass(ModClass* model,ModReade
     }
 
     //Streams
-    tmpModEI =  modReader->findCompOfClassInDescendants(model,EILinguist::getModelicaClassType(EI::STREAM));
+    tmpModEI =  modClassTree->findCompOfClassInDescendants(EILinguist::getModelicaClassType(EI::STREAM),model);
     EIStream* newEIStream;
 
     for(int i=0;i<tmpModEI.size();i++)

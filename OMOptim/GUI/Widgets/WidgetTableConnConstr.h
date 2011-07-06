@@ -62,7 +62,7 @@ class WidgetTableConnConstr : public QWidget {
 
 
 public:
-        explicit WidgetTableConnConstr(EIConnConstrs *constrs, EITree* _eiTree,bool _editable,QWidget *parent = 0);
+        explicit WidgetTableConnConstr(EIConnConstrs *constrs, EITree* _eiTree,bool _editable,QWidget *parent);
     virtual ~WidgetTableConnConstr();
 
 	public slots:

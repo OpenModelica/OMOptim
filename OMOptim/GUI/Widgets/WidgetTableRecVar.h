@@ -61,7 +61,7 @@ class WidgetTableRecVar : public QDialog {
 
 
 public:
-    explicit WidgetTableRecVar(OptimResult*,QWidget *parent = 0);
+    explicit WidgetTableRecVar(OptimResult*,QWidget *parent);
     virtual ~WidgetTableRecVar();
 
 public slots:

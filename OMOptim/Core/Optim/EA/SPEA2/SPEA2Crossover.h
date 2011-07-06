@@ -43,13 +43,14 @@
 #include <eoOp.h>
 
 #include "LowTools.h"
+#include "MOParameter.h"
 
 template<class EOT>
 class EA2Crossover: public eoQuadOp<EOT>
 {
 public:
   /// Ctor
-  EA2Crossover(EAConfig* _config):eoQuadOp<EOT>() {config = _config;}
+  EA2Crossover(MOParameters* _parameters):eoQuadOp<EOT>() {parameters = _parameters;}
   virtual std::string className() const {return "EA2Crossover";}
 virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 	
@@ -64,7 +65,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 	//********************************
 	// Crossover on double variables 
 	//********************************
-	if(rng.flip(config->getParameterValue("doublePCross",0.25)) && (_eoA.doubleVars.size()>0))
+        if(rng.flip(parameters->value("doublePCross",0.25).toDouble()) && (_eoA.doubleVars.size()>0))
 	{
 		// getting new eoA iVar1 value
 		iVar1 = LowTools::round(rng.random(_eoA.doubleVars.size()-1));
@@ -86,7 +87,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 	//********************************
 	// Crossover on int variables 
 	//********************************
-	if(rng.flip(config->getParameterValue("intPCross",0.25)) && (_eoA.intVars.size()>0))
+        if(rng.flip(parameters->value("intPCross",0.25).toDouble()) && (_eoA.intVars.size()>0))
 	{
 		// getting new eoA iVar1 value
 		iVar1 = LowTools::round(rng.random(_eoA.intVars.size()-1));
@@ -108,7 +109,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 	//********************************
 	// Crossover on bool variables 
 	//********************************
-	if(rng.flip(config->getParameterValue("boolPCross",0.25)) && (_eoA.boolVars.size()>0))
+        if(rng.flip(parameters->value("boolPCross",0.25).toDouble()) && (_eoA.boolVars.size()>0))
 	{
 
 		iVar1 = LowTools::round(rng.random(_eoA.boolVars.size()-1));
@@ -127,7 +128,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 }
 private :
 
-	EAConfig *config;
+        MOParameters *parameters;
 
 
 };

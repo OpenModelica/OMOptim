@@ -45,31 +45,72 @@ EITargetResult::EITargetResult(void)
 {
         _eiTree = new EITree();
         _eiConns = new EIConns();
+
+        _name = "EITargetResult";
 }
-EITargetResult::EITargetResult(Project* project, Problem* problem)
-:Result()
+EITargetResult::EITargetResult(Project* project, ModClassTree* modClassTree,Problem* problem)
+:Result(project,modClassTree,problem)
 {
-	_project = project;
-	_problem = problem;
 
         _eiTree = new EITree();
         _eiConns = new EIConns();
 
 }
 
-EITargetResult::~EITargetResult(void)
+EITargetResult::EITargetResult(Project* project, ModClassTree* modClassTree,QDomElement domResult,EITarget* problem)
+    :Result(project,modClassTree)
 {
 
-    delete _eiTree;
+    _eiTree = new EITree();
+    _eiConns = new EIConns();
 
-    _eiConns->clear();
+
+
+    //**************
+    // Result
+    //**************
+    if(!domResult.isNull())
+    {
+        this->setSuccess(true);
+
+        //Infos
+        QDomElement domInfos = domResult.firstChildElement("Infos");
+        QString resultName = domInfos.attribute("name");
+        setName(resultName);
+
+        // EI
+        QDomElement domEI = domResult.firstChildElement("EIItem");
+        EIControler::setItems(domEI,_eiTree->rootElement());
+
+        // Values
+        QDomElement cValues = domResult.firstChildElement("Values");
+        QString strTotalCost = cValues.attribute("TotalCost");
+        _totalCost = strTotalCost.toDouble();
+
+        // EIConns
+        QDomElement domEIConns = domResult.firstChildElement("EIConns");
+        _eiConns->setItems(domEIConns,_eiTree);
+
+        QDomElement cFiles = domResult.firstChildElement("Files");
+        _logFileName = cFiles.attribute("LogFile");
+        _resFileName = cFiles.attribute("ResFile");
+        _sensFileName = cFiles.attribute("SensFile");
+
+    }
+}
+
+EITargetResult::~EITargetResult(void)
+{
+    delete _eiTree;
     delete _eiConns;
 }
 
 QDomElement EITargetResult::toXmlData(QDomDocument & doc)
 {
-	// Root element
-	QDomElement cResult = doc.createElement("Result");
+        // Result element
+        QDomElement cRoot = doc.createElement("OMResult");
+        QDomElement cResult = doc.createElement(this->getClassName());
+        cRoot.appendChild(cResult);
 
 	// Problem definition
 	QDomElement cInfos = doc.createElement("Infos");
@@ -83,7 +124,7 @@ QDomElement EITargetResult::toXmlData(QDomDocument & doc)
 
         // Total cost
         QDomElement cValues = doc.createElement("Values");
-        cValues.setAttribute("TotalCost",totalCost);
+        cValues.setAttribute("TotalCost",_totalCost);
         cResult.appendChild(cValues);
 
         // files

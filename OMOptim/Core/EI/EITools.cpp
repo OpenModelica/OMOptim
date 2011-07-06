@@ -39,6 +39,7 @@
 
   */
 #include "EITools.h"
+#include <cmath>
 
 EITools::EITools(void)
 {
@@ -125,7 +126,9 @@ void EITools::getTkQpkQuk(MOOptVector *variables,
     bool ok;
 	double TinProv,ToutProv,QflowProv,DTmin2prov;
 	QList<MEQflow> DQprov;
+    MEQflow curDQ;
     QString msg;
+    bool isHotStream;
 
 	for(int iS=0;iS<streams.size();iS++)
 	{
@@ -148,37 +151,26 @@ void EITools::getTkQpkQuk(MOOptVector *variables,
 			//Cold stream
 			TinProv += DTmin2prov;
 			ToutProv += DTmin2prov;
+            isHotStream = false;
 		}
 		else
 		{
 			//Hot stream
 			TinProv += -DTmin2prov;
 			ToutProv += -DTmin2prov;
+            isHotStream = true;
 		}
 
 		DQprov.clear();
 		double DT;
 		for(int iT=0;iT<Tk.size()-1;iT++)
 		{
-			//Fill DQk
-			if(Tk.at(iT).value(METemperature::K)<std::min<double>(TinProv,ToutProv))
-			{
-				DQprov.push_back(MEQflow(0,MEQflow::W));
+            curDQ = EIReader::getIntervalQFlow(Tk.at(iT+1),Tk.at(iT),curStream);
+            if(isHotStream)// curDQ should be negative if Tout<Tin
+                curDQ = curDQ*-1;
+            DQprov.push_back(curDQ);
 			}
-			else
-			{
-				if(Tk.at(iT).value(METemperature::K)>=std::max<double>(TinProv,ToutProv))
-				{
-					DQprov.push_back(MEQflow(0,MEQflow::W));
-				}
-				else
-				{
-					DT=Tk.at(iT+1).value(METemperature::K)-Tk.at(iT).value(METemperature::K);
-					assert(QflowProv>=0);
-					DQprov.push_back(MEQflow(DT/(ToutProv-TinProv)*QflowProv,MEQflow::W)); //QFlowprov is positive, DQ is negative if Tout<Tin
-				}
-			}
-		}
+
 		// utility/process stream
         EIReader::getFirstParentGroupFact(curStream,curGroupFact,curGroup);
 
@@ -204,3 +196,28 @@ void EITools::getTkQpkQuk(MOOptVector *variables,
 	}
 }
 
+
+double EITools::DTlm(METemperature T1in,METemperature T1out,METemperature T2in,METemperature T2out)
+{
+    bool T1hoter = T1in > T2out;
+    if(T1hoter)
+        return DTlm(T1in-T2out,T1out-T2in);
+    else
+        return DTlm(T2in-T1out,T2out-T1in);
+}
+
+double EITools::DTlm(double dT1,double dT2)
+{
+    METemperature result;
+
+    if(dT1==dT2)
+        return dT1;
+
+    if((dT1==0)||(dT2==0))
+    {
+        infoSender.send(Info("Unable to compute DTlm with dT=1",ListInfo::WARNING2));
+        return 0;
+    }
+
+    return (dT1-dT2)/log(dT1/dT2);
+}

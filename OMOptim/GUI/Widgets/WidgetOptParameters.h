@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -46,13 +46,12 @@
 
 #include "ui_WidgetOptParameters.h"
 #include "MyDelegates.h"
-#include "EAConfig.h"
-#include "MyAlgoUtils.h"
+#include "OptimAlgoUtils.h"
 #include "Optimization.h"
 #include "MOTableView.h"
 #include "GuiTools.h"
 #include "Project.h"
-#include "EAConfigDialog.h"
+#include "MOParametersDlg.h"
 
 namespace Ui {
     class WidgetOptParametersClass;
@@ -67,7 +66,7 @@ class WidgetOptParameters : public QWidget {
 
 
 public:
-	explicit WidgetOptParameters(Project* project,Optimization* problem,QWidget *parent = NULL);
+        explicit WidgetOptParameters(Project* project,Optimization* problem,bool isResult,QWidget *parent = NULL);
     virtual ~WidgetOptParameters();
 
 	
@@ -78,20 +77,18 @@ public:
 
 public slots :
 
-	void launch();
 	void changedAlgorithm();
-	void onChangedCheckUseSartFile();
-	void onAlgosConfigChanged();
+
+        //void onAlgosConfigChanged();
 	void openAlgoParameters();
-	void restoreProblem();
-	void pursueMoo();
-	void selectStartFile();
-	void onTextStartFileChanged(const QString &newText);
+        //void restoreProblem();
+        //void pursueMoo();
 	void actualizeGui();
 
 private :
 	Project* _project;
 	Optimization* _problem;
+        bool _isResult;// defines wether form could be editable or not
 
 };
 

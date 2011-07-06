@@ -44,37 +44,36 @@
 Result::Result()
 {
 	_project = NULL;
-	_modModelPlus = NULL;
 	_success = false;
+        _problem = NULL;
 }
-Result::Result(Project* project,ModModelPlus* modModelPlus,Problem* problem,ModReader* modReader,ModPlusCtrl* modPlusReader)
+Result::Result(Project* project,ModClassTree* modClassTree,Problem* clonedProblem)
+:OMCase(project,modClassTree)
 {
-
-	_project = project;
-	_modModelPlus = modModelPlus;
-	_modReader = modReader;
-	_modPlusReader = modPlusReader;
-	_problem = problem;
-
+        _problem = clonedProblem;
 	_success = false;
-	_algo = problem->getCurAlgo();
 
+        if(_problem)
+            _name = _problem->name()+"_Result";
 }
 
 Result::Result(const Result &result)
+    :OMCase(result)
 {
+        // indication pointers
 	_project = result._project;
-	_modModelPlus = result._modModelPlus;
-	_modReader = result._modReader;
-	_modPlusReader = result._modPlusReader;
+        _modClassTree = result._modClassTree;
 
-	_problem = result._problem;
+        // filled pointers
+        _problem = result._problem->clone();
+
+        // information
 	_success = result._success;
-	_algo = _problem->getCurAlgo();
 
 
-	_name = result._name;
-	_filesToCopyNames = result._filesToCopyNames;
+	
+        //_name = result._name;
+        //_filesToCopyNames = result._filesToCopyNames;
 	
 	_computationTime = result._computationTime;
 	_hour = result._hour;
@@ -83,6 +82,15 @@ Result::Result(const Result &result)
 
 Result::~Result(void)
 {
+    delete _problem;
+}
+
+void Result::setDefaultSaveFileName()
+{
+        if(_name.isEmpty())
+                _saveFileName= "result.mpb";
+        else
+                _saveFileName = _name + ".mpb";
 }
 
 QString Result::getFieldName(int field,int role)
@@ -94,52 +102,17 @@ unsigned Result::getNbFields()
 	return 1;
 }
 
-QStringList Result::filesToCopyNames()
-{
-	return _filesToCopyNames;
-}
-
-void Result::setName(QString name)
-{
-	_name = name;
-}
-
-Project* Result::project()
-{
-	return _project;
-}
-ModModelPlus* Result::modModelPlus()
-{
-	return _modModelPlus;
-}
-
-ModModel* Result::modModel()
-{
-	return _modModelPlus->modModel();
-}
-
 Problem* Result::problem()
 {
 	return _problem;
 }
 
-void Result::setModModelPlus(ModModelPlus* modModelPlus)
+void Result::setProblem(Problem * clonedProblem)
 {
-	_modModelPlus = modModelPlus;
-}
-void Result::setProject(Project* project)
-{
-	_project = project;
-}
+    if(_problem && (_problem!=clonedProblem))
+        delete _problem;
 
-void Result::setProblem(Problem * problem)
-{
-	_problem = problem;
-}
-
-void Result::setAlgo(MyAlgorithm* algo)
-{
-	_algo = algo;
+    _problem = clonedProblem;
 }
 
 bool Result::isSuccess()
@@ -150,17 +123,6 @@ bool Result::isSuccess()
 void Result::setSuccess(bool success)
 {
 	_success = success;
-}
-
-
-QDir Result::saveFolder()
-{
-    return _saveFolder;
-}
-
-void Result::setSaveFolder(QDir saveFolder)
-{
-    _saveFolder = saveFolder;
 }
 
 

@@ -82,7 +82,7 @@ public slots :
 	void onFinishedOMCThread(QString);
 	void onTerminatingOMCThread(QString);
 	void enableProblemTab(QModelIndex);
-	void enableSolvedProblemTab(QModelIndex);
+        void enableResultTab(QModelIndex);
 	void onSelectedModClass(QModelIndex);
 
 
@@ -100,12 +100,12 @@ public slots :
 	void quit();
 	void openSettings();
 
-	void projectReset();
+        void onProjectAboutToBeReset();
 	void loadMoFile();
 	void loadModelicaLibrary();
 
 	void onAddedProblem(Problem*);
-	void onAddedSolvedProblem(Problem*);
+        void onAddedResult(Result*);
 	void onComponentsUpdated();
 	void onConnectionsUpdated();
 	void onModifiersUpdated();
@@ -116,9 +116,9 @@ public slots :
 	void onProblemStopAsked();
 
 
-	void removeSolvedProblem();
-	void removeSolvedProblem(int);
-	void removeSolvedProblemTab(int);
+        void removeResult();
+        void removeResult(int);
+        void removeResultTab(int);
 
 	void removeProblem();
 	void removeProblem(int);
@@ -126,11 +126,11 @@ public slots :
 
 	void renameProblem();
 	void renameProblem(int);
-	void renameSolvedProblem();
-	void renameSolvedProblem(int);
+        void renameResult();
+        void renameResult(int);
 
 	// Pop-up menus
-	void showSolvedProblemPopup(const QPoint & iPoint);
+        void showResultPopup(const QPoint & iPoint);
 	void showProblemPopup(const QPoint & iPoint);
 	void showModClassTreePopup(const QPoint & iPoint);
 
@@ -154,7 +154,6 @@ private:
 
 	//Recent Files and folders
 	void createRecentFilesMenu();
-	void updateRecentFilesMenu();
 	void updateRecentFilesList(QString);
 
 	void setLastProjectFolder(QString folderName);
@@ -174,8 +173,8 @@ private :
 	TabProject *_tabProject;
 	WidgetProgress* _widgetProgress;
 	enum { MaxRecentFiles = 5 };
-    QAction *_recentFileActs[MaxRecentFiles];
-	QAction *_separatorAct;
+        QList<QAction*> _recentFileActs;
+
 	MyTextLog *_textLog;
 
 

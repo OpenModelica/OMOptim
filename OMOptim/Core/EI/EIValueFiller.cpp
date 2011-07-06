@@ -80,13 +80,13 @@ EITree* EIValueFiller::getFilledEI(EITree* referencedEI,MOOptVector* variables,
     for(int iModel=0;iModel<missingModels.size();iModel++)
     {
         corrModModelPlus = project->modModelPlus(missingModels.at(iModel));
-        OneSimulation oneSim(project,project->rootModClass(),project->modReader(),project->modPlusCtrl(),corrModModelPlus);
+        OneSimulation oneSim(project,project->modClassTree(),project->modPlusCtrl(),corrModModelPlus);
 
-        oneSim.launch(ProblemConfig());
+        OneSimResult* result = oneSim.launch(ProblemConfig());
 
-        if(oneSim.result()->isSuccess())
+        if(result->isSuccess())
         {
-            variables->append(*oneSim.result()->finalVariables(),true);
+            variables->append(*result->finalVariables(),true);
         }
     }
 
@@ -132,7 +132,7 @@ QMap<EIItem*,QStringList> EIValueFiller::getReferences(EIItem* referencedEI, boo
         curRefs = referencedEI->references();
         // add model name in front of ref if it is in.
         // 1 : is referencedEI from a model
-        curModel = dynamic_cast<ModModel*>(project->modReader()->findInDescendants(project->rootModClass(),referencedEI->model()));
+        curModel = dynamic_cast<ModModel*>(project->modClassTree()->findInDescendants(referencedEI->model()));
         // 2 : if yes, for each reference, add modelName+"." in front of each reference
         if(curModel)
         {
@@ -141,7 +141,7 @@ QMap<EIItem*,QStringList> EIValueFiller::getReferences(EIItem* referencedEI, boo
 
             for(int i=0;i<curRefs.size();i++)
             {
-                refInModel = project->modReader()->findInDescendants(curModel,curRefs.at(i));
+                refInModel = project->modClassTree()->findInDescendants(curRefs.at(i),curModel);
                 refInModel = refInModel || curModModelPlus->variables()->findItem(curRefs.at(i));
 
                 if(refInModel)
@@ -222,7 +222,7 @@ QList<ModModel*> EIValueFiller::corrModels(QMap<EIItem*,QStringList> mapRefs,Pro
 
     for(int i=0;i<refsNames.size();i++)
     {
-        corrModel = project->modReader()->modelOf(refsNames.at(i),project->rootModClass());
+        corrModel = project->modClassTree()->modelOf(refsNames.at(i));
         if(corrModel && !models.contains(corrModel))
             models.push_back(corrModel);
     }

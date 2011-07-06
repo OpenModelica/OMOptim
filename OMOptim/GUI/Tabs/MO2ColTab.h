@@ -55,7 +55,7 @@ class MO2ColTab : public MOTabCplx
 
 public:
         MO2ColTab(QString _projectName,MOItem* _mainItem,bool closable=false,QWidget *parent = 0);
-        ~MO2ColTab(void);
+        virtual ~MO2ColTab(void);
 
 	QVBoxLayout *buttonsLayout;
 	QGridLayout *widgetsLayout;

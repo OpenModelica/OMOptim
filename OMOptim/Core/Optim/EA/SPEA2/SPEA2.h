@@ -62,6 +62,8 @@
 #include "OptimResult.h"
 #include "EAStdResult.h"
 
+#include "SPEA2Parameters.h"
+
 
 /********************************************************
 First multi-objective genetic algorithm implementation.
@@ -74,32 +76,33 @@ class SPEA2 : public EABase
 {
 public : 
 	SPEA2();
-	SPEA2(Project*,Problem*,ModReader*,ModPlusCtrl*,ModClass* _rootClass);
-	SPEA2(Project*,Problem*,ModReader*,ModPlusCtrl*,ModClass* _rootClass,EAConfig*);
+        SPEA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*);
+        SPEA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*,MOParameters*);
 	SPEA2(const SPEA2 &);
 
 	SPEA2* clone();
 
-	QList<int> compatibleProblems();
+	QList<int> compatibleOMCases();
 
 	Result* launch(QString tempDir);
 	QString name();
 	void setDefaultParameters();
 
 private :
-	inline Result* buildResult(moeoUnboundedArchive<EOStd> &, EAConfig* );
+        inline Result* buildResult(moeoUnboundedArchive<EOStd> & );
 
 
 
 };
 
-Result* SPEA2::buildResult(moeoUnboundedArchive<EOStd> & arch, EAConfig* config)
+Result* SPEA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
 {
 	Result* result;
 	switch(_problem->type())
 	{
 	case Problem::OPTIMIZATION :
-		result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,_modReader,_modPlusReader,arch,config);
+                result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,
+                                                                       _modClassTree,_modPlusCtrl,arch,_parameters);
 		break;
 	}
 	return result;

@@ -42,7 +42,7 @@
 
 #include "Project.h"
 #include "Optimization.h"
-#include "MyEAProgress.h"
+#include "OMEAProgress.h"
 #include "VariablesManip.h"
 #include "float.h"
 
@@ -71,9 +71,8 @@ public:
     {
         _problem = EAStdOptimizationEval._problem;
         _project = EAStdOptimizationEval._project;
-        _modReader = EAStdOptimizationEval._modReader;
-        _modPlusReader = EAStdOptimizationEval._modPlusReader;
-        _rootModClass = EAStdOptimizationEval._rootModClass;
+        _modPlusCtrl = EAStdOptimizationEval._modPlusCtrl;
+        _modClassTree = EAStdOptimizationEval._modClassTree;
         _tempDir = EAStdOptimizationEval._tempDir;
         _subModels = EAStdOptimizationEval._subModels;
         _previousSubModel = EAStdOptimizationEval._previousSubModel;
@@ -86,14 +85,12 @@ public:
      * \brief Ctor.
      */
     EAStdOptimizationEval(Project* project,Optimization* problem,QList<ModModelPlus*> subModels,QString tempDir
-                          ,ModReader* modReader,ModPlusCtrl* modPlusReader,ModClass* rootModClass)
+                          ,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
 	{
         _project = project;
         _problem = problem;
-        _modReader = modReader;
-        _modPlusReader = modPlusReader;
-        _rootModClass = rootModClass;
-
+        _modPlusCtrl = modPlusCtrl;
+        _modClassTree = modClassTree;
         _tempDir = tempDir;
         _subModels = subModels;
         _previousSubModel = -1;
@@ -138,7 +135,7 @@ public:
 			/************************************
 			Creating a new OneSimulation
 			************************************/
-            OneSimulation *oneSim = new OneSimulation(_project,_rootModClass,_modReader,_modPlusReader,model);
+            OneSimulation *oneSim = new OneSimulation(_project,_project->modClassTree(),_modPlusCtrl,model);
             oneSim->_filesToCopy = _problem->_filesToCopy;
 			
 			//Reading chromosome and placing it in overwritedvariables
@@ -186,8 +183,7 @@ public:
 					refillTempDir = true;
 			}
             ProblemConfig config(_tempDir,refillTempDir);
-			oneSim->launch(config);
-			OneSimResult *result = oneSim->result();
+            OneSimResult *result =  oneSim->launch(config);
 
             _previousSubModel = iSubModel;
 
@@ -201,7 +197,7 @@ public:
 				{
                     EITarget* eiTarget = dynamic_cast<EITarget*>(_problem->eiProblem());
                     eiTarget->setInputVars(result->finalVariables());
-                    eiTarget->launch(ProblemConfig());
+                    EITargetResult* eiResult = eiTarget->launch(ProblemConfig());
 				}
 			}
 			#endif
@@ -216,7 +212,7 @@ public:
 
 			if (!result->isSuccess())
 			{
-                infoSender.send(Info(ListInfo::ONESIMULATIONFAILED));
+
 				resultOk = false;
 			}
 			else
@@ -269,9 +265,8 @@ public:
 protected:
     Optimization* _problem;
     Project* _project;
-    ModReader* _modReader;
-    ModPlusCtrl* _modPlusReader;
-    ModClass* _rootModClass;
+    ModClassTree* _modClassTree;
+    ModPlusCtrl* _modPlusCtrl;
     QList<ModModelPlus*> _subModels;
     std::vector<OneSimResult*> *_resultPoints;
     QString _tempDir;

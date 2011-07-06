@@ -59,7 +59,7 @@
 #include "ModClass.h"
 #include "MOVector.h"
 #include "vqtconvert.h"
-#include "ModModelParameter.h"
+#include "MOParameter.h"
 
 class Dymola
 {
@@ -77,9 +77,9 @@ public:
 
 
 	static QString getExecutablePath();
-	static bool firstRun(QString moPath,QString modelToConsider,QString storeFolder);
+        static bool firstRun(QString moPath,QString modelToConsider,QString storeFolder,QString logFilePath);
 	static bool createDsin(QString moPath,QString modelToConsider,QString folder);
-	static void start(QString path);
+        static void start(QString path,int maxNSec=-1);
 	static void verifyInstallation();
 	//static QString getPreambleFromDsin(QTextStream *);
 	static void getVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);
@@ -88,14 +88,15 @@ public:
 	static void getFinalVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);
 	static void getFinalVariablesFromDsFile(QTextStream *, MOVector<Variable> *,QString _modelName);
 
-	static void setVariablesToDsin(QString fileName,QString modelName, MOVector<Variable> *,MOVector<ModModelParameter> *parameters);
-	static void modifyPreamble(QString &allDsinText,MOVector<ModModelParameter> *parameters);
+	static void setVariablesToDsin(QString fileName,QString modelName, MOVector<Variable> *,MOParameters *parameters);
+        static void writeParameters(QString &allDsinText,MOParameters *parameters);
 	static QString sciNumRx();
 	//static QString Dymola::variableToValueLines(Variable* variable);
 
 
 	// Parameters
-	enum DymolaParameters{STOPTIME};
+        enum DymolaParameters{STOPTIME,TOLERANCE,NINTERVAL,SOLVER,MAXSIMTIME};
+        enum DymolaSolvers{DASSL=8,EULER=11};
 
 };
 

@@ -86,11 +86,11 @@ QGridLayout* DlgSettings::buildLayoutFromSettings()
 		{
 			// add setting
 			QString dispName;
-			if(settings.names.at(index1).contains("/"))
-				dispName = settings.names.at(index1).section("/",1,-1);
-			else
-				dispName = settings.names.at(index1);
-
+//			if(settings.names.at(index1).contains("/"))
+//				dispName = settings.names.at(index1).section("/",1,-1);
+//			else
+//				dispName = settings.names.at(index1);
+                        dispName = settings.descs.at(index1);
 			boxLayout->addWidget(new QLabel(dispName),iRow,0);
 
 			int type = settings.types.at(index1);
@@ -113,7 +113,6 @@ QGridLayout* DlgSettings::buildLayoutFromSettings()
 				((QLineEdit*)valueWidget)->setText(value.toString());
 				//add button
 				break;
-
 			case MOSettings::DOUBLE :
 				valueWidget = new QDoubleSpinBox(this);
 				((QDoubleSpinBox*)valueWidget)->setValue(value.toDouble());

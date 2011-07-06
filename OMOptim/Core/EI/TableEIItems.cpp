@@ -46,9 +46,11 @@ TableEIItems::TableEIItems(EIItem * _rootElement,bool _editable,EI::Type _filter
 	rootElement = _rootElement;
 	filter = _filter;
 	recursive = _recursive;
+    enabled = true;
 
 	updateList();
 
+    connect(rootElement,SIGNAL(deleted()),this,SLOT(onRootElementDeleted()));
 	connect(rootElement,SIGNAL(modified()),this,SLOT(updateList()));
 }
 
@@ -59,8 +61,11 @@ TableEIItems::~TableEIItems(void)
 
 void TableEIItems::updateList()
 {
+    if(enabled)
+    {
 	eiItems.clear();
     eiItems = EIReader::getItems(rootElement,recursive,filter);
+}
 }
 
 int TableEIItems::columnCount(const QModelIndex &parent) const
@@ -74,11 +79,12 @@ int TableEIItems::columnCount(const QModelIndex &parent) const
 	default :
 		return 0;
 	}
-	
 }
 
 QVariant TableEIItems::data(const QModelIndex &index, int role) const
 {
+    if(enabled)
+    {
 	QVariant result;
 
 	if (!index.isValid())
@@ -111,6 +117,7 @@ QVariant TableEIItems::data(const QModelIndex &index, int role) const
 				break;
 
 	}
+}
 
 	return QVariant();
 }
@@ -206,6 +213,16 @@ QModelIndex TableEIItems::parent(const QModelIndex &index) const
 
 int TableEIItems::rowCount(const QModelIndex &parent) const
 {
+    if(enabled)
+    {
 	return eiItems.size();
 }
+    else
+        return 0;
+}
 
+void TableEIItems::onRootElementDeleted()
+{
+    enabled = false;
+    this->reset();
+}

@@ -56,7 +56,7 @@ WidgetBlocks::WidgetBlocks(Project* project,OptimResult* result,QWidget *parent)
 	connect(_result,SIGNAL(curPointChanged()),this,SLOT(onResultCurPointChanged()));
 
 	_blockScene = new BlockSubsScene(((Optimization*)_result->problem())->blockSubstitutions(),_result->modModel(),
-		_project->rootModClass(),_project->modReader(),true);
+                _project->modClassTree(),true);
 	_ui->graphBlocks->setScene(_blockScene);
 	_ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
 	connect(_blockScene, SIGNAL(zoomRect(QRectF)),

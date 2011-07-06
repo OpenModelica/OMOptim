@@ -42,7 +42,7 @@
 
 
 #include "Problem.h"
-#include "ModClass.h"
+#include "ModClassTree.h"
 #include "ModModelPlus.h"
 #include <QtCore/QStringList>
 #include <QtXml/QDomDocument>
@@ -58,7 +58,7 @@ class BlockSubstitutions : public QObject,public QVector<BlockSubstitution*>
 
 public:
 	BlockSubstitutions(void);
-	BlockSubstitutions(Project* _project,ModModelPlus* _model,QDomElement _el,ModClass* _modelRoot,ModReader*);
+        BlockSubstitutions(Project* _project,ModModelPlus* _model,QDomElement _el,ModClassTree*);
 	~BlockSubstitutions(void);
 
 	BlockSubstitutions* clone();

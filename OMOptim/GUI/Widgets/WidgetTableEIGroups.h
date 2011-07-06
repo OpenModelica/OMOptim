@@ -62,7 +62,7 @@ class WidgetTableEIGroups : public QWidget {
 
 
 public:
-        explicit WidgetTableEIGroups(EIItem* _rootEI,bool _editable,QWidget *parent = 0);
+        explicit WidgetTableEIGroups(EIItem* _rootEI,bool _editable,QWidget *parent);
     virtual ~WidgetTableEIGroups();
 
 	public slots:

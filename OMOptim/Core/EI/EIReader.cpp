@@ -267,7 +267,7 @@ QStringList EIReader::getAllItemNames(EIItem* item,EI::Type filter)
 
 
 // Streams filter and sort functions
-QList<EIStream*> EIReader::getStreamsAboveT(METemperature T,QList<EIStream*> allStreams,MOOptVector* variables)
+QList<EIStream*> EIReader::getStreamsAboveT(METemperature T,QList<EIStream*> allStreams)
 {
     QList<EIStream*> list;
     EIStream* curStream;
@@ -282,7 +282,7 @@ QList<EIStream*> EIReader::getStreamsAboveT(METemperature T,QList<EIStream*> all
     return list;
 }
 
-QList<EIStream*> EIReader::getStreamsBelowT(METemperature T,QList<EIStream*> allStreams,MOOptVector* variables)
+QList<EIStream*> EIReader::getStreamsBelowT(METemperature T,QList<EIStream*> allStreams)
 {
     QList<EIStream*> list;
     EIStream* curStream;
@@ -296,6 +296,128 @@ QList<EIStream*> EIReader::getStreamsBelowT(METemperature T,QList<EIStream*> all
     }
     return list;
 
+}
+
+QList<EIStream*> EIReader::getStreamsPresentInDT(METemperature Thot,METemperature Tcold,QList<EIStream*> allStreams)
+{
+    QList<EIStream*> list;
+    EIStream* curStream;
+
+    list = getStreamsBelowT(Thot,allStreams);
+    list = getStreamsAboveT(Tcold,list);
+
+    return list;
+}
+
+
+static MEQflow EIReader::getIntervalQFlow(METemperature T1,METemperature T2,EIStream* stream,bool useCorrectedT)
+{
+    METemperature TIntHot = std::max(T1,T2);
+    METemperature TIntCold = std::min(T1,T2);
+    Q_ASSERT(stream->ToutNum!=stream->TinNum);
+
+    METemperature TStreamHot = std::max(stream->TinNum,stream->ToutNum);
+    METemperature TStreamCold = std::min(stream->TinNum,stream->ToutNum);
+
+    if(useCorrectedT)
+    {
+        bool isHotStream = (stream->TinNum > stream->ToutNum);
+        double DTmin2prov = stream->getFieldValue(EIStream::DTMIN2).toDouble();
+
+        if(!isHotStream)
+        {
+            //Cold stream
+            TStreamHot += DTmin2prov;
+            TStreamCold += DTmin2prov;
+        }
+        else
+        {
+            //Hot stream
+            TStreamHot += -DTmin2prov;
+            TStreamCold += -DTmin2prov;
+        }
+
+    }
+
+
+    //if stream not in interval, return 0;
+    if((TStreamHot<TIntCold)||(TStreamCold>TIntHot))
+        return 0;
+
+
+    METemperature dTint = std::min(TStreamHot,TIntHot)-std::max(TStreamCold,TIntCold);
+    METemperature dTstream = TStreamHot-TStreamCold;
+    double ratio = dTint.value()/dTstream.value();
+
+    MEQflow dQ = stream->QflowNum*ratio;
+    Q_ASSERT(dQ.value()>=0);
+    return dQ;
+}
+
+QList<int> EIReader::getTIntervalsConcerned(const QList<METemperature> &Tk,EIStream* stream,bool useCorrectedT)
+{
+    QList<int> result;
+
+
+    METemperature TStreamHot = std::max(stream->TinNum,stream->ToutNum);
+    METemperature TStreamCold = std::min(stream->TinNum,stream->ToutNum);
+
+    if(useCorrectedT)
+    {
+        bool isHotStream = (stream->TinNum > stream->ToutNum);
+        double DTmin2prov = stream->getFieldValue(EIStream::DTMIN2).toDouble();
+
+        if(!isHotStream)
+        {
+            //Cold stream
+            TStreamHot += DTmin2prov;
+            TStreamCold += DTmin2prov;
+        }
+        else
+        {
+            //Hot stream
+            TStreamHot += -DTmin2prov;
+            TStreamCold += -DTmin2prov;
+        }
+    }
+
+    for(int i=0;i<Tk.size()-1;i++)
+    {
+        if((TStreamCold<std::max(Tk.at(i),Tk.at(i+1)))
+            &&(TStreamHot>std::min(Tk.at(i),Tk.at(i+1))))
+            result.push_back(i);
+    }
+    return result;
+}
+
+static QList<EIStream*> EIReader::getColdStreams(QList<EIStream*> allStreams)
+{
+    QList<EIStream*> list;
+    EIStream* curStream;
+
+    for(int i=0;i<allStreams.size();i++)
+    {
+        curStream = allStreams.at(i);
+
+        if(curStream->TinNum < curStream->ToutNum)
+            list.push_back(curStream);
+    }
+    return list;
+}
+
+static QList<EIStream*> EIReader::getHotStreams(QList<EIStream*> allStreams)
+{
+    QList<EIStream*> list;
+    EIStream* curStream;
+
+    for(int i=0;i<allStreams.size();i++)
+    {
+        curStream = allStreams.at(i);
+
+        if(curStream->TinNum > curStream->ToutNum)
+            list.push_back(curStream);
+    }
+    return list;
 }
 
 void EIReader::sortByCp(QList<EIStream*> & allStreams,Qt::SortOrder order)

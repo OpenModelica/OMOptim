@@ -45,6 +45,7 @@
 
         //STD Headers
 #include <iostream>
+#include <stdexcept>
 
         //QT Headers
 #include <QtCore/QStringList>

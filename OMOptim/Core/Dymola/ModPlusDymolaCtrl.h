@@ -13,6 +13,7 @@ http://www-cep.ensmp.fr/english/
 
 #include "ModPlusCtrl.h"
 #include "Dymola.h"
+#include <limits>
 
 class ModPlusDymolaCtrl :public ModPlusCtrl
 {

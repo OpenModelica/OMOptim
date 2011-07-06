@@ -42,16 +42,16 @@
 
 #include "MOVector.h"
 #include "EIConnConstr.h"
-
+/**
+ *  Class for connection constraints in Energy integratio
+ */
 class EIConnConstrs : public MOVector<EIConnConstr>
 {
 public:
 	EIConnConstrs(void);
+        EIConnConstrs(const EIConnConstrs &);
 	~EIConnConstrs(void);
-
 	EIConnConstrs* clone();
-
-	
         EIConnConstrs(QDomElement & domList, EITree* eiTree);
         QMultiMap<EIStream*,EIStream*> getMapStreams(MOOptVector *variables);
 

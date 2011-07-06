@@ -45,14 +45,13 @@
 
 
 WidgetTreeStreams::WidgetTreeStreams(EITree* _eiTree, bool _showFields,bool _editable,
-                                     ModReader* _modReader,ModClass* _rootModClass, MOomc* _moomc,MOOptVector *_variables,QWidget *parent) :
+                                     ModClassTree* _modClassTree, MOomc* _moomc,QWidget *parent,MOOptVector *_variables) :
     QWidget(parent),
     ui(new Ui::WidgetTreeStreamsClass)
 {
     ui->setupUi(this);
 	
-        modReader = _modReader;
-        rootModClass = _rootModClass;
+    modClassTree = _modClassTree;
         moomc= _moomc;
 
 	variables = _variables;
@@ -71,6 +70,7 @@ WidgetTreeStreams::WidgetTreeStreams(EITree* _eiTree, bool _showFields,bool _edi
 		ui->pushAddGroup->hide();
 		ui->pushAddStream->hide();
 		ui->pushRemove->hide();
+        ui->pushLoadModel->hide();
 	}
 	
 
@@ -122,7 +122,7 @@ WidgetTreeStreams::WidgetTreeStreams(EITree* _eiTree, bool _showFields,bool _edi
 	treeView->setItemDelegateForColumn(EIStream::QFLOW_U,qUDlg);
 
 	//WidgetEIGroup
-	widgetEIGroup = new WidgetEIGroup(NULL,true,this);
+    widgetEIGroup = new WidgetEIGroup(NULL,this,true);
 	widgetEIGroup->setVisible(false);
 	ui->layoutWidgetItem->addWidget(widgetEIGroup);
 	connect(treeView,SIGNAL(clicked(QModelIndex)),

@@ -132,6 +132,7 @@ public:
 	QStringList getChildrenNames();
 	bool childrenReaden();
 	void setChildrenReaden(bool);
+        int indexInParent();
 
 	ModClass* child(int row);
 	ModClass* compChild(int row);

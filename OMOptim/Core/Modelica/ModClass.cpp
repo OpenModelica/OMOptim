@@ -236,6 +236,30 @@ ModClass* ModClass::modelChild(int nRow)
 		return NULL;
 }
 
+int ModClass::indexInParent()
+{
+    if(parent()==NULL)
+        return -1;
+
+
+    //looking for row number of child in parent
+    int nbBrothers = parent()->childCount();
+    bool found = false;
+    int iC=0;
+
+    while(!found && iC<nbBrothers)
+    {
+        found = (parent()->child(iC)==this);
+        if(!found)
+            iC++;
+    }
+    if(!found)
+        return -1;
+    else
+        return iC;
+}
+
+
 QString ModClass::filePath()
 {
 	if(_filePath.isEmpty()&& (_parent!=NULL))

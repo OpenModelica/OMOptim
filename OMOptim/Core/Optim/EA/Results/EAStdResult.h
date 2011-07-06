@@ -50,7 +50,7 @@
 
 #include "VariableType.h"
 #include "OptimResult.h"
-#include "EAConfig.h"
+#include "MOParameter.h"
 #include "Problem.h"
 #include "Optimization.h"
 
@@ -60,18 +60,17 @@
 {
 public :
 	inline static OptimResult* buildOptimResult(Project*,Optimization* ,QList<BlockSubstitutions*>,
-                                                    ModReader* modReader,ModPlusCtrl* modPlusReader,
-                                                    moeoUnboundedArchive<EOT> & arch, EAConfig* config);
+                                                    ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,
+                                                    moeoUnboundedArchive<EOT> & arch, MOParameters* parameters);
 };
 
 template<class EOT>
 OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* problem,QList<BlockSubstitutions*> subBlocks,
-                                                ModReader* modReader,ModPlusCtrl* modPlusReader,
-                                                moeoUnboundedArchive<EOT> & arch, EAConfig* config)
+                                                ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,
+                                                moeoUnboundedArchive<EOT> & arch, MOParameters* parameters)
 {
-    OptimResult *result = new OptimResult(project,problem->modModelPlus(),problem,modReader,modPlusReader);
-    result->setName(problem->name()+" results");
-    result->setAlgo(problem->getCurAlgo()->clone());
+    OptimResult *result = new OptimResult(project,problem->modModelPlus(),problem,modClassTree,modPlusCtrl,problem->getCurAlgo()->clone());
+    result->setName(problem->name()+" result");
     result->_subBlocks = subBlocks;
 
     int nbScans = VariablesManip::nbScans(problem->scannedVariables());

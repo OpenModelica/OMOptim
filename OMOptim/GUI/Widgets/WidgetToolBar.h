@@ -57,7 +57,7 @@ class WidgetToolBar : public QDialog {
 
 
 public:
-    explicit WidgetToolBar(QWidget *parent = 0);
+    explicit WidgetToolBar(QWidget *parent);
     virtual ~WidgetToolBar();
 
 

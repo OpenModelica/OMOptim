@@ -1,10 +1,10 @@
-ï»¿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
- * SE-58183 LinkÃ¶ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -83,12 +83,11 @@
 #include "EAStdCheckPoint.h"
 #include "NSGA2Algo.h"
 #include "EAStdBounds.h"
-#include "MyEAEvalFuncCounter.h"
-#include "MyEAProgress.h"
-#include "MyEAEvalContinue.h"
+#include "OMEAEvalFuncCounter.h"
+#include "OMEAProgress.h"
+#include "OMEAEvalContinue.h"
 #include "MyEoGnuplot1DMonitor.h"
 #include "EAStdOptimizationEval.h"
-//#include "EAStdVariableDetEval.h"
 #include "EAStdResult.h"
 
 NSGA2::NSGA2():EABase()
@@ -96,17 +95,17 @@ NSGA2::NSGA2():EABase()
 	setDefaultParameters();
 }
 
-NSGA2::NSGA2(Project* _project,Problem* _problem,ModReader* _modReader,ModPlusCtrl* _modPlusReader,ModClass* rootClass)
-:EABase(_project,_problem,_modReader,_modPlusReader,rootClass)
+NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree,ModPlusCtrl* _modPlusCtrl)
+:EABase(_project,_problem,_modClassTree,_modPlusCtrl)
 {
 	setDefaultParameters();
 };
 
 
-NSGA2::NSGA2(Project* _project,Problem* _problem,ModReader* _modReader,ModPlusCtrl* _modPlusReader,ModClass* rootClass,EAConfig* eaConfig)
-:EABase(_project,_problem,_modReader,_modPlusReader,rootClass)
+NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree,ModPlusCtrl* _modPlusCtrl,MOParameters* parameters)
+:EABase(_project,_problem,_modClassTree,_modPlusCtrl)
 {
-	_config = eaConfig;	
+        _parameters = parameters->clone();
 };
 
 NSGA2::NSGA2(const NSGA2 & ea):EABase(ea)
@@ -126,23 +125,13 @@ QString NSGA2::name()
 
 void NSGA2::setDefaultParameters()
 {
-	_config->parameters->addItem(new AlgoParameter("PopulationSize","Population size",50,"int",1,1000));
-	_config->parameters->addItem(new AlgoParameter("MaxIterations","Max Iterations",100,"int",1,1000));
-	_config->parameters->addItem(new AlgoParameter("DoubleMutEpsilon","Epsilon for real variables mutation",0.01,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("DoublePMut","Mutation probability for real variables",0.35,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("DoublePCross","Crossover probability for real variables",0.25,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("IntPMut","Mutation probability for integer variables",0.35,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("IntPCross","Crossover probability for integer variables",0.25,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("BoolPMut","Mutation probability for boolean variables",0.35,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("BoolPCross","Crossover probability for boolean variables",0.25,"double",0,1));
-	_config->parameters->addItem(new AlgoParameter("SaveFrequency","Population saving frequency (# generations, 0 = save only final state)",0,"int",0,10000000));
+    NSGA2Parameters::setDefaultParameters(_parameters);
 }
 
-QList<int> NSGA2::compatibleProblems()
+QList<int> NSGA2::compatibleOMCases()
 {
 	QList<int> _problems;
 	_problems.push_back(Problem::OPTIMIZATION);
-//	_problems.push_back(VARIABLEDETERMINATION);
 	return _problems;
 }
 
@@ -191,10 +180,10 @@ Result* NSGA2::launch(QString tempDir)
 	/************************************
 	PROGRESS
 	************************************/
-	MyEAProgress* myEAProgress = new MyEAProgress();
-	connect(myEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
-	connect(myEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
-	int totalEval = _config->getParameterValue("MaxIterations",50);
+        OMEAProgress* omEAProgress = new OMEAProgress();
+        connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
+        connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
+        int totalEval = _parameters->value(NSGA2Parameters::MAXITERATIONS,50).toInt();
 
 	/************************************
 	FITNESS EVALUATION
@@ -203,10 +192,10 @@ Result* NSGA2::launch(QString tempDir)
 	switch(_problem->type())
 	{
 	case Problem::OPTIMIZATION :
-		plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modReader,_modPlusReader,_rootModClass);
+                plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modClassTree,_modPlusCtrl);
 		break;
 	}
-	MyEAEvalFuncCounter<EOStd>* eval = new MyEAEvalFuncCounter<EOStd> (* plainEval,myEAProgress,totalEval);
+        OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
 	state.storeFunctor(eval);
 
 	
@@ -221,10 +210,10 @@ Result* NSGA2::launch(QString tempDir)
 	///************************************
 	//CROSSOVER AND MUTATION
 	//************************************/
-	SBCrossover<EOStd> *xover = new SBCrossover<EOStd>((EAConfig*)_config);
+        SBCrossover<EOStd> *xover = new SBCrossover<EOStd>(_parameters);
 	state.storeFunctor(xover);
 
-	EAStdMutation<EOStd> *mutation = new EAStdMutation<EOStd>(doubleBounds,intBounds,(EAConfig*)_config);
+        EAStdMutation<EOStd> *mutation = new EAStdMutation<EOStd>(doubleBounds,intBounds,_parameters);
 	state.storeFunctor(mutation);
 
 	eoSequentialOp<EOStd> *op = new eoSequentialOp<EOStd>;
@@ -240,7 +229,10 @@ Result* NSGA2::launch(QString tempDir)
 	************************************/
 	eoPop<EOStd> pop;
 	bool loadFailed=false;
-	if(((EAConfig*)_config)->getUseSartFile() && ((EAConfig*)_config)->getReloadFilePath()!="" && QFileInfo(((EAConfig*)_config)->getReloadFilePath()).exists())
+        bool useStartFile = _parameters->value(NSGA2Parameters::USESTARTFILE,false).toBool();
+        QString reloadFilePath = _parameters->value(NSGA2Parameters::STARTFILEPATH).toString();
+
+        if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
 	{
 		// create another state for reading
 		eoState inState;		// a state for loading - WITHOUT the parser
@@ -250,8 +242,8 @@ Result* NSGA2::launch(QString tempDir)
 		inState.registerObject(pop);
 		inState.registerObject(rng);
 		
-		QString path = ((EAConfig*)_config)->getReloadFilePath();
-		std::string str = path.toLatin1().data();
+
+                std::string str = reloadFilePath.toLatin1().data();
 		try{
 			inState.load(str);
 		}
@@ -269,10 +261,10 @@ Result* NSGA2::launch(QString tempDir)
 		pop = state.takeOwnership(eoPop<EOStd>());
 	}
 
-	if(pop.size() < _config->getParameterValue("PopulationSize",20))
+        int populationSize = _parameters->value(NSGA2Parameters::POPULATIONSIZE,20).toInt();
+        if(pop.size() < populationSize)
 	{
-		pop.append(_config->getParameterValue("PopulationSize",20),*init);
-
+                pop.append(populationSize,*init);
 	}
 
 	// for future stateSave, register the algorithm into the state
@@ -297,14 +289,14 @@ Result* NSGA2::launch(QString tempDir)
 	/************************************
 	OUTPUT
 	************************************/
-	eoCheckPoint<EOStd>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,(EAConfig*)_config,tempDir);
+        eoCheckPoint<EOStd>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir);
 
 
 	///************************************
 	//BUILD NSGA-II
 	//************************************/
 	
-	//moeoNSGAII < EOStd > nsgaII (_config->maxGenerations, *eval, xover, meanPCross, mutation, meanPMut);
+
 	NSGA2Algo<EOStd> nsgaII (checkpoint,*eval, *xover, *mutation);
 
 	///************************************
@@ -329,7 +321,7 @@ Result* NSGA2::launch(QString tempDir)
 	///************************************
 	//GETTING RESULT FROM FINAL ARCHIVE
 	//************************************/
-	Result* result = buildResult(arch,(EAConfig*)_config);
+        Result* result = buildResult(arch);
 
 	result->_hour = beginTime;
 	result->_computationTime = compTime;

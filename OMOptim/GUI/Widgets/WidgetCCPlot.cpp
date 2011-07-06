@@ -100,8 +100,8 @@ WidgetCCPlot::~WidgetCCPlot()
 
 void WidgetCCPlot::actualizeGui()
 {
+    plot1->replot();
 	unitChanged();
-	plot1->replot();
 }
 
 void WidgetCCPlot::clear()

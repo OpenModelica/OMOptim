@@ -73,12 +73,12 @@ class TabResOneSim : public MO2ColTab {
     Q_OBJECT
 
 public:
-	TabResOneSim(Project *project,OneSimulation *problem_,QWidget *parent = 0);
-    ~TabResOneSim();
+        TabResOneSim(Project *project,OneSimResult *result,QWidget *parent = 0);
+        virtual ~TabResOneSim();
     TabType tabType(){return TABSOLVEDPROBLEM;};
 
-	Project *project;
-	OneSimulation *problem;
+        Project *_project;
+        OneSimResult *_result;
 
 };
 

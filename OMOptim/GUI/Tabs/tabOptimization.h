@@ -48,6 +48,7 @@
 #include "WidgetSelectOptVars.h"
 #include "WidgetSelectComponents.h"
 #include "WidgetFilesList.h"
+#include "WidgetOptimActions.h"
 
 
 class TabOptimization : public MO2ColTab {
@@ -66,6 +67,7 @@ public:
 	WidgetSelectOptVars *widgetSelectOptVars;
 	WidgetSelectComponents *widgetSelectComponents;
         WidgetFilesList *widgetFilesList;
+        WidgetOptimActions *widgetOptimActions;
 
 
 	void actualizeGui();

@@ -89,7 +89,7 @@ HighTools::~HighTools(void)
 //}
 
 
-void HighTools::checkUniqueProblemName(Project* project_,Problem *problem_,Problems *problems_)
+void HighTools::checkUniqueProblemName(Project* project_,Problem *problem_,OMCases *problems_)
 {
 	QString defaultTitle;
 	QString title;
@@ -129,7 +129,7 @@ void HighTools::checkUniqueProblemName(Project* project_,Problem *problem_,Probl
 }
 
 
-void HighTools::checkUniqueResultName(Result *result_,Results *results_)
+void HighTools::checkUniqueResultName(Project* project_,Result *result_,OMCases *results_)
 {
 	QString defaultTitle;
 	QString title;
@@ -162,4 +162,8 @@ void HighTools::checkUniqueResultName(Result *result_,Results *results_)
 		}
 	}
 	result_->setName(title);
+
+        // save file path
+        result_->setSaveFolder(project_->problemsFolder()+QDir::separator()+result_->name());
+        result_->setDefaultSaveFileName();
 }

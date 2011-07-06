@@ -71,6 +71,8 @@ MOItem::MOItem(QDomElement & domEl)
 
 MOItem::~MOItem(void)
 {
+    QString msg = "deleted MOItem"+name();
+    qDebug(msg.toLatin1().data());
     emit deleted();
 }
 

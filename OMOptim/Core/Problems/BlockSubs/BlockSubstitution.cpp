@@ -40,14 +40,13 @@
   */
 #include "BlockSubstitution.h"
 
-BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model,ModReader* _modReader,ModClass* _modRoot, QString _orgComponent, QString _subComponent,
+BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model,ModClassTree* _modClassTree, QString _orgComponent, QString _subComponent,
 									 QStringList _orgPorts,QList<QStringList> _orgConnectedComps,
 									 QStringList _subPorts,QList<QStringList> _subConnectedComps)
 {
 	project = _project;
 	model = _model;
-	modReader = _modReader;
-	modRoot = _modRoot;
+        modClassTree = _modClassTree;
 	orgComponent = _orgComponent;
 	subComponent = _subComponent;
 	orgPorts = _orgPorts;
@@ -58,18 +57,17 @@ BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model,ModR
 
 
 
-BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, ModelicaConnections* _connections, QString _orgComponent,QString _subComponent,ModClass* _modRoot,ModReader* _modReader,bool doAutoConnect, bool &ok)
+BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, ModelicaConnections* _connections, QString _orgComponent,QString _subComponent,ModClassTree* _modClassTree,bool doAutoConnect, bool &ok)
 {
-	ok = init(_project,_model,_connections,_orgComponent,_subComponent, _modRoot,_modReader);
+
+        ok = init(_project,_model,_connections,_orgComponent,_subComponent,_modClassTree);
 
 	if(doAutoConnect)
 		autoConnect();
 }
 
-BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, ModelicaConnections* _connections,QDomElement _domEl,ModClass* _modRoot,ModReader* _modReader)
+BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, ModelicaConnections* _connections,QDomElement _domEl,ModClassTree* _modClassTree)
 {
-	modReader = _modReader;
-	modRoot = _modRoot;
 
 	if( _domEl.tagName() != "BlockSubstitution" )
 	{
@@ -101,7 +99,7 @@ BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, Mod
 	}
 
 	//build first version
-	bool ok = init(_project,_model,_connections,_orgComponent,_subComponent, _modRoot,_modReader);
+        bool ok = init(_project,_model,_connections,_orgComponent,_subComponent, _modClassTree);
 
 	// getting replacing connections
 	n1 = _domEl.firstChild();
@@ -138,21 +136,21 @@ BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, Mod
 }
 
 
-bool BlockSubstitution::init(Project * _project, ModModelPlus *_model, ModelicaConnections* _connections,QString _orgComponent, QString _subComponent, ModClass *_modRoot, ModReader* _modReader)
+bool BlockSubstitution::init(Project * _project, ModModelPlus *_model, ModelicaConnections* _connections,QString _orgComponent, QString _subComponent, ModClassTree *_modClassTree)
 {
 	project = _project;
 	model = _model;
-	modReader = _modReader;
-	modRoot = _modRoot;
+        modClassTree = _modClassTree;
+
 
 	orgComponent = _orgComponent;
 	subComponent = _subComponent;
 
 
-	ModClass* _orgElement = modReader->findInDescendants(modRoot,orgComponent);
+        ModClass* _orgElement = _modClassTree->findInDescendants(orgComponent);
 	if(_orgElement==NULL)
 	{
-		infoSender.debug(orgComponent + " not found in model " + modRoot->name());
+                infoSender.debug(orgComponent + " not found.");
 		return false;
 	}
 	_connections->getOutside(_orgElement,true,orgPorts,orgConnectedComps);
@@ -163,10 +161,10 @@ bool BlockSubstitution::init(Project * _project, ModModelPlus *_model, ModelicaC
 		ModClass* _subElement;
 		QString _libraryName = subComponent.section(".",0,0);
 		
-			_subElement =  modReader->findInDescendants(modRoot,subComponent);
+                        _subElement =  _modClassTree->findInDescendants(subComponent);
 			if(_subElement)
 			{
-				subPorts = modReader->getPorts(_subElement,Modelica::FULL);
+                                subPorts = modClassTree->getPorts(_subElement,Modelica::FULL);
 				for(int i=0;i<subPorts.size();i++)
 				{
 					subConnectedComps.push_back(QStringList());
@@ -184,11 +182,11 @@ void BlockSubstitution::setSubComponent(QString _subComponent,bool doAutoConnect
 
 	// reading subcomponent ports
 	ModClass* _subElement;
-	_subElement = modReader->findInDescendants(modRoot,subComponent);
+        _subElement = modClassTree->findInDescendants(subComponent);
 	
 	if(_subElement)
 	{
-		subPorts = modReader->getPorts(_subElement,Modelica::FULL);
+                subPorts = modClassTree->getPorts(_subElement,Modelica::FULL);
 		for(int i=0;i<subPorts.size();i++)
 		{
 			subConnectedComps.push_back(QStringList());
@@ -203,7 +201,7 @@ BlockSubstitution::~BlockSubstitution(void)
 BlockSubstitution* BlockSubstitution::clone()
 {
 	BlockSubstitution* newBSub = new BlockSubstitution(
-		project,model,modReader,modRoot,orgComponent, subComponent,
+                project,model,modClassTree,orgComponent, subComponent,
 									 orgPorts,orgConnectedComps,
 									 subPorts,subConnectedComps);
 	return newBSub;

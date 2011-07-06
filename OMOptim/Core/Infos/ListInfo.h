@@ -142,9 +142,6 @@ namespace ListInfo{
 
 	
 
-
-
-
 	static strInfo strInfos[NBINFOS] = 
 	{
 		{FILENOTEXISTS, "File %s does not exist",WARNING2},
@@ -173,7 +170,7 @@ namespace ListInfo{
 		{PROBLEMMODELNOTFOUND, "Model \"%s\" of problem \"%s\" can't be found.",ERROR2},
 		//MODEL
 		{MODELCOMPILATIONSUCCESS, "Model \"%s\" compiled successfully",NORMAL2},
-		{MODELCOMPILATIONFAIL, "Model \"%s\" failed to compile",ERROR2},
+                {MODELCOMPILATIONFAIL, "Model \"%s\" failed to compile. See <A href=\"file:///%s\">log file</A> for detail.",ERROR2},
 		{MODELLOADSUCCESS, "Model loaded successfully\"%s\" ",NORMAL2},
 		{MODELLOADFAIL, "Model failed to be loaded \"%s\"  :\n %s",ERROR2},
 		//Problem::OPTIMIZATION

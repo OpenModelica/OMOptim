@@ -45,7 +45,7 @@
 #include <QtCore/QObjectList>
 #include <QtGui/QMessageBox>
 
-#include "EAConfigDialog.h"
+
 #include "BlockSubstituteConnDlg.h"
 #include "GuiTools.h"
 
@@ -57,19 +57,22 @@ MO2ColTab(project_->name(),problem_,false,parent)
 	problem = problem_;
 
 	
-	widgetSelectOptVars = new WidgetSelectOptVars(problem,this);
+        widgetSelectOptVars = new WidgetSelectOptVars(problem,true,this);
 	addDockWidget("Variables",widgetSelectOptVars);
 
 #ifdef USEBLOCKSUB
-	widgetSelectComponents = new WidgetSelectComponents(project,problem,this);
+        widgetSelectComponents = new WidgetSelectComponents(project,problem,false,this);
 	addDockWidget("Components",widgetSelectComponents,widgetSelectOptVars);
 #endif
 
-	widgetOptParameters = new WidgetOptParameters(project,problem,this);
+        widgetOptParameters = new WidgetOptParameters(project,problem,false,this);
 	addDockWidget("Optimization",widgetOptParameters,widgetSelectOptVars);
 	
         widgetFilesList = new WidgetFilesList(&problem->_filesToCopy,this);
         addDockWidget("Files",widgetFilesList,widgetSelectOptVars);
+
+        widgetOptimActions = new WidgetOptimActions(project,problem,false,this);
+        addFixedWidget("Launch",widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
 	actualizeGui();
 

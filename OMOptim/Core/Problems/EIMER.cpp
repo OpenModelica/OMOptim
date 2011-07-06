@@ -41,17 +41,27 @@
 #include "EIMER.h"
 
 
-EIMER::EIMER(Project* project,ModReader* modReader,MOomc* moomc)
-    :EIProblem(project,modReader,moomc)
+EIMER::EIMER(Project* project,ModClassTree* modClassTree,MOomc* moomc)
+    :EIProblem(project,modClassTree,moomc)
 {
 	_inputVars = new MOOptVector(false,false);
+         _type = Problem::EIMER;
+        EIMERParameters::setDefaultParameters(_parameters);
 }
 
 EIMER::EIMER(const EIMER &problem)
 :EIProblem(problem)
 {
     _inputVars = problem._inputVars->clone();
+    _type = Problem::EIMER;
 }
+
+Problem* EIMER::clone()
+{
+    Problem* problem = new EIMER(*this);
+    return problem;
+}
+
 
 EIMER::~EIMER(void)
 {
@@ -84,16 +94,12 @@ bool EIMER::checkBeforeComp(QString & error)
 	return true;
 }
 
-void EIMER::setIncludeUtilities(bool include)
-{
-        _includeUtilities = include;
-}
-void EIMER::launch(ProblemConfig config)
+Result* EIMER::launch(ProblemConfig config)
 {
 
-    deleteResult();
-    _result = new EIMERResult();
-    EIMERResult *curResult = _result; // just a shortcut to avoid cast
+    bool includeUtilities = _parameters->value(EIMERParameters::INCLUDEUTILITIES,QVariant(true)).toBool();
+
+    EIMERResult *result = new EIMERResult(_project,new EIMER(*this));
 
     QList<METemperature> Tk;
     QList<EIStream*> eiStreams;
@@ -102,15 +108,15 @@ void EIMER::launch(ProblemConfig config)
     //replace ei references by values
     EITree* filledEI = EIValueFiller::getFilledEI(_eiTree,inputVars(),_project);
 
-    EITools::getTkQik(_inputVars,filledEI->rootElement(),Tk,eiStreams,Qik,!_includeUtilities);
+    EITools::getTkQik(_inputVars,filledEI->rootElement(),Tk,eiStreams,Qik,!includeUtilities);
 
 
     CCTools::buildCCfromStreams(Tk,Qik,
-                                curResult->curveHot,
-                                curResult->curveCold);
+                                result->curveHot,
+                                result->curveCold);
 
     CCTools::buildGCCfromStreams(Tk,Qik,
-                                 curResult->curveGcc);
+                                 result->curveGcc);
 
     METemperature TPinch;
     MEQflow MER,MERCold;
@@ -118,10 +124,12 @@ void EIMER::launch(ProblemConfig config)
     CCTools::getValues(Tk,Qik,TPinch,MER,MERCold);
 
 
-    curResult->TPinch = TPinch;
-    curResult->MER = MER;
-    curResult->MERCold = MERCold;
-    curResult->emitUpdated();
+    result->TPinch = TPinch;
+    result->MER = MER;
+    result->MERCold = MERCold;
+    result->emitUpdated();
+
 
     emit finished(this);
+    return result;
 }

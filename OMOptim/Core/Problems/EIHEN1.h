@@ -38,8 +38,8 @@
 
   */
 
-#ifndef PROBLEMHEN1_H
-#define PROBLEMHEN1_H
+#ifndef EIHEN1_H
+#define EIHEN1_H
 
 #include "EIProblem.h"
 #include "EIMERResult.h"
@@ -48,33 +48,38 @@
 #include "EIValueFiller.h"
 #include "EIHEN1Functions.h"
 #include "MilpHEN1.h"
+#include "EIHEN1Parameters.h"
 
-/*
- *  Class for heat exchanger network resolution. EIHEN1 implements a really simple version
- * based on pinch rules. No cost or surface calculations in this 
+/**
+ *  Class for heat exchanger network resolution. EIHEN1 implements
+ * HEN formulation from following article :
+ * Barbaro, A. & Bagajewicz,
+ * M. J. New rigorous one-step MILP formulation for heat exchanger network synthesis,
+ * Computers & Chemical Engineering, 2005, 29, 1945-1976.
+ * However, modifications have been made.
+ *
  */
 class EIHEN1 : public EIProblem
 {
         Q_OBJECT
 
 public:
-    EIHEN1(Project*,ModReader*,MOomc*);
+    EIHEN1(Project*,ModClassTree*,MOomc*);
 	EIHEN1(const EIHEN1 &);
 	virtual ~EIHEN1(void);
-	virtual QString getClassName(){return "EIHEN1";};
 
-	void launch(ProblemConfig _config);
+        Problem* clone();
 	
+        static QString className(){return "EIHEN1";};
+        virtual QString getClassName(){return EIHEN1::className();};
+	
+        // Infos
+        static QString infos();
+
+        Result* launch(ProblemConfig _config);
+
 	QDomElement toXmlData(QDomDocument & doc);
 	bool checkBeforeComp(QString & error);
-	
-
-        void setIncludeUtilities(bool);
-        EIConnConstrs* connConstrs();
-
-protected :
-        EIConnConstrs *_connConstrs; // connnection constraints
-        bool _includeUtilities;
 
 };
 

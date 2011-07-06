@@ -8,13 +8,15 @@ EIConnConstrs::~EIConnConstrs(void)
 {
 }
 
+EIConnConstrs::EIConnConstrs(const EIConnConstrs &b)
+{
+    for(int i=0;i<b.items.size();i++)
+        items.push_back(b.items.at(i)->clone());
+}
+
 EIConnConstrs* EIConnConstrs::clone()
 {
-	EIConnConstrs* cloned = new EIConnConstrs();
-	for(int i=0;i<items.size();i++)
-	{
-		cloned->addItem(items.at(i)->clone());
-	}
+        EIConnConstrs* cloned = new EIConnConstrs(*this);
 	return cloned;
 }
 

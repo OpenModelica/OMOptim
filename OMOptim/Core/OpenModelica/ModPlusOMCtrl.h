@@ -42,7 +42,7 @@
 
 #include "ModPlusCtrl.h"
 #include "OpenModelica.h"
-
+#include <limits>
 
 class ModPlusOMCtrl :public ModPlusCtrl
 {

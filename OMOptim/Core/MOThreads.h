@@ -88,9 +88,14 @@ namespace MOThreads
 		LaunchProblem(Problem*,ProblemConfig);
 		void run();
 		void publicExec();
+                Result* result();
 	private:
-		Problem* problem;
-		ProblemConfig config;
+                Problem* _problem;
+                ProblemConfig _config;
+                Result* _result;
+
+        signals :
+                void finished(Result*);
 	};
 } //namespace
 

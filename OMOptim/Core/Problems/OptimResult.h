@@ -47,13 +47,9 @@
 #include "OneSimulation.h"
 #include "OneSimResult.h"
 #include <QtXml/QDomDocument>
-#include "EAConfig.h"
-#include "Project.h"
-#include "Optimization.h"
 #include "BlockSubstitutions.h"
 #include "CSV.h"
 #include "ProblemConfig.h"
-
 
 
 class Save;
@@ -67,17 +63,18 @@ class OptimResult : public Result
 public:
 
 	OptimResult();
-	OptimResult(Project*, ModModelPlus*, Optimization*,ModReader*,ModPlusCtrl*);	
+        OptimResult(Project*, ModModelPlus*, Optimization*,ModClassTree*,ModPlusCtrl*,OptimAlgo* algo);
 	OptimResult(const OptimResult &_res);
 	~OptimResult(void);
-	virtual QString getClassName(){return "OptimResult";};
+        static QString className(){return "OptimResult";};
+        virtual QString getClassName(){return OptimResult::className();};
 
 	QDomElement toXmlData(QDomDocument &);
 	int problemType(){return Problem::OPTIMIZATION;};
 
         void updateRecomputedPointsFromFolder();
 
-        void recomputePoints(std::vector<int>,bool forceRecompute = false);
+
 
 	QString buildOptVarsFrontCSV(QString separator="\t");
 	QString buildAllVarsFrontCSV(QString separator="\t");
@@ -89,7 +86,6 @@ public:
 	void setCurScan(int);
 	int curScan();
 
-	int nbScans();
 
 	void setCurPoint(int);
 	int curPoint();
@@ -115,6 +111,10 @@ public :
 	QString _optVarsFrontFileName;
 	QString _allVarsFrontFileName;
 
+        ModModel* modModel(){return _modModelPlus->modModel();};
+        ModModelPlus* modModelPlus(){return _modModelPlus;};
+        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
+
 protected:
 	int _curPoint;
 	int _curScan;
@@ -125,6 +125,12 @@ protected:
 
         QList<int> _recomputedPoints;
 
+        OptimAlgo *_algo;
+
+
+        //Model
+        ModModelPlus* _modModelPlus;
+        ModPlusCtrl* _modPlusCtrl;
 };
 
 

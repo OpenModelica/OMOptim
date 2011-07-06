@@ -44,9 +44,7 @@
 #include "MOCCCurve.h"
 #include "EIReader.h"
 #include "MOOptVector.h"
-
-
-class EITarget;
+#include "EIProblem.h"
 
 class EIMERResult : public Result
 {
@@ -55,7 +53,7 @@ class EIMERResult : public Result
 public:
 	EIMERResult();
 	EIMERResult(const EIMERResult &);
-	EIMERResult(Project*, EITarget*,EIReader*);
+        EIMERResult(Project*, EIProblem *);
 	~EIMERResult(void);
 	QString getClassName(){return "EIMERResult";};
 

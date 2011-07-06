@@ -54,6 +54,7 @@
 #include "Problem.h"
 #include "OneSimulation.h"
 #include "Optimization.h"
+#include "OptimResult.h"
 #include "MOVector.h"
 
 class Optimization;
@@ -67,14 +68,13 @@ public:
 	
 	static void saveProblem(Problem*);
 
-	static void saveSolvedProblem(Problem*);	
-	static void saveSolvedProblem(Optimization*);
+        static void saveResult(Result*);
+        static void saveStdResult(Result*);
+        static void saveOptimResult(OptimResult*);
 	
 	static void saveProject(Project*);
 	static void saveModModelPlus(ModModelPlus*);
 
-private :
-	static void saveSolvedProblem(Problem*,bool _useLess);
 
 
 

@@ -48,20 +48,20 @@ namespace Ui
 	class TabResOptimizationClass;
 }
 
-TabResOptimization::TabResOptimization(Project *project_,Optimization *problem_, QWidget *parent) :
-MO2ColTab(project_->name(),problem_,false,parent)
+TabResOptimization::TabResOptimization(Project *project,OptimResult *result, QWidget *parent) :
+MO2ColTab(project->name(),result,false,parent)
 {
         QMainWindow::setDockNestingEnabled(true);
         QMainWindow::setCorner(Qt::TopLeftCorner,Qt::LeftDockWidgetArea);
-	project = project_;
-	problem = problem_;
-	result = dynamic_cast<OptimResult*>(problem->result());
+        _project = project;
+        _result = result;
+        _problem = dynamic_cast<Optimization*>(_result->problem());
 
 
-        widgetMooPointsList = new WidgetMooPointsList(result,this);
-        widgetMooPlot = new WidgetMooPlot(result,this);
-        widgetTableRecVar = new WidgetTableRecVar(result,this);
-        widgetCalculateMooPoints = new WidgetCalculateMooPoints(result,widgetMooPointsList,this);
+        widgetMooPointsList = new WidgetMooPointsList(_result,this);
+        widgetMooPlot = new WidgetMooPlot(_result,this);
+        widgetTableRecVar = new WidgetTableRecVar(_result,this);
+        widgetCalculateMooPoints = new WidgetCalculateMooPoints(_result,widgetMooPointsList,this);
 
         // set size policy
         widgetMooPointsList->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
@@ -72,12 +72,18 @@ MO2ColTab(project_->name(),problem_,false,parent)
 
         addDockWidget("Plot",widgetMooPlot,NULL,Qt::RightDockWidgetArea);
 #ifdef USEBLOCKSUB
-        addDockWidget("Blocks",new WidgetBlocks(project,result,this),widgetMooPlot,Qt::RightDockWidgetArea);
+        if(_problem->blockSubstitutions()->size()>0)
+            addDockWidget("Blocks",new WidgetBlocks(_project,_result,this),widgetMooPlot,Qt::RightDockWidgetArea);
 #endif
-        addDockWidget("Recomp. vars",widgetTableRecVar,widgetMooPlot,Qt::RightDockWidgetArea);
-        addFixedWidget("Recompute",widgetCalculateMooPoints,Qt::BottomDockWidgetArea);
+        addDockWidget("Variables",widgetTableRecVar,widgetMooPlot,Qt::RightDockWidgetArea);
+
         addFixedWidget("Points",widgetMooPointsList,Qt::LeftDockWidgetArea,Qt::Horizontal,false);
 	
+
+        widgetOptimActions = new WidgetOptimActions(_project,_problem,true,this);
+        addDockWidget("Recompute",widgetCalculateMooPoints,widgetMooPlot,Qt::BottomDockWidgetArea);
+        addFixedWidget("Launch",widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,true);
+
 
         // connect signals for selection changed
 	connect(widgetMooPlot,SIGNAL(selectionChanged(QList<int> &)),
@@ -96,7 +102,7 @@ MO2ColTab(project_->name(),problem_,false,parent)
                 widgetMooPlot,SLOT(onExtShownPointsChanged(QList<int>&)));
 
         // connect signals for cur scan changed
-	connect(result,SIGNAL(curScanChanged(int &)),widgetTableRecVar,SLOT(onCurScanChanged(int &)));
+        connect(_result,SIGNAL(curScanChanged(int &)),widgetTableRecVar,SLOT(onCurScanChanged(int &)));
 
         // refresh shown points
          widgetMooPointsList->setOnlyPareto(widgetMooPointsList->_ui->pushPareto->isChecked());

@@ -66,7 +66,7 @@ class WidgetCCPlot : public QWidget {
 
 
 public:
-	WidgetCCPlot(EIMERResult* _result,QWidget *parent = 0);
+        WidgetCCPlot(EIMERResult* _result,QWidget *parent);
     virtual ~WidgetCCPlot();
 	 Ui::WidgetCCPlotClass *ui;
 

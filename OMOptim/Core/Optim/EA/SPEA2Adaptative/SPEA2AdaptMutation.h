@@ -50,6 +50,7 @@
 
 //-----------------------------------------------------------------------------
 
+#include "MOParameter.h"
 /** changes all values of the std::vector by uniform choice with range epsilon
 with probability p_change per variable
 \class eoUniformMutation 
@@ -68,11 +69,11 @@ public:
 	EAAdapt1Mutation(
 		std::vector<eoRealInterval> & _doubleBounds,
 		std::vector<eoIntInterval> & _intBounds,
-		EAConfig *_config
+                MOParameters* _parameters
 		):
 	doubleBounds(_doubleBounds), intBounds(_intBounds)
 	{
-		config = _config;
+                parameters = _parameters;
 	}
 
 	/// The class name.
@@ -156,7 +157,7 @@ private:
 	std::vector<eoRealInterval> doubleBounds;
 	std::vector<eoIntInterval> intBounds;
 
-	EAConfig *config;
+        MOParameters *parameters;
 };
 
 #endif

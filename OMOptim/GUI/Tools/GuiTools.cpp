@@ -89,20 +89,20 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
 }
 
 
-void GuiTools::ModClassToTreeView(ModReader* _modReader,ModClass* _rootElement,QTreeView * _treeView,ModClassTree * &_treeModel)
-{
-	_treeView->setModel(NULL);
-	if(_treeModel)
-		delete _treeModel;
-	_treeModel = new ModClassTree(_modReader,_rootElement,(QObject*)_treeView);
-	_treeView->setModel(_treeModel);
+//void GuiTools::ModClassToTreeView(ModReader* _modReader,ModClass* _rootElement,QTreeView * _treeView,ModClassTree * _treeModel)
+//{
+//    _treeView->setModel(NULL);
+//    if(_treeModel)
+//        delete _treeModel;
+//    _treeModel = new ModClassTree(_modReader,_rootElement,(QObject*)_treeView);
+//    _treeView->setModel(_treeModel);
 
-	if(_rootElement)
-	{
-		connect(_rootElement,SIGNAL(addedChild(ModClass*)),_treeModel,SLOT(allDataChanged()));
-		connect(_rootElement,SIGNAL(addedChild(ModClass*)),_treeView,SLOT(repaint()));
-	}
-}
+//    if(_rootElement)
+//    {
+//        connect(_rootElement,SIGNAL(addedChild(ModClass*)),_treeModel,SLOT(allDataChanged()));
+//        connect(_rootElement,SIGNAL(addedChild(ModClass*)),_treeView,SLOT(repaint()));
+//    }
+//}
 
 
 QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *model, QAbstractItemView *view,QLineEdit* lineEdit)
@@ -145,14 +145,14 @@ QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *mode
 
 
 
-QMenu* GuiTools::createSolvedProblemPopupMenu(Project* project, QWidget* mainWindow, const QPoint & iPoint,Problem* selectedProblem,int numProblem)
+QMenu* GuiTools::createResultPopupMenu(Project* project, QWidget* mainWindow, const QPoint & iPoint,Result* selectedResult,int numResult)
 {
 	QMenu *menu = new QMenu();
 
 	//Open folder
 	//Open folder
 	QAction *openFolderAct = new QAction("Open folder",menu);
-	connect(openFolderAct,SIGNAL(triggered()),selectedProblem,SLOT(openFolder()));
+    connect(openFolderAct,SIGNAL(triggered()),selectedResult,SLOT(openFolder()));
 	QIcon icon;
     icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/folder")), QIcon::Normal, QIcon::Off);
     openFolderAct->setIcon(icon);
@@ -161,18 +161,18 @@ QMenu* GuiTools::createSolvedProblemPopupMenu(Project* project, QWidget* mainWin
 
 	
 	//Rename problem
-	QAction *renameAct = new QAction("Rename solved problem...",menu);
-	renameAct->setData(numProblem);
-	connect(renameAct,SIGNAL(triggered()),mainWindow,SLOT(renameSolvedProblem()));
+    QAction *renameAct = new QAction("Rename result...",menu);
+    renameAct->setData(numResult);
+    connect(renameAct,SIGNAL(triggered()),mainWindow,SLOT(renameResult()));
 	menu->addAction(renameAct);
 
 	
 
 
 	//Remove problem
-	QAction *removeAct = new QAction("Remove solved problem",menu);
-	removeAct->setData(numProblem);
-	connect(removeAct,SIGNAL(triggered()),mainWindow,SLOT(removeSolvedProblem()));
+    QAction *removeAct = new QAction("Remove result",menu);
+    removeAct->setData(numResult);
+    connect(removeAct,SIGNAL(triggered()),mainWindow,SLOT(removeResult()));
 	QIcon iconRem;
     iconRem.addPixmap(QPixmap(QString::fromUtf8(":/icons/Remove")), QIcon::Normal, QIcon::Off);
     removeAct->setIcon(iconRem);
@@ -217,6 +217,7 @@ QMenu* GuiTools::createProblemPopupMenu(Project* project, QWidget* mainWindow, c
 QMenu* GuiTools::newModClassPopupMenu(Project* project, const QPoint & iPoint,ModClass* selectedClass)
 {
 	QMenu *menu = new QMenu();
+    project->setCurModClass(selectedClass);
 
 	switch(selectedClass->getClassRestr())
 	{
@@ -258,7 +259,6 @@ void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & i
 	menu->addAction(compileModel);
 
 	
-
 	//Read variables
 	QAction *readVariables = new QAction("Read variables",menu);
 	connect(readVariables,SIGNAL(triggered()),selectedModModelPlus,SLOT(readVariables()));
@@ -268,6 +268,16 @@ void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & i
 	QAction *readConnections = new QAction("Read connections",menu);
 	connect(readConnections,SIGNAL(triggered()),selectedModModelPlus,SLOT(readConnections()));
 	menu->addAction(readConnections);
+
+    //Add problem
+    QMenu *addProblemMenu = menu->addMenu("Create problem");
+    QAction *addOptimization = addProblemMenu->addAction("Optimization");
+    connect(addOptimization,SIGNAL(triggered()),project,SLOT(addNewOptimization()));
+    QAction *addOneSim = addProblemMenu->addAction("Simulation");
+    connect(addOneSim,SIGNAL(triggered()),project,SLOT(addNewOneSimulation()));
+    QAction *addEIProblem = addProblemMenu->addAction("EI");
+    connect(addEIProblem,SIGNAL(triggered()),project,SLOT(addNewEIProblem()));
+
 
 	//Set parameters
 	QAction *setParameters = new QAction("Set parameters...",menu);

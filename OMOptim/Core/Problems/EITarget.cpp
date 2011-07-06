@@ -41,19 +41,25 @@
 #include "EITarget.h"
 
 
-EITarget::EITarget(Project* project,ModReader* modReader,MOomc* moomc)
-    :EIProblem(project,modReader,moomc)
+EITarget::EITarget(Project* project,ModClassTree* modClassTree,MOomc* moomc)
+    :EIProblem(project,modClassTree,moomc)
 {
     _inputVars = new MOOptVector(false,false);
     _connConstrs = new EIConnConstrs(); // connnection constraints
+     _type = Problem::EITARGET;
 }
 
-EITarget::EITarget(Project* project,ModReader* modReader,MOomc* moomc,QDomElement domProblem)
-    :EIProblem(project,modReader,moomc)
+EITarget::EITarget(Project* project,ModClassTree* modClassTree,MOomc* moomc,QDomElement domProblem)
+    :EIProblem(project,modClassTree,moomc)
 {
 
     _inputVars = new MOOptVector(false,false);
     _connConstrs = new EIConnConstrs(); // connnection constraints
+    _type = Problem::EITARGET;
+
+    EITargetParameters::setDefaultParameters(_parameters);
+
+
 
 
     QDomElement domInfos = domProblem.firstChildElement("Infos");
@@ -71,42 +77,55 @@ EITarget::EITarget(Project* project,ModReader* modReader,MOomc* moomc,QDomElemen
     QDomElement domInputVars = domProblem.firstChildElement("InputVars");
     inputVars()->setItems(domInputVars);
 
-    //**************
-    // Result
-    //**************
-    QDomElement domResult = domProblem.firstChildElement("Result");
-    if(!domResult.isNull())
-    {
-        EITargetResult* result = new EITargetResult(_project,this);
-        result->setSuccess(true);
+//    //**************
+//    // Result
+//    //**************
+//    QDomElement domResult = domProblem.firstChildElement("Result");
+//    if(!domResult.isNull())
+//    {
+//        EITargetResult* result = new EITargetResult(_project,this);
+//        result->setSuccess(true);
 
-        // EI
-        QDomElement domEI = domResult.firstChildElement("EIItem");
-        EIControler::setItems(domEI,result->eiTree()->rootElement());
+//        // EI
+//        QDomElement domEI = domResult.firstChildElement("EIItem");
+//        EIControler::setItems(domEI,result->eiTree()->rootElement());
 
-        // Values
-        QDomElement cValues = domResult.firstChildElement("Values");
-        QString totalCost = cValues.attribute("TotalCost");
-        result->totalCost = totalCost.toDouble();
+//        // Values
+//        QDomElement cValues = domResult.firstChildElement("Values");
+//        QString totalCost = cValues.attribute("TotalCost");
+//        result->totalCost = totalCost.toDouble();
 
-        // EIConns
-        QDomElement domEIConns = domResult.firstChildElement("EIConns");
-        result->eiConns()->setItems(domEIConns,result->eiTree());
+//        // EIConns
+//        QDomElement domEIConns = domResult.firstChildElement("EIConns");
+//        result->eiConns()->setItems(domEIConns,result->eiTree());
 
-        QDomElement cFiles = domResult.firstChildElement("Files");
-        result->_logFileName = cFiles.attribute("LogFile");
-        result->_resFileName = cFiles.attribute("ResFile");
-        result->_sensFileName = cFiles.attribute("SensFile");
+//        QDomElement cFiles = domResult.firstChildElement("Files");
+//        result->_logFileName = cFiles.attribute("LogFile");
+//        result->_resFileName = cFiles.attribute("ResFile");
+//        result->_sensFileName = cFiles.attribute("SensFile");
 
-        setResult(result);
+//        setResult(result);
+//    }
     }
-}
 
 EITarget::EITarget(const EITarget &problem)
     :EIProblem(problem)
 {
     _inputVars = problem._inputVars->clone();
     _connConstrs = problem._connConstrs->clone();
+    _type = Problem::EITARGET;
+
+
+    EITargetParameters::setDefaultParameters(_parameters);
+
+//    if(problem._result)
+//        _result = new EITargetResult(problem._result);
+}
+
+Problem* EITarget::clone()
+{
+    Problem* problem = new EITarget(*this);
+    return problem;
 }
 
 EITarget::~EITarget(void)
@@ -145,13 +164,8 @@ bool EITarget::checkBeforeComp(QString & error)
 }
 
 
-EIConnConstrs* EITarget::connConstrs()
-{
-    return _connConstrs;
-}
 
-
-void EITarget::launch(ProblemConfig config)
+Result* EITarget::launch(ProblemConfig config)
 {
 
     // copy .mod file
@@ -179,10 +193,12 @@ void EITarget::launch(ProblemConfig config)
     EIControler::resetProcessFacts(filledEI->rootElement());
 
     MilpTarget *milpTarget = new MilpTarget(filledEI,_connConstrs,inputVars(),tempDir,modFileInfo.absoluteFilePath(),dataFilePath);
-    _result = milpTarget->launch();
+    EITargetResult* result = milpTarget->launch();
+    result->setProblem(this->clone());
 
     delete filledEI;
     emit finished(this);
+    return result;
 }
 
 

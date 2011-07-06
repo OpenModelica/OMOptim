@@ -59,40 +59,23 @@ public:
 	ModReader(MOomc *_oms);
 
 	// Load functions
-	void readMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus,bool forceLoad = true);
-	void readMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad = true);
+        void loadMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus,bool forceLoad = true);
+        void loadMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad = true);
 	void refresh(ModClass* rootClass,QMap<ModModel*,ModModelPlus*> & mapModelPlus);
 
-	// Read functions
-	void readFromOmc(ModClass*,int depthMax = 1000, int curDepth = 0);	//Read data and children with OMC calls
-	void readFromOmcV2(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
-	void readFromOmcV3(ModClass*,ModClass* _rootClass,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
-        void readFromOmcV4(ModClass*,ModClass* _rootClass,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls, using OMEdit version
-
-	// Find functions
-	bool isInDescendants(ModClass* parent, QString fullName);
-	ModClass* findInDescendants(ModClass* parent,QString fullName);
-	QList<ModClass*> findCompOfClassInDescendants(ModClass*,QString _className);
-        ModModel* modelOf(ModClass* item);
-        ModModel* modelOf(QString itemName,ModClass* rootModClass);
 
 
-	void childrenInfos(ModClass* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &compsNames,QStringList &compsClasses);
+
+
 	//edit functions
-	void addModClass(ModClass* rootClass,QString name,QString filePath="");
-
-	//*****************************
-	//Ports
-	//*****************************
-	QList<ModClass*> getPorts(ModClass* parent);
-	QStringList getPorts(ModClass* parent,Modelica::NameFormat format);
+        //void addModClass(ModClass* rootClass,QString className,QString filePath="");
+        ModClass* newModClass(QString className,QString filePath="");
 
 private :
 	MOomc* moomc;
 	int getDepthMax();
 
-signals:
-	void finishedRead();
+
 };
 
 

@@ -41,8 +41,8 @@
 #include "WidgetEIGroup.h"
 
 
-WidgetEIGroup::WidgetEIGroup(MOItem *_item,bool _forceEditable,QWidget *parent):
-WidgetMOItem(_item,_forceEditable,parent)
+WidgetEIGroup::WidgetEIGroup(MOItem *_item,QWidget *parent,bool _forceEditable):
+WidgetMOItem(_item,parent,_forceEditable)
 {
     connect(this,SIGNAL(valueChanged()),this,SLOT(onValueChanged()));
 }

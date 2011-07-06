@@ -79,6 +79,8 @@ static QString listToSet(QString setName, QList<double> _list)
 }
 
 
+
+
 };
 
 

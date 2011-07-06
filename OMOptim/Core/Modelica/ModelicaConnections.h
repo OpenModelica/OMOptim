@@ -45,17 +45,17 @@
 #include "ModelicaConnection.h"
 #include "MOVector.h"
 #include "Modelica.h"
-#include "ModReader.h"
+#include "ModClassTree.h"
 
 class ModelicaConnections : public MOVector<ModelicaConnection>
 {
 
 public:
-	ModelicaConnections(ModReader*);
+        ModelicaConnections(ModClassTree*);
 	~ModelicaConnections(void);
 
 private :
-	ModReader* modReader;
+        ModClassTree* _modClassTree;
 
 public :
 

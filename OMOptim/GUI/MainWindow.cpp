@@ -46,12 +46,15 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	_ui->setupUi(this);
 	_project = project;
 
+    // Recent Files
+    createRecentFilesMenu();
+
 	//***********************
 	// Main window gui
 	//***********************
 	// Tabs
 	_tabMain = new MOMainTab(this,_project);
-	_tabProject = new TabProject(_project);
+    _tabProject = new TabProject(_project,_recentFileActs,this);
 	_tabProject->setWindowTitle("Project");
 	_tabProject->setBackgroundRole(QPalette::Window);
 	_tabProject->setAutoFillBackground(true);
@@ -62,8 +65,8 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	_ui->splitterH->insertWidget(1,_tabMain);
 	_ui->splitterH->setStretchFactor(1,10);
 	delete _ui->widgetToDelete;
-	_ui->treeProblems->header()->setResizeMode(QHeaderView::Stretch);
-	_ui->treeSolvedProblems->header()->setResizeMode(QHeaderView::Stretch);
+    _ui->treeOMCases->header()->setResizeMode(QHeaderView::Stretch);
+    _ui->treeResults->header()->setResizeMode(QHeaderView::Stretch);
 	addDockWidget(Qt::BottomDockWidgetArea,_ui->dockLog);
 	
 	// Actions
@@ -72,17 +75,15 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	_ui->menuDisplay->addActions(dispActions);
 
 	// Trees
-	_ui->treeProblems->setModel(_project->problems());
-	_ui->treeSolvedProblems->setModel(_project->solvedProblems());
-	ModClassTree* modClassTree = new ModClassTree(_project->modReader(),_project->rootModClass(),this);
-	GuiTools::ModClassToTreeView(_project->modReader(),_project->rootModClass(),_ui->treeModClass,modClassTree);
-	_ui->treeProblems->setContextMenuPolicy(Qt::CustomContextMenu);
-	_ui->treeSolvedProblems->setContextMenuPolicy(Qt::CustomContextMenu);
+    _ui->treeOMCases->setModel(_project->problems());
+    _ui->treeResults->setModel(_project->results());
+    //GuiTools::ModClassToTreeView(_project->modReader(),_project->rootModClass(),_ui->treeModClass,_project->modClassTree());
+    _ui->treeModClass->setModel(_project->modClassTree());
+    _ui->treeOMCases->setContextMenuPolicy(Qt::CustomContextMenu);
+    _ui->treeResults->setContextMenuPolicy(Qt::CustomContextMenu);
 	_ui->treeModClass->setContextMenuPolicy(Qt::CustomContextMenu);
 
-	// Recent Files
-	createRecentFilesMenu();
-	updateRecentFilesMenu();
+
 
 	// text log
 	_textLog=new MyTextLog();
@@ -99,18 +100,20 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	//*********************************
 	// Signals for gui
 	//*********************************
-	connect(_ui->treeProblems, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableProblemTab(QModelIndex)));
-	connect(_ui->treeSolvedProblems, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableSolvedProblemTab(QModelIndex)));
+    connect(_ui->treeOMCases, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableProblemTab(QModelIndex)));
+    connect(_ui->treeResults, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableResultTab(QModelIndex)));
 	connect(_ui->treeModClass, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModClass(QModelIndex)));
 	connect(this, SIGNAL(sendInfo(Info)),this, SLOT( displayInfo(Info)));
-	connect (_ui->treeSolvedProblems,SIGNAL(customContextMenuRequested(const QPoint &)),
-	this,SLOT(showSolvedProblemPopup(const QPoint &)));
-	connect (_ui->treeProblems,SIGNAL(customContextMenuRequested(const QPoint &)),
+    connect (_ui->treeResults,SIGNAL(customContextMenuRequested(const QPoint &)),
+             this,SLOT(showResultPopup(const QPoint &)));
+    connect (_ui->treeOMCases,SIGNAL(customContextMenuRequested(const QPoint &)),
 	this,SLOT(showProblemPopup(const QPoint &)));
 	connect (_ui->treeModClass,SIGNAL(customContextMenuRequested(const QPoint &)),
 	this,SLOT(showModClassTreePopup(const QPoint &)));
 	connect (_tabMain,SIGNAL(customContextMenuRequested(const QPoint &)),
 	this,SLOT(showTabTitlePopup(const QPoint &)));
+    connect(_tabProject,SIGNAL(newProject()),this,SLOT(newProject()));
+    connect(_tabProject,SIGNAL(loadProject()),this,SLOT(loadProject()));
 
 	// Menus
 	connect( _ui->actionNewProject, SIGNAL( triggered() ),this, SLOT( newProject()));
@@ -131,7 +134,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	//*********************************
 	// Signals for project, infos
 	//*********************************
-	connect(_project, SIGNAL(projectReset()),this, SLOT(projectReset()));
+    connect(_project, SIGNAL(projectAboutToBeReset()),this, SLOT(onProjectAboutToBeReset()));
 	connect(_project, SIGNAL(projectChanged()),this, SLOT( actualizeGuiFromProject()));
 	connect(_project, SIGNAL(sendProgress(float)), this, SLOT(displayProgress(float)));
 	connect(_project, SIGNAL(sendProgress(float,int,int)), this, SLOT(displayProgress(float,int,int)));
@@ -165,8 +168,8 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 	//*********************************
 	// Signals for solved problems
 	//*********************************
-	connect(_project, SIGNAL(beforeRemoveSolvedProblem(int)),this, SLOT(removeSolvedProblemTab(int)));
-	connect(_project, SIGNAL(addedSolvedProblem(Problem*)),this, SLOT(onAddedSolvedProblem(Problem*)));
+    connect(_project, SIGNAL(beforeRemoveResult(int)),this, SLOT(removeResultTab(int)));
+    connect(_project, SIGNAL(addedResult(Result*)),this, SLOT(onAddedResult(Result*)));
 
 	//*********************************
 	// Signals for model
@@ -369,24 +372,16 @@ void MainWindow::actualizeGuiFromProject()
 {
 	_tabProject->actualizeGuiFromProject();
 
-
 	// Menus and buttons
 	_ui->actionSaveProject->setEnabled(_project->isDefined());
 	_ui->menuAddProblem->setEnabled(_project->isDefined());
 	_ui->actionDatabases->setEnabled(_project->isDefined());
         _ui->actionOMCShell->setEnabled(_project->isDefined());
         _ui->actionOMCClear->setEnabled(_project->isDefined());
+    _ui->actionLoadMoFile->setEnabled(_project->isDefined());
+    _ui->actionLoadModelicaLibrary->setEnabled(_project->isDefined());
 
-
-	if(_project->isDefined())
-	{
-		
-		updateRecentFilesMenu();
 	}
-	else
-	{
-	}
-}
 
 
 void MainWindow::newOneSimulation()
@@ -394,7 +389,7 @@ void MainWindow::newOneSimulation()
 	if(_project->isDefined())
 	{
 		// Creating Problem
-		WidgetSelectModModel* widgetSelect = new WidgetSelectModModel(_project->modReader(),_project->rootModClass(),this);
+        WidgetSelectModModel* widgetSelect = new WidgetSelectModModel(_project->modClassTree(),this);
 		if(widgetSelect->exec()==QDialog::Accepted)
 		{
 			ModModel* curModel = widgetSelect->selectedModel;
@@ -407,7 +402,7 @@ void MainWindow::newOptimization(){
 	if(_project->isDefined())
 	{
 		// Creating Problem
-		WidgetSelectModModel* widgetSelect = new WidgetSelectModModel(_project->modReader(),_project->rootModClass(),this);
+        WidgetSelectModModel* widgetSelect = new WidgetSelectModModel(_project->modClassTree(),this);
 		if(widgetSelect->exec()==QDialog::Accepted)
 		{
 			ModModel* curModel = widgetSelect->selectedModel;
@@ -455,6 +450,7 @@ void MainWindow::OMCClear()
 void MainWindow::enableProblemTab(QModelIndex index)
 {
 	int i=0;
+    MOTabBase* tab;
 	if(_project->isDefined() && index.isValid())
 	{
 		if (index.row()<_project->problems()->items.size())
@@ -464,7 +460,8 @@ void MainWindow::enableProblemTab(QModelIndex index)
 			bool found = false;
 			while(i<_tabMain->count() && !found)
 			{
-                                if((_tabMain->tabText(i)==name)&&(((MOTabBase*)_tabMain->widget(i))->tabType()==MOTabBase::TABPROBLEM))
+                tab = dynamic_cast<MOTabBase*>(_tabMain->widget(i));
+                if(tab && (_tabMain->tabText(i)==name)&&(tab->tabType()==MOTabBase::TABPROBLEM))
 					found =true;
 				else
 					i++;
@@ -478,19 +475,21 @@ void MainWindow::enableProblemTab(QModelIndex index)
 
 
 
-void MainWindow::enableSolvedProblemTab(QModelIndex index)
+void MainWindow::enableResultTab(QModelIndex index)
 {
 	int i=0;
+    MOTabBase* tab;
 	if(_project->isDefined() && index.isValid())
 	{
-		if (index.row()<_project->solvedProblems()->items.size())
+        if (index.row()<_project->results()->items.size())
 		{
-			QString name = _project->solvedProblems()->items.at(index.row())->name();
+            QString name = _project->results()->items.at(index.row())->name();
 
 			bool found = false;
 			while(i<_tabMain->count() && !found)
 			{
-                                if((_tabMain->tabText(i)==name)&&(((MOTabBase*)_tabMain->widget(i))->tabType()==MOTabBase::TABSOLVEDPROBLEM))
+                tab = dynamic_cast<MOTabBase*>(_tabMain->widget(i));
+                if(tab && (_tabMain->tabText(i)==name)&&(tab->tabType()==MOTabBase::TABSOLVEDPROBLEM))
 					found =true;
 				else
 					i++;
@@ -509,15 +508,15 @@ void MainWindow::quit()
 	
 	qApp->quit();
 }
-void MainWindow::projectReset()
+void MainWindow::onProjectAboutToBeReset()
 {
 	// deleting tabs
 	while(_tabMain->count()>1)
 	{
 		_tabMain->removeTab(1);
 	}
-	_ui->treeProblems->reset();
-	_ui->treeSolvedProblems->reset();
+    _ui->treeOMCases->reset();
+    _ui->treeResults->reset();
 	actualizeGuiFromProject();
 }
 void MainWindow::onAddedProblem(Problem* newProblem)
@@ -526,10 +525,10 @@ void MainWindow::onAddedProblem(Problem* newProblem)
 	_tabMain->addProblemTab(_project,newProblem);
 	emit sendInfo(Info(ListInfo::ADDEDPROBLEM,newProblem->name()));
 }
-void MainWindow::onAddedSolvedProblem(Problem* newProblem)
+void MainWindow::onAddedResult(Result* newResult)
 {
 	// Creating problem tab
-	_tabMain->addSolvedProblemTab(_project,newProblem);
+    _tabMain->addResultTab(_project,newResult);
 }
 
 void MainWindow::onComponentsUpdated()
@@ -550,39 +549,39 @@ void MainWindow::onConnectionsUpdated()
 	//_tabProject->tabComponents->actualizeConnectionsTable();
 }
 
-void MainWindow::removeSolvedProblem()
+void MainWindow::removeResult()
 {
 	// SLOT : sender is menu, data is containing problem number
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (action)
 	{
 		int iPb = action->data().toInt();
-		if((iPb>-1) && (iPb<_project->solvedProblems()->rowCount()))
-			removeSolvedProblem(iPb);
+        if((iPb>-1) && (iPb<_project->results()->rowCount()))
+            removeResult(iPb);
 	}
 }
 
 
-void MainWindow::removeSolvedProblem(int num)
+void MainWindow::removeResult(int num)
 {
 	QMessageBox msgBox;
 	msgBox.setText("Removing solved problem cannot be undone.");
 	QString msg;
-	msg.sprintf("Are you sure you want to remove %s ?",_project->solvedProblems()->items.at(num)->name().toLatin1().data());
+    msg.sprintf("Are you sure you want to remove %s ?",_project->results()->items.at(num)->name().toLatin1().data());
 	msgBox.setInformativeText(msg);
 	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
 	msgBox.setDefaultButton(QMessageBox::Yes);
 
 	if(msgBox.exec() == QMessageBox::Yes)
 	{
-		_project->removeSolvedProblem(num);
+        _project->removeResult(num);
 	}
 }
 
-void MainWindow::removeSolvedProblemTab(int num)
+void MainWindow::removeResultTab(int num)
 {
 	//remove tab
-	_tabMain->removeTab(MOTabBase::TABSOLVEDPROBLEM,_project->solvedProblems()->items.at(num)->name());
+    _tabMain->removeTab(MOTabBase::TABSOLVEDPROBLEM,_project->results()->items.at(num)->name());
 }
 
 void MainWindow::removeProblem()
@@ -646,27 +645,27 @@ void MainWindow::renameProblem(int i)
 }
 
 
-void MainWindow::renameSolvedProblem()
+void MainWindow::renameResult()
 {
 	// SLOT : sender is menu, data is containing problem number
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (action)
 	{
 		int iPb = action->data().toInt();
-		if((iPb>-1) && (iPb<_project->solvedProblems()->rowCount()))
-			renameSolvedProblem(iPb);
+        if((iPb>-1) && (iPb<_project->results()->rowCount()))
+            renameResult(iPb);
 	}
 
 }
-void MainWindow::renameSolvedProblem(int i)
+void MainWindow::renameResult(int i)
 {
 	 bool ok;
      QString newName = QInputDialog::getText(this, "Rename...",
-		 "New name :", QLineEdit::Normal,_project->solvedProblems()->items.at(i)->name(),&ok);
+                                            "New name :", QLineEdit::Normal,_project->results()->items.at(i)->name(),&ok);
                                           
      if (ok && !newName.isEmpty())
 	 {
-		 _project->renameSolvedProblem(i,newName);
+        _project->renameResult(i,newName);
 	 }
 }
 
@@ -674,21 +673,21 @@ void MainWindow::renameSolvedProblem(int i)
 
 
 
-void MainWindow::showSolvedProblemPopup(const QPoint & iPoint)
+void MainWindow::showResultPopup(const QPoint & iPoint)
 {
 	//Popup on Result Tree
 	QModelIndex  index ;
-	index = _ui->treeSolvedProblems->indexAt(iPoint);
+    index = _ui->treeResults->indexAt(iPoint);
 	if ( index.row() == -1 )
 	{
 		// no item selected
 	}
 	else
 	{
-		_ui->treeSolvedProblems->setCurrentIndex(index);
-		Problem *selectedProblem = _project->solvedProblems()->items.at(index.row());
-		QMenu *problemMenu = GuiTools::createSolvedProblemPopupMenu(_project,this,_ui->treeSolvedProblems->mapToGlobal(iPoint),selectedProblem,index.row());
-		problemMenu->exec(_ui->treeSolvedProblems->mapToGlobal(iPoint));
+        _ui->treeResults->setCurrentIndex(index);
+        Result *selectedResult = _project->results()->items.at(index.row());
+        QMenu *resultMenu = GuiTools::createResultPopupMenu(_project,this,_ui->treeResults->mapToGlobal(iPoint),selectedResult,index.row());
+        resultMenu->exec(_ui->treeResults->mapToGlobal(iPoint));
 	}
 }
 
@@ -698,17 +697,17 @@ void MainWindow::showProblemPopup(const QPoint & iPoint)
 {
 	//Popup on Proble Tree
 	QModelIndex  index ;
-	index = _ui->treeProblems->indexAt(iPoint);
+    index = _ui->treeOMCases->indexAt(iPoint);
 	if ( index.row() == -1 )
 	{
 		// no item selected
 	}
 	else
 	{
-		_ui->treeProblems->setCurrentIndex(index);
+        _ui->treeOMCases->setCurrentIndex(index);
 		Problem *selectedProblem = _project->problems()->items.at(index.row());
-		QMenu * problemMenu = GuiTools::createProblemPopupMenu(_project,this,_ui->treeProblems->mapToGlobal(iPoint),selectedProblem,index.row());
-		problemMenu->exec(_ui->treeProblems->mapToGlobal(iPoint));
+        QMenu * problemMenu = GuiTools::createProblemPopupMenu(_project,this,_ui->treeOMCases->mapToGlobal(iPoint),selectedProblem,index.row());
+        problemMenu->exec(_ui->treeOMCases->mapToGlobal(iPoint));
 	}
 }
 
@@ -724,7 +723,7 @@ void MainWindow::showModClassTreePopup(const QPoint & iPoint)
 	else
 	{
 		ModClass* selectedModClass = static_cast<ModClass*>(index.internalPointer());
-		QMenu * modClassMenu= GuiTools::newModClassPopupMenu(_project,_ui->treeProblems->mapToGlobal(iPoint),selectedModClass);
+        QMenu * modClassMenu= GuiTools::newModClassPopupMenu(_project,_ui->treeOMCases->mapToGlobal(iPoint),selectedModClass);
 		if(modClassMenu)
 			modClassMenu->exec(_ui->treeModClass->mapToGlobal(iPoint));
 	}
@@ -771,40 +770,32 @@ QString MainWindow::getLastDatabaseFolder()
 	return settings.value("MO/recentDatabaseFolder").toString();
 }
 
-void MainWindow::updateRecentFilesMenu()
+void MainWindow::createRecentFilesMenu()
 {
+
+    _recentFileActs.clear();
+    QAction* newAction;
 	QSettings settings("MO", "Settings");
     QStringList files = settings.value("MO/recentFileList").toStringList();
 
 	int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
 
 	for (int i = 0; i < numRecentFiles; ++i) {
+        newAction = new QAction(this);
 		QString text = tr("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
-		_recentFileActs[i]->setText(text);
-		_recentFileActs[i]->setData(files[i]);
-		_recentFileActs[i]->setVisible(true);
-	}
-	for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
-	{
-		_recentFileActs[j]->setVisible(false);
+        newAction->setText(text);
+        newAction->setData(files[i]);
+        newAction->setVisible(true);
+        connect(newAction, SIGNAL(triggered()),
+                this, SLOT(openRecentFile()));
+        _recentFileActs.push_back(newAction);
+        _ui->menuFile->insertAction(_ui->actionQuit,newAction);
 	}
 
-	_separatorAct->setVisible(numRecentFiles > 0);
-
+    //_separatorAct->setVisible(numRecentFiles > 0);
+    _ui->menuFile->insertSeparator(_ui->actionQuit);
 }
 
-void MainWindow::createRecentFilesMenu()
-{
-
-	for (int i = 0; i < MaxRecentFiles; ++i)
-	{
-		_recentFileActs[i] = new QAction(this);
-		connect(_recentFileActs[i], SIGNAL(triggered()),
-                    this, SLOT(openRecentFile()));
-		_ui->menuFile->insertAction(_ui->actionQuit,_recentFileActs[i]);
-	}
-	_separatorAct = _ui->menuFile->insertSeparator(_ui->actionQuit);
-}
 
 void MainWindow::clearRecentFilesMenu()
 {
@@ -812,7 +803,7 @@ void MainWindow::clearRecentFilesMenu()
     QStringList files;
     settings.setValue("MO/recentFileList", QStringList());
 
-	updateRecentFilesMenu();
+    createRecentFilesMenu();
 }
 
 void MainWindow::openRecentFile()
@@ -955,14 +946,17 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
  void MainWindow::openUserManual()
  {
-     QUrl userManualPath;
-     // since in MAC OS X the url adds extra quotes to it, so we need to handle it differently.
-     //#ifdef Q_OS_MAC
-     //    userManualPath = QUrl(QString("file:///").append(QString(getenv("OPENMODELICAHOME")))
-     //                         .append("/share/doc/omedit/OMEdit-UserManual.pdf"));
-     //#else
-     userManualPath = QUrl(QString("file:///").append(OpenModelica::home().replace("\\", "/"))
-                           .append("/share/doc/omoptim/OMOptim-UsersGuide.pdf"));
-     //#endif
-     QDesktopServices::openUrl(userManualPath);
+    QStringList pathTries;
+
+    pathTries << QApplication::applicationDirPath().replace("\\", "/")+QDir::separator()+"doc/OMOptim-UsersGuide.pdf";
+    pathTries << QApplication::applicationDirPath().replace("\\", "/")+QDir::separator()+"doc/OMOptimUsersGuide.pdf";
+    pathTries << OpenModelica::home().replace("\\", "/").append("/share/doc/omoptim/OMOptim-UsersGuide.pdf");
+
+    int iTry=0;
+    bool openOk=false;
+    while(iTry<pathTries.size()&&!openOk)
+    {
+        openOk = QDesktopServices::openUrl(QUrl(QString("file:///").append(pathTries.at(iTry))));
+        iTry++;
  }
+}

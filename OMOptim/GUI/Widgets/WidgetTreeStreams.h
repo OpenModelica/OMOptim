@@ -54,7 +54,7 @@
 #include "ModReader.h"
 #include "ModClass.h"
 #include "EIModelExtractor.h"
-
+#include "EIControler.h"
 
 namespace Ui {
     class WidgetTreeStreamsClass;
@@ -70,7 +70,7 @@ class WidgetTreeStreams : public QWidget {
 
 public:
         explicit WidgetTreeStreams(EITree* _eiTree,bool _showFields,bool _editable,
-                                   ModReader* _modReader,ModClass* _rootModClass,MOomc* _moomc,MOOptVector *_variables=NULL,QWidget *parent = 0);
+                                   ModClassTree* _modClassTree,MOomc* _moomc,QWidget *parent,MOOptVector *_variables=NULL);
     virtual ~WidgetTreeStreams();
 
 	void setInputVars(MOOptVector*);
@@ -96,8 +96,7 @@ public:
 	//QSortFilterProxyModel *streamsProxyModel;
 
         MOomc* moomc;
-        ModReader* modReader;
-        ModClass* rootModClass;
+        ModClassTree* modClassTree;
         MyTreeView* treeView;
 	MOOptVector *variables;
 	VarCompleterDelegate *compltDlg1;

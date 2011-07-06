@@ -11,6 +11,11 @@ set Sz; #set of zones
 param ndt >=0 integer; #number of temperature intervals
 set Sdt := 1..ndt; #set of temperature intervals
 
+set SUtGroups; #Utility groups
+set SUtStrGroups within {SUtGroups,HU union CU};
+
+
+
 set B within {i in Si, j in Sj} ; # {(i, j)| more than one heat exchanger is permitted between hot stream i and cold stream j}
 set Cz{z in Sz} within Sj  default {}; #{j|j is a cold stream present in zone z}
 set Cnz{n in Sdt, z in Sz} within Sj default {}; #{j|j is a cold stream present in temperature interval n in zone z}
@@ -37,15 +42,15 @@ param kmax >=0 integer; #maximum number of heat exchangers
 set Sk := 1.. kmax; #set of heat exchangers
 
 ### Parameters ###
-param Aijmaxz{Si,Sj,Sz} default 1e100; #maximum shell area for an exchanger matching hot stream i and cold stream j in zone z
+param Aijmaxz{Si,Sj,Sz} default 1e5; #maximum shell area for an exchanger matching hot stream i and cold stream j in zone z
 param cijA{Si,Sj} default 1; #ij variable cost for a new heat exchanger matching hot stream i and cold stream j
 param cijF{Si,Sj} default 1; #ij fixed cost for a new heat exchanger matching hot stream i and cold stream j
-param ciH{Si} default 1; #cost of heating utility i
-param cjC{Sj} default 1; #cost of cooling utility j
+param FixUtCost{SUtGroups} default 1; #fix cost of utility
+param VarUtCost{SUtGroups} default 1; #var cost of utility
+param UtFactMax{SUtGroups} default 1e5; #upper bound for groups multiplication factor
+param UtFactMin{SUtGroups} default 0; #lower bound for groups multiplication factor
 param Cpim{Si,Sdt} default 1; #heat capacity of hot stream i at temperature interval m
 param Cpjn{Sj,Sdt}  default 1; #heat capacity of cold stream j at temperature interval m
-param FiU{Si} default 1e100; #upper bound for the flow rate of heating utility i
-param FjU{Si} default 1e100; #upper bound for the flow rate of cooling utility j
 param hjn{Sj,Sdt} default 1; #film heat transfer coefficient for cold stream j in interval n
 param him{Si,Sdt} default 1; #film heat transfer coefficient for hot stream i in interval m
 param DHimzH{Si,Sdt,Sz} default 0;#enthalpy change for hot stream i at interval m of zone z
@@ -58,8 +63,8 @@ param TmU{Sdt};#upper temperature of interval m
 param TmL{Sdt};#lower temperature of interval m
 param DTmnML{Sdt,Sdt};# mean logarithmic temperature difference between intervals m and n
 param Eijzmax{Si,Sj,Sz} default 100; #maximum number of heat exchanger between i and j authorized
-param Fi{Si diff HU}  ; #flow rate of hot process stream i
-param Fj{Sj diff CU} ; #flow rate of cold process stream j
+param Fi{Si} default 1; #flow rate of hot stream i
+param Fj{Sj} default 1; #flow rate of cold stream j
 
 ###  VARIABLES  ###
  var Aijz {i in Si,j in Sj,z in Sz}, >=0; #area for an exchanger matching hot stream i and cold stream j in zone z
@@ -84,13 +89,13 @@ var qaijnzC {i in Si,j in Sj,n in Sdt,z in Sz}, >=0;#auxiliary continuous variab
 #exchangers exist between hot stream i and cold stream j in zone z
 var qaimjnz {i in Si,m in Sdt,j in Sj,n in Sdt,z in Sz}, >=0;#auxiliary continuous variable utilized to compute the area of individual heat exchangers between hot stream i
 #with cold stream j in zone z when (i, j) in B.
- var Uijz {i in Si,j in Sj,z in Sz}, >=0;# number of shells in the heat exchanger between hot stream i and cold stream j in zone z
- var Uijzk {i in Si,j in Sj,z in Sz,k in Sk}, >=0;# number of shells in the kth heat exchanger between hot stream i and cold stream j in zone z
+ var Uijz {i in Si,j in Sj,z in Sz},integer, >=0;# number of shells in the heat exchanger between hot stream i and cold stream j in zone z
+ var Uijzk {i in Si,j in Sj,z in Sz,k in Sk},integer, >=0;# number of shells in the kth heat exchanger between hot stream i and cold stream j in zone z
 var Ximjnz {i in Si,m in Sdt,j in Sj,n in Sdt,z in Sz};# auxiliary continuous variable equal to zero when an exchanger ends at interval m for hot stream i and at interval
 #n for cold stream j. A value of one corresponds to all other cases.
-var YijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;# determines whether heat is being transferred from hot stream i at interval m to cold stream j. De?ned as binary
+var YijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, binary; #>=0;# determines whether heat is being transferred from hot stream i at interval m to cold stream j. De?ned as binary
 #when (i, j) / ? B and as continuous when (i, j) ? B.
-var YijnzC {i in Si,j in Sj,n in Sdt,z in Sz}, >=0;# determines whether heat is being transferred from hot stream i to cold stream j at interval n. De?ned as binary
+var YijnzC {i in Si,j in Sj,n in Sdt,z in Sz}, binary; #>=0;# determines whether heat is being transferred from hot stream i to cold stream j at interval n. De?ned as binary
 #when (i, j) / ? B and as continuous when (i, j) ? B.
 var aijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;#  auxiliary continuous variable equal to one when heat transfer from interval m of hot stream i to cold stream j
 #occurs in zone z and it does not correspond to the beginning nor the ending of a heat exchanger. A value of zero
@@ -99,18 +104,31 @@ var aijnzC {i in Si,j in Sj,n in Sdt,z in Sz}, >=0;# auxiliary continuous variab
 #occurs in zone z and it does not correspond to the beginning nor the ending of a heat exchanger. A value of zero
 #corresponds to all other cases.
 var Eijz {i in Si, j in Sj, z in Sz}, >=0; #number of heat exchangers between hot stream i and cold stream j
-var FiH{HU}, >=0  ; #flow rate of hot utility stream i
-var FjC{CU}, >=0 ; #flow rate of cold process stream j
+
+var UtFact{SUtGroups}, >=0  ; #multiplication factor of utility group
+var UtEnabled{SUtGroups}, binary ; #is utility group enabled
+
+var TotalArea, >=0; #Total heat exchanger area
+var HENumber, integer; #number of heat exchangers
+var TotalCost;
+
 #################
 ### Equations ###
 #################
 
 ### Heat balance equations ###
-s.t. eq1 'Heat balance for heating utilities' {z in Sz,m in Mz[z],i in Hmz[m,z] inter HUz[z]} :
-FiH[i]*(TmU[m]-TmL[m]) ,= sum{n in Mz[z] : TmL[n]<TmU[m]}(sum{j in PimH[i,m] inter Cnz[n,z] : i in PjnC[j,n]}(qimjnz[i,m,j,n,z]));
 
-s.t. eq2 'Heat balance for cooling utilities' {z in Sz,n in Mz[z],j in Cnz[n,z] inter CUz[z]} :
-FjC[j]*(TmU[n]-TmL[n]) ,= sum{m in Mz[z] : TmL[n]<TmU[m]}(sum{i in PjnC[j,n] inter Hmz[m,z] : j in PimH[i,m]}(qimjnz[i,m,j,n,z]));
+s.t. eq1 'Heat balance for heating utilities' {z in Sz,m in Mz[z],group in SUtGroups,i in Hmz[m,z] inter HUz[z]: (group,i) in SUtStrGroups} :
+UtFact[group]*DHimzH[i,m,z] ,= sum{n in Mz[z] : TmL[n]<TmU[m]}(sum{j in PimH[i,m] inter Cnz[n,z] : i in PjnC[j,n]}(qimjnz[i,m,j,n,z]));
+
+s.t. eqUtMax 'maximum utility fact' {group in SUtGroups} :
+UtFact[group] ,<= UtEnabled[group]*UtFactMax[group];
+
+s.t. eqUtMin 'minimum utility fact' {group in SUtGroups} :
+UtFact[group] ,>= UtEnabled[group]*UtFactMin[group];
+
+s.t. eq2 'Heat balance for cooling utilities' {z in Sz,n in Mz[z],group in SUtGroups,j in Cnz[n,z] inter CUz[z]: (group,j) in SUtStrGroups} :
+UtFact[group]*DHjnzC[j,n,z] ,= sum{m in Mz[z] : TmL[n]<TmU[m]}(sum{i in PjnC[j,n] inter Hmz[m,z] : j in PimH[i,m]}(qimjnz[i,m,j,n,z]));
 
 s.t. eq3 'Heat balance for hot process streams' {z in Sz,m in Mz[z],i in Hmz[m,z] diff (HUz[z] union NIH)} :
 DHimzH[i,m,z] ,= sum{n in Mz[z] : TmL[n]<TmU[m]}(sum{j in PimH[i,m] inter Cnz[n,z] : i in PjnC[j,n]}(qimjnz[i,m,j,n,z]));
@@ -124,26 +142,42 @@ qijmzH[i,j,m,z] ,= sum{n in Mz[z] : (TmL[n]<TmU[m]) and (j in Cnz[n,z]) and (i i
 s.t. eq6 'Cumulative heat transfer to j at interval n from i' {z in Sz,n in Mz[z],j in Cnz[n,z],i in Hz[z] inter PjnC[j,n]} :
 qijnzC[i,j,n,z] ,= sum{m in Mz[z] : (TmL[n]<TmU[m]) and (i in Hmz[m,z]) and (j in PimH[i,m])}(qimjnz[i,m,j,n,z]);
 
-s.t. eq7 'Heat balance for hot streams (non-isothermal mixing allowed)' {z in Sz,m in Mz[z],i in (Hmz[m,z] diff HUz[z]) inter NIH} :
-DHimzH[i,m,z] ,= sum{n in Mz[z] : TmL[n]<TmU[m]}(sum{j in PimH[i,m] inter Cnz[n,z] : i in PjnC[j,n]}(qimjnz[i,m,j,n,z]))
-		+ sum{n in Mz[z] : (n > m) and (i in Hmz[n,z])}(qimnzH[i,m,n,z])
-		- sum{n in Mz[z] : (n < m) and (i in Hmz[n,z])}(qimnzH[i,m,n,z]);
-		
-s.t. eq8 'Heat balance for cold streams (non-isothermal mixing allowed)' {z in Sz,n in Mz[z],j in (Cnz[n,z] diff CUz[z]) inter NIC} :
-DHjnzC[j,n,z] ,= sum{m in Mz[z] : TmL[n]<TmU[m]}(sum{i in PjnC[j,n] inter Hmz[m,z] : j in PimH[i,m]}(qimjnz[i,m,j,n,z]))
-		+ sum{m in Mz[z] : (m < n) and (j in Cnz[m,z])}(qjnmzC[j,n,m,z])
-		- sum{m in Mz[z] : (m > n) and (j in Cnz[m,z])}(qjnmzC[j,n,m,z]);
-
-s.t. eq9 'Heat balance for hot streams (non-isothermal mixing allowed)' {z in Sz,m in Mz[z],i in (Hmz[m,z] diff HUz[z]) inter NIH} :
-sum{n in Mz[z] : (n < m) and (i in Hmz[n,z])}qimnzH[i,m,n,z] 
+s.t. eq9 'Heat balance for hot streams (non-isothermal mixing allowed)'
+{z in Sz,m in Mz[z],i in (Hmz[m,z] diff HUz[z]) inter NIH} :
+sum{n in Mz[z] : (n > m) and (i in Hmz[n,z])}qimnzH[i,m,n,z] 
 ,<= sum{n in Mz[z] : TmL[n]<TmU[m]}(sum{j in PimH[i,m] inter Cnz[n,z] : i in PjnC[j,n]}(qimjnz[i,m,j,n,z]));
+
+s.t. eq9bis 'Heat balance for hot streams (non-isothermal mixing allowed)'
+{z in Sz,m in Mz[z],i in (Hmz[m,z] diff HUz[z]) inter NIH, n in Mz[z] :(n < m) and (i in Hmz[n,z])} :
+qimnzH[i,m,n,z] ,= 0;
 
 s.t. eq10 'Heat balance for cold streams (non-isothermal mixing allowed)' {z in Sz,n in Mz[z],j in (Cnz[n,z] diff CUz[z]) inter NIC} :
 sum{m in Mz[z] : (m > n) and (j in Cnz[m,z])}(qjnmzC[j,n,m,z])
 ,<= sum{m in Mz[z] : TmL[n]<TmU[m]}(sum{i in PjnC[j,n] inter Hmz[m,z] : j in PimH[i,m]}(qimjnz[i,m,j,n,z]));
 
+s.t. eq10bis 'Heat balance for cold streams (non-isothermal mixing allowed)'
+{z in Sz,n in Mz[z],j in (Cnz[n,z] diff CUz[z]) inter NIC,m in Mz[z] : (m < n) and (j in Cnz[m,z])} :
+qjnmzC[j,n,m,z] ,= 0;
+	
+	
+
+s.t. eq7 'Heat balance for hot streams (non-isothermal mixing allowed)' {z in Sz,m in Mz[z],i in (Hmz[m,z] diff HUz[z]) inter NIH} :
+DHimzH[i,m,z] ,= sum{n in Mz[z] : TmL[n]<TmU[m]}(sum{j in PimH[i,m] inter Cnz[n,z] : i in PjnC[j,n]}(qimjnz[i,m,j,n,z]))
+		+ sum{n in Mz[z] : (n > m) and (i in Hmz[n,z])}(qimnzH[i,m,n,z])
+- sum{n in Mz[z] : (n < m) and (i in Hmz[n,z])}(qimnzH[i,n,m,z]);
+		
+s.t. eq8 'Heat balance for cold streams (non-isothermal mixing allowed)' {z in Sz,n in Mz[z],j in (Cnz[n,z] diff CUz[z]) inter NIC} :
+DHjnzC[j,n,z] ,= sum{m in Mz[z] : TmL[n]<TmU[m]}(sum{i in PjnC[j,n] inter Hmz[m,z] : j in PimH[i,m]}(qimjnz[i,m,j,n,z]))
+		+ sum{m in Mz[z] : (m < n) and (j in Cnz[m,z])}(qjnmzC[j,m,n,z])
+		- sum{m in Mz[z] : (m > n) and (j in Cnz[m,z])}(qjnmzC[j,n,m,z]);
+
+
+
+
+
 ### Heat exchanger definition and counting ###
-s.t. eq11 'Bounds on cumulative heat transfer for hot process streams' {z in Sz,m in Mz[z],i in (Hmz[m,z] diff HUz[z]),j in (Cz[z] inter PimH[i,m])} :
+s.t. eq11 'Bounds on cumulative heat transfer for hot process streams'
+{z in Sz,m in Mz[z],i in (Hmz[m,z] diff HUz[z]),j in (Cz[z] inter PimH[i,m])} :
 qijmzH[i,j,m,z] ,>= qijmL[i,j,m]*YijmzH[i,j,m,z];
 
 s.t. eq11bis 'Bounds on cumulative heat transfer for hot process streams' {z in Sz,m in Mz[z],i in (Hmz[m,z] diff HUz[z]),j in (Cz[z] inter PimH[i,m])} :
@@ -158,14 +192,14 @@ qijnzC[i,j,n,z] ,<= DHjnzC[j,n,z]*YijnzC[i,j,n,z];
 s.t. eq13 'Bounds on cumulative heat transfer for heating utilities' {z in Sz,m in Mz[z],i in (Hmz[m,z] inter HUz[z]),j in (Cz[z] inter PimH[i,m])} :
 qijmzH[i,j,m,z] ,>= qijmL[i,j,m]*YijmzH[i,j,m,z];
 
-s.t. eq13bis 'Bounds on cumulative heat transfer for heating utilities' {z in Sz,m in Mz[z],i in (Hmz[m,z] inter HUz[z]),j in (Cz[z] inter PimH[i,m])} :
-qijmzH[i,j,m,z] ,<= FiU[i]*(TmU[m]-TmL[m]);
+# s.t. eq13bis 'Bounds on cumulative heat transfer for heating utilities' {z in Sz,m in Mz[z],i in (Hmz[m,z] inter HUz[z]),j in (Cz[z] inter PimH[i,m])} :
+# qijmzH[i,j,m,z] ,<= FiU[i]*(TmU[m]-TmL[m]);
 
 s.t. eq14 'Bounds on cumulative heat transfer for cooling utilities' {z in Sz,n in Mz[z],j in (Cnz[n,z] inter CUz[z]),i in (Hz[z] inter PjnC[j,n])} :
 qijnzC[i,j,n,z] ,>= qijnL[i,j,n]*YijnzC[i,j,n,z];
 
-s.t. eq14bis 'Bounds on cumulative heat transfer for cooling utilities' {z in Sz,n in Mz[z],j in (Cnz[n,z] inter CUz[z]),i in (Hz[z] inter PjnC[j,n])} :
-qijnzC[i,j,n,z] ,<= FjU[i]*(TmU[n]-TmL[n]);
+# s.t. eq14bis 'Bounds on cumulative heat transfer for cooling utilities' {z in Sz,n in Mz[z],j in (Cnz[n,z] inter CUz[z]),i in (Hz[z] inter PjnC[j,n])} :
+# qijnzC[i,j,n,z] ,<= FjU[i]*(TmU[n]-TmL[n]);
 							
 s.t. eq15 'Heat exchanger beginning for hot streams (i,j) not in B' {z in Sz,i in Hz[z],m in Mz[z] inter mi0[i], j in Cz[z] inter PimH[i,m] : not ((i,j) in B)} :
 KijmzH[i,j,m,z],>= YijmzH[i,j,m,z];			
@@ -410,12 +444,12 @@ qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n]))
 
 ### Flow rate consistency for hot streams in extreme intervals - i,j not in B###
 s.t. eq75
-{z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) : not ((i,j) in B) } :
+{z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC diff CUz[z]), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) : not ((i,j) in B) } :
 qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n]))
 ,>= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1]))- (1+KeijnzC[i,j,n-1,z] + KeijnzC[i,j,n,z] - KijnzC[i,j,n-1,z])*Fj[j];
 
 s.t. eq76
-{z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) : not ((i,j) in B) } :
+{z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC diff CUz[z]), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) : not ((i,j) in B) } :
 qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n]))
 ,<= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1])) + (1+KijnzC[i,j,n-1,z] + KijnzC[i,j,n,z] - KeijnzC[i,j,n,z])*Fj[j];
 
@@ -483,7 +517,7 @@ KijmzH[i,j,m,z] ,<= 2 - KeijmzH[i,j,m,z] - KeijnzC[i,j,n,z];
 
 s.t. eq87
 {z in (Sz inter (2..ndt)), m in Mz[z],n in Mz[z], i in (SH inter Hmz[m,z] inter Hmz[m-1,z]),
-j in (/*SC inter*/ Cnz[n,z] inter Cnz[n-1,z]) : (TmL[n]<TmU[m]) and (TmU[n] > TmL[m]) and (i in (PjnC[j,n] inter PjnC[j,n-1])) and (j in (PimH[i,m] inter PimH[i,m-1]))} :
+j in (SC inter Cnz[n,z] inter Cnz[n-1,z]) : (TmL[n]<TmU[m]) and (TmU[n] > TmL[m]) and (i in (PjnC[j,n] inter PjnC[j,n-1])) and (j in (PimH[i,m] inter PimH[i,m-1]))} :
 qijmzH[i,j,m,z]/(TmU[m]-TmL[n])
 ,<= qijmzH[i,j,m-1,z]/(TmU[m-1]-TmL[m-1])*Cpim[i,m]/Cpim[i,m-1]+(2-KeijmzH[i,j,m,z] - KeijnzC[i,j,n,z])*DHimzH[i,m,z]/(TmU[m]-TmL[n]);
 
@@ -537,71 +571,81 @@ j in (SC inter Cnz[n,z] inter Cnz[n-1,z]) : (TmL[n]<TmU[m]) and (TmU[n] > TmL[m]
 ### Heat exchanger area calculation ###
 s.t. eq96
 {z in Sz, i in Hz[z], j in Cz[z] : (i,j) in P} :
-Aijz[i,j,z] ,= sum{m in Miz[i,z]}(sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n])}(qimjnz[i,m,j,n,z]*(him[i,m]+hjn[j,n])/(DTmnML[m,n]*him[i,m]*hjn[j,n])));
+Aijz[i,j,z] ,= sum{m in Miz[i,z]}(sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n]) and (DTmnML[m,n]!=0)}(qimjnz[i,m,j,n,z]*(him[i,m]+hjn[j,n])/(DTmnML[m,n]*him[i,m]*hjn[j,n])));
 
 
-# s.t. eq97
-# {z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in (1..kmax-1) : (i,j) in B} :
-# Aijzk[i,j,z,k] ,<=
-# sum{l in Miz[i,z] : l<=m}(sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n])}
-# ((qimjnz[i,l,j,n,z]-qaimjnz[i,l,j,n,z])*(him[i,l]+hjn[j,n])/(DTmnML[l,n]*him[i,l]*hjn[j,n])))
-# -sum{h in (1..k-1)}(Aijzk[i,j,z,h])
-# +Aijmaxz[i,j,z]*(2-KeijmzH[i,j,m,z]-Gijmzk[i,j,m,z,k]);
+s.t. eq97
+{z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in (1..kmax-1) : (i,j) in B} :
+Aijzk[i,j,z,k] ,<=
+sum{l in Miz[i,z] : l<=m}(sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n]) and (DTmnML[m,n]!=0)}
+((qimjnz[i,l,j,n,z]-qaimjnz[i,l,j,n,z])*(him[i,l]+hjn[j,n])/(DTmnML[l,n]*him[i,l]*hjn[j,n])))
+-sum{h in (1..k-1)}(Aijzk[i,j,z,h])
++Aijmaxz[i,j,z]*(2-KeijmzH[i,j,m,z]-Gijmzk[i,j,m,z,k]);
+
+s.t. eq98
+{z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in (1..kmax-1) : (i,j) in B} :
+Aijzk[i,j,z,k] ,>= 
+sum{l in Miz[i,z] : l<m}(sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n])}
+((qimjnz[i,l,j,n,z]-qaimjnz[i,l,j,n,z])*(him[i,l]+hjn[j,n])/(DTmnML[l,n]*him[i,l]*hjn[j,n])))
+-sum{h in (1..k-1)}(Aijzk[i,j,z,h])
+-Aijmaxz[i,j,z]*(2-KeijmzH[i,j,m,z]-Gijmzk[i,j,m,z,k]);
 
 
-# s.t. eq98
-# {z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in (1..kmax-1) : (i,j) in B} :
-# Aijzk[i,j,z,k] ,>= 
-# sum{l in Miz[i,z] : l<m}(sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n])}
-# ((qimjnz[i,l,j,n,z]-qaimjnz[i,l,j,n,z])*(him[i,l]+hjn[j,n])/(DTmnML[l,n]*him[i,l]*hjn[j,n])))
-# -sum{h in (1..k-1)}(Aijzk[i,j,z,h])
-# -Aijmaxz[i,j,z]*(2-KeijmzH[i,j,m,z]-Gijmzk[i,j,m,z,k]);
+s.t. eq99
+{z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in Sk : (i,j) in B} :
+Aijzk[i,j,z,k] ,>=
+Aijz[i,j,z]-sum{h in (1..k-1)}(Aijzk[i,j,z,h]);
+
+s.t. eq100
+{z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]) : (i,j) in B} :
+sum{h in Sk}(h*Gijmzk[i,j,m,z,h])
+,= sum{l in Miz[i,z] : (l<=m) and (j in PimH[i,m])}(KijmzH[i,j,l,z]+1-YijmzH[i,j,m,z]);
+
+s.t. eq101
+{z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]) : (i,j) in B} :
+sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n])}
+(qaimjnz[i,m,j,n,z]) ,= qaijmzH[i,j,m,z];
+
+s.t. eq102
+{z in Sz, m in Mz[z],n in Mz[z], i in Hmz[m,z], j in (Cnz[n,z] inter PimH[i,m]) : ((i,j) in B) and (TmL[n]<TmU[m])} :
+qaimjnz[i,m,j,n,z] ,<= qimjnz[i,m,j,n,z];
+
+### Number of shells ###
+s.t. eq103
+{z in Sz, i in Hz[z], j in Cz[z] : ((i,j) in P) and (not ((i,j) in B))} :
+Aijz[i,j,z] ,<= Aijmaxz[i,j,z]*Uijz[i,j,z];
+
+ s.t. eq104
+ {z in Sz, i in Hz[z], j in Cz[z], k in Sk : ((i,j) in P) and  ((i,j) in B)} :
+ Aijzk[i,j,z,k] ,<= Aijmaxz[i,j,z]*Uijzk[i,j,z,k];
 
 
-# s.t. eq99
-# {z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in Sk : (i,j) in B} :
-# Aijzk[i,j,z,k] ,>=
-# Aijz[i,j,z]-sum{h in (1..k-1)}(Aijzk[i,j,z,h]);
+### Fill information ###
+s.t. eqTotalArea:
+TotalArea ,= sum{z in Sz, i in Hz[z], j in Cz[z] : ((i,j) in P)}(Aijz[i,j,z]);
 
-# s.t. eq100
-# {z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]) : (i,j) in B} :
-# sum{h in Sk}(h*Gijmzk[i,j,m,z,h])
-# ,= sum{l in Miz[i,z] : (l<=m) and (j in PimH[i,m])}(KijmzH[i,j,l,z]+1-YijmzH[i,j,m,z]);
-
-# s.t. eq101
-# {z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]) : (i,j) in B} :
-# sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n])}
-# (qaimjnz[i,m,j,n,z]) ,= qaijmzH[i,j,m,z];
-
-# s.t. eq102
-# {z in Sz, m in Mz[z],n in Mz[z], i in Hmz[m,z], j in (Cnz[n,z] inter PimH[i,m]) : ((i,j) in B) and (TmL[n]<TmU[m])} :
-# qaimjnz[i,m,j,n,z] ,<= qimjnz[i,m,j,n,z];
-
-# ### Number of shells ###
-# s.t. eq103
-# {z in Sz, i in Hz[z], j in Cz[z] : ((i,j) in P) and (not ((i,j) in B))} :
-# Aijz[i,j,z] ,<= Aijmaxz[i,j,z]*Uijz[i,j,z];
-
-# s.t. eq104
-# {z in Sz, i in Hz[z], j in Cz[z], k in Sk : ((i,j) in P) and  ((i,j) in B)} :
-# Aijzk[i,j,z,k] ,<= Aijmaxz[i,j,z]*Uijzk[i,j,z,k];
+s.t. eqHENumber:
+HENumber ,= sum{z in Sz,  m in Mz[z], i in Hmz[m,z], j in (Cz[z] inter PimH[i,m])}(KijmzH[i,j,m,z]);
 
 
 ###################
 ###  OBJECTIVE  ###
 ###################
 
+s.t. eqTotalCost:
+TotalCost ,= sum{z in Sz, group in SUtGroups}(FixUtCost[group]*UtEnabled[group] + UtFact[group]*VarUtCost[group])
++ 	sum{z in Sz, i in Hz[z],j in Cz[z] : ((i,j) in P) and(not ((i,j) in B))}(cijF[i,j]*Uijz[i,j,z]+cijA[i,j]*Aijz[i,j,z])
++	sum{k in Sk, z in Sz, i in Hz[z],j in Cz[z] : (i,j) in P inter B}(cijF[i,j]*Uijzk[i,j,z,k] + cijA[i,j]*Aijzk[i,j,z,k]);   
 
-minimize totalCost:
-sum{z in Sz, i in HUz[z],j in Cz[z] : (i,j) in P}(ciH[i]*FiH[i]*DTi[i])
-+	sum{z in Sz, j in CUz[z],i in Hz[z] : (i,j) in P}(cjC[j]*FjC[j]*DTj[j])
+minimize eqObj:
+TotalCost;
+#sum{z in Sz, group in SUtGroups}(FixUtCost[group]*UtEnabled[group] + UtFact[group]*VarUtCost[group]);
 # + 	sum{z in Sz, i in Hz[z],j in Cz[z] : ((i,j) in P) and(not ((i,j) in B))}(cijF[i,j]*Uijz[i,j,z]+cijA[i,j]*Aijz[i,j,z])
-# +	sum{k in Sk, z in Sz, i in Hz[z],j in Cz[z] : (i,j) in P}(cijF[i,j]*Uijzk[i,j,z,k] + cijA[i,j]*Aijzk[i,j,z,k]);       
-+ 	sum{z in Sz, i in Hz[z],j in Cz[z] : ((i,j) in P) }(cijF[i,j]*Uijz[i,j,z]+cijA[i,j]*Aijz[i,j,z]);
+#+	sum{k in Sk, z in Sz, i in Hz[z],j in Cz[z] : (i,j) in P inter B}(cijF[i,j]*Uijzk[i,j,z,k] + cijA[i,j]*Aijzk[i,j,z,k]);       
 
-solve;
 	   
-###  OUTPUT ###
-#display{iU in SUtGroups}: iU,VFactUt[iU];
+#solve;
+	   
+
 	   
 end;

@@ -62,7 +62,7 @@ class WidgetTableStreams : public QWidget {
 
 
 public:
-        explicit WidgetTableStreams(EIItem* _rootEI,bool _editable,MOVector<Variable> *_variables=NULL,QWidget *parent = 0);
+        explicit WidgetTableStreams(EIItem* _rootEI,bool _editable,QWidget *parent,MOVector<Variable> *_variables=NULL);
     virtual ~WidgetTableStreams();
 
 	public slots:

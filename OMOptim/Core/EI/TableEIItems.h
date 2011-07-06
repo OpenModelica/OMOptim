@@ -61,6 +61,7 @@ private :
 	EI::Type filter;
 	bool recursive;
 	QList<EIItem*> eiItems;
+        bool enabled;
 
 
 	// abstract model functions
@@ -80,6 +81,7 @@ signals:
 
 public slots :
 		void updateList();
+                void onRootElementDeleted();
 };
 
 
