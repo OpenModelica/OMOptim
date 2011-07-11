@@ -397,13 +397,13 @@ void Save::saveProject(Project* project)
     // Saving solved OMCases
     for (int nr=0;nr<project->results()->items.size();nr++)
 	{
-        Save::saveResult(project->results()->items.at(nr));
+        Save::saveResult(dynamic_cast<Result*>(project->results()->items.at(nr)));
 	}
 
     // Saving OMCases
 	for (int nr=0;nr<project->problems()->items.size();nr++)
 	{
-		Save::saveProblem(project->problems()->items.at(nr));
+                Save::saveProblem(dynamic_cast<Problem*>(project->problems()->items.at(nr)));
 	}
 
 	// Saving ModModelPlus

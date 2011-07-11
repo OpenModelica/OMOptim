@@ -693,7 +693,8 @@ void Project::removeResult()
 
 Problem* Project::restoreProblemFromResult(int numResult)
 {
-        Result* result = _results->items.at(numResult);
+    Result* result = dynamic_cast<Result*>(_results->items.at(numResult));
+
 	Problem* restoredPb;
 
         switch(result->problemType())

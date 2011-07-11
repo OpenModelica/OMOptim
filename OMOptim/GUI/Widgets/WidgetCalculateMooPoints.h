@@ -46,7 +46,7 @@
 #include<QtGui/QFileDialog>
 
 #include "OptimResult.h"
-#include "widgetmoopointslist.h"
+#include "WidgetMooPointsList.h"
 
 namespace Ui {
     class WidgetCalculateMooPointsClass;

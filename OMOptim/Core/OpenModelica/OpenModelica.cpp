@@ -314,8 +314,7 @@ void OpenModelica::start(QString exeFile,int maxnsec)
     bool ok = simProcess.waitForFinished(nmsec);
         if(!ok)
         {
-        QString msg("CreateProcess failed (%d).\n");
-        msg.sprintf(msg.toLatin1().data(),GetLastError());
+        QString msg("CreateProcess failed (%d).");
             infoSender.debug(msg);
             return;
         }

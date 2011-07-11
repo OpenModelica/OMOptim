@@ -46,7 +46,7 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include <QtGui/QTextEdit>
-#include "MOOmc.h"
+#include "MOomc.h"
 #include "MOOptPlot.h"
 #include "Project.h"
 

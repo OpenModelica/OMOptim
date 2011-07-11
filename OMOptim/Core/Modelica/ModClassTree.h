@@ -66,7 +66,7 @@
 
      // Read and fullfill functions
      void readFromOmc(ModClass*,int depthMax = 1000, int curDepth = 0);	//Read data and children with OMC calls
-     void readFromOmcV2(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
+     void readFromOmcV2(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0); 	//Read data and children with OMC calls
      void readFromOmcV3(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
      void readFromOmcV4(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls, using OMEdit version
 

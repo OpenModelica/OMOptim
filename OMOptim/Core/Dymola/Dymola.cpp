@@ -107,10 +107,9 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
         bool ok = scriptProcess.waitForFinished(-1);
         if(!ok)
         {
-            QString msg("CreateProcess failed (%d).\n");
-            msg.sprintf(msg.toLatin1().data(),GetLastError());
+            QString msg("CreateProcess failed");
             infoSender.debug(msg);
-            return;
+            return false;
         }
 
         //look if it succeed
@@ -162,10 +161,9 @@ bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
     bool ok = simProcess.waitForFinished(-1);
     if(!ok)
     {
-        QString msg("CreateProcess failed (%d).\n");
-        msg.sprintf(msg.toLatin1().data(),GetLastError());
+        QString msg("CreateProcess failed");
         infoSender.debug(msg);
-        return;
+        return false;
     }
 
     //look if it succeed
@@ -224,8 +222,7 @@ void Dymola::start(QString path,int maxNSec)
     bool ok = simProcess.waitForFinished(nmsec);
     if(!ok)
     {
-                    QString msg("CreateProcess failed (%d).\n");
-                    msg.sprintf(msg.toLatin1().data(),GetLastError());
+        QString msg("CreateProcess failed (%d).");
                     infoSender.debug(msg);
         simProcess.close();
                     return;

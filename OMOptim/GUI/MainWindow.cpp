@@ -685,7 +685,7 @@ void MainWindow::showResultPopup(const QPoint & iPoint)
 	else
 	{
         _ui->treeResults->setCurrentIndex(index);
-        Result *selectedResult = _project->results()->items.at(index.row());
+        Result *selectedResult = dynamic_cast<Result*>(_project->results()->items.at(index.row()));
         QMenu *resultMenu = GuiTools::createResultPopupMenu(_project,this,_ui->treeResults->mapToGlobal(iPoint),selectedResult,index.row());
         resultMenu->exec(_ui->treeResults->mapToGlobal(iPoint));
 	}
@@ -705,7 +705,7 @@ void MainWindow::showProblemPopup(const QPoint & iPoint)
 	else
 	{
         _ui->treeOMCases->setCurrentIndex(index);
-		Problem *selectedProblem = _project->problems()->items.at(index.row());
+                Problem *selectedProblem = dynamic_cast<Problem*>(_project->problems()->items.at(index.row()));
         QMenu * problemMenu = GuiTools::createProblemPopupMenu(_project,this,_ui->treeOMCases->mapToGlobal(iPoint),selectedProblem,index.row());
         problemMenu->exec(_ui->treeOMCases->mapToGlobal(iPoint));
 	}

@@ -148,7 +148,7 @@ public :
 
     }
 
-    QWidget *DoubleSpinBoxDelegate::createEditor(QWidget *parent,
+    QWidget *createEditor(QWidget *parent,
                                                  const QStyleOptionViewItem &/* option */,
                                                  const QModelIndex &/* index */) const
     {

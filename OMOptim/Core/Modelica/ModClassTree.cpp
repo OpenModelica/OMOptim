@@ -73,7 +73,7 @@ void ModClassTree::clear()
     endResetModel();
 }
 
-bool ModClassTree::addModClass(ModClass* parent,QString className,QString filePath="")
+bool ModClassTree::addModClass(ModClass* parent,QString className,QString filePath)
 {
     bool ok=false;
     ModClass* newClass = _modReader->newModClass(className,filePath);
@@ -157,7 +157,7 @@ void ModClassTree::readFromOmc(ModClass* parent,int depthMax,int curDepth)
 }
 
 
-void ModClassTree::readFromOmcV2(ModClass* parent,int depthMax,QString direction,int curDepth)
+void ModClassTree::readFromOmcV2(ModClass* parent,int depthMax,QString direction,int curDepth) const
 {
         if(parent->_readMutex.tryLock())
         {
@@ -497,7 +497,7 @@ QVariant ModClassTree::data(const QModelIndex &index, int role) const
 		if(item)
 		{
 			if(!item->childrenReaden())
-                readFromOmcV2(item,1);
+                        readFromOmcV2(item,1);
 
 			if (role == Qt::ToolTipRole)
 			{

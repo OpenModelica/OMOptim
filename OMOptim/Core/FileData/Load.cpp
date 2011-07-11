@@ -425,13 +425,13 @@ Result* Load::newResult(QDomElement domResult,Project* project,Problem* problem,
 
     // read result
     if (resultType==OneSimResult::className())
-        result = newOneSimulationResult(resultRoot,project,problem);
+        result = newOneSimulationResult(resultRoot,project,dynamic_cast<OneSimulation*>(problem));
     if (resultType==OptimResult::className())
-        result = newOptimizationResult(resultRoot,project,problem,fileInfo.absoluteDir());
+        result = newOptimizationResult(resultRoot,project,dynamic_cast<Optimization*>(problem),fileInfo.absoluteDir());
 
 #ifdef USEEI
     if (resultType==EITargetResult::className())
-        result = new EITargetResult(project,project->modClassTree(),resultRoot,problem);
+        result = new EITargetResult(project,project->modClassTree(),resultRoot,dynamic_cast<EITarget*>(problem));
 #endif
 
 
