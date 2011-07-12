@@ -140,6 +140,7 @@ bool ModPlusOMCtrl::isCompiled()
 
 	QString filePath;
 	QFile file;
+
 	for(int i=0;i<filesNeeded.size();i++)
 	{
 		filePath = _mmoFolder+QDir::separator()+filesNeeded.at(i);

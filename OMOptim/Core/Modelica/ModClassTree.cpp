@@ -75,6 +75,7 @@ void ModClassTree::clear()
 
 bool ModClassTree::addModClass(ModClass* parent,QString className,QString filePath)
 {
+
     bool ok=false;
     ModClass* newClass = _modReader->newModClass(className,filePath);
 
@@ -496,8 +497,9 @@ QVariant ModClassTree::data(const QModelIndex &index, int role) const
 
 		if(item)
 		{
-			if(!item->childrenReaden())
-                        readFromOmcV2(item,1);
+            // fullfiling is now done in ::fetchmore
+            // if(!item->childrenReaden())
+            // readFromOmcV2(item,1);
 
 			if (role == Qt::ToolTipRole)
 			{
@@ -679,7 +681,29 @@ QModelIndex ModClassTree::parent(const QModelIndex &index) const
 
 		return createIndex(iC, 0, parentElement);
 }
+bool ModClassTree::hasChildren ( const QModelIndex & parent ) const
+{
+    if(!_enabled)
+        return false;
 
+    ModClass *parentElement;
+
+    if (parent.column() > 0)
+        return false;
+
+    if (!parent.isValid())
+        return (rootElement()->childCount()>0);
+    else
+        parentElement = static_cast<ModClass*>(parent.internalPointer());
+
+    if(parentElement->childrenReaden())
+        return (parentElement->childCount()>0);
+    else
+    {
+        QStringList children = _moomc->getClassNames(parentElement->name());
+        return !children.isEmpty();
+    }
+}
 int ModClassTree::rowCount(const QModelIndex &parent) const
 {
     if(!_enabled)
@@ -723,9 +747,9 @@ ModModel* ModClassTree::modelOf(ModClass* item)
         return NULL;
 
     if(item->getClassRestr()==Modelica::MODEL)
-        return item;
+        return dynamic_cast<ModModel*>(item);
     else
-        return modelOf(item->parent());
+        return dynamic_cast<ModModel*>(modelOf(item->parent()));
 }
 
 
@@ -841,6 +865,42 @@ QIcon ModClassTree::getModelicaNodeIcon(ModClass* modClass)
     //        return QIcon(":/Resources/icons/type-icon.png");
     //    }
     return QIcon();
+}
+
+bool ModClassTree::canFetchMore ( const QModelIndex & parent ) const
+{
+    if(!_enabled)
+        return false;
+
+    if (!parent.isValid())
+        return false;
+
+    if(parent.column()<0 || parent.column()>=ModClass::nbFields)
+        return false;
+
+    ModClass *item = static_cast<ModClass*>(parent.internalPointer());
+
+    if(item && !item->childrenReaden())
+        return true;
+    else
+        return false;
+}
+
+void ModClassTree::fetchMore ( const QModelIndex & parent )
+{
+    if(!_enabled)
+        return;
+
+    if (!parent.isValid())
+        return;
+
+    ModClass *item = static_cast<ModClass*>(parent.internalPointer());
+
+    if(item)
+    {
+        if(!item->childrenReaden())
+            readFromOmcV2(item,_modReader->getDepthMax());
+    }
 }
 
 void ModClassTree::onRootDeleted()

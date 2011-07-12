@@ -42,25 +42,24 @@
 
 
 EABase::EABase(void)
+    :OptimAlgo()
 {
-	_project = NULL;
-	_stop = false;
-        _parameters = new MOParameters();
+
 }
 
 
 EABase::EABase(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
+:OptimAlgo()
 {
 	_project = project;
 	_problem = problem;
         _modClassTree = modClassTree;
         _modPlusCtrl = modPlusCtrl;
 	_stop = false;
-        _parameters = new MOParameters();
-
 }
 
-EABase::EABase(const EABase & eaBase):OptimAlgo(eaBase)
+EABase::EABase(const EABase & eaBase)
+    :OptimAlgo(eaBase)
 {
         _modClassTree = eaBase._modClassTree;
         _modPlusCtrl = eaBase._modPlusCtrl;
@@ -69,7 +68,6 @@ EABase::EABase(const EABase & eaBase):OptimAlgo(eaBase)
 	_index = eaBase._index;
 	_stop = eaBase._stop;
 
-        _parameters = eaBase._parameters->clone();
 }
 
 EABase::~EABase(void)

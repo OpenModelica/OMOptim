@@ -53,7 +53,17 @@ public:
 	~EIConnConstrs(void);
 	EIConnConstrs* clone();
         EIConnConstrs(QDomElement & domList, EITree* eiTree);
-        QMultiMap<EIStream*,EIStream*> getMapStreams(MOOptVector *variables);
+
+        void setItems(QDomElement,EITree* eiTree);
+
+        QMultiMap<QString,QString> getForbiddenMatchs(MOOptVector *variables);
+
+        bool isForbiddenMatch(QString str1,QString str2,QMultiMap<QString,QString> map = QMultiMap<QString,QString>(),MOOptVector* variables=NULL);
+
+        static QString className(){return "EIConnConstrs";};
+        virtual QString getClassName(){return EIConnConstrs::className();};
+
+
 
 };
 #endif

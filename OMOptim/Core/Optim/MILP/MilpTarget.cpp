@@ -219,11 +219,11 @@ void MilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 
 	// SUtStrGroups
 	QString setSForbConn = "set SForbConn := ";
-	EIStream* hotStr;
-	EIStream* coldStr;
+    QString hotStr;
+    QString coldStr;
 	
 	//Forbidden <HotStream,ColdStream>
-    QMultiMap<EIStream*,EIStream*> mapConstr = _connConstrs->getMapStreams(_variables);
+    QMultiMap<QString,QString> mapConstr = _connConstrs->getForbiddenMatchs(_variables);
 
 	for(int i=0;i<mapConstr.keys().size();i++)
 	{
@@ -231,7 +231,7 @@ void MilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
 			for(int j=0;j<mapConstr.values(hotStr).size();j++)
 			{
 				coldStr = mapConstr.values(hotStr).at(j);
-				setSForbConn+="("+hotStr->name(EI::FULL)+","+coldStr->name(EI::FULL)+") \n";
+            setSForbConn+="("+hotStr+","+coldStr+") \n";
 			}
 	}
 	setSForbConn += "; \n";
@@ -454,7 +454,7 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 	for(int i=0;i<mapGroupFacMul.keys().size();i++)
 	{
 		groupName = mapGroupFacMul.keys().at(i);
-        curGroup =result->eiTree()->findItem(groupName);
+        curGroup = dynamic_cast<EIGroup*>(result->eiTree()->findItem(groupName));
 		if(curGroup)
 		{
             value = mapGroupFacMul.value(groupName);
@@ -488,7 +488,7 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
             nameA = regExp.cap(1);
             nameB = regExp.cap(2);
 
-            qflow = glp_get_col_prim(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
+            qflow = glp_mip_col_val(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
             if(qflow!=0)
             {
                 streamA = dynamic_cast<EIStream*>(result->eiTree()->findItem(nameA));

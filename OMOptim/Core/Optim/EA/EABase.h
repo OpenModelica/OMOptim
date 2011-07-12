@@ -45,6 +45,7 @@
 #include "OptimAlgo.h"
 #include "ModClassTree.h"
 #include "ModPlusCtrl.h"
+#include <time.h> //needed in paradiseo (not included otherwhere!!)
 
 
 class Project;

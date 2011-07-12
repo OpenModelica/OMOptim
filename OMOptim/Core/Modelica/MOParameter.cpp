@@ -142,7 +142,7 @@ bool MOParameter::setFieldValue(int ifield,QVariant value)
 			_defaultValue = value;
 			break;
 		case TYPE :
-                        _type=value.toInt();
+                        _type=((MOParameter::Type)value.toInt());
 			break;
 		case MIN :
 			_min=value;

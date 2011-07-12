@@ -57,8 +57,8 @@ EITargetResult::EITargetResult(Project* project, ModClassTree* modClassTree,Prob
 
 }
 
-EITargetResult::EITargetResult(Project* project, ModClassTree* modClassTree,QDomElement domResult,EITarget* problem)
-    :Result(project,modClassTree)
+EITargetResult::EITargetResult(Project* project, ModClassTree* modClassTree,QDomElement domResult,Problem* problem)
+    :Result(project,modClassTree,problem)
 {
 
     _eiTree = new EITree();

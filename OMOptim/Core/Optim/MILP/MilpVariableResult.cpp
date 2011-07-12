@@ -100,7 +100,7 @@ void MilpVariableResult2D::fill(glp_prob * glpProblem,QStringList colNames)
             i1 = regExp.cap(1);
             i2 = regExp.cap(2);
 
-            curValue = glp_get_col_prim(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
+            curValue = glp_mip_col_val(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
 
             _values.insert(MilpKey2D(i1,i2),curValue);
 
@@ -136,7 +136,7 @@ void MilpVariableResult3D::fill(glp_prob * glpProblem,QStringList colNames)
             i2 = regExp.cap(2);
             i3 = regExp.cap(3);
 
-            curValue = glp_get_col_prim(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
+            curValue = glp_mip_col_val(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
 
             _values.insert(MilpKey3D(i1,i2,i3),curValue);
 
@@ -172,10 +172,10 @@ void MilpVariableResult4D::fill(glp_prob * glpProblem,QStringList colNames)
             i3 = regExp.cap(3);
             i4 = regExp.cap(4);
 
-            curValue = glp_get_col_prim(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
+            curValue = glp_mip_col_val(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
 
-            _values.insert(MilpKey4D(i1,i2,i3,i4),1.1);
-            //_values.insert(MilpKey4D(i1,i2,i3,i4),curValue);
+            //_values.insert(MilpKey4D(i1,i2,i3,i4),1.1);
+            _values.insert(MilpKey4D(i1,i2,i3,i4),curValue);
             qDebug(QString::number(_values.value(MilpKey4D(i1,i2,i3,i4))).toLatin1().data());
 
         }
@@ -183,5 +183,24 @@ void MilpVariableResult4D::fill(glp_prob * glpProblem,QStringList colNames)
     }
 }
 
+
+QString MilpVariableResult4D::toString()
+{
+
+        QString result;
+        MilpKey4D key;
+        QList<double> values;
+        for(int i = 0; i<_values.uniqueKeys().size();i++)
+        {
+            key = _values.uniqueKeys().at(i);
+            values.clear();
+            values.append(_values.values(key));
+            result += _name + "[" +key.toString()+"] :=";
+            for(int j=0;j<values.size();j++)
+                result += QString::number(values.at(j))+" ";
+            result+=";\n";
+        }
+        return result;
+}
 
 

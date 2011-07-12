@@ -47,8 +47,8 @@ Project::Project()
 	_curProblem = -1;
 	
 
-        _problems = new OMCases("Problems");
-        _results = new OMCases("Results");
+        _problems = new Problems("Problems");
+        _results = new Results("Results");
 	_curLaunchedProblem = NULL;
 	setCurModClass(NULL);
 
@@ -693,7 +693,7 @@ void Project::removeResult()
 
 Problem* Project::restoreProblemFromResult(int numResult)
 {
-    Result* result = dynamic_cast<Result*>(_results->items.at(numResult));
+        Result* result = _results->at(numResult);
 
 	Problem* restoredPb;
 

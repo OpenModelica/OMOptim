@@ -105,7 +105,8 @@ NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree,Mod
 NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree,ModPlusCtrl* _modPlusCtrl,MOParameters* parameters)
 :EABase(_project,_problem,_modClassTree,_modPlusCtrl)
 {
-        _parameters = parameters->clone();
+    delete _parameters;
+    _parameters = new MOParameters(*parameters);
 };
 
 NSGA2::NSGA2(const NSGA2 & ea):EABase(ea)

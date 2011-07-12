@@ -37,8 +37,8 @@
  	@version 0.9 
 
   */
-#if !defined(_PROBLEMS_H)
-#define _PROBLEMS_H
+#if !defined(_OMCASES_H)
+#define _OMCASES_H
 
 #include <vector>
 #include <QtCore/QObject>

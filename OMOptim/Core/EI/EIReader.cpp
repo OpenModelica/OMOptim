@@ -310,7 +310,7 @@ QList<EIStream*> EIReader::getStreamsPresentInDT(METemperature Thot,METemperatur
 }
 
 
-static MEQflow EIReader::getIntervalQFlow(METemperature T1,METemperature T2,EIStream* stream,bool useCorrectedT)
+MEQflow EIReader::getIntervalQFlow(METemperature T1,METemperature T2,EIStream* stream,bool useCorrectedT)
 {
     METemperature TIntHot = std::max(T1,T2);
     METemperature TIntCold = std::min(T1,T2);
@@ -390,7 +390,7 @@ QList<int> EIReader::getTIntervalsConcerned(const QList<METemperature> &Tk,EIStr
     return result;
 }
 
-static QList<EIStream*> EIReader::getColdStreams(QList<EIStream*> allStreams)
+QList<EIStream*> EIReader::getColdStreams(QList<EIStream*> allStreams)
 {
     QList<EIStream*> list;
     EIStream* curStream;
@@ -405,7 +405,7 @@ static QList<EIStream*> EIReader::getColdStreams(QList<EIStream*> allStreams)
     return list;
 }
 
-static QList<EIStream*> EIReader::getHotStreams(QList<EIStream*> allStreams)
+QList<EIStream*> EIReader::getHotStreams(QList<EIStream*> allStreams)
 {
     QList<EIStream*> list;
     EIStream* curStream;
@@ -428,13 +428,13 @@ void EIReader::sortByCp(QList<EIStream*> & allStreams,Qt::SortOrder order)
         qSort(allStreams.begin(),allStreams.end(),EIReader::CpGreaterThan);
 }
 
-bool EIReader::CpLowerThan(const EIStream* s1, const EIStream* s2)
+bool EIReader::CpLowerThan(EIStream* s1, EIStream* s2)
 {
     bool ok1,ok2;
     return s1->Cp(ok1) < s1->Cp(ok2);
 }
 
-bool EIReader::CpGreaterThan(const EIStream* s1, const EIStream* s2)
+bool EIReader::CpGreaterThan( EIStream* s1,  EIStream* s2)
 {
    return !CpLowerThan(s1,s2);
 }

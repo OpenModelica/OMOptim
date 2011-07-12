@@ -57,8 +57,8 @@ public :
 
     QString toString();
 
-    QString row(){return _row;};
-    QString col(){return _col;};
+    QString row()const{return _row;};
+    QString col()const{return _col;};
 private :
         QString _row;
         QString _col;
@@ -76,9 +76,9 @@ public :
 
     QString toString();
 
-    QString i1(){return _i1;};
-    QString i2(){return _i2;};
-    QString i3(){return _i3;};
+    QString i1()const{return _i1;};
+    QString i2()const{return _i2;};
+    QString i3()const{return _i3;};
 private :
         QString _i1;
         QString _i2;
@@ -97,10 +97,10 @@ public :
 
     QString toString();
 
-    QString i1(){return _i1;};
-    QString i2(){return _i2;};
-    QString i3(){return _i3;};
-    QString i4(){return _i4;};
+    QString i1()const{return _i1;};
+    QString i2()const{return _i2;};
+    QString i3()const{return _i3;};
+    QString i4()const{return _i4;};
 private :
         QString _i1;
         QString _i2;

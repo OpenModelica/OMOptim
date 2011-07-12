@@ -44,8 +44,6 @@
 EITarget::EITarget(Project* project,ModClassTree* modClassTree,MOomc* moomc)
     :EIProblem(project,modClassTree,moomc)
 {
-    _inputVars = new MOOptVector(false,false);
-    _connConstrs = new EIConnConstrs(); // connnection constraints
      _type = Problem::EITARGET;
 }
 
@@ -53,8 +51,6 @@ EITarget::EITarget(Project* project,ModClassTree* modClassTree,MOomc* moomc,QDom
     :EIProblem(project,modClassTree,moomc)
 {
 
-    _inputVars = new MOOptVector(false,false);
-    _connConstrs = new EIConnConstrs(); // connnection constraints
     _type = Problem::EITARGET;
 
     EITargetParameters::setDefaultParameters(_parameters);
@@ -75,48 +71,23 @@ EITarget::EITarget(Project* project,ModClassTree* modClassTree,MOomc* moomc,QDom
 
     // InputVars
     QDomElement domInputVars = domProblem.firstChildElement("InputVars");
-    inputVars()->setItems(domInputVars);
+    _inputVars->setItems(domInputVars);
 
-//    //**************
-//    // Result
-//    //**************
-//    QDomElement domResult = domProblem.firstChildElement("Result");
-//    if(!domResult.isNull())
-//    {
-//        EITargetResult* result = new EITargetResult(_project,this);
-//        result->setSuccess(true);
+    // Conn sontrs
+    QDomElement domConnConstrs = domProblem.firstChildElement(EIConnConstrs::className());
+    _connConstrs->setItems(domConnConstrs,eiTree());
 
-//        // EI
-//        QDomElement domEI = domResult.firstChildElement("EIItem");
-//        EIControler::setItems(domEI,result->eiTree()->rootElement());
 
-//        // Values
-//        QDomElement cValues = domResult.firstChildElement("Values");
-//        QString totalCost = cValues.attribute("TotalCost");
-//        result->totalCost = totalCost.toDouble();
-
-//        // EIConns
-//        QDomElement domEIConns = domResult.firstChildElement("EIConns");
-//        result->eiConns()->setItems(domEIConns,result->eiTree());
-
-//        QDomElement cFiles = domResult.firstChildElement("Files");
-//        result->_logFileName = cFiles.attribute("LogFile");
-//        result->_resFileName = cFiles.attribute("ResFile");
-//        result->_sensFileName = cFiles.attribute("SensFile");
-
-//        setResult(result);
-//    }
     }
 
 EITarget::EITarget(const EITarget &problem)
     :EIProblem(problem)
 {
-    _inputVars = problem._inputVars->clone();
-    _connConstrs = problem._connConstrs->clone();
+
     _type = Problem::EITARGET;
 
 
-    EITargetParameters::setDefaultParameters(_parameters);
+
 
 //    if(problem._result)
 //        _result = new EITargetResult(problem._result);
@@ -152,7 +123,7 @@ QDomElement EITarget::toXmlData(QDomDocument & doc)
     cProblem.appendChild(cResultVars);
 
     // Conn constr
-    QDomElement cConnConstr = _connConstrs->toXmlData(doc,"ConnConstrs");
+    QDomElement cConnConstr = _connConstrs->toXmlData(doc,_connConstrs->getClassName());
     cProblem.appendChild(cConnConstr);
 
     return cProblem;
@@ -180,7 +151,7 @@ Result* EITarget::launch(ProblemConfig config)
         infoSender.send(Info(modFileInfo.absoluteFilePath()+" does not exists",ListInfo::ERROR2));
         infoSender.send(Info(ListInfo::PROBLEMEIFAILED));
         emit finished(this);
-        return;
+        return NULL;
     }
 
     QDir tempDir(config.tempDir);

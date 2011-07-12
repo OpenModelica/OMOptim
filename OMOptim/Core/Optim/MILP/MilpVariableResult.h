@@ -129,10 +129,12 @@ public:
     void fill(glp_prob * glpProblem,QStringList colNames = QStringList());
 
     QMap<MilpKey4D,double> values(){return _values;};
+    QString toString();
 
 private :
 
     QMap<MilpKey4D,double> _values;
+
 };
 
 #endif // MilpVariableResult_H

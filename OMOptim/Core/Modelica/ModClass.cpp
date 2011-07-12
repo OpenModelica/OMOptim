@@ -119,7 +119,7 @@ ModClass* ModClass::parent()
 		return _parent;
 }
 
-int ModClass::childCount()
+int ModClass::childCount() const
 {
 	return _children.size();
 }

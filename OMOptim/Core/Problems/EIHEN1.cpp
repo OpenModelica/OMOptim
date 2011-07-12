@@ -48,6 +48,36 @@ EIHEN1::EIHEN1(Project* project,ModClassTree* modClassTree,MOomc* moomc)
     EIHEN1Parameters::setDefaultParameters(_parameters);
 }
 
+EIHEN1::EIHEN1(Project* project,ModClassTree* modClassTree,MOomc* moomc,QDomElement domProblem)
+    :EIProblem(project,modClassTree,moomc)
+{
+
+    _type = Problem::EIHEN1;
+    EIHEN1Parameters::setDefaultParameters(_parameters);
+
+
+    QDomElement domInfos = domProblem.firstChildElement("Infos");
+    QString problemName = domInfos.attribute("name");
+
+    // Infos
+    setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
+    setName(problemName);
+
+    // EI
+    QDomElement domEI = domProblem.firstChildElement("EIItem");
+    EIControler::setItems(domEI,eiTree()->rootElement());
+
+    // InputVars
+    QDomElement domInputVars = domProblem.firstChildElement("InputVars");
+    _inputVars->setItems(domInputVars);
+
+    // Conn sontrs
+    QDomElement domConnConstrs = domProblem.firstChildElement(EIConnConstrs::className());
+    _connConstrs->setItems(domConnConstrs,eiTree());
+
+}
+
+
 EIHEN1::EIHEN1(const EIHEN1 &problem)
     :EIProblem(problem)
 {
@@ -122,7 +152,7 @@ Result* EIHEN1::launch(ProblemConfig config)
         infoSender.send(Info(modFileInfo.absoluteFilePath()+" does not exists",ListInfo::ERROR2));
         infoSender.send(Info(ListInfo::PROBLEMEIFAILED));
         emit finished(this);
-        return;
+        return NULL;
     }
 
     QDir tempDir(config.tempDir);

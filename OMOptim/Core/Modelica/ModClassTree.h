@@ -61,7 +61,7 @@
 
      ModClassTree(ModReader* _modReader,MOomc* moomc,QObject *parent = 0);
      virtual ~ModClassTree();
-     ModClass* rootElement(){return _rootElement;}
+     ModClass* rootElement()const {return _rootElement;}
 
 
      // Read and fullfill functions
@@ -105,13 +105,17 @@
                        const QModelIndex &parent = QModelIndex()) const;
      QModelIndex indexOf(ModClass*,int column=0);
      QModelIndex parent(const QModelIndex &index) const;
+     bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
      int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	 int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	 ModClass* findItem(QString);
 
+
 	 QStringList mimeTypes() const;
 	 QMimeData* mimeData(const QModelIndexList &indexes) const;
      QIcon getModelicaNodeIcon(ModClass* modClass);
+     bool canFetchMore ( const QModelIndex & parent ) const;
+     void fetchMore ( const QModelIndex & parent );
 
 
  private:

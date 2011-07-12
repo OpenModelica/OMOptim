@@ -55,6 +55,8 @@
 #include "ModModelPlus.h"
 #include "MOItem.h"
 #include "OMCases.h"
+#include "Problems.h"
+#include "Results.h"
 #include "MOomc.h"
 #include "Software.h"
 #include "ModPlusCtrl.h"
@@ -114,8 +116,8 @@ private:
 	QStringList _moFiles;
 	QStringList _mmoFiles;
 
-        OMCases* _problems;
-        OMCases* _results;
+        Problems* _problems;
+        Results* _results;
 	
 
 	ModReader* _modReader;
@@ -186,8 +188,8 @@ public:
 	QStringList mmoFiles();
 	
 	MOomc* moomc(){return _moomc;};
-        OMCases* problems(){return _problems;};
-        OMCases* results(){return _results;};
+        Problems* problems(){return _problems;};
+        Results* results(){return _results;};
 	ModReader* modReader(){return _modReader;};
 	ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
         ModClassTree* modClassTree(){return _modClassTree;};

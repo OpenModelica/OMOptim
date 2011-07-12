@@ -323,7 +323,7 @@ void EIStream::resetNumerize()
 * (using variables parameter)
 * If failed to numerize, ok is set to false, and returns -1.
 */
-double EIStream::Cp(bool &ok,MOOptVector* variables) const
+double EIStream::Cp(bool &ok,MOOptVector* variables)
 {
     // try to numerize if not done
     // if failure, return -1;

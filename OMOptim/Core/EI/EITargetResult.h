@@ -23,7 +23,7 @@ class EITargetResult : public Result
 {
 public:
         EITargetResult(Project*, ModClassTree*, Problem*);
-        EITargetResult(Project* project,ModClassTree*,QDomElement domResult,EITarget* problem);
+        EITargetResult(Project* project,ModClassTree*,QDomElement domResult,Problem* problem);
 	EITargetResult(void);
 	~EITargetResult(void);
 

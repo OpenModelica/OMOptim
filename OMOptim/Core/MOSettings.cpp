@@ -70,13 +70,13 @@ void MOSettings::initialize(bool eraseCurrentValues)
 
 	QSettings settings("MO", "Settings");
 
-	//*******************************
-	// MO Extra Path
-	//*******************************
-	names << QString("path/mainFolder");
-	descs << QString("Path of installation");
-	defaultValues << getenv("MOPATH");
-	types.push_back(FOLDERPATH);
+//	//*******************************
+//	// MO Extra Path
+//	//*******************************
+//	names << QString("path/mainFolder");
+//	descs << QString("Path of installation");
+//	defaultValues << getenv("MOPATH");
+//	types.push_back(FOLDERPATH);
 
 //	//*******************************
 //	// Default modelica library

@@ -241,7 +241,7 @@ QVariant EITree::headerData(int section, Qt::Orientation orientation,
     return QAbstractItemModel::headerData(section, orientation, role);
 }
 
-QModelIndex EITree::indexOf(EIItem* item,int column)
+QModelIndex EITree::indexOf(EIItem* item,int column) const
 {
     if(item==_rootElement)
         return createIndex(0,column,item);

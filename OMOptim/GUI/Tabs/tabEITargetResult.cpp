@@ -53,7 +53,7 @@ TabEITargetResult::TabEITargetResult(Project *project,EITargetResult  *targetRes
     // create new EIMER and launch it
     _problemMER = new EIMER(project,_project->modClassTree(),_project->moomc());
     _problemMER->setEITree(new EITree(*_targetResult->eiTree()));
-    _merResult = _problemMER->launch(ProblemConfig());
+    _merResult = dynamic_cast<EIMERResult*>(_problemMER->launch(ProblemConfig()));
 
     // Variables
 
@@ -62,7 +62,7 @@ TabEITargetResult::TabEITargetResult(Project *project,EITargetResult  *targetRes
 
 
     _widgetCCPlot = new WidgetCCPlot(_merResult,this);
-    _widgetSelPointScan = new WidgetSelPointScan(((EIProblem*)_targetResult->problem())->inputVars(),this);
+    //_widgetSelPointScan = new WidgetSelPointScan(((EIProblem*)_targetResult->problem())->inputVars(),this);
     _widgetTableConnConstr = new WidgetTableConnConstr(
             ((EIProblem*)_targetResult->problem())->connConstrs(),
             _targetResult->eiTree(),
@@ -73,7 +73,7 @@ TabEITargetResult::TabEITargetResult(Project *project,EITargetResult  *targetRes
     _widgetEITargetResult = new WidgetEITargetResult(_targetResult,this);
 
     addDockWidget("EI items",_widgetTreeStreams);
-    addDockWidget("Points and Scans",_widgetSelPointScan,_widgetTreeStreams);
+    //addDockWidget("Points and Scans",_widgetSelPointScan,_widgetTreeStreams);
     addDockWidget("EI Groups",_widgetTableEIGroups,_widgetTreeStreams);
     addDockWidget("Composites",_widgetCCPlot,_widgetTreeStreams);
     addDockWidget("Connections constraints",_widgetTableConnConstr,_widgetTreeStreams);

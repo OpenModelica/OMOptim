@@ -205,12 +205,13 @@ QString Dymola::getExecutablePath()
 void Dymola::start(QString path,int maxNSec)
 {
 #ifdef WIN32
-    bool cdOk = SetCurrentDirectory(path.utf16());
+    QProcess simProcess;
+    simProcess.setWorkingDirectory(path);
 		
 
    QString appPath = "\""+path+"\\"+"Dymosim.exe\"";
 
-    QProcess simProcess;
+
     simProcess.start(appPath, QStringList());
 
     int nmsec;
@@ -222,10 +223,10 @@ void Dymola::start(QString path,int maxNSec)
     bool ok = simProcess.waitForFinished(nmsec);
     if(!ok)
     {
-        QString msg("CreateProcess failed (%d).");
-                    infoSender.debug(msg);
+        QString msg("CreateProcess failed.");
+        infoSender.debug(msg);
         simProcess.close();
-                    return;
+        return;
     }
 
 

@@ -33,6 +33,8 @@ EIConnConstr::EIConnConstr(QDomElement & domEl, EITree* _eiTree)
 	}
 }
 
+
+
 void EIConnConstr::setItems(EIItem* _a,EIItem* _b)
 {
 	a = _a;
@@ -117,8 +119,13 @@ bool EIConnConstr::isValid()
 }
 
 
-QMultiMap<EIStream*,EIStream*> EIConnConstr::getMapStreams(MOOptVector *variables)
+QMultiMap<QString,QString> EIConnConstr::getForbiddenMatchs(MOOptVector *variables)
 {
+    QMultiMap<QString,QString> result;
+
+    if(type==FORBIDDEN)
+    {
+
 	QList<EIStream*> aStreams;
 	QList<EIStream*> bStreams;
 	if(a->getEIType()==EI::STREAM)
@@ -131,7 +138,7 @@ QMultiMap<EIStream*,EIStream*> EIConnConstr::getMapStreams(MOOptVector *variable
 	else
 		bStreams.append(EIReader::getStreams(b));
 
-	QMultiMap<EIStream*,EIStream*> result;
+
 
 	EIStream* curAStream;
 	EIStream* curBStream;
@@ -143,11 +150,12 @@ QMultiMap<EIStream*,EIStream*> EIConnConstr::getMapStreams(MOOptVector *variable
 			curBStream = bStreams.at(ib);
 			
 			if(curAStream->isHot(variables)&&!curBStream->isHot(variables))
-				result.insert(curAStream,curBStream);
+                                result.insert(curAStream->name(),curBStream->name());
 			if(!curAStream->isHot(variables)&&curBStream->isHot(variables))
-				result.insert(curBStream,curAStream);
+                                result.insert(curBStream->name(),curAStream->name());
 		}
 	}
+    }
 	return result;
 }
 

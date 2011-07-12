@@ -62,10 +62,10 @@ public :
 	{
 		if (_eo.invalid())
 		{
-			value()++;
+                        this->value()++;
 			myFunc(_eo);
 
-                        omEAProgress->setCurEval(value());
+                        omEAProgress->setCurEval(this->value());
 		}
 	}
 

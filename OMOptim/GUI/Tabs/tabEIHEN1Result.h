@@ -71,6 +71,7 @@
 #include "WidgetEIConns.h"
 #include "EIHEN1Result.h"
 #include "EIMER.h"
+#include "EIHEN1.h"
 
 class TabEIHEN1Result : public MO2ColTab {
     Q_OBJECT

@@ -98,7 +98,7 @@ public:
 
         QStringList references();
     bool numerize(MOOptVector* variables);
-    double Cp(bool &ok,MOOptVector* variables=NULL) const;
+    double Cp(bool &ok,MOOptVector* variables=NULL);
 
 	
 

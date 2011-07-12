@@ -41,6 +41,7 @@
 #define _SPEA2ADAPT_H
 
 
+#include <time.h>
 #include <stdio.h>
 #include <eo>
 #include <moeo>
@@ -49,6 +50,7 @@
 #include <do/make_continue_moeo.h>
 #include <do/make_checkpoint_moeo.h>
 #include <do/make_ea_moeo.h>
+
 
 #include "EABase.h"
 #include "Project.h"

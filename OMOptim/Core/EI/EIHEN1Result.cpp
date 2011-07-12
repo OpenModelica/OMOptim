@@ -57,6 +57,53 @@ EIHEN1Result::EIHEN1Result(Project* project, Problem* problem)
 
 }
 
+EIHEN1Result::EIHEN1Result(Project* project, ModClassTree* modClassTree,QDomElement domResult,Problem* problem)
+    :Result(project,modClassTree,problem)
+{
+
+    _eiTree = new EITree();
+    _eiConns = new EIConns();
+
+
+
+    //**************
+    // Result
+    //**************
+    if(!domResult.isNull())
+    {
+        this->setSuccess(true);
+
+        //Infos
+        QDomElement domInfos = domResult.firstChildElement("Infos");
+        QString resultName = domInfos.attribute("name");
+        setName(resultName);
+
+        // EI
+        QDomElement domEI = domResult.firstChildElement("EIItem");
+        EIControler::setItems(domEI,_eiTree->rootElement());
+
+        // Values
+        QDomElement cValues = domResult.firstChildElement("Values");
+        QString strValue = cValues.attribute("TotalCost");
+        _totalCost = strValue.toDouble();
+        strValue = cValues.attribute("TotalArea");
+        _totalArea = strValue.toDouble();
+        strValue = cValues.attribute("HENumber");
+        _HENumber = strValue.toDouble();
+
+        // EIConns
+        QDomElement domEIConns = domResult.firstChildElement("EIConns");
+        _eiConns->setItems(domEIConns,_eiTree);
+
+        QDomElement cFiles = domResult.firstChildElement("Files");
+        _logFileName = cFiles.attribute("LogFile");
+        _resFileName = cFiles.attribute("ResFile");
+        _sensFileName = cFiles.attribute("SensFile");
+
+    }
+}
+
+
 EIHEN1Result::EIHEN1Result(const EIHEN1Result &result)
     :Result(result)
 {
@@ -92,6 +139,8 @@ QDomElement EIHEN1Result::toXmlData(QDomDocument & doc)
     // Total cost
     QDomElement cValues = doc.createElement("Values");
     cValues.setAttribute("TotalCost",_totalCost);
+    cValues.setAttribute("TotalArea",_totalArea);
+    cValues.setAttribute("HENumber",_HENumber);
     cResult.appendChild(cValues);
 
     // files

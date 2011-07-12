@@ -68,12 +68,12 @@ public:
 
 
 	//edit functions
-        //void addModClass(ModClass* rootClass,QString className,QString filePath="");
         ModClass* newModClass(QString className,QString filePath="");
+        int getDepthMax();
 
 private :
 	MOomc* moomc;
-	int getDepthMax();
+
 
 
 };

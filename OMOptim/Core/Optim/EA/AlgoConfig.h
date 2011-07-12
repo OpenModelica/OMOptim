@@ -46,7 +46,7 @@
 #include <QtCore/QVector>
 #include "MOVector.h"
 
-
+#include <time.h> //useful for eo
 #include <eo>
 #include "AlgoParameter.h"
 

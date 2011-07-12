@@ -56,7 +56,7 @@ Problem::Problem(const Problem &problem)
 	_type = problem._type;
 	
 	
-        _parameters = problem._parameters->clone();
+        _parameters = new  MOParameters(*problem._parameters);
   //      _filesToCopy = problem._filesToCopy;
 
 //	_saveFolder = problem._saveFolder;

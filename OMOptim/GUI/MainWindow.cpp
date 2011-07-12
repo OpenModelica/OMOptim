@@ -329,12 +329,12 @@ void MainWindow::loadProject()
 
 	if (!filename.isNull())
 	{
-		QMessageBox msgBox;
-		msgBox.setText("Project will be loaded. It may take a long time while application will seem freezed.");
-                msgBox.setIcon(QMessageBox::Information);
-		msgBox.exec();
+//        QMessageBox msgBox;
+//        msgBox.setText("Project will be loaded. It may take a long time while application will seem freezed.");
+//        msgBox.setIcon(QMessageBox::Information);
+//        msgBox.exec();
 
-		msgBox.hide();
+//        msgBox.hide();
 		bool loaded = _project->load(filename);
 
 		if(loaded)
@@ -352,9 +352,9 @@ void MainWindow::loadProject()
 
 void MainWindow::loadProject(QString _fileName)
 {
-	QMessageBox msgBox;
-	msgBox.setText("Project will be loaded. It may take a long time while application will seem freezed.");
-	msgBox.exec();
+//    QMessageBox msgBox;
+//    msgBox.setText("Project will be loaded. It may take a long time while application will seem freezed.");
+//    msgBox.exec();
 
 
 	bool loaded = _project->load(_fileName);
@@ -455,7 +455,7 @@ void MainWindow::enableProblemTab(QModelIndex index)
 	{
 		if (index.row()<_project->problems()->items.size())
 		{
-			QString name = _project->problems()->items.at(index.row())->name();
+            QString name = _project->problems()->at(index.row())->name();
 
 			bool found = false;
 			while(i<_tabMain->count() && !found)
@@ -483,7 +483,7 @@ void MainWindow::enableResultTab(QModelIndex index)
 	{
         if (index.row()<_project->results()->items.size())
 		{
-            QString name = _project->results()->items.at(index.row())->name();
+            QString name = _project->results()->at(index.row())->name();
 
 			bool found = false;
 			while(i<_tabMain->count() && !found)
@@ -567,7 +567,7 @@ void MainWindow::removeResult(int num)
 	QMessageBox msgBox;
 	msgBox.setText("Removing solved problem cannot be undone.");
 	QString msg;
-    msg.sprintf("Are you sure you want to remove %s ?",_project->results()->items.at(num)->name().toLatin1().data());
+    msg.sprintf("Are you sure you want to remove %s ?",_project->results()->at(num)->name().toLatin1().data());
 	msgBox.setInformativeText(msg);
 	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
 	msgBox.setDefaultButton(QMessageBox::Yes);
@@ -581,7 +581,7 @@ void MainWindow::removeResult(int num)
 void MainWindow::removeResultTab(int num)
 {
 	//remove tab
-    _tabMain->removeTab(MOTabBase::TABSOLVEDPROBLEM,_project->results()->items.at(num)->name());
+    _tabMain->removeTab(MOTabBase::TABSOLVEDPROBLEM,_project->results()->at(num)->name());
 }
 
 void MainWindow::removeProblem()
@@ -603,7 +603,7 @@ void MainWindow::removeProblem(int num)
 	QMessageBox msgBox;
 	msgBox.setText("Removing problem cannot be undone.");
 	QString msg;
-	msg.sprintf("Are you sure you want to remove %s ?",_project->problems()->items.at(num)->name().toLatin1().data());
+    msg.sprintf("Are you sure you want to remove %s ?",_project->problems()->at(num)->name().toLatin1().data());
 	msgBox.setInformativeText(msg);
 	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
 	msgBox.setDefaultButton(QMessageBox::Yes);
@@ -617,7 +617,7 @@ void MainWindow::removeProblem(int num)
 void MainWindow::removeProblemTab(int num)
 {
 	//remove tab
-	_tabMain->removeTab(MOTabBase::TABPROBLEM,_project->problems()->items.at(num)->name());
+    _tabMain->removeTab(MOTabBase::TABPROBLEM,_project->problems()->at(num)->name());
 }
 
 void MainWindow::renameProblem()
@@ -636,7 +636,7 @@ void MainWindow::renameProblem(int i)
 {
 	 bool ok;
      QString newName = QInputDialog::getText(this, "Rename...",
-		 "New name :", QLineEdit::Normal,_project->problems()->items.at(i)->name(),&ok);
+                                            "New name :", QLineEdit::Normal,_project->problems()->at(i)->name(),&ok);
                                           
      if (ok && !newName.isEmpty())
 	 {
@@ -661,7 +661,7 @@ void MainWindow::renameResult(int i)
 {
 	 bool ok;
      QString newName = QInputDialog::getText(this, "Rename...",
-                                            "New name :", QLineEdit::Normal,_project->results()->items.at(i)->name(),&ok);
+                                            "New name :", QLineEdit::Normal,_project->results()->at(i)->name(),&ok);
                                           
      if (ok && !newName.isEmpty())
 	 {
@@ -685,7 +685,7 @@ void MainWindow::showResultPopup(const QPoint & iPoint)
 	else
 	{
         _ui->treeResults->setCurrentIndex(index);
-        Result *selectedResult = dynamic_cast<Result*>(_project->results()->items.at(index.row()));
+        Result *selectedResult = _project->results()->at(index.row());
         QMenu *resultMenu = GuiTools::createResultPopupMenu(_project,this,_ui->treeResults->mapToGlobal(iPoint),selectedResult,index.row());
         resultMenu->exec(_ui->treeResults->mapToGlobal(iPoint));
 	}
@@ -705,7 +705,7 @@ void MainWindow::showProblemPopup(const QPoint & iPoint)
 	else
 	{
         _ui->treeOMCases->setCurrentIndex(index);
-                Problem *selectedProblem = dynamic_cast<Problem*>(_project->problems()->items.at(index.row()));
+        Problem *selectedProblem = _project->problems()->at(index.row());
         QMenu * problemMenu = GuiTools::createProblemPopupMenu(_project,this,_ui->treeOMCases->mapToGlobal(iPoint),selectedProblem,index.row());
         problemMenu->exec(_ui->treeOMCases->mapToGlobal(iPoint));
 	}

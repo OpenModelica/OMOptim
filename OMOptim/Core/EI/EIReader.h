@@ -90,8 +90,8 @@ public:
         static void sortByCp(QList<EIStream*> & allStreams,Qt::SortOrder);
 
 private:
-        static bool CpLowerThan(const EIStream* s1, const EIStream* s2); //comparator used for sorting
-        static bool CpGreaterThan(const EIStream* s1, const EIStream* s2); //comparator used for sorting
+        static bool CpLowerThan( EIStream* s1,  EIStream* s2); //comparator used for sorting
+        static bool CpGreaterThan( EIStream* s1,  EIStream* s2); //comparator used for sorting
 
 
 

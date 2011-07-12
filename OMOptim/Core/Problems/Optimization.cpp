@@ -222,7 +222,7 @@ Result* Optimization::launch(ProblemConfig _config)
 
 	createSubExecs(_subModels,_subBlocks);
 
-        OptimResult* result = ((EABase*)getCurAlgo())->launch(_config.tempDir);
+        OptimResult* result = dynamic_cast<OptimResult*>(((EABase*)getCurAlgo())->launch(_config.tempDir));
 
         //fill problem in result
         if(result->problem()==NULL)
@@ -306,7 +306,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
             // Launch simulation
             //****************************************************
             ProblemConfig config(_project->tempPath(),true);
-            OneSimResult *oneSimRes = oneSim->launch(config);
+            OneSimResult *oneSimRes = dynamic_cast<OneSimResult*>(oneSim->launch(config));
 
             if(!oneSimRes->isSuccess())
             {

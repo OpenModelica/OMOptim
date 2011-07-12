@@ -43,6 +43,9 @@
 
 OptimAlgo::OptimAlgo(void)
 {
+    _problem = NULL;
+    _project = NULL;
+    _parameters = new MOParameters();
 }
 
 OptimAlgo::~OptimAlgo(void)
@@ -54,7 +57,7 @@ OptimAlgo::OptimAlgo(const OptimAlgo & algo)
 {
 	_project = algo._project;
 	_problem = algo._problem;
-        _parameters = algo._parameters->clone();
+        _parameters = new MOParameters(*algo._parameters);
 }
 
 void OptimAlgo::setProblem(Problem* problem)

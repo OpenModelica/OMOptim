@@ -44,7 +44,7 @@
 #include "QtGui/QListWidget"
 
 
-        WidgetLaunchEI::WidgetLaunchEI(EITarget* problem,QWidget *parent) :
+        WidgetLaunchEI::WidgetLaunchEI(EIProblem* problem,QWidget *parent) :
         QDialog(parent),
         _ui(new Ui::WidgetLaunchEIClass)
 {

@@ -30,7 +30,7 @@ DEFINES += __x86__ \
     _MBCS \
     QWT_DLL
 
-QMAKE_CXXFLAGS+=-fpermissive
+#QMAKE_CXXFLAGS+=-fpermissive
 
 # Version numbering (independent from OpenModelica)
 VERSION_HEADER = ../version.h
@@ -102,7 +102,7 @@ contains(CONFIG,useei){
 	# add CONFIG+=useei in command line
 
 	
-	DEFINES+= USEEI
+    DEFINES+= USEEI
     LIBS +=	-L$$(GLPKLIB) \
                 -lglpk_4_44
     INCLUDEPATH += $$(GLPKINCLUDE)
@@ -139,8 +139,8 @@ contains(CONFIG,useei){
                 ../GUI/Tabs/TabEITargetResult.h \
                 ../GUI/Widgets/WidgetTableEIGroups.h \
                 ../GUI/Widgets/WidgetCCPlot.h \
-				../GUI/Widgets/WidgetTreeStreams.h \
-				../GUI/Widgets/WidgetTableConnConstr.h \
+                ../GUI/Widgets/WidgetTreeStreams.h \
+                ../GUI/Widgets/WidgetTableConnConstr.h \
                 ../GUI/Widgets/WidgetTableStreams.h \
                 ../Core/EI/EIValueFiller.h \
                 ../GUI/Widgets/WidgetLaunchEI.h \
@@ -153,7 +153,7 @@ contains(CONFIG,useei){
                 ../Core/EI/EIConns.h \
                 ../GUI/Widgets/WidgetEIConns.h \
                 ../GUI/Widgets/WidgetEITargetResult.h \
-				../GUI/Widgets/WidgetEIHEN1Result.h \
+                                ../GUI/Widgets/WidgetEIHEN1Result.h \
                                     ../Core/EI/EIHEN1Result.h \
     ../GUI/Tabs/tabEIHEN1Result.h \
     ../Core/Optim/MILP/MilpSet.h \
@@ -189,16 +189,16 @@ contains(CONFIG,useei){
                 ../GUI/Tabs/TabEITargetResult.cpp \
                 ../Core/Tools/CCTools.cpp \
                 ../Core/Problems/EIMER.cpp\
-				../GUI/Widgets/WidgetEIGroup.cpp \
-				../GUI/Widgets/WidgetEIInputVars.cpp \
-				../GUI/Widgets/WidgetTableConnConstr.cpp \
-				../GUI/Widgets/WidgetTableEIGroups.cpp \
-				../GUI/Widgets/WidgetTableStreams.cpp \
-		        ../GUI/Widgets/WidgetTreeStreams.cpp \
+                ../GUI/Widgets/WidgetEIGroup.cpp \
+                ../GUI/Widgets/WidgetEIInputVars.cpp \
+                ../GUI/Widgets/WidgetTableConnConstr.cpp \
+                ../GUI/Widgets/WidgetTableEIGroups.cpp \
+                ../GUI/Widgets/WidgetTableStreams.cpp \
+                ../GUI/Widgets/WidgetTreeStreams.cpp \
                 ../GUI/Widgets/WidgetCCPlot.cpp \
                 ../GUI/Widgets/WidgetLaunchEI.cpp \
                 ../GUI/Widgets/WidgetEITargetResult.cpp \
-				../GUI/Widgets/WidgetEIHEN1Result.cpp \
+                                ../GUI/Widgets/WidgetEIHEN1Result.cpp \
                 ../Core/Problems/EIHEN1.cpp \
                 ../Core/EI/EIHEN1Functions.cpp \
                 ../Core/EI/EIModelContainer.cpp \
@@ -261,7 +261,7 @@ DEPENDPATH += . \
               ../Core/Optim/EA/Results \
               ../Core/Optim/EA/SPEA2 \
               ../Core/Optim/EA/SPEA2Adaptative
-			  
+
 INCLUDEPATH += . \
               .. \
               ../Core \
@@ -460,13 +460,15 @@ HEADERS += ../config.h \
     ../Core/MOKeepVector.h \
     ../GUI/Tools/MyTreeView.h \
     ../GUI/Widgets/WidgetProjectInfos.h \
-    ../GUI/Widgets/WidgetFilesList.h \ 
+    ../GUI/Widgets/WidgetFilesList.h \
     ../GUI/Widgets/WidgetOptimActions.h \
     ../Core/Problems/OMCase.h \
     ../version.h \
     ../Core/Optim/EA/NSGA2/NSGA2Parameters.h \
     ../Core/Optim/EA/SPEA2/SPEA2Parameters.h \
-    ../Core/Optim/EA/SPEA2Adaptative/SPEA2AdaptParameters.h
+    ../Core/Optim/EA/SPEA2Adaptative/SPEA2AdaptParameters.h \
+    ../Core/Problems/Problems.h \
+    ../Core/Problems/Results.h
 
    # ../Core/OMCasesOMProblem.h
 
@@ -509,7 +511,7 @@ FORMS += ../GUI/MainWindow.ui \
     ../GUI/Widgets/WidgetOptimActions.ui
  
 
- 
+
 
 SOURCES += ../main.cpp \
            ../Core/MOItem.cpp \
@@ -615,7 +617,7 @@ SOURCES += ../main.cpp \
            ../GUI/Widgets/WidgetSelectOptVars.cpp \
            ../GUI/Widgets/WidgetSelectVars.cpp \
            ../GUI/Widgets/WidgetSelPointScan.cpp \
-		   ../GUI/Widgets/WidgetTableRecVar.cpp \
+           ../GUI/Widgets/WidgetTableRecVar.cpp \
            ../GUI/Widgets/WidgetTableVar.cpp \
            ../GUI/Widgets/WidgetToolBar.cpp \
            ../Core/Optim/EA/AlgoParameter.cpp \
@@ -635,7 +637,9 @@ SOURCES += ../main.cpp \
             ../GUI/Widgets/WidgetProjectInfos.cpp \
     ../GUI/Widgets/WidgetFilesList.cpp \
     ../GUI/Widgets/WidgetOptimActions.cpp \
-    ../Core/Problems/OMCase.cpp
+    ../Core/Problems/OMCase.cpp \
+    ../Core/Problems/Problems.cpp \
+    ../Core/Problems/Results.cpp
 
 
 

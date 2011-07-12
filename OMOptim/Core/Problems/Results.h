@@ -1,10 +1,10 @@
-// $Id$
-        /**
+ï»¿// $Id$
+/**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,58 +29,29 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file WidgetLaunchEI.h
+        @file Results.h
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
  	@version 0.9 
-*/
 
-#ifndef  WIDGETLAUNCHEI_H
-#define WIDGETLAUNCHEI_H
+  */
+#if !defined(_RESULTS_H)
+#define _RESULTS_H
 
+#include "OMCases.h"
+#include "Result.h"
 
-#include <QtGui/QDialog>
-#include <QtGui/QWidget>
-#include<QtGui/QFileDialog>
-
-#include "EITarget.h"
-
-
-        namespace Ui {
-    class WidgetLaunchEIClass;
-}
-
-
-class QErrorMessage;
-
-
-class WidgetLaunchEI : public QDialog {
-    Q_OBJECT
-
-
+class Results : public OMCases
+{
 public:
-    explicit WidgetLaunchEI(EIProblem*,QWidget *parent);
-    virtual ~WidgetLaunchEI();
+        Results(QString name="Results");
+        virtual ~Results(void);
 
-
-public:
-    Ui::WidgetLaunchEIClass *_ui;
-    EIProblem* _problem;
-
-
-	public slots:
-
-    void launchTarget();
-    void launchMER();
-    void launchHEN();
-
-signals:
-    void MERAsked();
-    void HENAsked();
-    void targetAsked();
-
+        Result* at(int i);
+private :
+        QString name;
 };
 
-#endif 
+#endif

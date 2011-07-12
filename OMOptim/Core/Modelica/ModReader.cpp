@@ -105,7 +105,7 @@ void ModReader::loadMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModMo
 //		}
 //}
 
-ModClass* ModReader::newModClass(QString className,QString filePath="")
+ModClass* ModReader::newModClass(QString className,QString filePath)
 {
 	Modelica::ClassRestr restr = moomc->getClassRestriction(className);
 

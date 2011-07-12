@@ -82,7 +82,7 @@ EITree* EIValueFiller::getFilledEI(EITree* referencedEI,MOOptVector* variables,
         corrModModelPlus = project->modModelPlus(missingModels.at(iModel));
         OneSimulation oneSim(project,project->modClassTree(),project->modPlusCtrl(),corrModModelPlus);
 
-        OneSimResult* result = oneSim.launch(ProblemConfig());
+        OneSimResult* result = dynamic_cast<OneSimResult*>(oneSim.launch(ProblemConfig()));
 
         if(result->isSuccess())
         {

@@ -90,7 +90,7 @@ public:
                         int role = Qt::DisplayRole) const;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex indexOf(EIItem*,int column=0);
+    QModelIndex indexOf(EIItem*,int column=0) const;
 
     QModelIndex parent(const QModelIndex &index) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;

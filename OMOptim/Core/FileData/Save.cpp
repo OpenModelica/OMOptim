@@ -357,7 +357,7 @@ void Save::saveProject(Project* project)
 		for (int nr=0;nr<project->problems()->items.size();nr++)
 		{
 			QDomElement cProblem = doc.createElement( "Problem" );
-			QString relPath = projectDir.relativeFilePath(project->problems()->items.at(nr)->entireSavePath());
+            QString relPath = projectDir.relativeFilePath(project->problems()->at(nr)->entireSavePath());
 			cProblem.setAttribute("path",relPath);
             cOMCases.appendChild(cProblem);
 		}
@@ -372,7 +372,7 @@ void Save::saveProject(Project* project)
         for (int nr=0;nr<project->results()->items.size();nr++)
 		{
             QDomElement cResult = doc.createElement( "Result" );;
-            cResult.setAttribute("path",projectDir.relativeFilePath(project->results()->items.at(nr)->entireSavePath()));
+            cResult.setAttribute("path",projectDir.relativeFilePath(project->results()->at(nr)->entireSavePath()));
 			cResults.appendChild(cResult);
 		}
 		root.appendChild(cResults);
@@ -397,13 +397,13 @@ void Save::saveProject(Project* project)
     // Saving solved OMCases
     for (int nr=0;nr<project->results()->items.size();nr++)
 	{
-        Save::saveResult(dynamic_cast<Result*>(project->results()->items.at(nr)));
+        Save::saveResult(project->results()->at(nr));
 	}
 
     // Saving OMCases
 	for (int nr=0;nr<project->problems()->items.size();nr++)
 	{
-                Save::saveProblem(dynamic_cast<Problem*>(project->problems()->items.at(nr)));
+        Save::saveProblem(project->problems()->at(nr));
 	}
 
 	// Saving ModModelPlus

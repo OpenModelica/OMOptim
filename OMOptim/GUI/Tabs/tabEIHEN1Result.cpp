@@ -51,27 +51,33 @@ MO2ColTab(project->name(),result,false,parent)
         _project = project;
         _result  = result;
 
-//        // create new EIMER and launch it
+
+
+        // create new EIMER and launch it
         _problemMER = new EIMER(project,_project->modClassTree(),_project->moomc());
         _problemMER->setEITree(new EITree(*_result->eiTree()));
         _problemMER->parameters()->setValue(EIMERParameters::INCLUDEUTILITIES,true);
-         _merResult = _problemMER->launch(ProblemConfig());
+         _merResult = dynamic_cast<EIMERResult*>(_problemMER->launch(ProblemConfig()));
 
-//        // Variables
+          EIHEN1 *problem = dynamic_cast<EIHEN1*>(_result->problem());
+        // Variables
+            MOOptVector* variables=NULL;
+            if(problem)
+                variables = problem->inputVars();
 
         _widgetTreeStreams = new WidgetTreeStreams(_result->eiTree(),true,true,
-                                                  _project->modClassTree(),_project->moomc(),this,((EIProblem*)_result->problem())->inputVars());
+                                                  _project->modClassTree(),_project->moomc(),this,variables);
 
 
         _widgetCCPlot = new WidgetCCPlot(_merResult,this);
-//        _widgetSelPointScan = new WidgetSelPointScan(_problemTarget->inputVars(),this);
+        //_widgetSelPointScan = new WidgetSelPointScan(variables,this);
         _widgetTableConnConstr = new WidgetTableConnConstr(
-                ((EIProblem*)_result->problem())->connConstrs(),
+                problem->connConstrs(),
                 _result ->eiTree(),
                 true,
                 this);
         _widgetTableEIGroups = new WidgetTableEIGroups(_result->eiTree()->rootElement(),false,this);
-//        _widgetEIConns = new WidgetEIConns(((EITargetResult*)_problemTarget->result())->eiConns(),this);
+        _widgetEIConns = new WidgetEIConns(_result->eiConns(),this);
         _widgetEIHEN1Result = new WidgetEIHEN1Result(_result,this);
 
         addDockWidget("EI items",_widgetTreeStreams);
@@ -79,12 +85,12 @@ MO2ColTab(project->name(),result,false,parent)
         addDockWidget("EI Groups",_widgetTableEIGroups,_widgetTreeStreams);
         addDockWidget("Composites",_widgetCCPlot,_widgetTreeStreams);
         addDockWidget("Connections constraints",_widgetTableConnConstr,_widgetTreeStreams);
-//        addDockWidget("Connections",_widgetEIConns,_widgetTreeStreams);
+        addDockWidget("Connections",_widgetEIConns,_widgetTreeStreams);
         addFixedWidget("Result",_widgetEIHEN1Result,Qt::BottomDockWidgetArea);
 
 //        connect(_problemTarget,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
 
-//        mapDockWidgets.key(_widgetCCPlot)->raise();
+        mapDockWidgets.key(_widgetCCPlot)->raise();
 
 
 //        updateSelPointScan();

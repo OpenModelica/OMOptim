@@ -85,7 +85,7 @@ class EIConnConstr : public MOItem
 	void setType(Type _type);
 	EIConnConstr* clone();
 	bool isValid();
-        QMultiMap<EIStream*,EIStream*> getMapStreams(MOOptVector *variables);
+        QMultiMap<QString,QString> getForbiddenMatchs(MOOptVector *variables);
 
 	// access and edit functions
 	QVariant getFieldValue(int iField, int role = Qt::UserRole) const;

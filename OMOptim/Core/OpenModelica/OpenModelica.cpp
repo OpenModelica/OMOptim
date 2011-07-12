@@ -285,18 +285,18 @@ void OpenModelica::setInputVariables(QString fileName_, MOVector<Variable> *vari
 void OpenModelica::start(QString exeFile,int maxnsec)
 {
 #ifdef WIN32
+
+
 	QFileInfo exeFileInfo(exeFile);
 	QString exeDir = exeFileInfo.absolutePath();
-    bool cdOk = SetCurrentDirectory(exeDir.utf16());
+
+    QProcess simProcess;
+    simProcess.setWorkingDirectory(exeDir);
 
 
     QString appPath = "\""+exeFile+"\"";
 
        
-	
-
-
-        QProcess simProcess;
         // add OM path in PATH
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     QString omHome = env.value("OpenModelicaHome");

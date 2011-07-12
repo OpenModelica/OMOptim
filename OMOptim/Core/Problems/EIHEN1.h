@@ -65,6 +65,8 @@ class EIHEN1 : public EIProblem
 
 public:
     EIHEN1(Project*,ModClassTree*,MOomc*);
+    EIHEN1(Project*,ModClassTree*,MOomc*,QDomElement domProblem);
+
 	EIHEN1(const EIHEN1 &);
 	virtual ~EIHEN1(void);
 

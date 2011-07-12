@@ -93,9 +93,12 @@ var qaimjnz {i in Si,m in Sdt,j in Sj,n in Sdt,z in Sz}, >=0;#auxiliary continuo
  var Uijzk {i in Si,j in Sj,z in Sz,k in Sk},integer, >=0;# number of shells in the kth heat exchanger between hot stream i and cold stream j in zone z
 var Ximjnz {i in Si,m in Sdt,j in Sj,n in Sdt,z in Sz};# auxiliary continuous variable equal to zero when an exchanger ends at interval m for hot stream i and at interval
 #n for cold stream j. A value of one corresponds to all other cases.
-var YijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, binary; #>=0;# determines whether heat is being transferred from hot stream i at interval m to cold stream j. De?ned as binary
+var YijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;# determines whether heat is being transferred from hot stream i at interval m to cold stream j. De?ned as binary
+
+
+
 #when (i, j) / ? B and as continuous when (i, j) ? B.
-var YijnzC {i in Si,j in Sj,n in Sdt,z in Sz}, binary; #>=0;# determines whether heat is being transferred from hot stream i to cold stream j at interval n. De?ned as binary
+var YijnzC {i in Si,j in Sj,n in Sdt,z in Sz}, >=0;# determines whether heat is being transferred from hot stream i to cold stream j at interval n. De?ned as binary
 #when (i, j) / ? B and as continuous when (i, j) ? B.
 var aijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;#  auxiliary continuous variable equal to one when heat transfer from interval m of hot stream i to cold stream j
 #occurs in zone z and it does not correspond to the beginning nor the ending of a heat exchanger. A value of zero
@@ -189,17 +192,22 @@ qijnzC[i,j,n,z] ,>= qijnL[i,j,n]*YijnzC[i,j,n,z];
 s.t. eq12bis 'Bounds on cumulative heat transfer for cold process streams' {z in Sz,n in Mz[z],j in (Cnz[n,z] diff CUz[z]),i in (Hz[z] inter PjnC[j,n])} :
 qijnzC[i,j,n,z] ,<= DHjnzC[j,n,z]*YijnzC[i,j,n,z];
 
-s.t. eq13 'Bounds on cumulative heat transfer for heating utilities' {z in Sz,m in Mz[z],i in (Hmz[m,z] inter HUz[z]),j in (Cz[z] inter PimH[i,m])} :
+s.t. eq13L 'Lower bound on cumulative heat transfer for heating utilities' {z in Sz,m in Mz[z],i in (Hmz[m,z] inter HUz[z]),j in (Cz[z] inter PimH[i,m])} :
 qijmzH[i,j,m,z] ,>= qijmL[i,j,m]*YijmzH[i,j,m,z];
 
-# s.t. eq13bis 'Bounds on cumulative heat transfer for heating utilities' {z in Sz,m in Mz[z],i in (Hmz[m,z] inter HUz[z]),j in (Cz[z] inter PimH[i,m])} :
-# qijmzH[i,j,m,z] ,<= FiU[i]*(TmU[m]-TmL[m]);
+s.t. eq13U 'Upper bound on cumulative heat transfer for heating utilities'
+{z in Sz,m in Mz[z],i in (Hmz[m,z] inter HUz[z]),group in SUtGroups,j in (Cz[z] inter PimH[i,m]): (group,i) in SUtStrGroups} :
+qijmzH[i,j,m,z] ,<= DHimzH[i,m,z]*YijmzH[i,j,m,z]*UtFactMax[group];
 
-s.t. eq14 'Bounds on cumulative heat transfer for cooling utilities' {z in Sz,n in Mz[z],j in (Cnz[n,z] inter CUz[z]),i in (Hz[z] inter PjnC[j,n])} :
+s.t. eq14L 'Lower bound on cumulative heat transfer for cooling utilities'
+{z in Sz,n in Mz[z],j in (Cnz[n,z] inter CUz[z]),i in (Hz[z] inter PjnC[j,n])} :
 qijnzC[i,j,n,z] ,>= qijnL[i,j,n]*YijnzC[i,j,n,z];
 
-# s.t. eq14bis 'Bounds on cumulative heat transfer for cooling utilities' {z in Sz,n in Mz[z],j in (Cnz[n,z] inter CUz[z]),i in (Hz[z] inter PjnC[j,n])} :
-# qijnzC[i,j,n,z] ,<= FjU[i]*(TmU[n]-TmL[n]);
+s.t. eq14U 'Upper bound on cumulative heat transfer for cooling utilities'
+{z in Sz,n in Mz[z],j in (Cnz[n,z] inter CUz[z]),i in (Hz[z] inter PjnC[j,n]),group in SUtGroups: (group,j) in SUtStrGroups} :
+qijnzC[i,j,n,z] ,<= DHjnzC[j,n,z]*YijnzC[i,j,n,z]*UtFactMax[group];
+							
+
 							
 s.t. eq15 'Heat exchanger beginning for hot streams (i,j) not in B' {z in Sz,i in Hz[z],m in Mz[z] inter mi0[i], j in Cz[z] inter PimH[i,m] : not ((i,j) in B)} :
 KijmzH[i,j,m,z],>= YijmzH[i,j,m,z];			
@@ -231,10 +239,14 @@ KeijmzH[i,j,m,z] ,>= YijmzH[i,j,m,z] - YijmzH[i,j,m+1,z];
 s.t. eq24  {z in Sz,m in Mz[z] inter (1..ndt-1),i in (Hmz[m,z] inter Hmz[m+1,z]), j in Cz[z] inter PimH[i,m] inter PimH[i,m+1] : not ((i,j) in B)} :
 KeijmzH[i,j,m,z] ,>= 0;
 
-s.t. eq25 'Heat exchanger existence on hot streams - (i,j) in B' {z in Sz, m in Mz[z], i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]) : (i,j) in B} :
+  s.t. eq25 'Heat exchanger existence on hot streams - (i,j) in B' {z in Sz, m in Mz[z], i in Hz[z], j in (Cz[z]) : (i,j) in B} :
 YijmzH[i,j,m,z] = sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KijmzH[i,j,l,z])
 				-sum{l in Miz[i,z] : (l<= m-1) and (j in PimH[i,l])}(KeijmzH[i,j,l,z]);		
 		
+s.t. eq25end 'add heat exchanger end at the coolest temperature interval if needed - (i,j) in B'	{z in Sz, i in Hz[z], j in (Cz[z]) : (i,j) in B} :
+sum{m in Miz[i,z]}(KeijmzH[i,j,m,z]) ,= sum{m in Miz[i,z]}(KijmzH[i,j,m,z]);
+
+
 s.t. eq26 'Heat exchanger beginning for  cold streams (i,j) not in B' {z in Sz,j in Cz[z],n in Mz[z] inter nj0[j], i in (Hz[z] inter PjnC[j,n]) : not ((i,j) in B)} :
 KijnzC[i,j,n,z],>= YijnzC[i,j,n,z];			
 				
@@ -265,9 +277,12 @@ KeijnzC[i,j,n,z] ,>= YijnzC[i,j,n,z] - YijnzC[i,j,n+1,z];
 s.t. eq35  {z in Sz,n in Mz[z] inter (1..ndt-1),j in (Cnz[n,z] inter Cnz[n+1,z]), i in (Hz[z] inter PjnC[j,n] inter PjnC[j,n+1]) : not ((i,j) in B)} :
 KeijnzC[i,j,n,z] ,>= 0;
 
-s.t. eq36 'Heat exchanger existence on cold streams - (i,j) in B' {z in Sz, n in Mz[z], j in Cnz[n,z], i in (Hz[z] inter PjnC[j,n]) : (i,j) in B} :
+ s.t. eq36 'Heat exchanger existence on cold streams - (i,j) in B' {z in Sz, n in Mz[z], j in Cz[z], i in Hz[z] : (i,j) in B} :
 YijnzC[i,j,n,z] ,= sum{l in Njz[j,z] : (l<= n) and (i in PjnC[j,l])}(KijnzC[i,j,l,z])
 				-sum{l in Njz[j,z] : (l<= n-1) and (i in PjnC[j,l])}(KeijnzC[i,j,l,z]);					
+	
+s.t. eq36end 'add heat exchanger end at the coolest temperature interval if needed - (i,j) in B' {z in Sz, j in Cz[z], i in Hz[z] : (i,j) in B} :
+sum{n in Njz[j,z] }(KeijnzC[i,j,n,z]) ,= sum{n in Njz[j,z] }(KijnzC[i,j,n,z]);					 
 	
 s.t. eq37 'Number of heat exchangers between hot stream i and cold stream j' {z in Sz, i in Hz[z],j in Cz[z] : (i,j) in P} :
 Eijz[i,j,z] = sum{m in Miz[i,z] : j in PimH[i,m]}(KijmzH[i,j,m,z]);

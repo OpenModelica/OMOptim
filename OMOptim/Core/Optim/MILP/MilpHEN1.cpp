@@ -28,7 +28,7 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
  	@file MilpHEN1.cpp
  	@brief Comments for file documentation.
@@ -233,7 +233,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     // P : connections allowed
     // all combinations + removing forbidden ones
     // get forbidden <HotStream,ColdStream>
-    QMultiMap<EIStream*,EIStream*> mapForbidden = _connConstrs->getMapStreams(_variables);
+    QMultiMap<QString,QString> mapForbidden = _connConstrs->getForbiddenMatchs(_variables);
 
     MilpSet0D setP("P");
     for(int iH=0;iH<hotStreams.size();iH++)
@@ -241,7 +241,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
         for(int iC=0;iC<coldStreams.size();iC++)
         {
             //check if not forbidden
-            if(!mapForbidden.values(hotStreams.at(iH)).contains(coldStreams.at(iC)))
+            if(!_connConstrs->isForbiddenMatch(hotStreams.at(iH)->name(),coldStreams.at(iC)->name(),mapForbidden))
                 setP.addItem("("+hotStreams.at(iH)->name()+","+coldStreams.at(iC)->name()+")");
     }
     }
@@ -461,7 +461,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
             {
                 coldStreamName = coldStreams.at(iC)->name();
                 //check if not forbidden
-                if(!mapForbidden.values(hotStreams.at(iH)).contains(coldStreams.at(iC)))
+                 if(!_connConstrs->isForbiddenMatch(hotStreams.at(iH)->name(),coldStreams.at(iC)->name(),mapForbidden))
                     setPimH.addItem(hotStreamName,tempIntervals.at(iT),coldStreamName);
         }
     }
@@ -481,7 +481,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
             {
                 hotStreamName = hotStreams.at(iH)->name();
                 //check if not forbidden
-                if(!mapForbidden.values(hotStreams.at(iH)).contains(coldStreams.at(iC)))
+                 if(!_connConstrs->isForbiddenMatch(hotStreams.at(iH)->name(),coldStreams.at(iC)->name(),mapForbidden))
                     setPjnC.addItem(coldStreamName,tempIntervals.at(iT),hotStreamName);
         }
     }
@@ -755,7 +755,7 @@ EIHEN1Result* MilpHEN1::readResult(glp_prob * glpProblem)
     for(int i=0;i<mapGroupFacMul.keys().size();i++)
     {
         groupName = mapGroupFacMul.keys().at(i);
-        curGroup =result->eiTree()->findItem(groupName);
+        curGroup = dynamic_cast<EIGroup*>(result->eiTree()->findItem(groupName));
         if(curGroup)
         {
             value = mapGroupFacMul.value(groupName);
@@ -771,7 +771,7 @@ EIHEN1Result* MilpHEN1::readResult(glp_prob * glpProblem)
     for(int i=0;i<mapGroupEnabled.keys().size();i++)
     {
         groupName = mapGroupEnabled.keys().at(i);
-        curGroup =result->eiTree()->findItem(groupName);
+        curGroup =dynamic_cast<EIGroup*>(result->eiTree()->findItem(groupName));
         if(curGroup)
         {
             curGroup->setChecked((bool)mapGroupEnabled.value(groupName));
@@ -811,6 +811,8 @@ EIConns* MilpHEN1::readEIConns(glp_prob * glpProblem,QStringList colNames)
     MilpVariableResult4D varKijmzH("KijmzH");
     varKijmzH.fill(glpProblem,colNames);
 
+    qDebug(varKijmzH.toString().toLatin1().data());
+
     // KijmzH
     MilpVariableResult4D varKijnzC("KijnzC");
     varKijnzC.fill(glpProblem,colNames);
@@ -824,7 +826,7 @@ EIConns* MilpHEN1::readEIConns(glp_prob * glpProblem,QStringList colNames)
     varKeijnzC.fill(glpProblem,colNames);
 
     // QijmzH
-    MilpVariableResult4D varQijmzH("QijmzH");
+    MilpVariableResult4D varQijmzH("qijmzH");
     varQijmzH.fill(glpProblem,colNames);
 
 
@@ -887,6 +889,9 @@ EIConns* MilpHEN1::readEIConns(glp_prob * glpProblem,QStringList colNames)
                 infoSender.debug("Error HEN: could not found HEN cold begin (i1="+strHot+",i2="+strCold+")");
             else
             {
+
+                 curBCKey = beginCKeys.at(iBC);
+
                 // find cold end
                 found = false;
                 iEC=0;
@@ -902,6 +907,8 @@ EIConns* MilpHEN1::readEIConns(glp_prob * glpProblem,QStringList colNames)
                     infoSender.debug("Error HEN: could not found HEN cold end (i1="+strHot+",i2="+strCold+")");
                 else
                 {
+                    curECKey = endCKeys.at(iEC);
+
                     //Create connection
 
 
@@ -917,8 +924,8 @@ EIConns* MilpHEN1::readEIConns(glp_prob * glpProblem,QStringList colNames)
 
                     Q_ASSERT(kBC<=kEC); // to check, don't know order yet!
 
-                    newConn->setA(_eiTree->findItem(strHot),_Tk.at(kBH-1),_Tk.at(kEH),1);
-                    newConn->setB(_eiTree->findItem(strCold),_Tk.at(kBC),_Tk.at(kEC-1),1);
+                    newConn->setA(dynamic_cast<EIStream*>(_eiTree->findItem(strHot)),_Tk.at(kBH-1),_Tk.at(kEH),1);
+                    newConn->setB(dynamic_cast<EIStream*>(_eiTree->findItem(strCold)),_Tk.at(kBC),_Tk.at(kEC-1),1);
 
                     //calculate qflow
                     MilpKey4D curKey;

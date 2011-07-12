@@ -86,7 +86,7 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 	virtual void addItem(ItemClass*);
-	void removeRow(int index,const QModelIndex &parent = QModelIndex());
+    bool removeRow(int index,const QModelIndex &parent = QModelIndex());
 	void removeRow(QString);
 	bool removeRows(int index, int count,const QModelIndex &parent = QModelIndex());
 	bool removeRows(QList<int> indexes);
@@ -353,22 +353,23 @@ void MOVector<ItemClass>::addItem(ItemClass* item_)
 }
 
 template<class ItemClass>
-void MOVector<ItemClass>::removeRow(int index,const QModelIndex &parent)
+bool MOVector<ItemClass>::removeRow(int index,const QModelIndex &parent)
 {
-	if(index>-1)
-	{
-		beginRemoveRows(parent,index,index);
-		delete items.at(index);
-		items.erase(items.begin()+index);
-		endRemoveRows();
+    return removeRows(index,1,parent);
 	}
-}
+
+
+/**
+  * This is the function that will be in fine called everytime a removeRow function is called.
+  * It is the only one which contains beginRemoveRows and endRemoveRows calls, as data deleting.
+  */
 template<class ItemClass>
 bool MOVector<ItemClass>::removeRows(int index, int count, const QModelIndex &parent)
 {
-	beginRemoveRows(QModelIndex(),index,index+count-1);
+
 	if(items.size()>=index+count)
 	{
+        beginRemoveRows(QModelIndex(),index,index+count-1);
 		for(int i=0;i<count;i++)
 		{
 			delete items.at(index);
@@ -383,9 +384,13 @@ bool MOVector<ItemClass>::removeRows(int index, int count, const QModelIndex &pa
 	}
 }
 
+
+
 template<class ItemClass>
 bool MOVector<ItemClass>::removeRows(QList<int> indexes)
 {
+    if(indexes.size())
+    {
 	qSort(indexes.begin(),indexes.end());
 
 	// start by the end in order not to be affected
@@ -394,6 +399,8 @@ bool MOVector<ItemClass>::removeRows(QList<int> indexes)
 		removeRow(indexes.at(i));
 	}
 	return true;
+}
+    return false;
 }
 
 

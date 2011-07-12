@@ -128,7 +128,7 @@ public:
 	int compChildCount();
 	int modelChildCount();
 	int packageChildCount();
-	int childCount();
+        int childCount() const;
 	QStringList getChildrenNames();
 	bool childrenReaden();
 	void setChildrenReaden(bool);

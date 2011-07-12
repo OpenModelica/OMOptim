@@ -183,7 +183,7 @@ public:
 					refillTempDir = true;
 			}
             ProblemConfig config(_tempDir,refillTempDir);
-            OneSimResult *result =  oneSim->launch(config);
+            OneSimResult *result =  dynamic_cast<OneSimResult*>(oneSim->launch(config));
 
             _previousSubModel = iSubModel;
 
@@ -197,7 +197,7 @@ public:
 				{
                     EITarget* eiTarget = dynamic_cast<EITarget*>(_problem->eiProblem());
                     eiTarget->setInputVars(result->finalVariables());
-                    EITargetResult* eiResult = eiTarget->launch(ProblemConfig());
+                    EITargetResult* eiResult = dynamic_cast<EITargetResult*>(eiTarget->launch(ProblemConfig()));
 				}
 			}
 			#endif

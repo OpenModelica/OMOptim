@@ -51,12 +51,14 @@ MO2ColTab(project->name(),result,false,parent)
 
         OneSimulation* problem = dynamic_cast<OneSimulation*>(_result->problem());
 	
-	// add combos
+        // table widgets
+        _inputTableVars = new WidgetTableVar(_result->inputVariables(),this);
+        _finalTableVars = new WidgetTableVar(_result->finalVariables(),this);
 
-	// Variables
-	addDockWidget("Input Variables",new WidgetTableVar(_result->inputVariables(),this));
-        addDockWidget("Overwrited Variables",new WidgetTableVar(problem->overwritedVariables(),this));
-	addDockWidget("Final Variables",new WidgetTableVar(_result->finalVariables(),this,true));
+        addDockWidget("Input Variables",_inputTableVars );
+        addDockWidget("Final Variables",_finalTableVars,_inputTableVars);
+		
+        _finalTableVars->raise();
 		
 	//// Adding view list in combo
 	//viewList << "Problem" << "Variables" << "Composite curves" ;

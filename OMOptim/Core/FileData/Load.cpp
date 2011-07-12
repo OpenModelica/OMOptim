@@ -399,11 +399,12 @@ Result* Load::newResult(QString filePath,Project* project)
 
     // attribute problem to result
     if(result)
+    {
         result->setProblem(problem);
 
     // attribute file path to result
     result->setEntireSavePath(filePath);
-
+    }
 
     return result;
 }
@@ -432,6 +433,8 @@ Result* Load::newResult(QDomElement domResult,Project* project,Problem* problem,
 #ifdef USEEI
     if (resultType==EITargetResult::className())
         result = new EITargetResult(project,project->modClassTree(),resultRoot,dynamic_cast<EITarget*>(problem));
+    if (resultType==EIHEN1Result::className())
+        result = new EIHEN1Result(project,project->modClassTree(),resultRoot,problem);
 #endif
 
 
@@ -495,6 +498,10 @@ Problem* Load::newProblem(QDomElement domProblem,Project* project)
     if (problemType==EITarget::className())
 {
         problem = new EITarget(project,project->modClassTree(),project->moomc(),problemRoot);
+    }
+    if (problemType==EIHEN1::className())
+    {
+        problem = new EIHEN1(project,project->modClassTree(),project->moomc(),problemRoot);
     }
 #endif
 

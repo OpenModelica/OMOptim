@@ -79,7 +79,7 @@ EIProblem::EIProblem(const EIProblem &problem)
 
     _connConstrs = problem._connConstrs->clone();
     _inputVars = problem._inputVars->clone();
-    _parameters = problem._parameters->clone();
+
 }
 
 void EIProblem::loadModel(ModModel* loadedModel)

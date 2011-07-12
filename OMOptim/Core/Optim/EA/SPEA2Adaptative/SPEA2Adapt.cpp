@@ -109,7 +109,8 @@ SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassT
 SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,MOParameters* parameters)
 :EABase(project,problem,modClassTree,modPlusCtrl)
 {
-        _parameters = parameters->clone();
+    delete _parameters;
+    _parameters = new MOParameters(*parameters);
 };
 
 SPEA2Adapt::SPEA2Adapt(const SPEA2Adapt & ea):EABase(ea)

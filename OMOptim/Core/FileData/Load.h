@@ -69,6 +69,8 @@
 #ifdef USEEI
 	#include "EITarget.h"
 	#include "EITargetResult.h"
+        #include "EIHEN1Result.h"
+        #include "EIHEN1.h"
 #endif
 
 class OptimResult;

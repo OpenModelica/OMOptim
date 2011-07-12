@@ -91,7 +91,7 @@ void WidgetEIInputVars::fillList()
 
     for(int i=0;i<project->results()->items.size();i++)
 	{
-        curResult = project->results()->items.at(i);
+        curResult = project->results()->at(i);
 
         switch(curResult->problemType())
 		{

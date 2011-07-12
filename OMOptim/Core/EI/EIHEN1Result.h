@@ -15,11 +15,13 @@ http://www-cep.ensmp.fr/english/
 #include "EITree.h"
 #include "EIConns.h"
 #include "MOVector.h"
+#include "EIControler.h"
 
 class EIHEN1Result : public Result
 {
 public:
 	EIHEN1Result(Project*, Problem*);
+        EIHEN1Result(Project* project,ModClassTree*,QDomElement domResult,Problem* problem);
         EIHEN1Result(const EIHEN1Result &);
 	EIHEN1Result(void);
 	~EIHEN1Result(void);
@@ -29,7 +31,8 @@ public:
         double _HENumber;
 
 
-	virtual QString getClassName(){return "EIHEN1Result";};
+        static QString className(){return "EIHEN1Result";};
+        virtual QString getClassName(){return EIHEN1Result::className();};
 
         int problemType(){return Problem::EIHEN1;};
         QDomElement toXmlData(QDomDocument &);

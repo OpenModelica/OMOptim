@@ -107,7 +107,8 @@ SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlu
 SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,MOParameters* parameters)
 :EABase(project,problem,modClassTree,modPlusCtrl)
 {
-        _parameters = parameters->clone();
+       delete _parameters;
+       _parameters = new MOParameters(*parameters);
 };
 
 

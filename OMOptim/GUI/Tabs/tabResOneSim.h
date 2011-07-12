@@ -80,6 +80,12 @@ public:
         Project *_project;
         OneSimResult *_result;
 
+    private :
+            WidgetTableVar* _inputTableVars;
+    WidgetTableVar* _overTableVars;
+    WidgetTableVar* _finalTableVars;
+
+
 };
 
 
