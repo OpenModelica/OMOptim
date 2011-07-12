@@ -158,7 +158,7 @@ void ModClassTree::readFromOmc(ModClass* parent,int depthMax,int curDepth)
 }
 
 
-void ModClassTree::readFromOmcV2(ModClass* parent,int depthMax,QString direction,int curDepth) const
+void ModClassTree::readFromOmcV2(ModClass* parent,int depthMax,QString direction,int curDepth)
 {
         if(parent->_readMutex.tryLock())
         {
