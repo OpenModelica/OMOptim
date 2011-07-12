@@ -1,4 +1,4 @@
 LIBS += @CORBALIBS@ -lqwt@with_qwt_suffix@ -L../../OMPlot/bin/ -lOMPlot -lmoeo -leo -leoutils
-INCLUDEPATH += @with_qwt@ @CORBA_QMAKE_INCLUDES@ ../../OMPlot/OMPlotGUI @with_paradiseo@ @with_paradiseo@/utils/
+INCLUDEPATH += @with_qwt@ @CORBA_QMAKE_INCLUDES@ ../../OMPlot/OMPlotGUI @with_paradiseo@/include/paradiseo/ @with_paradiseo@/include/paradiseo/utils/
 
 QMAKE_LFLAGS += @LDFLAGS@ -L@with_paradiseo@/lib/paradiseo/
