@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MilpTarget.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file MilpTarget.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 
   */
 #include "MilpTarget.h"
@@ -46,18 +46,41 @@
 
 
 MilpTarget::MilpTarget(EITree* eiTree,EIConnConstrs *connConstrs,
-                       MOOptVector *variables,QDir folder,QString modFileName, QString dataFileName)
+                       MOOptVector *variables,QDir folder, QString dataFileName)
 {
     _eiTree = new EITree(*eiTree);
     _variables = variables;
     _folder = folder;
-    _modFileName =  modFileName;
     _dataFileName = dataFileName;
     _connConstrs = connConstrs;
 
     _logFileName = "MILPLog.txt";
     _resFileName = "MILPResult.txt";
     _sensFileName= "MILPSens.txt";
+
+
+#ifdef DEBUG
+    // if debug, uses directly file in MILP folder (this folder is set in settings)
+    // this allows to modify .mod and launch computation without recomputing
+    QSettings settings("MO", "Settings");
+    QString milpFolder = settings.value("path/MILPFolder").toString();
+
+    QDir dir(milpFolder);
+    QFileInfo modFileInfo(dir,"MilpTarget.mod");
+    _modFilePath = modFileInfo.absoluteFilePath();
+
+    if(!modFileInfo.exists())
+    {
+        infoSender.send(Info(modFileInfo.absoluteFilePath()+" does not exists",ListInfo::ERROR2));
+    }
+
+#else
+    // if not debug, .mod file is taken from resource file
+    QFile orgModFile(":/MILP/MilpTarget.mod");
+    QFileInfo orgModFileInfo(orgModFile);
+    _modFilePath = folder.filePath(orgModFileInfo.fileName());
+    orgModFile.copy(_modFilePath);
+#endif
 
 }
 
@@ -68,256 +91,257 @@ MilpTarget::~MilpTarget(void)
 
 EITargetResult* MilpTarget::launch()
 {
-	//***********************
-	// get data
-	//***********************
-	// get temperature intervals, flows, factors...
-	QList<METemperature> Tk;
-	QList<EIStream*> eiProcessStreams;
-	QList<QList<MEQflow> > Qpk; //.at(iStream).at(iDTk)
-	QList<EIStream*> eiUtilityStreams;
-	QList<QList<MEQflow> > Quk;//.at(iStream).at(iDTk)
-	QMultiMap<EIGroupFact*,EIStream*> factStreamMap; // multimap <unit multiplier, Streams concerned>,
-	QMap<EIGroupFact*,EIGroupFact*> factsRelation; // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
-	QMap<EIGroupFact*,EIGroup*> factGroupMap;
+    //***********************
+    // get data
+    //***********************
+    // get temperature intervals, flows, factors...
+    QList<METemperature> Tk;
+    QList<EIStream*> eiProcessStreams;
+    QList<QList<MEQflow> > Qpk; //.at(iStream).at(iDTk)
+    QList<EIStream*> eiUtilityStreams;
+    QList<QList<MEQflow> > Quk;//.at(iStream).at(iDTk)
+    QMultiMap<EIGroupFact*,EIStream*> factStreamMap; // multimap <unit multiplier, Streams concerned>,
+    QMap<EIGroupFact*,EIGroupFact*> factsRelation; // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
+    QMap<EIGroupFact*,EIGroup*> factGroupMap;
 
 
     EITools::getTkQpkQuk(_variables,
                          _eiTree->rootElement(),Tk,
-		eiProcessStreams,Qpk,
-		eiUtilityStreams,Quk,
-		factStreamMap,
-		factsRelation,
-		factGroupMap);
+                         eiProcessStreams,Qpk,
+                         eiUtilityStreams,Quk,
+                         factStreamMap,
+                         factsRelation,
+                         factGroupMap,
+                         true);
 
-	// write data
+    // write data
     QString dataFilePath = _folder.absoluteFilePath(_dataFileName);
-	DataToFile(dataFilePath,Tk,eiProcessStreams,Qpk,eiUtilityStreams,Quk,
-		factStreamMap,factsRelation,factGroupMap);
+    DataToFile(dataFilePath,Tk,eiProcessStreams,Qpk,eiUtilityStreams,Quk,
+               factStreamMap,factsRelation,factGroupMap);
 
 
-    glp_prob* glpProblem = launchGLPK();
-	EITargetResult* result;
-	if(!glpProblem)
-	{
-		result = new EITargetResult();
-        result->setEITree(_eiTree);
-		result->setSuccess(false);
-	}
-	else
-	{
-		result = readResult(glpProblem);
-		glp_delete_prob(glpProblem);
-	}
+         glp_prob* glpProblem = launchGLPK();
+    EITargetResult* result;
+    if(!glpProblem)
+    {
+        result = new EITargetResult();
+                result->setEITree(*_eiTree);
+        result->setSuccess(false);
+    }
+    else
+    {
+        result = readResult(glpProblem);
+        glp_delete_prob(glpProblem);
+    }
 
     result->_logFileName = _logFileName;
     result->_resFileName = _resFileName;
     result->_sensFileName = _sensFileName;
 
-	return result;
+    return result;
 }
 
 
 
 void MilpTarget::DataToFile(QString dataFilePath, QList<METemperature> &Tk,
-	QList<EIStream*> &eiProcessStreams,
-	QList<QList<MEQflow> > &Qpk, //.at(iStream).at(iDTk)
-	QList<EIStream*> &eiUtilityStreams,
-	QList<QList<MEQflow> > &Quk,//.at(iStream).at(iDTk)
-	QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
-	QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
-	QMap<EIGroupFact*,EIGroup*> &factGroupMap)
+                            QList<EIStream*> &eiProcessStreams,
+                            QList<QList<MEQflow> > &Qpk, //.at(iStream).at(iDTk)
+                            QList<EIStream*> &eiUtilityStreams,
+                            QList<QList<MEQflow> > &Quk,//.at(iStream).at(iDTk)
+                            QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
+                            QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
+                            QMap<EIGroupFact*,EIGroup*> &factGroupMap)
 {
-	// Create Data File
-	QFile file(dataFilePath);
-	if(file.exists())
-	{
-		file.remove();
-	}
-	file.open(QIODevice::WriteOnly);
-	
-	// Create text
-	QString dataText;
-	dataText.append("data;");
-	
-	//*************
-	// sets
-	//*************
-	QList<double> doubleSet;
-	// STk
-	for(int i=0;i<Tk.size();i++)
-	{
-		doubleSet.push_back(Tk.at(i).value(METemperature::K));
-	}
-	dataText += GlpkTools::listToSet("STk",doubleSet);
-	
-	QStringList hotStreams;
-	QStringList coldStreams;
-	QStringList procStreams;
-	QStringList utStreams;
-	QStringList allStreams;
-	QStringList groups;
-	QString streamName;
+    // Create Data File
+    QFile file(dataFilePath);
+    if(file.exists())
+    {
+        file.remove();
+    }
+    file.open(QIODevice::WriteOnly);
 
-	// SProcStreams	
-	for(int i=0;i<eiProcessStreams.size();i++)
-	{
-		streamName = eiProcessStreams.at(i)->name();
-		procStreams.push_back(streamName);
+    // Create text
+    QString dataText;
+    dataText.append("data;");
+
+    //*************
+    // sets
+    //*************
+    QList<double> doubleSet;
+    // STk
+    for(int i=0;i<Tk.size();i++)
+    {
+        doubleSet.push_back(Tk.at(i).value(METemperature::K));
+    }
+    dataText += GlpkTools::listToSet("STk",doubleSet);
+
+    QStringList hotStreams;
+    QStringList coldStreams;
+    QStringList procStreams;
+    QStringList utStreams;
+    QStringList allStreams;
+    QStringList groups;
+    QString streamName;
+
+    // SProcStreams
+    for(int i=0;i<eiProcessStreams.size();i++)
+    {
+        streamName = eiProcessStreams.at(i)->name();
+        procStreams.push_back(streamName);
         if(eiProcessStreams.at(i)->isHot(_variables))
-			hotStreams.push_back(streamName);
-		else
-			coldStreams.push_back(streamName);
-	}
-	dataText += GlpkTools::listToSet("SProcStreams",procStreams);
+            hotStreams.push_back(streamName);
+        else
+            coldStreams.push_back(streamName);
+    }
+    dataText += GlpkTools::listToSet("SProcStreams",procStreams);
 
-	// SUtStreams
-	for(int i=0;i<eiUtilityStreams.size();i++)
-	{
-		streamName = eiUtilityStreams.at(i)->name();
-		utStreams.push_back(streamName);
+    // SUtStreams
+    for(int i=0;i<eiUtilityStreams.size();i++)
+    {
+        streamName = eiUtilityStreams.at(i)->name();
+        utStreams.push_back(streamName);
         if(eiUtilityStreams.at(i)->isHot(_variables))
-			hotStreams.push_back(streamName);
-		else
-			coldStreams.push_back(streamName);
-	}
+            hotStreams.push_back(streamName);
+        else
+            coldStreams.push_back(streamName);
+    }
 
-	allStreams = utStreams + procStreams;
+    allStreams = utStreams + procStreams;
 
-	dataText += GlpkTools::listToSet("SStreams",allStreams);
-	dataText += GlpkTools::listToSet("SUtStreams",utStreams);
+    dataText += GlpkTools::listToSet("SStreams",allStreams);
+    dataText += GlpkTools::listToSet("SUtStreams",utStreams);
 
-	dataText += GlpkTools::listToSet("SHotStreams",hotStreams);
-	dataText += GlpkTools::listToSet("SColdStreams",coldStreams);
-	
-
-
-	// SUtGroups
-	for(int i=0;i<factGroupMap.values().size();i++)
-		groups.push_back(factGroupMap.values().at(i)->name());
-	dataText += GlpkTools::listToSet("SUtGroups",groups);
-
-	// SUtStrGroups
-	EIGroupFact* curGroupFact;
-	EIGroup* curGroup;
-	EIStream* curStream;
-	QString setUtStrGrText = "set SUtStrGroups := ";
-	for(int iFact=0;iFact<factStreamMap.uniqueKeys().size();iFact++)
-	{
-		curGroupFact = factStreamMap.uniqueKeys().at(iFact);
-		curGroup = factGroupMap.value(curGroupFact);
-
-		for(int iS=0;iS<factStreamMap.values(curGroupFact).size();iS++)
-		{
-			curStream = factStreamMap.values(curGroupFact).at(iS);
-			setUtStrGrText+="("+curGroup->name()+","+curStream->name()+") ";
-		}		
-	}
-	setUtStrGrText += "; \n";
-	dataText += setUtStrGrText;
+    dataText += GlpkTools::listToSet("SHotStreams",hotStreams);
+    dataText += GlpkTools::listToSet("SColdStreams",coldStreams);
 
 
-	// SUtStrGroups
-	QString setSForbConn = "set SForbConn := ";
+
+    // SUtGroups
+    for(int i=0;i<factGroupMap.values().size();i++)
+        groups.push_back(factGroupMap.values().at(i)->name());
+    dataText += GlpkTools::listToSet("SUtGroups",groups);
+
+    // SUtStrGroups
+    EIGroupFact* curGroupFact;
+    EIGroup* curGroup;
+    EIStream* curStream;
+    QString setUtStrGrText = "set SUtStrGroups := ";
+    for(int iFact=0;iFact<factStreamMap.uniqueKeys().size();iFact++)
+    {
+        curGroupFact = factStreamMap.uniqueKeys().at(iFact);
+        curGroup = factGroupMap.value(curGroupFact);
+
+        for(int iS=0;iS<factStreamMap.values(curGroupFact).size();iS++)
+        {
+            curStream = factStreamMap.values(curGroupFact).at(iS);
+            setUtStrGrText+="("+curGroup->name()+","+curStream->name()+") ";
+        }
+    }
+    setUtStrGrText += "; \n";
+    dataText += setUtStrGrText;
+
+
+    // SUtStrGroups
+    QString setSForbConn = "set SForbConn := ";
     QString hotStr;
     QString coldStr;
-	
-	//Forbidden <HotStream,ColdStream>
+
+    //Forbidden <HotStream,ColdStream>
     QMultiMap<QString,QString> mapConstr = _connConstrs->getForbiddenMatchs(_variables);
 
-	for(int i=0;i<mapConstr.keys().size();i++)
-	{
-		hotStr = mapConstr.keys().at(i);
-			for(int j=0;j<mapConstr.values(hotStr).size();j++)
-			{
-				coldStr = mapConstr.values(hotStr).at(j);
+    for(int i=0;i<mapConstr.keys().size();i++)
+    {
+        hotStr = mapConstr.keys().at(i);
+        for(int j=0;j<mapConstr.values(hotStr).size();j++)
+        {
+            coldStr = mapConstr.values(hotStr).at(j);
             setSForbConn+="("+hotStr+","+coldStr+") \n";
-			}
-	}
-	setSForbConn += "; \n";
-	dataText += setSForbConn;
+        }
+    }
+    setSForbConn += "; \n";
+    dataText += setSForbConn;
 
 
-	//*************
-	// param
-	//*************
-	dataText += "param nbTemperatures := "+QString::number(Tk.size())+"; \n";
-	dataText += "param nbUtGroups := "+QString::number(factGroupMap.values().size())+"; \n";
+    //*************
+    // param
+    //*************
+    dataText += "param nbTemperatures := "+QString::number(Tk.size())+"; \n";
+    dataText += "param nbUtGroups := "+QString::number(factGroupMap.values().size())+"; \n";
 
 
-	//DQpk
-	dataText += "param DQpk := \n";
-	double curValue;
-	for(int iS=0;iS<Qpk.size();iS++)
-	{
-		for(int iK=0;iK<Qpk.at(iS).size();iK++)
-		{
-			// Absolute value for QFlow with this mod file
+    //DQpk
+    dataText += "param DQpk := \n";
+    double curValue;
+    for(int iS=0;iS<Qpk.size();iS++)
+    {
+        for(int iK=0;iK<Qpk.at(iS).size();iK++)
+        {
+            // Absolute value for QFlow with this mod file
             curValue =  fabs(Qpk.at(iS).at(iK).value(MEQflow::KW));
-			if(curValue!=0)
-				dataText += "["+eiProcessStreams.at(iS)->name()
-				+"," +QString::number(iK+1)
-				+"] " + QString::number(curValue) + "\n"; 
-		}
-	}
+            if(curValue!=0)
+                dataText += "["+eiProcessStreams.at(iS)->name()
+                        +"," +QString::number(iK+1)
+                        +"] " + QString::number(curValue) + "\n";
+        }
+    }
     dataText +="; \n";
 
-	//DQuk
-	dataText += "param DQuk := \n";
-	for(int iS=0;iS<Quk.size();iS++)
-	{
-		for(int iK=0;iK<Quk.at(iS).size();iK++)
-		{
-			// Absolute value for QFlow with this mod file
+    //DQuk
+    dataText += "param DQuk := \n";
+    for(int iS=0;iS<Quk.size();iS++)
+    {
+        for(int iK=0;iK<Quk.at(iS).size();iK++)
+        {
+            // Absolute value for QFlow with this mod file
             curValue = fabs(Quk.at(iS).at(iK).value(MEQflow::KW));
-			if(curValue!=0)
-				dataText += "["+eiUtilityStreams.at(iS)->name()
-				+"," +QString::number(iK+1)
-				+"] " + QString::number(curValue) + "\n"; 
-		}
-	}
+            if(curValue!=0)
+                dataText += "["+eiUtilityStreams.at(iS)->name()
+                        +"," +QString::number(iK+1)
+                        +"] " + QString::number(curValue) + "\n";
+        }
+    }
     dataText +=";\n";
 
-	//fmin, fmax, cost
-	QString strFmax = "param fmax := ";
-	QString strFmin = "param fmin := ";
-	QString strCostFix = "param costFix := ";
-	QString strCostMult = "param costMult := ";
+    //fmin, fmax, cost
+    QString strFmax = "param fmax := ";
+    QString strFmin = "param fmin := ";
+    QString strCostFix = "param costFix := ";
+    QString strCostMult = "param costMult := ";
 
-	for(int iFact=0;iFact<factGroupMap.uniqueKeys().size();iFact++)
-	{
-		curGroupFact = factGroupMap.uniqueKeys().at(iFact);
-		curGroup = factGroupMap.value(curGroupFact);
+    for(int iFact=0;iFact<factGroupMap.uniqueKeys().size();iFact++)
+    {
+        curGroupFact = factGroupMap.uniqueKeys().at(iFact);
+        curGroup = factGroupMap.value(curGroupFact);
 
-		strFmax += "["+curGroup->name()+"] " 
-			+ QString::number(curGroupFact->max)+"\n"; 
-		strFmin += "["+curGroup->name()+"] " 
-			+ QString::number(curGroupFact->min)+"\n"; 
-		strCostFix += "["+curGroup->name()+"] " 
-			+ curGroup->getFieldValue(EIGroup::COSTFIX).toString()+"\n"; 
-		strCostMult += "["+curGroup->name()+"] " 
-			+ curGroup->getFieldValue(EIGroup::COSTMULT).toString()+"\n"; 
-	}
+        strFmax += "["+curGroup->name()+"] "
+                + QString::number(curGroupFact->max)+"\n";
+        strFmin += "["+curGroup->name()+"] "
+                + QString::number(curGroupFact->min)+"\n";
+        strCostFix += "["+curGroup->name()+"] "
+                + curGroup->getFieldValue(EIGroup::COSTFIX).toString()+"\n";
+        strCostMult += "["+curGroup->name()+"] "
+                + curGroup->getFieldValue(EIGroup::COSTMULT).toString()+"\n";
+    }
 
-	strFmax += "; \n";
-	strFmin += "; \n";
-	strCostFix += "; \n";
-	strCostMult += "; \n";
-
-
-	dataText+= strFmax;
-	dataText+= strFmin;
-	dataText+= strCostFix;
-	dataText+= strCostMult;
+    strFmax += "; \n";
+    strFmin += "; \n";
+    strCostFix += "; \n";
+    strCostMult += "; \n";
 
 
+    dataText+= strFmax;
+    dataText+= strFmin;
+    dataText+= strCostFix;
+    dataText+= strCostMult;
 
-	dataText +="end;";
 
 
-	QTextStream ts( &file );
-	ts << dataText;
-	file.close();
+    dataText +="end;";
+
+
+    QTextStream ts( &file );
+    ts << dataText;
+    file.close();
 }
 
 glp_prob* MilpTarget::launchGLPK()
@@ -326,82 +350,81 @@ glp_prob* MilpTarget::launchGLPK()
     //delete log file
     _folder.remove(_logFileName);
 
-	//delete result file
+    //delete result file
     _folder.remove(_resFileName);
 
     //delete sensitivity file
     _folder.remove(_sensFileName);
 
 
-	glp_prob *glpProblem;
-	glp_tran *tran;
-	int ret;
-	glpProblem = glp_create_prob();
-	tran = glp_mpl_alloc_wksp();
-    ret = glp_mpl_read_model(tran, _folder.absoluteFilePath(_modFileName).toLatin1().data(), 1);
-	if (ret != 0)
-	{ 
-		infoSender.send(Info(ListInfo::MILPERRORMODEL));
-		return NULL;
-	}
+    glp_prob *glpProblem;
+    glp_tran *tran;
+    int ret;
+    glpProblem = glp_create_prob();
+    tran = glp_mpl_alloc_wksp();
+    ret = glp_mpl_read_model(tran, _modFilePath.toLatin1().data(), 1);
+    if (ret != 0)
+    {
+        infoSender.send(Info(ListInfo::MILPERRORMODEL));
+        return NULL;
+    }
     ret = glp_mpl_read_data(tran, _folder.absoluteFilePath(_dataFileName).toLatin1().data());
-	if (ret != 0)
-	{ 
-		infoSender.send(Info(ListInfo::MILPERRORDATA));
-		return NULL;
-	}
-	ret = glp_mpl_generate(tran, NULL);
-	if (ret != 0)
-	{
-		infoSender.send(Info(ListInfo::MILPERRORDATA));
-		return NULL;
-	}
-	
-	glp_mpl_build_prob(tran, glpProblem);
-	glp_simplex(glpProblem, NULL);
-	glp_intopt(glpProblem, NULL);
-	ret = glp_mpl_postsolve(tran, glpProblem, GLP_MIP);
-	if (ret != 0)
-		fprintf(stderr, "Error on postsolving model\n");
-	
-	glp_mpl_free_wksp(tran);
+    if (ret != 0)
+    {
+        infoSender.send(Info(ListInfo::MILPERRORDATA));
+        return NULL;
+    }
+    ret = glp_mpl_generate(tran, NULL);
+    if (ret != 0)
+    {
+        infoSender.send(Info(ListInfo::MILPERRORDATA));
+        return NULL;
+    }
+
+    glp_mpl_build_prob(tran, glpProblem);
+    glp_simplex(glpProblem, NULL);
+    glp_intopt(glpProblem, NULL);
+    ret = glp_mpl_postsolve(tran, glpProblem, GLP_MIP);
+    if (ret != 0)
+        fprintf(stderr, "Error on postsolving model\n");
+
+    glp_mpl_free_wksp(tran);
     glp_print_sol(glpProblem, _folder.absoluteFilePath(_logFileName).toUtf8().data());
     glp_print_ranges(glpProblem,0,0,0,_folder.absoluteFilePath(_sensFileName).toUtf8().data());
 
-
 	// get results
-	int nbRows = glp_get_num_rows(glpProblem);
+        int nbRows = glp_get_num_rows(glpProblem);
 	int nbCols = glp_get_num_cols(glpProblem);
 
-	QString resText;
-	QString rowName;
-	QString colName;
-	double value;
-	for(int iRow = 1;iRow<=nbRows; iRow++)
-	{
-		rowName = QString(glp_get_row_name(glpProblem, iRow));
-		value = glp_mip_row_val(glpProblem, iRow);
-		resText += "Row[" + QString::number(iRow)+"] : ";
-		resText += rowName + " : ";
-		resText += QString::number(value) +"\n";
-	}
-	for(int iCol = 1;iCol<=nbCols; iCol++)
-	{
-		colName = QString(glp_get_col_name(glpProblem, iCol));
-		value = glp_mip_col_val(glpProblem, iCol);
-		resText += "Col[" + QString::number(iCol)+"] : ";
-		resText += colName + " : ";
-		resText += QString::number(value) +"\n";
-	}
+    QString resText;
+    QString rowName;
+    QString colName;
+    double value;
+    for(int iRow = 1;iRow<=nbRows; iRow++)
+    {
+        rowName = QString(glp_get_row_name(glpProblem, iRow));
+        value = glp_mip_row_val(glpProblem, iRow);
+        resText += "Row[" + QString::number(iRow)+"] : ";
+        resText += rowName + " : ";
+        resText += QString::number(value) +"\n";
+    }
+    for(int iCol = 1;iCol<=nbCols; iCol++)
+    {
+        colName = QString(glp_get_col_name(glpProblem, iCol));
+        value = glp_mip_col_val(glpProblem, iCol);
+        resText += "Col[" + QString::number(iCol)+"] : ";
+        resText += colName + " : ";
+        resText += QString::number(value) +"\n";
+    }
 
     QFile resFile(_folder.absoluteFilePath(_resFileName));
     resFile.open(QIODevice::WriteOnly);
     QTextStream ts( &resFile );
-	ts << resText;
+    ts << resText;
     resFile.close();
 
-	
-	return glpProblem;
+
+    return glpProblem;
 }
 
 
@@ -414,19 +437,19 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 {
 
     // clone eiTree
-	EITargetResult* result = new EITargetResult();
-    result->setEITree(_eiTree);
+    EITargetResult* result = new EITargetResult();
+    result->setEITree(*_eiTree);
 
-	// read if successfull
-	int status = glp_get_status(glpProblem);
-	switch(status)
-	{
-	case GLP_OPT :
-		result->setSuccess(true);
-		break;
-	default:
-		result->setSuccess(false);
-	}
+    // read if successfull
+    int status = glp_get_status(glpProblem);
+    switch(status)
+    {
+    case GLP_OPT :
+        result->setSuccess(true);
+        break;
+    default:
+        result->setSuccess(false);
+    }
 
 
     // read all column names
@@ -447,26 +470,26 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 
     // read all VFacUt
     MilpVariableResult1D varUtFact("VFactUt");
-    varUtFact.fill(glpProblem,colNames);
+    GlpkTools::fill(varUtFact,glpProblem,colNames);
     QMap<QString,double> mapGroupFacMul = varUtFact.values();
 
     EIGroup* curGroup;
-	for(int i=0;i<mapGroupFacMul.keys().size();i++)
-	{
-		groupName = mapGroupFacMul.keys().at(i);
+    for(int i=0;i<mapGroupFacMul.keys().size();i++)
+    {
+        groupName = mapGroupFacMul.keys().at(i);
         curGroup = dynamic_cast<EIGroup*>(result->eiTree()->findItem(groupName));
-		if(curGroup)
-		{
+        if(curGroup)
+        {
             value = mapGroupFacMul.value(groupName);
             curGroup->getFact()->value = value;
             if(value==0)
                 dynamic_cast<EIGroup*>(curGroup)->setChecked(false);
-		}
-	}
+        }
+    }
 
-	// read TotalCost
+    // read TotalCost
     MilpVariableResult0D varTotalCost("TotalCost");
-    varTotalCost.fill(glpProblem,-1,colNames);
+    GlpkTools::fill(varTotalCost,glpProblem,-1,colNames);
     result->_totalCost = varTotalCost.value();
 
     // read Qijk
@@ -507,7 +530,10 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
         iCol = colNames.indexOf(regExp,iCol+1);
     }
 
-	return result;
+   //recreate a MER to get new pinch temperature
+
+
+    return result;
 }
 //
 //void MilpTarget::RootEIToTargetMilp(EIItem* rootEI,MOOptVector *variables)
@@ -708,7 +734,7 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 //
 //
 
-	
+
 
 
 

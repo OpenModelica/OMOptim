@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -38,7 +38,7 @@
  	@version 0.9 
 */
 
-#include "TabEIProblem.h"
+#include "tabEIProblem.h"
 #include <QtGui/QSortFilterProxyModel>
 #include "MOOptPlot.h"
 #include "SimpleMilpTarget.h"
@@ -70,10 +70,13 @@ TabEIProblem::TabEIProblem(Project *project,EIProblem *problem, QWidget *parent)
     else
         _problemHEN = new EIHEN1(_project,_project->modClassTree(),_project->moomc());
 
+
+
+
     _resultMER = new EIMERResult();
 
     // Variables
-    _widgetEIInputVars = new WidgetEIInputVars(_project,_problem->inputVars(),_problem->eiTree()->rootElement(),this);
+  //  _widgetEIInputVars = new WidgetEIInputVars(_project,_problem->inputVars(),_problem->eiTree()->rootElement(),this);
     _widgetTreeStreams = new WidgetTreeStreams(_problem->eiTree(), true,true,_project->modClassTree(),_project->moomc(),this,_problem->inputVars());
 
     _widgetCCPlot = new WidgetCCPlot(_resultMER,this);
@@ -87,15 +90,15 @@ TabEIProblem::TabEIProblem(Project *project,EIProblem *problem, QWidget *parent)
 
 
 
-    addDockWidget("Loaded variables",_widgetEIInputVars);
-    addDockWidget("Points and Scans",_widgetSelPointScan,_widgetEIInputVars);
-    addDockWidget("EI Streams",_widgetTreeStreams,_widgetEIInputVars);
-    addDockWidget("Composites, MER",_widgetCCPlot,_widgetEIInputVars);
-    addDockWidget("Connections",_widgetTableConnConstr,_widgetEIInputVars);
+  //  addDockWidget("Loaded variables",_widgetEIInputVars);
+    addDockWidget("EI Streams",_widgetTreeStreams);
+    addDockWidget("Points and Scans",_widgetSelPointScan,_widgetTreeStreams);
+    addDockWidget("Composites, MER",_widgetCCPlot,_widgetTreeStreams);
+    addDockWidget("Connections",_widgetTableConnConstr,_widgetTreeStreams);
     addFixedWidget("Launch",_widgetLaunchEI,Qt::BottomDockWidgetArea);
 
     connect(_problem,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
-    connect(_widgetEIInputVars,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
+  //  connect(_widgetEIInputVars,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
     connect(_widgetLaunchEI,SIGNAL(targetAsked()),this,SLOT(onTargetAsked()));
     connect(_widgetLaunchEI,SIGNAL(MERAsked()),this,SLOT(onMERAsked()));
     connect(_widgetLaunchEI,SIGNAL(HENAsked()),this,SLOT(onHENAsked()));
@@ -138,14 +141,10 @@ void TabEIProblem::onTargetAsked()
     QString tempDir = _project->tempPath();
     ProblemConfig cfg;
     cfg.tempDir = tempDir;
-    _problemTarget->setEITree(new EITree(*_problem->eiTree()));
+    _problemTarget->setEITree(*_problem->eiTree());
     _problemTarget->setInputVars(_problem->inputVars()->clone());
     _problemTarget->setConnConstrs(new EIConnConstrs(*_problem->connConstrs()));
 
-    QString error;
-    bool ok = _problemTarget->checkBeforeComp(error);
-    if(!ok)
-        QMessageBox::warning(this, "Error",error,QMessageBox::Ok,QMessageBox::Ok);
 
     MOParametersDlg dlg(_problemTarget->parameters());
     if(dlg.exec()==QDialog::Accepted)
@@ -170,7 +169,7 @@ void TabEIProblem::onMERAsked()
     QString tempDir = _project->tempPath();
     ProblemConfig cfg;
     cfg.tempDir = tempDir;
-    _problemMER->setEITree(new EITree(*_problem->eiTree()));
+    _problemMER->setEITree(*_problem->eiTree());
     _problemMER->setInputVars(_problem->inputVars()->clone());
 
 
@@ -201,7 +200,7 @@ void TabEIProblem::onHENAsked()
     QString tempDir = _project->tempPath();
     ProblemConfig cfg;
     cfg.tempDir = tempDir;
-    _problemHEN->setEITree(new EITree(*_problem->eiTree()));
+    _problemHEN->setEITree(*_problem->eiTree());
     _problemHEN->setInputVars(_problem->inputVars()->clone());
     _problemHEN->setConnConstrs(new EIConnConstrs(*_problem->connConstrs()));
 
@@ -209,16 +208,6 @@ void TabEIProblem::onHENAsked()
     if(dlg.exec()==QDialog::Accepted)
     {
          _project->launchProblem(_problemHEN);
-        //EIHEN1Result *result =  _problemHEN->launch(cfg);
-
-        // update target inputvars
-        // (useful if MER or HEN has launched some simulation -> keep results and avoid simulating several times)
-//        _problem->updateInputVars(_problemHEN->inputVars());
-//        if(result->isSuccess())
-//            _project->addResult(result);
-//        else
-//            delete result;
-
     }
 
 
@@ -230,7 +219,7 @@ void TabEIProblem::onEILoadModelAsked()
     if(widgetSelect->exec()==QDialog::Accepted)
     {
         ModModel* curModel = widgetSelect->selectedModel;
-        _problem->loadModel(curModel);
+        _problem->loadModel(_project->modClassTree(),curModel);
     }
     _widgetTreeStreams->treeView->expandAll();
     _widgetTreeStreams->treeView->resizeColumnToContents(0);

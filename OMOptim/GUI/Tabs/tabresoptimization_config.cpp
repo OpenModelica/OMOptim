@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -74,7 +74,6 @@ void TabResOptimization_Config::actualizeGui()
 {
 
 	//_ui->labelEAName->setText(EAUtils::getEAName(result->iEA));
-	_ui->labelCompTime->setText(_result->_computationTime.toString());
-	_ui->labelDate->setText(_result->_hour.toString() + " on " + _result->_date.toString());
-
+        _ui->labelCompTime->setText(_result->_duration.toString());
+        _ui->labelDate->setText(_result->_date.toString());
 	}

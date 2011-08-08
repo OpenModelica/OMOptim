@@ -108,6 +108,7 @@ public:
 
 
     virtual QString toString();
+    QMultiMap<MilpKey2D,QString> values(){return _items;}
 
 private :
         QMultiMap<MilpKey2D,QString> _items;

@@ -3,21 +3,21 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Load.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @file Load.cpp
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version 0.9
 
   */
 #include "Load.h"
@@ -51,134 +51,134 @@ Load::~Load(void)
 bool Load::loadProject(QString filePath,Project* _project)
 {
 
-	infoSender.send(Info(ListInfo::LOADINGPROJECT,filePath));
-	_project->clear();
-	_project->setFilePath(filePath);
-	QDir projectDir(_project->folder());
+    infoSender.send(Info(ListInfo::LOADINGPROJECT,filePath));
+    _project->clear();
+    _project->setFilePath(filePath);
+    QDir projectDir(_project->folder());
 
-	QString tmpPath;
-	
-	// Open and read file
-	QDomDocument doc( "MOProjectXML" );
-	QFile file(filePath);
-	if( !file.open( QIODevice::ReadOnly ) )
-	{
-		infoSender.send( Info(ListInfo::PROJECTFILENOTEXISTS,filePath));
-		return false;
-	}
-	if( !doc.setContent( &file ) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
-		return false;
-	}
-	file.close();
-	QDomElement root = doc.documentElement();
-	if( root.tagName() != "MOProject" )
-	{
-		infoSender.send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
-		return false;
-	}
+    QString tmpPath;
 
-	//**************************************
-	// Reading XML file
-	//**************************************
-	// name
-	QDomElement domBasic = root.firstChildElement("Basic");
-	_project->setName(domBasic.attribute("name", "" ));
+    // Open and read file
+    QDomDocument doc( "MOProjectXML" );
+    QFile file(filePath);
+    if( !file.open( QIODevice::ReadOnly ) )
+    {
+        infoSender.send( Info(ListInfo::PROJECTFILENOTEXISTS,filePath));
+        return false;
+    }
+    if( !doc.setContent( &file ) )
+    {
+        file.close();
+        infoSender.send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+        return false;
+    }
+    file.close();
+    QDomElement root = doc.documentElement();
+    if( root.tagName() != "MOProject" )
+    {
+        infoSender.send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+        return false;
+    }
 
-	// Mo files
-	QStringList modelMoFilePaths;
-	QDomElement domMoFiles = root.firstChildElement("MoFiles");
-	QDomNodeList listMoFiles = domMoFiles.elementsByTagName("MoFile");
-	for(int i=0;i<listMoFiles.size();i++)
-	{
-		tmpPath = listMoFiles.at(i).toElement().attribute("path", "" );
-		QFileInfo modelFileInfo(tmpPath);
-		if(!modelFileInfo.exists())
-		{
-			modelFileInfo=QFileInfo(projectDir,tmpPath); //stored in relative path
-			tmpPath = modelFileInfo.canonicalFilePath();
-		}
-		modelMoFilePaths.push_back(tmpPath);
-	}
+    //**************************************
+    // Reading XML file
+    //**************************************
+    // name
+    QDomElement domBasic = root.firstChildElement("Basic");
+    _project->setName(domBasic.attribute("name", "" ));
 
-	// Mmo files
-	QStringList modelMmoFilePaths;
-	QDomElement domMmoFiles = root.firstChildElement("MmoFiles");
-	QDomNodeList listMmoFiles = domMmoFiles.elementsByTagName("MmoFile");
-	for(int i=0;i<listMmoFiles.size();i++)
-	{
-		tmpPath = listMmoFiles.at(i).toElement().attribute("path", "" );
-		QFileInfo modelFileInfo(projectDir,tmpPath);
-		tmpPath = modelFileInfo.canonicalFilePath();
-		modelMmoFilePaths.push_back(tmpPath);
-	}
+    // Mo files
+    QStringList modelMoFilePaths;
+    QDomElement domMoFiles = root.firstChildElement("MoFiles");
+    QDomNodeList listMoFiles = domMoFiles.elementsByTagName("MoFile");
+    for(int i=0;i<listMoFiles.size();i++)
+    {
+        tmpPath = listMoFiles.at(i).toElement().attribute("path", "" );
+        QFileInfo modelFileInfo(tmpPath);
+        if(!modelFileInfo.exists())
+        {
+            modelFileInfo=QFileInfo(projectDir,tmpPath); //stored in relative path
+            tmpPath = modelFileInfo.canonicalFilePath();
+        }
+        modelMoFilePaths.push_back(tmpPath);
+    }
 
-	// Problems to load
-	QStringList problemsPaths;
+    // Mmo files
+    QStringList modelMmoFilePaths;
+    QDomElement domMmoFiles = root.firstChildElement("MmoFiles");
+    QDomNodeList listMmoFiles = domMmoFiles.elementsByTagName("MmoFile");
+    for(int i=0;i<listMmoFiles.size();i++)
+    {
+        tmpPath = listMmoFiles.at(i).toElement().attribute("path", "" );
+        QFileInfo modelFileInfo(projectDir,tmpPath);
+        tmpPath = modelFileInfo.canonicalFilePath();
+        modelMmoFilePaths.push_back(tmpPath);
+    }
+
+    // Problems to load
+    QStringList problemsPaths;
     QDomElement domOMCases = root.firstChildElement("Problems");
     QDomNodeList listOMCases = domOMCases.elementsByTagName("Problem");
     for(int i=0;i<listOMCases.size();i++)
-	{
+    {
         tmpPath = listOMCases.at(i).toElement().attribute("path", "" );
-		QFileInfo problemFileInfo(projectDir,tmpPath);
-		problemsPaths.push_back(problemFileInfo.canonicalFilePath());
-	}
+        QFileInfo problemFileInfo(projectDir,tmpPath);
+        problemsPaths.push_back(problemFileInfo.canonicalFilePath());
+    }
 
     // Results to load
     QStringList resultsPaths;
     QDomElement domResults = root.firstChildElement("Results");
     QDomNodeList listResults = domResults.elementsByTagName("Result");
     for(int i=0;i<listResults.size();i++)
-	{
+    {
         tmpPath = listResults.at(i).toElement().attribute("path", "" );
-		QFileInfo solvedFileInfo(projectDir,tmpPath);
+        QFileInfo solvedFileInfo(projectDir,tmpPath);
         resultsPaths.push_back(solvedFileInfo.canonicalFilePath());
-	}
-			
-
-	//**************************************
-	// Reading Mo Files
-	//**************************************
-	QSettings settings("MO", "Settings");
+    }
 
 
-	for(int i=0;i<modelMoFilePaths.size();i++)
-	{
-		QFileInfo fileinfo = QFileInfo(modelMoFilePaths.at(i));
-		if (!fileinfo.exists())
-			infoSender.send(Info(ListInfo::MODELFILENOTEXISTS,modelMoFilePaths.at(i)));
-	}
-	_project->loadMoFiles(modelMoFilePaths);
+    //**************************************
+    // Reading Mo Files
+    //**************************************
+    QSettings settings("MO", "Settings");
 
-	//**************************************
-	// Reading Mmo Files
-	//**************************************
-	for(int i=0;i<modelMmoFilePaths.size();i++)
-	{
-		QFileInfo fileinfo = QFileInfo(modelMmoFilePaths.at(i));
-		if (!fileinfo.exists())
-			infoSender.send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
-		else
-			_project->loadModModelPlus(modelMmoFilePaths.at(i));
-	}
 
-	//**************************************
+    for(int i=0;i<modelMoFilePaths.size();i++)
+    {
+        QFileInfo fileinfo = QFileInfo(modelMoFilePaths.at(i));
+        if (!fileinfo.exists())
+            infoSender.send(Info(ListInfo::MODELFILENOTEXISTS,modelMoFilePaths.at(i)));
+    }
+    _project->loadMoFiles(modelMoFilePaths);
+
+    //**************************************
+    // Reading Mmo Files
+    //**************************************
+    for(int i=0;i<modelMmoFilePaths.size();i++)
+    {
+        QFileInfo fileinfo = QFileInfo(modelMmoFilePaths.at(i));
+        if (!fileinfo.exists())
+            infoSender.send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
+        else
+            _project->loadModModelPlus(modelMmoFilePaths.at(i));
+    }
+
+    //**************************************
     // Reading problems
-	//**************************************
-	for(int i=0;i<problemsPaths.size();i++)
-		_project->addProblem(problemsPaths.at(i));
+    //**************************************
+    for(int i=0;i<problemsPaths.size();i++)
+        _project->addProblem(problemsPaths.at(i));
 
-	//**************************************
+    //**************************************
     // Reading results
-	//**************************************
+    //**************************************
     for(int i=0;i<resultsPaths.size();i++)
         _project->addResult(resultsPaths.at(i));
 
-	_project->setIsDefined(true);
+    _project->setIsDefined(true);
 
-	return true;
+    return true;
 }
 //Result* Load::newResultFromFile(QString filePath,Project* _project)
 //{
@@ -336,7 +336,7 @@ bool Load::loadProject(QString filePath,Project* _project)
 ////			}
 ////
 ////
-////			
+////
 ////			if( e.tagName() == "FrontFile" )
 ////			{
 ////				result->frontFileName = e.attribute("path","");
@@ -364,29 +364,29 @@ bool Load::loadProject(QString filePath,Project* _project)
 ////
 ////	// Looking for recomputed points
 ////	result->updateRecPointsFromFolder();
-////	
+////
 ////
 ////	return result;
 ////}
 
 Result* Load::newResult(QString filePath,Project* project)
 {
-	QString error;
+    QString error;
 
     QDomDocument doc( "OMCase" );
-	QFile file(filePath);
-	if( !file.open( QIODevice::ReadOnly ) )
-	{
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-		return NULL;
-	}
-	else if( !doc.setContent(&file,&error) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
-		return NULL;
-	}
-	file.close();
+    QFile file(filePath);
+    if( !file.open( QIODevice::ReadOnly ) )
+    {
+        infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+        return NULL;
+    }
+    else if( !doc.setContent(&file,&error) )
+    {
+        file.close();
+        infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
+        return NULL;
+    }
+    file.close();
 
     QDomElement domCase = doc.firstChildElement("OMCase");
     // create problem
@@ -402,8 +402,8 @@ Result* Load::newResult(QString filePath,Project* project)
     {
         result->setProblem(problem);
 
-    // attribute file path to result
-    result->setEntireSavePath(filePath);
+        // attribute file path to result
+        result->setEntireSavePath(filePath);
     }
 
     return result;
@@ -432,7 +432,7 @@ Result* Load::newResult(QDomElement domResult,Project* project,Problem* problem,
 
 #ifdef USEEI
     if (resultType==EITargetResult::className())
-        result = new EITargetResult(project,project->modClassTree(),resultRoot,dynamic_cast<EITarget*>(problem));
+        result = new EITargetResult(project,project->modClassTree(),resultRoot,problem);
     if (resultType==EIHEN1Result::className())
         result = new EIHEN1Result(project,project->modClassTree(),resultRoot,problem);
 #endif
@@ -443,22 +443,22 @@ Result* Load::newResult(QDomElement domResult,Project* project,Problem* problem,
 
 Problem* Load::newProblem(QString filePath,Project* project)
 {
-	QString error;
+    QString error;
 
     QDomDocument doc( "OMCase" );
-	QFile file(filePath);
-	if( !file.open( QIODevice::ReadOnly ) )
-	{
-		infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-		return NULL;
-	}
-	else if( !doc.setContent(&file,&error) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
-		return NULL;
-	}
-	file.close();
+    QFile file(filePath);
+    if( !file.open( QIODevice::ReadOnly ) )
+    {
+        infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+        return NULL;
+    }
+    else if( !doc.setContent(&file,&error) )
+    {
+        file.close();
+        infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
+        return NULL;
+    }
+    file.close();
 
     // create problem
     QDomElement domCase = doc.firstChildElement("OMCase");
@@ -473,7 +473,7 @@ Problem* Load::newProblem(QString filePath,Project* project)
     }
 
     return problem;
-	}
+}
 
 Problem* Load::newProblem(QDomElement domProblem,Project* project)
 {
@@ -496,83 +496,88 @@ Problem* Load::newProblem(QDomElement domProblem,Project* project)
 
 #ifdef USEEI
     if (problemType==EITarget::className())
-{
+    {
         problem = new EITarget(project,project->modClassTree(),project->moomc(),problemRoot);
     }
     if (problemType==EIHEN1::className())
     {
         problem = new EIHEN1(project,project->modClassTree(),project->moomc(),problemRoot);
     }
+    if (problemType==EIProblem::className())
+    {
+        problem = new EIProblem(project,project->modClassTree(),project->moomc(),problemRoot);
+    }
+
 #endif
 
     return problem;
-	}
+}
 
 
 
 Problem* Load::newOneSimulation(QDomElement domProblem,Project* project)
-	{
+{
     if(domProblem.isNull())
-		return NULL;
+        return NULL;
 
     Q_ASSERT(domProblem.tagName()==OneSimulation::className());
 
 
-	QDomElement domInfos = domProblem.firstChildElement("Infos");
-	QString modelName = domInfos.attribute("model");
+    QDomElement domInfos = domProblem.firstChildElement("Infos");
+    QString modelName = domInfos.attribute("model");
 
-	// Find model
+    // Find model
     ModModel* modModel = project->findModModel(modelName);
     if(modModel == NULL)
-	{
-		return NULL;
-	}
+    {
+        return NULL;
+    }
 
     ModModelPlus* modModelPlus = project->modModelPlus(modModel);
     OneSimulation* problem= new OneSimulation(project,project->modClassTree(),
                                               project->modPlusCtrl(),modModelPlus);
 
-	// Infos
-	problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
-	problem->setName(domInfos.attribute("name", "" ));
+    // Infos
+    problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
+    problem->setName(domInfos.attribute("name", "" ));
 
-	// Scanned Variables
-	QDomElement domScanVars = domProblem.firstChildElement("ScannedVariables");
-	problem->scannedVariables()->setItems(domScanVars);
+    // Scanned Variables
+    QDomElement domScanVars = domProblem.firstChildElement("ScannedVariables");
+    problem->scannedVariables()->setItems(domScanVars);
 
-	// Overwrited Variables
-	QDomElement domOverVars = domProblem.firstChildElement("OverwritedVariables");
-	problem->overwritedVariables()->setItems(domOverVars);
+    // Overwrited Variables
+    QDomElement domOverVars = domProblem.firstChildElement("OverwritedVariables");
+    problem->overwritedVariables()->setItems(domOverVars);
 
     // Files to copy
     QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
     QString text = cFilesToCopy.text();
     problem->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
 
-	// addOverWritedCVariables
-	// make their value editable
-	for(int iV=0;iV<problem->overwritedVariables()->items.size();iV++)
-		problem->overwritedVariables()->items.at(iV)->setIsEditableField(Variable::VALUE,true);
+    // addOverWritedCVariables
+    // make their value editable
+    for(int iV=0;iV<problem->overwritedVariables()->items.size();iV++)
+        problem->overwritedVariables()->items.at(iV)->setIsEditableField(Variable::VALUE,true);
 
-	return problem;
+    return problem;
 }
 
 Result* Load::newOneSimulationResult(QDomElement domResult,Project* project,OneSimulation *problem)
 {
     if(domResult.isNull())
-		return NULL;
+        return NULL;
 
     OneSimResult* result = new OneSimResult(project,problem->modModelPlus(),problem,project->modClassTree(),problem->modPlusCtrl());
 
     Q_ASSERT(domResult.tagName()==OneSimResult::className());
 
-	// Infos
-	QDomElement domResInfos = domResult.firstChildElement("Infos");
-	result->setName(domResInfos.attribute("name", "" ));
+    //Infos
+    QDomElement domResInfos = domResult.firstChildElement("Infos");
+    result->setName(domResInfos.attribute("name", "" ));
 
-	//FinalVariables
-	QDomElement domFinalVars = domResult.firstChildElement("FinalVariables");
-	result->finalVariables()->setItems(domFinalVars);
+    //FinalVariables
+    QDomElement domFinalVars = domResult.firstChildElement("FinalVariables");
+    result->finalVariables()->setItems(domFinalVars);
 
 
     return result;
@@ -585,42 +590,43 @@ Result* Load::newOneSimulationResult(QDomElement domResult,Project* project,OneS
 Problem* Load::newOptimization(QDomElement domProblem,Project* project)
 {
     if(domProblem.isNull())
-		return NULL;
+        return NULL;
 
     Q_ASSERT(domProblem.tagName()==Optimization::className());
 
 
-	QDomElement domInfos = domProblem.firstChildElement("Infos");
-	QString modelName = domInfos.attribute("model");
-	QString problemName = domInfos.attribute("name");
+    QDomElement domInfos = domProblem.firstChildElement("Infos");
+    QString modelName = domInfos.attribute("model");
+    QString problemName = domInfos.attribute("name");
 
-	// Find model
-	ModModel* _modModel = project->findModModel(modelName);
-	if(_modModel == NULL)
-	{
-		infoSender.send( Info(ListInfo::PROBLEMMODELNOTFOUND,modelName,problemName));
-		return NULL;
-	}
 
-	// Create problem
-	ModModelPlus* _modModelPlus = project->modModelPlus(_modModel);
+    // Find model
+    ModModel* _modModel = project->findModModel(modelName);
+    if(_modModel == NULL)
+    {
+        infoSender.send( Info(ListInfo::PROBLEMMODELNOTFOUND,modelName,problemName));
+        return NULL;
+    }
+
+    // Create problem
+    ModModelPlus* _modModelPlus = project->modModelPlus(_modModel);
     Optimization* problem= new Optimization(project,project->modClassTree(),
                                             project->modPlusCtrl(),_modModelPlus);
-	// Infos
-	problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
-	problem->setName(problemName);
+    // Infos
+    problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
+    problem->setName(problemName);
 
-	// Optimized Variables
-	QDomElement domOptVars = domProblem.firstChildElement("OptimizedVariables");
-	problem->optimizedVariables()->setItems(domOptVars);
+    // Optimized Variables
+    QDomElement domOptVars = domProblem.firstChildElement("OptimizedVariables");
+    problem->optimizedVariables()->setItems(domOptVars);
 
-	// Objectives
-	QDomElement domObj = domProblem.firstChildElement("Objectives");
-	problem->objectives()->setItems(domObj);
+    // Objectives
+    QDomElement domObj = domProblem.firstChildElement("Objectives");
+    problem->objectives()->setItems(domObj);
 
-	// Scanned Variables
-	QDomElement domScann = domProblem.firstChildElement("ScannedVariables");
-	problem->scannedVariables()->setItems(domScann);
+    // Scanned Variables
+    QDomElement domScann = domProblem.firstChildElement("ScannedVariables");
+    problem->scannedVariables()->setItems(domScann);
 
     // Files to copy
     QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
@@ -628,24 +634,24 @@ Problem* Load::newOptimization(QDomElement domProblem,Project* project)
     problem->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
 
 
-	// BlockSubstitutions
-	QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
+    // BlockSubstitutions
+    QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
     problem->setBlockSubstitutions(new BlockSubstitutions(project,_modModelPlus,domBlockSubs,project->modClassTree()));
 
-	// EA
-	QDomElement domEA = domProblem.firstChildElement("EA");
-	QDomElement domEAInfos = domEA.firstChildElement("Infos");
-	if(!domEAInfos.isNull())
-	{
-		problem->setiCurAlgo(domEAInfos.attribute("num", "" ).toInt());		
-	}
-	QDomElement domEAParameters = domEA.firstChildElement("Parameters");
-	if(!domEAParameters.isNull())
-	{
+    // EA
+    QDomElement domEA = domProblem.firstChildElement("EA");
+    QDomElement domEAInfos = domEA.firstChildElement("Infos");
+    if(!domEAInfos.isNull())
+    {
+        problem->setiCurAlgo(domEAInfos.attribute("num", "" ).toInt());
+    }
+    QDomElement domEAParameters = domEA.firstChildElement("Parameters");
+    if(!domEAParameters.isNull())
+    {
         problem->getCurAlgo()->_parameters->update(domEAParameters);
-	}
+    }
 
-	return problem;
+    return problem;
 }
 
 
@@ -654,161 +660,170 @@ Problem* Load::newOptimization(QDomElement domProblem,Project* project)
 
 Result* Load::newOptimizationResult(QDomElement domResult,Project* project,Optimization* optimization,QDir resultDir)
 {
-	
+
     if(domResult.isNull())
-		return NULL;
+        return NULL;
 
     if(optimization==NULL)
-		return NULL;
+        return NULL;
 
     Q_ASSERT(domResult.tagName()==OptimResult::className());
 
     OptimResult* result = new OptimResult(project,optimization->modModelPlus(),optimization,project->modClassTree(),optimization->modPlusCtrl(),optimization->getCurAlgo());
-	result->setSuccess(true);
+    result->setSuccess(true);
 
-	//**********
-	// Result
-	//**********
-	// OptVarResult from optVar, OptObjResult from OptObj...
-	result->optVariablesResults()->clear();
+    //**********
+    // Result
+    //**********
+    // OptVarResult from optVar, OptObjResult from OptObj...
+    result->optVariablesResults()->clear();
     for(int i=0;i<optimization->optimizedVariables()->items.size();i++)
-	{
+    {
         result->optVariablesResults()->addItem(new VariableResult(*optimization->optimizedVariables()->items.at(i)));
-	}
+    }
 
-	result->optObjectivesResults()->clear();
+    result->optObjectivesResults()->clear();
     for(int i=0;i<optimization->objectives()->items.size();i++)
-	{
+    {
         result->optObjectivesResults()->addItem(new VariableResult(*optimization->objectives()->items.at(i)));
-	}
-	
-		//Infos
-		QDomElement domResInfos = domResult.firstChildElement("Infos");
-		result->setName(domResInfos.attribute("name", "" ));
+    }
 
-		// Blocksubs
-		QDomElement domBlocks = domResult.firstChildElement("AllBlockSubstitutions");
-		QDomElement domBlock = domBlocks.firstChildElement();
-		QRegExp regExp("BlockSubstitutions[\\d]+");
+    //Infos
+    QDomElement domResInfos = domResult.firstChildElement("Infos");
+    result->setName(domResInfos.attribute("name", "" ));
+    QString date = domResInfos.attribute("date");
+    result->_date = QDateTime::fromString(date);
+    QString duration = domResInfos.attribute("duration");
+    result->_duration = QTime::fromString(duration);
 
-		while(!domBlock.isNull())
-		{
-			if(regExp.exactMatch(domBlock.tagName()))
-			{
-				QString number = domBlock.tagName();
-				number.remove(QRegExp("[\\D]*"));
-				domBlock.setTagName("BlockSubstitutions");
+
+
+
+
+
+    // Blocksubs
+    QDomElement domBlocks = domResult.firstChildElement("AllBlockSubstitutions");
+    QDomElement domBlock = domBlocks.firstChildElement();
+    QRegExp regExp("BlockSubstitutions[\\d]+");
+
+    while(!domBlock.isNull())
+    {
+        if(regExp.exactMatch(domBlock.tagName()))
+        {
+            QString number = domBlock.tagName();
+            number.remove(QRegExp("[\\D]*"));
+            domBlock.setTagName("BlockSubstitutions");
 
             result->_subBlocks.push_back(new BlockSubstitutions(project,result->modModelPlus(),domBlock,project->modClassTree()));
-			}
-			domBlock = domBlock.nextSiblingElement();
-		}
+        }
+        domBlock = domBlock.nextSiblingElement();
+    }
 
-		// Filling and Sizing recomputed variables (without values)
+    // Filling and Sizing recomputed variables (without values)
     if(result->modModelPlus()->variables()->items.isEmpty())
         result->modModelPlus()->readVariables();
 
     for (int i=0;i<result->modModelPlus()->variables()->items.size();i++)
-		{
+    {
         result->recomputedVariables()->addItem(new VariableResult(*result->modModelPlus()->variables()->items.at(i)));
-		}
+    }
 
-		// Filling final values from frontFile (csv)
+    // Filling final values from frontFile (csv)
 
 
     QFileInfo frontFileInfo(resultDir,result->_optVarsFrontFileName);
-		if(frontFileInfo.exists())
-			loadOptimValuesFromFrontFile(result,frontFileInfo.absoluteFilePath());
+    if(frontFileInfo.exists())
+        loadOptimValuesFromFrontFile(result,frontFileInfo.absoluteFilePath());
 
-		// Filling recomputed values from folder point_ (csv)
-                result->updateRecomputedPointsFromFolder();
+    // Filling recomputed values from folder point_ (csv)
+    result->updateRecomputedPointsFromFolder();
 
     return result;
-	}
+}
 
 
 
 
 void Load::loadOptimValuesFromFrontFile(OptimResult* _result,QString fileName)
 {
-	QFile frontFile(fileName);
-	if(!frontFile.exists())
-	{
-		return;
-	}
-	frontFile.open(QIODevice::ReadOnly);
-	QTextStream tsfront( &frontFile );
-	QString text = tsfront.readAll();
-	frontFile.close();
+    QFile frontFile(fileName);
+    if(!frontFile.exists())
+    {
+        return;
+    }
+    frontFile.open(QIODevice::ReadOnly);
+    QTextStream tsfront( &frontFile );
+    QString text = tsfront.readAll();
+    frontFile.close();
 
-	// Clearing previous values
-	for (int i=0; i<_result->optObjectivesResults()->items.size(); i++)
-	{
-		_result->optObjectivesResults()->items.at(i)->clearFinalValues();
-	}
-	for (int i=0; i<_result->optVariablesResults()->items.size(); i++)
-	{
-		_result->optVariablesResults()->items.at(i)->clearFinalValues();
-	}
-	for (int i=0; i<_result->recomputedVariables()->items.size(); i++)
-	{
-		_result->recomputedVariables()->items.at(i)->clearFinalValues();
-	}
+    // Clearing previous values
+    for (int i=0; i<_result->optObjectivesResults()->items.size(); i++)
+    {
+        _result->optObjectivesResults()->items.at(i)->clearFinalValues();
+    }
+    for (int i=0; i<_result->optVariablesResults()->items.size(); i++)
+    {
+        _result->optVariablesResults()->items.at(i)->clearFinalValues();
+    }
+    for (int i=0; i<_result->recomputedVariables()->items.size(); i++)
+    {
+        _result->recomputedVariables()->items.at(i)->clearFinalValues();
+    }
 
-	QStringList lines = text.split("\n",QString::KeepEmptyParts);
+    QStringList lines = text.split("\n",QString::KeepEmptyParts);
 
-	QStringList firstLine = lines[0].split("\t",QString::SkipEmptyParts);
-	int nbCols = firstLine.size();
+    QStringList firstLine = lines[0].split("\t",QString::SkipEmptyParts);
+    int nbCols = firstLine.size();
 
-	int *objIndex = new int[nbCols];
-	int *optVarIndex = new int[nbCols];
-	int *recompVarIndex = new int[nbCols];
+    int *objIndex = new int[nbCols];
+    int *optVarIndex = new int[nbCols];
+    int *recompVarIndex = new int[nbCols];
 
-	bool useScan = (dynamic_cast<Optimization*>(_result->problem())->nbScans()>1);
-	_result->recomputedVariables()->setUseScan(useScan);
+    bool useScan = (dynamic_cast<Optimization*>(_result->problem())->nbScans()>1);
+    _result->recomputedVariables()->setUseScan(useScan);
 
-	// Filling index tables
-	for(int i=0; i<nbCols; i++)
-	{
-		objIndex[i] = _result->optObjectivesResults()->findItem(firstLine.at(i));
-		optVarIndex[i] = _result->optVariablesResults()->findItem(firstLine.at(i));
-		if(!useScan)
-			recompVarIndex[i] = _result->recomputedVariables()->findItem(firstLine.at(i));
-	}
+    // Filling index tables
+    for(int i=0; i<nbCols; i++)
+    {
+        objIndex[i] = _result->optObjectivesResults()->findItem(firstLine.at(i));
+        optVarIndex[i] = _result->optVariablesResults()->findItem(firstLine.at(i));
+        if(!useScan)
+            recompVarIndex[i] = _result->recomputedVariables()->findItem(firstLine.at(i));
+    }
 
-	int iiSubBlock = firstLine.indexOf("subBlocksIndex");
+    int iiSubBlock = firstLine.indexOf("subBlocksIndex");
 
-	// Filling variables and objectives values
-	QStringList curLine;
-	int curIndex = 0; // to skip empty, partial or comment lines
-	for (int iLine = 1; iLine<lines.size(); iLine++)
-	{
-		curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
+    // Filling variables and objectives values
+    QStringList curLine;
+    int curIndex = 0; // to skip empty, partial or comment lines
+    for (int iLine = 1; iLine<lines.size(); iLine++)
+    {
+        curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
 
-		if(curLine.size()==nbCols)
-		{
-			for (int iCol = 0; iCol < nbCols; iCol++)
-			{
-				if (objIndex[iCol]>-1)
-				{
-					_result->optObjectivesResults()->items.at(objIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
-				}
-				if (optVarIndex[iCol]>-1)
-				{
-					_result->optVariablesResults()->items.at(optVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
-				}
-				if ((recompVarIndex[iCol]>-1)&&(!useScan))
-				{
-					_result->recomputedVariables()->items.at(recompVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
-				}
-			}
+        if(curLine.size()==nbCols)
+        {
+            for (int iCol = 0; iCol < nbCols; iCol++)
+            {
+                if (objIndex[iCol]>-1)
+                {
+                    _result->optObjectivesResults()->items.at(objIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
+                }
+                if (optVarIndex[iCol]>-1)
+                {
+                    _result->optVariablesResults()->items.at(optVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
+                }
+                if ((recompVarIndex[iCol]>-1)&&(!useScan))
+                {
+                    _result->recomputedVariables()->items.at(recompVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
+                }
+            }
 
-			if(iiSubBlock>-1)
-				_result->_iSubModels.push_back(curLine[iiSubBlock].toInt());
+            if(iiSubBlock>-1)
+                _result->_iSubModels.push_back(curLine[iiSubBlock].toInt());
 
-			curIndex ++;
-		}
-	}
+            curIndex ++;
+        }
+    }
 }
 
 
@@ -817,93 +832,93 @@ void Load::loadOptimValuesFromFrontFile(OptimResult* _result,QString fileName)
 
 bool Load::loadModModelPlus(Project* project,QString mmoFilePath)
 {
-	infoSender.send( Info(ListInfo::LOADINGMODEL,mmoFilePath));
+    infoSender.send( Info(ListInfo::LOADINGMODEL,mmoFilePath));
 
-	// Open file
-	QDomDocument doc( "MOModelXML" );
-	QFileInfo mmoFileInfo(mmoFilePath);
-	QDir mmoDir(mmoFileInfo.absolutePath());
-	QFile file(mmoFilePath);
-	if( !file.open( QIODevice::ReadOnly ) )
-	{
-		infoSender.send( Info(ListInfo::MODELFILENOTEXISTS,mmoFilePath));
-		return false;
-	}
-	QString error;
-	if( !doc.setContent( &file,&error ) )
-	{
-		file.close();
-		infoSender.send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
-		return false;
-	}
-	file.close();
-	QDomElement root = doc.documentElement();
-	if( root.tagName() != "MOModel" )
-	{
-		error = "Root tagname should be <MOModel>";
-		infoSender.send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
-		return false;
-	}
-	// Read file
-	QDomElement domBasic = root.firstChildElement("Basic");
-	QString name = domBasic.attribute("name");
-	QString modelName = domBasic.attribute("modelName");
-	
-	// Check if model exist
-	ModModel* _modModel = project->findModModel(modelName);
-	if(_modModel==NULL)
-		return false;
-	else
-	{
+    // Open file
+    QDomDocument doc( "MOModelXML" );
+    QFileInfo mmoFileInfo(mmoFilePath);
+    QDir mmoDir(mmoFileInfo.absolutePath());
+    QFile file(mmoFilePath);
+    if( !file.open( QIODevice::ReadOnly ) )
+    {
+        infoSender.send( Info(ListInfo::MODELFILENOTEXISTS,mmoFilePath));
+        return false;
+    }
+    QString error;
+    if( !doc.setContent( &file,&error ) )
+    {
+        file.close();
+        infoSender.send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
+        return false;
+    }
+    file.close();
+    QDomElement root = doc.documentElement();
+    if( root.tagName() != "MOModel" )
+    {
+        error = "Root tagname should be <MOModel>";
+        infoSender.send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
+        return false;
+    }
+    // Read file
+    QDomElement domBasic = root.firstChildElement("Basic");
+    QString name = domBasic.attribute("name");
+    QString modelName = domBasic.attribute("modelName");
+
+    // Check if model exist
+    ModModel* _modModel = project->findModModel(modelName);
+    if(_modModel==NULL)
+        return false;
+    else
+    {
         ModModelPlus* newModelPlus = new ModModelPlus(project->moomc(),project,project->modClassTree(),
                                                       _modModel);
-		// Other files
-		QDomElement domOtherFiles = root.firstChildElement("OtherFiles");
-		QString allOtherFiles = domOtherFiles.attribute( "list", "" );
-		newModelPlus->setOtherFiles(allOtherFiles.split(";"));			
-		// Infos
-		QDomElement domInfos = root.firstChildElement("Infos");
-		newModelPlus->setInfos(domInfos.attribute("text",""));
-		
-		// FilePath
-		newModelPlus->setMmoFilePath(mmoFilePath);
+        // Other files
+        QDomElement domOtherFiles = root.firstChildElement("OtherFiles");
+        QString allOtherFiles = domOtherFiles.attribute( "list", "" );
+        newModelPlus->setOtherFiles(allOtherFiles.split(";"));
+        // Infos
+        QDomElement domInfos = root.firstChildElement("Infos");
+        newModelPlus->setInfos(domInfos.attribute("text",""));
 
-		// Variables
-		QDomElement domVariables = root.firstChildElement("Variables");
-		newModelPlus->variables()->setItems(domVariables);
-		
-		// Controler type
-		QDomElement cControlers = root.firstChildElement("Controlers");
-		if(!cControlers.isNull())
-			newModelPlus->setCtrlType((ModPlusCtrl::Type)cControlers.attribute("curType","").toInt());
-		
-		// Controler parameters
-		QDomNodeList domControlerList = cControlers.elementsByTagName("Controler");
-		ModPlusCtrl::Type _type;
-		
-		QDomElement cParams;
-		QDomElement cControler;
-		ModPlusCtrl* curCtrl;
-		for(int iC=0;iC<domControlerList.size();iC++)
-		{
-			cControler = domControlerList.at(iC).toElement();
-			_type = (ModPlusCtrl::Type)cControler.attribute("type","-1").toInt();
-			if(_type>-1)
-			{
-				cParams = cControler.firstChildElement("parameters");
-				
-				if(!cParams.isNull())
-				{
-					curCtrl = newModelPlus->ctrls()->value(_type);
-					if(curCtrl)
-						curCtrl->parameters()->update(cParams);
-				}
-			}
-		}
-		
-		bool ok = project->addModModelPlus(newModelPlus);
-		return ok;
-	}
+        // FilePath
+        newModelPlus->setMmoFilePath(mmoFilePath);
+
+        // Variables
+        QDomElement domVariables = root.firstChildElement("Variables");
+        newModelPlus->variables()->setItems(domVariables);
+
+        // Controler type
+        QDomElement cControlers = root.firstChildElement("Controlers");
+        if(!cControlers.isNull())
+            newModelPlus->setCtrlType((ModPlusCtrl::Type)cControlers.attribute("curType","").toInt());
+
+        // Controler parameters
+        QDomNodeList domControlerList = cControlers.elementsByTagName("Controler");
+        ModPlusCtrl::Type _type;
+
+        QDomElement cParams;
+        QDomElement cControler;
+        ModPlusCtrl* curCtrl;
+        for(int iC=0;iC<domControlerList.size();iC++)
+        {
+            cControler = domControlerList.at(iC).toElement();
+            _type = (ModPlusCtrl::Type)cControler.attribute("type","-1").toInt();
+            if(_type>-1)
+            {
+                cParams = cControler.firstChildElement("parameters");
+
+                if(!cParams.isNull())
+                {
+                    curCtrl = newModelPlus->ctrls()->value(_type);
+                    if(curCtrl)
+                        curCtrl->parameters()->update(cParams);
+                }
+            }
+        }
+
+        bool ok = project->addModModelPlus(newModelPlus);
+        return ok;
+    }
 }
 
 

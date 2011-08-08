@@ -51,23 +51,23 @@ public:
 	CCTools(void);
 	~CCTools(void);
 
-	static void buildCCfromStreams(QList<METemperature> & Tk,
-		QList<QList<MEQflow> > & Qik,
+        static void buildCCfromStreams(const QList<METemperature> & Tk,
+                const QList<QList<MEQflow> > & Qik,
 		MOCCCurve *hotCurve,
 		MOCCCurve *coldCurve);
 
-	static void buildGCCfromStreams(QList<METemperature> & Tk,
-		QList<QList<MEQflow> > & Qik,
+        static void buildGCCfromStreams(const QList<METemperature> & Tk,
+                const QList<QList<MEQflow> > & Qik,
 		MOCCCurve *gccCurve);
 
-        static void getPinch(QVector<double>  Tall,QVector<double>  HCold,QVector<double>  HHot, METemperature & TPinch, double & dHPinch);
+        static void getPinch(const QList<METemperature> & Tall,const QList<MEQflow>  &HCold,const QList<MEQflow>  &HHot, METemperature & TPinch, MEQflow & dHPinch);
 
-	static void getValues(QList<METemperature> & Tk,
-		QList<QList<MEQflow> > & Qik,
+        static void getValues(const QList<METemperature> & Tk,
+                const QList<QList<MEQflow> > & Qik,
                 METemperature &TPinch, MEQflow &MER, MEQflow &MERCold);
 
 private :
-	static void projectHonT(QVector<double> &newT,QVector<double> &newH,QVector<double> &oldT, QVector<double> &oldH);
+        static void projectHonT(QList<METemperature> &newT,QList<MEQflow> &newH,const QList<METemperature> &oldT,const QList<MEQflow> &oldH);
 
 	static double getNumericalFieldValue(EIStream*,int iField,MOOptVector*,bool &ok);
 };

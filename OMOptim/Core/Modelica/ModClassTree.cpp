@@ -56,13 +56,15 @@
 
     // each change in _rootElement descendants implicates all tree redraw
 	// to optimize (more signals and index find function from ModClass*)
-    connect(_rootElement,SIGNAL(modified()),this,SLOT(allDataChanged()));
-    connect(_rootElement,SIGNAL(cleared()),this,SLOT(allDataCleared()));
+//    connect(_rootElement,SIGNAL(modified()),this,SLOT(allDataChanged()));
+//    connect(_rootElement,SIGNAL(cleared()),this,SLOT(allDataCleared()));
     connect(_rootElement,SIGNAL(deleted()),this,SLOT(onRootDeleted()));
 }
 
 ModClassTree::~ModClassTree()
 {
+    clear();
+    delete _rootElement;
 }
 
 
@@ -828,19 +830,6 @@ QStringList ModClassTree::getPorts(ModClass* parent,Modelica::NameFormat format)
         return _portsNames;
 }
 
-void ModClassTree::allDataChanged()
-{
-    //reset();
-//    emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1));
-//    emit layoutChanged();
-}
-
-void ModClassTree::allDataCleared()
-{
-    //reset();
-	//emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1));
-	//emit layoutChanged();
-}
 
 QIcon ModClassTree::getModelicaNodeIcon(ModClass* modClass)
 {
@@ -901,11 +890,4 @@ void ModClassTree::fetchMore ( const QModelIndex & parent )
         if(!item->childrenReaden())
             readFromOmcV2(item,_modReader->getDepthMax());
     }
-}
-
-void ModClassTree::onRootDeleted()
-{
-    _enabled = false;
-    this->beginResetModel();
-    this->endResetModel();
 }

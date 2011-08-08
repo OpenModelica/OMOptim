@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -56,7 +56,7 @@ public :
     static void setDefaultParameters(MOParameters *parameters)
     {
         parameters->addItem(new MOParameter((int)INCLUDEUTILITIES,"Include utilities","",true,MOParameter::BOOL));
-       
+
     };
 };
 

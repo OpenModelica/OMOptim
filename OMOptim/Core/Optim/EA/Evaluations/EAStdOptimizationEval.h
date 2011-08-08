@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -189,18 +189,18 @@ public:
 
 			/************************************
 			Launch EI problem
-			************************************/
-			#ifdef USEEI
+                        ************************************/
+/*#ifdef USEEI
             if(_problem->useEI())
-			{
+            {
                 if(_problem->eiProblem()->getClassName()=="EITarget")
-				{
+                {
                     EITarget* eiTarget = dynamic_cast<EITarget*>(_problem->eiProblem());
                     eiTarget->setInputVars(result->finalVariables());
                     EITargetResult* eiResult = dynamic_cast<EITargetResult*>(eiTarget->launch(ProblemConfig()));
-				}
-			}
-			#endif
+                }
+            }
+#endif*/
 
 			/************************************
 			Read results

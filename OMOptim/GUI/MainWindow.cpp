@@ -236,7 +236,7 @@ void MainWindow::displayInfo(Info i)
 	case ListInfo::OMCERROR2 :
 		_ui->textOMC->append(msg);
 		break;
-	case ListInfo::DEBUG :
+	case ListInfo::INFODEBUG :
 		_ui->textDebug->append(msg);
 		break;
 	}
@@ -393,7 +393,7 @@ void MainWindow::newOneSimulation()
 		if(widgetSelect->exec()==QDialog::Accepted)
 		{
 			ModModel* curModel = widgetSelect->selectedModel;
-			_project->addNewProblem(Problem::ONESIMULATION,curModel);
+			_project->addNewProblem(Problem::ONESIMULATIONTYPE,curModel);
 		}
 	}
 }
@@ -406,7 +406,7 @@ void MainWindow::newOptimization(){
 		if(widgetSelect->exec()==QDialog::Accepted)
 		{
 			ModModel* curModel = widgetSelect->selectedModel;
-			_project->addNewProblem(Problem::OPTIMIZATION,curModel);
+			_project->addNewProblem(Problem::OPTIMIZATIONTYPE,curModel);
 		}
 	}
 }
@@ -414,7 +414,7 @@ void MainWindow::newProblemEI()
 {
 	if(_project->isDefined())
 	{
-                _project->addNewProblem(Problem::EIPROBLEM,NULL);
+                _project->addNewProblem(Problem::EIPROBLEMTYPE,NULL);
 	}
 }
 void MainWindow::newOMCShell()

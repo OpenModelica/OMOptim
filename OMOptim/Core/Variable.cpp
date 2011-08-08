@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -76,6 +76,12 @@ Variable::Variable(QDomElement & domEl)
 
 Variable::~Variable(void)
 {
+}
+
+
+Variable* Variable::clone()
+{
+    return new Variable(*this);
 }
 
 void Variable::setDescription(QString description)
@@ -309,6 +315,11 @@ VariableResult::~VariableResult()
 
 }
 
+VariableResult* VariableResult::clone()
+{
+    return new VariableResult(*this);
+}
+
 std::vector<double> VariableResult::finalValues(int iScan) const
 {
 	return _finalValues.at(iScan);
@@ -444,7 +455,7 @@ void VariableResult::appendFinalValue(double value,int iScan)
 	{
                 QString msg;
                 msg.sprintf("appdendFinalValue with iScan > finalValues.nbScans (variable : %s",name().utf16());
-		infoSender.send(Info(msg,ListInfo::DEBUG));
+		infoSender.send(Info(msg,ListInfo::INFODEBUG));
 	}
 		
 	_finalValues.at(iScan).push_back(value);

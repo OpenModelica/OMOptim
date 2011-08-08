@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -136,7 +136,7 @@ void SPEA2Adapt::setDefaultParameters()
 QList<int> SPEA2Adapt::compatibleOMCases()
 {
 	QList<int> problems;
-	problems.push_back(Problem::OPTIMIZATION);
+	problems.push_back(Problem::OPTIMIZATIONTYPE);
 	return problems;
 }
 
@@ -163,7 +163,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	
 	switch(_problem->type())
 	{
-	case Problem::OPTIMIZATION :
+	case Problem::OPTIMIZATIONTYPE :
 		EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 		break;
 	}
@@ -188,7 +188,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	moeoEvalFunc < EOAdapt > *plainEval;
 	switch(_problem->type())
 	{
-	case Problem::OPTIMIZATION :
+	case Problem::OPTIMIZATIONTYPE :
 		plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
                         _modClassTree,_modPlusCtrl);
 		break;
@@ -327,16 +327,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	///************************************
 	//RUN THE ALGO
 	//************************************/
-	QTime _time;
-	QDate beginDate = QDate::currentDate();
-	QTime beginTime = QTime::currentTime();
-
-	_time.start();
 	spea2(pop);
-
-	QTime compTime(0,0,0,0);
-	int nms = _time.elapsed();
-	compTime = compTime.addSecs(nms/1000);
 
 
 	///************************************
@@ -344,9 +335,6 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	//************************************/
         Result* result = buildResult(arch);
 
-	result->_hour = beginTime;
-	result->_computationTime = compTime;
-	result->_date = beginDate;
 
 	return result;
 }

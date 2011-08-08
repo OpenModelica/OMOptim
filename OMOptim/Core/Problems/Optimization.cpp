@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -51,7 +51,7 @@ Optimization::Optimization(Project* project,ModClassTree* modClassTree,ModPlusCt
 	_modModelPlus = modModelPlus;
 	_modPlusCtrl = modPlusCtrl;
 
-	_type = Problem::OPTIMIZATION;
+	_type = Problem::OPTIMIZATIONTYPE;
 	_name="Optimization";
 	_optimizedVariables = new MOVector<OptVariable>;
 	_scannedVariables = new MOVector<ScannedVariable>;
@@ -63,7 +63,7 @@ Optimization::Optimization(Project* project,ModClassTree* modClassTree,ModPlusCt
 		connect(_algos.at(i),SIGNAL(configChanged()),this,SIGNAL(algoConfigsChanged()));
 
 	_iCurAlgo=0;
-	_useEI=false;
+
 }
 
 Optimization::Optimization(const Optimization &optim)
@@ -77,8 +77,6 @@ Optimization::Optimization(const Optimization &optim)
 	_objectives = optim._objectives->clone();
 	_blockSubstitutions = optim._blockSubstitutions->clone();
 
-	_useEI = optim._useEI;
-	//eiProblem(optim.eiProblem);
 
         //cloning algos
         for(int i=0;i<optim._algos.size();i++)
@@ -607,4 +605,9 @@ QStringList Optimization::getAlgoNames()
 void Optimization::setiCurAlgo(int iCurAlgo)
 {
         _iCurAlgo = iCurAlgo;
+}
+
+void Optimization::onStopAsked()
+{
+    getCurAlgo()->onStopAsked();
 }

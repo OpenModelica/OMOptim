@@ -70,11 +70,12 @@
 
 #include "MOomc.h"
 
-        //IAEX Headers
+//IAEX Headers
 #include "omcinteractiveenvironment.h"
 #include "MOThreads.h"
 #include "LowTools.h"
 #include "SleeperThread.h"
+#include "../../Compiler/runtime/config.h" // for branch, should add file manually !!
 
         class Project;
 
@@ -702,7 +703,8 @@ QString MOomc::evalCommand(QString command)
     // Send command to server
     try
     {
-        mResult = mOMC->sendExpression(command.toLatin1());
+        //mResult = mOMC->sendExpression(command.toLatin1());
+        mResult = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
        // logOMCMessages(command);
         infoSender.send(Info(getResult(),ListInfo::OMCNORMAL2));
     }
@@ -976,7 +978,8 @@ void MOomc::loadStandardLibrary()
 
 void MOomc::clear()
 {
-    evalCommand("clear()");
+    if(isStarted())
+        evalCommand("clear()");
 }
 
 
@@ -1014,13 +1017,13 @@ bool MOomc::startServer()
             infoSender.send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
         omcPath = QString( omhome ) + "bin/omc.exe";
 #else /* unix */
-        omcPath = (omhome ? QString(omhome)+"bin/omc" : "omc");
+        omcPath = (omhome ? QString(omhome)+"bin/omc" : QString(CONFIG_DEFAULT_OPENMODELICAHOME) + "/bin/omc");
 #endif
 
         // Check the IOR file created by omc.exe
         QFile objectRefFile;
         QString fileIdentifier;
-        fileIdentifier = qApp->sessionId().append(QTime::currentTime().toString().remove(":"));
+        fileIdentifier = qApp->sessionId().append(QTime::currentTime().toString(tr("hh:mm:ss:zzz")).remove(":"));
 
 #ifdef WIN32 // Win32
         objectRefFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.objid.").append(this->mName).append(fileIdentifier));
@@ -1096,7 +1099,7 @@ bool MOomc::startServer()
         }
     }
 
-        mCommunicator = &OmcCommunicator::getInstance();
+       // mCommunicator = &OmcCommunicator::getInstance();
 
     // set the temp directory.
     changeDirectory(OMCHelper::tmpPath);
@@ -1182,12 +1185,13 @@ bool MOomc::startServer()
 
 void MOomc::stopServer()
 {
+    if(isStarted())
   //  if( delegate_ )
-  //  {
+    {
         QString quit = "quit()";
         mOMC->sendExpression( quit.toLatin1() );
         infoSender.send( Info("Quiting OMC...",ListInfo::NORMAL2));
- //   }
+    }
     mHasInitialized = false;
 }
 
@@ -1201,10 +1205,10 @@ QString MOomc::getResult()
     return mResult.trimmed();
 }
 
-OmcCommunicator* MOomc::getCommunicator()
-{
-	return mCommunicator;
-}
+//OmcCommunicator* MOomc::getCommunicator()
+//{
+//	//return mCommunicator;
+//}
 
 QString MOomc::changeDirectory(QString directory)
 {

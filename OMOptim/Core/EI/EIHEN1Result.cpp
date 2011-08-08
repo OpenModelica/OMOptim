@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -76,6 +76,13 @@ EIHEN1Result::EIHEN1Result(Project* project, ModClassTree* modClassTree,QDomElem
         //Infos
         QDomElement domInfos = domResult.firstChildElement("Infos");
         QString resultName = domInfos.attribute("name");
+        QString date = domInfos.attribute("date");
+        _date = QDateTime::fromString(date);
+        QString duration = domInfos.attribute("duration");
+        _duration = QTime::fromString(duration);
+
+
+
         setName(resultName);
 
         // EI
@@ -129,6 +136,8 @@ QDomElement EIHEN1Result::toXmlData(QDomDocument & doc)
     // Problem definition
     QDomElement cInfos = doc.createElement("Infos");
     cInfos.setAttribute("name", _name);
+    cInfos.setAttribute("date", _date.toString());
+    cInfos.setAttribute("duration", _duration.toString());
     cInfos.setAttribute("type", problemType());
     cResult.appendChild(cInfos);
 
@@ -150,7 +159,7 @@ QDomElement EIHEN1Result::toXmlData(QDomDocument & doc)
     cFiles.setAttribute("SensFile",_sensFileName);
     cResult.appendChild(cFiles);
 
-    // HLD
+    // EIConns
     QDomElement cEIConns = _eiConns->toXmlData(doc,"EIConns");
     cResult.appendChild(cEIConns);
 
@@ -163,11 +172,11 @@ EITree* EIHEN1Result::eiTree()
 }
 
 
-void EIHEN1Result::setEITree(EITree * eiTree)
+void EIHEN1Result::setEITree(const EITree & eiTree)
 {
-    if(_eiTree && (_eiTree!=eiTree))
+    if(_eiTree )
         delete _eiTree;
-    _eiTree = eiTree;
+    _eiTree = new EITree(eiTree);
 }
 
 EIConns* EIHEN1Result::eiConns()

@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Save.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file Save.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 
   */
 #include "Save.h"
@@ -60,10 +60,10 @@ Save::~Save(void)
 //{
 //	switch (result->problemType())
 //	{
-//	case Problem::ONESIMULATION:
+//	case Problem::ONESIMULATIONTYPE:
 //		saveResult((OneSimResult*) result);
 //		break;
-//	case Problem::OPTIMIZATION:
+//	case Problem::OPTIMIZATIONTYPE:
 //		saveResult((OptimResult*) result);
 //		break;
 //	}
@@ -155,7 +155,7 @@ Save::~Save(void)
 
 void Save::saveProblem(Problem* problem)
 {
-	// Root element
+    // Root element
     QDomDocument doc("OMCase");
     QDomElement caseRoot = doc.createElement("OMCase");
     doc.appendChild(caseRoot);
@@ -165,7 +165,7 @@ void Save::saveProblem(Problem* problem)
     caseRoot.appendChild(problemRoot);
     problemRoot.appendChild(problemEl);
 
-	// Writing to file
+    // Writing to file
     if(!problem->saveFileName().isEmpty())
     {
 	QFile file(problem->entireSavePath());
@@ -175,13 +175,13 @@ void Save::saveProblem(Problem* problem)
 
 	if(file.exists())
 	{
-		file.remove();
+            file.remove();
 	}
 	file.open(QIODevice::WriteOnly);
 	QTextStream ts( &file );
 	ts << doc.toString();
 	file.close();
-}
+    }
 }
 
 
@@ -191,26 +191,26 @@ void Save::saveProblem(Problem* problem)
 void Save::saveResult(Result* result)
 {
     switch (result->problemType())
-	{
-	case Problem::OPTIMIZATION:
+    {
+    case Problem::OPTIMIZATIONTYPE:
         saveOptimResult((OptimResult*) result);
-		break;
+        break;
     default :
-            saveStdResult(result);
-    break;
+        saveStdResult(result);
+        break;
 
-	}
+    }
 }
 void Save::saveStdResult(Result* result)
 {
-	// Root element
+    // Root element
     QDomDocument doc("OMCase");
     QDomElement caseRoot = doc.createElement("OMCase");
     doc.appendChild(caseRoot);
-	
-	//***********************
-	// Problem definition
-	//***********************
+
+    //***********************
+    // Problem definition
+    //***********************
     // Root element
     QDomElement problemRoot = doc.createElement("OMProblem");
     QDomElement problemEl;
@@ -221,15 +221,15 @@ void Save::saveStdResult(Result* result)
         problemRoot.appendChild(problemEl);
         caseRoot.appendChild(problemRoot);
     }
-	//*********************
-	// Result definition
-	//*********************
+    //*********************
+    // Result definition
+    //*********************
     QDomElement resultRoot = doc.createElement("OMResult");
     QDomElement resultEl = result->toXmlData(doc);
     resultRoot.appendChild(resultEl);
     caseRoot.appendChild(resultRoot);
 
-	// Writing to file
+    // Writing to file
     if(!result->saveFileName().isEmpty())
     {
         QFile file(result->entireSavePath());
@@ -238,7 +238,7 @@ void Save::saveStdResult(Result* result)
 	dir.mkpath(dir.absolutePath());
 	if(file.exists())
 	{
-		file.remove();
+            file.remove();
 	}
 	file.open(QIODevice::WriteOnly);
 	QTextStream ts( &file );
@@ -252,14 +252,14 @@ void Save::saveStdResult(Result* result)
 
 void Save::saveOptimResult(OptimResult* result)
 {
-	// Root element
+    // Root element
     QDomDocument doc("OMCase");
     QDomElement caseRoot = doc.createElement("OMCase");
     doc.appendChild(caseRoot);
 
-	//***********************
-	// Problem definition
-	//***********************
+    //***********************
+    // Problem definition
+    //***********************
     QDomElement problemRoot = doc.createElement("OMProblem");
     QDomElement problemEl;
     if(result->problem())
@@ -269,33 +269,33 @@ void Save::saveOptimResult(OptimResult* result)
         problemRoot.appendChild(problemEl);
     }
 
-	//*********************
-	// Result definition
-	//*********************
+    //*********************
+    // Result definition
+    //*********************
     QDomElement resultRoot = doc.createElement("OMResult");
     QDomElement resultEl = result->toXmlData(doc);
     resultRoot.appendChild(resultEl);
     caseRoot.appendChild(resultRoot);
 
-	// Writing to file
+    // Writing to file
     QFile file(result->entireSavePath());
     QFileInfo fileInfo(result->entireSavePath());
-	QDir dir = fileInfo.absoluteDir();
-	dir.mkpath(dir.absolutePath());
+    QDir dir = fileInfo.absoluteDir();
+    dir.mkpath(dir.absolutePath());
 
-	if(file.exists())
-	{
-		file.remove();
-	}
-	file.open(QIODevice::WriteOnly);
-	QTextStream ts( &file );
-	ts << doc.toString();
-	file.close();
+    if(file.exists())
+    {
+        file.remove();
+    }
+    file.open(QIODevice::WriteOnly);
+    QTextStream ts( &file );
+    ts << doc.toString();
+    file.close();
 
-	//*********************************
-	// Writing points in Front File
-	//*********************************
-	
+    //*********************************
+    // Writing points in Front File
+    //*********************************
+
     QString optVarsfrontFileName = result->_optVarsFrontFileName;
     QString allVarsfrontFileName = result->_allVarsFrontFileName;
 
@@ -308,186 +308,189 @@ void Save::saveOptimResult(OptimResult* result)
 
 void Save::saveProject(Project* project)
 {
-	// MO file
-	QDomDocument doc("MOProjectXML");
-	QDomElement root = doc.createElement( "MOProject" );
-	doc.appendChild( root );
+    // MO file
+    QDomDocument doc("MOProjectXML");
+    QDomElement root = doc.createElement( "MOProject" );
+    doc.appendChild( root );
     root.setAttribute("Version",Version::version());
 
-	// Project info
-	QDir projectDir(project->folder());
-	QDomElement cBasic = doc.createElement( "Basic" );
-	cBasic.setAttribute( "name", project->name() );
-	root.appendChild(cBasic);
+    // Project info
+    QDir projectDir(project->folder());
+    QDomElement cBasic = doc.createElement( "Basic" );
+    cBasic.setAttribute( "name", project->name() );
+    root.appendChild(cBasic);
+
+    QString relPath;
+
+    // Mo files
+    QStringList moFilesPath = project->moFiles();
+    if(moFilesPath.size()>0)
+    {
+        QDomElement cMoFiles = doc.createElement("MoFiles");
+        for(int i=0;i<moFilesPath.size();i++)
+        {
+            QDomElement cMoFile = doc.createElement("MoFile");
+            cMoFile.setAttribute("path",moFilesPath.at(i));
+            cMoFiles.appendChild(cMoFile);
+        }
+        root.appendChild(cMoFiles);
+    }
 
 
-	// Mo files
-	QStringList moFilesPath = project->moFiles();
-	if(moFilesPath.size()>0)
-	{
-		QDomElement cMoFiles = doc.createElement("MoFiles");
-		for(int i=0;i<moFilesPath.size();i++)
-		{
-			QDomElement cMoFile = doc.createElement("MoFile");
-			cMoFile.setAttribute("path",moFilesPath.at(i));
-			cMoFiles.appendChild(cMoFile);
-		}
-		root.appendChild(cMoFiles);
-	}
+    // Mmo files
+    QStringList mmoFilesPath = project->mmoFiles();
+    if(mmoFilesPath.size()>0)
+    {
+        QDomElement cMmoFiles = doc.createElement("MmoFiles");
+        for(int i=0;i<mmoFilesPath.size();i++)
+        {
+            QDomElement cMmoFile = doc.createElement("MmoFile");
+            relPath = projectDir.relativeFilePath(mmoFilesPath.at(i));
+            cMmoFile.setAttribute("path",relPath);
+            cMmoFiles.appendChild(cMmoFile);
+        }
+        root.appendChild(cMmoFiles);
+    }
 
-
-	// Mmo files
-	QStringList mmoFilesPath = project->mmoFiles();
-	if(mmoFilesPath.size()>0)
-	{
-		QDomElement cMmoFiles = doc.createElement("MmoFiles");
-		for(int i=0;i<mmoFilesPath.size();i++)
-		{
-			QDomElement cMmoFile = doc.createElement("MmoFile");
-			cMmoFile.setAttribute("path",mmoFilesPath.at(i));
-			cMmoFiles.appendChild(cMmoFile);
-		}
-		root.appendChild(cMmoFiles);
-	}
-
-	// Project problems
-	if(project->problems()->items.size()>0)
-	{
+    // Project problems
+    if(project->problems()->items.size()>0)
+    {
         QDomElement cOMCases = doc.createElement( "Problems" );
-		for (int nr=0;nr<project->problems()->items.size();nr++)
-		{
-			QDomElement cProblem = doc.createElement( "Problem" );
-            QString relPath = projectDir.relativeFilePath(project->problems()->at(nr)->entireSavePath());
-			cProblem.setAttribute("path",relPath);
+        for (int nr=0;nr<project->problems()->items.size();nr++)
+        {
+            QDomElement cProblem = doc.createElement( "Problem" );
+            relPath = projectDir.relativeFilePath(project->problems()->at(nr)->entireSavePath());
+            cProblem.setAttribute("path",relPath);
             cOMCases.appendChild(cProblem);
-		}
+        }
         root.appendChild(cOMCases);
-	}
+    }
 
     // Project results
     if(project->results()->items.size()>0)
-	{
+    {
         QDomElement cResults = doc.createElement( "Results" );
 
         for (int nr=0;nr<project->results()->items.size();nr++)
-		{
-            QDomElement cResult = doc.createElement( "Result" );;
-            cResult.setAttribute("path",projectDir.relativeFilePath(project->results()->at(nr)->entireSavePath()));
-			cResults.appendChild(cResult);
-		}
-		root.appendChild(cResults);
-	}
+        {
+            QDomElement cResult = doc.createElement( "Result" );
+            relPath = projectDir.relativeFilePath(project->results()->at(nr)->entireSavePath());
+            cResult.setAttribute("path",relPath);
+            cResults.appendChild(cResult);
+        }
+        root.appendChild(cResults);
+    }
 
-	//Writing in .min file
-	QFile file(project->filePath());
-	QFileInfo fileInfo(project->filePath());
-	QDir dir = fileInfo.absoluteDir();
-	dir.mkpath(dir.absolutePath());
+    //Writing in .min file
+    QFile file(project->filePath());
+    QFileInfo fileInfo(project->filePath());
+    QDir dir = fileInfo.absoluteDir();
+    dir.mkpath(dir.absolutePath());
 
 
-	if(file.exists())
-	{
-		file.remove();
-	}
-	file.open(QIODevice::WriteOnly);
-	QTextStream ts( &file );
-	ts << doc.toString();
-	file.close();
+    if(file.exists())
+    {
+        file.remove();
+    }
+    file.open(QIODevice::WriteOnly);
+    QTextStream ts( &file );
+    ts << doc.toString();
+    file.close();
 
     // Saving solved OMCases
     for (int nr=0;nr<project->results()->items.size();nr++)
-	{
+    {
         Save::saveResult(project->results()->at(nr));
-	}
+    }
 
     // Saving OMCases
-	for (int nr=0;nr<project->problems()->items.size();nr++)
-	{
+    for (int nr=0;nr<project->problems()->items.size();nr++)
+    {
         Save::saveProblem(project->problems()->at(nr));
-	}
+    }
 
-	// Saving ModModelPlus
-	QList<ModModelPlus*> allModModelPlus = project->allModModelPlus();
-	for (int m=0;m<allModModelPlus.size();m++)
-	{
-		Save::saveModModelPlus(allModModelPlus.at(m));
-	}
+    // Saving ModModelPlus
+    QList<ModModelPlus*> allModModelPlus = project->allModModelPlus();
+    for (int m=0;m<allModModelPlus.size();m++)
+    {
+        Save::saveModModelPlus(allModModelPlus.at(m));
+    }
 }
 
 
 void Save::saveModModelPlus(ModModelPlus* modModelPlus)
 {
-	// MO file
-	QDomDocument doc("MOModelXML");
-	QDomElement root = doc.createElement( "MOModel" );
-	doc.appendChild(root);
+    // MO file
+    QDomDocument doc("MOModelXML");
+    QDomElement root = doc.createElement( "MOModel" );
+    doc.appendChild(root);
 
-	// Project info
-	QDir mmoDir(modModelPlus->mmoFolder());
-	QDomElement cBasic = doc.createElement( "Basic" );
-	cBasic.setAttribute( "name", modModelPlus->name() );
-	cBasic.setAttribute( "modelName", modModelPlus->modModelName());
-	root.appendChild(cBasic);
+    // Project info
+    QDir mmoDir(modModelPlus->mmoFolder());
+    QDomElement cBasic = doc.createElement( "Basic" );
+    cBasic.setAttribute( "name", modModelPlus->name() );
+    cBasic.setAttribute( "modelName", modModelPlus->modModelName());
+    root.appendChild(cBasic);
 
-	// OtherFiles
-	QDomElement cOtherFiles = doc.createElement( "OtherFiles" );
-	QString strOtherFiles;
-	for (int nof=0;nof<modModelPlus->otherFiles().size();nof++)
-	{
-		strOtherFiles.append(modModelPlus->otherFiles().at(nof)+";");
-	}
-	cOtherFiles.setAttribute("list",strOtherFiles);
-	root.appendChild(cOtherFiles);
+    // OtherFiles
+    QDomElement cOtherFiles = doc.createElement( "OtherFiles" );
+    QString strOtherFiles;
+    for (int nof=0;nof<modModelPlus->otherFiles().size();nof++)
+    {
+        strOtherFiles.append(modModelPlus->otherFiles().at(nof)+";");
+    }
+    cOtherFiles.setAttribute("list",strOtherFiles);
+    root.appendChild(cOtherFiles);
 
-	// Infos
-	QDomElement cInfos = doc.createElement( "Infos" );
-	cInfos.setAttribute("text",modModelPlus->infos());
-	root.appendChild(cInfos);
+    // Infos
+    QDomElement cInfos = doc.createElement( "Infos" );
+    cInfos.setAttribute("text",modModelPlus->infos());
+    root.appendChild(cInfos);
 
-	// Variables
-	QDomElement cVariables = modModelPlus->variables()->toXmlData(doc,"Variables");
-	root.appendChild(cVariables);
+    // Variables
+    QDomElement cVariables = modModelPlus->variables()->toXmlData(doc,"Variables");
+    root.appendChild(cVariables);
 
-	// Controlers
-	QDomElement cControlers = doc.createElement("Controlers");
-	cControlers.setAttribute("curType",(int)modModelPlus->ctrlType());
-	
+    // Controlers
+    QDomElement cControlers = doc.createElement("Controlers");
+    cControlers.setAttribute("curType",(int)modModelPlus->ctrlType());
 
-	// Controler parameters
-	QList<QDomElement> cCtrls;
-	QList<QDomElement> cCtrlsParams;
-	QDomElement ccurCtrl;
-	QDomElement ccurParams;
-	ModPlusCtrl* curCtrl;
-	for(int iCtrl=0;iCtrl<modModelPlus->ctrls()->values().size();iCtrl++)
-	{
-		curCtrl = modModelPlus->ctrls()->values().at(iCtrl);
-		ccurCtrl = doc.createElement("Controler");
-		ccurCtrl.setAttribute("type",(int)curCtrl->type());
-		ccurParams = curCtrl->parameters()->toXmlData(doc,"parameters");
-		
-		ccurCtrl.appendChild(ccurParams);
-		cControlers.appendChild(ccurCtrl);
 
-		cCtrls.push_back(ccurCtrl);
-		cCtrlsParams.push_back(ccurParams);
-	}
-	
-	root.appendChild(cControlers);
+    // Controler parameters
+    QList<QDomElement> cCtrls;
+    QList<QDomElement> cCtrlsParams;
+    QDomElement ccurCtrl;
+    QDomElement ccurParams;
+    ModPlusCtrl* curCtrl;
+    for(int iCtrl=0;iCtrl<modModelPlus->ctrls()->values().size();iCtrl++)
+    {
+        curCtrl = modModelPlus->ctrls()->values().at(iCtrl);
+        ccurCtrl = doc.createElement("Controler");
+        ccurCtrl.setAttribute("type",(int)curCtrl->type());
+        ccurParams = curCtrl->parameters()->toXmlData(doc,"parameters");
 
-	//Writing in MO file
-	QFile file(modModelPlus->mmoFilePath());
-	QFileInfo fileInfo(modModelPlus->mmoFilePath());
-	QDir dir = fileInfo.absoluteDir();
-	dir.mkpath(dir.absolutePath());
+        ccurCtrl.appendChild(ccurParams);
+        cControlers.appendChild(ccurCtrl);
 
-	if(file.exists())
-	{
-		file.remove();
-	}
-	file.open(QIODevice::WriteOnly);
-	QTextStream ts( &file );
-	ts << doc.toString();
-	file.close();
+        cCtrls.push_back(ccurCtrl);
+        cCtrlsParams.push_back(ccurParams);
+    }
+
+    root.appendChild(cControlers);
+
+    //Writing in MO file
+    QFile file(modModelPlus->mmoFilePath());
+    QFileInfo fileInfo(modModelPlus->mmoFilePath());
+    QDir dir = fileInfo.absoluteDir();
+    dir.mkpath(dir.absolutePath());
+
+    if(file.exists())
+    {
+        file.remove();
+    }
+    file.open(QIODevice::WriteOnly);
+    QTextStream ts( &file );
+    ts << doc.toString();
+    file.close();
 }
 

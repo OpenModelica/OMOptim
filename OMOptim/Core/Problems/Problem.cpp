@@ -45,35 +45,21 @@
 Problem::Problem(Project* project,ModClassTree* modClassTree)
     :OMCase(project,modClassTree)
 {
-	_type = UNDEFINED;
+        _type = UNDEFINEDTYPE;
         _parameters = new MOParameters();
 }
 
 Problem::Problem(const Problem &problem)
 :OMCase(problem)
 {
-//	_name = problem._name;
 	_type = problem._type;
-	
-	
         _parameters = new  MOParameters(*problem._parameters);
-  //      _filesToCopy = problem._filesToCopy;
-
-//	_saveFolder = problem._saveFolder;
-//	_saveFileName = problem._saveFileName;
-	
-//	_project = problem._project;
-//        _modClassTree = problem._modClassTree;
-
-
-
 }
 
 Problem::~Problem(void)
 {
     qDebug("deleting Problem");
     delete _parameters;
-
 }
 
 void Problem::setDefaultSaveFileName()

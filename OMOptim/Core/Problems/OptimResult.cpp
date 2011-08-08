@@ -330,11 +330,9 @@ QDomElement OptimResult::toXmlData(QDomDocument & doc)
 	QDomElement cInfos = doc.createElement("Infos");
 	cInfos.setAttribute("name", name());
 	cInfos.setAttribute("type", problemType());
-	cInfos.setAttribute("date", _date.toString());
-	cInfos.setAttribute("hour", _hour.toString());
-	cInfos.setAttribute("comptime", _computationTime.toString());
+        cInfos.setAttribute("date", _date.toString());
+        cInfos.setAttribute("duration", _duration.toString());
 	cResult.appendChild(cInfos);
-
 
 
 	// SubModels blocks

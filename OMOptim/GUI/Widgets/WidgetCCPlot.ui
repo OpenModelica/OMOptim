@@ -76,7 +76,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Search</normaloff>:/icons/Search</iconset>
        </property>
        <property name="iconSize">
@@ -163,7 +163,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>T pincement</string>
+           <string>T pinch</string>
           </property>
          </widget>
         </item>
@@ -221,7 +221,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../Resources/mineit.qrc"/>
+  <include location="../Resources/OMOptim.qrc"/>
  </resources>
  <connections/>
 </ui>

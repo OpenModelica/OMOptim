@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -74,13 +74,13 @@ class Problem: public OMCase
 
 public :
 	enum ProblemType{
-		UNDEFINED = -1,
-		ONESIMULATION,
-		OPTIMIZATION,
-                EIPROBLEM,
-                EITARGET,
-                EIMER,
-                EIHEN1
+                UNDEFINEDTYPE = -1,
+                ONESIMULATIONTYPE,
+                OPTIMIZATIONTYPE,
+                EIPROBLEMTYPE,
+                EITARGETTYPE,
+                EIMERTYPE,
+                EIHEN1TYPE
 	};
 
 protected :
@@ -145,6 +145,8 @@ public:
 	// Set functions
 	void setType(ProblemType);
 		
+public slots:
+        virtual void onStopAsked(){};
 
 		
 

@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file CCTools.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file CCTools.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 
   */
 #include "CCTools.h"
@@ -54,228 +54,236 @@ CCTools::~CCTools(void)
 {
 }
 
-void CCTools::buildCCfromStreams(QList<METemperature> & Tk,
-		QList<QList<MEQflow> > & Qik,
-		MOCCCurve *hotCurve,
-		MOCCCurve *coldCurve)
+void CCTools::buildCCfromStreams(const QList<METemperature> & Tk,
+                                 const QList<QList<MEQflow> > & Qik,
+                                 MOCCCurve *hotCurve,
+                                 MOCCCurve *coldCurve)
 {
-	
-	if(Tk.size()==0)
-		Tk.push_back(METemperature(0,0));
 
-	QVector<double> Tall;
-	QVector<double> HCold,HHot;
-	double curQik;
-
-	HCold.push_back(0);
-	HHot.push_back(0);
-
-	double curHCold, curHHot;
-
-        curHHot=0;
-        curHCold=0;
-
-	for(int iK=0;iK<Tk.size()-1;iK++)
-	{
-		Tall.push_back(Tk.at(iK).value(METemperature::K));
-
-		for(int iS=0;iS<Qik.size();iS++)
-		{
-                        curQik = Qik.at(iS).at(iK).value(MEQflow::W);
-
-			if(curQik>0)
-				curHCold += curQik;
-			else
-				curHHot -= curQik;
-		}
-		HHot.push_back(curHHot);
-		HCold.push_back(curHCold);
-	}
-	Tall.push_back(Tk.at(Tk.size()-1).value(METemperature::K));
-
-	// looking for Tpinch
-        METemperature TPinch;
-        double dHPinch;
-	getPinch(Tall,HCold,HHot,TPinch,dHPinch);
+    if(Tk.size()==0)
+    {
+        hotCurve->clear();
+        coldCurve->clear();
+        return;
+    }
 
 
-	// offsetting Cold curve (in order to make curves cross at pinch)
-	for(int iT=0;iT<Tall.size();iT++)
-	{
-		HCold[iT] = HCold[iT]-dHPinch;
-	}
+    QList<METemperature> Tall;
+    QList<MEQflow> HCold,HHot;
+    MEQflow curQik;
 
-	// set results
-	hotCurve->setData(HHot,Tall);
-	coldCurve->setData(HCold,Tall);
+    HCold.push_back(0);
+    HHot.push_back(0);
 
-	hotCurve->setType(MOCCCurve::CCHOT);
-	coldCurve->setType(MOCCCurve::CCCOLD);
+    MEQflow curHCold, curHHot;
+
+    curHHot=0;
+    curHCold=0;
+
+    for(int iK=0;iK<Tk.size()-1;iK++)
+    {
+        Tall.push_back(Tk.at(iK));
+
+        for(int iS=0;iS<Qik.size();iS++)
+        {
+            curQik = Qik.at(iS).at(iK);
+
+            if(curQik>MEQflow(0,0))
+                curHCold += curQik;
+            else
+                curHHot -= curQik;
+        }
+        HHot.push_back(curHHot);
+        HCold.push_back(curHCold);
+    }
+    Tall.push_back(Tk.at(Tk.size()-1));
+
+    // looking for Tpinch
+    METemperature TPinch;
+    MEQflow dHPinch;
+    getPinch(Tall,HCold,HHot,TPinch,dHPinch);
+
+
+    // offsetting Cold curve (in order to make curves cross at pinch)
+    for(int iT=0;iT<Tall.size();iT++)
+    {
+        HCold[iT] = HCold[iT]-dHPinch;
+    }
+
+    // set results
+    hotCurve->setData(HHot,Tall);
+    coldCurve->setData(HCold,Tall);
+
+    hotCurve->setType(MOCCCurve::CCHOT);
+    coldCurve->setType(MOCCCurve::CCCOLD);
 }
 
-void CCTools::buildGCCfromStreams(QList<METemperature> & Tk,
-		QList<QList<MEQflow> > & Qik,
-		MOCCCurve *gccCurve)
+void CCTools::buildGCCfromStreams(const QList<METemperature> & Tk,
+                                  const QList<QList<MEQflow> > & Qik,
+                                  MOCCCurve *gccCurve)
 {
 
-	MOCCCurve *hotCurve = new MOCCCurve(MOCCCurve::CCHOT);
-	MOCCCurve *coldCurve = new MOCCCurve(MOCCCurve::CCCOLD);
-	buildCCfromStreams(Tk,Qik,hotCurve,coldCurve);
+    MOCCCurve *hotCurve = new MOCCCurve(MOCCCurve::CCHOT);
+    MOCCCurve *coldCurve = new MOCCCurve(MOCCCurve::CCCOLD);
+    buildCCfromStreams(Tk,Qik,hotCurve,coldCurve);
 
 
-	QVector<double> dH;
-	QVector<double> Tall;
+    QList<MEQflow> dH;
+    QList<METemperature> Tall;
 
-	for(int i=0;i<Tk.size();i++)
-	{
-		Tall.push_back(Tk.at(i).value(METemperature::K));
-		dH.push_back(coldCurve->XData()[i]-hotCurve->XData()[i]);
-	}
+    for(int i=0;i<Tk.size();i++)
+    {
+        Tall.push_back(Tk.at(i).value(METemperature::K));
+        dH.push_back(coldCurve->XData().at(i)-hotCurve->XData().at(i));
+    }
 
-	gccCurve->setData(dH,Tall);
-	gccCurve->setType(MOCCCurve::GCC);
+    gccCurve->setData(dH,Tall);
+    gccCurve->setType(MOCCCurve::GCC);
 }
 
 
 
 
-void CCTools::getPinch(QVector<double>  Tall,QVector<double>  HCold,QVector<double>  HHot, METemperature & TPinch, double & dHPinch)
+void CCTools::getPinch(const QList<METemperature>  &Tall,const QList<MEQflow>  &HCold,const QList<MEQflow>  &HHot, METemperature & TPinch, MEQflow & dHPinch)
 {
 
-	QVector<double> HColdAll, HHotAll;
+    QList<MEQflow> HColdAll, HHotAll;
 
-	if(Tall.size()==0)
-	{
-		TPinch = 0;
-		dHPinch = 0;
-		return;
-	}
-	
-	// Getting pinch point
-	if(Tall.size()>0)
-	{
-		TPinch = Tall[0];
-		dHPinch = HCold[0] - HHot[0];
-		for(int iT=1;iT<Tall.size();iT++)
-		{
-			if(!LowTools::isNan(HCold[iT]) && !LowTools::isNan(HHot[iT]) && ((HCold[iT] - HHot[iT]) < dHPinch))
-			{
-				dHPinch = HCold[iT] - HHot[iT];
-				TPinch = Tall[iT];
-			}
-		}
-	}
-	else
-		TPinch = -1;
+    if(Tall.size()==0)
+    {
+        TPinch = 0;
+        dHPinch = 0;
+        return;
+    }
+
+    // Getting pinch point
+    if(Tall.size()>1)
+    {
+        TPinch = Tall[0];
+        dHPinch = HCold[0] - HHot[0];
+        for(int iT=1;iT<Tall.size();iT++)
+        {
+            if(/*!LowTools::isNan(HCold[iT]) && !LowTools::isNan(HHot[iT]) &&*/ ((HCold[iT] - HHot[iT]) < dHPinch))
+            {
+                dHPinch = HCold[iT] - HHot[iT];
+                TPinch = Tall[iT];
+            }
+        }
+    }
+    else
+        TPinch = -1;
 }
 
-void CCTools::getValues(QList<METemperature> & Tk,
-						QList<QList<MEQflow> > & Qik,
-                                                METemperature &TPinch, MEQflow &MER, MEQflow &MERCold)
+void CCTools::getValues(const QList<METemperature> & Tk,
+                        const QList<QList<MEQflow> > & Qik,
+                        METemperature &TPinch, MEQflow &MER, MEQflow &MERCold)
 {
 
-	MOCCCurve *hotCurve = new MOCCCurve(MOCCCurve::CCHOT);
-	MOCCCurve *coldCurve = new MOCCCurve(MOCCCurve::CCCOLD);
+    MOCCCurve *hotCurve = new MOCCCurve(MOCCCurve::CCHOT);
+    MOCCCurve *coldCurve = new MOCCCurve(MOCCCurve::CCCOLD);
 
-	buildCCfromStreams(Tk,Qik,hotCurve,coldCurve);
+    buildCCfromStreams(Tk,Qik,hotCurve,coldCurve);
 
-	double dHPinch;
+    MEQflow dHPinch;
 
-	QVector<double> HHot = hotCurve->XData();
-	QVector<double> HCold = coldCurve->XData();
-	QVector<double> Tall = hotCurve->YData();
-	QVector<double> Tall2 = coldCurve->YData();
-	assert(Tall==Tall2);
-	
-	getPinch(Tall,HHot,HCold,TPinch,dHPinch);
+    QList<MEQflow> HHot = hotCurve->XData();
+    QList<MEQflow> HCold = coldCurve->XData();
+    QList<METemperature> Tall = hotCurve->YData();
+    QList<METemperature> Tall2 = coldCurve->YData();
+    assert(Tall==Tall2);
+
+    getPinch(Tall,HCold,HHot,TPinch,dHPinch);
 
 
+    MER.setValue(0);
+    MERCold.setValue(0);
+
+    if((HHot.size()==0)&&(HCold.size()>0))
+    {
+        MER = HCold.at(HCold.size()-1)-HCold.at(0);
+        MERCold = MEQflow(0,0);
+        return;
+    }
+
+    if((HHot.size()>0)&&(HCold.size()==0))
+    {
         MER.setValue(0);
-        MERCold.setValue(0);
+        MERCold = HHot.at(HHot.size()-1)-HHot.at(0);
+        return;
+    }
 
-	if((HHot.size()==0)&&(HCold.size()>0))
-	{
-            MER.setValue(HCold.at(HCold.size()-1)-HCold.at(0),MEQflow::W);
-                MERCold.setValue(0);
-		return;
-	}
-
-	if((HHot.size()>0)&&(HCold.size()==0))
-	{
-                MER.setValue(0);
-                MERCold.setValue(HHot.at(HHot.size()-1)-HHot.at(0),MEQflow::W);
-		return;
-	}
-
-	if((HHot.size()>0)&&(HCold.size()>0))
-	{
-            MERCold.setValue(HCold.at(0)-HHot.at(0),MEQflow::W);
-            MER.setValue(HCold.at(HCold.size()-1)-HHot.at(HHot.size()-1),MEQflow::W);
-		return;
-	}
+    if((HHot.size()>0)&&(HCold.size()>0))
+    {
+        MERCold = HCold.at(0)-HHot.at(0);
+        MER = HCold.at(HCold.size()-1)-HHot.at(HHot.size()-1);
+        return;
+    }
 
 
-	return;
+    return;
 }
 
-void CCTools::projectHonT(QVector<double> &newT,QVector<double> &newH,QVector<double> &oldT, QVector<double> &oldH)
+void CCTools::projectHonT(QList<METemperature> &newT,QList<MEQflow> &newH,const QList<METemperature> &oldT,const QList<MEQflow> &oldH)
 {
-	int j;
-	bool found;
+    int j;
+    bool found;
 
-	newH.clear();
+    newH.clear();
+    double up,down;
 
-	for(int i=0;i<newT.size();i++)
-	{
+    for(int i=0;i<newT.size();i++)
+    {
 
-		// getting newH value
-		if(oldT.size()==0)
-			newH.push_back(0);
-		else
-		{
-			if(newT[i]<oldT[0])
-				newH.push_back(oldH[0]);
-			else
-			{
-				if(newT[i]>=oldT[oldT.size()-1])
-					newH.push_back(oldH[oldH.size()-1]);
-				else
-				{
-					j=0;
-					found = false;
-					while((j<oldT.size()-1) && (!found))
-					{
-						if(newT[i]>=oldT[j] && newT[i]<oldT[j+1])
-						{
-							found = true;
-							newH.push_back(oldH[j] + (newT[i]-oldT[j])/(oldT[j+1]-oldT[j])*(oldH[j+1]-oldH[j]));
-						}
+        // getting newH value
+        if(oldT.size()==0)
+            newH.push_back(MEQflow(0,0));
+        else
+        {
+            if(newT[i]<oldT[0])
+                newH.push_back(oldH[0]);
+            else
+            {
+                if(newT[i]>=oldT[oldT.size()-1])
+                    newH.push_back(oldH[oldH.size()-1]);
+                else
+                {
+                    j=0;
+                    found = false;
+                    while((j<oldT.size()-1) && (!found))
+                    {
+                        if(newT[i]>=oldT[j] && newT[i]<oldT[j+1])
+                        {
+                            found = true;
+                            up = newT[i].value(METemperature::K)-oldT[j].value(METemperature::K);
+                            down = oldT[j+1].value(METemperature::K)-oldT[j].value(METemperature::K);
+                            newH.push_back(oldH[j] + (oldH[j+1]-oldH[j])*(up/down));
+                        }
 
-						j++;
-					}
-				}
-			}
-		}
-	}
+                        j++;
+                    }
+                }
+            }
+        }
+    }
 
 
 }
 
 double CCTools::getNumericalFieldValue(EIStream* stream,int iField,MOOptVector* variables,bool &ok)
 {
-	
-	QString variableName = stream->getFieldValue(iField).toString();
 
-	int iVar = variables->findItem(variableName);
+    QString variableName = stream->getFieldValue(iField).toString();
 
-	if(iVar==-1)
-	{
-		ok = false;
-		return -1;
-	}
-	else
-	{
-		ok = true;
-		return variables->items.at(iVar)->finalValue(variables->curScan(),variables->curPoint());
-	}
+    int iVar = variables->findItem(variableName);
+
+    if(iVar==-1)
+    {
+        ok = false;
+        return -1;
+    }
+    else
+    {
+        ok = true;
+        return variables->items.at(iVar)->finalValue(variables->curScan(),variables->curPoint());
+    }
 }

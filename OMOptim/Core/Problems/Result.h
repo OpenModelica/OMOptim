@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -73,9 +73,8 @@ class Result: public OMCase
    */
 
 public :
-	QTime _computationTime;
-	QTime _hour;
-	QDate _date;
+        QTime _duration;
+        QDateTime _date;
 
 protected :
 	bool _success;

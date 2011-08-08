@@ -41,7 +41,7 @@
 #define WidgetEIInputVars_H
 
 #include <QtGui/QWidget>
-#include "onesimulation.h"
+#include "OneSimulation.h"
 #include "ui_WidgetEIInputVars.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>

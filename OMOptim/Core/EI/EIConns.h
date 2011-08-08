@@ -51,6 +51,15 @@ public:
 
         void setItems(QDomElement & domEl,EITree*);
 
+//        QVariant data(const QModelIndex &index, int role) const;
+
+//        setQUnit(MEQflow::KW);
+//        setTUnit(METemperature::K);
+
+private :
+//            MEQflow::Units _qflowUnit;
+//            METemperature::Units _TUnit;
+
 
 };
 #endif

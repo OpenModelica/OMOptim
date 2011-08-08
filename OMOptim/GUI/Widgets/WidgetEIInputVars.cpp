@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -95,12 +95,12 @@ void WidgetEIInputVars::fillList()
 
         switch(curResult->problemType())
 		{
-		case Problem::OPTIMIZATION :
+		case Problem::OPTIMIZATIONTYPE :
             item = new QListWidgetItem(curResult->name());
 				map.insert(item,dynamic_cast<OptimResult*>(curResult)->recomputedVariables());
 				ui->listAvailableVectors->addItem(item);
 				break;
-		case Problem::ONESIMULATION :
+		case Problem::ONESIMULATIONTYPE :
             item = new QListWidgetItem(curResult->name());
 				map.insert(item,dynamic_cast<OneSimResult*>(curResult)->finalVariables());
 				ui->listAvailableVectors->addItem(item);

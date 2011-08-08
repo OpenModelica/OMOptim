@@ -100,7 +100,7 @@ Result* SPEA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
 	Result* result;
 	switch(_problem->type())
 	{
-	case Problem::OPTIMIZATION :
+	case Problem::OPTIMIZATIONTYPE :
                 result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,
                                                                        _modClassTree,_modPlusCtrl,arch,_parameters);
 		break;

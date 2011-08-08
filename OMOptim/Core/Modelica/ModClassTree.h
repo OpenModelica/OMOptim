@@ -126,10 +126,6 @@
 
          bool _showOnlyComponents;
 
-	 public slots:
-		 void allDataChanged();
-		 void allDataCleared();
-                 void onRootDeleted();
  };
 
  #endif

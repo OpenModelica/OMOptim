@@ -64,7 +64,7 @@
 #include "WidgetTableVar.h"
 #include "WidgetSelPointScan.h"
 #include "WidgetTableConnConstr.h"
-#include "widgetTableEIGroups.h"
+#include "WidgetTableEIGroups.h"
 #include "WidgetEIHEN1Result.h"
 #include "WidgetCCPlot.h"
 #include "WidgetEIInputVars.h"

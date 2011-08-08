@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file TabEITargetResult.h
+        @file tabEITargetResult.h
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
@@ -37,8 +37,8 @@
  	@version 0.9 
 */
 
-#ifndef TABTARGETRESULT_H
-#define TABTARGETRESULT_H
+#ifndef TABEITARGETRESULT_H
+#define TABEITARGETRESULT_H
 
 #include <QtGui/QWidget>
 
@@ -64,7 +64,7 @@
 #include "WidgetTableVar.h"
 #include "WidgetSelPointScan.h"
 #include "WidgetTableConnConstr.h"
-#include "widgetTableEIGroups.h"
+#include "WidgetTableEIGroups.h"
 #include "WidgetEITargetResult.h"
 #include "WidgetCCPlot.h"
 #include "WidgetEIInputVars.h"

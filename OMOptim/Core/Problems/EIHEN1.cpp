@@ -1,23 +1,23 @@
 // $Id$
-        /**
+/**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -31,11 +31,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
         @file EIHEN1.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version 0.9
 
   */
 #include "EIHEN1.h"
@@ -44,44 +44,31 @@
 EIHEN1::EIHEN1(Project* project,ModClassTree* modClassTree,MOomc* moomc)
     :EIProblem(project,modClassTree,moomc)
 {
-    _type = Problem::EIHEN1;
+    _type = Problem::EIHEN1TYPE;
     EIHEN1Parameters::setDefaultParameters(_parameters);
+    _milpHEN1 = NULL;
 }
 
 EIHEN1::EIHEN1(Project* project,ModClassTree* modClassTree,MOomc* moomc,QDomElement domProblem)
-    :EIProblem(project,modClassTree,moomc)
+    :EIProblem(project,modClassTree,moomc,domProblem)
 {
-
-    _type = Problem::EIHEN1;
+    _type = Problem::EIHEN1TYPE;
     EIHEN1Parameters::setDefaultParameters(_parameters);
+    // Parameters
+    QDomElement cParameters = domProblem.firstChildElement("Parameters");
+    _parameters->update(cParameters);
 
 
-    QDomElement domInfos = domProblem.firstChildElement("Infos");
-    QString problemName = domInfos.attribute("name");
-
-    // Infos
-    setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
-    setName(problemName);
-
-    // EI
-    QDomElement domEI = domProblem.firstChildElement("EIItem");
-    EIControler::setItems(domEI,eiTree()->rootElement());
-
-    // InputVars
-    QDomElement domInputVars = domProblem.firstChildElement("InputVars");
-    _inputVars->setItems(domInputVars);
-
-    // Conn sontrs
-    QDomElement domConnConstrs = domProblem.firstChildElement(EIConnConstrs::className());
-    _connConstrs->setItems(domConnConstrs,eiTree());
-
+    _milpHEN1 = NULL;
 }
 
 
 EIHEN1::EIHEN1(const EIHEN1 &problem)
     :EIProblem(problem)
 {
-     _type = Problem::EIHEN1;
+     _type = Problem::EIHEN1TYPE;
+     _milpHEN1 = NULL;
+
 }
 
 Problem* EIHEN1::clone()
@@ -92,6 +79,8 @@ Problem* EIHEN1::clone()
 
 EIHEN1::~EIHEN1(void)
 {
+    if(_milpHEN1)
+        delete _milpHEN1;
 }
 
 
@@ -123,7 +112,34 @@ QDomElement EIHEN1::toXmlData(QDomDocument & doc)
 
 bool EIHEN1::checkBeforeComp(QString & error)
 {
-    return true;
+    bool result = true;
+    result = eiTree()->isValid(error,_inputVars);
+
+    QList<EIStream*> allStreams = EIReader::getStreams(eiTree()->rootElement());
+    EIStream* curStream;
+
+    // - if split in two zones, there should be DTmin>0
+    // - // no QFlow at 0
+    bool splitPinch = _parameters->value(EIHEN1Parameters::SPLITPINCH).toBool();
+
+    for(int i=0;i<allStreams.size();i++)
+    {
+        curStream = allStreams.at(i);
+
+        if(splitPinch && curStream->isChecked() && (curStream->_DTmin2==0))
+        {
+            result = false;
+            error+= "When splitting around pinch temperature, all DTmin/2 should be positive ("+curStream->name()+") \\n";
+        }
+
+//        if(curStream->isChecked() && (curStream->_QflowRef==0))
+//        {
+//            result = false;
+//            error+= "No Qflow should be null ("+curStream->name()+") \n";
+//        }
+    }
+
+    return result;
 }
 
 QString EIHEN1::infos()
@@ -140,47 +156,63 @@ QString EIHEN1::infos()
 Result* EIHEN1::launch(ProblemConfig config)
 {
 
-    // copy .mod file
-    QSettings settings("MO", "Settings");
-    QString milpFolder = settings.value("path/MILPFolder").toString();
+    emit begun(this);
+    EIHEN1Result* result  = NULL;
 
-    QDir dir(milpFolder);
-    QFileInfo modFileInfo(dir,"MilpHEN.mod");
-
-    if(!modFileInfo.exists())
+    QString error;
+    bool ok = checkBeforeComp(error);
+    if(!ok)
+        infoSender.send(Info(error,ListInfo::WARNING2));
+    else
     {
-        infoSender.send(Info(modFileInfo.absoluteFilePath()+" does not exists",ListInfo::ERROR2));
-        infoSender.send(Info(ListInfo::PROBLEMEIFAILED));
-        emit finished(this);
-        return NULL;
+
+        // replace ei references by values
+        EITree* filledEI = EIValueFiller::getFilledEI(eiTree(),inputVars(),_project);
+
+        // set within process groups facts to 1
+        EIControler::resetProcessFacts(filledEI->rootElement());
+
+        //if splitted, get Tpinch
+        bool splitPinch = _parameters->value((int)EIHEN1Parameters::SPLITPINCH,QVariant(true)).toBool();
+        METemperature TPinch;
+        if(splitPinch)
+        {
+            EIMER merProblem(_project,_modClassTree,_moomc);
+            merProblem.setEITree(*filledEI);
+            merProblem.parameters()->setValue(EIMERParameters::INCLUDEUTILITIES,false);
+            EIMERResult* merResult = dynamic_cast<EIMERResult*>(merProblem.launch(ProblemConfig()));
+            if(merResult)
+                TPinch = merResult->TPinch;
+            else
+                splitPinch = false;
+        }
+
+//        // reset DTmin/2 to 0
+//        EIControler::resetAllDTMin_2(filledEI->rootElement());
+
+        // remove unchecked eiitems
+        filledEI->removeUnchecked();
+
+        //replace eiTree wiyh filledEI
+        setEITree(*filledEI);
+
+        // create, connect and launch problem
+        _milpHEN1 = new MilpHEN1(filledEI,_parameters,_connConstrs,inputVars(),config.tempDir,splitPinch,TPinch);
+
+        connect(_milpHEN1,SIGNAL(finished(EIHEN1Result*)),this,SLOT(onMilpFinished(EIHEN1Result*)));
+        result = _milpHEN1->launch();
+        if(result)
+            result->setProblem(this->clone());
     }
 
-    QDir tempDir(config.tempDir);
-    QString dataFilePath = tempDir.absoluteFilePath(name()+".dat");
-
-    // replace ei references by values
-    EITree* filledEI = EIValueFiller::getFilledEI(eiTree(),inputVars(),_project);
-
-    // set within process groups facts to 1
-    EIControler::resetProcessFacts(filledEI->rootElement());
-
-    // reset DTmin/2 to 0
-    EIControler::resetAllDTMin_2(filledEI->rootElement());
-
-    // remove unchecked eiitems
-    filledEI->removeUnchecked();
-
-    //replace eiTree wiyh filledEI
-    setEITree(filledEI);
-
-    MilpHEN1 *milpHEN1 = new MilpHEN1(filledEI,_parameters,_connConstrs,inputVars(),tempDir,modFileInfo.absoluteFilePath(),dataFilePath);
-    EIHEN1Result* result = milpHEN1->launch();
-    result->setProblem(this->clone());
-
-
     emit finished(this);
+    return result;
+}
 
 
-   return result;
+void EIHEN1::onStopAsked()
+{
+    if(_milpHEN1)
+        _milpHEN1->stop();
 }
 

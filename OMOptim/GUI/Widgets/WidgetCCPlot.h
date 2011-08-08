@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -49,7 +49,7 @@
 #include "WidgetCCPlot.h"
 #include "MOCCPlot.h"
 #include "OptimResult.h"
-#include "ui_widgetCCPlot.h"
+#include "ui_WidgetCCPlot.h"
 #include "WidgetTreeStreams.h"
 #include "EITree.h"
 
@@ -73,7 +73,10 @@ public:
 private :
 	EIMERResult* result;
 	WidgetTreeStreams* widgetTreeStreams;
-	MinCCPlot *plot1;
+	MOCCPlot *plot1;
+        MEQflow::Units _qflowUnit;
+        METemperature::Units _TUnit;
+
 
 
 public slots:

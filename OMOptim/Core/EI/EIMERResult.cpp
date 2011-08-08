@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -63,10 +63,10 @@ EIMERResult::EIMERResult(const EIMERResult &result)
 
 	//resultVars = result.resultVars->clone();
 
-	xDataHot = result.xDataHot;
-	xDataCold = result.xDataCold;
-	yDataHot = result.yDataHot;
-	yDataCold = result.yDataCold;
+//	xDataHot = result.xDataHot;
+//	xDataCold = result.xDataCold;
+//	yDataHot = result.yDataHot;
+//	yDataCold = result.yDataCold;
 }
 
 EIMERResult::EIMERResult(Project* project, EIProblem * clonedProblem)
@@ -91,7 +91,7 @@ EIMERResult::~EIMERResult(void)
 
 int EIMERResult::problemType()
 {
-        return Problem::EIPROBLEM;
+        return Problem::EIPROBLEMTYPE;
 }
 
 QDomElement EIMERResult::toXmlData(QDomDocument &)

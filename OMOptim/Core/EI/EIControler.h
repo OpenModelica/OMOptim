@@ -57,11 +57,10 @@ public:
 	EIControler();
 	
 	//Edit functions
-        static void addEmptyStream(EIItem* parent);
-        static void addEmptyGroup(EIItem* parent);
         static void removeItem(EIItem*);
         static void resetProcessFacts(EIItem*);
         static void resetAllDTMin_2(EIItem*,double value=0);
+
 
 
 

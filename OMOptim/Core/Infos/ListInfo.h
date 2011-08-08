@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -56,7 +56,7 @@ namespace ListInfo{
 		OPTIMNORMAL,
 		OPTIMERROR,
 		OPTIMWARNING,
-		DEBUG
+                INFODEBUG
 	};
 
 	enum InfoNum{
@@ -91,16 +91,16 @@ namespace ListInfo{
 		MODELLOADSUCCESS,
 		MODELLOADFAIL,
 
-		//Problem::OPTIMIZATION
+		//Problem::OPTIMIZATIONTYPE
 		OPTNOOBJECTIVE,
 		OPTNOVARIABLE,
 		OPTIMIZATIONFAILED,
 		OPTIMIZATIONSUCCESS,
-		//Problem::OPTIMIZATION SUBMODELS
+		//Problem::OPTIMIZATIONTYPE SUBMODELS
 		SUBMODELNOTADDED,
 		SUBMODELADDED,
 
-		//Problem::EIPROBLEM,
+		//Problem::EIPROBLEMTYPE,
 		PROBLEMEIFAILED,
 		PROBLEMEISUCCESS,
 
@@ -173,7 +173,7 @@ namespace ListInfo{
                 {MODELCOMPILATIONFAIL, "Model \"%s\" failed to compile. See <A href=\"file:///%s\">log file</A> for detail.",ERROR2},
 		{MODELLOADSUCCESS, "Model loaded successfully\"%s\" ",NORMAL2},
 		{MODELLOADFAIL, "Model failed to be loaded \"%s\"  :\n %s",ERROR2},
-		//Problem::OPTIMIZATION
+		//Problem::OPTIMIZATIONTYPE
 		{OPTNOOBJECTIVE, "No objective in optimization problem",ERROR2},
 		{OPTNOVARIABLE, "No variable in optimization problem",ERROR2},
 		{OPTIMIZATIONFAILED, "Optimization has failed",ERROR2},
@@ -183,7 +183,7 @@ namespace ListInfo{
 		{SUBMODELNOTADDED, "Impossible to add submodel %s in optimization",WARNING2},
 		{SUBMODELNOTADDED, "Submodel %s added in optimization",NORMAL2},
 
-		//Problem::EIPROBLEM
+		//Problem::EIPROBLEMTYPE
 		{PROBLEMEIFAILED, "Problem EI has failed",ERROR2},
 		{PROBLEMEISUCCESS, "Problem EI has run successfully",NORMAL2},
 

@@ -30,173 +30,174 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIGroup.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIGroup.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 
   */
 #include "EIGroup.h"
 
 EIGroup::EIGroup():EIItem(NULL,"Group")
 {
-	setFieldValue(COSTFIX,0);
-	setFieldValue(COSTMULT,1);
+    setFieldValue(COSTFIX,0);
+    setFieldValue(COSTMULT,1);
 }
 
 EIGroup::EIGroup(EIItem* _parent,QString _name)
-:EIItem(_parent,_name)
+    :EIItem(_parent,_name)
 {
-	setFieldValue(COSTFIX,0);
-	setFieldValue(COSTMULT,1);
+    setFieldValue(COSTFIX,0);
+    setFieldValue(COSTMULT,1);
 }
 
 EIGroup::~EIGroup()
 {
-	clearDescendants();
+    clearDescendants();
 }
 
 EIGroup::EIGroup(const EIGroup & _group):EIItem(_group)
 {
-	factIsVariable = _group.factIsVariable;
-	fact = EIGroupFact(_group.fact);
-	costFix = _group.costFix;
-	costMult = _group.costMult;
+    factIsVariable = _group.factIsVariable;
+    fact = EIGroupFact(_group.fact);
+    costFix = _group.costFix;
+    costMult = _group.costMult;
 }
 
 
 
 EIItem* EIGroup::clone()
 {
-	return (EIItem*)(new EIGroup(*this));
+    return (EIItem*)(new EIGroup(*this));
 }
 
 EIGroup::EIGroup(QDomElement & domEl)
 {
-	setFieldValue(COSTFIX,0);
-	setFieldValue(COSTMULT,1);
+    setFieldValue(COSTFIX,0);
+    setFieldValue(COSTMULT,1);
 
-	QDomNamedNodeMap attributes = domEl.attributes();
-	QString fieldName;
-	QString fieldValue;
+    QDomNamedNodeMap attributes = domEl.attributes();
+    QString fieldName;
+    QString fieldValue;
 
-	for(int i=0;i<attributes.count();i++)
-	{
-		fieldName = attributes.item(i).toAttr().name();
-		fieldName.replace(XMLTools::space()," ");
-		fieldValue = attributes.item(i).toAttr().value();
-		fieldValue.replace(XMLTools::space()," ");
-		MOItem::setFieldValue(fieldName,QVariant(fieldValue));
-	}
+    for(int i=0;i<attributes.count();i++)
+    {
+        fieldName = attributes.item(i).toAttr().name();
+        fieldName.replace(XMLTools::space()," ");
+        fieldValue = attributes.item(i).toAttr().value();
+        fieldValue.replace(XMLTools::space()," ");
+        MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+    }
 
-	_editableFields << EIGroup::NAME;
+    _editableFields << EIGroup::NAME;
 }
 
 
 QVariant EIGroup::getFieldValue(int ifield, int role) const
 {
-         if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-		return QString("-");
-	else
-	{
-		switch (ifield)
-		{
-		case NAME :
-			return _name;
-		case FACTISVARIABLE :
-			return factIsVariable;
-		case FACTMIN :
-			return fact.min;
-		case FACTMAX :
-			return fact.max;
-		case FACT :
-			return fact.value;
-		case COSTFIX :
-			return costFix;
-		case COSTMULT :
-			return costMult;
-		case CHECKED :
-                        return _checked;
-		default :
-			return "unknown field";
-		}
-	}
+
+    if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
+        return QString("-");
+    else
+    {
+        switch (ifield)
+        {
+        case NAME :
+            return _name;
+        case FACTISVARIABLE :
+            return factIsVariable;
+        case FACTMIN :
+            return fact.min;
+        case FACTMAX :
+            return fact.max;
+        case FACT :
+            return fact.value;
+        case COSTFIX :
+            return costFix;
+        case COSTMULT :
+            return costMult;
+        case CHECKED :
+            return _checked;
+        default :
+            return "unknown field";
+        }
+    }
 }
 
 QString EIGroup::sFieldName(int ifield, int role)
 {
-	switch (ifield)
-	{
-	case NAME :
-		return "Name";
-	case FACTISVARIABLE :
-		return "FactVariable";
-	case FACTMIN :
-		return "FMin";
-	case FACTMAX :
-		return "FMax";
-	case FACT :
-		return "FValue";
-	case COSTFIX :
-		return "FixCost";
-	case COSTMULT :
-		return "VarCost";
-	case CHECKED :
-		return "Checked";
-	default :
-		return "unknown field";
-	}
+    switch (ifield)
+    {
+    case NAME :
+        return "Name";
+    case FACTISVARIABLE :
+        return "FactVariable";
+    case FACTMIN :
+        return "FMin";
+    case FACTMAX :
+        return "FMax";
+    case FACT :
+        return "FValue";
+    case COSTFIX :
+        return "FixCost";
+    case COSTMULT :
+        return "VarCost";
+    case CHECKED :
+        return "Checked";
+    default :
+        return "unknown field";
+    }
 }
 
 
 
 bool EIGroup::setFieldValue(int ifield,QVariant value_)
 {
-	bool ok=true;
+    bool ok=true;
 
-	switch (ifield)
-	{
-	case NAME :
-		_name = value_.toString();
-		break;
-	case FACTISVARIABLE :
-		factIsVariable = value_.toBool();
-		break;
-	case FACTMIN :
-		fact.min = value_.toDouble();
-		break;
-	case FACTMAX :
-		fact.max = value_.toDouble();
-		break;
-	case FACT :
-		fact.value = value_.toDouble();
-		break;
-	case COSTFIX :
-		costFix = value_.toDouble();
-		break;
-	case COSTMULT :
-		costMult = value_.toDouble();
-		break;
-	case CHECKED :
-                _checked =value_.toBool();
-		break;
-	}
-	if(!_filledFields.contains(ifield))
-		_filledFields.push_back(ifield);
-	
-	emit modified();
-	return ok;
+    switch (ifield)
+    {
+    case NAME :
+        _name = value_.toString();
+        break;
+    case FACTISVARIABLE :
+        factIsVariable = value_.toBool();
+        break;
+    case FACTMIN :
+        fact.min = value_.toDouble();
+        break;
+    case FACTMAX :
+        fact.max = value_.toDouble();
+        break;
+    case FACT :
+        fact.value = value_.toDouble();
+        break;
+    case COSTFIX :
+        costFix = value_.toDouble();
+        break;
+    case COSTMULT :
+        costMult = value_.toDouble();
+        break;
+    case CHECKED :
+        _checked =value_.toBool();
+        break;
+    }
+    if(!_filledFields.contains(ifield))
+        _filledFields.push_back(ifield);
+
+    emit modified();
+    return ok;
 }
 
 
 EIGroupFact* EIGroup::getFact()
 {
-	return &fact;
+    return &fact;
 }
 
 bool EIGroup::isFactVariable()
 {
-	return factIsVariable;
+    return factIsVariable;
 }

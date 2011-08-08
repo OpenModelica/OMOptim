@@ -74,19 +74,13 @@ WidgetTreeStreams::WidgetTreeStreams(EITree* _eiTree, bool _showFields,bool _edi
 	}
 	
 
+
         treeView=new MyTreeView(this);
-	//treeView->setModel(streamsProxyModel);
-	treeView->setModel(eiTree);
+        GuiTools::ModelToView(eiTree,treeView);
 	treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	ui->layoutTreeStreams->addWidget(treeView);
         treeView->expandAll();
-        treeView->resizeColumnToContents(0);
 
-	/*streamsProxyModel->setFilterKeyColumn(0);
-	streamsProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-	connect(ui->lineStreamsFilter,SIGNAL(textChanged(const QString&)),
-	streamsProxyModel,SLOT(setFilterWildcard(const QString&)));
-*/
 	connect(ui->pushAddStream,SIGNAL(clicked()),this,SLOT(addEmptyStream()));
 	connect(ui->pushAddGroup,SIGNAL(clicked()),this,SLOT(addEmptyGroup()));
 	connect(ui->pushRemove,SIGNAL(clicked()),this,SLOT(removeItem()));
@@ -160,7 +154,7 @@ void WidgetTreeStreams::addEmptyStream()
 	QModelIndex index = treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
         EIItem* parentItem = getContainer(index);
-        EIControler::addEmptyStream(parentItem);
+         eiTree->addEmptyStream(parentItem);
 
         treeView->expand(eiTree->indexOf(parentItem));
         treeView->resizeColumnToContents(0);
@@ -173,7 +167,7 @@ void WidgetTreeStreams::addEmptyGroup()
 	QModelIndex index = treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
         EIItem* parentItem = getContainer(index);
-        EIControler::addEmptyGroup(parentItem);
+        eiTree->addEmptyGroup(parentItem);
 
 	treeView->expand(index);
         treeView->resizeColumnToContents(0);

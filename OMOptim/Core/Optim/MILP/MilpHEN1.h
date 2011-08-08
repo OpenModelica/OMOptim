@@ -46,7 +46,8 @@
 #include "EIItem.h"
 #include "EIStream.h"
 #include "EITools.h"
-#include "GlpkTools.h"
+#include "GLPKTools.h"
+#include "CBCTools.h"
 
 #include "InfoSender.h"
 #include "EIConnConstrs.h"
@@ -56,30 +57,104 @@
 #include "EIHEN1Parameters.h"
 #include "EIHEN1Result.h"
 #include "EIConns.h"
+#include <cmath>
+
+#include <QtCore/QThread>
+#include "OMProcess.h"
 
 
-class MilpHEN1
+
+class GlpkHEN1Thread : public QThread
 {
 public:
-        MilpHEN1(EITree* eiTree,MOParameters *parameters,EIConnConstrs *_connConstrs,MOOptVector *variables,QDir folder,QString modFilePath, QString dataFilePath);
+    GlpkHEN1Thread(glp_prob*,glp_tran*);
+    void run(void);
+private :
+    glp_prob* _glpProblem;
+    glp_tran* _glpTran;
+
+};
+
+
+class CbcHEN1Thread : public QThread
+{
+public:
+    CbcHEN1Thread(QDir folder, QString mpsFileName,QString solFileName,MOParameters* parameters);
+    void run(void);
+
+private :
+    QString _mpsFileName;
+    QString _solFileName;
+    QDir _folder;
+    MOParameters* _parameters;
+
+};
+
+
+
+class MilpHEN1 :public QObject
+{
+    Q_OBJECT
+
+
+
+
+
+public:
+        MilpHEN1(EITree* eiTree,MOParameters *parameters,EIConnConstrs *_connConstrs,MOOptVector *variables,
+                 QDir folder,bool splitTPinch=false,METemperature TPinch = METemperature());
 	~MilpHEN1(void);
 
         EIHEN1Result* launch();
-	
+        void stop();
+
 
 private :
-        glp_prob * launchGLPK();
+        glp_prob* _glpProblem;
+        glp_tran *_glpTran;
+        GlpkHEN1Thread *_glpThread;
+        CbcHEN1Thread* _cbcThread;
+        EIHEN1Parameters::Solver _solver;
+
+
+
+        bool prepareData(QList<METemperature> & Tk);
+
+
+        bool launchCBC();
+        bool launchGLPK();
+
+
+
+        EIHEN1Result* getGLPKResult(const QList<METemperature> & Tk);
+        void printGlpkFileResult();
+         EIConns* readGLPKEIConns(glp_prob *,QStringList colNames,const QList<METemperature> & Tk);
+         EIHEN1Result* readGLPKResult(glp_prob *,const QList<METemperature> & Tk);
+
+        EIHEN1Result* getCBCResult(const QList<METemperature> & Tk);
+        EIHEN1Result* readCBCResult(const QString &txt,const QList<METemperature> & Tk);
+        EIConns* readCBCEIConns(const QString &txt, const QList<METemperature> & Tk);
+
+
+        EIConns* readEIConns(const QList<METemperature> & Tk, const MilpVariableResult4D &varKijmzH,
+                                    const MilpVariableResult4D &varKijnzC,
+                                       const MilpVariableResult4D &varKeijmzH,
+                                        const MilpVariableResult4D &varKeijnzC,
+                                      const  MilpVariableResult4D &varQijmzH,
+                                    const MilpVariableResult4D &varMassFijmz,
+                                    const MilpVariableResult4D &varMassFijnz);
+
+
+        void splitTk(QList<METemperature> & Tk, double maxDT);
         void DataToFile(QString dataFilePath,
 	QList<EIStream*> &eiProcessStreams,
-	QList<QList<MEQflow> > &Qpk, //.at(iStream).at(iDTk)
 	QList<EIStream*> &eiUtilityStreams,
-	QList<QList<MEQflow> > &Quk,//.at(iStream).at(iDTk)
 	QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
 	QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
-	QMap<EIGroupFact*,EIGroup*> &factGroupMap);
+        QMap<EIGroupFact*,EIGroup*> &factGroupMap,
+                        QList<METemperature> &Tk);
 
-        EIHEN1Result* readResult(glp_prob *);
-        EIConns* readEIConns(glp_prob *,QStringList colNames);
+
 
         static int hook(void *info, const char *s);
 
@@ -87,19 +162,22 @@ private :
         EITree* _eiTree;
         MOOptVector *_variables;
         QDir _folder;
-        QString _modFileName;
+        QString _modFilePath;
+        QString _mpsFileName;
         QString _dataFileName;
         QString _resFileName;
         QString _logFileName;
         QString _sensFileName;
         EIConnConstrs *_connConstrs;
         MOParameters *_parameters;
-        QList<METemperature> _Tk;
+        bool _splitTPinch;
+        METemperature _TPinch;
 
         int _QFlowUnit;
         int _TempUnit;
-
 };
+
+
 
 
 #endif

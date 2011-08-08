@@ -194,6 +194,9 @@ void MOPlot::setCurves(QList<QwtPlotCurve*>& _curves)
 
 void MOPlot::clear()
 {
+    QString msg = "MOPlot::clear";
+    qDebug(msg.toLatin1().data());
+
 	// first detach curves in order not to delete them
 	for(int i=0;i<curves.size();i++)
 		curves.at(i)->detach();

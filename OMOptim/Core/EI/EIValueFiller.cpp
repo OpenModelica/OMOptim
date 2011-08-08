@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -130,29 +130,33 @@ QMap<EIItem*,QStringList> EIValueFiller::getReferences(EIItem* referencedEI, boo
     if(!onlyChecked || referencedEI->isChecked())
     {
         curRefs = referencedEI->references();
-        // add model name in front of ref if it is in.
-        // 1 : is referencedEI from a model
-        curModel = dynamic_cast<ModModel*>(project->modClassTree()->findInDescendants(referencedEI->model()));
-        // 2 : if yes, for each reference, add modelName+"." in front of each reference
-        if(curModel)
+
+        if(curRefs.size()>0)
         {
-            curModModelPlus = project->modModelPlus(curModel);
-            curModModelPlus->readVariables();
-
-            for(int i=0;i<curRefs.size();i++)
+            // add model name in front of ref if it is in.
+            // 1 : is referencedEI from a model
+            curModel = dynamic_cast<ModModel*>(project->modClassTree()->findInDescendants(referencedEI->model()));
+            // 2 : if yes, for each reference, add modelName+"." in front of each reference
+            if(curModel)
             {
-                refInModel = project->modClassTree()->findInDescendants(curRefs.at(i),curModel);
-                refInModel = refInModel || curModModelPlus->variables()->findItem(curRefs.at(i));
+                curModModelPlus = project->modModelPlus(curModel);
+                curModModelPlus->readVariables();
 
-                if(refInModel)
+                for(int i=0;i<curRefs.size();i++)
                 {
-                    tmpRef = curRefs.at(i);
-                    tmpRef = curModel->name()+"."+tmpRef;
-                    curRefs.replace(i,tmpRef);
+                    refInModel = project->modClassTree()->findInDescendants(curRefs.at(i),curModel);
+                    refInModel = refInModel || curModModelPlus->variables()->findItem(curRefs.at(i));
+
+                    if(refInModel)
+                    {
+                        tmpRef = curRefs.at(i);
+                        tmpRef = curModel->name()+"."+tmpRef;
+                        curRefs.replace(i,tmpRef);
+                    }
                 }
             }
+            mapRefs.insert(referencedEI,curRefs);
         }
-        mapRefs.insert(referencedEI,curRefs);
 
         for(int iC=0;iC<referencedEI->childCount();iC++)
         {

@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -132,7 +132,7 @@ void NSGA2::setDefaultParameters()
 QList<int> NSGA2::compatibleOMCases()
 {
 	QList<int> _problems;
-	_problems.push_back(Problem::OPTIMIZATION);
+	_problems.push_back(Problem::OPTIMIZATIONTYPE);
 	return _problems;
 }
 
@@ -170,7 +170,7 @@ Result* NSGA2::launch(QString tempDir)
 	
 	switch(_problem->type())
 	{
-	case Problem::OPTIMIZATION :
+	case Problem::OPTIMIZATIONTYPE :
 		EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 		break;
 	/*case VARIABLEDETERMINATION :
@@ -192,7 +192,7 @@ Result* NSGA2::launch(QString tempDir)
 	moeoEvalFunc < EOStd > *plainEval;
 	switch(_problem->type())
 	{
-	case Problem::OPTIMIZATION :
+	case Problem::OPTIMIZATIONTYPE :
                 plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modClassTree,_modPlusCtrl);
 		break;
 	}
@@ -303,20 +303,7 @@ Result* NSGA2::launch(QString tempDir)
 	///************************************
 	//RUN THE ALGO
 	//************************************/
-	QTime _time;
-	QDate beginDate = QDate::currentDate();
-	QTime beginTime = QTime::currentTime();
-
-	_time.start();
 	nsgaII (pop);
-
-	QTime compTime(0,0,0,0);
-	int nms = _time.elapsed();
-	compTime = compTime.addSecs(nms/1000);
-
-
-  
-
 
 
 	///************************************
@@ -324,9 +311,6 @@ Result* NSGA2::launch(QString tempDir)
 	//************************************/
         Result* result = buildResult(arch);
 
-	result->_hour = beginTime;
-	result->_computationTime = compTime;
-	result->_date = beginDate;
 
 	return result;
 	

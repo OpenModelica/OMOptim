@@ -30,7 +30,7 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file TabEITargetResult.cpp
+        @file tabEITargetResult.cpp
         @brief Comments for file documentation.
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
@@ -38,7 +38,7 @@
         @version 0.9
 */
 
-#include "TabEITargetResult.h"
+#include "tabEITargetResult.h"
 #include <QtGui/QSortFilterProxyModel>
 #include "MOOptPlot.h"
 #include "SimpleMilpTarget.h"
@@ -52,7 +52,7 @@ TabEITargetResult::TabEITargetResult(Project *project,EITargetResult  *targetRes
 
     // create new EIMER and launch it
     _problemMER = new EIMER(project,_project->modClassTree(),_project->moomc());
-    _problemMER->setEITree(new EITree(*_targetResult->eiTree()));
+    _problemMER->setEITree(*_targetResult->eiTree());
     _merResult = dynamic_cast<EIMERResult*>(_problemMER->launch(ProblemConfig()));
 
     // Variables
@@ -107,28 +107,3 @@ void TabEITargetResult::updateSelPointScan()
     setWidgetVisible(_widgetSelPointScan,show);
 }
 
-
-//void TabEITargetResult::onTargetAsked()
-//{
-//        QString tempDir = _project->tempPath();
-//        ProblemConfig cfg;
-//        cfg.tempDir = tempDir;
-//        _problemTarget->launch(cfg);
-//}
-
-//void TabEITargetResult::onMERAsked(bool includeUtilities)
-//{
-//    // create and launch problem
-//    QString tempDir = _project->tempPath();
-//    ProblemConfig cfg;
-//    cfg.tempDir = tempDir;
-//    _problemMER->setRootEI(_problemTarget->rootEI()->clone());
-//    _problemMER->setIncludeUtilities(includeUtilities);
-//    _problemMER->launch(cfg);
-
-//    // set result to composites
-//    _widgetCCPlot->setMERResult(_problemMER->result());
-
-//    //change view to show composites
-//    mapDockWidgets.key(_widgetCCPlot)->show();
-//}

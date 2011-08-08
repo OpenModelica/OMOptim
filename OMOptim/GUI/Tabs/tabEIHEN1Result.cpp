@@ -4,8 +4,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -39,7 +39,7 @@
         @version 0.9
 */
 
-#include "TabEIHEN1Result.h"
+#include "tabEIHEN1Result.h"
 #include <QtGui/QSortFilterProxyModel>
 #include "MOOptPlot.h"
 #include "SimpleMilpTarget.h"
@@ -55,7 +55,7 @@ MO2ColTab(project->name(),result,false,parent)
 
         // create new EIMER and launch it
         _problemMER = new EIMER(project,_project->modClassTree(),_project->moomc());
-        _problemMER->setEITree(new EITree(*_result->eiTree()));
+        _problemMER->setEITree(*_result->eiTree());
         _problemMER->parameters()->setValue(EIMERParameters::INCLUDEUTILITIES,true);
          _merResult = dynamic_cast<EIMERResult*>(_problemMER->launch(ProblemConfig()));
 

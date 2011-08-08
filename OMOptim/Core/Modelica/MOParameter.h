@@ -81,7 +81,7 @@ public:
 
         MOParameter();
         MOParameter(const MOParameter &);
-        MOParameter(int index,QString name,QString desc,QVariant defaultValue, Type type, QVariant minValue=0, QVariant maxValue=1);
+        MOParameter(int index,QString name,QString desc,QVariant defaultValue, Type type, QVariant minValue=0, QVariant maxValue=1,int enablingIndex=-1,QVariant enablingValue = true);
         //MOParameter(QString);
         MOParameter(QDomElement & domEl);
         virtual ~MOParameter(void);
@@ -97,7 +97,13 @@ public:
 	static QString sFieldName(int ifield, int role);
         virtual QString getFieldName(int i, int role = Qt::DisplayRole){return MOParameter::sFieldName(i,role);};
 
-        MOParameter* clone();
+        virtual MOParameter* clone();
+
+        void setEnablingIndex(int,QVariant enablingValue=true);
+        int enablingIndex();
+        QVariant enablingValue();
+
+        QVariant value(){return getFieldValue(VALUE);};
 
 protected :
 	QString _description;
@@ -107,6 +113,8 @@ protected :
 	QVariant _min;
 	QVariant _max;
         int _index;
+        int _enablingIndex; // index of parameter that decides if it is enabled or not
+        QVariant _enablingValue; // value of enabling parameter (the one indexed by _enablingIndex) that enable this one
 };
 
 /**
@@ -134,11 +142,11 @@ public:
 
         MOParameterListed();
         MOParameterListed(const MOParameterListed &);
-        MOParameterListed(int index,QString name,QString desc,QVariant defaultValue, QMap<int,QString> mapList);
+        MOParameterListed(int index,QString name,QString desc,QVariant defaultValue, QMap<int,QString> mapList,int enablingIndex=-1,QVariant enablingValue = true);
         //MOParameterListed(QString);
         MOParameterListed(QDomElement & domEl);
         ~MOParameterListed(void);
-        MOParameterListed* clone();
+        virtual MOParameterListed* clone();
 
         virtual QString getClassName(){return "MOParameterListed";};
 
@@ -152,6 +160,7 @@ public:
         QString getFieldName(int i, int role = Qt::DisplayRole){return MOParameter::sFieldName(i,role);};
 
         QMap<int,QString> mapList(){return _mapList;};
+        QString strValue();
 
 private :
         QMap<int,QString> _mapList; // for list parameters (e.g. algorithm between dassl and euler)

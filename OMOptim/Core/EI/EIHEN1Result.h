@@ -34,11 +34,11 @@ public:
         static QString className(){return "EIHEN1Result";};
         virtual QString getClassName(){return EIHEN1Result::className();};
 
-        int problemType(){return Problem::EIHEN1;};
+        int problemType(){return Problem::EIHEN1TYPE;};
         QDomElement toXmlData(QDomDocument &);
 
         EITree* eiTree();
-        void setEITree(EITree*);
+        void setEITree(const EITree&);
 
         EIConns* eiConns();
         void setEIConns(EIConns*);

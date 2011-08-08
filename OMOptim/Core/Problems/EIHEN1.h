@@ -49,6 +49,7 @@
 #include "EIHEN1Functions.h"
 #include "MilpHEN1.h"
 #include "EIHEN1Parameters.h"
+#include "EIMER.h"
 
 /**
  *  Class for heat exchanger network resolution. EIHEN1 implements
@@ -67,21 +68,27 @@ public:
     EIHEN1(Project*,ModClassTree*,MOomc*);
     EIHEN1(Project*,ModClassTree*,MOomc*,QDomElement domProblem);
 
-	EIHEN1(const EIHEN1 &);
-	virtual ~EIHEN1(void);
+    EIHEN1(const EIHEN1 &);
+    virtual ~EIHEN1(void);
 
-        Problem* clone();
-	
-        static QString className(){return "EIHEN1";};
-        virtual QString getClassName(){return EIHEN1::className();};
-	
-        // Infos
-        static QString infos();
+    Problem* clone();
 
-        Result* launch(ProblemConfig _config);
+    static QString className(){return "EIHEN1";};
+    virtual QString getClassName(){return EIHEN1::className();};
 
-	QDomElement toXmlData(QDomDocument & doc);
-	bool checkBeforeComp(QString & error);
+    // Infos
+    static QString infos();
+
+    Result* launch(ProblemConfig _config);
+
+    QDomElement toXmlData(QDomDocument & doc);
+    bool checkBeforeComp(QString & error);
+
+private :
+    MilpHEN1 *_milpHEN1;
+
+public slots:
+    void onStopAsked();
 
 };
 

@@ -147,7 +147,7 @@ public :
 	void clear();
 
 	
-	OmcCommunicator* getCommunicator();
+        //OmcCommunicator* getCommunicator();
 
 	
 
@@ -163,7 +163,7 @@ private:
 //	QString command;
 	int nbCalls;
 
-	OmcCommunicator* mCommunicator;
+        //OmcCommunicator* mCommunicator;
 
 	
 	QString omc_version_;

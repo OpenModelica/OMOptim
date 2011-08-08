@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -68,21 +68,23 @@ public:
         static QList<EIStream*> getStreams(EIItem* parent);
         static QList<EIItem*> getItems(EIItem* parent,bool recursive,EI::Type filter = EI::GENERIC);
 
-        static QList<EIStream*> getValidStreams(EIItem*parent,MOOptVector *variables,bool onlyChecked);
+        static QList<EIStream*> getValidNumerizedStreams(EIItem*parent,MOOptVector *variables,bool onlyChecked);
         static QStringList getAllItemNames(EIItem* item,EI::Type filter = EI::GENERIC);
+
 	// Analyse functions
-        static void getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables);
+        static void getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables,bool useCorrectedT);
 	
 
 	// Mult fact
-        static void getFirstParentGroupFact(EIItem*,EIGroupFact* &,EIGroup* &);
+        static bool getFirstParentGroupFact(EIItem*,EIGroupFact* &,EIGroup* &);
+        static bool isInFactVariable(EIItem*);
 
         // Streams filter and sort functions
-        static QList<EIStream*> getStreamsAboveT(METemperature T,QList<EIStream*> allStreams);
-        static QList<EIStream*> getStreamsBelowT(METemperature T,QList<EIStream*> allStreams);
-        static QList<EIStream*> getStreamsPresentInDT(METemperature Thot,METemperature Tcold,QList<EIStream*> allStreams);
-        static MEQflow getIntervalQFlow(METemperature Thot,METemperature Tcold,EIStream* stream,bool useCorrectedT = true);
-        static QList<int> getTIntervalsConcerned(const QList<METemperature> & Tk,EIStream* stream,bool useCorrectedT = true);
+        static QList<EIStream*> getStreamsAboveT(METemperature T,QList<EIStream*> allStreams,bool useCorrectedT);
+        static QList<EIStream*> getStreamsBelowT(METemperature T,QList<EIStream*> allStreams,bool useCorrectedT);
+        static QList<EIStream*> getStreamsPresentInDT(METemperature Thot,METemperature Tcold,QList<EIStream*> allStreams,bool useCorrectedT);
+        static MEQflow getIntervalQFlow(METemperature Thot,METemperature Tcold,EIStream* stream,bool useCorrectedT);
+        static QList<int> getTIntervalsConcerned(const QList<METemperature> & Tk,EIStream* stream,bool useCorrectedT);
 
 
         static QList<EIStream*> getColdStreams(QList<EIStream*> allStreams);

@@ -136,7 +136,7 @@ contains(CONFIG,useei){
                 ../GUI/Tabs/TabEIProblem.h \
                 ../GUI/Widgets/WidgetEIGroup.h \
                 ../GUI/Widgets/WidgetEIInputVars.h \
-                ../GUI/Tabs/TabEITargetResult.h \
+                ../GUI/Tabs/tabEITargetResult.h \
                 ../GUI/Widgets/WidgetTableEIGroups.h \
                 ../GUI/Widgets/WidgetCCPlot.h \
                 ../GUI/Widgets/WidgetTreeStreams.h \
@@ -186,7 +186,7 @@ contains(CONFIG,useei){
                 ../Core/EI/EITree.cpp \
                 ../GUI/Plots/MOCCCurve.cpp \
                 ../GUI/Plots/MOCCPlot.cpp \
-                ../GUI/Tabs/TabEITargetResult.cpp \
+                ../GUI/Tabs/tabEITargetResult.cpp \
                 ../Core/Tools/CCTools.cpp \
                 ../Core/Problems/EIMER.cpp\
                 ../GUI/Widgets/WidgetEIGroup.cpp \
@@ -647,6 +647,6 @@ SOURCES += ../main.cpp \
 
   #  ../Core/OMCasesOMProblem.cpp
 
-RESOURCES += ../GUI/Resources/mineit.qrc
+RESOURCES += ../GUI/Resources/OMOptim.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc

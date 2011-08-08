@@ -49,7 +49,7 @@
 #include "EIMERParameters.h"
 
 /*
- * \brief Class for Target (Energy integration) problem. Target use GLPK for MILP optimization.
+ * \brief Class for MER (Energy integration) problem
  */
 class EIMER : public EIProblem
 {

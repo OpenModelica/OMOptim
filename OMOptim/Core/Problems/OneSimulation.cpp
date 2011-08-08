@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -53,7 +53,7 @@
 //    :Problem()
 //{
 //	_project = NULL;
-//	_type = Problem::ONESIMULATION;
+//	_type = Problem::ONESIMULATIONTYPE;
 //	_name="One Simulation";
 //	_overwritedVariables = new MOVector<Variable>;
 //	_scannedVariables = new MOVector<ScannedVariable>;
@@ -64,7 +64,7 @@ OneSimulation::OneSimulation(Project* project,ModClassTree* modClassTree,ModPlus
 {
 	_modModelPlus = modModelPlus;
 	_modPlusCtrl = modPlusCtrl;
-	_type = Problem::ONESIMULATION;
+	_type = Problem::ONESIMULATIONTYPE;
 	_name="One Simulation";
 	
 

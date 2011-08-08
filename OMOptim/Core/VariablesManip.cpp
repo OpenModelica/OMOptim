@@ -97,9 +97,9 @@ double VariablesManip::calculateObjValue(OptObjective* optObj,MOVector<VariableR
 	double result;
 	if(iVarObj==-1)
 	{
-		// #TODOemit sendInfo( Info(ListInfo::VARIABLEUNFINDABLE,objName));
-		ok = false;
-		return 0;
+            infoSender.send(Info("Could not find variable "+optObj->name()+". Setting value to 0",ListInfo::WARNING2));
+            ok = false;
+            return 0;
 	}
 	else
 	{

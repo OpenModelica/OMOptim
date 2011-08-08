@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -53,22 +53,6 @@
 }
 
 
-
-void EIControler::addEmptyStream(EIItem* parent)
-{
-    EIStream* newStream = new EIStream(parent);
-    bool ok = parent->addChild(newStream);
-    if(!ok)
-        delete newStream;
-}
-
-void EIControler::addEmptyGroup(EIItem* parent)
-{
-    EIGroup* newGroup = new EIGroup();
-    bool ok = parent->addChild(newGroup);
-    if(!ok)
-        delete newGroup;
-}
 
 void EIControler::removeItem(EIItem* _item)
 {
@@ -182,6 +166,6 @@ QList<EIStream*> EIControler::splitStream(EIStream* toSplit,double firstFraction
     EIStream* streamA = new EIStream(*toSplit);
     EIStream* streamB = new EIStream(*toSplit);
 
-    streamA->QflowNum * firstFraction;
-    streamA->QflowNum = streamA->QflowNum * (1-firstFraction);
+    streamA->_QflowNum * firstFraction;
+    streamA->_QflowNum = streamA->_QflowNum * (1-firstFraction);
 }

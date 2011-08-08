@@ -48,7 +48,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QMap>
 #include "MilpTools.h"
-#include <glpk.h>
+
 
 class MilpVariableResult
 {
@@ -56,12 +56,11 @@ public:
     MilpVariableResult(QString name);
 
     //virtual void fill(glp_prob * glpProblem,double defaultValue,QStringList colNames = QStringList()) = 0;
-
+    QString name(){return _name;};
 
 
 protected :
         QString _name;
-        QStringList getColNames(glp_prob *);
 
 };
 
@@ -71,9 +70,8 @@ class MilpVariableResult0D : public MilpVariableResult
 public:
     MilpVariableResult0D(QString name);
 
-    void fill(glp_prob * glpProblem,double defaultValue,QStringList colNames = QStringList());
-
     double value(){return _value;};
+    void setValue(double value){_value = value;};
 
 private :
     double _value;
@@ -85,9 +83,13 @@ class MilpVariableResult1D : public MilpVariableResult
 public:
     MilpVariableResult1D(QString name);
 
-    void fill(glp_prob * glpProblem,QStringList colNames = QStringList());
 
     QMap<QString,double> values(){return _values;};
+    void clear(){_values.clear();};
+    void insertValue(QString key,double value){_values.insert(key,value);};
+
+
+
 
 private :
   QMap<QString,double> _values;
@@ -100,9 +102,11 @@ class MilpVariableResult2D : public MilpVariableResult
 public:
     MilpVariableResult2D(QString name);
 
-    void fill(glp_prob * glpProblem,QStringList colNames = QStringList());
-
+    void clear(){_values.clear();};
+    void insertValue(MilpKey2D key,double value){_values.insert(key,value);};
     QMap<MilpKey2D,double> values(){return _values;};
+
+
 
 private :
     QMap<MilpKey2D,double> _values;
@@ -113,9 +117,12 @@ class MilpVariableResult3D : public MilpVariableResult
 {
 public:
     MilpVariableResult3D(QString name);
-    void fill(glp_prob * glpProblem,QStringList colNames = QStringList());
 
+    void clear(){_values.clear();};
+    void insertValue(MilpKey3D key,double value){_values.insert(key,value);};
     QMap<MilpKey3D,double> values(){return _values;};
+
+
 
 private :
 
@@ -126,9 +133,11 @@ class MilpVariableResult4D : public MilpVariableResult
 {
 public:
     MilpVariableResult4D(QString name);
-    void fill(glp_prob * glpProblem,QStringList colNames = QStringList());
 
-    QMap<MilpKey4D,double> values(){return _values;};
+    void clear(){_values.clear();};
+    void insertValue(MilpKey4D key,double value){_values.insert(key,value);};
+    QMap<MilpKey4D,double> values()const {return _values;};
+
     QString toString();
 
 private :

@@ -62,6 +62,7 @@ public:
 	virtual void setProblem(Problem* _problem);
 
         virtual void setDefaultParameters() = 0;
+        virtual void onStopAsked(){};
 
 public :
         MOParameters *_parameters;

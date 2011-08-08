@@ -46,7 +46,7 @@
 #include "EIItem.h"
 #include "EIStream.h"
 #include "EITools.h"
-#include "GlpkTools.h"
+#include "GLPKTools.h"
 #include "EITargetResult.h"
 #include "InfoSender.h"
 

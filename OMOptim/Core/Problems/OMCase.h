@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -58,7 +58,8 @@ class Project;
 
 
 /**
-* \brief OMCase is an abstract class inherited by Problem or Result. Provide basic functions like storage or displaying.
+* \brief OMCase is an abstract class inherited by Problem or Result.
+    It provides basic functions like storage or displaying.
 */
 class OMCase: public MOItem
 {

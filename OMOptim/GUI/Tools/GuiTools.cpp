@@ -41,7 +41,7 @@
 #include "GuiTools.h"
 
 
-GuiTools::GuiTools(void)
+        GuiTools::GuiTools(void)
 {
 }
 
@@ -51,41 +51,45 @@ GuiTools::~GuiTools(void)
 
 void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
 {
-	view->reset();
-	view->setModel(model);
+    view->reset();
+    view->setModel(model);
 
-	QTableView* tableView = dynamic_cast<QTableView*>(view);
-	if(tableView && model)
-	{
-		tableView->horizontalHeader()->setStretchLastSection(true);
-		tableView->resizeColumnsToContents();
-		tableView->resizeRowsToContents();
+    QTableView* tableView = dynamic_cast<QTableView*>(view);
+    if(tableView && model)
+    {
+        tableView->horizontalHeader()->setStretchLastSection(true);
+        tableView->resizeColumnsToContents();
+        tableView->resizeRowsToContents();
 
-		// set maximum height
-		int count = model->rowCount(QModelIndex());
-		int h=0;
-		for (int i = 0; i < count; i++)
-			h += tableView->rowHeight(i);
-		int maxH = 
-			(h +                                                      // total row height
-			count +                                                  // to account for the pixel(s) used in the grid
-			tableView->horizontalHeader()->height() + 
-			tableView->horizontalScrollBar()->height());   // Need room for the horizontal scrollbar
+        // set maximum height
+        int count = model->rowCount(QModelIndex());
+        int h=0;
+        for (int i = 0; i < count; i++)
+            h += tableView->rowHeight(i);
+        int maxH =
+                (h +                                                      // total row height
+                 count +                                                  // to account for the pixel(s) used in the grid
+                 tableView->horizontalHeader()->height() +
+                 tableView->horizontalScrollBar()->height());   // Need room for the horizontal scrollbar
 
-		tableView->setMaximumHeight(maxH);
-		tableView->resize(tableView->width(),maxH);
+        tableView->setMaximumHeight(maxH);
+        tableView->resize(tableView->width(),maxH);
 
-	}
-	
-	QTreeView* treeView = dynamic_cast<QTreeView*>(view);
-	if(treeView && model)
-	{
-		for(int i=0;i<model->columnCount();i++)
-			treeView->resizeColumnToContents(i);
-		treeView->setSortingEnabled(true);
-	}
+    }
 
+    QTreeView* treeView = dynamic_cast<QTreeView*>(view);
+    if(treeView && model)
+    {
+        for(int i=0;i<model->columnCount();i++)
+            treeView->resizeColumnToContents(i);
+        treeView->setSortingEnabled(true);
+    }
 
+    MyTreeView* myTreeView = dynamic_cast<MyTreeView*>(view);
+    if(myTreeView && model)
+    {
+        connect(model,SIGNAL(dataChanged(QModelIndex,QModelIndex)),myTreeView,SLOT(onDataChanged(QModelIndex,QModelIndex)));
+    }
 }
 
 
@@ -108,37 +112,37 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
 QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *model, QAbstractItemView *view,QLineEdit* lineEdit)
 {
 
-	view->reset();
-	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel((QObject*)lineEdit);
-	proxyModel->setSourceModel(model);
-	view->setModel(proxyModel);
-	//view->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-	QTableView* tableView = dynamic_cast<QTableView*>(view);
-	if(tableView)
-	{
-		tableView->horizontalHeader()->setStretchLastSection(true);
-		tableView->resizeColumnsToContents();
-		tableView->resizeRowsToContents();
-		tableView->setSortingEnabled(true);
-		tableView->verticalHeader()->hide();
-	}
-	
-	QTreeView* treeView = dynamic_cast<QTreeView*>(view);
-	if(treeView)
-	{
-		for(int i=0;i<model->columnCount();i++)
-			treeView->resizeColumnToContents(i);
-		treeView->setSortingEnabled(true);
-	}
+    view->reset();
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel((QObject*)lineEdit);
+    proxyModel->setSourceModel(model);
+    view->setModel(proxyModel);
+    //view->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+    QTableView* tableView = dynamic_cast<QTableView*>(view);
+    if(tableView)
+    {
+        tableView->horizontalHeader()->setStretchLastSection(true);
+        tableView->resizeColumnsToContents();
+        tableView->resizeRowsToContents();
+        tableView->setSortingEnabled(true);
+        tableView->verticalHeader()->hide();
+    }
 
-   
-	// views' filter
-	proxyModel->setFilterKeyColumn(0);
-	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-	connect(lineEdit,SIGNAL(textChanged(const QString&)),
-		proxyModel,SLOT(setFilterWildcard(const QString&)),Qt::AutoConnection);
+    QTreeView* treeView = dynamic_cast<QTreeView*>(view);
+    if(treeView)
+    {
+        for(int i=0;i<model->columnCount();i++)
+            treeView->resizeColumnToContents(i);
+        treeView->setSortingEnabled(true);
+    }
 
-	return proxyModel;
+
+    // views' filter
+    proxyModel->setFilterKeyColumn(0);
+    proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    connect(lineEdit,SIGNAL(textChanged(const QString&)),
+            proxyModel,SLOT(setFilterWildcard(const QString&)),Qt::AutoConnection);
+
+    return proxyModel;
 
 }
 
@@ -147,127 +151,127 @@ QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *mode
 
 QMenu* GuiTools::createResultPopupMenu(Project* project, QWidget* mainWindow, const QPoint & iPoint,Result* selectedResult,int numResult)
 {
-	QMenu *menu = new QMenu();
+    QMenu *menu = new QMenu();
 
-	//Open folder
-	//Open folder
-	QAction *openFolderAct = new QAction("Open folder",menu);
+    //Open folder
+    //Open folder
+    QAction *openFolderAct = new QAction("Open folder",menu);
     connect(openFolderAct,SIGNAL(triggered()),selectedResult,SLOT(openFolder()));
-	QIcon icon;
+    QIcon icon;
     icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/folder")), QIcon::Normal, QIcon::Off);
     openFolderAct->setIcon(icon);
     //openFolderAct->setIconSize(QSize(20, 20));
-	menu->addAction(openFolderAct);
+    menu->addAction(openFolderAct);
 
-	
-	//Rename problem
+
+    //Rename problem
     QAction *renameAct = new QAction("Rename result...",menu);
     renameAct->setData(numResult);
     connect(renameAct,SIGNAL(triggered()),mainWindow,SLOT(renameResult()));
-	menu->addAction(renameAct);
-
-	
+    menu->addAction(renameAct);
 
 
-	//Remove problem
+
+
+    //Remove problem
     QAction *removeAct = new QAction("Remove result",menu);
     removeAct->setData(numResult);
     connect(removeAct,SIGNAL(triggered()),mainWindow,SLOT(removeResult()));
-	QIcon iconRem;
+    QIcon iconRem;
     iconRem.addPixmap(QPixmap(QString::fromUtf8(":/icons/Remove")), QIcon::Normal, QIcon::Off);
     removeAct->setIcon(iconRem);
-	menu->addAction(removeAct);
+    menu->addAction(removeAct);
 
-	return menu;
+    return menu;
 }
 
 QMenu* GuiTools::createProblemPopupMenu(Project* project, QWidget* mainWindow, const QPoint & iPoint,Problem* selectedProblem,int numProblem)
 {
-	QMenu *menu = new QMenu();
+    QMenu *menu = new QMenu();
 
-	//Open folder
-	//Open folder
-	QAction *openFolderAct = new QAction("Open folder",menu);
-	connect(openFolderAct,SIGNAL(triggered()),selectedProblem,SLOT(openFolder()));
-	QIcon icon;
+    //Open folder
+    //Open folder
+    QAction *openFolderAct = new QAction("Open folder",menu);
+    connect(openFolderAct,SIGNAL(triggered()),selectedProblem,SLOT(openFolder()));
+    QIcon icon;
     icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/folder")), QIcon::Normal, QIcon::Off);
     openFolderAct->setIcon(icon);
     //openFolderAct->setIconSize(QSize(20, 20));
-	menu->addAction(openFolderAct);
+    menu->addAction(openFolderAct);
 
-	//Rename problem
-	QAction *renameAct = new QAction("Rename problem...",menu);
-	renameAct->setData(numProblem);
-	connect(renameAct,SIGNAL(triggered()),mainWindow,SLOT(renameProblem()));
-	menu->addAction(renameAct);
+    //Rename problem
+    QAction *renameAct = new QAction("Rename problem...",menu);
+    renameAct->setData(numProblem);
+    connect(renameAct,SIGNAL(triggered()),mainWindow,SLOT(renameProblem()));
+    menu->addAction(renameAct);
 
-	//Remove problem
-	QAction *removeAct = new QAction("Remove problem",menu);
-	removeAct->setData(numProblem);
-	connect(removeAct,SIGNAL(triggered()),mainWindow,SLOT(removeProblem()));
-	QIcon iconRem;
+    //Remove problem
+    QAction *removeAct = new QAction("Remove problem",menu);
+    removeAct->setData(numProblem);
+    connect(removeAct,SIGNAL(triggered()),mainWindow,SLOT(removeProblem()));
+    QIcon iconRem;
     iconRem.addPixmap(QPixmap(QString::fromUtf8(":/icons/Remove")), QIcon::Normal, QIcon::Off);
     removeAct->setIcon(iconRem);
-	menu->addAction(removeAct);
+    menu->addAction(removeAct);
 
-	return menu;
+    return menu;
 }
 
 
 QMenu* GuiTools::newModClassPopupMenu(Project* project, const QPoint & iPoint,ModClass* selectedClass)
 {
-	QMenu *menu = new QMenu();
+    QMenu *menu = new QMenu();
     project->setCurModClass(selectedClass);
 
-	switch(selectedClass->getClassRestr())
-	{
-	case Modelica::MODEL :
-		addModModelActions(menu,project,iPoint,(ModModel*)selectedClass);
-	default :
-		NULL;
-	}
+    switch(selectedClass->getClassRestr())
+    {
+    case Modelica::MODEL :
+        addModModelActions(menu,project,iPoint,(ModModel*)selectedClass);
+    default :
+            NULL;
+}
 
-	addCommonActions(menu,project,iPoint,selectedClass);
-	
-	return menu;
+    addCommonActions(menu,project,iPoint,selectedClass);
+
+    return menu;
 }
 
 void GuiTools::addCommonActions(QMenu* menu,Project* project, const QPoint & iPoint,ModClass* selectedModClass)
 {
-	//Open folder
-	QAction *openFolderAct = new QAction("Open folder",menu);
-	connect(openFolderAct,SIGNAL(triggered()),selectedModClass,SLOT(openMoFolder()));
-	QIcon icon;
-	icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/Folder")), QIcon::Normal, QIcon::Off);
-	 openFolderAct->setIcon(icon);
-	menu->addAction(openFolderAct);
+    //Open folder
+    QAction *openFolderAct = new QAction("Open folder",menu);
+    connect(openFolderAct,SIGNAL(triggered()),selectedModClass,SLOT(openMoFolder()));
+    QIcon icon;
+    icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/Folder")), QIcon::Normal, QIcon::Off);
+    openFolderAct->setIcon(icon);
+    menu->addAction(openFolderAct);
 
-	// Reload mo file
-	QAction *reload = new QAction("Reload .mo file",menu);
-	connect(reload,SIGNAL(triggered()),selectedModClass,SLOT(reloadInOMC()));
-	menu->addAction(reload);
+    // Reload mo file
+    QAction *reload = new QAction("Reload .mo file",menu);
+    connect(reload,SIGNAL(triggered()),selectedModClass,SLOT(reloadInOMC()));
+    menu->addAction(reload);
 
 }
 void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & iPoint,ModModel* selectedModel)
 {
-	
-	ModModelPlus* selectedModModelPlus = project->modModelPlus(selectedModel);
 
-	//Compile
-	QAction *compileModel = new QAction("Recompile model",menu);
-	connect(compileModel,SIGNAL(triggered()),selectedModModelPlus,SLOT(compile()));
-	menu->addAction(compileModel);
+    ModModelPlus* selectedModModelPlus = project->modModelPlus(selectedModel);
 
-	
-	//Read variables
-	QAction *readVariables = new QAction("Read variables",menu);
-	connect(readVariables,SIGNAL(triggered()),selectedModModelPlus,SLOT(readVariables()));
-	menu->addAction(readVariables);
+    //Compile
+    QAction *compileModel = new QAction("Recompile model",menu);
+    connect(compileModel,SIGNAL(triggered()),selectedModModelPlus,SLOT(compile()));
+    menu->addAction(compileModel);
 
-	//Read connections
-	QAction *readConnections = new QAction("Read connections",menu);
-	connect(readConnections,SIGNAL(triggered()),selectedModModelPlus,SLOT(readConnections()));
-	menu->addAction(readConnections);
+
+    //Read variables
+    QAction *readVariables = new QAction("Read variables",menu);
+    connect(readVariables,SIGNAL(triggered()),selectedModModelPlus,SLOT(readVariables()));
+    menu->addAction(readVariables);
+
+    //Read connections
+    QAction *readConnections = new QAction("Read connections",menu);
+    connect(readConnections,SIGNAL(triggered()),selectedModModelPlus,SLOT(readConnections()));
+    menu->addAction(readConnections);
 
     //Add problem
     QMenu *addProblemMenu = menu->addMenu("Create problem");
@@ -279,124 +283,141 @@ void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & i
     connect(addEIProblem,SIGNAL(triggered()),project,SLOT(addNewEIProblem()));
 
 
-	//Set parameters
-	QAction *setParameters = new QAction("Set parameters...",menu);
-	connect(setParameters,SIGNAL(triggered()),selectedModModelPlus,SLOT(openParametersDlg()));
-	menu->addAction(setParameters);
+    //Set parameters
+    QAction *setParameters = new QAction("Set parameters...",menu);
+    connect(setParameters,SIGNAL(triggered()),selectedModModelPlus,SLOT(openParametersDlg()));
+    menu->addAction(setParameters);
 
-	//Select simulator
-	QActionGroup *simulator = new QActionGroup(menu);
-	simulator->setExclusive(true);
-	QAction *dymola = simulator->addAction("Dymola");
-	dymola->setCheckable(true);
-	dymola->setChecked(selectedModModelPlus->ctrlType()==ModPlusCtrl::DYMOLA);
+    //Select simulator
+    QActionGroup *simulator = new QActionGroup(menu);
+    simulator->setExclusive(true);
+    menu->addSeparator()->setText(tr("Simulator"));
 
-	QAction *openModelica = simulator->addAction("OpenModelica");
-	openModelica->setCheckable(true);
-	openModelica->setChecked(selectedModModelPlus->ctrlType()==ModPlusCtrl::OPENMODELICA);
-	
-	connect(openModelica,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlOpenModelica()));
-	connect(dymola,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlDymola()));
-	menu->addSeparator()->setText(tr("Simulator"));
-	menu->addAction(dymola);
-	menu->addAction(openModelica);
-	
-	
+    ModPlusCtrl* curCtrl;
+    ModPlusCtrl::Type curType;
+    QList<ModPlusCtrl*> ctrls = selectedModModelPlus->ctrls()->values();
+    for(int i=0;i<ctrls.size();i++)
+    {
+        curCtrl = ctrls.at(i);
+        curType = selectedModModelPlus->ctrls()->key(curCtrl);
+        QAction* simAction = simulator->addAction(curCtrl->name());
+        simAction->setCheckable(true);
+        simAction->setChecked(selectedModModelPlus->ctrlType()==curType);
+        simAction->setData((int)curType);
+        connect(simAction,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlType()));
+        simulator->addAction(simAction);
+    }
+
+
+
+
+
+//    QAction *dymola = simulator->addAction("Dymola");
+//    dymola->setCheckable(true);
+//    dymola->setChecked(selectedModModelPlus->ctrlType()==ModPlusCtrl::DYMOLA);
+
+//    QAction *openModelica = simulator->addAction("OpenModelica");
+//    openModelica->setCheckable(true);
+//    openModelica->setChecked(selectedModModelPlus->ctrlType()==ModPlusCtrl::OPENMODELICA);
+
+//    connect(openModelica,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlOpenModelica()));
+//    connect(dymola,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlDymola()));
+
 }
 
 void GuiTools::minimizeTableSize(QTableView* _table)
 {
-	// resizing window
-	int colCount = _table->model()->columnCount();
-	int rowCount = _table->model()->rowCount();
-	
-	_table->resizeColumnsToContents();
-	_table->resizeRowsToContents();
+    // resizing window
+    int colCount = _table->model()->columnCount();
+    int rowCount = _table->model()->rowCount();
 
-	int w=0;
-	for (int i = 0; i < colCount; i++)
+    _table->resizeColumnsToContents();
+    _table->resizeRowsToContents();
+
+    int w=0;
+    for (int i = 0; i < colCount; i++)
         w += _table->columnWidth(i);
-        
-    int maxW = 
-        (w +                                                      // total column width
-        colCount +                                                  // to account for the pixel(s) used in the grid
-        _table->verticalHeader()->width() + 
-		_table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
+
+    int maxW =
+            (w +                                                      // total column width
+             colCount +                                                  // to account for the pixel(s) used in the grid
+             _table->verticalHeader()->width() +
+             _table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
 
 
-	int h=0;
+    int h=0;
     for (int i = 0; i < rowCount; i++)
-		h += _table->rowHeight(i);
-        
-    int maxH = 
-        (h +                                                      // total column width
-        rowCount +                                                  // to account for the pixel(s) used in the grid
-		_table->horizontalHeader()->height() + 
-		_table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
+        h += _table->rowHeight(i);
 
-	_table->resize(maxW+2,maxH+40);
+    int maxH =
+            (h +                                                      // total column width
+             rowCount +                                                  // to account for the pixel(s) used in the grid
+             _table->horizontalHeader()->height() +
+             _table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
+
+    _table->resize(maxW+2,maxH+40);
 }
 
 void GuiTools::minimizeTableSize(QTableWidget* _table)
 {
-	// resizing window
-	int colCount = _table->columnCount();
-	int rowCount = _table->rowCount();
-	
-	_table->resizeColumnsToContents();
-	_table->resizeRowsToContents();
+    // resizing window
+    int colCount = _table->columnCount();
+    int rowCount = _table->rowCount();
 
-	int w=0;
-	for (int i = 0; i < colCount; i++)
+    _table->resizeColumnsToContents();
+    _table->resizeRowsToContents();
+
+    int w=0;
+    for (int i = 0; i < colCount; i++)
         w += _table->columnWidth(i);
-        
-    int maxW = 
-        (w +                                                      // total column width
-        colCount +                                                  // to account for the pixel(s) used in the grid
-        _table->verticalHeader()->width() + 
-		_table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
+
+    int maxW =
+            (w +                                                      // total column width
+             colCount +                                                  // to account for the pixel(s) used in the grid
+             _table->verticalHeader()->width() +
+             _table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
 
 
-	int h=0;
+    int h=0;
     for (int i = 0; i < rowCount; i++)
-		h += _table->rowHeight(i);
-        
-    int maxH = 
-        (h +                                                      // total column width
-        rowCount +                                                  // to account for the pixel(s) used in the grid
-		_table->horizontalHeader()->height() + 
-		_table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
+        h += _table->rowHeight(i);
 
-	_table->resize(maxW+2,maxH+40);
+    int maxH =
+            (h +                                                      // total column width
+             rowCount +                                                  // to account for the pixel(s) used in the grid
+             _table->horizontalHeader()->height() +
+             _table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
+
+    _table->resize(maxW+2,maxH+40);
 }
 
 void GuiTools::resizeTable(QTableView* table)
 {
-	// resizing window
-	int count = table->model()->columnCount(QModelIndex());
-	int w=0;
+    // resizing window
+    int count = table->model()->columnCount(QModelIndex());
+    int w=0;
     for (int i = 0; i < count; i++)
         w += table->columnWidth(i);
-        
-    int maxW = 
-        (w +                                                      // total column width
-        count +                                                  // to account for the pixel(s) used in the grid
-        table->verticalHeader()->width() + 
-		table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
+
+    int maxW =
+            (w +                                                      // total column width
+             count +                                                  // to account for the pixel(s) used in the grid
+             table->verticalHeader()->width() +
+             table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
 
 
-	count = table->model()->rowCount(QModelIndex());
-	int h=0;
+    count = table->model()->rowCount(QModelIndex());
+    int h=0;
     for (int i = 0; i < count; i++)
-		h += table->rowHeight(i);
-        
-    int maxH = 
-        (h +                                                      // total column width
-        count +                                                  // to account for the pixel(s) used in the grid
-		table->horizontalHeader()->height() + 
-		table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
- 
-	table->resize(maxW+2,maxH+40);
+        h += table->rowHeight(i);
+
+    int maxH =
+            (h +                                                      // total column width
+             count +                                                  // to account for the pixel(s) used in the grid
+             table->horizontalHeader()->height() +
+             table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
+
+    table->resize(maxW+2,maxH+40);
 }
 
 

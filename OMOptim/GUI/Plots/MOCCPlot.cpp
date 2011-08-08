@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -30,7 +30,7 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MinCCPlot.cpp
+ 	@file MOCCPlot.cpp
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)

@@ -82,19 +82,17 @@ public:
 	virtual EI::Type getEIType(){return EI::STREAM;};	
 	virtual QString getEITypeName(){return "EIStream";};
 	
-    MERefValue<METemperature> TinRef; /** Reference value of inlet temperature.
+    MERefValue<METemperature> _TinRef; /** Reference value of inlet temperature.
                 Note that could contain a numerical value (without reference) @sa MERefValue */
-    MERefValue<METemperature> ToutRef; /** Reference value of outlet temperature.
+    MERefValue<METemperature> _ToutRef; /** Reference value of outlet temperature.
                 Note that could contain a numerical value (without reference) @sa MERefValue */
-    MERefValue<MEQflow> QflowRef; /** Reference value of heat flow.
+    MERefValue<MEQflow> _QflowRef; /** Reference value of heat flow.
                 Note that could contain a numerical value (without reference) @sa MERefValue */
 
-    METemperature TinNum; /** Numerical value of TinRef. Only pertinent when _numerized==true*/
-    METemperature ToutNum; /** Numerical value of ToutRef. Only pertinent when _numerized==true*/
-    MEQflow QflowNum; /** Numerical value of QflowRef. Only pertinent when _numerized==true*/
 
+    MEQflow _QflowNum; /** Numerical value of QflowRef. Only pertinent when _numerized==true*/
 
-	double DTmin2;
+    double _DTmin2;
 
         QStringList references();
     bool numerize(MOOptVector* variables);
@@ -111,8 +109,13 @@ public:
     bool numerized();
     void resetNumerize();
 
+    METemperature TinNum(bool useCorrectedT);
+    METemperature ToutNum(bool useCorrectedT);
+
 private :
         bool _numerized;
+        METemperature _TinNum; /** Numerical value of TinRef. Only pertinent when _numerized==true*/
+        METemperature _ToutNum; /** Numerical value of ToutRef. Only pertinent when _numerized==true*/
 };
 
 

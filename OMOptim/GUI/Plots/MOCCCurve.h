@@ -57,6 +57,9 @@
 #include <qwt_plot_grid.h>
 
 
+#include "MEQflow.h"
+#include "METemperature.h"
+
 
 
 
@@ -76,26 +79,37 @@ public :
 public:
 	MOCCCurve(int type);
 	MOCCCurve(const MOCCCurve &);
-	MOCCCurve(QString _name, QVector<double> xData, QVector<double> yData);
+        MOCCCurve(QString _name, const QList<MEQflow> & xData, const QList<METemperature> & yData);
 	~MOCCCurve(void);
 
 	void init();
+        void setTUnit(METemperature::Units);
+        void setQUnit(MEQflow::Units);
 
-	void setData(QVector<double> xData,QVector<double> yData);
+        void setData(const QList<MEQflow> & xData, const QList<METemperature> & yData);
+        void clear();
 
 	QString _name;
 
 	QStringList _pointLabels;
 
-	QVector<double> XData();
-	QVector<double> YData();
+        QList<MEQflow> XData();
+        QList<METemperature> YData();
 
 	int type();
 	void setType(int type);
 
 private:
 	int _type;
-	QVector<double> _xData;
-	QVector<double> _yData;
+        QList<MEQflow> _xData;
+        QList<METemperature> _yData;
 
+        QVector<double> _rawXData;
+        QVector<double> _rawYData;
+
+        MEQflow::Units _qflowUnit;
+        METemperature::Units _TUnit;
+
+        void updateRawXData();
+        void updateRawYData();
 };

@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -84,7 +84,7 @@ bool EIConn::isValid()
 }
 
 // Specific functions
-void EIConn::setA(EIStream* a,METemperature Tina,METemperature Touta,double fracta)
+void EIConn::setA(EIStream* a,const METemperature & Tina,const METemperature & Touta,double fracta)
 {
     _streamA = a;
     _TinA = Tina;
@@ -92,7 +92,7 @@ void EIConn::setA(EIStream* a,METemperature Tina,METemperature Touta,double frac
     _fractA = fracta;
 }
 
-void EIConn::setB(EIStream* b,METemperature Tinb,METemperature Toutb,double fractb)
+void EIConn::setB(EIStream* b,const METemperature & Tinb,const METemperature & Toutb,double fractb)
 {
     _streamB = b;
     _TinB = Tinb;
@@ -212,7 +212,7 @@ QString EIConn::sFieldName(int field, int role)
         case Qt::DisplayRole:
             return "[QFlow]";
         default :
-            return "QFlow";
+            return "QFlow_Unit";
         }
     }
     return QString();

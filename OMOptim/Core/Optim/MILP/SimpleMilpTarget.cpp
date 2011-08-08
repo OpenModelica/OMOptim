@@ -78,7 +78,8 @@ EITargetResult* SimpleMilpTarget::launch()
 		eiUtilityStreams,Quk,
 		factStreamMap,
 		factsRelation,
-		factGroupMap);
+                factGroupMap,
+                             true);
 
 	// write data
 	DataToFile(dataFilePath,Tk,eiProcessStreams,Qpk,eiUtilityStreams,Quk,
@@ -355,7 +356,7 @@ EITargetResult* SimpleMilpTarget::readResult(glp_prob * glpProblem)
 
 	// clone rootEI
 	EITargetResult* result = new EITargetResult();
-        result->setEITree(new EITree(*eiTree));
+        result->setEITree(*eiTree);
 
 	// read if successfull
 	int status = glp_get_status(glpProblem);

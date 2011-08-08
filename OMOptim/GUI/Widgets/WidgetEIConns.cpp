@@ -56,6 +56,19 @@ WidgetEIConns::WidgetEIConns(EIConns *eiConns,QWidget *parent)
         _ui->layoutTable->addWidget(_tableView);
         _tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
+        //*****************
+        //UNITS COMBOS
+        //*****************
+        _ui->comboQUnit->addItem("W",MEQflow::W);
+        _ui->comboQUnit->addItem("kW",MEQflow::KW);
+        _ui->comboQUnit->addItem("MW",MEQflow::MW);
+        _ui->comboTUnit->addItem("C",METemperature::C);
+        _ui->comboTUnit->addItem("K",METemperature::K);
+
+        //Connect actions
+        connect(_ui->comboTUnit,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
+        connect(_ui->comboQUnit,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
+
 
         // resize columns
         GuiTools::resizeTableViewColumns(_tableView);
@@ -66,4 +79,9 @@ WidgetEIConns::~WidgetEIConns()
     delete _ui;
 }
 
+void WidgetEIConns::unitChanged()
+{
+
+
+}
 

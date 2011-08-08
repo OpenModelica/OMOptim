@@ -45,40 +45,21 @@
 #include <QtCore/QVector>
 #include <QtCore/QStringList>
 
+#include "MilpVariableResult.h"
+#include <glpk.h>
+
 class GlpkTools
 {
 public :
 	
-static QString listToSet(QString setName, QStringList list)
-{
-	// create a textline set (mathprog language) from a list of values
-	QString result;
-	result += "set " + setName + ":= ";
-
-	for(int i=0;i<list.size();i++)
-	{
-		result += list.at(i)+" ";
-	}
-
-	result += "; \n";
-
-	return result;
-}
-
-static QString listToSet(QString setName, QList<double> _list)
-{
-	// create a textline set (mathprog language) from a list of values
-	QStringList listStr;
-	
-	for(int i=0;i<_list.size();i++)
-	{
-		listStr.push_back(QString::number(_list.at(i)));
-	}
-
-	return listToSet(setName,listStr);
-}
-
-
+static QString listToSet(QString setName, QStringList list);
+static QString listToSet(QString setName, QList<double> _list);
+static void fill(MilpVariableResult0D &var, glp_prob * glpProblem,double defaultValue,QStringList colNames = QStringList());
+static void fill(MilpVariableResult1D &var, glp_prob * glpProblem,QStringList colNames = QStringList());
+static void fill(MilpVariableResult2D &var, glp_prob * glpProblem,QStringList colNames = QStringList());
+static void fill(MilpVariableResult3D &var, glp_prob * glpProblem,QStringList colNames = QStringList());
+static void fill(MilpVariableResult4D &var, glp_prob * glpProblem,QStringList colNames = QStringList());
+static QStringList getColNames(glp_prob *glpProblem);
 
 
 };

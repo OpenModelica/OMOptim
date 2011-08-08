@@ -56,7 +56,7 @@ public:
 
         static void getTkQik(MOOptVector *variables,
 		EIItem* rootEI,QList<METemperature> & Tk,
-		QList<EIStream*> & eiStreams, QList<QList<MEQflow> > & Qik, bool onlyProcess);
+                QList<EIStream*> & eiStreams, QList<QList<MEQflow> > & Qik, bool onlyProcess, bool useCorrectedT);
 
         static void getTkQpkQuk(MOOptVector *variables,
 		EIItem* rootEI,QList<METemperature> & Tk,
@@ -64,7 +64,9 @@ public:
 		QList<EIStream*> & eiUtilityStreams, QList<QList<MEQflow> > & Quk,
 		QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
 		QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
-		QMap<EIGroupFact*,EIGroup*> &factGroupMap
+                QMap<EIGroupFact*,EIGroup*> &factGroupMap,
+                                 bool useCorrectedT
+
 		);
 
         static double DTlm(METemperature T1in,METemperature T1out,METemperature T2in,METemperature T2out);

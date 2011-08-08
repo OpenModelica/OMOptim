@@ -44,6 +44,8 @@
 #include <QTextStream>
 #include <QTime>
 
+/** InfoSender is used to send information to GUI or to console.
+It contains a global variable infoSender shared among all project files*/
 
 class InfoSender : public QObject
 {

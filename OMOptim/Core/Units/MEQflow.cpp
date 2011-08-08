@@ -128,8 +128,24 @@ bool MEQflow::operator==(const MEQflow& b) const
     return (value(_unit)==b.value(_unit));
 }
 
+bool MEQflow::operator>(const MEQflow& b) const
+{
+    return (value(_unit)>b.value(_unit));
+}
+
+bool MEQflow::operator<(const MEQflow& b) const
+{
+    return (value(_unit)<b.value(_unit));
+}
+
 MEQflow& MEQflow::operator+=(const MEQflow& b)
 {
     _value += b.value(_unit);
+    return *this;
+}
+
+MEQflow& MEQflow::operator-=(const MEQflow& b)
+{
+    _value -= b.value(_unit);
     return *this;
 }

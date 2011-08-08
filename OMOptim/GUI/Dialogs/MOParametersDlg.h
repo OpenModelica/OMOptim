@@ -1,10 +1,10 @@
 // $Id$
-        /**
+/**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOParametersDlg.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file MOParametersDlg.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 */
 
 #if !defined(_MOParametersDlg_H)
@@ -62,25 +62,30 @@
 
 
 
-        class MOParametersDlg : public QDialog
+
+class MOParametersDlg : public QDialog
 {
     Q_OBJECT
 
 public:
-    MOParametersDlg(MOParameters *parameters);
+    MOParametersDlg(MOParameters *parameters, bool editable=true);
 
 
 private :
-        MOParameters *_parameters;
-QVector<QWidget*> _valueWidgets;
-QStringList _paramNames;
-QVector<int> _paramTypes;
-QGridLayout* buildLayoutFromParameters();
+    MOParameters *_parameters;
+    QMap<int,QWidget*> _mapValueWidgets;
+    QStringList _paramNames;
+    QVector<int> _paramTypes;
+    bool _editable;
+    QGridLayout* buildLayoutFromParameters();
+    void updateAllEnabled();
+    void updateEnabled(QWidget* widgetChanged);
 
 public slots:
-void pushedOk();
-void pushedCancel();
-void pushedDefault();
+    void pushedOk();
+    void pushedCancel();
+    void pushedDefault();
+    void onCheckedChanged();
 
 
 

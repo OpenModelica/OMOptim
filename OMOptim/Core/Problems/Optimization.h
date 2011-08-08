@@ -48,7 +48,6 @@
 #include "OptObjective.h"
 #include "OptimResult.h"
 #include "ProblemConfig.h"
-#include "EIProblem.h"
 
 #include "BlockSubstitution.h"
 #include "BlockSubstitutions.h"
@@ -75,9 +74,7 @@ protected :
 	MOVector<OptObjective> *_objectives;
 	BlockSubstitutions *_blockSubstitutions;
 
-	// MER problem
-	bool _useEI;
-        EIProblem* _eiProblem;
+
 	bool _useScan;
 
         // Algorithm information
@@ -101,8 +98,7 @@ public:
 	MOVector<OptVariable> *optimizedVariables(){return _optimizedVariables;};
 	MOVector<OptObjective> *objectives(){return _objectives;};
 	BlockSubstitutions *blockSubstitutions(){return _blockSubstitutions;};
-	bool useEI(){return _useEI;};
-	EIProblem* eiProblem(){return _eiProblem;};
+
 	
 	//overwrited functions
 	bool checkBeforeComp(QString & error);
@@ -128,6 +124,9 @@ public:
         // recompute points
         void recomputePoints(OptimResult*, std::vector<int>,bool forceRecompute = false);
 	
+public slots :
+        void onStopAsked();
+
 	
 };
 

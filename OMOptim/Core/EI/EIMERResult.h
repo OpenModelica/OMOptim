@@ -75,10 +75,10 @@ public :
 	MOCCCurve *curveCold;
 	MOCCCurve *curveGcc;
 
-	QList<double>  xDataHot;
-	QList<double>  yDataHot;
-	QList<double>  xDataCold;
-	QList<double>  yDataCold;
+//	QList<double>  xDataHot;
+//	QList<double>  yDataHot;
+//	QList<double>  xDataCold;
+//	QList<double>  yDataCold;
 
 	void emitUpdated();
 

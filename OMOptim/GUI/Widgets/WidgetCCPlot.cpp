@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetCCPlot.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file WidgetCCPlot.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 */
 
 #include "WidgetCCPlot.h"
@@ -49,29 +49,30 @@ WidgetCCPlot::WidgetCCPlot(EIMERResult* _result,QWidget *parent) :
     ui(new Ui::WidgetCCPlotClass)
 {
     ui->setupUi(this);
-	
-	result = _result;
-		
-	//***********
-	//PLOT
-	//***********
-	plot1 = new MinCCPlot(result);
-	ui->layoutPlot->addWidget(plot1);
-	ui->layoutPlot->setSizeConstraint(QLayout::SetMaximumSize);
-	QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	plot1->setSizePolicy(sizePolicy);
-	
-	//*****************
-	//BUTTONS
-	//*****************
-	connect(ui->radioCC,SIGNAL(toggled(bool)),this,SLOT(setViewCC(bool)));
-	connect(ui->radioGCC,SIGNAL(toggled(bool)),this,SLOT(setViewGCC(bool)));
-    connect(ui->pushZoom,SIGNAL(clicked(bool)),plot1,SLOT(enableZoom(bool)));
-	ui->radioGCC->setChecked(true);
 
-	//*****************
-	//UNITS COMBOS
-	//*****************
+    result = _result;
+
+    //***********
+    //PLOT
+    //***********
+    plot1 = new MOCCPlot(result);
+    ui->layoutPlot->addWidget(plot1);
+    ui->layoutPlot->setSizeConstraint(QLayout::SetMaximumSize);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    plot1->setSizePolicy(sizePolicy);
+
+    //*****************
+    //BUTTONS
+    //*****************
+    connect(ui->radioCC,SIGNAL(toggled(bool)),this,SLOT(setViewCC(bool)));
+    connect(ui->radioGCC,SIGNAL(toggled(bool)),this,SLOT(setViewGCC(bool)));
+    connect(ui->pushZoom,SIGNAL(clicked(bool)),plot1,SLOT(enableZoom(bool)));
+    ui->radioGCC->setChecked(true);
+    setViewGCC(true);
+
+    //*****************
+    //UNITS COMBOS
+    //*****************
     ui->comboUnitMER->addItem("W",MEQflow::W);
     ui->comboUnitMER->addItem("kW",MEQflow::KW);
     ui->comboUnitMER->addItem("MW",MEQflow::MW);
@@ -82,10 +83,10 @@ WidgetCCPlot::WidgetCCPlot(EIMERResult* _result,QWidget *parent) :
     ui->comboUnitT->addItem("K",METemperature::K);
 
     //Connect actions
-	connect(ui->comboUnitMER,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
-	connect(ui->comboUnitMERCold,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
-	connect(ui->comboUnitT,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
-	connect(result,SIGNAL(updated()),this,SLOT(replot()));
+    connect(ui->comboUnitMER,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
+    connect(ui->comboUnitMERCold,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
+    connect(ui->comboUnitT,SIGNAL(currentIndexChanged(int)),this,SLOT(unitChanged()));
+    connect(result,SIGNAL(updated()),this,SLOT(replot()));
     connect(result,SIGNAL(deleted()),this,SLOT(clear()));
 
     // gui
@@ -101,69 +102,90 @@ WidgetCCPlot::~WidgetCCPlot()
 void WidgetCCPlot::actualizeGui()
 {
     plot1->replot();
-	unitChanged();
+    unitChanged();
 }
 
 void WidgetCCPlot::clear()
 {
+    QString msg = "WidgetCCPlot::clear";
+    qDebug(msg.toLatin1().data());
     plot1->clear();
 }
 
 void WidgetCCPlot::setViewCC(bool checked)
 {
-	if(checked)
+    QString msg = "WidgetCCPlot::setViewCC";
+    qDebug(msg.toLatin1().data());
+    if(checked)
     {
-		plot1->setCCType(MinCCPlot::CC);
+        plot1->setCCType(MOCCPlot::CC);
         if(!ui->radioCC->isChecked())
             ui->radioCC->setChecked(true);
-}
+    }
 }
 
 void WidgetCCPlot::setViewGCC(bool checked)
 {
-	if(checked)
+    QString msg = "WidgetCCPlot::setViewGCC";
+    qDebug(msg.toLatin1().data());
+
+    if(checked)
     {
-		plot1->setCCType(MinCCPlot::GCC);
+        plot1->setCCType(MOCCPlot::GCC);
         if(!ui->radioGCC->isChecked())
             ui->radioGCC->setChecked(true);
-}
+    }
 }
 
 void WidgetCCPlot::setMERResult(EIMERResult* result_)
 {
+    QString msg = "WidgetCCPlot::setMERResult";
+    qDebug(msg.toLatin1().data());
+
     result = result_;
-    connect(result,SIGNAL(updated()),this,SLOT(replot()));
-    connect(result,SIGNAL(deleted()),this,SLOT(clear()));
     plot1->setResult(result);
-    replot();
-    setViewCC(true);
+    //    replot();
+    //    setViewCC(true);
+    actualizeGui();
+
 }
 
 
 void WidgetCCPlot::replot()
 {
-	plot1->replot();
-	unitChanged();
+    QString msg = "WidgetCCPlot::replot";
+    qDebug(msg.toLatin1().data());
+
+    plot1->replot();
+    unitChanged();
 }
 
 void WidgetCCPlot::unitChanged()
 {
+    QString msg = "WidgetCCPlot::unitChanged";
+    qDebug(msg.toLatin1().data());
+
+
     if(result)
     {
-        int unitT = ui->comboUnitT->itemData(ui->comboUnitT->currentIndex()).toInt();
-        int unitMER =  ui->comboUnitMER->itemData(ui->comboUnitMER->currentIndex()).toInt();
+
+        _TUnit = (METemperature::Units)ui->comboUnitT->itemData(ui->comboUnitT->currentIndex()).toInt();
+        _qflowUnit =  (MEQflow::Units)ui->comboUnitMER->itemData(ui->comboUnitMER->currentIndex()).toInt();
         int unitMERCold =  ui->comboUnitMERCold->itemData(ui->comboUnitMERCold->currentIndex()).toInt();
 
-        ui->labelTPinch->setText(QString::number(result->TPinch.value(unitT)));
-        ui->labelMER->setText(QString::number(result->MER.value(unitMER)));
+        ui->labelTPinch->setText(QString::number(result->TPinch.value(_TUnit)));
+        ui->labelMER->setText(QString::number(result->MER.value(_qflowUnit)));
         ui->labelMERCold->setText(QString::number(result->MERCold.value(unitMERCold)));
 
+        plot1->setTUnit(_TUnit);
+        plot1->setQUnit(_qflowUnit);
+
     }
-	else
+    else
     {
         ui->labelMER->setText("-");
         ui->labelMERCold->setText("-");
         ui->labelTPinch->setText("-");
-}
+    }
 }
 

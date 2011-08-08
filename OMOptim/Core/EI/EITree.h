@@ -48,6 +48,7 @@
 #include "EIItem.h"
 
 
+
         /**
         * \brief EITree is a container for eiItem hierarchy.
         *
@@ -61,12 +62,14 @@
 
 public:
 
-    EITree(bool showFields=true,bool editable=true,QString rootName="");
+            EITree(bool showFields=true,bool editable=true);
 
     EITree(const EITree &);
     EITree(QDomElement & domEl);
 
     ~EITree(void);
+
+    void clear();
 
     // remove functions
     bool removeItem(EIItem* item);
@@ -75,8 +78,13 @@ public:
     bool removeChildren(EIItem* parent);
     void removeUnchecked();
 
+    //edit function
+    void uncheckUtilities();
+
     // add functions
-    void addChild(EIItem* parent, EIItem* child);
+    bool addChild(EIItem* parent, EIItem* child);
+    void addEmptyGroup(EIItem* parent);
+    void addEmptyStream(EIItem* parent);
 
     // find functions
     EIItem* findItem(QString fullName);
@@ -99,6 +107,8 @@ public:
     bool isCheckable(const QModelIndex) const;
     bool removeRows (int row,int count,const QModelIndex & parent);
 
+    bool isValid(QString &msg,MOOptVector* variables=NULL,const QModelIndex = QModelIndex(),bool recursive=true);
+
     QDomElement toXmlData(QDomDocument & doc);
 
 
@@ -111,10 +121,11 @@ public:
         bool _editable;
         bool _enabled;
 
-    public slots:
-        void allDataChanged();
-        void allDataCleared();
-        void onRootElementDeleted();
+        static QColor utilityTextColor(){return QColor(139,69,0);}
+        static QColor processTextColor(){return QColor(85,107,47);}
+
+
+
 
 };
 

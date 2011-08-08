@@ -75,8 +75,7 @@ Result::Result(const Result &result)
         //_name = result._name;
         //_filesToCopyNames = result._filesToCopyNames;
 	
-	_computationTime = result._computationTime;
-	_hour = result._hour;
+        _duration = result._duration;
 	_date = result._date;
 }
 

@@ -65,6 +65,8 @@ public:
         double operator-(const METemperature& b) const; //temperature difference
         METemperature& operator+=(const double& diffTemp);
         METemperature& operator-=(const double& diffTemp);
+        METemperature operator-(const double& diffTemp) const;
+        METemperature operator+(const double& diffTemp) const;
         bool operator==(const METemperature& b) const;
         bool operator!=(const METemperature& b) const;
         bool operator<(const METemperature& b) const;

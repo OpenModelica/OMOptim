@@ -500,8 +500,8 @@ void TabOMC::exceptionInEval(std::exception &e)
     // 2006-0-09 AF, try to reconnect to OMC first.
     try
     {
-        project->moomc()->getCommunicator()->closeConnection();
-        bool reconnected = project->moomc()->getCommunicator()->establishConnection();
+        //project->moomc()->getCommunicator()->closeConnection();
+        //bool reconnected = project->moomc()->getCommunicator()->establishConnection();
         returnPressed();
     }
     catch( std::exception &e )
@@ -525,7 +525,7 @@ void TabOMC::exceptionInEval(std::exception &e)
                 //project->moomc()->delegate_->closeConnection();
                 try
                 {
-                    project->moomc()->getCommunicator()->establishConnection();
+                    //project->moomc()->getCommunicator()->establishConnection();
                     returnPressed();
                 }
                 catch( std::exception &e )

@@ -131,6 +131,16 @@ METemperature& METemperature::operator-=(const double& diffTemp)
     return *this;
 }
 
+METemperature METemperature::operator-(const double& diffTemp) const
+{
+    return METemperature(_value-diffTemp,_unit);
+}
+
+METemperature METemperature::operator+(const double& diffTemp) const
+{
+    return METemperature(_value+diffTemp,_unit);
+}
+
 bool METemperature::operator<(const METemperature& b) const
 {
     return value(_unit)<b.value(_unit);

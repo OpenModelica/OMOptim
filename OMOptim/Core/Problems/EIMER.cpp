@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -45,7 +45,7 @@ EIMER::EIMER(Project* project,ModClassTree* modClassTree,MOomc* moomc)
     :EIProblem(project,modClassTree,moomc)
 {
 	_inputVars = new MOOptVector(false,false);
-         _type = Problem::EIMER;
+         _type = Problem::EIMERTYPE;
         EIMERParameters::setDefaultParameters(_parameters);
 }
 
@@ -53,7 +53,7 @@ EIMER::EIMER(const EIMER &problem)
 :EIProblem(problem)
 {
     _inputVars = problem._inputVars->clone();
-    _type = Problem::EIMER;
+    _type = Problem::EIMERTYPE;
 }
 
 Problem* EIMER::clone()
@@ -86,6 +86,11 @@ QDomElement EIMER::toXmlData(QDomDocument & doc)
 	QDomElement cResultVars = _inputVars->toXmlData(doc,"ResultVars");
 	cProblem.appendChild(cResultVars);
 
+        // Parameters
+        EIMERParameters::setDefaultParameters(_parameters);
+        QDomElement cParameters = doc.firstChildElement("Parameters");
+        _parameters->update(cParameters);
+
 	return cProblem;
 }
 
@@ -108,7 +113,8 @@ Result* EIMER::launch(ProblemConfig config)
     //replace ei references by values
     EITree* filledEI = EIValueFiller::getFilledEI(_eiTree,inputVars(),_project);
 
-    EITools::getTkQik(_inputVars,filledEI->rootElement(),Tk,eiStreams,Qik,!includeUtilities);
+    //extract Qik and Tk
+    EITools::getTkQik(_inputVars,filledEI->rootElement(),Tk,eiStreams,Qik,!includeUtilities,true);
 
 
     CCTools::buildCCfromStreams(Tk,Qik,

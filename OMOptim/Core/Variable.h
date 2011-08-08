@@ -105,6 +105,8 @@ public:
 	Variable(QDomElement &);
 	~Variable(void);
 
+         Variable* clone();
+
 	virtual QString getClassName(){return "Variable";};
 
 public :
@@ -156,7 +158,10 @@ public:
 	VariableResult(const Variable &);	
 	VariableResult(QDomElement &);
 
+
 	~VariableResult(void);
+
+        VariableResult* clone();
 	virtual QString getClassName(){return "VariableResult";};
 
         static const int nbFields = 4;

@@ -33,11 +33,11 @@ public:
         static QString className(){return "EITargetResult";};
         virtual QString getClassName(){return EITargetResult::className();};
 
-        int problemType(){return Problem::EITARGET;};
+        int problemType(){return Problem::EITARGETTYPE;};
         QDomElement toXmlData(QDomDocument &);
 
         EITree* eiTree();
-        void setEITree(EITree*);
+        void setEITree(const EITree&);
 
         EIConns* eiConns();
         void setEIConns(EIConns*);

@@ -46,7 +46,7 @@
 #include "EIItem.h"
 #include "EIStream.h"
 #include "EITools.h"
-#include "GlpkTools.h"
+#include "GLPKTools.h"
 #include "EITargetResult.h"
 #include "InfoSender.h"
 #include "EIConnConstrs.h"
@@ -57,7 +57,7 @@
 class MilpTarget
 {
 public:
-        MilpTarget(EITree* eiTree,EIConnConstrs *_connConstrs,MOOptVector *variables,QDir folder,QString modFilePath, QString dataFilePath);
+        MilpTarget(EITree* eiTree,EIConnConstrs *_connConstrs,MOOptVector *variables,QDir folder, QString dataFilePath);
 	~MilpTarget(void);
 
 	EITargetResult* launch();
@@ -80,7 +80,7 @@ private :
         EITree* _eiTree;
         MOOptVector *_variables;
         QDir _folder;
-        QString _modFileName;
+        QString _modFilePath;
         QString _dataFileName;
         QString _resFileName;
         QString _logFileName;

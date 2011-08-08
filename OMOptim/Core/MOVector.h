@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -128,7 +128,8 @@ MOVector<ItemClass>::MOVector(const MOVector & test_)
 	int iv;
 	for(iv=0;iv<test_.items.size();iv++)
 	{
-		addItem(new ItemClass(*test_.items.at(iv)));
+                //addItem(new ItemClass(*test_.items.at(iv)));
+            addItem(test_.items.at(iv)->clone());
 	}
 }
 

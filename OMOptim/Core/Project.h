@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -103,14 +103,25 @@ public :
 	QMutex _connectionMutex;
 	QMutex _problemLaunchMutex;
 
+
+
+
+
+
 private:
 	//Misc
 	QString _filePath;
-	int _curProblem;
 	bool _isdefined;
-	Problem* _curLaunchedProblem;
 	ModClass* _curModClass;
 	MOomc *_moomc;
+
+         // cur problem information
+        Problem* _curLaunchedProblem;
+        int _curProblem;
+        QDateTime _curProblemDate;
+
+
+
 
 	// Models
 	QStringList _moFiles;
@@ -209,6 +220,7 @@ public:
 	//****************************	
 	void terminateOmsThreads();
 	void createTempDir();
+        bool checkConfiguration();
 
 	//****************************
 	// Slots

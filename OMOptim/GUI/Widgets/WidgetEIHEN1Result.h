@@ -46,6 +46,7 @@
 
 #include "EIHEN1Result.h"
 #include "ui_WidgetEIHEN1Result.h"
+#include "MOParametersDlg.h"
 
 
 
@@ -72,6 +73,7 @@ public slots :
     void onResultAsked();
     void onLogAsked();
     void onSensitivityAsked();
+    void onParametersAsked();
 };
 
 #endif 

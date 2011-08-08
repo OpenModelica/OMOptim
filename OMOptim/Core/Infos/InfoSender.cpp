@@ -94,7 +94,7 @@ void InfoSender::send(Info _info)
 		prefix = "<b><font color='red'>OMCError :";
 		suffix = "</font></b>";
 		break;
-	case ListInfo::DEBUG :
+        case ListInfo::INFODEBUG :
 		prefix = "<b><font color='blue'>Debug :";
 		suffix = "</font></b>";
 		break;
@@ -106,6 +106,7 @@ void InfoSender::send(Info _info)
 		*logStream << "\t";
 		*logStream << prefix;
 		*logStream << _info.infoMsg;
+                *logStream << suffix;
 		*logStream << "\n";
 	}
 	emit sent(_info);
@@ -113,6 +114,6 @@ void InfoSender::send(Info _info)
 
 void InfoSender::debug(QString msg)
 {
-	Info _info(msg,ListInfo::DEBUG);
+        Info _info(msg,ListInfo::INFODEBUG);
 	send(_info);
 }

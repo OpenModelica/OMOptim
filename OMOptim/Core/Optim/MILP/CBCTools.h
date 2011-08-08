@@ -1,10 +1,10 @@
-// $Id$
+ï»¿// $Id: CBCTools.h 9418 2011-07-06 11:44:40Z hubert.thieriot $
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,49 +29,42 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MEQflow.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @file CBCTools.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 
   */
-#if !defined(_MEQFLOW_H)
-#define _MEQFLOW_H
+#ifndef _CBCTOOLS_H
+#define _CBCTOOLS_H
 
-#include "InfoSender.h"
-#include "MEDimValue.h"
 
-class MEQflow : public MEDimValue
+#include <QtCore/QObject>
+#include <QtCore/QVector>
+#include <QtCore/QStringList>
+#include <QtCore/QProcess>
+
+#include "MilpVariableResult.h"
+
+class CBCTools
 {
-public:
-	MEQflow(double value=0,int unit=0);
-	~MEQflow();
-
-	enum Units
-	{
-		W,
-		KW,
-		MW
-	};
-
-	QString unit(int iUnit)  const;
-        QString unit()  const; //should'nt be (should be inherited) but error in compiler otherwise
-	unsigned nbUnits() const;
-	double convert(double value,int orgUnit,int dstUnit) const;
-
-        MEQflow operator-(const MEQflow& b) const;
-        MEQflow operator+(const MEQflow& b) const;
-        MEQflow& operator+=(const MEQflow& b);
-        MEQflow& operator-=(const MEQflow& b);
-        MEQflow operator*(const double& fact) const;
+public :
 
 
-        bool operator==(const MEQflow& b) const;
-        bool operator>(const MEQflow& b) const;
-        bool operator<(const MEQflow& b) const;
+    static void fill(MilpVariableResult0D &variable,double defaultValue,const QString &txt);
+
+    static void fill(MilpVariableResult1D &variable,const QString &txt);
+
+    static void fill(MilpVariableResult2D &variable,const QString &txt);
+    static void fill(MilpVariableResult3D &variable,const QString &txt);
+    static void fill(MilpVariableResult4D &variable,const QString &txt);
+    static bool isInstalled();
+
+
 };
+
 
 
 #endif

@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Link�pings universitet, Department of Computer and Information Science,
- * SE-58183 Link�ping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -480,7 +480,22 @@ QString EIItem::name(EI::NameFormat type)
 
 bool EIItem::isValid(MOOptVector* variables, QString &errMsg)
 {
-    return true;
+    bool ok = true;
+
+//    if(_name.isEmpty())
+//    {
+//        ok = false;
+//        errMsg+= "empty name \n";
+//    }
+
+    bool hasAccent = (_name.indexOf(QRegExp("é|è|à|ü|ö|ô|â)"))>-1);
+    if(hasAccent)
+    {
+        ok = false;
+        errMsg+="accents in "+_name;
+    }
+
+    return ok;
 }
 
 

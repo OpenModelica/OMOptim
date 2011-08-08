@@ -68,7 +68,7 @@ QString MilpSet1D::toString()
     QStringList values;
     for(int i = 0; i<_items.uniqueKeys().size();i++)
     {
-        key = _items.keys().at(i);
+        key = _items.uniqueKeys().at(i);
         values.clear();
         values.append(_items.values(key));
         result += "set " + _name + "[" +key+"] :=" + values.join(" ")+";\n";

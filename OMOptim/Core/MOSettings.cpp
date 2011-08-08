@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOSettings.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @file MOSettings.cpp
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version 0.9
 
   */
 #include "MOSettings.h"
@@ -62,13 +62,13 @@ MOSettings::~MOSettings(void)
 void MOSettings::initialize(bool eraseCurrentValues)
 {
 
-	names.clear();
-	descs.clear();
-	types.clear();
-	defaultValues.clear();
+        names.clear();
+        descs.clear();
+        types.clear();
+        defaultValues.clear();
 
 
-	QSettings settings("MO", "Settings");
+        QSettings settings("MO", "Settings");
 
 //	//*******************************
 //	// MO Extra Path
@@ -104,14 +104,16 @@ void MOSettings::initialize(bool eraseCurrentValues)
 //	defaultValues << eiLibPath;
 //	types.push_back(FILEPATH);
 
-	//*******************************
-	// Dymola path
-	//*******************************
+        //*******************************
+        // Dymola path
+        //*******************************
+#ifdef WIN32
         names << QString("Dymola/dymolaExe");
-	descs << QString("Path of Dymola executable");
-	QString dymolaPath = Dymola::getExecutablePath();
-	defaultValues << dymolaPath;
-	types.push_back(FILEPATH);
+        descs << QString("Path of Dymola executable");
+        QString dymolaPath = Dymola::getExecutablePath();
+        defaultValues << dymolaPath;
+        types.push_back(FILEPATH);
+#endif
 
 //	//*******************************
 //	// Quit omc at end of program
@@ -121,23 +123,23 @@ void MOSettings::initialize(bool eraseCurrentValues)
 //        defaultValues << true;
 //	types.push_back(BOOL);
 
-	//*******************************
-	// Model depth read at beginning
-	//*******************************
-	names << QString("DepthReadWhileLoadingModModel");
+        //*******************************
+        // Model depth read at beginning
+        //*******************************
+        names << QString("DepthReadWhileLoadingModModel");
         descs << QString("Default reading depth in Modelica hierarchy (-1 : entire model)");
-	defaultValues << 2;
-	types.push_back(INT);
-	
-	//*******************************
+        defaultValues << 2;
+        types.push_back(INT);
+
+        //*******************************
         // Max number of digits in dsin
-	//*******************************
+        //*******************************
         names << QString("Dymola/MaxDigitsDsin");
         descs << QString("Maximum number of digits in dsin.txt");
         defaultValues << 5;
         types.push_back(INT);
 
-//        //*******************************
+//	//*******************************
 //	// Gnuplot enabling
 //	//*******************************
 //	names << QString("bool/useGnuplot");
@@ -161,43 +163,43 @@ void MOSettings::initialize(bool eraseCurrentValues)
 //	defaultValues << "pgnuplot.exe";
 //	types.push_back(FILEPATH);
 
-	//*******************************
+        //*******************************
         // Milp files path
-	//*******************************
+        //*******************************
 #ifdef USEEI
-	names << QString("path/MILPFolder");
+        names << QString("path/MILPFolder");
         descs << QString("Folder of Milp models");
-	QString MOPath(getenv("MOPATH"));
-	defaultValues << MOPath+QDir::separator()+"Milp";
-	types.push_back(FOLDERPATH);
+        QString MOPath(getenv("MOPATH"));
+        defaultValues << MOPath+QDir::separator()+"Milp";
+        types.push_back(FOLDERPATH);
 #endif
-	for(int i=0; i<names.size();i++)
-	{
-		if(eraseCurrentValues || settings.value(names.at(i))==QVariant())
-			settings.setValue(names.at(i),defaultValues.at(i));
-	}
+        for(int i=0; i<names.size();i++)
+        {
+                if(eraseCurrentValues || settings.value(names.at(i))==QVariant())
+                        settings.setValue(names.at(i),defaultValues.at(i));
+        }
 }
 
 
 
 void MOSettings::setValue(QString _name, QVariant _value)
 {
-	QSettings globalSettings("MO", "Settings");
-	globalSettings.setValue(_name,_value);
+        QSettings globalSettings("MO", "Settings");
+        globalSettings.setValue(_name,_value);
 }
 
 void MOSettings::setValue(int i, QVariant _value)
 {
-	QSettings globalSettings("MO", "Settings");
-	globalSettings.setValue(names.at(i),_value);
+        QSettings globalSettings("MO", "Settings");
+        globalSettings.setValue(names.at(i),_value);
 }
 QVariant MOSettings::getValue(QString _name)
 {
-	QSettings globalSettings("MO", "Settings");
-	return globalSettings.value(_name);
+        QSettings globalSettings("MO", "Settings");
+        return globalSettings.value(_name);
 }
 QVariant MOSettings::getValue(int i)
 {
-	QSettings globalSettings("MO", "Settings");
-	return globalSettings.value(names.at(i));
+        QSettings globalSettings("MO", "Settings");
+        return globalSettings.value(names.at(i));
 }

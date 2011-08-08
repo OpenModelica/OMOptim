@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -94,7 +94,7 @@ Result* SPEA2Adapt::buildResult(moeoUnboundedArchive<EOAdapt> & arch)
 	Result* result;
 	switch(_problem->type())
 	{
-	case Problem::OPTIMIZATION :
+	case Problem::OPTIMIZATIONTYPE :
                 result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,
                                                                          _subBlocks,_modClassTree,_modPlusCtrl,arch,_parameters);
 		break;

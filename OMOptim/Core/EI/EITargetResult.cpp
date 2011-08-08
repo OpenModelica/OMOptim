@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -147,12 +147,13 @@ EITree* EITargetResult::eiTree()
 }
 
 
-void EITargetResult::setEITree(EITree * eiTree)
+void EITargetResult::setEITree(const EITree & eiTree)
 {
-    if(_eiTree && (_eiTree!=eiTree))
+    if(_eiTree )
         delete _eiTree;
-    _eiTree = eiTree;
+    _eiTree = new EITree(eiTree);
 }
+
 
 EIConns* EITargetResult::eiConns()
 {

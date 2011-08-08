@@ -44,6 +44,8 @@
 MOParameter::MOParameter(){
 	_editableFields.clear();
 	_editableFields << MOParameter::VALUE;
+        _enablingIndex = -1;
+        _enablingValue = true;
 }
 
 MOParameter::MOParameter(const MOParameter & param):MOItem(param)
@@ -55,10 +57,12 @@ MOParameter::MOParameter(const MOParameter & param):MOItem(param)
 	_min = param._min;
 	_max = param._max;
 	_index = param._index;
+        _enablingIndex = param._enablingIndex;
+        _enablingValue = param._enablingValue;
 }
 
-MOParameter::MOParameter(int index,QString name,QString description, QVariant defaultValue, Type type, QVariant minValue, QVariant maxValue):
-_index(index),_description(description),_defaultValue(defaultValue),_type(type),_min(minValue),_max(maxValue)
+MOParameter::MOParameter(int index,QString name,QString description, QVariant defaultValue, Type type, QVariant minValue, QVariant maxValue,int enablingIndex,QVariant enablingValue):
+    _index(index),_description(description),_defaultValue(defaultValue),_type(type),_min(minValue),_max(maxValue),_enablingIndex(enablingIndex),_enablingValue(enablingValue)
 {
 	_name = name;
 	_value = _defaultValue;
@@ -75,30 +79,6 @@ _index(index),_description(description),_defaultValue(defaultValue),_type(type),
 	_editableFields.clear();
 	_editableFields << MOParameter::VALUE;
 }
-
-
-
-//MOParameter::MOParameter(QString savedString)
-//{
-//	QStringList fields = savedString.split(" ",QString::SkipEmptyParts);
-//	if(fields.size()!=nbFields)
-//	{
-//		emit sendInfo(Info(ListInfo::PROBLEMREADINGLINE,savedString));
-//	}
-//	else
-//	{
-//		for(int iF=0;iF<fields.size();iF++)
-//		{
-//			QString curField = fields.at(iF);
-//			curField.remove(" ");
-//			curField.remove("\t");
-//			setFieldValue(iF,QVariant(curField));
-//		}
-//	}
-	
-//	_editableFields.clear();
-//	_editableFields << MOParameter::VALUE;
-//}
 
 
 
@@ -226,6 +206,22 @@ QString MOParameter::sFieldName(int iField, int role)
 	}
 }
 
+void MOParameter::setEnablingIndex(int index,QVariant value)
+{
+    _enablingIndex = index;
+    _enablingValue = value;
+}
+
+int MOParameter::enablingIndex()
+{
+    return _enablingIndex;
+}
+
+QVariant MOParameter::enablingValue()
+{
+    return _enablingValue;
+}
+
 
 MOParameterListed::MOParameterListed(){
         _editableFields.clear();
@@ -238,17 +234,16 @@ MOParameterListed::MOParameterListed(const MOParameterListed & param):MOParamete
         _mapList = param._mapList;
 }
 
-MOParameterListed::MOParameterListed(int index,QString name,QString description, QVariant defaultValue, QMap<int,QString> mapList):
-MOParameter(index,name,description,defaultValue,LIST),_mapList(mapList)
+MOParameterListed::MOParameterListed(int index,QString name,QString description, QVariant defaultValue, QMap<int,QString> mapList,int enablingIndex,QVariant enablingValue):
+    MOParameter(index,name,description,defaultValue,LIST),_mapList(mapList)
 {
-
+    setEnablingIndex(enablingIndex,enablingValue);
 }
 
 
 
 MOParameterListed::MOParameterListed(QDomElement & domEl)
-{
-        QDomNamedNodeMap attributes = domEl.attributes();
+{ QDomNamedNodeMap attributes = domEl.attributes();
         QString fieldName;
         QString fieldValue;
 
@@ -343,6 +338,11 @@ QString MOParameterListed::sFieldName(int iField, int role)
 {
     return MOParameter::sFieldName(iField,role);
 }
+
+QString MOParameterListed::strValue()
+{
+    return _mapList.value(_value.toInt());
+};
 
 QVariant MOParameters::value(int index,QVariant defaultValue)
 {

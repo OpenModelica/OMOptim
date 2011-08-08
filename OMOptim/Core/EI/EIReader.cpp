@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIReader.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIReader.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 
   */
 #include "EIReader.h"
@@ -56,37 +56,41 @@ EIReader::EIReader()
 
 bool EIReader::isInDescendants(EIItem* parent, QString fullName)
 {
-	EIItem* foundClass = findInDescendants(parent,fullName);
-	return (bool)(foundClass);
+    EIItem* foundClass = findInDescendants(parent,fullName);
+    return (bool)(foundClass);
 }
 
 EIItem* EIReader::findInDescendants(EIItem* parent,QString fullName)
 {
-	EIItem* curChild;
-	QString curFullName = parent->name();
+    EIItem* curChild;
+    QString curFullName = parent->name();
 
-	int curDepth = parent->depth();
-	int lookingDepth = fullName.split(".").size()-1;
+    int curDepth = parent->depth();
+    int lookingDepth = fullName.split(".").size()-1;
 
-	// check if it is this component
-	if(curFullName == fullName)
-		return parent;
+    //if empty, return NULL
+    if(fullName.isEmpty())
+        return NULL;
 
-	//first check name compatibility
-	if(fullName.indexOf(curFullName)!=0)
-		return NULL;
+    // check if it is this component
+    if(curFullName == fullName)
+        return parent;
 
-	//get child name to visit
-	QString childShortName = fullName.section(".",curDepth,curDepth);
+    //first check name compatibility
+    if(fullName.indexOf(curFullName)!=0)
+        return NULL;
 
-	// looking in children
-	for(int iChild=0;iChild<parent->childCount();iChild++)
-	{
-		curChild = parent->child(iChild);
-		if(curChild->name(EI::SHORT)==childShortName)
-			return findInDescendants(curChild,fullName);
-	}
-	return NULL;
+    //get child name to visit
+    QString childShortName = fullName.section(".",curDepth,curDepth);
+
+    // looking in children
+    for(int iChild=0;iChild<parent->childCount();iChild++)
+    {
+        curChild = parent->child(iChild);
+        if(curChild->name(EI::SHORT)==childShortName)
+            return findInDescendants(curChild,fullName);
+    }
+    return NULL;
 }
 
 /**
@@ -101,173 +105,195 @@ EIItem* EIReader::findInDescendants(EIItem* parent, EI::Type eiType, QVariant it
     if((parent->getEIType()==eiType) && (parent->getFieldValue(iField) == itemFieldValue))
         return parent;
 
-     // looking in children
+    // looking in children
     int iChild=0;
     EIItem* foundItem=NULL;
     while(!foundItem && iChild<parent->childCount())
-{
+    {
         foundItem = findInDescendants(parent->child(iChild),eiType,itemFieldValue,iField);
         iChild++;
-		}
+    }
     return foundItem;
-	}
+}
 
 
 
 QList<EIStream*> EIReader::getStreams(EIItem* parent)
 {
-	QList<EIStream*> result;
-	
-	for(int i=0;i<parent->streamChildCount();i++)
-		result.push_back(dynamic_cast<EIStream*>(parent->streamChild(i)));
+    QList<EIStream*> result;
 
-	for(int i=0;i<parent->childCount();i++)
-	{
-		if(parent->child(i)->getEIType()!=EI::STREAM)
-			result.append(getStreams(parent->child(i)));
-	}
-	return result;
+    for(int i=0;i<parent->streamChildCount();i++)
+        result.push_back(dynamic_cast<EIStream*>(parent->streamChild(i)));
+
+    for(int i=0;i<parent->childCount();i++)
+    {
+        if(parent->child(i)->getEIType()!=EI::STREAM)
+            result.append(getStreams(parent->child(i)));
+    }
+    return result;
 }
 
 QList<EIItem*> EIReader::getItems(EIItem* parent,bool recursive,EI::Type filter)
 {
-	QList<EIItem*> result;
-	
-	for(int i=0;i<parent->childCount();i++)
-	{
-		if((filter == EI::GENERIC)||(parent->child(i)->getEIType()==filter))
-			result.push_back(parent->child(i));
-	}
+    QList<EIItem*> result;
 
-	if(recursive)
-	{
-		for(int i=0;i<parent->childCount();i++)
-		{
-			if(parent->child(i)->getEIType()!=EI::STREAM)
-				result.append(getItems(parent->child(i),recursive,filter));
-		}
-	}
+    for(int i=0;i<parent->childCount();i++)
+    {
+        if((filter == EI::GENERIC)||(parent->child(i)->getEIType()==filter))
+            result.push_back(parent->child(i));
+    }
 
-	return result;
+    if(recursive)
+    {
+        for(int i=0;i<parent->childCount();i++)
+        {
+            if(parent->child(i)->getEIType()!=EI::STREAM)
+                result.append(getItems(parent->child(i),recursive,filter));
+        }
+    }
+
+    return result;
 }
 
-QList<EIStream*> EIReader::getValidStreams(EIItem*parent,MOOptVector *variables,bool onlyChecked)
+QList<EIStream*> EIReader::getValidNumerizedStreams(EIItem*parent,MOOptVector *variables,bool onlyChecked)
 {
-	QList<EIStream*> result = getStreams(parent);
-	
-	EIStream* curStream;
+    QList<EIStream*> result = getStreams(parent);
+
+    EIStream* curStream;
     bool keep;
     int i=0;
     while(i<result.size())
-	{
-		curStream = result.at(i);
-                QString error;
+    {
+        curStream = result.at(i);
+        QString error;
         keep = !onlyChecked || curStream->isChecked();
         keep = keep && curStream->isValid(variables,error);
+        keep = keep && curStream->numerize(variables);
+
         if(!keep)
-			result.removeAt(i);
+            result.removeAt(i);
         else i++;
-	}
-	return result;
+    }
+    return result;
 }
 
-void EIReader::getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables)
+void EIReader::getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables,bool useCorrectedT)
 {
-	QList<EIStream*> streams = getValidStreams(parent,variables,true);
+    QList<EIStream*> streams = getValidNumerizedStreams(parent,variables,true);
 
-	EIStream* curStream;
+    EIStream* curStream;
     double DTmin2prov; // Temperature in Kelvin
-	
+
     bool ok1,ok2,ok;
     QString msg;
-	
+
     Tk.clear();
 
-    METemperature TinCorr,ToutCorr;
 
-	for(int i=0;i<streams.size();i++)
-	{
-		curStream = streams.at(i);
-		DTmin2prov = curStream->getFieldValue(EIStream::DTMIN2).toDouble();
-        TinCorr = curStream->TinNum;
-        ToutCorr = curStream->ToutNum;
-        if(curStream->TinNum==curStream->ToutNum)
-		{
+
+    for(int i=0;i<streams.size();i++)
+    {
+        curStream = streams.at(i);
+
+        if(curStream->TinNum(useCorrectedT)==curStream->ToutNum(useCorrectedT))
+        {
             msg.clear();
-            msg.sprintf("In stream %s, Tin = Tout. This stream won't be considered",curStream->name().utf16());
+            msg.sprintf("In stream %s, Tin = Tout. This stream won't be considered",curStream->name().toLatin1().data());
             infoSender.send(Info(msg,ListInfo::WARNING2));
             ok=false;
         }
 
-        if(curStream->TinNum<curStream->ToutNum)
-        {
-			//Cold stream
-            TinCorr += DTmin2prov;
-            ToutCorr += DTmin2prov;
-		}
-		else
-		{
-			//Hot stream
-            TinCorr+= -DTmin2prov;
-            ToutCorr += -DTmin2prov;
-		}
-
-        Tk.push_back(TinCorr);
-        Tk.push_back(ToutCorr);
-	}
+        Tk.push_back(curStream->TinNum(useCorrectedT));
+        Tk.push_back(curStream->ToutNum(useCorrectedT));
+    }
 
 
-	//sort
+    //sort
     qSort(Tk.begin(),Tk.end());
 
-	//remove duplicates
+    //remove duplicates
     QList<METemperature>::iterator iter = std::unique(Tk.begin(),Tk.end());
     Tk.erase(iter,Tk.end());
-	}
+}
 
 /**
 * Description Look in item hierarchy for the first group with a variable factor.
+* If not found, return false (fact and group are set to NULL)
 */
-void EIReader::getFirstParentGroupFact(EIItem* item,EIGroupFact* &fact,EIGroup* &group)
+bool EIReader::getFirstParentGroupFact(EIItem* item,EIGroupFact* &fact,EIGroup* &group)
 {
-	fact = NULL;
-	group = NULL;
-        EIItem* parentItem=item;
+    fact = NULL;
+    group = NULL;
+    EIItem* parentItem=item;
+    bool found = false;
     while(fact==NULL && parentItem!=NULL)
-	{
-                parentItem = parentItem->parent();
-                EIGroup* _group = dynamic_cast<EIGroup*>(parentItem);
-		if(_group)
-		{
+    {
+        parentItem = parentItem->parent();
+        EIGroup* _group = dynamic_cast<EIGroup*>(parentItem);
+        if(_group)
+        {
             group = _group;
-			if(_group->isFactVariable())
-			{
-				fact = _group->getFact();
-			}
-		}
-	}
+            if(_group->isFactVariable())
+            {
+                found = true;
+                fact = _group->getFact();
+            }
+        }
+    }
+    return found;
+}
+/**
+* Check if parent, grand parent (...) is a fact variable group.
+*/
+
+bool EIReader::isInFactVariable(EIItem* item)
+{
+    EIGroupFact* fact;
+    EIGroup* group;
+
+    EIGroup* curGroup = dynamic_cast<EIGroup*>(item);
+    if(curGroup && (curGroup->isFactVariable()))
+        return true;
+    else
+        return getFirstParentGroupFact(item,fact,group);
 }
 
 QStringList EIReader::getAllItemNames(EIItem* item,EI::Type filter)
 {
-	QStringList itemNames;
-	EIItem* curChild;
-	for(int i=0;i<item->childCount();i++)
-	{
-		curChild = item->child(i);
-		
-		if((filter==EI::GENERIC)||(curChild->getEIType()==filter))
-			itemNames.push_back(curChild->name(EI::FULL));
+    QStringList itemNames;
+    EIItem* curChild;
+    for(int i=0;i<item->childCount();i++)
+    {
+        curChild = item->child(i);
 
-		itemNames.append(getAllItemNames(curChild,filter));
-	}
-	return itemNames;
+        if((filter==EI::GENERIC)||(curChild->getEIType()==filter))
+            itemNames.push_back(curChild->name(EI::FULL));
+
+        itemNames.append(getAllItemNames(curChild,filter));
+    }
+    return itemNames;
 }
 
 
 
 // Streams filter and sort functions
-QList<EIStream*> EIReader::getStreamsAboveT(METemperature T,QList<EIStream*> allStreams)
+QList<EIStream*> EIReader::getStreamsAboveT(METemperature T,QList<EIStream*> allStreams,bool useCorrectedT)
+{
+    QList<EIStream*> list;
+    EIStream* curStream;
+
+
+    for(int i=0;i<allStreams.size();i++)
+    {
+        curStream = allStreams.at(i);
+
+        if((curStream->TinNum(useCorrectedT)>T)||(curStream->ToutNum(useCorrectedT)>T))
+            list.push_back(curStream);
+    }
+    return list;
+}
+
+QList<EIStream*> EIReader::getStreamsBelowT(METemperature T,QList<EIStream*> allStreams,bool useCorrectedT)
 {
     QList<EIStream*> list;
     EIStream* curStream;
@@ -276,35 +302,20 @@ QList<EIStream*> EIReader::getStreamsAboveT(METemperature T,QList<EIStream*> all
     {
         curStream = allStreams.at(i);
 
-        if((curStream->TinNum>T)||(curStream->ToutNum>T))
-            list.push_back(curStream);
-    }
-    return list;
-}
-
-QList<EIStream*> EIReader::getStreamsBelowT(METemperature T,QList<EIStream*> allStreams)
-{
-    QList<EIStream*> list;
-    EIStream* curStream;
-
-    for(int i=0;i<allStreams.size();i++)
-    {
-        curStream = allStreams.at(i);
-
-        if((curStream->TinNum<T)||(curStream->ToutNum<T))
+        if((curStream->TinNum(useCorrectedT)<T)||(curStream->ToutNum(useCorrectedT)<T))
             list.push_back(curStream);
     }
     return list;
 
 }
 
-QList<EIStream*> EIReader::getStreamsPresentInDT(METemperature Thot,METemperature Tcold,QList<EIStream*> allStreams)
+QList<EIStream*> EIReader::getStreamsPresentInDT(METemperature Thot,METemperature Tcold,QList<EIStream*> allStreams,bool useCorrectedT)
 {
     QList<EIStream*> list;
     EIStream* curStream;
 
-    list = getStreamsBelowT(Thot,allStreams);
-    list = getStreamsAboveT(Tcold,list);
+    list = getStreamsBelowT(Thot,allStreams,useCorrectedT);
+    list = getStreamsAboveT(Tcold,list,useCorrectedT);
 
     return list;
 }
@@ -314,30 +325,11 @@ MEQflow EIReader::getIntervalQFlow(METemperature T1,METemperature T2,EIStream* s
 {
     METemperature TIntHot = std::max(T1,T2);
     METemperature TIntCold = std::min(T1,T2);
-    Q_ASSERT(stream->ToutNum!=stream->TinNum);
+    Q_ASSERT(stream->ToutNum(useCorrectedT)!=stream->TinNum(useCorrectedT));
 
-    METemperature TStreamHot = std::max(stream->TinNum,stream->ToutNum);
-    METemperature TStreamCold = std::min(stream->TinNum,stream->ToutNum);
+    METemperature TStreamHot = std::max(stream->TinNum(useCorrectedT),stream->ToutNum(useCorrectedT));
+    METemperature TStreamCold = std::min(stream->TinNum(useCorrectedT),stream->ToutNum(useCorrectedT));
 
-    if(useCorrectedT)
-    {
-        bool isHotStream = (stream->TinNum > stream->ToutNum);
-        double DTmin2prov = stream->getFieldValue(EIStream::DTMIN2).toDouble();
-
-        if(!isHotStream)
-        {
-            //Cold stream
-            TStreamHot += DTmin2prov;
-            TStreamCold += DTmin2prov;
-        }
-        else
-        {
-            //Hot stream
-            TStreamHot += -DTmin2prov;
-            TStreamCold += -DTmin2prov;
-        }
-
-    }
 
 
     //if stream not in interval, return 0;
@@ -349,7 +341,7 @@ MEQflow EIReader::getIntervalQFlow(METemperature T1,METemperature T2,EIStream* s
     METemperature dTstream = TStreamHot-TStreamCold;
     double ratio = dTint.value()/dTstream.value();
 
-    MEQflow dQ = stream->QflowNum*ratio;
+    MEQflow dQ = stream->_QflowNum*ratio;
     Q_ASSERT(dQ.value()>=0);
     return dQ;
 }
@@ -359,32 +351,15 @@ QList<int> EIReader::getTIntervalsConcerned(const QList<METemperature> &Tk,EIStr
     QList<int> result;
 
 
-    METemperature TStreamHot = std::max(stream->TinNum,stream->ToutNum);
-    METemperature TStreamCold = std::min(stream->TinNum,stream->ToutNum);
+    METemperature TStreamHot = std::max(stream->TinNum(useCorrectedT),stream->ToutNum(useCorrectedT));
+    METemperature TStreamCold = std::min(stream->TinNum(useCorrectedT),stream->ToutNum(useCorrectedT));
 
-    if(useCorrectedT)
-    {
-        bool isHotStream = (stream->TinNum > stream->ToutNum);
-        double DTmin2prov = stream->getFieldValue(EIStream::DTMIN2).toDouble();
 
-        if(!isHotStream)
-        {
-            //Cold stream
-            TStreamHot += DTmin2prov;
-            TStreamCold += DTmin2prov;
-        }
-        else
-        {
-            //Hot stream
-            TStreamHot += -DTmin2prov;
-            TStreamCold += -DTmin2prov;
-        }
-    }
 
     for(int i=0;i<Tk.size()-1;i++)
     {
         if((TStreamCold<std::max(Tk.at(i),Tk.at(i+1)))
-            &&(TStreamHot>std::min(Tk.at(i),Tk.at(i+1))))
+                &&(TStreamHot>std::min(Tk.at(i),Tk.at(i+1))))
             result.push_back(i);
     }
     return result;
@@ -399,7 +374,7 @@ QList<EIStream*> EIReader::getColdStreams(QList<EIStream*> allStreams)
     {
         curStream = allStreams.at(i);
 
-        if(curStream->TinNum < curStream->ToutNum)
+        if(curStream->TinNum(false) < curStream->ToutNum(false))
             list.push_back(curStream);
     }
     return list;
@@ -414,7 +389,7 @@ QList<EIStream*> EIReader::getHotStreams(QList<EIStream*> allStreams)
     {
         curStream = allStreams.at(i);
 
-        if(curStream->TinNum > curStream->ToutNum)
+        if(curStream->TinNum(false) > curStream->ToutNum(false))
             list.push_back(curStream);
     }
     return list;
@@ -436,6 +411,6 @@ bool EIReader::CpLowerThan(EIStream* s1, EIStream* s2)
 
 bool EIReader::CpGreaterThan( EIStream* s1,  EIStream* s2)
 {
-   return !CpLowerThan(s1,s2);
+    return !CpLowerThan(s1,s2);
 }
 

@@ -63,6 +63,9 @@ public:
         explicit WidgetEIConns(EIConns *eiConns,QWidget *parent);
     virtual ~WidgetEIConns();
 
+public slots :
+    void unitChanged();
+
 
 public:
     Ui::WidgetEIConnsClass *_ui;

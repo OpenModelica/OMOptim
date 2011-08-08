@@ -54,11 +54,13 @@ WidgetEIHEN1Result::WidgetEIHEN1Result(EIHEN1Result *result,QWidget *parent)
     _ui->labelTotalCost->setText(QString::number(result->_totalCost));
     _ui->labelTotalArea->setText(QString::number(result->_totalArea));
     _ui->labelHENumber->setText(QString::number(result->_HENumber));
-
+    _ui->labelCompTime->setText(result->_duration.toString());
+    _ui->labelDate->setText(result->_date.toString());
 
     connect(_ui->pushLog,SIGNAL(clicked()),this,SLOT(onLogAsked()));
     connect(_ui->pushResult,SIGNAL(clicked()),this,SLOT(onResultAsked()));
     connect(_ui->pushSensitivity,SIGNAL(clicked()),this,SLOT(onSensitivityAsked()));
+    connect(_ui->pushParameters,SIGNAL(clicked()),this,SLOT(onParametersAsked()));
 }
 
 WidgetEIHEN1Result::~WidgetEIHEN1Result()
@@ -85,4 +87,14 @@ void WidgetEIHEN1Result::onSensitivityAsked()
     QString filePath = _result->saveFolder()+QDir::separator()+_result->_sensFileName;
     QUrl fileUrl(QString("file:///").append(filePath));
     bool ok = QDesktopServices::openUrl(fileUrl);
+}
+
+void WidgetEIHEN1Result::onParametersAsked()
+{
+    if(_result->problem())
+    {
+        MOParametersDlg dlg(_result->problem()->parameters(),false);
+        dlg.exec();
+    }
+
 }

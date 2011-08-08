@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -41,17 +41,13 @@
 #include "EITree.h"
 
 
-EITree::EITree(bool showFields,bool editable,QString rootName)
+EITree::EITree(bool showFields,bool editable)
     :_showFields(showFields),_editable(editable)
 {
-    _rootElement = new EIItem(NULL,rootName);
+    _rootElement = new EIItem(NULL,QString()); // _rootElement name should be empty for search functions
     _enabled = true;
 
-    // each change in _rootElement descendants implicates all tree redraw
-    // to optimize (more signals and index find function from ModClass*)
-    connect(_rootElement,SIGNAL(modified()),this,SLOT(allDataChanged()));
-    connect(_rootElement,SIGNAL(cleared()),this,SLOT(allDataCleared()));
-    connect(_rootElement,SIGNAL(deleted()),this,SLOT(onRootElementDeleted()));
+
 }
 
 EITree::EITree(const EITree &tree)
@@ -62,11 +58,7 @@ EITree::EITree(const EITree &tree)
 
     _rootElement = tree._rootElement->clone();
 
-    // each change in rootElement descendants implicates all tree redraw
-    // to optimize (more signals and index find function from ModClass*)
-    connect(_rootElement,SIGNAL(modified()),this,SLOT(allDataChanged()));
-    connect(_rootElement,SIGNAL(cleared()),this,SLOT(allDataCleared()));
-    connect(_rootElement,SIGNAL(deleted()),this,SLOT(onRootElementDeleted()));
+
 }
 
  EITree::EITree(QDomElement & domEl)
@@ -74,27 +66,48 @@ EITree::EITree(const EITree &tree)
      _rootElement = new EIItem(domEl);
      _enabled = true;
 
-     // each change in _rootElement descendants implicates all tree redraw
-     // to optimize (more signals and index find function from ModClass*)
-     connect(_rootElement,SIGNAL(modified()),this,SLOT(allDataChanged()));
-     connect(_rootElement,SIGNAL(cleared()),this,SLOT(allDataCleared()));
-     connect(_rootElement,SIGNAL(deleted()),this,SLOT(onRootElementDeleted()));
+
  }
 
 EITree::~EITree(void)
 {
+    clear();
     delete _rootElement;
 }
 
+void EITree::clear()
+{
+    beginResetModel();
+    _rootElement->clear();
+    endResetModel();
+}
 
 
-void EITree::addChild(EIItem* parent, EIItem* child)
+bool EITree::addChild(EIItem* parent, EIItem* child)
 {
     QModelIndex parentIndex = indexOf(parent);
     beginInsertRows(parentIndex,parent->childCount(),parent->childCount());
-    parent->addChild(child);
+    bool ok = parent->addChild(child);
     endInsertRows();
+    return ok;
 }
+
+void EITree::addEmptyGroup(EIItem* parent)
+{
+    EIGroup* newGroup = new EIGroup();
+    bool ok = addChild(parent,newGroup);
+    if(!ok)
+        delete newGroup;
+}
+
+void EITree::addEmptyStream(EIItem* parent)
+{
+    EIStream* newStream = new EIStream(parent);
+    bool ok = addChild(parent,newStream);
+    if(!ok)
+        delete newStream;
+}
+
 
 int EITree::columnCount(const QModelIndex &parent) const
 {
@@ -121,6 +134,15 @@ QVariant EITree::data(const QModelIndex &index, int role) const
             &&(index.column()>0)
             &&(role==Qt::DisplayRole))
             return QVariant();
+
+        if(role==Qt::TextColorRole)
+        {
+            if(EIReader::isInFactVariable(item))
+                return utilityTextColor();
+            else
+                return processTextColor();
+        }
+
 
         switch(role)
 	{
@@ -317,6 +339,7 @@ int EITree::rowCount(const QModelIndex &parent) const
 
 EIItem* EITree::findItem(QString _fullName)
 {
+
     return EIReader::findInDescendants(_rootElement,_fullName);
 }
 
@@ -372,6 +395,18 @@ void EITree::removeUnchecked()
     endResetModel();
 }
 
+ void EITree::uncheckUtilities()
+ {
+     QList<EIItem*> groups = EIReader::getItems(_rootElement,true,EI::GROUP);
+     EIGroup* curGroup;
+     for(int i=0;i<groups.size();i++)
+     {
+         curGroup = dynamic_cast<EIGroup*>(groups.at(i));
+         if(curGroup && curGroup->isFactVariable())
+             curGroup->setChecked(false);
+     }
+ }
+
 bool EITree::removeRows ( int row, int count, const QModelIndex & parent )
 {
     bool ok = true;
@@ -396,26 +431,26 @@ EIItem* EITree::rootElement()
     return _rootElement;
 }
 
-void EITree::onRootElementDeleted()
-{
-    _enabled = false;
-    //    this->revert();
-    this->beginResetModel();
-    this->reset();
-    this->endResetModel();
-}
 
-void EITree::allDataChanged()
-{
-    emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1));
-    emit layoutChanged();
-}
 
-void EITree::allDataCleared()
+
+bool EITree::isValid(QString &msg,MOOptVector* variables,const QModelIndex index,bool recursive)
 {
-    reset();
-    //emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1));
-    //emit layoutChanged();
+    EIItem* parent;
+    bool ok = true;
+    if(index.isValid())
+        parent=static_cast<EIItem*>(index.internalPointer());
+    else
+        parent = _rootElement;
+
+    ok = parent->isValid(variables,msg) && ok; // force verification even if already got an error (instead of ok && ...)
+
+    if(recursive)
+    {
+        for(int iC=0;iC<parent->childCount();iC++)
+            ok = parent->isValid(variables,msg) && ok;
+    }
+    return ok;
 }
 
 QDomElement EITree::toXmlData(QDomDocument & doc)

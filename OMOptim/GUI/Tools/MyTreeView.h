@@ -46,6 +46,8 @@
 
 class MyTreeView :  public QTreeView
 {
+    Q_OBJECT
+
 public:
     MyTreeView(QWidget* parent)
         :QTreeView(parent)
@@ -62,6 +64,17 @@ public:
     {
         return this->sizeHintForColumn(iCol);
     };
+
+public slots :
+    void onDataChanged(QModelIndex indexA,QModelIndex indexB)
+    {
+
+        int col1 = std::min(indexA.column(),indexB.column());
+        int col2 = std::max(indexA.column(),indexB.column());
+
+        for(int i=col1;i<=col2;i++)
+            resizeColumnToContents(i);
+    }
 
 
 };

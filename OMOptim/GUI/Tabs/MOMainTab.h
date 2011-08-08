@@ -51,9 +51,9 @@
 #include "Project.h"
 
 #ifdef USEEI
-#include "TabEITargetResult.h"
+#include "tabEITargetResult.h"
 #include "tabEIHEN1Result.h"
-#include "TabEIProblem.h"
+#include "tabEIProblem.h"
 #endif
 
 class MainWindow;

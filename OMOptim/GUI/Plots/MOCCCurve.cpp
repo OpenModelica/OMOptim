@@ -44,7 +44,11 @@ MOCCCurve::MOCCCurve(int type)
 {
 
 	_type = type;
+        _qflowUnit = MEQflow::KW;
+        _TUnit = METemperature::K;
+
 	init();
+
 
 }
 
@@ -56,7 +60,7 @@ MOCCCurve::MOCCCurve(const MOCCCurve & curve)
 	_yData = curve._yData;
 }
 
-MOCCCurve::MOCCCurve(QString name, QVector<double> xData, QVector<double> yData)
+MOCCCurve::MOCCCurve(QString name,const QList<MEQflow> & xData, const QList<METemperature> &  yData)
 {
 	_name = name;
 	_xData = xData;
@@ -79,17 +83,49 @@ int MOCCCurve::type()
 void MOCCCurve::setType(int type)
 {
 	_type = type;
-	init();
+	init();        
 }
 
-QVector<double> MOCCCurve::XData()
+QList<MEQflow> MOCCCurve::XData()
 {
 	return _xData;
 }
-QVector<double>  MOCCCurve::YData()
+QList<METemperature>  MOCCCurve::YData()
 {
 	return _yData;
 }
+
+void MOCCCurve::setTUnit(METemperature::Units newTUnit)
+{
+    if(newTUnit!=_TUnit)
+    {
+        _TUnit = newTUnit;
+
+        //change label
+        //#TODO
+
+
+        //redraw
+        setData(_xData,_yData);
+    }
+}
+
+void MOCCCurve::setQUnit(MEQflow::Units newQUnit)
+{
+    if(newQUnit!=_qflowUnit)
+    {
+        _qflowUnit = newQUnit;
+
+        //change label
+        //#TODO
+
+
+        //redraw
+        setData(_xData,_yData);
+    }
+
+}
+
 
 void MOCCCurve::init()
 {
@@ -145,14 +181,41 @@ void MOCCCurve::init()
 	}
 }
 
-void MOCCCurve::setData(QVector<double> xData,QVector<double> yData)
+void MOCCCurve::setData(const QList<MEQflow> & xData, const QList<METemperature> & yData)
 {
 	_xData = xData;
 	_yData = yData;
 
+        updateRawXData();
+        updateRawYData();
+
 	if(_xData.size()==0)
 		setRawData(NULL,NULL,0);
 	else
-		setRawData(_xData.data(),_yData.data(),_xData.size());
+                setRawData(_rawXData.data(),_rawYData.data(),_xData.size());
+}
 
+void MOCCCurve::clear()
+{
+    _xData = QList<MEQflow>();
+    _yData = QList<METemperature>();
+
+    setRawData(NULL,NULL,0);
+}
+
+void MOCCCurve::updateRawXData()
+{
+   _rawXData.clear();
+
+    for(int i=0;i<_xData.size();i++)
+        _rawXData.push_back(_xData.at(i).value(_qflowUnit));
+
+}
+
+void MOCCCurve::updateRawYData()
+{
+    _rawYData.clear();
+
+    for(int i=0;i<_yData.size();i++)
+        _rawYData.push_back(_yData.at(i).value(_TUnit));
 }

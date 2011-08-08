@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -87,8 +87,8 @@ public:
     bool isValid();
 
     // Specific functions
-    void setA(EIStream* a,METemperature Tina,METemperature Touta,double fracta);
-    void setB(EIStream* b,METemperature Tinb,METemperature Toutb,double fractb);
+    void setA(EIStream* a,const METemperature &Tina,const METemperature &Touta,double fracta);
+    void setB(EIStream* b,const METemperature &Tinb,const METemperature &Toutb,double fractb);
     void setQFlow(MEQflow);
 
 
