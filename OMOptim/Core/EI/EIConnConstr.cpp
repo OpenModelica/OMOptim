@@ -1,5 +1,7 @@
 #include "EIConnConstr.h"
 
+namespace EI
+{
 EIConnConstr::EIConnConstr(EITree* _eiTree)
 {
         eiTree = _eiTree;
@@ -103,7 +105,7 @@ bool EIConnConstr::setFieldValue(int field,QVariant value)
 	return false;
 }
 
-EIConnConstr* EIConnConstr::clone()
+EIConnConstr* EIConnConstr::clone() const
 {
         EIConnConstr* cloned = new EIConnConstr(eiTree);
 	cloned->a = a;
@@ -113,7 +115,7 @@ EIConnConstr* EIConnConstr::clone()
 	return cloned;
 }
 
-bool EIConnConstr::isValid()
+bool EIConnConstr::isValid() const
 {
 	return a && b;
 }
@@ -168,4 +170,5 @@ QString EIConnConstr::strType(Type _type)
 	default :
 		return "-";
 	}
+}
 }

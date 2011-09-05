@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef _DYMOLA_H
@@ -79,7 +79,7 @@ public:
 	static QString getExecutablePath();
         static bool firstRun(QString moPath,QString modelToConsider,QString storeFolder,QString logFilePath);
 	static bool createDsin(QString moPath,QString modelToConsider,QString folder);
-        static void start(QString path,int maxNSec=-1);
+        static void start(QString path,QProcess &,int maxNSec=-1);
 	static void verifyInstallation();
 	//static QString getPreambleFromDsin(QTextStream *);
 	static void getVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);

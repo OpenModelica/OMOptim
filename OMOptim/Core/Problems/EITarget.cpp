@@ -35,7 +35,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 
   */
 #include "EITarget.h"
@@ -66,7 +66,7 @@ EITarget::EITarget(const EITarget &problem)
     _type = Problem::EITARGETTYPE;
 }
 
-Problem* EITarget::clone()
+Problem* EITarget::clone() const
 {
     Problem* problem = new EITarget(*this);
     return problem;
@@ -111,10 +111,7 @@ bool EITarget::checkBeforeComp(QString & error)
 
 Result* EITarget::launch(ProblemConfig config)
 {
-    emit begun(this);
     EITargetResult* result = NULL;
-
-
     QString error;
     bool ok = checkBeforeComp(error);
     if(!ok)
@@ -137,7 +134,7 @@ Result* EITarget::launch(ProblemConfig config)
 
         delete filledEI;
     }
-    emit finished(this);
+
     return result;
 }
 

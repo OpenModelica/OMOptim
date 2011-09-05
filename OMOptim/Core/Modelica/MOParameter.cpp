@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "MOParameter.h"
@@ -175,7 +175,7 @@ QVariant MOParameter::getFieldValue(int ifield, int role) const
     }
 }
 
-MOParameter* MOParameter::clone()
+MOParameter* MOParameter::clone() const
 {
         MOParameter* newParam = new MOParameter(*this);
 	return newParam;
@@ -328,7 +328,7 @@ QVariant MOParameterListed::getFieldValue(int ifield, int role) const
     }
 }
 
-MOParameterListed* MOParameterListed::clone()
+MOParameterListed* MOParameterListed::clone() const
 {
         MOParameterListed* newParam = new MOParameterListed(*this);
         return newParam;
@@ -348,7 +348,7 @@ QVariant MOParameters::value(int index,QVariant defaultValue)
 {
     int iParam = this->findItem(index,MOParameter::INDEX);
    if(iParam>-1)
-       return this->items.at(iParam)->getFieldValue(MOParameter::VALUE);
+       return this->at(iParam)->getFieldValue(MOParameter::VALUE);
    else
        return defaultValue;
 }
@@ -357,7 +357,7 @@ QVariant MOParameters::value(QString name,QVariant defaultValue)
 {
     int iParam = this->findItem(name,MOParameter::NAME);
    if(iParam>-1)
-       return this->items.at(iParam)->getFieldValue(MOParameter::VALUE);
+       return this->at(iParam)->getFieldValue(MOParameter::VALUE);
    else
    {
        QString msg = "MOParameters : did not find parameter :"+name;
@@ -370,7 +370,7 @@ QVariant MOParameters::value(QString name,QVariant defaultValue)
  {
      int iParam = this->findItem(index,MOParameter::INDEX);
     if(iParam>-1)
-        return this->items.at(iParam)->setFieldValue(MOParameter::VALUE,value);
+        return this->at(iParam)->setFieldValue(MOParameter::VALUE,value);
     else
         return false;
  }

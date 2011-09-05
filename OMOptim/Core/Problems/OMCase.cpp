@@ -30,21 +30,21 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OMCase.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file OMCase.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+        @version
 
   */
 #include "OMCase.h"
 #include "LowTools.h"
 #include "EABase.h"
 
-        OMCase::OMCase(void)
-        {
-        }
+OMCase::OMCase(void)
+{
+}
 
 OMCase::OMCase(Project* project,ModClassTree* modClassTree)
 {
@@ -54,14 +54,14 @@ OMCase::OMCase(Project* project,ModClassTree* modClassTree)
 
 OMCase::OMCase(const OMCase &omCase)
 {
-	_name = omCase._name;
-        _project = omCase._project;
-        _modClassTree = omCase._modClassTree;
+    _name = omCase._name;
+    _project = omCase._project;
+    _modClassTree = omCase._modClassTree;
 
-	
-        _filesToCopy = omCase._filesToCopy;
-	_saveFolder = omCase._saveFolder;
-	_saveFileName = omCase._saveFileName;
+
+    _filesToCopy = omCase._filesToCopy;
+    _saveFolder = omCase._saveFolder;
+    _saveFileName = omCase._saveFileName;
 }
 
 OMCase::~OMCase(void)
@@ -73,139 +73,139 @@ OMCase::~OMCase(void)
 
 void OMCase::setName(QString name)
 {
-	_name=name;
-	emit renamed(_name);
+    _name=name;
+    emit renamed(_name);
 
-	if(_saveFileName.isEmpty())
-		setDefaultSaveFileName();
+    if(_saveFileName.isEmpty())
+        setDefaultSaveFileName();
 }
 
 
 void OMCase::setProject(Project* project)
 {
-	_project=project;
+    _project=project;
 }
 
 void OMCase::setSaveFolder(QString saveFolder)
 {
-        _saveFolder=saveFolder;
+    _saveFolder=saveFolder;
 }
 
 void OMCase::setEntireSavePath(QString savePath)
 {
-	QFileInfo fInfo(savePath);
-	setSaveFolder(fInfo.canonicalPath());
-	_saveFileName = fInfo.fileName();
+    QFileInfo fInfo(savePath);
+    setSaveFolder(fInfo.canonicalPath());
+    _saveFileName = fInfo.fileName();
 }
 
 QString OMCase::saveFolder()
 {
-	return _saveFolder;
+    return _saveFolder;
 }
 
 QString OMCase::saveFileName()
 {
-	return _saveFileName;
+    return _saveFileName;
 }
 
 QString OMCase::entireSavePath()
 {
-	return _saveFolder + QDir::separator() + _saveFileName;
+    return _saveFolder + QDir::separator() + _saveFileName;
 }
 
 
 
 void OMCase::openFolder()
 {
-	LowTools::openFolder(_saveFolder);
+    LowTools::openFolder(_saveFolder);
 }
 
 
 /**
-* Description Store problem files in destFolder. Is called when a problem resolution is finished.
+* Stores problem files in destFolder. Is called when a problem resolution is finished.
 * @param destFolder destination folder path.
 * @param tempDir dir from where problem files are copied
 */
 void OMCase::store(QString destFolder, QString tempDir)
 {
 
-	// update save paths
-	setSaveFolder(destFolder);
-	setDefaultSaveFileName();
+    // update save paths
+    setSaveFolder(destFolder);
+    setDefaultSaveFileName();
 
-	QString savePath = _saveFolder + QDir::separator() + _saveFileName;
+    QString savePath = _saveFolder + QDir::separator() + _saveFileName;
 
 
-	QDir dir = QDir(_saveFolder);
+    QDir dir = QDir(_saveFolder);
 
-	if (!dir.exists())
-	{
-		dir.mkpath(_saveFolder);
-	}
-	else
-	{
-		LowTools::removeDir(_saveFolder);
-		dir.mkdir(_saveFolder);
-	}
+    if (!dir.exists())
+    {
+        dir.mkpath(_saveFolder);
+    }
+    else
+    {
+        LowTools::removeDir(_saveFolder);
+        dir.mkdir(_saveFolder);
+    }
 
-	//copy needed path from old place to new one
-	if(tempDir != "")
-	{
-		QDir tmpDir(tempDir);
-		QDir newDir(_saveFolder);
+    //copy needed path from old place to new one
+    if(tempDir != "")
+    {
+        QDir tmpDir(tempDir);
+        QDir newDir(_saveFolder);
 
-		// copy problem files and folders
-                QStringList fileNames = tmpDir.entryList();
-                for(int i=0;i<fileNames.size();i++)
-		{
-			QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_saveFolder + QDir::separator() + fileNames.at(i));
-		}
+        // copy problem files and folders
+        QStringList fileNames = tmpDir.entryList();
+        for(int i=0;i<fileNames.size();i++)
+        {
+            QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_saveFolder + QDir::separator() + fileNames.at(i));
+        }
 
-                for(int i=0;i<_filesToCopy.size();i++)
-                {
-                        QFile::copy(tempDir + QDir::separator() + _filesToCopy.at(i),_saveFolder + QDir::separator() + _filesToCopy.at(i));
-                }
-	}
+        for(int i=0;i<_filesToCopy.size();i++)
+        {
+            QFile::copy(tempDir + QDir::separator() + _filesToCopy.at(i),_saveFolder + QDir::separator() + _filesToCopy.at(i));
+        }
+    }
 
-        setSaveFolder(destFolder);
+    setSaveFolder(destFolder);
 }
 
 
 /**
-* Description Rename omcase
+* Renames omcase
 * @param newName new omcase name
 * @param changeFolder if yes, rename folder also
 */
 void OMCase::rename(QString newName, bool changeFolder)
 {
-	QString oldName = _name;
-	setName(newName);
+    QString oldName = _name;
+    setName(newName);
 
-	if(changeFolder)
-	{
-		QString oldSaveFolder = saveFolder();
-		QString newSaveFolder = oldSaveFolder;
-		newSaveFolder.replace(oldName,newName);
+    if(changeFolder)
+    {
+        QString oldSaveFolder = saveFolder();
+        QString newSaveFolder = oldSaveFolder;
+        newSaveFolder.replace(oldName,newName);
 
-		QString oldSaveFileName = saveFileName();
-		QString newSaveFileName = oldSaveFileName;
-		newSaveFileName.replace(oldName,newName);
+        QString oldSaveFileName = saveFileName();
+        QString newSaveFileName = oldSaveFileName;
+        newSaveFileName.replace(oldName,newName);
 
-		QDir newDir(newSaveFolder);
-		if(newDir.exists())
-		{
-			newDir.cd("..");
-			newDir.rmdir(newSaveFolder);
-			newDir.setCurrent(newSaveFolder);
-		}
+        QDir newDir(newSaveFolder);
+        if(newDir.exists())
+        {
+            newDir.cd("..");
+            newDir.rmdir(newSaveFolder);
+            newDir.setCurrent(newSaveFolder);
+        }
 
-		LowTools::copyDir(oldSaveFolder,newSaveFolder);
-		LowTools::removeDir(oldSaveFolder);
+        LowTools::copyDir(oldSaveFolder,newSaveFolder);
+        LowTools::removeDir(oldSaveFolder);
 
-		newDir.rename(oldSaveFileName,newSaveFileName);
+        newDir.rename(oldSaveFileName,newSaveFileName);
 
-		setSaveFolder(newSaveFolder);
-		_saveFileName = newSaveFileName;
-	}
+        setSaveFolder(newSaveFolder);
+        _saveFileName = newSaveFileName;
+    }
 }
 

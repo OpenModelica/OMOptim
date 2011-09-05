@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
         /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 
@@ -186,7 +186,7 @@ QStringList MOomc::getModels(QString parentClass)
     }
     return models;
 }
-void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,QStringList & compClasses)
+void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,QStringList & compClasses,bool includeInherited)
 {
 
     compNames.clear();
@@ -237,6 +237,12 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
             //ERROR
         }
     }
+
+    QStringList inhNames, inhClasses;
+
+    getInheritedComponents(parentClass,inhNames,inhClasses);
+    compNames.append(inhNames);
+    compClasses.append(inhClasses);
 }
 
 
@@ -262,14 +268,12 @@ QStringList MOomc::getParameterNames(QString parentClass,bool includeInherited)
     return parameterNames;
 }
 
-void MOomc::getConnections(QString curComp,QStringList &aNames, QStringList &bNames)
+QMap<QString,QString> MOomc::getConnections(const QString & curModel)
 {
-    aNames.clear();
-    bNames.clear();
-
+    QMap<QString,QString> result;
     QStringList connectFields;
     //getting nb connections
-    QString res= evalCommand("getConnectionCount("+curComp+")");
+    QString res= evalCommand("getConnectionCount("+curModel+")");
     if (res!="Error")
     {
         int nbConnections = res.toInt();
@@ -278,18 +282,18 @@ void MOomc::getConnections(QString curComp,QStringList &aNames, QStringList &bNa
         for(int iC=0;iC<nbConnections;iC++)
         {
             //get its name
-            res= evalCommand("getNthConnection("+curComp+","+QString::number(iC+1)+")");
+            res= evalCommand("getNthConnection("+curModel+","+QString::number(iC+1)+")");
             if (res!="Error")
             {
                 res.remove("{");
                 res.remove("}");
                 connectFields = res.split(",");
 
-                aNames.push_back(connectFields.at(0));
-                bNames.push_back(connectFields.at(1));
+                result.insert(connectFields.at(0),connectFields.at(1));
             }
         }
     }
+    return result;
 }
 
 QStringList MOomc::getInheritedClasses(QString parentClass)
@@ -491,43 +495,45 @@ Modelica::ClassRestr MOomc::getClassRestriction(QString className)
         return Modelica::OTHER;
 }
 
-QString MOomc::getAnnotation(QString compName,QString compClass)
+QString MOomc::getAnnotation(QString compName,QString compClass,QString model)
 {
 
-    QString model = compName.section(".",0,0);
-    QString commandText = "list("+model+")";
-    QString list= evalCommand(commandText);
+    QString annot;
+    //#TODO
+//    QString commandText = "list("+model+")";
+//    QString list= evalCommand(commandText);
 
 
-    QStringList listLines = list.split("\n");
-    QString compShortName = compName.section(".",-1,-1);
+//    QStringList listLines = list.split("\n");
+//    QString compShortName = compName.section(".",-1,-1);
 
-    QRegExp regExp(".*"+compClass+"[\\s]*"+ compName.section(".",-1,-1)+"\\(.*\\)[\\s]*;");
-    int iLine = listLines.indexOf(regExp);
+//    QRegExp regExp(".*"+compClass+"[\\s]*"+ compName.section(".",-1,-1)+"\\(.*\\)[\\s]*;");
+//    int iLine = listLines.indexOf(regExp);
 
-    QStringList cap=regExp.capturedTexts();
-    listLines.at(iLine).contains(regExp);
-    cap = regExp.capturedTexts();
+//    QStringList cap=regExp.capturedTexts();
+//    listLines.at(iLine).contains(regExp);
+//    cap = regExp.capturedTexts();
 
-    if(iLine == -1)
-        return QString();
-    else
-    {
-        QString annot = listLines.at(iLine);
-        if(!annot.contains("annotation"))
-            return QString();
-        else
-        {
-            annot.remove(QRegExp(".*annotation\\("));
-            annot.remove(QRegExp("\\)[\\s]*;"));
-            return annot;
-        }
-    }
+//    if(iLine == -1)
+//        return QString();
+//    else
+//    {
+//        QString annot = listLines.at(iLine);
+//        if(!annot.contains("annotation"))
+//            return QString();
+//        else
+//        {
+//            annot.remove(QRegExp(".*annotation\\("));
+//            annot.remove(QRegExp("\\)[\\s]*;"));
+//            return annot;
+//        }
+//    }
+    return annot;
 }
 
 int MOomc::getConnectionNumber(QString className)
 {
-    QString commandText = "getConnectionNumber("+className+")";
+    QString commandText = "getConnectionCount("+className+")";
     QString commandRes= evalCommand(commandText);
 
     return commandRes.toInt();
@@ -552,41 +558,33 @@ bool MOomc::deleteComponent(QString compName)
     return (commandRes=="true");
 
 }
-bool MOomc::deleteConnection(QString org,QString dest, QString model)
+bool MOomc::deleteConnection(const QString & org,const QString & dest, const QString & model)
 {
+    // getting short names
+    QString shortOrg = org;
+    shortOrg.remove(QRegExp("^"+model+"."));
+    QString shortDest = dest;
+    shortDest.remove(QRegExp("^"+model+"."));
 
-    int nbConnBefore = getConnectionNumber(model);
-
-    //remove modelname in org and dest
-    QString firstSection = org.section(".",0,0);
-    if(firstSection==model)
-        org = org.section(".",1,-1);
-
-    firstSection = dest.section(".",0,0);
-    if(firstSection==model)
-        dest = dest.section(".",1,-1);
-
-    QString commandText = "deleteConnection(" + org +"," + dest +"," + model +")";
+    QString commandText = "deleteConnection(" + shortOrg +"," + shortDest +"," + model +")";
     QString commandRes= evalCommand(commandText);
 
-    commandText = "deleteConnection(" + dest +"," + org +"," + model +")";
+    commandText = "deleteConnection(" + shortDest +"," + shortOrg +"," + model +")";
     commandRes= evalCommand(commandText);
 
+    QMap<QString,QString> existingConns = getConnections(model);
 
-    int nbConnAfter = getConnectionNumber(model);
-
-    if(nbConnAfter==nbConnBefore)
+    if((existingConns.value(shortOrg) == shortDest)||(existingConns.value(shortDest) == shortOrg))
     {
-        QString msg = "deleting connection didn't work: "+commandText;
-        infoSender.debug(msg);
+        QString msg = "deleting connection didn't work ["+org+","+dest+"]";
+        infoSender.send(Info(msg,ListInfo::WARNING2));
         return false;
     }
     else
         return true;
 
 }
-
-bool MOomc::deleteConnections(QStringList orgs,QStringList dests, QString model)
+bool MOomc::deleteConnections(const QStringList &  orgs, const QStringList  &  dests, const QString & model)
 {
     bool allOk = false;
     if(orgs.size()==dests.size())
@@ -600,7 +598,7 @@ bool MOomc::deleteConnections(QStringList orgs,QStringList dests, QString model)
     return allOk;
 }
 
-bool MOomc::deleteConnections(QStringList orgs,QList<QStringList> dests, QString model)
+bool MOomc::deleteConnections(const QStringList &  orgs,const QList<QStringList> & dests,const QString & model)
 {
     bool allOk = false;
     if(orgs.size()==dests.size())
@@ -1307,8 +1305,6 @@ QStringList MOomc::getElementInfos(QString parentClass)
     }
 
     return list;
-
-
 }
 
 void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &compsNames,QStringList &compsClasses)

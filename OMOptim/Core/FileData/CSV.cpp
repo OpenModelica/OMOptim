@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 
   */
 #include "CSV.h"
@@ -64,9 +64,9 @@ QString CSV::variablesToLines(MOVector<Variable> * variables)
         QString text = "";
         Variable *curVar;
 
-        for (int i=0;i<variables->items.size();i++)
+        for (int i=0;i<variables->size();i++)
         {
-                curVar=variables->items.at(i);
+                curVar=variables->at(i);
 
                 //Variable fields
                 text += ("#VAR");
@@ -176,9 +176,9 @@ QString CSV::variableResultToValueLines(MOOptVector* variables, int iPoint)
         }
 
 
-        for (int iVar=0;iVar<variables->items.size();iVar++)
+        for (int iVar=0;iVar<variables->size();iVar++)
         {
-                curVar=variables->items.at(iVar);
+                curVar=variables->at(iVar);
                 titleLine.push_back(curVar->name());
 
                 for(int iScan=0;iScan<variables->nbScans();iScan++)
@@ -243,7 +243,7 @@ void CSV::linesToVariableResult(MOOptVector * variables, int iPoint, QString lin
                 if(curScanValues.size()==varNames.size())
                 {
                     iScan = iLine-1;
-                    variables->items.at(indexVar)->setFinalValue(iScan,iPoint,curScanValues.at(iCol).toDouble(),true);
+                    variables->at(indexVar)->setFinalValue(iScan,iPoint,curScanValues.at(iCol).toDouble(),true);
                 }
             }
         }
@@ -258,9 +258,9 @@ QString CSV::scannedVariablesToLines(MOVector<ScannedVariable> * scannedVariable
         QString text = "";
         ScannedVariable *curVar;
 
-        for (int i=0;i<scannedVariables->items.size();i++)
+        for (int i=0;i<scannedVariables->size();i++)
         {
-                curVar=scannedVariables->items.at(i);
+                curVar=scannedVariables->at(i);
 
                 //Variable fields
                 text += ("#SCANVAR");
@@ -282,9 +282,9 @@ QString CSV::optObjectivesToLines(MOVector<OptObjective>* objectives)
 
         OptObjective *curObj;
 
-        for (int i=0;i<objectives->items.size();i++)
+        for (int i=0;i<objectives->size();i++)
         {
-                curObj=objectives->items.at(i);
+                curObj=objectives->at(i);
 
                 //Objective fields
                 text += ("#OBJ");

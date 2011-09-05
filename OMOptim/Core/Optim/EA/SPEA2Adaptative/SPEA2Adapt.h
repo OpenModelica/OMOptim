@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_SPEA2ADAPT_H)
@@ -78,7 +78,7 @@ public :
         SPEA2Adapt(Project*,Problem*,ModClassTree*,ModPlusCtrl*);
         SPEA2Adapt(Project*,Problem*,ModClassTree*,ModPlusCtrl*,MOParameters*);
 	SPEA2Adapt(const SPEA2Adapt &);
-	SPEA2Adapt* clone();
+	SPEA2Adapt* clone() const;
 
 	QList<int> compatibleOMCases();
 	Result* launch(QString tempDir);

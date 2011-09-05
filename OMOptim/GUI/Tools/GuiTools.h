@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #ifndef GUITOOLS_H
@@ -80,7 +80,7 @@ public:
 
 	static QSortFilterProxyModel * ModelToViewWithFilter(QAbstractItemModel *, QAbstractItemView *,QLineEdit*);
 	static void ModelToView(QAbstractItemModel *, QAbstractItemView *);
-     //   static void ModClassToTreeView(ModReader*,ModClass*,QTreeView* _treeView,ModClassTree* _treeModel);
+        static ModClassTree* ModClassToTreeView(ModReader*,MOomc*,const ModClass &,QTreeView*);
 
 	//ModClass popup menus
 	static QMenu* newModClassPopupMenu(Project*,const QPoint &,ModClass*); 

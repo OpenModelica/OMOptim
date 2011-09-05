@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #ifndef _EIReader_H
@@ -47,6 +47,8 @@
 
 #include "MOSettings.h"
 
+namespace EI
+{
 class EIReader : public QObject
 {
 	Q_OBJECT
@@ -61,23 +63,23 @@ public:
 	// Read functions
         static bool isInDescendants(EIItem* parent, QString fullName);
 	
-        static EIItem* findInDescendants(EIItem* parent,QString fullName);
+        static EIItem* findInDescendants(EIItem* parent,QString fullName) ;
         static EIItem* findInDescendants(EIItem* parent, EI::Type eiType, QVariant itemFieldValue, int iField);
 	
 	// Extract functions
-        static QList<EIStream*> getStreams(EIItem* parent);
-        static QList<EIItem*> getItems(EIItem* parent,bool recursive,EI::Type filter = EI::GENERIC);
+        static QList<EIStream*> getStreams(const EIItem* parent);
+        static QList<EIItem*> getItems(const EIItem* parent,bool recursive,EI::Type filter = EI::GENERIC);
 
-        static QList<EIStream*> getValidNumerizedStreams(EIItem*parent,MOOptVector *variables,bool onlyChecked);
-        static QStringList getAllItemNames(EIItem* item,EI::Type filter = EI::GENERIC);
+        static QList<EIStream*> getValidNumerizedStreams(const EIItem*parent,MOOptVector *variables,bool onlyChecked);
+        static QStringList getAllItemNames(const EIItem* item,EI::Type filter = EI::GENERIC);
 
 	// Analyse functions
-        static void getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables,bool useCorrectedT);
+        static void getValidTk(const EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables,bool useCorrectedT);
 	
 
 	// Mult fact
-        static bool getFirstParentGroupFact(EIItem*,EIGroupFact* &,EIGroup* &);
-        static bool isInFactVariable(EIItem*);
+        static bool getFirstParentGroupFact( EIItem*,EIGroupFact* &,EIGroup* &);
+        static bool isInFactVariable( EIItem*);
 
         // Streams filter and sort functions
         static QList<EIStream*> getStreamsAboveT(METemperature T,QList<EIStream*> allStreams,bool useCorrectedT);
@@ -98,7 +100,7 @@ private:
 
 
 };
-
+}
 
 
 #endif

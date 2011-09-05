@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 0.1 
+ 	@version 0.1 
 
   */
 #ifndef _EAStdOptimizationEval_H
@@ -98,12 +98,12 @@ public:
 		/************************************
 		OBJECTIVE FUNCTIONS DEFINITION
 		************************************/
-        _nbObj = _problem->objectives()->items.size();
+        _nbObj = _problem->objectives()->size();
 		OptObjective::Direction objDirection;
 
 		for(unsigned int iObj=0;iObj<_nbObj;iObj++)
 		{
-			objDirection = problem->objectives()->items.at(iObj)->direction();
+			objDirection = problem->objectives()->at(iObj)->direction();
 			if(objDirection == OptObjective::MINIMIZE)
 			{
 				_bObjectives.push_back(true);
@@ -139,7 +139,7 @@ public:
             oneSim->_filesToCopy = _problem->_filesToCopy;
 			
 			//Reading chromosome and placing it in overwritedvariables
-            int nbVar = _problem->optimizedVariables()->items.size();
+            int nbVar = _problem->optimizedVariables()->size();
 			Variable* curVar;
 
 			int iDouble = 0;
@@ -148,7 +148,7 @@ public:
 
 			for(int i=0;i<nbVar;i++)
 			{
-                curVar = new Variable(*_problem->optimizedVariables()->items.at(i));
+                curVar = new Variable(*_problem->optimizedVariables()->at(i));
 				switch(curVar->getFieldValue(Variable::DATATYPE).toInt())
 				{
                                 case OMREAL :
@@ -219,13 +219,13 @@ public:
 			{
                 //infoSender.send(( Info(ListInfo::ONESIMULATIONSUCCESS));
 				//Recover Objective values
-                int nbObj = _problem->objectives()->items.size();
+                int nbObj = _problem->objectives()->size();
 				int iObj=0;
 				double curObjResult;
 				
 				while(resultOk && (iObj<nbObj))
 				{
-                    curObj = _problem->objectives()->items.at(iObj);
+                    curObj = _problem->objectives()->at(iObj);
 					//looking for its value in finalVariables
 					curObjResult = VariablesManip::calculateObjValue(curObj,result->finalVariables(),resultOk,0);
 					objVec[iObj]=curObjResult;

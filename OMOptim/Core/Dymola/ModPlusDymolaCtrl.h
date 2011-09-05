@@ -5,7 +5,7 @@
 @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
 Company : CEP - ARMINES (France)
 http://www-cep.ensmp.fr/english/
-@version 0.9
+@version
 
 */
 #ifndef _MODPLUSDYMOLACTRL_H
@@ -48,6 +48,8 @@ public:
 
         // Simulate function
         bool simulate(QString tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy=QStringList());
+        void stopSimulation();
+        bool canBeStoped();
 
 
 private:
@@ -55,6 +57,7 @@ private:
         QString _dsresFile;
         QString _dsfinalFile;
         OutputReadMode _outputReadMode;
+        QProcess _simProcess;
 
 };
 

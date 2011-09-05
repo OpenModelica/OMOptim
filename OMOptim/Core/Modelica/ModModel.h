@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef _ModModel_H
@@ -48,6 +48,7 @@ public:
 	ModModel(MOomc*);
 	ModModel(MOomc*,ModClass* _parent,QString _name,QString filePath="");
 	~ModModel(void);
+        virtual ModClass* clone() const;
 	virtual QString getClassName(){return "ModModel";};
 
 

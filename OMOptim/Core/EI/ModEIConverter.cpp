@@ -1,5 +1,7 @@
 #include "ModEIConverter.h"
 
+using namespace EI;
+
 ModEIConverter::ModEIConverter()
 {
 }

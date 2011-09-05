@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIConnConstrs.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIConnConstrs.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #ifndef EICONNCONSTRS_H
@@ -42,28 +42,32 @@
 
 #include "MOVector.h"
 #include "EIConnConstr.h"
+
+namespace EI
+{
 /**
- *  Class for connection constraints in Energy integratio
+ *  Class for connection constraints in Energy integration
  */
 class EIConnConstrs : public MOVector<EIConnConstr>
 {
 public:
-	EIConnConstrs(void);
-        EIConnConstrs(const EIConnConstrs &);
-	~EIConnConstrs(void);
-	EIConnConstrs* clone();
-        EIConnConstrs(QDomElement & domList, EITree* eiTree);
+    EIConnConstrs(void);
+    EIConnConstrs(const EIConnConstrs &);
+    ~EIConnConstrs(void);
+    EIConnConstrs* clone() const;
+    EIConnConstrs(QDomElement & domList, EITree* eiTree);
 
-        void setItems(QDomElement,EITree* eiTree);
+    void setItems(QDomElement,EITree* eiTree);
 
-        QMultiMap<QString,QString> getForbiddenMatchs(MOOptVector *variables);
+    QMultiMap<QString,QString> getForbiddenMatchs(MOOptVector *variables);
 
-        bool isForbiddenMatch(QString str1,QString str2,QMultiMap<QString,QString> map = QMultiMap<QString,QString>(),MOOptVector* variables=NULL);
+    bool isForbiddenMatch(QString str1,QString str2,QMultiMap<QString,QString> map = QMultiMap<QString,QString>(),MOOptVector* variables=NULL);
 
-        static QString className(){return "EIConnConstrs";};
-        virtual QString getClassName(){return EIConnConstrs::className();};
+    static QString className(){return "EIConnConstrs";};
+    virtual QString getClassName(){return EIConnConstrs::className();};
 
 
 
 };
+}
 #endif

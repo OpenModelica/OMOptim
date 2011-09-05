@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 */
 
 #include "WidgetProgress.h"
@@ -50,16 +50,17 @@ WidgetProgress::WidgetProgress(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->pushStop, SIGNAL(clicked()),this,SIGNAL(pushedStop()));
+    connect(ui->pushStop, SIGNAL(clicked()),this,SLOT(onPushedStop()));
+    connect(ui->pushQuickEnd,SIGNAL(clicked()),this,SLOT(onPushedQuickEnd()));
 
 
-    fraction =0;
-    taskName = "";
-    timer = new QTimer(this);
-    connect( timer, SIGNAL(timeout()), this, SLOT(updateTimeLeft()) );
+    _fraction = 0;
+    _taskName = "";
+    _timer = new QTimer(this);
+    connect( _timer, SIGNAL(timeout()), this, SLOT(updateTimeLeft()) );
     
-    nbSpeeds = 20;
-    period = 2000;
+    _nbSpeeds = 20;
+    _period = 2000;
 }
 
 WidgetProgress::~WidgetProgress()
@@ -67,69 +68,69 @@ WidgetProgress::~WidgetProgress()
     delete ui;
 }
 
-void WidgetProgress::setProgress(float _fraction)
+void WidgetProgress::setProgress(float fraction)
 {
 
-    float oldFraction = fraction;
-    fraction = _fraction;
-    ui->progressBar->setValue((int)(fraction*100));
+    float oldFraction = _fraction;
+    _fraction = fraction;
+    ui->progressBar->setValue((int)(_fraction*100));
 
     // hide if 0%
-    if(_fraction==0)
+    if(fraction==0)
         ui->progressBar->hide();
     else
         ui->progressBar->show();
 
     //speed
-    int elapsed = lastTime.elapsed();
-    double newSpeed = (fraction-oldFraction)/(double)elapsed;
-    if(lastSpeeds.size()==nbSpeeds)
-        lastSpeeds.removeFirst();
-    lastSpeeds.push_back(newSpeed);
+    int elapsed = _lastTime.elapsed();
+    double newSpeed = (_fraction-oldFraction)/(double)elapsed;
+    if(_lastSpeeds.size()==_nbSpeeds)
+        _lastSpeeds.removeFirst();
+    _lastSpeeds.push_back(newSpeed);
 
     // restart time counter
-    lastTime.restart();
+    _lastTime.restart();
 
 }
 
-void WidgetProgress::setProgress(float _fraction,int curEval,int totalEval)
+void WidgetProgress::setProgress(float fraction,int curEval,int totalEval)
 {
-    float oldFraction = fraction;
-    fraction = _fraction;
-    ui->progressBar->setValue((int)(fraction*100));
+    float oldFraction = _fraction;
+    _fraction = fraction;
+    ui->progressBar->setValue((int)(_fraction*100));
 
-    ui->labelTask->setText(taskName + "(eval "+QString::number(curEval)+"/"+QString::number(totalEval)+")");
+    ui->labelTask->setText(_taskName + "(eval "+QString::number(curEval)+"/"+QString::number(totalEval)+")");
 
     //speed
-    int elapsed = lastTime.elapsed();
-    double newSpeed = (fraction-oldFraction)/(double)elapsed;
-    if(lastSpeeds.size()==nbSpeeds)
-        lastSpeeds.removeFirst();
-    lastSpeeds.push_back(newSpeed);
+    int elapsed = _lastTime.elapsed();
+    double newSpeed = (_fraction-oldFraction)/(double)elapsed;
+    if(_lastSpeeds.size()==_nbSpeeds)
+        _lastSpeeds.removeFirst();
+    _lastSpeeds.push_back(newSpeed);
 
     // restart time counter
-    lastTime.restart();
+    _lastTime.restart();
 }
 
-void WidgetProgress::newTask(QString _taskName)
+void WidgetProgress::newTask(QString taskName)
 {
-    taskName = _taskName;
-    ui->labelTask->setText(taskName);
+    _taskName = taskName;
+    ui->labelTask->setText(_taskName);
     setProgress(0);
 
-    lastSpeeds.clear();
+    _lastSpeeds.clear();
 
-    timer->start(period);
+    _timer->start(_period);
 }
 
 
 void WidgetProgress::endTask()
 {
-    taskName = "";
-    ui->labelTask->setText(taskName);
+    _taskName = "";
+    ui->labelTask->setText(_taskName);
     setProgress(0);
 
-    timer->stop();
+    _timer->stop();
 }
 
 void WidgetProgress::updateTimeLeft()
@@ -138,26 +139,56 @@ void WidgetProgress::updateTimeLeft()
 
     double averageSpeed=0;
 
-    if(lastSpeeds.size()>0)
+    if(_lastSpeeds.size()>0)
     {
         ui->labelTimeLeft->show();
-        for(int i=0;i<lastSpeeds.size();i++)
-            averageSpeed += lastSpeeds.at(i);
-        averageSpeed = averageSpeed / lastSpeeds.size();
+        for(int i=0;i<_lastSpeeds.size();i++)
+            averageSpeed += _lastSpeeds.at(i);
+        averageSpeed = averageSpeed / _lastSpeeds.size();
 
-        int timeLeft = (1-fraction)/averageSpeed;
+        int timeLeft = (1-_fraction)/averageSpeed;
 
         QTime dispTime(0,0,0);
         dispTime = dispTime.addMSecs(timeLeft);
 
 
-        ui->labelTimeLeft->setText("-"+dispTime.toString());
+        ui->labelTimeLeft->setText("- "+dispTime.toString());
     }
     else
         ui->labelTimeLeft->hide();
 }
 
+void WidgetProgress::onPushedStop()
+{
+    emit askProblemStop(_problem);
+}
 
+void WidgetProgress::onPushedQuickEnd()
+{
+    Optimization* optim = dynamic_cast<Optimization*>(_problem);
+
+    if(optim)
+    {
+        optim->onQuickEndAsked();
+    }
+}
+
+void WidgetProgress::setCurProblem(Problem* problem)
+{
+    _problem = problem;
+
+    if(!problem || !problem->canBeStoped())
+        ui->pushStop->hide();
+    else
+        ui->pushStop->show();
+
+    Optimization* optim = dynamic_cast<Optimization*>(problem);
+
+    if(problem->type()==Problem::OPTIMIZATIONTYPE)
+        ui->pushQuickEnd->show();
+    else
+        ui->pushQuickEnd->hide();
+}
 
 
 

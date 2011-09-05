@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #ifndef EITOOLS_H
@@ -47,33 +47,36 @@
 #include "EIReader.h"
 #include "assert.h"
 
+namespace EI
+{
 class EITools
 {
 public:
-	EITools(void);
-	~EITools(void);
+    EITools(void);
+    ~EITools(void);
 
 
-        static void getTkQik(MOOptVector *variables,
-		EIItem* rootEI,QList<METemperature> & Tk,
-                QList<EIStream*> & eiStreams, QList<QList<MEQflow> > & Qik, bool onlyProcess, bool useCorrectedT);
+    static void getTkQik(MOOptVector *variables,
+                         EIItem* rootEI,QList<METemperature> & Tk,
+                         QList<EIStream*> & eiStreams, QList<QList<MEQflow> > & Qik, bool onlyProcess, bool useCorrectedT);
 
-        static void getTkQpkQuk(MOOptVector *variables,
-		EIItem* rootEI,QList<METemperature> & Tk,
-		QList<EIStream*> & eiProcessStreams, QList<QList<MEQflow> > & Qpk,
-		QList<EIStream*> & eiUtilityStreams, QList<QList<MEQflow> > & Quk,
-		QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
-		QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
-                QMap<EIGroupFact*,EIGroup*> &factGroupMap,
-                                 bool useCorrectedT
+    static void getTkQpkQuk(MOOptVector *variables,
+                            EIItem* rootEI,QList<METemperature> & Tk,
+                            QList<EIStream*> & eiProcessStreams, QList<QList<MEQflow> > & Qpk,
+                            QList<EIStream*> & eiUtilityStreams, QList<QList<MEQflow> > & Quk,
+                            QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
+                            QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
+                            QMap<EIGroupFact*,EIGroup*> &factGroupMap,
+                            bool useCorrectedT
 
-		);
+                            );
 
-        static double DTlm(METemperature T1in,METemperature T1out,METemperature T2in,METemperature T2out);
-        static double DTlm(double dT1,double dT2);
+    static double DTlm(METemperature T1in,METemperature T1out,METemperature T2in,METemperature T2out);
+    static double DTlm(double dT1,double dT2);
 
-	
+
 };
+}
 
 
 #endif

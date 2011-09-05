@@ -29,12 +29,12 @@
  *
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIConn.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIConn.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #ifndef EIConn_H
@@ -45,6 +45,8 @@
 #include "EIReader.h"
 #include "EITree.h"
 
+namespace EI
+{
 /*! \class EIConn
    * \brief Each instance of this class corresponds to a heat connexion between two streams. It can concerns only fractions of these streams
    * 
@@ -56,13 +58,15 @@ public:
     {
         NAME,
         STREAMA,
-        FRACTA,
+         FLOWA_V,
+        FLOWA_U,
         TINA_V,
         TINA_U,
         TOUTA_V,
         TOUTA_U,
         STREAMB,
-        FRACTB,
+        FLOWB_V,
+       FLOWB_U,
         TINB_V,
         TINB_U,
         TOUTB_V,
@@ -72,45 +76,57 @@ public:
     };
 
 
-    static const int nbFields = 15;
+    static const int nbFields = 17;
 
 
-    EIConn(EITree*);
+    EIConn();
     ~EIConn(void);
     EIConn(const EIConn &);
-    EIConn(QDomElement &, EITree*);
+    EIConn(QDomElement &, const EITree &);
+    EIConn& operator=(const EIConn&);
 
 
     // MOItem overwrited
-    virtual unsigned getNbFields(){return nbFields;};
-    virtual QString getClassName(){return "EIConn";};
-    bool isValid();
+    virtual unsigned getNbFields(){return nbFields;}
+    virtual QString getClassName(){return "EIConn";}
+    bool isValid() const;
 
     // Specific functions
-    void setA(EIStream* a,const METemperature &Tina,const METemperature &Touta,double fracta);
-    void setB(EIStream* b,const METemperature &Tinb,const METemperature &Toutb,double fractb);
+    void setA(const QString &a,const METemperature &Tina,const METemperature &Touta,MEMassFlow flowA);
+    void setB(const QString &b,const METemperature &Tinb,const METemperature &Toutb,MEMassFlow flowB);
     void setQFlow(MEQflow);
 
+    QString aName()const{return _streamA;}
+    QString bName()const{return _streamB;}
 
+    METemperature TinA()const{return _TinA;}
+    METemperature TinB()const{return _TinB;}
+    METemperature ToutA()const{return _ToutA;}
+    METemperature ToutB()const{return _ToutB;}
+    MEQflow qFlow()const{return _qFlow;}
+
+    METemperature Tin(QString stream)const;
+    METemperature Tout(QString stream)const;
+    MEMassFlow massFlow(QString stream)const;
 
     // access and edit functions
     QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
     static QString sFieldName(int field, int role);
-    QString getFieldName(int i, int role = Qt::DisplayRole){return EIConn::sFieldName(i,role);};
+    QString getFieldName(int i, int role = Qt::DisplayRole){return EIConn::sFieldName(i,role);}
     bool setFieldValue(int field,QVariant value);
 
 protected:
-    EIStream* _streamA;
-    EIStream* _streamB;
+    QString _streamA;
+    QString _streamB;
     METemperature _TinA;
     METemperature _ToutA;
     METemperature _TinB;
     METemperature _ToutB;
     MEQflow _qFlow;
-    double _fractA;
-    double _fractB;
+    MEMassFlow _flowA;
+    MEMassFlow _flowB;
 
-    EITree* _eiTree;
 };
+}
 
 #endif

@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "METemperature.h"
@@ -124,6 +124,12 @@ METemperature& METemperature::operator+=(const double& diffTemp)
     _value += diffTemp;
     return *this;
 }
+METemperature& METemperature::operator=(const METemperature& b)
+{
+    _value = b._value;
+    _unit = b._unit;
+    return *this;
+}
 
 METemperature& METemperature::operator-=(const double& diffTemp)
 {
@@ -139,6 +145,11 @@ METemperature METemperature::operator-(const double& diffTemp) const
 METemperature METemperature::operator+(const double& diffTemp) const
 {
     return METemperature(_value+diffTemp,_unit);
+}
+
+METemperature METemperature::operator+(const METemperature& b) const
+{
+    return METemperature(_value+b.value(_unit),_unit);
 }
 
 bool METemperature::operator<(const METemperature& b) const
@@ -157,4 +168,9 @@ bool METemperature::operator<=(const METemperature& b) const
 bool METemperature::operator>=(const METemperature& b) const
 {
     return value(_unit)>=b.value(_unit);
+}
+
+bool METemperature::equals(const METemperature &b,double error) const
+{
+    return (fabs(value(_unit)-b.value(_unit))<=error);
 }

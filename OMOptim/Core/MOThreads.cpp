@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOThreads.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file MOThreads.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #include "MOThreads.h"
@@ -43,88 +43,55 @@
 namespace MOThreads
 {
 
-	GetCompAndConn::GetCompAndConn(ModModel* _modModel, ModModelPlus* _modModelPlus,Project* _project)
-	{
-		//	senderIsDatabase = false;
-		//	models = new MOVector<Model>;
-		//	models->addItem(_model);
+ProblemThread::ProblemThread(Problem* problem,ProblemConfig config)
+{
+    _problem = problem;
+    _config = config;
+    _result = NULL;
 
-		//	project = _project;
+    connect(this,SIGNAL(finished()),this,SLOT(onFinished()));
 
-		/*connect(this,SIGNAL(componentsUpdated()),model,SIGNAL(componentsUpdated()));
-		connect(this,SIGNAL(modifiersUpdated()),model,SIGNAL(modifiersUpdated()));
-		connect(this,SIGNAL(connectionsUpdated()),model,SIGNAL(connectionsUpdated()));*/
-	}
+    // propagate signals
+    connect(_problem,SIGNAL(newProgress(float)),this,SIGNAL(newProgress(float)));
+    connect(_problem,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProgress(float,int,int)));
+}
 
-	void GetCompAndConn::run(void)
-	{
+void ProblemThread::run()
+{
+    emit begun(_problem);
+    QString msg = "Launching problem : name = "+_problem->name()+" ; type = "+_problem->getClassName();
+    infoSender.send(Info(msg));
+    _launchDate = QDateTime::currentDateTime();
+    _result = _problem->launch(_config);
 
-
-		//Model* curModel;
-		//bool readModelOk = false;
-
-		//for(int i=0;i<models->items.size();i++)
-		//{
-		//	curModel = models->items.at(i);
-		//	curModel->moomc->addUsingThread(this,"reading components and connections in modelica");
-		//	if (project->componentMutex.tryLock())
-		//	{
-		//		readModelOk = curModel->readElements(project->libraries);
-		//		project->componentMutex.unlock();
-		//		//emit componentsUpdated();
-		//		//emit modifiersUpdated();
-		//	}
-
-		//	if(readModelOk)
-		//	{
-		//		curModel->readTableEIStreams();
-
-		//		if (project->connectionMutex.tryLock())
-		//		{
-		//			curModel->readConnections();
-		//			project->connectionMutex.unlock();
-		//			//emit connectionsUpdated();
-		//		}
-
-		//		curModel->moomc->removeUsingThread(this);
-		//	}
-		//}
-	}
-
-//	StartOms::StartOms(MOomc* _oms)
-//	{
-//		moomc = _oms;
-//	}
-
-//	void StartOms::run()
-//	{
-//		moomc->startServer();
-//	}
-
-
-    LaunchProblem::LaunchProblem(Problem* problem,ProblemConfig config)
-	{
-        _problem = problem;
-        _config = config;
-        _result = NULL;
-	}
-
-	void LaunchProblem::run()
-	{
-        QString msg = "Launching problem : name = "+_problem->name()+" ; type = "+_problem->getClassName();
-        infoSender.send(Info(msg));
-        _result = _problem->launch(_config);
-        emit finished(_result);
-	}
-
-    Result* LaunchProblem::result()
+    if(_result)
     {
-        return _result;
+        // set result date and time
+        _result->_date = _launchDate;
+        // time spent (numberof days still not taken into account)
+        int nSec = _launchDate.secsTo(QDateTime::currentDateTime());
+        _result->_duration = QTime(0,0,0,0);
+        _result->_duration = _result->_duration.addSecs(nSec);
     }
+}
 
-	void LaunchProblem::publicExec()
-	{
-		exec();
-	}
+Result* ProblemThread::result()
+{
+    return _result;
+}
+
+void ProblemThread::publicExec()
+{
+    exec();
+}
+void ProblemThread::onFinished()
+{
+    emit finished(_problem,_result);
+}
+void ProblemThread::onStopAsked()
+{
+    terminate();
+    onFinished();
+}
 
 }

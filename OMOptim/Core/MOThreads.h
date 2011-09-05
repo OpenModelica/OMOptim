@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,68 +34,52 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_MOTHREADS_H)
 #define _MOTHREADS_H
 
 #include "ModModelPlus.h"
-#include "Project.h"
+
 
 
 #include "MOVector.h"
 #include <QtCore/QThread>
 #include <QtCore/QMutex>
+#include "Problem.h"
+#include "Result.h"
 
 
 namespace MOThreads
 {
-	class GetCompAndConn :
-		public QThread
+
+	class ProblemThread : public QThread
 	{
 		Q_OBJECT
 	public:
-		GetCompAndConn(ModModel*, ModModelPlus*,Project*);
-
-		void run();
-
-	private :
-
-		Project* project;
-
-	signals :
-		void componentsUpdated();
-		void modifiersUpdated();
-		void connectionsUpdated();
-	};
-
-
-//	class StartOms :public QThread
-//	{
-//		Q_OBJECT
-//	public :
-//		StartOms(MOomc *);
-//		void run();
-//	private :
-//		MOomc* moomc;
-//	};
-
-	class LaunchProblem : public QThread
-	{
-		Q_OBJECT
-	public:
-		LaunchProblem(Problem*,ProblemConfig);
+		ProblemThread(Problem*,ProblemConfig);
 		void run();
 		void publicExec();
                 Result* result();
+
+                QDateTime _launchDate;
+
 	private:
                 Problem* _problem;
                 ProblemConfig _config;
                 Result* _result;
 
+
+        public slots :
+                void onStopAsked();
+                void onFinished();
         signals :
-                void finished(Result*);
+                void finished(Problem*,Result*);
+                void begun(Problem*);
+                void newProgress(float);
+                void newProgress(float,int,int);
+
 	};
 } //namespace
 

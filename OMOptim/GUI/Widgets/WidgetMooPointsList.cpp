@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
         /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 */
 
 #include "WidgetMooPointsList.h"
@@ -62,7 +62,7 @@
     //_ui->layoutWidgetList->setSizeConstraint(QLayout::SetMaximumSize);
     _listPoints->setSizePolicy(QSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred));
 
-    if(_result->optObjectivesResults()->items.size()>0)
+    if(_result->optObjectivesResults()->size()>0)
     {
         for (int i=0;i<_result->optObjectivesResults()->nbPoints();i++)
         {
@@ -127,7 +127,7 @@ void WidgetMooPointsList::showAllPoints()
     // set all points
     QList<int> list;
     int nbPoints=0;
-    if(_result->optObjectivesResults()->items.size()>0)
+    if(_result->optObjectivesResults()->size()>0)
         nbPoints = _result->optObjectivesResults()->nbPoints();
 
     for(int i =0;i<nbPoints;i++)

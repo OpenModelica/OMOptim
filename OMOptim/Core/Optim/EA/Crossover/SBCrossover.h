@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #ifndef SBCROSSOVER_H
@@ -48,7 +48,7 @@
 #include "MOParameter.h"
 
 
-/** Description Crossover operation : using SBX described in Sareni & al., Recombination and self-adapation in Multi-objective GA,
+/** Crossover operation : using SBX described in Sareni & al., Recombination and self-adapation in Multi-objective GA,
   * Lecture Notes in Computer Science, 2004, Volume 2936/2004, 115-126
   * Inheriting eoQuadOp : SBCrossover do a crossover between two individuals.
   *

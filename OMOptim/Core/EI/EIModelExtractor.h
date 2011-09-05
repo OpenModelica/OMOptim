@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 
   */
 
@@ -51,16 +51,19 @@
 #include "EIModelContainer.h"
 #include "MOKeepVector.h"
 
+namespace EI
+{
+/**
+  * EIModelExtractor provides functions to read a modelica model and get all EIItems included in it. It groups all these items to a EIModelContainer.
+  * @sa EIModelContainer
+  */
 class EIModelExtractor
 {
 public:
     EIModelExtractor();
 
    static EIModelContainer* extractFromModClass(ModClass*,ModClassTree*,MOomc*);
-
-
-
-
 };
+}
 
 #endif // EIMODELEXTRACTOR_H

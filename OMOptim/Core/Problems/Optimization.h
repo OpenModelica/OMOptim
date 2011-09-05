@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_OPTIMIZATION_H)
@@ -51,6 +51,7 @@
 
 #include "BlockSubstitution.h"
 #include "BlockSubstitutions.h"
+#include "OptObjectives.h"
 
 
 class EABase;
@@ -69,9 +70,9 @@ protected :
         ModPlusCtrl* _modPlusCtrl;
 
 
-	MOVector<ScannedVariable> *_scannedVariables;
-	MOVector<OptVariable> *_optimizedVariables;
-	MOVector<OptObjective> *_objectives;
+        ScannedVariables *_scannedVariables;
+        OptVariables *_optimizedVariables;
+        OptObjectives *_objectives;
 	BlockSubstitutions *_blockSubstitutions;
 
 
@@ -85,7 +86,7 @@ public:
 	//Optimization(void);
         Optimization(Project*,ModClassTree*,ModPlusCtrl*,ModModelPlus* _mainModelPlus);
 	Optimization(const Optimization &);
-        Problem* clone();
+        Problem* clone() const;
 	~Optimization(void);
 
         static QString className(){return "Optimization";};
@@ -94,9 +95,9 @@ public:
 	//Get functions
 	ModModelPlus* modModelPlus();
         ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
-	MOVector<ScannedVariable> *scannedVariables(){return _scannedVariables;};
-	MOVector<OptVariable> *optimizedVariables(){return _optimizedVariables;};
-	MOVector<OptObjective> *objectives(){return _objectives;};
+        ScannedVariables* scannedVariables(){return _scannedVariables;};
+        OptVariables *optimizedVariables(){return _optimizedVariables;};
+        OptObjectives *objectives(){return _objectives;};
 	BlockSubstitutions *blockSubstitutions(){return _blockSubstitutions;};
 
 	
@@ -125,7 +126,7 @@ public:
         void recomputePoints(OptimResult*, std::vector<int>,bool forceRecompute = false);
 	
 public slots :
-        void onStopAsked();
+        void onQuickEndAsked();
 
 	
 };

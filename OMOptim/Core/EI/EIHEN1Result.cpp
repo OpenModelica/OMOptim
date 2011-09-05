@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "EIHEN1Result.h"
@@ -45,6 +45,7 @@ EIHEN1Result::EIHEN1Result(void)
 {
         _eiTree = new EITree();
         _eiConns = new EIConns();
+        _eiHEN = new EIHEN();
 }
 EIHEN1Result::EIHEN1Result(Project* project, Problem* problem)
 :Result()
@@ -54,6 +55,7 @@ EIHEN1Result::EIHEN1Result(Project* project, Problem* problem)
 
         _eiTree = new EITree();
         _eiConns = new EIConns();
+        _eiHEN = new EIHEN();
 
 }
 
@@ -63,6 +65,7 @@ EIHEN1Result::EIHEN1Result(Project* project, ModClassTree* modClassTree,QDomElem
 
     _eiTree = new EITree();
     _eiConns = new EIConns();
+    _eiHEN = new EIHEN();
 
 
 
@@ -102,6 +105,9 @@ EIHEN1Result::EIHEN1Result(Project* project, ModClassTree* modClassTree,QDomElem
         QDomElement domEIConns = domResult.firstChildElement("EIConns");
         _eiConns->setItems(domEIConns,_eiTree);
 
+        // building eiHEN
+        _eiHEN->setData(*_eiTree,*_eiConns);
+
         QDomElement cFiles = domResult.firstChildElement("Files");
         _logFileName = cFiles.attribute("LogFile");
         _resFileName = cFiles.attribute("ResFile");
@@ -111,19 +117,21 @@ EIHEN1Result::EIHEN1Result(Project* project, ModClassTree* modClassTree,QDomElem
 }
 
 
-EIHEN1Result::EIHEN1Result(const EIHEN1Result &result)
-    :Result(result)
-{
+//EIHEN1Result::EIHEN1Result(const EIHEN1Result &result)
+//    :Result(result)
+//{
 
-}
+
+//}
 
 EIHEN1Result::~EIHEN1Result(void)
 {
-
     delete _eiTree;
 
     _eiConns->clear();
     delete _eiConns;
+
+    delete _eiHEN;
 }
 
 QDomElement EIHEN1Result::toXmlData(QDomDocument & doc)
@@ -189,4 +197,14 @@ void EIHEN1Result::setEIConns(EIConns * eiConns)
     if(_eiConns && (_eiConns!=eiConns))
         delete _eiConns;
     _eiConns = eiConns;
+
+    //updates eiHen
+    _eiHEN->setData(*_eiTree,*_eiConns);
 }
+
+EIHEN* EIHEN1Result::eiHen()
+{
+    return _eiHEN;
+}
+
+

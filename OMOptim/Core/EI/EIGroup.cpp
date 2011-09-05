@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,11 +35,13 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #include "EIGroup.h"
 
+namespace EI
+{
 EIGroup::EIGroup():EIItem(NULL,"Group")
 {
     setFieldValue(COSTFIX,0);
@@ -68,7 +70,7 @@ EIGroup::EIGroup(const EIGroup & _group):EIItem(_group)
 
 
 
-EIItem* EIGroup::clone()
+EIItem* EIGroup::clone()  const
 {
     return (EIItem*)(new EIGroup(*this));
 }
@@ -200,4 +202,5 @@ EIGroupFact* EIGroup::getFact()
 bool EIGroup::isFactVariable()
 {
     return factIsVariable;
+}
 }

@@ -42,18 +42,22 @@ http://www-cep.ensmp.fr/english/
 
 
 ModPlusOMCtrl::ModPlusOMCtrl(ModModelPlus* model,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName)
-:ModPlusCtrl(model,moomc,mmoFolder,moFilePath,modModelName)
+    :ModPlusCtrl(model,moomc,mmoFolder,moFilePath,modModelName)
 {
-        QDir tDir(mmoFolder);
+    QDir tDir(mmoFolder);
 
-        _initFile = _modModelName+"_init.txt";
-        _resFile = _modModelName+"_res.csv";
-        _exeFile = _modModelName+".exe";
+    _initFile = _modModelName+"_init.xml";
+    _resFile = _modModelName+"_res.csv";
+#ifdef WIN32
+    _exeFile = _modModelName+".exe";
+#else
+    _exeFile = _modModelName;
+#endif
 
-        _copyAllMoOfFolder = true;
+    _copyAllMoOfFolder = true;
 
-        _parameters = new MOParameters();
-        setDefaultParameters();
+    _parameters = new MOParameters();
+    setDefaultParameters();
 }
 
 ModPlusOMCtrl::~ModPlusOMCtrl(void)
@@ -62,7 +66,7 @@ ModPlusOMCtrl::~ModPlusOMCtrl(void)
 
 ModPlusCtrl::Type ModPlusOMCtrl::type()
 {
-        return ModPlusCtrl::OPENMODELICA;
+    return ModPlusCtrl::OPENMODELICA;
 }
 
 QString ModPlusOMCtrl::name()
@@ -80,156 +84,163 @@ void ModPlusOMCtrl::setDefaultParameters()
 
 bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString resFile)
 {
-        if(resFile.isEmpty())
-                resFile = _resFile;
+    infoSender.send(Info("Reading final variables in "+resFile,ListInfo::NORMAL2));
 
-        return OpenModelica::getFinalVariablesFromFile(resFile,finalVariables,_modModelName);
+    if(resFile.isEmpty())
+        resFile = _resFile;
+
+    return OpenModelica::getFinalVariablesFromFile(resFile,finalVariables,_modModelName);
 }
 
 
 bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QString initFile)
 {
-        bool authorizeRecreate=false;
-        if(initFile.isEmpty())
-        {
-                authorizeRecreate=true;
-                initFile = _mmoFolder+QDir::separator()+_initFile;
-        }
-        initVariables->clear();
-        QFileInfo initFileInfo = QFileInfo(initFile);
 
-        if(!initFileInfo.exists()&&authorizeRecreate)
-        {
-                createInitFile();
-        }
 
-        if(!initFileInfo.exists())
-        {
-                return false;
-        }
-        else
-        {
-                OpenModelica::getInputVariablesFromFile(_moomc,initFile,initVariables,_modModelName);
-                return true;
-        }
+    bool authorizeRecreate=false;
+    if(initFile.isEmpty())
+    {
+        authorizeRecreate=true;
+        initFile = _mmoFolder+QDir::separator()+_initFile;
+    }
 
+    infoSender.send(Info("Reading initial variables in "+initFile,ListInfo::NORMAL2));
+
+    initVariables->clear();
+    QFileInfo initFileInfo = QFileInfo(initFile);
+
+    if(!initFileInfo.exists()&&authorizeRecreate)
+    {
+        createInitFile();
+    }
+
+    if(!initFileInfo.exists())
+    {
+        return false;
+    }
+    else
+    {
+        OpenModelica::getInputVariablesFromXmlFile(_moomc,initFile,_modModelName,initVariables);
         return true;
+    }
+
+    return true;
 }
 
 bool ModPlusOMCtrl::compile()
 {
 
-        infoSender.send(Info("Compiling model "+_modModelName,ListInfo::NORMAL2));
+    infoSender.send(Info("Compiling model "+_modModelName,ListInfo::NORMAL2));
 
-        // compile
-        QString logFile = _mmoFolder+_modModelName+".log";
-        bool success = OpenModelica::compile(_moomc,_moFilePath,_modModelName,_mmoFolder);
+    // compile
+    QString logFile = _mmoFolder+_modModelName+".log";
+    bool success = OpenModelica::compile(_moomc,_moFilePath,_modModelName,_mmoFolder);
 
-        // Inform
-        ListInfo::InfoNum iMsg;
-        if(success)
-                iMsg = ListInfo::MODELCOMPILATIONSUCCESS;
-        else
-                iMsg = ListInfo::MODELCOMPILATIONFAIL;
+    // Inform
+    ListInfo::InfoNum iMsg;
+    if(success)
+        iMsg = ListInfo::MODELCOMPILATIONSUCCESS;
+    else
+        iMsg = ListInfo::MODELCOMPILATIONFAIL;
 
-        infoSender.send(Info(iMsg,_modModelName,logFile));
+    infoSender.send(Info(iMsg,_modModelName,logFile));
 
-        return success;
+    return success;
 }
 
 
 bool ModPlusOMCtrl::isCompiled()
 {
-        bool filesExist = true;
-        QStringList filesNeeded;
-        filesNeeded << _exeFile;
+    bool filesExist = true;
+    QStringList filesNeeded;
+    filesNeeded << _exeFile;
 
-        QString filePath;
-        QFile file;
+    QString filePath;
+    QFile file;
 
-        for(int i=0;i<filesNeeded.size();i++)
-        {
-                filePath = _mmoFolder+QDir::separator()+filesNeeded.at(i);
-                file.setFileName(filePath);
-                filesExist = filesExist && file.exists();
-        }
-        return filesExist;
+    for(int i=0;i<filesNeeded.size();i++)
+    {
+        filePath = _mmoFolder+QDir::separator()+filesNeeded.at(i);
+        file.setFileName(filePath);
+        filesExist = filesExist && file.exists();
+    }
+    return filesExist;
 }
 
 
 bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy)
 {
-        // eventually compile model
-        if(!isCompiled())
-                compile();
+    // Info
+    infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));
 
-        // clear outputVars
-        outputVars->clear();
+    // eventually compile model
+    if(!isCompiled())
+        compile();
 
-        // Create tempDir
-        QDir modelTempDir(tempFolder);
-        modelTempDir.mkdir(tempFolder);
+    // clear outputVars
+    outputVars->clear();
 
-        // copy files in temp dir (#TODO : optimize with a config.updateTempDir in case of several consecutive launches)
-        QStringList allFilesToCopy;
-        QDir mmoDir = QDir(_mmoFolder);
-        allFilesToCopy << mmoDir.filePath(_initFile) << mmoDir.filePath(_exeFile);
-        allFilesToCopy.append(filesToCopy);
+    // Create tempDir
+    QDir modelTempDir(tempFolder);
+    modelTempDir.mkdir(tempFolder);
 
-        QDir tempDir = QDir(tempFolder);
-        QFileInfo fileToCopyInfo;
-        QFile fileToCopy;
+    // copy files in temp dir (#TODO : optimize with a config.updateTempDir in case of several consecutive launches)
+    QStringList allFilesToCopy;
+    QDir mmoDir = QDir(_mmoFolder);
+    allFilesToCopy << mmoDir.filePath(_initFile) << mmoDir.filePath(_exeFile);
+    allFilesToCopy.append(filesToCopy);
 
-        for(int i=0; i< allFilesToCopy.size();i++)
-        {
-            fileToCopy.setFileName(allFilesToCopy.at(i));
-            fileToCopyInfo.setFile(fileToCopy);
-            tempDir.remove(fileToCopyInfo.fileName());
-            fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
-        }
+    QDir tempDir = QDir(tempFolder);
+    QFileInfo fileToCopyInfo;
+    QFile fileToCopy;
 
-
-        // remove previous log files
-        QStringList filesToRemove;
-        filesToRemove << _resFile;
-        for(int i=0;i<filesToRemove.size();i++)
-                tempDir.remove(filesToRemove.at(i));
-
-        QString tempInitFile = tempDir.absoluteFilePath(_initFile);
-        QString tempResFile = tempDir.absoluteFilePath(_resFile);
-        QString tempExeFile = tempDir.absoluteFilePath(_exeFile);
+    for(int i=0; i< allFilesToCopy.size();i++)
+    {
+        fileToCopy.setFileName(allFilesToCopy.at(i));
+        fileToCopyInfo.setFile(fileToCopy);
+        tempDir.remove(fileToCopyInfo.fileName());
+        fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
+    }
 
 
-        // Specifying new Variables values in dymosim input file
-        OpenModelica::setInputVariables(tempInitFile,inputVars,_modModelName,parameters());
+    // remove previous log files
+    QStringList filesToRemove;
+    filesToRemove << _resFile;
+    for(int i=0;i<filesToRemove.size();i++)
+        tempDir.remove(filesToRemove.at(i));
 
-        // Info
-        infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));
+    QString tempInitFile = tempDir.absoluteFilePath(_initFile);
+    QString tempResFile = tempDir.absoluteFilePath(_resFile);
+    QString tempExeFile = tempDir.absoluteFilePath(_exeFile);
 
-        // Launching oepnmodelica
-        int maxNSec=-1;
-        int iParam = _parameters->findItem((int)OpenModelica::MAXSIMTIME,MOParameter::INDEX);
-        if(iParam>-1)
-            maxNSec=_parameters->items.at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
 
-        OpenModelica::start(tempExeFile,maxNSec);
+    // Specifying new Variables values in OM input file
+    OpenModelica::setInputXml(tempInitFile,inputVars,_modModelName,parameters());
 
-                //getting results
-        //Checking if successed
-        bool success=QFile::exists(tempResFile);
+    // Launching oepnmodelica
+    int maxNSec=-1;
+    int iParam = _parameters->findItem((int)OpenModelica::MAXSIMTIME,MOParameter::INDEX);
+    if(iParam>-1)
+        maxNSec=_parameters->at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
 
-        if(!success)
-                return false;
+    OpenModelica::start(tempExeFile,maxNSec);
 
-        bool readOk = readOutputVariables(outputVars,tempResFile);
-        return readOk;
+    //getting results
+    //Checking if successed
+    bool success=QFile::exists(tempResFile);
+
+    if(!success)
+        return false;
+
+    bool readOk = readOutputVariables(outputVars,tempResFile);
+    return readOk;
 }
 bool ModPlusOMCtrl::createInitFile()
 {
-        return compile();
+    return compile();
 }
 
 void ModPlusOMCtrl::setMmoFolder(QString mmoFolder)
 {
-        _mmoFolder = mmoFolder;
+    _mmoFolder = mmoFolder;
 }

@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModelicaConnections.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file ModelicaConnections.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #include "ModelicaConnections.h"
@@ -43,12 +43,12 @@
 
 ModelicaConnections::ModelicaConnections(ModClassTree* modClassTree)
 {
-        _modClassTree = modClassTree;
+    _modClassTree = modClassTree;
 }
 
 ModelicaConnections::~ModelicaConnections(void)
 {
-	clear();
+    clear();
 }
 
 //void ModelicaConnections::clear()
@@ -141,41 +141,43 @@ ModelicaConnections::~ModelicaConnections(void)
 
 ModelicaConnections* ModelicaConnections::filter(ModClass* element,bool includeChildren,bool acceptInternal)
 {
-        ModelicaConnections* elConn = new ModelicaConnections(_modClassTree);
-        QString elName = element->name();
-	QString a,b;
-	ModelicaConnection* curConn;
+    ModelicaConnections* elConn = new ModelicaConnections(_modClassTree);
+    QString elName = element->name();
+    QString a,b;
+    ModelicaConnection* curConn;
 
-	for(int i=0;i<this->items.size();i++)
-	{
-		curConn = this->items.at(i);
-		a = curConn->getA();
-		b = curConn->getB();
+    for(int i=0;i<this->size();i++)
+    {
+        curConn = this->at(i);
+        a = curConn->getA();
+        b = curConn->getB();
 
-		if((QString::compare(elName,a,Qt::CaseInsensitive)==0)
-			||(QString::compare(elName,b,Qt::CaseInsensitive)==0))
-			elConn->addItem(curConn);
-		else
-		{
-			if(includeChildren)
-			{
-                                bool aIsInChildren = (_modClassTree->findInDescendants(a,element)!=NULL);
+        if((QString::compare(elName,a,Qt::CaseInsensitive)==0)
+                ||(QString::compare(elName,b,Qt::CaseInsensitive)==0))
+            elConn->addItem(curConn);
+        else
+        {
+            if(includeChildren)
+            {
+                //bool aIsInChildren = (_modClassTree->findInDescendants(a,element)!=NULL);
+                bool aIsInChildren = portIsInElement(a,elName);
 
-				if(acceptInternal && aIsInChildren)
-					elConn->addItem(curConn);
-				else
-				{
-                                        bool bIsInChildren = (_modClassTree->findInDescendants(b,element)!=NULL);
-					bool isConcerned = (aIsInChildren || bIsInChildren);
-					bool isInternal = (aIsInChildren && bIsInChildren);
-				
-					if(isConcerned && !(isInternal&&!acceptInternal))
-						elConn->addItem(curConn);
-				}
-			}
-		}
-	}
-	return elConn;
+                if(acceptInternal && aIsInChildren)
+                    elConn->addItem(curConn);
+                else
+                {
+                    //bool bIsInChildren = (_modClassTree->findInDescendants(b,element)!=NULL);
+                    bool bIsInChildren = portIsInElement(b,elName);
+                    bool isConcerned = (aIsInChildren || bIsInChildren);
+                    bool isInternal = (aIsInChildren && bIsInChildren);
+
+                    if(isConcerned && !(isInternal&&!acceptInternal))
+                        elConn->addItem(curConn);
+                }
+            }
+        }
+    }
+    return elConn;
 }
 
 
@@ -187,12 +189,12 @@ ModelicaConnections* ModelicaConnections::filter(ModClass* element,bool includeC
 //
 //	ModClass* aModClass,*bModClass;
 //	QString aName,bName;
-//	for(int i=0;i<elConn->items.size();i++)
+//	for(int i=0;i<elConn->size();i++)
 //	{
-//		aName = elConn->items.at(i)->getA();
+//		aName = elConn->at(i)->getA();
 //		aModClass = modReader->findInDescendants(element,aName);
 //		
-//		bName = elConn->items.at(i)->getB();
+//		bName = elConn->at(i)->getB();
 //		bModClass = modReader->findInDescendants(element,bName);
 //		
 //
@@ -211,130 +213,135 @@ ModelicaConnections* ModelicaConnections::filter(ModClass* element,bool includeC
 
 void ModelicaConnections::getOutside(ModClass* element,bool includeChildren,QStringList &ports, QStringList &outsideComps)
 {
-	QString aName;
-	QString bName;
-	ModClass* aModClass;
-	ModClass* bModClass;
+    QString aName;
+    QString bName;
 
-        ModelicaConnections* elConn = filter(element,includeChildren,false);
+    ModelicaConnections* elConn = filter(element,includeChildren,false);
 
-	ports.clear();
-	outsideComps.clear();
+    ports.clear();
+    outsideComps.clear();
 
-	for(int i=0;i<elConn->items.size();i++)
-	{
-		aName = elConn->items.at(i)->getA();
-                aModClass = _modClassTree->findInDescendants(aName,element);
-		
-		bName = elConn->items.at(i)->getB();
-                bModClass = _modClassTree->findInDescendants(bName,element);
-		
+    for(int i=0;i<elConn->size();i++)
+    {
+        aName = elConn->at(i)->getA();
+        bool aIsInside = portIsInElement(aName,element->name(Modelica::FULL));
 
-		if(aModClass && ! bModClass)
-		{
-			ports.push_back(aName);
-			outsideComps.push_back(bName);
-		}
-		
-		if(!aModClass && bModClass)
-		{
-			ports.push_back(bName);
-			outsideComps.push_back(aName);
-		}
-	}
+        bName = elConn->at(i)->getB();
+        bool bIsInside = portIsInElement(bName,element->name(Modelica::FULL));
+
+        if(aIsInside && ! bIsInside)
+        {
+            ports.push_back(aName);
+            outsideComps.push_back(bName);
+        }
+
+        if(!aIsInside && bIsInside)
+        {
+            ports.push_back(bName);
+            outsideComps.push_back(aName);
+        }
+    }
 }
 
 void ModelicaConnections::getOutside(ModClass* element,bool includeChildren,QStringList &uniquePorts, QList<QStringList> &outsideComps)
 {
-	QStringList listPorts;
-	QStringList listOutsideComps;
+    QStringList listPorts;
+    QStringList listOutsideComps;
 
-        getOutside(element,includeChildren,listPorts,listOutsideComps);
+    getOutside(element,includeChildren,listPorts,listOutsideComps);
 
-	QMultiMap<QString,QString> map;
-	for(int i=0;i<listPorts.size();i++)
-	{
-		map.insert(listPorts.at(i),listOutsideComps.at(i));
-	}
+    QMultiMap<QString,QString> map;
+    for(int i=0;i<listPorts.size();i++)
+    {
+        map.insert(listPorts.at(i),listOutsideComps.at(i));
+    }
 
-	uniquePorts = map.uniqueKeys();
-	outsideComps.clear();
-	for(int i=0;i<uniquePorts.size();i++)
-	{
-		outsideComps.push_back(map.values(uniquePorts.at(i)));
-	}
+    uniquePorts = map.uniqueKeys();
+    outsideComps.clear();
+    for(int i=0;i<uniquePorts.size();i++)
+    {
+        outsideComps.push_back(map.values(uniquePorts.at(i)));
+    }
 }
 
-QList<ModClass*> ModelicaConnections::getOutsideConnectedComps(ModClass* element,bool includeChildren)
+//QList<ModClass*> ModelicaConnections::getOutsideConnectedComps(ModClass* element,bool includeChildren)
+//{
+//    ModelicaConnections* elConns= filter(element,includeChildren,false);
+//    QList<ModClass*> connectedComps ;
+
+//    ModClass *aModClass,*bModClass;
+//    QString aName,bName;
+
+
+//    // looking for connections from itself
+//    for(int iConn=0;iConn<elConns->size();iConn++)
+//    {
+//        aName = elConns->at(iConn)->getA();
+//        bName = elConns->at(iConn)->getB();
+
+
+//        aModClass = _modClassTree->findInDescendants(aName,element);
+//        bModClass = _modClassTree->findInDescendants(bName,element);
+
+//        if(aModClass)
+//            connectedComps.push_back(bModClass);
+//        else
+//            connectedComps.push_back(aModClass);
+//    }
+//    return connectedComps;
+//}
+
+//QStringList ModelicaConnections::getOutsideConnectedCompsNames(ModClass* element,bool includeChildren,Modelica::NameFormat format)
+//{
+//    QList<ModClass*> connectedComps = getOutsideConnectedComps(element,includeChildren);
+//    QStringList names;
+//    for(int i=0;i<connectedComps.size();i++)
+//    {
+//        names.push_back(connectedComps.at(i)->name(format));
+//    }
+//    return names;
+//}
+
+//QList<ModClass*> ModelicaConnections::getOutsideConnectingPorts(ModClass* element,bool includeChildren)
+//{
+//    ModelicaConnections* elConns= filter(element,includeChildren,false);
+
+//    QList<ModClass*> connectedComps ;
+//    ModClass *aModClass,*bModClass;
+//    QString aName,bName;
+
+
+//    // looking for connections from itself
+//    for(int iConn=0;iConn<elConns->size();iConn++)
+//    {
+//        aName = elConns->at(iConn)->getA();
+//        bName = elConns->at(iConn)->getB();
+//        aModClass = _modClassTree->findInDescendants(aName,element);
+//        bModClass = _modClassTree->findInDescendants(bName,element);
+//        if(aModClass)
+//            connectedComps.push_back(aModClass);
+//        else
+//            connectedComps.push_back(bModClass);
+//    }
+//    return connectedComps;
+
+//}
+
+//QStringList ModelicaConnections::getOutsideConnectingPortsNames(ModClass* element,bool includeChildren,Modelica::NameFormat format)
+//{
+//    QList<ModClass*> connectedComps = getOutsideConnectingPorts(element,includeChildren);
+//    QStringList names;
+//    for(int i=0;i<connectedComps.size();i++)
+//    {
+//        names.push_back(connectedComps.at(i)->name(format));
+//    }
+//    return names;
+//}
+
+bool ModelicaConnections::portIsInElement(QString portName,QString elementName)
 {
-        ModelicaConnections* elConns= filter(element,includeChildren,false);
-	QList<ModClass*> connectedComps ;
 
-	ModClass *aModClass,*bModClass;
-	QString aName,bName;
-
-
-	// looking for connections from itself
-	for(int iConn=0;iConn<elConns->items.size();iConn++)
-	{
-		aName = elConns->items.at(iConn)->getA();
-		bName = elConns->items.at(iConn)->getB();
-                aModClass = _modClassTree->findInDescendants(aName,element);
-                bModClass = _modClassTree->findInDescendants(bName,element);
-		
-		if(aModClass)
-			connectedComps.push_back(bModClass);
-		else
-			connectedComps.push_back(aModClass);
-	}
-	return connectedComps;
+    return portName.contains(QRegExp("^"+elementName+"[$|\\.]"));
 }
-
-QStringList ModelicaConnections::getOutsideConnectedCompsNames(ModClass* element,bool includeChildren,Modelica::NameFormat format)
-{
-        QList<ModClass*> connectedComps = getOutsideConnectedComps(element,includeChildren);
-	QStringList names;
-	for(int i=0;i<connectedComps.size();i++)
-	{
-		names.push_back(connectedComps.at(i)->name(format));
-	}
-	return names;
-}
-
-QList<ModClass*> ModelicaConnections::getOutsideConnectingPorts(ModClass* element,bool includeChildren)
-{
-        ModelicaConnections* elConns= filter(element,includeChildren,false);
-
-	QList<ModClass*> connectedComps ;
-	ModClass *aModClass,*bModClass;
-	QString aName,bName;
-	
-
-	// looking for connections from itself
-	for(int iConn=0;iConn<elConns->items.size();iConn++)
-	{
-		aName = elConns->items.at(iConn)->getA();
-		bName = elConns->items.at(iConn)->getB();
-                aModClass = _modClassTree->findInDescendants(aName,element);
-                bModClass = _modClassTree->findInDescendants(bName,element);
-		if(aModClass)
-			connectedComps.push_back(aModClass);
-		else
-			connectedComps.push_back(bModClass);
-	}
-	return connectedComps;
-
-}
-QStringList ModelicaConnections::getOutsideConnectingPortsNames(ModClass* element,bool includeChildren,Modelica::NameFormat format)
-{
-        QList<ModClass*> connectedComps = getOutsideConnectingPorts(element,includeChildren);
-	QStringList names;
-	for(int i=0;i<connectedComps.size();i++)
-	{
-		names.push_back(connectedComps.at(i)->name(format));
-	}
-	return names;
-}
-
 
 

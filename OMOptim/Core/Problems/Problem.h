@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #if !defined(_PROBLEM_H)
@@ -97,7 +97,7 @@ public:
 	Problem(const Problem & s);
 	virtual ~Problem(void);
 	
-        virtual Problem* clone()=0;
+        virtual Problem* clone() const =0;
 	
 	// MO Item overwriting
 	virtual QString getFieldName(int iField,int iRole);
@@ -105,23 +105,27 @@ public:
 	virtual QString getClassName(){return "Problem";};
 
 
+        // Stop functions
+        virtual bool canBeStoped(){return false;}
+        virtual void stop(){};
+
         // Infos
         static QString infos();
 
 	// Execution
 	/**
-	* Description Launch problem resolution.
+        * Launch problem resolution.
 	* This function should be reimplemented for each kind of problem.
 	*/
         virtual Result* launch(ProblemConfig config) = 0;
 
         /**
-        * Description precomputation function : should be launched at beginning
+        * Precomputation function : should be launched at beginning
         * of launch function
         */
         //virtual void precompute();
         /**
-        * Description Check if problem parameters, and inputs are correct.
+        * Check if problem parameters, and inputs are correct.
         * For example, check if min<max.
         * pure virtual functions : all classes inheriting Problem should have a check function.
         * @param error : contains list of errors detected.
@@ -132,7 +136,7 @@ public:
 
 	// Managment functions
 	/**
-	* Description Save problem information in XML form.
+        * Save problem information in XML form.
 	*/
 	virtual QDomElement toXmlData(QDomDocument & doc) = 0;
 	virtual void store(QString destFolder, QString tempDir);
@@ -146,15 +150,15 @@ public:
 	void setType(ProblemType);
 		
 public slots:
-        virtual void onStopAsked(){};
+        //virtual void onStopAsked(){};
 
 		
 
 signals:
-	void finished(Problem*);
+        //void finished(Problem*);
 	void newProgress(float);
 	void newProgress(float,int,int);
-	void begun(Problem*);
+        //void begun(Problem*);
 };
 
 

@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #include "Save.h"
@@ -353,10 +353,10 @@ void Save::saveProject(Project* project)
     }
 
     // Project problems
-    if(project->problems()->items.size()>0)
+    if(project->problems()->size()>0)
     {
         QDomElement cOMCases = doc.createElement( "Problems" );
-        for (int nr=0;nr<project->problems()->items.size();nr++)
+        for (int nr=0;nr<project->problems()->size();nr++)
         {
             QDomElement cProblem = doc.createElement( "Problem" );
             relPath = projectDir.relativeFilePath(project->problems()->at(nr)->entireSavePath());
@@ -367,11 +367,11 @@ void Save::saveProject(Project* project)
     }
 
     // Project results
-    if(project->results()->items.size()>0)
+    if(project->results()->size()>0)
     {
         QDomElement cResults = doc.createElement( "Results" );
 
-        for (int nr=0;nr<project->results()->items.size();nr++)
+        for (int nr=0;nr<project->results()->size();nr++)
         {
             QDomElement cResult = doc.createElement( "Result" );
             relPath = projectDir.relativeFilePath(project->results()->at(nr)->entireSavePath());
@@ -398,13 +398,13 @@ void Save::saveProject(Project* project)
     file.close();
 
     // Saving solved OMCases
-    for (int nr=0;nr<project->results()->items.size();nr++)
+    for (int nr=0;nr<project->results()->size();nr++)
     {
         Save::saveResult(project->results()->at(nr));
     }
 
     // Saving OMCases
-    for (int nr=0;nr<project->problems()->items.size();nr++)
+    for (int nr=0;nr<project->problems()->size();nr++)
     {
         Save::saveProblem(project->problems()->at(nr));
     }

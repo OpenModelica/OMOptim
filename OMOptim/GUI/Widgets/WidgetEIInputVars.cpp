@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #include "WidgetEIInputVars.h"
@@ -89,7 +89,7 @@ void WidgetEIInputVars::fillList()
 	QListWidgetItem* item;
 	ui->listAvailableVectors->clear();
 
-    for(int i=0;i<project->results()->items.size();i++)
+    for(int i=0;i<project->results()->size();i++)
 	{
         curResult = project->results()->at(i);
 

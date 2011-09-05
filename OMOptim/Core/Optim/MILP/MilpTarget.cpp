@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #include "MilpTarget.h"
@@ -519,9 +519,9 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 
                 if(streamA && streamB)
                 {
-                    newEIConn = new EIConn(result->eiTree());
-                    newEIConn->setA(streamA,METemperature(),METemperature(),1);
-                    newEIConn->setB(streamB,METemperature(),METemperature(),1);
+                    newEIConn = new EIConn();
+                    newEIConn->setA(streamA->name(),METemperature(),METemperature(),1);
+                    newEIConn->setB(streamB->name(),METemperature(),METemperature(),1);
                     newEIConn->setQFlow(MEQflow(qflow,MEQflow::KW));
                     result->eiConns()->addItem(newEIConn);
                 }

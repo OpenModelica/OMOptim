@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #ifndef MOMAINTAB_H
@@ -42,18 +42,18 @@
 
 #include <QtGui/QTabWidget>
 #include <QContextMenuEvent>
-#include "tabOneSim.h"
-#include "tabOptimization.h"
-#include "tabResOneSim.h"
-#include "tabResOptimization.h"
-#include "tabResOneSim.h"
+#include "TabOneSim.h"
+#include "TabOptimization.h"
+#include "TabResOneSim.h"
+#include "TabResOptimization.h"
+#include "TabResOneSim.h"
 #include "MOTab.h"
 #include "Project.h"
 
 #ifdef USEEI
-#include "tabEITargetResult.h"
-#include "tabEIHEN1Result.h"
-#include "tabEIProblem.h"
+#include "TabEITargetResult.h"
+#include "TabEIHEN1Result.h"
+#include "TabEIProblem.h"
 #endif
 
 class MainWindow;

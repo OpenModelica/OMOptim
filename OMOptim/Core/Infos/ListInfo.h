@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_LISTINFO_H)
@@ -164,7 +164,7 @@ namespace ListInfo{
 		{FOLDERUNREMOVABLE, "Folder (%s) not removable. Stopping computation.",ERROR2},
 		{LOADINGMODEL, "Loading model file (%s) ...",NORMAL2},
 		{RESULTFILENOTEXISTS, "Result file (%s) does not exist. This result will not be imported.",ERROR2},
-		{RESULTFILECORRUPTED, "MO result file %s is corrupted.",ERROR2},
+                {RESULTFILECORRUPTED, "Result file is corrupted (%s)",ERROR2},
 		{PROBLEMFILENOTEXISTS, "Problem file (%s) does not exist. This result will not be imported.",ERROR2},
 		{PROBLEMFILECORRUPTED, "Problem file is corrupted (error : %s, file : %s)",ERROR2},
 		{PROBLEMMODELNOTFOUND, "Model \"%s\" of problem \"%s\" can't be found.",ERROR2},

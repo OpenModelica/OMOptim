@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #ifndef _CCTOOLS_H
@@ -45,32 +45,35 @@
 #include "EIStream.h"
 #include <QtCore/QObject>
 
+namespace EI
+{
 class CCTools
 {
 public:
-	CCTools(void);
-	~CCTools(void);
+    CCTools(void);
+    ~CCTools(void);
 
-        static void buildCCfromStreams(const QList<METemperature> & Tk,
-                const QList<QList<MEQflow> > & Qik,
-		MOCCCurve *hotCurve,
-		MOCCCurve *coldCurve);
+    static void buildCCfromStreams(const QList<METemperature> & Tk,
+                                   const QList<QList<MEQflow> > & Qik,
+                                   MOCCCurve *hotCurve,
+                                   MOCCCurve *coldCurve);
 
-        static void buildGCCfromStreams(const QList<METemperature> & Tk,
-                const QList<QList<MEQflow> > & Qik,
-		MOCCCurve *gccCurve);
+    static void buildGCCfromStreams(const QList<METemperature> & Tk,
+                                    const QList<QList<MEQflow> > & Qik,
+                                    MOCCCurve *gccCurve);
 
-        static void getPinch(const QList<METemperature> & Tall,const QList<MEQflow>  &HCold,const QList<MEQflow>  &HHot, METemperature & TPinch, MEQflow & dHPinch);
+    static void getPinch(const QList<METemperature> & Tall,const QList<MEQflow>  &HCold,const QList<MEQflow>  &HHot, METemperature & TPinch, MEQflow & dHPinch);
 
-        static void getValues(const QList<METemperature> & Tk,
-                const QList<QList<MEQflow> > & Qik,
-                METemperature &TPinch, MEQflow &MER, MEQflow &MERCold);
+    static void getValues(const QList<METemperature> & Tk,
+                          const QList<QList<MEQflow> > & Qik,
+                          METemperature &TPinch, MEQflow &MER, MEQflow &MERCold);
 
 private :
-        static void projectHonT(QList<METemperature> &newT,QList<MEQflow> &newH,const QList<METemperature> &oldT,const QList<MEQflow> &oldH);
+    static void projectHonT(QList<METemperature> &newT,QList<MEQflow> &newH,const QList<METemperature> &oldT,const QList<MEQflow> &oldH);
 
-	static double getNumericalFieldValue(EIStream*,int iField,MOOptVector*,bool &ok);
+    static double getNumericalFieldValue(EIStream*,int iField,MOOptVector*,bool &ok);
 };
+}
 
 
 #endif

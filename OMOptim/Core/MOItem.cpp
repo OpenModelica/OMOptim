@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "MOItem.h"
@@ -120,7 +120,7 @@ void MOItem::setName(QString name)
 		_filledFields.push_back(MOItem::NAME);
 }
 
-QString MOItem::name()
+QString MOItem::name() const
 {
 	return _name;
 }
@@ -135,7 +135,7 @@ QVariant MOItem::getFieldValue(int ifield, int role) const
                 switch (ifield)
 		{
 		case NAME :
-			return _name;
+                        return name();
 		default :
 			return "unknown field";
 		}

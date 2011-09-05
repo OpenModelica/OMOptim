@@ -35,11 +35,13 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #include "EIItem.h"
 
+namespace EI
+{
 EIItem::EIItem()
 {
         _parent = NULL;
@@ -89,12 +91,12 @@ EIItem::~EIItem(void)
 	clear();
 }
 
-EIItem* EIItem::parent()
+EIItem* EIItem::parent()const
 {
     return _parent;
 }
 
-EIItem* EIItem::clone()
+EIItem* EIItem::clone() const
 {
 	EIItem* newItem = new EIItem(*this);
 	return newItem;
@@ -159,7 +161,7 @@ int EIItem::childCount() const
         return _children.size();
 }
 
-int EIItem::streamChildCount()
+int EIItem::streamChildCount() const
 {
 	int nbComp=0;
         for(int i=0;i<_children.size();i++)
@@ -169,7 +171,7 @@ int EIItem::streamChildCount()
 	return nbComp;
 }
 
-int EIItem::groupChildCount()
+int EIItem::groupChildCount() const
 {
 	int nbModel=0;
         for(int i=0;i<_children.size();i++)
@@ -187,7 +189,7 @@ EIItem* EIItem::child(int nRow) const
 		return NULL;
 }
 
-EIItem* EIItem::streamChild(int nRow)
+EIItem* EIItem::streamChild(int nRow) const
 {
 	int iCurStream=-1;
 	int curIndex=0;
@@ -207,7 +209,7 @@ EIItem* EIItem::streamChild(int nRow)
 
 
 
-EIItem* EIItem::groupChild(int nRow)
+EIItem* EIItem::groupChild(int nRow) const
 {
 	int iCurGroup=-1;
 	int curIndex=0;
@@ -331,7 +333,7 @@ void EIItem::emitModified()
 	emit modified();
 }
 
-int EIItem::depth()
+int EIItem::depth() const
 {
 	QString fullName=_name;
         EIItem *curParent = parent();
@@ -460,7 +462,7 @@ QDomElement EIItem::toXmlData(QDomDocument & doc)
 	return result;
 }
 
-QString EIItem::name(EI::NameFormat type)
+QString EIItem::name(EI::NameFormat type)const
 {
 	if(type == EI::SHORT)
 		return _name;
@@ -478,7 +480,7 @@ QString EIItem::name(EI::NameFormat type)
 	}
 }
 
-bool EIItem::isValid(MOOptVector* variables, QString &errMsg)
+bool EIItem::isValid(MOOptVector* variables, QString &errMsg) const
 {
     bool ok = true;
 
@@ -499,7 +501,7 @@ bool EIItem::isValid(MOOptVector* variables, QString &errMsg)
 }
 
 
-QString EIItem::model()
+QString EIItem::model() const
 {
     if(parent()==NULL)
         return QString();
@@ -513,7 +515,7 @@ QString EIItem::model()
 * For generic EIItem, there is no reference.
 * This is virtual since references can come from specific fields (e.g. from EIStream)
 */
-QStringList EIItem::references()
+QStringList EIItem::references() const
 {
     return QStringList();
 }
@@ -528,3 +530,4 @@ bool EIItem::numerize(MOOptVector* variables)
     return true;
 }
 
+}

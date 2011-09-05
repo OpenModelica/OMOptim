@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef LOAD_H
@@ -70,7 +70,7 @@
 	#include "EITarget.h"
 	#include "EITargetResult.h"
         #include "EIHEN1Result.h"
-        #include "EIHEN1.h"
+        #include "EIHEN1Problem.h"
 #endif
 
 class OptimResult;

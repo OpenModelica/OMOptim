@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #include "Problem.h"
@@ -90,7 +90,7 @@ void Problem::setType(ProblemType type)
 
 
 /**
-* Description Store problem files in destFolder. Is called when a problem resolution is finished.
+* Store problem files in destFolder. Is called when a problem resolution is finished.
 * @param destFolder destination folder path.
 * @param tempDir dir from where problem files are copied
 */

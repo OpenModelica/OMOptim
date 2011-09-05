@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef LOWTOOLS_H
@@ -79,12 +79,7 @@ public:
 	static void removeDuplicates(QVector<double> & vector);
 	static void removeWhiteSpaceStrings(QStringList &list);
 
-//        template < class T>
-//        static void removeDuplicates(QList<T> &list)
-//        {
-//            list.iterator iter = std::unique(list.begin(),list.end());
-//            list.erase(iter,list.end());
-//        };
+
 
 	static QString getValueFromElementInfo(QString elementInfoLine,QString fieldName);
 
@@ -98,7 +93,24 @@ public:
 
 };
 
-
+template < class T>
+class removeDuplicates
+{
+public :
+    static void apply(QList<T> &list)
+    {
+        int j;
+        for(int i=0;i<list.size();i++)
+        {
+            j=list.indexOf(list.at(i),i+1);
+            while(j>i)
+            {
+                list.removeAt(j);
+                j=list.indexOf(list.at(i),i+1);
+            }
+        }
+    };
+};
 
 
 #endif

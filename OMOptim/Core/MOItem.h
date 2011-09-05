@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_MOITEM_H)
@@ -91,14 +91,14 @@ public:
 	
 	//Name
 	void setName(QString);
-	QString name();
+        QString name() const;
 
 	//All fields
 	virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
 	virtual bool setFieldValue(int, QVariant);
 	virtual bool setFieldValue(QString, QVariant);
 
-	virtual int getFieldIndex(QString _fieldName,int role= Qt::DisplayRole);
+        virtual int getFieldIndex(QString _fieldName,int role= Qt::DisplayRole);
 
 	virtual QString getFieldName(int iField,int role = Qt::DisplayRole)=0;
 	static QString sFieldName(int field, int role);

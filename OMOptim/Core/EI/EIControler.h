@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #ifndef _EIControler_H
@@ -48,6 +48,8 @@
 #include "MOSettings.h"
 #include "EIModelContainer.h"
 
+namespace EI
+{
 class EIControler : public QObject
 {
 	Q_OBJECT
@@ -64,13 +66,13 @@ public:
 
 
 
-        static QList<EIStream*> splitStream(EIStream* toSplit,double firstFraction);
+       // static QList<EIStream*> splitStream(EIStream* toSplit,double firstFraction);
 
 	//XML functions
         static void setItems(QDomElement & domEl,EIItem* rootEI);
 
 };
 
-
+}
 
 #endif

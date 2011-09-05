@@ -39,6 +39,7 @@ set SH within Si; #{i| splits are allowed for hot stream i}
 set SC within Sj; #{j| splits are allowed for cold stream j}
 
 param kmax >=0 integer; #maximum number of heat exchangers
+
 set Sk := 1.. kmax; #set of heat exchangers
 
 ### Parameters ###
@@ -99,8 +100,8 @@ var YijnzC {i in Si,j in Sj,n in Sdt,z in Sz}, >=0;# determines whether heat is 
 #when (i, j) / ? B and as continuous when (i, j) ? B.
 var aijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;#  auxiliary continuous variable equal to one when heat transfer from interval m of hot stream i to cold stream j
 var bijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;
-var massFijmz {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;
-var massFijnz {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;
+var massFijmz {i in Si,j in Sj,m in Sdt,z in Sz}, >=0; #massFlows
+var massFijnz {i in Si,j in Sj,m in Sdt,z in Sz}, >=0; #massFlows
 
 #occurs in zone z and it does not correspond to the beginning nor the ending of a heat exchanger. A value of zero
 #corresponds to all other cases.
@@ -116,11 +117,14 @@ var TotalArea, >=0; #Total heat exchanger area
 var HENumber, integer; #number of heat exchangers
 var TotalCost;
 
-var TintI{i in Si,j in Sj,m in Sdt,n in Sdt,z in Sz} ;
-var TintJ{i in Si,j in Sj,m in Sdt,n in Sdt,z in Sz} ;
+var TinI{i in Si,j in Sj,m in Sdt,z in Sz} ;
+var TinJ{i in Si,j in Sj,n in Sdt,z in Sz} ;
 
+var ToutI{i in Si,j in Sj,m in Sdt,z in Sz} ;
+var ToutJ{i in Si,j in Sj,n in Sdt,z in Sz} ;
 
-
+var testG {i in Si,j in Sj,m in Sdt,z in Sz,k in Sk}, integer;
+var AL {i in Si,j in Sj,z in Sz,k in Sk};
 #################
 ### Equations ###
 #################
@@ -229,6 +233,8 @@ qijnzC[i,j,n,z] ,<= DHjnzC[j,n,z]*YijnzC[i,j,n,z]*UtFactMax[group];
 #s.t. eq19  {z in Sz,m in Mz[z] inter (2..ndt),i in (Hmz[m,z] inter Hmz[m-1,z]), j in Cz[z] inter PimH[i,m] inter PimH[i,m-1] : not ((i,j) in B)} :
 #KijmzH[i,j,m,z] ,>= 0;
 
+
+
 #s.t. eq20 'Heat exchanger ending for hot streams (i,j) not in B' {z in Sz,i in Hz[z],m in Mz[z] inter mif[i], j in Cz[z] inter PimH[i,m] : not ((i,j) in B)} :
 #KeijmzH[i,j,m,z],>= YijmzH[i,j,m,z];			
 #				
@@ -248,9 +254,11 @@ s.t. eq25 'Heat exchanger existence on hot streams - (i,j) in B' {z in Sz, m in 
 YijmzH[i,j,m,z] = sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KijmzH[i,j,l,z])
 				-sum{l in Miz[i,z] : (l<= m-1) and (j in PimH[i,l])}(KeijmzH[i,j,l,z]);	
 
-#s.t. eq25order 'Heat exchanger existence on hot streams - (i,j) in B - end after begining' {z in Sz, m in Mz[z], i in Hz[z], j in (Cz[z]) : (i,j) in B} :
-#sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KijmzH[i,j,l,z])
-#,>= sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KeijmzH[i,j,l,z]);			
+
+s.t. eq25order 'Heat exchanger existence on hot streams - (i,j) in B - end after begining' {z in Sz, m in Mz[z], i in Hz[z], j in (Cz[z]) : (i,j) in B} :
+sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KijmzH[i,j,l,z])
+,>= sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KeijmzH[i,j,l,z]);			
+
 #		
 #s.t. eq25end 'add heat exchanger end at the coolest temperature interval if needed - (i,j) in B'	{z in Sz, i in Hz[z], j in (Cz[z]) : (i,j) in B} :
 #sum{m in Miz[i,z]}(KeijmzH[i,j,m,z]) ,= sum{m in Miz[i,z]}(KijmzH[i,j,m,z]);
@@ -290,10 +298,10 @@ YijmzH[i,j,m,z] = sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KijmzH[i,j,l
 YijnzC[i,j,n,z] ,= sum{l in Njz[j,z] : (l<= n) and (i in PjnC[j,l])}(KijnzC[i,j,l,z])
 				-sum{l in Njz[j,z] : (l<= n-1) and (i in PjnC[j,l])}(KeijnzC[i,j,l,z]);		
 
-##s.t. eq36order 'Heat exchanger existence on cold streams - (i,j) in B - end after begining' {z in Sz, n in Mz[z], j in Cz[z], i in Hz[z] : (i,j) in B} :
-##sum{l in Njz[j,z] : (l<= n) and (i in PjnC[j,l])}(KijnzC[i,j,l,z])
-##,>= sum{l in Njz[j,z] : (l<= n) and (i in PjnC[j,l])}(KeijnzC[i,j,l,z]);				
-##	
+s.t. eq36order 'Heat exchanger existence on cold streams - (i,j) in B - end after begining' {z in Sz, n in Mz[z], j in Cz[z], i in Hz[z] : (i,j) in B} :
+sum{l in Njz[j,z] : (l<= n) and (i in PjnC[j,l])}(KijnzC[i,j,l,z])
+,>= sum{l in Njz[j,z] : (l<= n) and (i in PjnC[j,l])}(KeijnzC[i,j,l,z]);				
+	
 ##s.t. eq36end 'add heat exchanger end at the coolest temperature interval if needed - (i,j) in B' {z in Sz, j in Cz[z], i in Hz[z] : (i,j) in B} :
 ##sum{n in Njz[j,z] }(KeijnzC[i,j,n,z]) ,= sum{n in Njz[j,z] }(KijnzC[i,j,n,z]);					 
 ##	
@@ -320,18 +328,20 @@ Eijz[i,j,z] ,<= Eijzmax[i,j,z];
 s.t. eq43 'Heat transfer consistency for multiple heat exchangers between the same pair of streams'
 {z in Sz,m in Mz[z], n in Mz[z],i in Hmz[m,z],j in Cnz[n,z] : ((i in PjnC[j,n]) and (j in PimH[i,m]) and (TmL[n]<=TmU[m]) and ((i,j) in B))} :
 sum{l in Miz[i,z] : l<=m}(qijmzH[i,j,l,z]) - qaijmzH[i,j,n,z]
-,<= sum{l in Njz[j,z] : l<=n}(qijnzC[i,j,l,z])-qaijnzC[i,j,m,z]+4*Ximjnz[i,m,j,n,z]
+,<= sum{l in Njz[j,z] : l<=n}(qijnzC[i,j,l,z])-qaijnzC[i,j,m,z]+/*4**/Ximjnz[i,m,j,n,z]
 *max(sum{l in Miz[i,z] : (l<=m) and (j in PimH[i,l])}(DHimzH[i,l,z]),sum{l in Miz[i,z] : (l<=n) and (i in PjnC[j,l])}(DHjnzC[j,l,z]));
 					
 s.t. eq44 
 {z in Sz,m in Mz[z], n in Mz[z],i in Hmz[m,z],j in Cnz[n,z] : ((i in PjnC[j,n]) and (j in PimH[i,m]) and (TmL[n]<=TmU[m]) and ((i,j) in B))} :
 sum{l in Miz[i,z] : l<=m}(qijmzH[i,j,l,z]) - qaijmzH[i,j,n,z]
-,>= sum{l in Njz[j,z] : l<=n}(qijnzC[i,j,l,z])-qaijnzC[i,j,m,z]-4*Ximjnz[i,m,j,n,z]
+,>= sum{l in Njz[j,z] : l<=n}(qijnzC[i,j,l,z])-qaijnzC[i,j,m,z]-/*4**/Ximjnz[i,m,j,n,z]
 *max(sum{l in Miz[i,z] : (l<=m) and (j in PimH[i,l])}(DHimzH[i,l,z]),sum{l in Miz[i,z] : (l<=n) and (i in PjnC[j,l])}(DHjnzC[j,l,z]));
 
 s.t. eq45 
 {z in Sz,m in Mz[z], n in Mz[z],i in Hmz[m,z],j in Cnz[n,z] : ((i in PjnC[j,n]) and (j in PimH[i,m]) and (TmL[n]<=TmU[m]) and ((i,j) in B))} :
-Ximjnz[i,m,j,n,z] ,= 2 - KeijmzH[i,j,m,z]-KeijnzC[i,j,n,z]+1/4*sum{l in Njz[j,z] : l<=n}(KeijnzC[i,j,l,z])-1/4*sum{l in Miz[i,z] : l<=m}(KeijmzH[i,j,l,z]);
+Ximjnz[i,m,j,n,z] ,= 8 - 4*KeijmzH[i,j,m,z]-4*KeijnzC[i,j,n,z]+sum{l in Njz[j,z] : l<=n}(KeijnzC[i,j,l,z])-sum{l in Miz[i,z] : l<=m}(KeijmzH[i,j,l,z]);
+#4*Ximjnz[i,m,j,n,z] -8 +4*KeijmzH[i,j,m,z] +4*KeijnzC[i,j,n,z] ,= 2+sum{l in Njz[j,z] : l<=n}(KeijnzC[i,j,l,z])/*-sum{l in Miz[i,z] : l<=m}(KeijmzH[i,j,l,z])*/;
+
 
 s.t. eq46 
 {z in Sz,m in Mz[z], n in Mz[z],i in Hmz[m,z],j in Cnz[n,z] : ((i in PjnC[j,n]) and (j in PimH[i,m]) and (TmL[n]<TmU[m]) and (TmL[n]>=TmL[m])and ((i,j) in B))} :
@@ -377,6 +387,32 @@ s.t. eq56
 {z in Sz,n in Mz[z],(i,j) in B : (i in PjnC[j,n]) and (j in Cnz[n,z])} :
 qaijnzC[i,j,n,z] ,>=0 ;
 
+### MassFractions and extreme intervals
+##s.t. eqTinI
+##{z in Sz, m in Mz[z],i in Hmz[m,z], j in Cz[z]:(j in PimH[i,m])} :
+##TinI[i,j,m,z] ,= TmL[m] + qijmzH[i,j,m,z]/(Fi[i]*Cpim[i,m]);
+
+##s.t. eqToutI
+##{z in Sz, m in Mz[z],i in Hmz[m,z], j in Cz[z]:(j in PimH[i,m])} :
+##ToutI[i,j,m,z] ,= TmU[m] - qijmzH[i,j,m,z]/(Fi[i]*Cpim[i,m]);
+
+##s.t. eqTinJ
+##{z in Sz, n in Mz[z],i in Hz[z], j in Cnz[n,z]:(i in PjnC[j,n]) } :
+##TinJ[i,j,n,z] ,=  TmU[n] - qijnzC[i,j,n,z]/(Fj[j]*Cpjn[j,n]);
+
+##s.t. eqToutJ
+##{z in Sz,n in Mz[z],i in Hz[z], j in Cnz[n,z]:(i in PjnC[j,n]) } :
+##ToutJ[i,j,n,z] ,=  TmL[n] + qijnzC[i,j,n,z]/(Fj[j]*Cpjn[j,n]);
+
+s.t. eqMassFractionHot
+{z in Sz, m in Mz[z], i in Hmz[m,z], j in PimH[i,m]  :  (j in Cz[z])} :
+massFijmz[i,j,m,z] ,= qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]));
+
+s.t. eqMassFractionCold
+{z in Sz, n in Mz[z] , j in (Cnz[n,z]), i in (PjnC[j,n] inter Hz[z]) } :
+#aijmzH[i,j,m,z] ,>= YijmzH[i,j,m,z] - KijmzH[i,j,m,z] - KijmzH[i,j,m-1,z] - KeijmzH[i,j,m,z] - KeijmzH[i,j,m-1,z];
+massFijnz[i,j,n,z] ,= qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n]));
+
 
 ## Definition of exchanger internal interval for hot streams ###
 s.t. eq57
@@ -391,9 +427,6 @@ s.t. eq59
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z]), j in (PimH[i,m] inter PimH[i,m-1]) : (i in SH) and (j in Cz[z])} :
 aijmzH[i,j,m,z] ,>= YijmzH[i,j,m,z] - KijmzH[i,j,m,z] - KijmzH[i,j,m-1,z] - KeijmzH[i,j,m,z] - KeijmzH[i,j,m-1,z];
 
-s.t. eqMassFractionHot
-{z in Sz, m in Mz[z], i in Hmz[m,z], j in PimH[i,m]  :  (j in Cz[z])} :
-massFijmz[i,j,m,z] ,= qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m])*Fi[i]);
 
 
 s.t. eq60
@@ -428,59 +461,77 @@ qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]))
 #massFijmz[i,j,m,z] ,>= massFijmz[i,j,m-1,z] - (1-aijmzH[i,j,m,z])*Fi[i]*UtFactMax[group];
 
 
+## My flow rate additional constraints ###
+s.t. eqMyFRH 'avoid one temperature interval only heat exchange'
+{z in Sz, m in Mz[z], i in Hz[z], j in (Cz[z]) : (i,j) in P}:
+KijmzH[i,j,m,z] + KeijmzH[i,j,m,z] ,<= 1;
+
+s.t. eqMyFRC 'avoid one temperature interval only heat exchange'
+{z in Sz, n in Mz[z], j in Cz[z], i in Hz[z] : (i,j) in P}:
+KijnzC[i,j,n,z] + KeijnzC[i,j,n,z] ,<= 1;
+
+s.t. eqMyFRH2 'avoid two temperature intervals only heat exchange'
+{z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z]), j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z])} :
+KijmzH[i,j,m-1,z] + KeijmzH[i,j,m,z] ,<= 1;
+
+s.t. eqMyFRC2 'avoid two temperature intervals only heat exchange'
+{z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) } :
+KijnzC[i,j,n-1,z] + KeijnzC[i,j,n,z] ,<= 1;
+
+
 ## Flow rate consistency for hot streams in extreme intervals - i,j not in B###
 s.t. eq63
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH diff HUz[z]), j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) :not ((i,j) in B) } :
 qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))- (1+KeijmzH[i,j,m-1,z] /*+ KeijmzH[i,j,m,z]*/ - KijmzH[i,j,m-1,z])*Fi[i];
+,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))- (1+KeijmzH[i,j,m-1,z] + KeijmzH[i,j,m,z] - KijmzH[i,j,m-1,z])*Fi[i];
 
 s.t. eq63Ut
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH inter HUz[z]),group in SUtGroups, j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) : ((group,i) in  SUtStrGroups) and (not ((i,j) in B)) } :
 qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))- (1+KeijmzH[i,j,m-1,z] /*+ KeijmzH[i,j,m,z]*/ - KijmzH[i,j,m-1,z])*Fi[i]*UtFactMax[group];
+,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))- (1+KeijmzH[i,j,m-1,z] + KeijmzH[i,j,m,z] - KijmzH[i,j,m-1,z])*Fi[i]*UtFactMax[group];
 
 
 s.t. eq64
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH diff HUz[z]), j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) : not ((i,j) in B) } :
 qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,<= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) + (1+/*KijmzH[i,j,m-1,z]*/ + KijmzH[i,j,m,z] - KeijmzH[i,j,m,z])*Fi[i];
+,<= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) + (1+KijmzH[i,j,m-1,z] + KijmzH[i,j,m,z] - KeijmzH[i,j,m,z])*Fi[i];
 
 s.t. eq64Ut
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH inter HUz[z]),group in SUtGroups, j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) : ((group,i) in  SUtStrGroups) and (not ((i,j) in B)) } :
 qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,<= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))+ (1+/*KijmzH[i,j,m-1,z]*/ + KijmzH[i,j,m,z] - KeijmzH[i,j,m,z])*Fi[i]*UtFactMax[group];
+,<= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))+ (1+KijmzH[i,j,m-1,z] + KijmzH[i,j,m,z] - KeijmzH[i,j,m,z])*Fi[i]*UtFactMax[group];
 
 
 ### Flow rate consistency for hot streams in extreme intervals - i,j  in B###
 s.t. eq65
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH diff HUz[z]), j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) :  ((i,j) in B) } :
 qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))- (1+KeijmzH[i,j,m-1,z] /*+ KeijmzH[i,j,m,z]*/ - KijmzH[i,j,m-1,z])*Fi[i];
+,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))- (1+KeijmzH[i,j,m-1,z] + KeijmzH[i,j,m,z] - KijmzH[i,j,m-1,z])*Fi[i];
 
 s.t. eq65Ut
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH inter HUz[z]),group in SUtGroups, j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) :   ((group,i) in  SUtStrGroups) and ((i,j) in B) } :
 qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))- (1+KeijmzH[i,j,m-1,z] /*+ KeijmzH[i,j,m,z]*/ - KijmzH[i,j,m-1,z])*Fi[i]*UtFactMax[group];
+,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1]))- (1+KeijmzH[i,j,m-1,z] + KeijmzH[i,j,m,z] - KijmzH[i,j,m-1,z])*Fi[i]*UtFactMax[group];
 
 s.t. eq66
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH diff HUz[z]), j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) :  ((i,j) in B) } :
 qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,>= qaijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) - (2/*+KeijmzH[i,j,m,z]*/ - KijmzH[i,j,m-1,z] - YijmzH[i,j,m-1,z])*Fi[i];
+,>= qaijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) - (2+KeijmzH[i,j,m,z] - KijmzH[i,j,m-1,z] - YijmzH[i,j,m-1,z])*Fi[i];
 
 s.t. eq66Ut
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH inter HUz[z]),group in SUtGroups, j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) :  ((group,i) in  SUtStrGroups) and  ((i,j) in B) } :
 qijmzH[i,j,m,z]/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,>= qaijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) - (2/*+KeijmzH[i,j,m,z]*/ - KijmzH[i,j,m-1,z] - YijmzH[i,j,m-1,z])*Fi[i]*UtFactMax[group];
+,>= qaijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) - (2+KeijmzH[i,j,m,z] - KijmzH[i,j,m-1,z] - YijmzH[i,j,m-1,z])*Fi[i]*UtFactMax[group];
 
 s.t. eq67
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH diff HUz[z]), j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) :  ((i,j) in B) } :
 (qijmzH[i,j,m,z]-qaijmzH[i,j,m,z])/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) - (2/*+KijmzH[i,j,m-1,z]*/ - KeijmzH[i,j,m,z] - YijmzH[i,j,m,z])*Fi[i];
+,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) - (2+KijmzH[i,j,m-1,z] - KeijmzH[i,j,m,z] - YijmzH[i,j,m,z])*Fi[i];
 
 s.t. eq67Ut
 {z in Sz, m in Mz[z] inter (2..ndt), i in (Hmz[m,z] inter Hmz[m-1,z] inter SH inter HUz[z]),group in SUtGroups, j in (PimH[i,m] inter PimH[i,m-1] inter Cz[z]) :  ((group,i) in  SUtStrGroups) and ((i,j) in B) } :
 (qijmzH[i,j,m,z]-qaijmzH[i,j,m,z])/(Cpim[i,m]*(TmU[m]-TmL[m]))
-,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) - (2/*+KijmzH[i,j,m-1,z]*/ - KeijmzH[i,j,m,z] - YijmzH[i,j,m,z])*Fi[i]*UtFactMax[group];
+,>= qijmzH[i,j,m-1,z]/(Cpim[i,m-1]*(TmU[m-1]-TmL[m-1])) - (2+KijmzH[i,j,m-1,z] - KeijmzH[i,j,m,z] - YijmzH[i,j,m,z])*Fi[i]*UtFactMax[group];
 
 
 ### Flow rate constistency for hot streams - i not in SH ###
@@ -495,11 +546,6 @@ s.t. eq69
 {z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) } :
 aijnzC[i,j,n,z] ,<= 1 - KijnzC[i,j,n,z]- KijnzC[i,j,n-1,z];
 
-
-s.t. eqMassFractionCold
-{z in Sz, n in Mz[z] , j in (Cnz[n,z]), i in (PjnC[j,n] inter Hz[z]) } :
-#aijmzH[i,j,m,z] ,>= YijmzH[i,j,m,z] - KijmzH[i,j,m,z] - KijmzH[i,j,m-1,z] - KeijmzH[i,j,m,z] - KeijmzH[i,j,m-1,z];
-massFijnz[i,j,n,z] ,= qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n])*Fj[j]);
 
 s.t. eq70
 {z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) } :
@@ -568,33 +614,33 @@ qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n]))
 s.t. eq77
 {z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC diff CUz[z]), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) :  ((i,j) in B) } :
 qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n]))
-,>= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1]))- (1+KeijnzC[i,j,n-1,z] /*+ KeijnzC[i,j,n,z] */- KijnzC[i,j,n-1,z])*Fj[j];
+,>= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1]))- (1+KeijnzC[i,j,n-1,z] + KeijnzC[i,j,n,z] - KijnzC[i,j,n-1,z])*Fj[j];
 
 s.t. eq77Ut
 {z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC inter CUz[z]),group in SUtGroups, i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) : ((group,j) in  SUtStrGroups) and  ((i,j) in B) } :
 qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n]))
-,>= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1]))- (1+KeijnzC[i,j,n-1,z] /*+ KeijnzC[i,j,n,z]*/ - KijnzC[i,j,n-1,z])*Fj[j]*UtFactMax[group];
+,>= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1]))- (1+KeijnzC[i,j,n-1,z] + KeijnzC[i,j,n,z] - KijnzC[i,j,n-1,z])*Fj[j]*UtFactMax[group];
 
 s.t. eq78
 {z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC diff CUz[z]), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) :  ((i,j) in B) } :
 qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n]))
-,>= qaijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1])) - (2/*+KeijnzC[i,j,n,z]*/ - KijnzC[i,j,n-1,z] - YijnzC[i,j,n-1,z])*Fj[j];
+,>= qaijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1])) - (2+KeijnzC[i,j,n,z] - KijnzC[i,j,n-1,z] - YijnzC[i,j,n-1,z])*Fj[j];
 
 s.t. eq78Ut
 {z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC inter CUz[z]),group in SUtGroups, i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) : ((group,j) in  SUtStrGroups) and  ((i,j) in B) } :
 qijnzC[i,j,n,z]/(Cpjn[j,n]*(TmU[n]-TmL[n]))
-,>= qaijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1])) - (2/*+KeijnzC[i,j,n,z]*/ - KijnzC[i,j,n-1,z] - YijnzC[i,j,n-1,z])*Fj[j]*UtFactMax[group];
+,>= qaijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1])) - (2+KeijnzC[i,j,n,z] - KijnzC[i,j,n-1,z] - YijnzC[i,j,n-1,z])*Fj[j]*UtFactMax[group];
 
 
 s.t. eq79
 {z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC diff CUz[z]), i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) :  ((i,j) in B) } :
 (qijnzC[i,j,n,z]-qaijnzC[i,j,n,z])/(Cpjn[j,n]*(TmU[n]-TmL[n]))
-,<= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1])) + (2/*+KijnzC[i,j,n-1,z]*/ - KeijnzC[i,j,n,z] - YijnzC[i,j,n,z])*Fj[j];
+,<= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1])) + (2+KijnzC[i,j,n-1,z] - KeijnzC[i,j,n,z] - YijnzC[i,j,n,z])*Fj[j];
 
 s.t. eq79Ut
 {z in Sz, n in Mz[z] inter (2..ndt), j in (Cnz[n,z] inter Cnz[n-1,z] inter SC inter CUz[z]),group in SUtGroups, i in (PjnC[j,n] inter PjnC[j,n-1] inter Hz[z]) : ((group,j) in  SUtStrGroups) and  ((i,j) in B) } :
 (qijnzC[i,j,n,z]-qaijnzC[i,j,n,z])/(Cpjn[j,n]*(TmU[n]-TmL[n]))
-,<= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1])) + (2/*+KijnzC[i,j,n-1,z]*/ - KeijnzC[i,j,n,z] - YijnzC[i,j,n,z])*Fj[j]*UtFactMax[group];
+,<= qijnzC[i,j,n-1,z]/(Cpjn[j,n-1]*(TmU[n-1]-TmL[n-1])) + (2+KijnzC[i,j,n-1,z] - KeijnzC[i,j,n,z] - YijnzC[i,j,n,z])*Fj[j]*UtFactMax[group];
 
 
 ## Flow rate constistency for cold strams - j not in SC ###
@@ -613,28 +659,11 @@ and (TmL[n]<=TmU[m]) and (TmU[m] >= TmL[m]) } :
 TmL[m] + qijmzH[i,j,m,z]/(Fi[i]*Cpim[i,m])
 ,>= TmL[n] + qijnzC[i,j,n,z]/(Fj[j]*Cpjn[j,n]) - (2-KijmzH[i,j,m,z]-KijnzC[i,j,n,z])*TmU[n];
 
-s.t. eq81TintI
-{z in Sz, m in Mz[z],n in Mz[z],i in Hmz[m,z], j in Cnz[n,z]:(i in PjnC[j,n]) 
-and (j in PimH[i,m])  
-and (TmL[n]<=TmU[m]) and (TmU[m] >= TmL[m]) } :
-TintI[i,j,m,n,z] ,= TmL[m] + qijmzH[i,j,m,z]/(Fi[i]*Cpim[i,m]);
-
-s.t. eq81TintJ
-{z in Sz, m in Mz[z],n in Mz[z],i in Hmz[m,z], j in Cnz[n,z]:(i in PjnC[j,n]) 
-and (j in PimH[i,m]) 
-and (TmL[n]<=TmU[m]) and (TmU[m] >= TmL[m]) } :
-TintJ[i,j,m,n,z] ,=  TmL[n] + qijnzC[i,j,n,z]/(Fj[j]*Cpjn[j,n]);
-
 
 s.t. eq82
 {z in Sz, m in Mz[z],n in Mz[z],i in Hmz[m,z], j in Cnz[n,z] :(not (i in SH)) and (i in PjnC[j,n]) and (j in PimH[i,m]) and (not (j in SC))  and (TmL[n]<=TmU[m]) and (TmU[m] >= TmL[m])} :
 TmU[m] - qijmzH[i,j,m,z]/(Fi[i]*Cpim[i,m])
 ,>= TmU[n] - qijnzC[i,j,n,z]/(Fj[j]*Cpjn[j,n]) - (2-KeijmzH[i,j,m,z]-KeijnzC[i,j,n,z])*TmU[n];
-
-#s.t. eq82d
-#{z in Sz, m in Mz[z],n in Mz[z],i in Hmz[m,z], j in Cnz[n,z] :(not (i in SH)) and (i in PjnC[j,n]) and (j in PimH[i,m]) and (not (j in SC))  and (TmL[n]<=TmU[m]) and (TmU[m] >= TmL[m])} :
-#TmU[m] - qijmzH[i,j,m,z]/(Fi[i]*Cpim[i,m])
-#,>= TmU[n] - qijnzC[i,j,n,z]/(Fj[j]*Cpjn[j,n]) - (2-KeijmzH[i,j,m,z]-KeijnzC[i,j,n,z])*TmU[n];
 
 
 ### Temperature feasibility constraints - i in SH, j in SC, (i,j) not in B ###
@@ -718,25 +747,33 @@ s.t. eq96
 {z in Sz, i in Hz[z], j in Cz[z] : (i,j) in P} :
 Aijz[i,j,z] ,= sum{m in Miz[i,z]}(sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n]) and (DTmnML[m,n]!=0)}(qimjnz[i,m,j,n,z]*(him[i,m]+hjn[j,n])/(DTmnML[m,n]*him[i,m]*hjn[j,n])));
 
-
 s.t. eq97
 {z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in Sk : (i,j) in B} :
 Aijzk[i,j,z,k] ,<=
-sum{l in Miz[i,z] : l<=m}(sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n]) and (DTmnML[l,n]!=0)}
+sum{l in Miz[i,z] : l<=m}(sum{n in Njz[j,z] : (TmL[n]<TmU[l])and(j in PimH[i,m]) and (i in PjnC[j,n]) and (DTmnML[l,n]!=0)}
 ((qimjnz[i,l,j,n,z]-qaimjnz[i,l,j,n,z])*(him[i,l]+hjn[j,n])/(DTmnML[l,n]*him[i,l]*hjn[j,n])))
--sum{h in (1..k-1)}(Aijzk[i,j,z,h])
+-sum{h in Sk : h<k}(Aijzk[i,j,z,h])
 +Aijmaxz[i,j,z]*(2-KeijmzH[i,j,m,z]-Gijmzk[i,j,m,z,k]);
-
-
 
 s.t. eq98
 {z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in Sk : (i,j) in B} :
 Aijzk[i,j,z,k] ,>= 
-sum{l in Miz[i,z] : l<=m}(sum{n in Njz[j,z] : (TmL[n]<TmU[m])and(j in PimH[i,m]) and (i in PjnC[j,n])and (DTmnML[l,n]!=0)}
+sum{l in Miz[i,z] : l<=m}(sum{n in Njz[j,z] : (TmL[n]<TmU[l])and(j in PimH[i,m]) and (i in PjnC[j,n])and (DTmnML[l,n]!=0)}
 ((qimjnz[i,l,j,n,z]-qaimjnz[i,l,j,n,z])*(him[i,l]+hjn[j,n])/(DTmnML[l,n]*him[i,l]*hjn[j,n])))
--sum{h in (1..k-1)}(Aijzk[i,j,z,h])
+-sum{h in Sk : h<k}(Aijzk[i,j,z,h])
 -Aijmaxz[i,j,z]*(2-KeijmzH[i,j,m,z]-Gijmzk[i,j,m,z,k]);
 
+#s.t. eqtestG
+#{z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in Sk : (i,j) in B} :
+#testG[i,j,m,z,k] ,= (2-KeijmzH[i,j,m,z]-Gijmzk[i,j,m,z,k]);
+
+#s.t. eqTestA
+#{z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in Sk : (i,j) in B} :
+#AL[i,j,z,k] ,>= 
+#sum{l in Miz[i,z] : l<=m}(
+#	sum{n in Njz[j,z] :(TmL[n]<TmU[l])and(j in PimH[i,m]) and (i in PjnC[j,n])and (DTmnML[l,n]!=0)}
+#		((qimjnz[i,l,j,n,z]/*-qaimjnz[i,l,j,n,z]*/)*(him[i,l]+hjn[j,n])/(DTmnML[l,n]*him[i,l]*hjn[j,n])))
+#-1000*testG[i,j,m,z,k];
 
 s.t. eq99
 {z in Sz, m in Mz[z],i in Hmz[m,z], j in (Cz[z] inter PimH[i,m]), k in Sk : (i,j) in B} :
@@ -757,7 +794,7 @@ s.t. eq102
 {z in Sz, m in Mz[z],n in Mz[z], i in Hmz[m,z], j in (Cnz[n,z] inter PimH[i,m]) : ((i,j) in B) and (TmL[n]<TmU[m])} :
 qaimjnz[i,m,j,n,z] ,<= qimjnz[i,m,j,n,z];
 
-# Number of shells ###
+ ###Number of shells ###
 s.t. eq103
 {z in Sz, i in Hz[z], j in Cz[z] : ((i,j) in P) and (not ((i,j) in B))} :
 Aijz[i,j,z] ,<= Aijmaxz[i,j,z]*Uijz[i,j,z];
@@ -774,10 +811,8 @@ TotalArea ,= sum{z in Sz, i in Hz[z], j in Cz[z] : ((i,j) in (P diff B))}(Aijz[i
 +  sum{k in Sk, z in Sz, i in Hz[z],j in Cz[z] : ((i,j) in (P inter B))}(Aijzk[i,j,z,k]);   
 
 s.t. eqHENumber:
-HENumber ,= sum{z in Sz, i in Hz[z], j in Cz[z] : (not ((i,j) in B))}(Eijz[i,j,z])
-+ sum{z in Sz,  i in Hz[z], j in Cz[z] :  ((i,j) in B)}(sum{k in Sk}(Uijzk[i,j,z,k]));
-
-
+HENumber ,= + 	sum{z in Sz, i in Hz[z],j in Cz[z] : ((i,j) in P) and(not ((i,j) in B))}(Eijz[i,j,z])
++	sum{k in Sk, z in Sz, i in Hz[z],j in Cz[z] : (i,j) in P inter B}(Uijzk[i,j,z,k] );   
 ###################
 ###  OBJECTIVE  ###
 ###################
@@ -789,13 +824,7 @@ TotalCost ,= sum{z in Sz, group in SUtGroups}(FixUtCost[group]*UtEnabled[group] 
 
 minimize eqObj:
 TotalCost;
-#sum{z in Sz, group in SUtGroups}(FixUtCost[group]*UtEnabled[group] + UtFact[group]*VarUtCost[group]);
-# + 	sum{z in Sz, i in Hz[z],j in Cz[z] : ((i,j) in P) and(not ((i,j) in B))}(cijF[i,j]*Uijz[i,j,z]+cijA[i,j]*Aijz[i,j,z])
-#+	sum{k in Sk, z in Sz, i in Hz[z],j in Cz[z] : (i,j) in P inter B}(cijF[i,j]*Uijzk[i,j,z,k] + cijA[i,j]*Aijzk[i,j,z,k]);       
 
-	   
-#solve;
-	   
 
 	   
 end;

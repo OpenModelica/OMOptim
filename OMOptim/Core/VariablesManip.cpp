@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "VariablesManip.h"
@@ -59,18 +59,18 @@ void VariablesManip::updateScanValues(MOVector<Variable> *vars, MOVector<Scanned
     double curMin,curStep,curValue;
     QString curName;
 
-    for(iov=0;iov<scannedVars->items.size();iov++)
+    for(iov=0;iov<scannedVars->size();iov++)
     {
-        curName = scannedVars->items.at(iov)->name();
+        curName = scannedVars->at(iov)->name();
         iv=vars->findItem(curName);
 
         if(iv!=-1)
         {
-            curMin = scannedVars->items.at(iov)->getFieldValue(ScannedVariable::SCANMIN).toDouble();
-            curStep = scannedVars->items.at(iov)->getFieldValue(ScannedVariable::SCANSTEP).toDouble();
+            curMin = scannedVars->at(iov)->getFieldValue(ScannedVariable::SCANMIN).toDouble();
+            curStep = scannedVars->at(iov)->getFieldValue(ScannedVariable::SCANSTEP).toDouble();
             curValue = curMin + iScan.at(iov) * curStep;
 
-            vars->items.at(iv)->setFieldValue(Variable::VALUE,curValue);
+            vars->at(iv)->setFieldValue(Variable::VALUE,curValue);
         }
         else
         {
@@ -84,15 +84,15 @@ void VariablesManip::updateScanValues(MOVector<Variable> *vars, MOVector<Scanned
 int VariablesManip::nbScans(MOVector<ScannedVariable> *scannedVars)
 {
 	int nbScans = 1;
-	for(int i=0;i<scannedVars->items.size();i++)
-		nbScans = nbScans*scannedVars->items.at(i)->nbScans();
+	for(int i=0;i<scannedVars->size();i++)
+		nbScans = nbScans*scannedVars->at(i)->nbScans();
 	
 	return nbScans;
 }
 
 double VariablesManip::calculateObjValue(OptObjective* optObj,MOVector<VariableResult> * oneSimFinalVars,bool & ok,int iPoint)
 {
-	int iVarObj = oneSimFinalVars->findItem(optObj->name());
+    int iVarObj = oneSimFinalVars->findItem(optObj->name());
 	ok = false;
 	double result;
 	if(iVarObj==-1)
@@ -106,16 +106,16 @@ double VariablesManip::calculateObjValue(OptObjective* optObj,MOVector<VariableR
 		switch(optObj->scanFunction())
 		{
 			case OptObjective::SUM :
-				result = VariablesManip::calculateScanSum(oneSimFinalVars->items.at(iVarObj),ok,iPoint);
+				result = VariablesManip::calculateScanSum(oneSimFinalVars->at(iVarObj),ok,iPoint);
 				break;
 			case OptObjective::AVERAGE :
-				result = VariablesManip::calculateScanAverage(oneSimFinalVars->items.at(iVarObj),ok,iPoint);
+				result = VariablesManip::calculateScanAverage(oneSimFinalVars->at(iVarObj),ok,iPoint);
 				break;
 			case OptObjective::DEVIATION :
-				result = VariablesManip::calculateScanStandardDev(oneSimFinalVars->items.at(iVarObj),ok,iPoint);
+				result = VariablesManip::calculateScanStandardDev(oneSimFinalVars->at(iVarObj),ok,iPoint);
 				break;
 			default : 
-				result = oneSimFinalVars->items.at(iVarObj)->finalValue(0,iPoint);
+				result = oneSimFinalVars->at(iVarObj)->finalValue(0,iPoint);
 				ok=true;
 				break;
 		}

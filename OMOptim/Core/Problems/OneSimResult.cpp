@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OneSimResult.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file OneSimResult.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #include "OneSimResult.h"
@@ -43,30 +43,30 @@
 
 OneSimResult::OneSimResult(void)
 {
-	_inputVariables = new MOVector<Variable>;
-	_finalVariables = new MOOptVector(true,false); //can have several scans but not several points
+    _inputVariables = new Variables();
+    _finalVariables = new MOOptVector(true,false); //can have several scans but not several points
 
-	// files to copy
-        _filesToCopy << "dsin.txt";
+    // files to copy
+    _filesToCopy << "dsin.txt";
 }
 
 OneSimResult::OneSimResult(Project* project, ModModelPlus* model, OneSimulation* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
-:Result(project,modClassTree,(Problem*)problem)
+    :Result(project,modClassTree,(Problem*)problem)
 {
     _modModelPlus = model;
     _modPlusCtrl = modPlusCtrl;
 
-	_inputVariables = new MOVector<Variable>;
-	_finalVariables = new MOOptVector(true,false); //can have several scans but not several points
-	
-	// files to copy
-        _filesToCopy << "dsin.txt";
+    _inputVariables = new Variables(model);
+    _finalVariables = new MOOptVector(true,false); //can have several scans but not several points
+
+    // files to copy
+    _filesToCopy << "dsin.txt";
 }
 
 OneSimResult::~OneSimResult(void)
 {
-	delete _inputVariables;
-	delete _finalVariables;
+    delete _inputVariables;
+    delete _finalVariables;
 }
 
 QDomElement OneSimResult::toXmlData(QDomDocument & doc)
@@ -75,16 +75,16 @@ QDomElement OneSimResult::toXmlData(QDomDocument & doc)
     QDomElement cResult = doc.createElement(this->getClassName());
     cRoot.appendChild(cResult);
 
-	// Problem definition
-	QDomElement cInfos = doc.createElement("Infos");
-	cInfos.setAttribute("name", _name);
-	cInfos.setAttribute("type", problemType());
-	cResult.appendChild(cInfos);
+    // Problem definition
+    QDomElement cInfos = doc.createElement("Infos");
+    cInfos.setAttribute("name", _name);
+    cInfos.setAttribute("type", problemType());
+    cResult.appendChild(cInfos);
 
-	// Final variables
-	QDomElement cFinalVariables = _finalVariables->toXmlData(doc,"FinalVariables");
-	cResult.appendChild(cFinalVariables);
-	return cResult;
+    // Final variables
+    QDomElement cFinalVariables = _finalVariables->toXmlData(doc,"FinalVariables");
+    cResult.appendChild(cFinalVariables);
+    return cResult;
 }
 
 

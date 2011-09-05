@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "ModClass.h"
@@ -49,13 +49,25 @@ ModClass::ModClass(MOomc* moomc)
 }
 
 
-ModClass::ModClass(MOomc* moomc,ModClass* parent,QString name,QString filePath = "")
+ModClass::ModClass(MOomc* moomc,ModClass* parent,QString fullname,QString filePath = "")
 {
 	_moomc = moomc;
 	_parent = parent;
-	_name = name;
+        _name = fullname;
 	_filePath = filePath;
 	_childrenReaden = false;
+}
+
+ModClass* ModClass::clone() const
+{
+    ModClass* newModClass = new ModClass(_moomc,_parent,_name,_filePath);
+    newModClass->_childrenReaden = _childrenReaden;
+
+    for(int i=0;i<_children.size();i++)
+    {
+        newModClass->addChild(_children.at(i)->clone());
+    }
+    return newModClass;
 }
 
 ModClass::~ModClass(void)
@@ -174,7 +186,7 @@ int ModClass::packageChildCount()
 	return nbPackage;
 }
 
-ModClass* ModClass::child(int nRow)
+ModClass* ModClass::child(int nRow) const
 {
 	if((nRow>-1)&&(nRow<_children.count()))
 		return _children.at(nRow);
@@ -182,7 +194,7 @@ ModClass* ModClass::child(int nRow)
 		return NULL;
 }
 
-ModClass* ModClass::compChild(int nRow)
+ModClass* ModClass::compChild(int nRow) const
 {
 	int iCurComp=-1;
 	int curIndex=0;
@@ -200,7 +212,7 @@ ModClass* ModClass::compChild(int nRow)
 		return NULL;
 }
 
-ModClass* ModClass::packageChild(int nRow)
+ModClass* ModClass::packageChild(int nRow) const
 {
 	int iCurPackage=-1;
 	int curIndex=0;
@@ -218,7 +230,7 @@ ModClass* ModClass::packageChild(int nRow)
 		return NULL;
 }
 
-ModClass* ModClass::modelChild(int nRow)
+ModClass* ModClass::modelChild(int nRow) const
 {
 	int iCurModel=-1;
 	int curIndex=0;
@@ -262,33 +274,40 @@ int ModClass::indexInParent()
 
 QString ModClass::filePath()
 {
-	if(_filePath.isEmpty()&& (_parent!=NULL))
-		return _parent->filePath();
-	else
-		return _filePath;
+    ModClass* parent = _parent;
+    QString filePath = _filePath;
+    while(filePath.isEmpty()&&(parent!=NULL))
+    {
+        filePath = parent->_filePath;
+        parent = parent->parent();
+    }
+    if(filePath.isEmpty())
+        filePath = _moomc->getFileOfClass(getModClassName());
+
+    return filePath;
 }
 
 QString ModClass::name(Modelica::NameFormat type)
 {
 	if(type == Modelica::SHORT)
-		return _name;
+            return _name.section(".",-1,-1);
 	else
 	{
 		QString fullName = _name;
-                ModClass *curParent = parent();
+//                ModClass *curParent = parent();
 
-		while((curParent!=NULL)&&(curParent->name(Modelica::SHORT)!=""))
-		{
-			fullName.insert(0,curParent->name(Modelica::SHORT)+".");
-                        curParent = curParent->parent();
-		}
+//		while((curParent!=NULL)&&(curParent->name(Modelica::SHORT)!=""))
+//		{
+//			fullName.insert(0,curParent->name(Modelica::SHORT)+".");
+//                        curParent = curParent->parent();
+//		}
 
-		QString dymolaName;
+                QString middleName;
 		switch(type)
 		{
-		case Modelica::DYMOLA:
-			dymolaName = fullName.section(".",1,fullName.count(".")+1);
-			return dymolaName;
+                case Modelica::WITHOUTROOT:
+                        middleName = fullName.section(".",1,fullName.count(".")+1);
+                        return middleName;
 		case Modelica::FULL:
 			return fullName;
 		default:
@@ -375,7 +394,8 @@ void ModClass::setParent(ModClass *parent)
 QString ModClass::getStrToolTip()
 {
 	QString toolTip;
-	toolTip += ("Generic Modelica Class : " + _name);
+        toolTip += ("Generic Modelica Class : " + _name + "\n");
+        toolTip += ("File : " + filePath() + "\n");
 	return toolTip;
 }
 

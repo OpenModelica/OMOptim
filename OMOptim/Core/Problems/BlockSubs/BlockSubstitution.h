@@ -5,7 +5,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_BLOCKSUBSTITUTION_H)
@@ -42,7 +42,7 @@ public :
 
 public :
 
-	BlockSubstitution* clone();
+	BlockSubstitution* clone() const;
 	void copyFrom(BlockSubstitution*);
 
 	QDomElement toXmlData(QDomDocument & doc);

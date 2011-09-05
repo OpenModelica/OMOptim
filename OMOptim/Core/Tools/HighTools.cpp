@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "HighTools.h"
@@ -69,9 +69,9 @@ HighTools::~HighTools(void)
 //	{
 //		i=0;
 //		titleIsFound=false;
-//		while(i<_components->items.size() && !titleIsFound)
+//		while(i<_components->size() && !titleIsFound)
 //		{
-//			if (title==_components->items.at(i)->name())
+//			if (title==_components->at(i)->name())
 //			{
 //				titleIsFound=true;
 //				title=defaultTitle+" ("+QString::number(suffix)+")";
@@ -106,9 +106,9 @@ void HighTools::checkUniqueProblemName(Project* project_,Problem *problem_,OMCas
 	{
 		i=0;
 		titleIsFound=false;
-		while(i<problems_->items.size() && !titleIsFound)
+                while(i<problems_->size() && !titleIsFound)
 		{
-			if (title==problems_->items.at(i)->name())
+			if (title==problems_->at(i)->name())
 			{
 				titleIsFound=true;
 				title=defaultTitle+" ("+QString::number(suffix)+")";
@@ -146,9 +146,9 @@ void HighTools::checkUniqueResultName(Project* project_,Result *result_,OMCases 
 	{
 		i=0;
 		titleIsFound=false;
-		while(i<results_->items.size() && !titleIsFound)
+                while(i<results_->size() && !titleIsFound)
 		{
-			if (title==results_->items.at(i)->name())
+			if (title==results_->at(i)->name())
 			{
 				titleIsFound=true;
 				title=defaultTitle+" ("+QString::number(suffix)+")";

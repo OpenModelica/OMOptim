@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 /*
@@ -121,7 +121,7 @@ QString SPEA2::name()
 	return("SPEA2");
 }
 
-SPEA2* SPEA2::clone()
+SPEA2* SPEA2::clone() const
 {
 	SPEA2* newEA = new SPEA2(*this);
 	return newEA ;

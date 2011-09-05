@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "ModelicaModifier.h"
@@ -60,7 +60,7 @@ ModelicaModifier::~ModelicaModifier(void)
 {
 }
 
-ModelicaModifier* ModelicaModifier::clone()
+ModelicaModifier* ModelicaModifier::clone() const
 {
 	ModelicaModifier* newOne = new ModelicaModifier(_componentName,_name,_value,_description,_component);
 	newOne->_filledFields = _filledFields;
@@ -106,7 +106,7 @@ void ModelicaModifier::setComponent(ModClass *component)
 	if(!_filledFields.contains(ModelicaModifier::COMPONENT_NAME))
 		_filledFields.push_back(ModelicaModifier::COMPONENT_NAME);
 	_component = component;
-	_componentName = component->name(Modelica::DYMOLA);
+        _componentName = component->name(Modelica::WITHOUTROOT);
 }
 
 

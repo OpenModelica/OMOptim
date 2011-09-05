@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_PROJECT_H)
@@ -79,7 +79,7 @@
 #ifdef USEEI
 	#include "EITarget.h"
 	#include "EIReader.h"
-        #include "EIHEN1.h"
+        #include "EIHEN1Problem.h"
 #endif
 
 
@@ -96,17 +96,11 @@ class Project: public MOItem
 		//****************************	
 public : 
 
-	
-
-	//Threads management
+        //Threads management
 	QMutex _componentMutex;
 	QMutex _connectionMutex;
 	QMutex _problemLaunchMutex;
-
-
-
-
-
+        QMap<Problem*,MOThreads::ProblemThread *> _launchedThreads;
 
 private:
 	//Misc
@@ -115,22 +109,13 @@ private:
 	ModClass* _curModClass;
 	MOomc *_moomc;
 
-         // cur problem information
-        Problem* _curLaunchedProblem;
-        int _curProblem;
-        QDateTime _curProblemDate;
-
-
-
-
-	// Models
+        // Models
 	QStringList _moFiles;
 	QStringList _mmoFiles;
 
         Problems* _problems;
         Results* _results;
 	
-
 	ModReader* _modReader;
 	ModPlusCtrl* _modPlusCtrl;
         ModClassTree* _modClassTree;
@@ -229,10 +214,11 @@ public:
                 void removeResult();
 		void removeProblem();
                 Problem* restoreProblemFromResult(int numSolved);
+                Problem* restoreProblemFromResult(Result* result);
 		bool renameProblem(int, QString);
                 bool renameResult(int, QString);
 
-                void onProblemFinished(Result*);
+                void onProblemFinished(Problem*,Result*);
 		void onProblemStopAsked(Problem*);
 
 		void onModClassSelectionChanged(QList<ModClass*> &classes);
@@ -240,9 +226,6 @@ public:
                 void addNewOptimization();
                 void addNewOneSimulation();
                 void addNewEIProblem();
-
-
-
 
 		//****************************
 		// Signals
@@ -269,7 +252,7 @@ public:
 		void problemBegun(Problem*);
 		void newProblemProgress(float);
 		void newProblemProgress(float,int,int);
-		void problemFinished(Problem*);
+                void problemFinished(Problem*,Result*);
 
 		void curModClassChanged(ModClass*);
 		void curModModelChanged(ModModel*);

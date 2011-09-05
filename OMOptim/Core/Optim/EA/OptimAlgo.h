@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_OPTIMALGO_H)
@@ -56,13 +56,13 @@ public:
         virtual ~OptimAlgo(void);
         OptimAlgo(const OptimAlgo &);
 	
-        virtual OptimAlgo* clone() = 0;
+        virtual OptimAlgo* clone() const = 0;
 	virtual QList<int> compatibleOMCases() = 0;
 	virtual QString name() =0;
 	virtual void setProblem(Problem* _problem);
 
         virtual void setDefaultParameters() = 0;
-        virtual void onStopAsked(){};
+        virtual void onQuickEndAsked(){};
 
 public :
         MOParameters *_parameters;

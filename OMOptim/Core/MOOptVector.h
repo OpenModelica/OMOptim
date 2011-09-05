@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_MOOPTVECTOR_H)
@@ -43,7 +43,7 @@
 #include "MOVector.h"
 #include "Variable.h"
 
-
+class ModModelPlus;
 
 class MOOptVector : public MOVector<VariableResult>
 {
@@ -51,7 +51,7 @@ class MOOptVector : public MOVector<VariableResult>
 
 public:
 
-	MOOptVector(bool useScan, bool usePoints);
+        MOOptVector(bool useScan, bool usePoints,ModModelPlus* modModelPlus = NULL);
 
 	QVariant data(const QModelIndex &index, int role) const;
 	//void addItem(VariableResult*);
@@ -62,7 +62,6 @@ public:
 	int nbPoints();
 	void setCurPoint(int);
 	void setCurScan(int);
-
 	void setUsePoints(bool);
 	void setUseScan(bool);
 	bool getUsePoints();
@@ -70,7 +69,7 @@ public:
 	int curPoint();
 	int curScan();
 
-	MOOptVector* clone();
+	MOOptVector* clone() const;
 	void addItem(VariableResult* item_);
 	
 
@@ -85,6 +84,9 @@ protected :
 
 	int _nbScans;
 	int _nbPoints;
+
+        ModModelPlus* _modModelPlus;
+        bool _displayShort;
 
 signals:
 	void usePointsChanged();

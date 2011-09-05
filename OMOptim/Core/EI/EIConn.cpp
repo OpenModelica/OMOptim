@@ -29,22 +29,20 @@
  *
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIConn.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIConn.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+        @version
 
   */
 
 #include "EIConn.h"
-
-EIConn::EIConn(EITree* eiTree)
+namespace EI
 {
-    _streamA = NULL;
-    _streamB = NULL;
-    _eiTree = eiTree;
+EIConn::EIConn()
+{
 }
 
 EIConn::~EIConn(void)
@@ -52,15 +50,34 @@ EIConn::~EIConn(void)
 
 }
 
-EIConn::EIConn(const EIConn &)
+EIConn::EIConn(const EIConn &b)
 {
-
+    _streamA =b._streamA;
+    _TinA = b._TinA;
+    _ToutA = b._ToutA;
+    _flowA = b._flowA;
+    _streamB =b._streamB;
+    _TinB = b._TinB;
+    _ToutB = b._ToutB;
+    _flowB = b._flowB;
+    _qFlow = b._qFlow;
 }
 
-EIConn::EIConn(QDomElement &domEl, EITree* eiTree)
+EIConn& EIConn::operator=(const EIConn& b)
 {
-    _eiTree = eiTree;
+    _streamA =b._streamA;
+    _TinA = b._TinA;
+    _ToutA = b._ToutA;
+    _flowA = b._flowA;
+    _streamB =b._streamB;
+    _TinB = b._TinB;
+    _ToutB = b._ToutB;
+    _flowB = b._flowB;
+    _qFlow = b._qFlow;
+}
 
+EIConn::EIConn(QDomElement &domEl, const EITree & eiTree)
+{
     QDomNamedNodeMap attributes = domEl.attributes();
     QString fieldName;
     QString fieldValue;
@@ -78,26 +95,26 @@ EIConn::EIConn(QDomElement &domEl, EITree* eiTree)
 
 
 // MOItem overwrited
-bool EIConn::isValid()
+bool EIConn::isValid() const
 {
-    return (_streamA && _streamB);
+   return true;
 }
 
 // Specific functions
-void EIConn::setA(EIStream* a,const METemperature & Tina,const METemperature & Touta,double fracta)
+void EIConn::setA(const QString &a,const METemperature & Tina,const METemperature & Touta,MEMassFlow flowA)
 {
     _streamA = a;
     _TinA = Tina;
     _ToutA = Touta;
-    _fractA = fracta;
+    _flowA = flowA;
 }
 
-void EIConn::setB(EIStream* b,const METemperature & Tinb,const METemperature & Toutb,double fractb)
+void EIConn::setB(const QString & b,const METemperature & Tinb,const METemperature & Toutb,MEMassFlow flowB)
 {
     _streamB = b;
     _TinB = Tinb;
     _ToutB = Toutb;
-    _fractB = fractb;
+    _flowB = flowB;
 }
 
 void EIConn::setQFlow(MEQflow qFlow)
@@ -113,11 +130,11 @@ QVariant EIConn::getFieldValue(int iField, int role ) const
     case NAME:
         return _name;
     case STREAMA :
-        if(_streamA)
-            return _streamA->name();
-        break;
-    case FRACTA :
-        return _fractA;
+        return _streamA;
+    case FLOWA_V :
+        return _flowA.value();
+    case FLOWA_U :
+        return _flowA.unit();
     case TINA_V :
         return _TinA.value();
     case TINA_U :
@@ -127,11 +144,11 @@ QVariant EIConn::getFieldValue(int iField, int role ) const
     case TOUTA_U :
         return _ToutA.unit();
     case STREAMB :
-        if(_streamB)
-            return _streamB->name();
-        break;
-    case FRACTB :
-        return _fractB;
+        return _streamB;
+    case FLOWB_V :
+        return _flowB.value();
+    case FLOWB_U :
+        return _flowB.unit();
     case TINB_V :
         return _TinB.value();
     case TINB_U :
@@ -157,17 +174,25 @@ QString EIConn::sFieldName(int field, int role)
         return "Name";
     case STREAMA :
         return "Stream A";
-    case FRACTA :
-        return "Fraction of A";
+    case FLOWA_V :
+        return "MassFlowA";
+    case FLOWA_U :
+        switch(role)
+        {
+        case Qt::DisplayRole:
+            return "";
+        default :
+            return "MassFlowA_Unit";
+        }
     case TINA_V :
         return "TinA";
     case TINA_U :
         switch(role)
         {
         case Qt::DisplayRole:
-            return "[TinA]";
+            return "";
         default :
-                return "TinA_Unit";
+            return "TinA_Unit";
         }
     case TOUTA_V :
         return "ToutA";
@@ -175,23 +200,31 @@ QString EIConn::sFieldName(int field, int role)
         switch(role)
         {
         case Qt::DisplayRole:
-            return "[ToutA]";
+            return "";
         default :
             return "ToutA_Unit";
         }
     case STREAMB :
         return "Stream B";
-    case FRACTB :
-        return "Fraction of B";
+    case FLOWB_V :
+        return "MassFlowB";
+    case FLOWB_U :
+        switch(role)
+        {
+        case Qt::DisplayRole:
+            return "";
+        default :
+            return "MassFlowB_Unit";
+        }
     case TINB_V :
         return "TinB";
     case TINB_U :
         switch(role)
         {
         case Qt::DisplayRole:
-            return "[TinB]";
+            return "";
         default :
-                return "TinB_Unit";
+            return "TinB_Unit";
         }
     case TOUTB_V :
         return "ToutB";
@@ -199,7 +232,7 @@ QString EIConn::sFieldName(int field, int role)
         switch(role)
         {
         case Qt::DisplayRole:
-            return "[ToutB]";
+            return "";
         default :
             return "ToutB_Unit";
         }
@@ -210,7 +243,7 @@ QString EIConn::sFieldName(int field, int role)
         switch(role)
         {
         case Qt::DisplayRole:
-            return "[QFlow]";
+            return "";
         default :
             return "QFlow_Unit";
         }
@@ -222,73 +255,120 @@ bool EIConn::setFieldValue(int field,QVariant value)
 {
     bool ok=true;
 
-        switch(field)
-        {
-        case NAME:
-            _name = value.toString();
-        case STREAMA :
-                _streamA = dynamic_cast<EIStream*>(_eiTree->findItem(value.toString()));
-                ok = (bool)_streamA;
-                break;
-        case TINA_V :
-                _TinA.setValue(value.toDouble());
-                break;
-        case TINA_U :
-                if(value.type()==QVariant::String)
-                        ok=_TinA.setUnit(value.toString());
-                else
-                        _TinA.setUnit(value.toInt());
-                break;
-        case TOUTA_V :
-                _ToutA.setValue(value.toDouble());
-                break;
-        case TOUTA_U :
-                if(value.type()==QVariant::String)
-                        ok=_ToutA.setUnit(value.toString());
-                else
-                        _ToutA.setUnit(value.toInt());
-                break;
-        case FRACTA:
-                _fractA = value.toDouble();
-                break;
+    switch(field)
+    {
+    case NAME:
+        _name = value.toString();
+        break;
+    case STREAMA :
+        _streamA = value.toString();
+        break;
+    case FLOWA_V :
+        _flowA.setValue(value.toDouble());
+        break;
+    case FLOWA_U :
+        if(value.type()==QVariant::String)
+            ok=_flowA.setUnit(value.toString());
+        else
+            _flowA.setUnit(value.toInt());
+        break;
 
-        case STREAMB :
-                _streamB = dynamic_cast<EIStream*>(_eiTree->findItem(value.toString()));
-                ok = (bool)_streamB;
-                break;
-        case TINB_V :
-                _TinB.setValue(value.toDouble());
-                break;
-        case TINB_U :
-                if(value.type()==QVariant::String)
-                        ok=_TinB.setUnit(value.toString());
-                else
-                        _TinB.setUnit(value.toInt());
-                break;
-        case TOUTB_V :
-                _ToutB.setValue(value.toDouble());
-                break;
-        case TOUTB_U :
-                if(value.type()==QVariant::String)
-                        ok=_ToutB.setUnit(value.toString());
-                else
-                        _ToutB.setUnit(value.toInt());
-                break;
-        case FRACTB:
-                _fractB = value.toDouble();
-                break;
+    case TINA_V :
+        _TinA.setValue(value.toDouble());
+        break;
+    case TINA_U :
+        if(value.type()==QVariant::String)
+            ok=_TinA.setUnit(value.toString());
+        else
+            _TinA.setUnit(value.toInt());
+        break;
+    case TOUTA_V :
+        _ToutA.setValue(value.toDouble());
+        break;
+    case TOUTA_U :
+        if(value.type()==QVariant::String)
+            ok=_ToutA.setUnit(value.toString());
+        else
+            _ToutA.setUnit(value.toInt());
+        break;
+
+    case STREAMB :
+        _streamB =value.toString();
+        break;
+    case TINB_V :
+        _TinB.setValue(value.toDouble());
+        break;
+    case TINB_U :
+        if(value.type()==QVariant::String)
+            ok=_TinB.setUnit(value.toString());
+        else
+            _TinB.setUnit(value.toInt());
+        break;
+    case TOUTB_V :
+        _ToutB.setValue(value.toDouble());
+        break;
+    case TOUTB_U :
+        if(value.type()==QVariant::String)
+            ok=_ToutB.setUnit(value.toString());
+        else
+            _ToutB.setUnit(value.toInt());
+        break;
+    case FLOWB_V :
+        _flowB.setValue(value.toDouble());
+        break;
+    case FLOWB_U :
+        if(value.type()==QVariant::String)
+            ok=_flowB.setUnit(value.toString());
+        else
+            _flowB.setUnit(value.toInt());
+        break;
+    case QFLOW_V :
+        _qFlow.setValue(value.toDouble());
+        break;
+    case QFLOW_U :
+        if(value.type()==QVariant::String)
+            ok=_qFlow.setUnit(value.toString());
+        else
+            _qFlow.setUnit(value.toInt());
+        break;
+    }
+    return ok;
+}
+}
 
 
+METemperature EIConn::Tin(QString stream)const
+{
+    Q_ASSERT((stream==aName())||(stream==bName()));
 
-        case QFLOW_V :
-                _qFlow.setValue(value.toDouble());
-                break;
-        case QFLOW_U :
-                if(value.type()==QVariant::String)
-                        ok=_qFlow.setUnit(value.toString());
-                else
-                        _qFlow.setUnit(value.toInt());
-                break;
-        }
-        return ok;
+    if(stream==aName())
+        return _TinA;
+    if(stream==bName())
+        return _TinB;
+
+    return METemperature(-1,METemperature::K);
+}
+
+METemperature EIConn::Tout(QString stream)const
+{
+    Q_ASSERT((stream==aName())||(stream==bName()));
+
+    if(stream==aName())
+        return _ToutA;
+    if(stream==bName())
+        return _ToutB;
+
+    return METemperature(-1,METemperature::K);
+}
+
+MEMassFlow EIConn::massFlow(QString stream) const
+{
+    Q_ASSERT((stream==aName())||(stream==bName()));
+
+    if(stream==aName())
+        return _flowA;
+    if(stream==bName())
+        return _flowB;
+
+    return MEMassFlow(-1,MEMassFlow::KG_S);
 }

@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 
   */
 #if !defined(_MODMODELPLUS_H)
@@ -56,6 +56,7 @@
 #include "InfoSender.h"
 #include "ModPlusCtrl.h"
 #include "ModPlusDymolaCtrl.h"
+#include "Variables.h"
 
 
 using std::vector;
@@ -81,7 +82,7 @@ public :
 
 
 protected :
-        MOVector<Variable> *_variables;
+        Variables *_variables;
         ModModel *_modModel;
         ModelicaConnections *_connections;
         MOVector<ModelicaModifier> *_modifiers;
@@ -159,8 +160,8 @@ public:
         //************************
         //  Variables
         //************************
-        MOVector<Variable>* variables(bool readIfNot=false);
-        MOVector<Variable>* variables(ModClass*);
+        Variables* variables(bool readIfNot=false);
+        Variables* variables(ModClass*);
 
         //************************
         //  Connections

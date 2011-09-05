@@ -35,7 +35,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 
   */
 #include "Load.h"
@@ -348,10 +348,10 @@ bool Load::loadProject(QString filePath,Project* _project)
 ////	}
 ////
 ////	// Filling and Sizing recomputed variables (without values)
-////	for (int i=0;i<	_project->getModel()->variables->items.size();i++)
+////	for (int i=0;i<	_project->getModel()->variables->size();i++)
 ////	{
-////		result->recomputedVariables()->addItem(new VariableResult(_project->getModel()->variables->items.at(i)));
-////		//result->recomputedVariables()->items.at(i)->finalValues.resize(nbPoints);
+////		result->recomputedVariables()->addItem(new VariableResult(_project->getModel()->variables->at(i)));
+////		//result->recomputedVariables()->at(i)->finalValues.resize(nbPoints);
 ////	}
 ////
 ////	// Filling final values from frontFile (csv)
@@ -383,7 +383,7 @@ Result* Load::newResult(QString filePath,Project* project)
     else if( !doc.setContent(&file,&error) )
     {
         file.close();
-        infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
+        infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,filePath));
         return NULL;
     }
     file.close();
@@ -393,9 +393,16 @@ Result* Load::newResult(QString filePath,Project* project)
     QDomElement domProblem = domCase.firstChildElement("OMProblem");
     Problem* problem = newProblem(domProblem,project);
 
+
     // create result
     QDomElement domResult = domCase.firstChildElement("OMResult");
     Result* result = newResult(domResult,project,problem,filePath);
+
+    if(!problem || !result)
+    {
+        infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
+        return NULL;
+    }
 
     // attribute problem to result
     if(result)
@@ -499,9 +506,9 @@ Problem* Load::newProblem(QDomElement domProblem,Project* project)
     {
         problem = new EITarget(project,project->modClassTree(),project->moomc(),problemRoot);
     }
-    if (problemType==EIHEN1::className())
+    if (problemType==EIHEN1Problem::className())
     {
-        problem = new EIHEN1(project,project->modClassTree(),project->moomc(),problemRoot);
+        problem = new EIHEN1Problem(project,project->modClassTree(),project->moomc(),problemRoot);
     }
     if (problemType==EIProblem::className())
     {
@@ -556,8 +563,8 @@ Problem* Load::newOneSimulation(QDomElement domProblem,Project* project)
 
     // addOverWritedCVariables
     // make their value editable
-    for(int iV=0;iV<problem->overwritedVariables()->items.size();iV++)
-        problem->overwritedVariables()->items.at(iV)->setIsEditableField(Variable::VALUE,true);
+    for(int iV=0;iV<problem->overwritedVariables()->size();iV++)
+        problem->overwritedVariables()->at(iV)->setIsEditableField(Variable::VALUE,true);
 
     return problem;
 }
@@ -677,15 +684,15 @@ Result* Load::newOptimizationResult(QDomElement domResult,Project* project,Optim
     //**********
     // OptVarResult from optVar, OptObjResult from OptObj...
     result->optVariablesResults()->clear();
-    for(int i=0;i<optimization->optimizedVariables()->items.size();i++)
+    for(int i=0;i<optimization->optimizedVariables()->size();i++)
     {
-        result->optVariablesResults()->addItem(new VariableResult(*optimization->optimizedVariables()->items.at(i)));
+        result->optVariablesResults()->addItem(new VariableResult(*optimization->optimizedVariables()->at(i)));
     }
 
     result->optObjectivesResults()->clear();
-    for(int i=0;i<optimization->objectives()->items.size();i++)
+    for(int i=0;i<optimization->objectives()->size();i++)
     {
-        result->optObjectivesResults()->addItem(new VariableResult(*optimization->objectives()->items.at(i)));
+        result->optObjectivesResults()->addItem(new VariableResult(*optimization->objectives()->at(i)));
     }
 
     //Infos
@@ -723,9 +730,9 @@ Result* Load::newOptimizationResult(QDomElement domResult,Project* project,Optim
     if(result->modModelPlus()->variables()->items.isEmpty())
         result->modModelPlus()->readVariables();
 
-    for (int i=0;i<result->modModelPlus()->variables()->items.size();i++)
+    for (int i=0;i<result->modModelPlus()->variables()->size();i++)
     {
-        result->recomputedVariables()->addItem(new VariableResult(*result->modModelPlus()->variables()->items.at(i)));
+        result->recomputedVariables()->addItem(new VariableResult(*result->modModelPlus()->variables()->at(i)));
     }
 
     // Filling final values from frontFile (csv)
@@ -757,17 +764,17 @@ void Load::loadOptimValuesFromFrontFile(OptimResult* _result,QString fileName)
     frontFile.close();
 
     // Clearing previous values
-    for (int i=0; i<_result->optObjectivesResults()->items.size(); i++)
+    for (int i=0; i<_result->optObjectivesResults()->size(); i++)
     {
-        _result->optObjectivesResults()->items.at(i)->clearFinalValues();
+        _result->optObjectivesResults()->at(i)->clearFinalValues();
     }
-    for (int i=0; i<_result->optVariablesResults()->items.size(); i++)
+    for (int i=0; i<_result->optVariablesResults()->size(); i++)
     {
-        _result->optVariablesResults()->items.at(i)->clearFinalValues();
+        _result->optVariablesResults()->at(i)->clearFinalValues();
     }
-    for (int i=0; i<_result->recomputedVariables()->items.size(); i++)
+    for (int i=0; i<_result->recomputedVariables()->size(); i++)
     {
-        _result->recomputedVariables()->items.at(i)->clearFinalValues();
+        _result->recomputedVariables()->at(i)->clearFinalValues();
     }
 
     QStringList lines = text.split("\n",QString::KeepEmptyParts);
@@ -806,15 +813,15 @@ void Load::loadOptimValuesFromFrontFile(OptimResult* _result,QString fileName)
             {
                 if (objIndex[iCol]>-1)
                 {
-                    _result->optObjectivesResults()->items.at(objIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
+                    _result->optObjectivesResults()->at(objIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
                 }
                 if (optVarIndex[iCol]>-1)
                 {
-                    _result->optVariablesResults()->items.at(optVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
+                    _result->optVariablesResults()->at(optVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
                 }
                 if ((recompVarIndex[iCol]>-1)&&(!useScan))
                 {
-                    _result->recomputedVariables()->items.at(recompVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
+                    _result->recomputedVariables()->at(recompVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
                 }
             }
 

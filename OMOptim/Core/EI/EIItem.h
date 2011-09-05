@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIItem.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIItem.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #ifndef _EIItem_H
@@ -50,26 +50,25 @@
 
 #include <QtGui/QStandardItem>
 
+/** @brief Namespace EI regroups all classes and functions related to energy integration*
+  */
 namespace EI
 {
-	enum Type{
-		GROUP,
-		STREAM,
-            MODELCONTAINER,
-		GENERIC
-	};
-
-	enum NameFormat{
-		SHORT,
-		FULL
-	};
+enum Type{
+    GROUP,
+    STREAM,
+    MODELCONTAINER,
+    GENERIC
 };
 
-//class EITree;
+enum NameFormat{
+    SHORT,
+    FULL
+};
 
 class EIItem : public MOItem
 {
-	Q_OBJECT
+    Q_OBJECT
 
     /**
     * \brief EIItem is a class corresponding to a Energy Integration item (like a group or a stream)
@@ -78,111 +77,108 @@ class EIItem : public MOItem
     * This class provides basic structure and functions of Energy Integration items.
     */
 
-  //  friend class EITree;
+    //  friend class EITree;
 protected:
-        EIItem *_parent; /** if has no parent, set to NULL*/
-        QList<EIItem*> _children; /** list of children */
-        bool _checked; /** is this item enabled or not */
-	
+    EIItem *_parent; /** if has no parent, set to NULL*/
+    QList<EIItem*> _children; /** list of children */
+    bool _checked; /** is this item enabled or not */
 
 
 
-	//***********************
-	// Functions
-	//***********************
+
+    //***********************
+    // Functions
+    //***********************
 public:
-	EIItem();
-        EIItem(EIItem* parent,QString name);
-	EIItem(const EIItem &);
-        EIItem(QDomElement & domEl);
-	virtual ~EIItem(void);
-	virtual EI::Type getEIType(){return EI::GENERIC;};	
-	virtual QString getClassName(){return "EIItem";};
-	
-	virtual EIItem* clone();
-	QString name(EI::NameFormat = EI::FULL);
+    EIItem();
+    EIItem(EIItem* parent,QString name);
+    EIItem(const EIItem &);
+    EIItem(QDomElement & domEl);
+    virtual ~EIItem(void);
+    virtual EI::Type getEIType() const {return EI::GENERIC;};
+    virtual QString getClassName(){return "EIItem";};
+
+    virtual EIItem* clone() const ;
+    QString name(EI::NameFormat = EI::FULL)const ;
 
 
-	enum Field
-	{
-		//Modelica fields
-		NAME,
-                CHECKED
-	};
+    enum Field
+    {
+        //Modelica fields
+        NAME,
+        CHECKED
+    };
 
 
 
 public:
-        static const int nbFields = 2;
-	virtual unsigned getNbFields(){return nbFields;};
-
-
-	
-	// General functions
-	virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
-	virtual bool setFieldValue(int iField, QVariant value);
-	static QString sFieldName(int field, int role);
-	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return EIItem::sFieldName(i,role);};
-
-	void emitModified();
-
-	// Parent
-        EIItem* parent();
-	void setParent(EIItem *);
-
-	// Tree functions
-	int depth();
-		
-	//Checked
-	bool isChecked();
-	void setChecked(bool);
-
-        //References
-        virtual QStringList references();
-        virtual bool numerize(MOOptVector* variables);
-        virtual bool isValid(MOOptVector* variables, QString &errMsg);
-        virtual QString model(); /** returns a QString if item is included in a model container*/
-
-	//*****************************
-	//Children
-	//*****************************
-	bool addChild(EIItem*);
-	void clearDescendants();
-	virtual void clear();
-	int streamChildCount();
-	int groupChildCount();
-	int childCount() const;
-        bool removeChild(int i);
-        bool removeChild(EIItem *);
-        bool removeDescendant(EIItem*);
-        void removeUncheckedDescendants();
-        int findChild(QVariant itemFieldValue, int iField);
-
-	EIItem* child(int row) const;
-	EIItem* streamChild(int row);
-	EIItem* groupChild(int row);	
-
-        int indexInParent();
+    static const int nbFields = 2;
+    virtual unsigned getNbFields(){return nbFields;};
 
 
 
-	//******************************
-	// GUI
-	//******************************
-	virtual QString getStrToolTip();
+    // General functions
+    virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
+    virtual bool setFieldValue(int iField, QVariant value);
+    static QString sFieldName(int field, int role);
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return EIItem::sFieldName(i,role);} ;
 
-	//******************************
-	// XML
-	//******************************
-	virtual QDomElement toXmlData(QDomDocument & doc);
+    void emitModified();
 
+    // Parent
+    EIItem* parent() const;
+    void setParent(EIItem *);
+
+    // Tree functions
+    int depth() const ;
+
+    //Checked
+    bool isChecked();
+    void setChecked(bool);
+
+    //References
+    virtual QStringList references() const ;
+    virtual bool numerize(MOOptVector* variables);
+    virtual bool isValid(MOOptVector* variables, QString &errMsg) const;
+    virtual QString model() const; /** returns a QString if item is included in a model container*/
+
+    //*****************************
+    //Children
+    //*****************************
+    bool addChild(EIItem*);
+    void clearDescendants();
+    virtual void clear();
+    int streamChildCount() const ;
+    int groupChildCount() const ;
+    int childCount() const;
+    bool removeChild(int i);
+    bool removeChild(EIItem *);
+    bool removeDescendant(EIItem*);
+    void removeUncheckedDescendants();
+    int findChild(QVariant itemFieldValue, int iField);
+
+    EIItem* child(int row) const;
+    EIItem* streamChild(int row) const ;
+    EIItem* groupChild(int row) const ;
+
+    int indexInParent();
+
+
+    //******************************
+    // GUI
+    //******************************
+    virtual QString getStrToolTip();
+
+    //******************************
+    // XML
+    //******************************
+    virtual QDomElement toXmlData(QDomDocument & doc);
 
 signals:
-	//void connectionsUpdated();
-	void addedChild(EIItem*);
-	void modified();
-	void cleared();
-        //void deleted();
+    void addedChild(EIItem*);
+    void modified();
+    void cleared();
 };
+}
 
 #endif

@@ -102,6 +102,8 @@ bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,Q
 
 bool ModPlusDymolaCtrl::readOutputVariablesDSFINAL(MOVector<Variable> *finalVariables, QString dsfinalFile)
 {
+    infoSender.send(Info("Reading final variables in "+dsfinalFile,ListInfo::NORMAL2));
+
     finalVariables->clear();
     QFileInfo dsfinalInfo = QFileInfo(dsfinalFile);
 
@@ -116,6 +118,8 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSFINAL(MOVector<Variable> *finalVari
 
 bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariables, QString dsresFile)
 {
+    infoSender.send(Info("Reading final variables in "+dsresFile,ListInfo::NORMAL2));
+
     finalVariables->clear();
 
     if(dsresFile.isEmpty())
@@ -136,6 +140,8 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariab
 
 bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,QString dsinFile)
 {
+
+
     bool authorizeRecreate=false;
 
     if(dsinFile.isEmpty())
@@ -143,6 +149,9 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
         authorizeRecreate=true;
         dsinFile = _mmoFolder+QDir::separator()+_dsinFile;
     }
+
+    infoSender.send(Info("Reading initial variables in "+dsinFile,ListInfo::NORMAL2));
+
     initVariables->clear();
 
     if(!QFile::exists(dsinFile) && authorizeRecreate)
@@ -207,6 +216,9 @@ bool ModPlusDymolaCtrl::isCompiled()
 
 bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy)
 {
+    // Info
+    infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));
+
     // eventually compile model
     if(!this->isCompiled())
     {
@@ -253,15 +265,12 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
     // Specifying new Variables values in dymosim input file
     Dymola::setVariablesToDsin(tempDsin,_modModelName,updatedVars,_parameters);
 
-    // Info
-    infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));
-
     // Launching Dymosim
     int maxNSec=-1;
     int iParam = _parameters->findItem((int)Dymola::MAXSIMTIME,MOParameter::INDEX);
     if(iParam>-1)
-        maxNSec=_parameters->items.at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
-    Dymola::start(tempFolder,maxNSec);
+        maxNSec=_parameters->at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
+    Dymola::start(tempFolder,_simProcess,maxNSec);
 
     QString logFile = tempDir.absoluteFilePath("dslog.txt");
 
@@ -283,7 +292,15 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
     return readOk;
 }
 
+void ModPlusDymolaCtrl::stopSimulation()
+{
+    _simProcess.kill();
+}
 
+bool ModPlusDymolaCtrl::canBeStoped()
+{
+    return true;
+}
 
 bool ModPlusDymolaCtrl::createDsin()
 {

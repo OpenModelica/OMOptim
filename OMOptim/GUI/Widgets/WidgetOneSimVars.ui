@@ -118,7 +118,7 @@
         <string>Simulate</string>
        </property>
        <property name="icon">
-        <iconset resource="../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Play</normaloff>:/icons/Play</iconset>
        </property>
       </widget>
@@ -229,7 +229,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../Resources/mineit.qrc"/>
+  <include location="../Resources/OMOptim.qrc"/>
  </resources>
  <connections/>
 </ui>

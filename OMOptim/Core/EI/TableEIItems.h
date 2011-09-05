@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #ifndef _TABLEEISTREAMS_H
@@ -46,21 +46,22 @@
 #include "MOVector.h"
 #include "CCTools.h"
 
+using namespace EI;
 class TableEIItems : public QAbstractItemModel
 {
 
 	Q_OBJECT
 
 public:
-        TableEIItems(EIItem *_rootElement,bool _editable,EI::Type _filter,bool _recursive);
+        TableEIItems(EI::EIItem *_rootElement,bool _editable,EI::Type _filter,bool _recursive);
 	~TableEIItems(void);
 
 private :
-	EIItem* rootElement;
+        EI::EIItem* rootElement;
 	bool editable;
 	EI::Type filter;
 	bool recursive;
-	QList<EIItem*> eiItems;
+        QList<EI::EIItem*> eiItems;
         bool enabled;
 
 
@@ -80,7 +81,7 @@ signals:
 	void hasChanged();
 
 public slots :
-		void updateList();
+        void updateList();
 
 };
 

@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "Variable.h"
@@ -79,7 +79,7 @@ Variable::~Variable(void)
 }
 
 
-Variable* Variable::clone()
+Variable* Variable::clone() const
 {
     return new Variable(*this);
 }
@@ -103,6 +103,11 @@ void Variable::setValue(double value)
 	if(!_filledFields.contains(Variable::VALUE))
 		_filledFields.push_back(Variable::VALUE);
 	_value = value;
+}
+
+double Variable::value() const
+{
+       return _value;
 }
 //
 //void Variable::setMin(double min_)
@@ -203,7 +208,7 @@ QString Variable::name(Modelica::NameFormat format) const
 		return _name;
 	case Modelica::SHORT : 
 		return _name.section(".",-1,-1);
-	case Modelica::DYMOLA :
+        case Modelica::WITHOUTROOT :
 		//#TODO check for grandchildren models
 		return _name.section(".",1,-1);
 	default :
@@ -315,7 +320,7 @@ VariableResult::~VariableResult()
 
 }
 
-VariableResult* VariableResult::clone()
+VariableResult* VariableResult::clone() const
 {
     return new VariableResult(*this);
 }

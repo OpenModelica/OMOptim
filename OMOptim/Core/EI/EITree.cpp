@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "EITree.h"
@@ -57,8 +57,15 @@ EITree::EITree(const EITree &tree)
     _enabled = tree._enabled;
 
     _rootElement = tree._rootElement->clone();
+}
 
+EITree & EITree::operator=(const EITree &tree)
+{
+    _showFields = tree._showFields;
+    _editable = tree._editable;
+    _enabled = tree._enabled;
 
+    _rootElement = tree._rootElement->clone();
 }
 
  EITree::EITree(QDomElement & domEl)
@@ -337,13 +344,12 @@ int EITree::rowCount(const QModelIndex &parent) const
         return 0;
 }
 
-EIItem* EITree::findItem(QString _fullName)
+EIItem* EITree::findItem(QString _fullName)const
 {
-
     return EIReader::findInDescendants(_rootElement,_fullName);
 }
 
-EIItem* EITree::findItem(EI::Type eiType,QVariant itemFieldValue, int iField)
+EIItem* EITree::findItem(EI::Type eiType,QVariant itemFieldValue, int iField)const
 {
     return EIReader::findInDescendants(_rootElement,eiType,itemFieldValue,iField);
 }

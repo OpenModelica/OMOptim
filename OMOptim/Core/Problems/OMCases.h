@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_OMCASES_H)
@@ -71,6 +71,9 @@ public:
         void addCase(OMCase*);
 	bool removeRow(int row,const QModelIndex &parent = QModelIndex());
 	int findItem(QString);
+
+        OMCase* at(int i) const {return items.at(i);}
+        int size() const{return items.size();}
 
 private :
         QString name;

@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "ModModel.h"
@@ -52,4 +52,16 @@ ModModel::ModModel(MOomc* moomc,ModClass* parent,QString name,QString filePath)
 ModModel::~ModModel()
 {
 	clearDescendants();
+}
+
+ModClass* ModModel::clone() const
+{
+    ModModel* newModModel = new ModModel(_moomc,_parent,_name,_filePath);
+    newModModel->_childrenReaden = _childrenReaden;
+
+    for(int i=0;i<children().size();i++)
+    {
+        newModModel->addChild(child(i)->clone());
+    }
+    return newModModel;
 }

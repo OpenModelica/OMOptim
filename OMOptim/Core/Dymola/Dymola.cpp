@@ -202,14 +202,13 @@ QString Dymola::getExecutablePath()
 }
 
 
-void Dymola::start(QString path,int maxNSec)
+void Dymola::start(QString path,QProcess &simProcess,int maxNSec)
 {
 #ifdef WIN32
-    QProcess simProcess;
     simProcess.setWorkingDirectory(path);
 		
 
-   QString appPath = "\""+path+"\\"+"Dymosim.exe\"";
+    QString appPath = "\""+path+"\\"+"Dymosim.exe\"";
 
 
     simProcess.start(appPath, QStringList());
@@ -229,9 +228,6 @@ void Dymola::start(QString path,int maxNSec)
         return;
     }
 
-
-    // when finish using wText dont forget to delete it
-//    delete []wAppPath;
 #endif
 }
 
@@ -253,7 +249,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     if((iLStopTime>-1) && (iPStopTime>-1))
     {
 		newLine =  "       "
-                   +parameters->items.at(iPStopTime)->getFieldValue(MOParameter::VALUE).toString()
+                   +parameters->at(iPStopTime)->getFieldValue(MOParameter::VALUE).toString()
 			+"                   # StopTime     Time at which integration stops";
         lines.replace(iLStopTime,newLine);
     }
@@ -263,7 +259,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     if((iLTolerance>-1) && (iPTolerance>-1))
     {
         newLine =  "       "
-                   +parameters->items.at(iPTolerance)->getFieldValue(MOParameter::VALUE).toString()
+                   +parameters->at(iPTolerance)->getFieldValue(MOParameter::VALUE).toString()
                    +"                   # nInterval    Relative precision of signals for \n                            #              simulation, linearization and trimming";
         lines.replace(iLTolerance,newLine);
     }
@@ -273,7 +269,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     if((iLnInterval>-1) && (iPnInterval>-1))
     {
         newLine =  "       "
-                   +parameters->items.at(iPnInterval)->getFieldValue(MOParameter::VALUE).toString()
+                   +parameters->at(iPnInterval)->getFieldValue(MOParameter::VALUE).toString()
                    +"                   # nInterval    Number of communication intervals, if > 0";
         lines.replace(iLnInterval,newLine);
     }
@@ -283,7 +279,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     if((iLSolver>-1) && (iPSolver>-1))
     {
         newLine =  "       "
-                   +parameters->items.at(iPSolver)->getFieldValue(MOParameter::VALUE).toString()
+                   +parameters->at(iPSolver)->getFieldValue(MOParameter::VALUE).toString()
                    +"                   # Algorithm    Integration algorithm as integer";
         lines.replace(iLSolver,newLine);
     }
@@ -323,7 +319,7 @@ void Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     }
 
 
-    nbv=variables->items.size();
+    nbv=variables->size();
 
 
     // Get variable's value, type, min, max, nature
@@ -355,7 +351,7 @@ void Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
 
     line = text->readLine();
     nv=0;
-    nbv=variables->items.size();
+    nbv=variables->size();
     while (!text->atEnd() && nv<nbv){
         variables->items[nv]->setDescription(line);
         line = text->readLine();
@@ -436,7 +432,7 @@ void Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
         variables->addItem(newVariable);
         line=text->readLine();
     }
-    nbv=variables->items.size();
+    nbv=variables->size();
 
     // **************************
     // Description
@@ -553,16 +549,16 @@ void Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
         if(dataInfo1.at(iV) ==0 || dataInfo1.at(iV) ==1)
         {
             if(dataInfo2.at(iV)<0)
-                variables->items.at(iV)->setValue(data1[nbRows1-1][-dataInfo2.at(iV)-1]);
+                variables->at(iV)->setValue(data1[nbRows1-1][-dataInfo2.at(iV)-1]);
             else
-                variables->items.at(iV)->setValue(data1[nbRows1-1][dataInfo2.at(iV)-1]);
+                variables->at(iV)->setValue(data1[nbRows1-1][dataInfo2.at(iV)-1]);
         }
         else
         {
             if(dataInfo2.at(iV)<0)
-                variables->items.at(iV)->setValue(data2[nbRows2-1][-dataInfo2.at(iV)-1]);
+                variables->at(iV)->setValue(data2[nbRows2-1][-dataInfo2.at(iV)-1]);
             else
-                variables->items.at(iV)->setValue(data2[nbRows2-1][dataInfo2.at(iV)-1]);
+                variables->at(iV)->setValue(data2[nbRows2-1][dataInfo2.at(iV)-1]);
         }
     }
 
@@ -607,10 +603,10 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         int index2;
         int prec=MOSettings::getValue("Dymola/MaxDigitsDsin").toInt(); //number of decimals
         QString value;
-        for(int iV=0;iV<variables->items.size();iV++)
+        for(int iV=0;iV<variables->size();iV++)
         {
 
-            curVar = variables->items.at(iV);
+            curVar = variables->at(iV);
             varName = curVar->name(Modelica::FULL);
             varName = varName.remove(modelName+".");
             rxLine.setPattern(sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s*#\\s*("+varName+")\\s*");

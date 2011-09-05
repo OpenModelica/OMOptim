@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef _ModClass_H
@@ -84,7 +84,7 @@ public:
 	ModClass(MOomc*,ModClass* _parent,QString _name,QString filePath);
 	virtual QString getClassName(){return "ModClass";};
 
-	//virtual ModClass* clone();
+        virtual ModClass* clone() const;
 	//virtual ModClass* cloneStructure(QString newName); // clone all fields excepted connections and variables
 	virtual ~ModClass(void);
 	virtual Modelica::ClassRestr getClassRestr(){return Modelica::GENERIC;};	
@@ -134,10 +134,10 @@ public:
 	void setChildrenReaden(bool);
         int indexInParent();
 
-	ModClass* child(int row);
-	ModClass* compChild(int row);
-	ModClass* modelChild(int row);
-	ModClass* packageChild(int row);
+        ModClass* child(int row) const;
+        ModClass* compChild(int row) const;
+        ModClass* modelChild(int row) const;
+        ModClass* packageChild(int row) const;
 
 	
 

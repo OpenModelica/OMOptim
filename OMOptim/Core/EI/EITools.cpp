@@ -35,11 +35,13 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #include "EITools.h"
 #include <cmath>
+
+using namespace EI;
 
 EITools::EITools(void)
 {
@@ -136,7 +138,7 @@ void EITools::getTkQpkQuk(MOOptVector *variables,
         curStream = streams.at(iS);
         TinProv = curStream->TinNum(true).value(METemperature::K);
         ToutProv = curStream->ToutNum(true).value(METemperature::K);
-        QflowProv  = curStream->_QflowNum.value(MEQflow::W);
+        QflowProv  = curStream->QflowNum().value(MEQflow::W);
 
 
         if(TinProv==ToutProv)

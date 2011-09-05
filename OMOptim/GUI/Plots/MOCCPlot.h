@@ -34,7 +34,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 */
 
 #ifndef _MOCCPLOT_H
@@ -147,8 +147,6 @@ MOCCPlot::MOCCPlot(EIMERResult* res)
     myPalette.setColor(QPalette::Background,QColor(Qt::white));
     myPalette.setColor(QPalette::Window,QColor(Qt::white));
 
-
-
     //this->canvas()->setFrameStyle(QFrame::NoFrame);
     _axisFont = QFont(QApplication::font().family(),8,QFont::Bold);
     this->canvas()->setFont(_axisFont);
@@ -183,6 +181,9 @@ MOCCPlot::MOCCPlot(EIMERResult* res)
     grid->setMinPen(QPen(Qt::lightGray, 0 , Qt::SolidLine));
     grid->attach(this);
 
+    // size constraint
+    setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+    setMinimumSize(QSize());
 
     setCCType(GCC);
 }

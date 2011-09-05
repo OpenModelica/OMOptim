@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "AlgoParameter.h"
@@ -184,7 +184,7 @@ QVariant AlgoParameter::getFieldValue(int ifield, int role) const
 	}
 }
 
-AlgoParameter* AlgoParameter::clone()
+AlgoParameter* AlgoParameter::clone() const
 {
 	AlgoParameter* newParam = new AlgoParameter();
 

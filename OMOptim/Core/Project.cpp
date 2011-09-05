@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #include "Project.h"
@@ -44,12 +44,12 @@
 Project::Project()
 {
     _isdefined = false;
-    _curProblem = -1;
+//    _curProblem = -1;
 
 
     _problems = new Problems("Problems");
     _results = new Results("Results");
-    _curLaunchedProblem = NULL;
+//    _curLaunchedProblem = NULL;
     setCurModClass(NULL);
 
     _moomc = new MOomc("OMOptim",true);
@@ -109,8 +109,8 @@ void Project::clear()
     _isdefined=false;
     _filePath.clear();
     _name.clear();
-    _curProblem=-1;
-    _curLaunchedProblem = NULL;
+//    _curProblem=-1;
+//    _curLaunchedProblem = NULL;
     setCurModClass(NULL);
 
     _moFiles.clear();
@@ -240,11 +240,12 @@ void Project::refreshAllMod()
     }
 
     _modClassTree->clear();
+    _modClassTree->readFromOmc(_modClassTree->rootElement(),2);
 
-    for(int iO=0;iO<omcClasses.size();iO++)
-    {
-        _modClassTree->addModClass(rootModClass(),omcClasses.at(iO),_moomc->getFileOfClass(omcClasses.at(iO)));
-    }
+//    for(int iO=0;iO<omcClasses.size();iO++)
+//    {
+//        _modClassTree->addModClass(rootModClass(),omcClasses.at(iO),_moomc->getFileOfClass(omcClasses.at(iO)));
+//    }
 
     // refreshing map
     _mapModelPlus.clear();
@@ -589,7 +590,7 @@ void Project::launchProblem(Problem* problem)
             break;
 
         case Problem::EIHEN1TYPE :
-            launchedProblem = new EIHEN1(*((EIHEN1*)problem));
+            launchedProblem = new EIHEN1Problem(*((EIHEN1Problem*)problem));
             break;
 #endif
         default :
@@ -598,37 +599,43 @@ void Project::launchProblem(Problem* problem)
         }
 
 
-
-
-        connect(launchedProblem,SIGNAL(finished(Problem*)),this,SIGNAL(problemFinished(Problem*)));
-
-
         // Create temporary directory where calculations are performed
         createTempDir();
 
         // store temp problem
-        _curLaunchedProblem = launchedProblem;
-        _curProblemDate = QDateTime::currentDateTime();
+//        _curLaunchedProblem = launchedProblem;
+//        _curProblemDate = QDateTime::currentDateTime();
 
 
         //Create problem thread
         ProblemConfig config(tempPath());
-        MOThreads::LaunchProblem* launchThread = new MOThreads::LaunchProblem(launchedProblem,config);
+        MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
 
-        // connect signal
-        connect(launchedProblem,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
-        connect(launchedProblem,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
-        connect(launchedProblem,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
-        connect(launchThread,SIGNAL(finished(Result*)),this,SLOT(onProblemFinished(Result*)));
+        // connect signals
+        connect(launchThread,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
+        connect(launchThread,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
+        connect(launchThread,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
+        connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
+        connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SIGNAL(problemFinished(Problem*,Result*)));
 
+        // store thread-problem
+        _launchedThreads.insert(launchedProblem,launchThread);
+
+        // start problem
         launchThread->start();
     }
 }
-
-void Project::onProblemFinished(Result* result)
+void Project::onProblemStopAsked(Problem* problem)
 {
+//    MOThreads::ProblemThread *thread = _launchedThreads.value(problem,NULL);
 
+//    if(thread)
+//        thread->onStopAsked();
+    problem->stop();
+}
 
+void Project::onProblemFinished(Problem* problem,Result* result)
+{
     if(result)
     {
         //Results
@@ -683,24 +690,13 @@ void Project::onProblemFinished(Result* result)
 
             result->store(QString(resultsFolder()+QDir::separator()+result->name()),tempPath());
 
-
-            // set result date and time
-            result->_date = _curProblemDate;
-
-
-            // time spent (numberof days still not taken into account)
-            int nSec = _curProblemDate.secsTo(QDateTime::currentDateTime());
-
-            result->_duration = QTime(0,0,0,0);
-            result->_duration = result->_duration.addSecs(nSec);
-
             addResult(result);
 
             save();
         }
     }
     _problemLaunchMutex.unlock();
-    _curLaunchedProblem = NULL;
+    _launchedThreads.remove(problem);
 }
 
 
@@ -726,8 +722,11 @@ void Project::removeResult()
 
 Problem* Project::restoreProblemFromResult(int numResult)
 {
-    Result* result = _results->at(numResult);
+    return restoreProblemFromResult(_results->at(numResult));
+}
 
+Problem* Project::restoreProblemFromResult(Result* result)
+{
     Problem* restoredPb;
 
     switch(result->problemType())
@@ -755,7 +754,7 @@ void Project::removeResult(int num)
     emit beforeRemoveResult(num);
 
     // remove folder and data
-    QString folder = QDir(_results->items.at(num)->saveFolder()).absolutePath();
+    QString folder = QDir(_results->at(num)->saveFolder()).absolutePath();
     LowTools::removeDir(folder);
     _results->removeRow(num);
 
@@ -769,7 +768,7 @@ void Project::removeProblem(int num)
     emit beforeRemoveProblem(num);
 
     // remove folder and data
-    QString folder = QFileInfo(_problems->items.at(num)->saveFolder()).absolutePath();
+    QString folder = QFileInfo(_problems->at(num)->saveFolder()).absolutePath();
     LowTools::removeDir(folder);
     _problems->removeRow(num);
 
@@ -788,7 +787,7 @@ bool Project::renameProblem(int i,QString newName)
         return false;
 
     // change name
-    _problems->items.at(i)->rename(newName,true);
+    _problems->at(i)->rename(newName,true);
     save();
     return true;
 }	
@@ -804,7 +803,7 @@ bool Project::renameResult(int i,QString newName)
         return false;
 
     // change name
-    _results->items.at(i)->rename(newName,true);
+    _results->at(i)->rename(newName,true);
     save();
     return true;
 }
@@ -825,11 +824,6 @@ void Project::terminateOmsThreads()
 }
 
 
-void Project::onProblemStopAsked(Problem* problem)
-{
-    problem->onStopAsked();
-}
-
 void Project::addNewOptimization()
 {
     if(curModModel())
@@ -848,10 +842,10 @@ void Project::addNewEIProblem()
         this->addNewProblem(Problem::EIPROBLEMTYPE,curModModel());
 }
 
-Problem* Project::curLaunchedProblem()
-{
-    return _curLaunchedProblem;
-}
+//Problem* Project::curLaunchedProblem()
+//{
+//    return _curLaunchedProblem;
+//}
 
 QStringList Project::moFiles()
 {

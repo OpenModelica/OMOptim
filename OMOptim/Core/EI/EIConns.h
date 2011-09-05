@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 
   */
 #ifndef EICONNS_H
@@ -42,24 +42,33 @@
 
 #include "MOVector.h"
 #include "EIConn.h"
+#include "LowTools.h"
 
+namespace EI
+{
 class EIConns : public MOVector<EIConn>
 {
 public:
-        EIConns(void);
-        ~EIConns(void);
+    EIConns(void);
+    ~EIConns(void);
 
-        void setItems(QDomElement & domEl,EITree*);
+    void setItems(QDomElement & domEl,const EITree &);
 
-//        QVariant data(const QModelIndex &index, int role) const;
+    QStringList allStreams() const;
 
-//        setQUnit(MEQflow::KW);
-//        setTUnit(METemperature::K);
+
+    QList<METemperature> TList(QString stream) const;
+
+    QList<EIConn> filter(QString stream) const;
+    QList<EIConn> filterT(QString stream,METemperature T) const;
+    QList<EIConn> filterTin(QString stream,METemperature Tin) const;
+    QList<EIConn> filterTout(QString stream,METemperature Tout) const;
 
 private :
-//            MEQflow::Units _qflowUnit;
-//            METemperature::Units _TUnit;
+    //MEQflow::Units _qflowUnit;
+    //METemperature::Units _TUnit;
 
 
 };
+}
 #endif

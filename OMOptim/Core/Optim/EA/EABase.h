@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_EABASE_H)
@@ -66,7 +66,7 @@ public:
 	
         virtual ~EABase(void);
 
-	virtual EABase* clone() = 0;
+        virtual EABase* clone() const = 0;
 	virtual Result* launch(QString tempDir) = 0;
 	
 	
@@ -88,7 +88,7 @@ protected:
 	bool _stop;
 	
 	public slots:
-		void onStopAsked();
+                void onQuickEndAsked();
 
 };
 

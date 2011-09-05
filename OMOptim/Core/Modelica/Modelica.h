@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef _MODELICA_H
@@ -61,7 +61,7 @@ namespace Modelica
 
 	enum NameFormat{
 		SHORT,
-		DYMOLA, // Full without root model name
+                WITHOUTROOT, // Full without root model name
 		FULL
 	};
 };

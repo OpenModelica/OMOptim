@@ -1,5 +1,7 @@
 #include "EIModelExtractor.h"
 
+namespace EI
+{
 EIModelExtractor::EIModelExtractor()
 {
 }
@@ -103,4 +105,5 @@ EIModelContainer* EIModelExtractor::extractFromModClass(ModClass* model,ModClass
 
 
     return rootEI;
+}
 }

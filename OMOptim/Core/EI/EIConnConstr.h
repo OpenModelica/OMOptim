@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIConnConstr.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIConnConstr.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #ifndef EICONNCONSTR_H
@@ -48,56 +48,58 @@
 /*! \class EIConnConstr
    * \brief Each instance of this class corresponds to a connexion constraint
    * in energy integration.
-   *
    */
+namespace EI
+{
 class EIConnConstr : public MOItem
 {
-	public:
-	enum Field
-	{
-		//Modelica fields
-		ITEMA,
-		ITEMB,
-		TYPE
-	};
+public:
+    enum Field
+    {
+        //Modelica fields
+        ITEMA,
+        ITEMB,
+        TYPE
+    };
 
-	enum Type
-	{
-		FORBIDDEN
-	};
-	static const int nbFields = 3;
+    enum Type
+    {
+        FORBIDDEN
+    };
+    static const int nbFields = 3;
 
 
-        EIConnConstr(EITree*);
-	~EIConnConstr(void);
-        EIConnConstr(QDomElement &, EITree*);
+    EIConnConstr(EITree*);
+    ~EIConnConstr(void);
+    EIConnConstr(QDomElement &, EITree*);
 
-	
-	static QString strType(Type);
 
-	// MOItem overwrited
-	virtual unsigned getNbFields(){return nbFields;};
-	virtual QString getClassName(){return "EIConnConstr";};
-	
+    static QString strType(Type);
 
-	// Specific functions
-	void setItems(EIItem* a,EIItem* b);
-	void setType(Type _type);
-	EIConnConstr* clone();
-	bool isValid();
-        QMultiMap<QString,QString> getForbiddenMatchs(MOOptVector *variables);
+    // MOItem overwrited
+    virtual unsigned getNbFields(){return nbFields;};
+    virtual QString getClassName(){return "EIConnConstr";};
 
-	// access and edit functions
-	QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
-	static QString sFieldName(int field, int role);
-	QString getFieldName(int i, int role = Qt::DisplayRole){return EIConnConstr::sFieldName(i,role);};
-	bool setFieldValue(int field,QVariant value);
+
+    // Specific functions
+    void setItems(EIItem* a,EIItem* b);
+    void setType(Type _type);
+    EIConnConstr* clone() const;
+    bool isValid() const;
+    QMultiMap<QString,QString> getForbiddenMatchs(MOOptVector *variables);
+
+    // access and edit functions
+    QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
+    static QString sFieldName(int field, int role);
+    QString getFieldName(int i, int role = Qt::DisplayRole){return EIConnConstr::sFieldName(i,role);};
+    bool setFieldValue(int field,QVariant value);
 
 protected:
-	EIItem* a;
-	EIItem* b;
-	Type type;
-        EITree* eiTree;
+    EIItem* a;
+    EIItem* b;
+    Type type;
+    EITree* eiTree;
 };
+}
 
 #endif

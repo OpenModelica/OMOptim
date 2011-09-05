@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIModelContainer.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIModelContainer.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #ifndef _EIModelContainer_H
@@ -42,46 +42,54 @@
 
 #include "EIItem.h"
 
+namespace EI
+{
 
+/**
+  * EIModelContainer is an EIItem that holds all EIItems of a modelica model. e.g. a modelica model can contains several EIGroups. The EIModelContainer corresponding to the modelica model
+  * will have as children these EIGroups.
+  * EIModelContainer holds a reference to modelica model concerned.
+  * @sa EIModelExtractor
+  */
 class EIModelContainer : public EIItem
 {
 public :
-	enum Field
-	{
-		//Modelica fields
-		NAME,
-		CHECKED,
-		MODEL		
-	};
+    enum Field
+    {
+        //Modelica fields
+        NAME,
+        CHECKED,
+        MODEL
+    };
 
-	static const int nbFields = 3;
-	virtual unsigned getNbFields(){return nbFields;};
+    static const int nbFields = 3;
+    virtual unsigned getNbFields(){return nbFields;};
 
-	public:
-		EIModelContainer();
-                EIModelContainer(EIItem* parent,QString name,QString modelName);
-		EIModelContainer(const EIModelContainer &);
-		EIModelContainer(QDomElement &);
-		~EIModelContainer(void);
+public:
+    EIModelContainer();
+    EIModelContainer(EIItem* parent,QString name,QString modelName);
+    EIModelContainer(const EIModelContainer &);
+    EIModelContainer(QDomElement &);
+    ~EIModelContainer(void);
 
-		EIItem* clone();
+    EIItem* clone() const;
 
-		virtual QString getClassName(){return "EIModelContainer";};
-		virtual EI::Type getEIType(){return EI::MODELCONTAINER;};
+    virtual QString getClassName(){return "EIModelContainer";};
+    virtual EI::Type getEIType() const {return EI::MODELCONTAINER;};
 
-                QString model();
+    QString model();
 
-		// access and edit functions
-		QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
-		bool setFieldValue(int iField, QVariant value);
-		static QString sFieldName(int field, int role);
-		QString getFieldName(int i, int role = Qt::DisplayRole){return EIModelContainer::sFieldName(i,role);};
+    // access and edit functions
+    QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
+    bool setFieldValue(int iField, QVariant value);
+    static QString sFieldName(int field, int role);
+    QString getFieldName(int i, int role = Qt::DisplayRole){return EIModelContainer::sFieldName(i,role);};
 
-		
+
 protected :
-        QString _model;
+    QString _model;
 };
-
+}
 
 
 

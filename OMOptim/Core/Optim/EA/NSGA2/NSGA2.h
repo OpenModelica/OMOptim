@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_NSGA2_H)
@@ -81,7 +81,7 @@ public :
         NSGA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*);
         NSGA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*,MOParameters*);
 	NSGA2(const NSGA2 &);
-	NSGA2* clone();
+	NSGA2* clone() const;
 
 	QList<int> compatibleOMCases();
 

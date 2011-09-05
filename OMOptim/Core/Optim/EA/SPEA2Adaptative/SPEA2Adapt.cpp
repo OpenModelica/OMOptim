@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 /*
@@ -117,7 +117,7 @@ SPEA2Adapt::SPEA2Adapt(const SPEA2Adapt & ea):EABase(ea)
 {
 }
 
-SPEA2Adapt* SPEA2Adapt::clone()
+SPEA2Adapt* SPEA2Adapt::clone() const
 {
 	SPEA2Adapt* newEA = new SPEA2Adapt(*this);
 	return newEA ;
@@ -306,13 +306,13 @@ Result* SPEA2Adapt::launch(QString tempDir)
  //   checkpoint.add(averageStat);
  //   checkpoint.add(fdcStat);
 
-	// The Stdout monitor will print parameters to the screen ...
-    MyEoGnuplot1DMonitor monitor("export_monitor.xg",false);
-    // when called by the checkpoint (i.e. at every generation)
-    checkpoint.add(monitor);
+//	// The Stdout monitor will print parameters to the screen ...
+//    MyEoGnuplot1DMonitor monitor("export_monitor.xg",false);
+//    // when called by the checkpoint (i.e. at every generation)
+//    checkpoint.add(monitor);
 
-    // the monitor will output a series of parameters: add them
-    monitor.add(generationCounter);
+//    // the monitor will output a series of parameters: add them
+//    monitor.add(generationCounter);
    // monitor.add(eval);		// because now eval is an eoEvalFuncCounter!
     //monitor.add(bestStat);
     //monitor.add(SecondStat);

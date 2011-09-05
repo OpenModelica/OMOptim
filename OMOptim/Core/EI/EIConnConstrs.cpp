@@ -1,5 +1,7 @@
 #include "EIConnConstrs.h"
 
+namespace EI
+{
 EIConnConstrs::EIConnConstrs(void)
 {
 }
@@ -14,7 +16,7 @@ EIConnConstrs::EIConnConstrs(const EIConnConstrs &b)
         items.push_back(b.items.at(i)->clone());
 }
 
-EIConnConstrs* EIConnConstrs::clone()
+EIConnConstrs* EIConnConstrs::clone() const
 {
         EIConnConstrs* cloned = new EIConnConstrs(*this);
 	return cloned;
@@ -76,4 +78,5 @@ bool EIConnConstrs::isForbiddenMatch(QString str1,QString str2,QMultiMap<QString
     bool isForb = map.values(str1).contains(str2) || map.values(str2).contains(str1) ;
 
     return isForb;
+}
 }

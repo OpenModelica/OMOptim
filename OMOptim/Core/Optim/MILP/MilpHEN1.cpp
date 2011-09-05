@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #include "MilpHEN1.h"
@@ -44,14 +44,15 @@
 #endif
 #include <cmath>
 
+bool GlpkCallBack::_stop;
 
-MilpHEN1::MilpHEN1(EITree* eiTree,MOParameters *parameters,EIConnConstrs *connConstrs,
-                   MOOptVector *variables,QDir folder,bool splitTPinch,METemperature TPinch)
+MilpHEN1::MilpHEN1(const EITree &eiTree,const MOParameters &parameters,const EIConnConstrs &connConstrs,
+                   const MOOptVector &variables,QDir folder,bool splitTPinch,METemperature TPinch)
 {
-    _eiTree = new EITree(*eiTree);
-    _variables = new MOOptVector(*variables);
-    _connConstrs = new EIConnConstrs(*connConstrs);
-    _parameters = new MOParameters(*parameters);
+    _eiTree = new EITree(eiTree);
+    _variables = new MOOptVector(variables);
+    _connConstrs = new EIConnConstrs(connConstrs);
+    _parameters = new MOParameters(parameters);
 
     _folder = folder;
     _splitTPinch = splitTPinch;
@@ -90,12 +91,11 @@ MilpHEN1::MilpHEN1(EITree* eiTree,MOParameters *parameters,EIConnConstrs *connCo
     _mpsFileName = "problem.mps";
 
 
-    _QFlowUnit = MEQflow::W;
+    _QFlowUnit = MEQflow::KW;
     _TempUnit = METemperature::K;
+    _MassFlowUnit = MEMassFlow::KG_S;
 
     _glpProblem = NULL;
-    _glpThread = NULL;
-
 }
 
 MilpHEN1::~MilpHEN1(void)
@@ -104,7 +104,6 @@ MilpHEN1::~MilpHEN1(void)
     delete _variables;
     delete _parameters;
     delete _connConstrs;
-    delete _glpProblem;
 }
 
 int MilpHEN1::hook(void *info, const char *s)
@@ -118,9 +117,15 @@ int MilpHEN1::hook(void *info, const char *s)
     return 1;
 }
 
+EIHEN1Parameters::Solver MilpHEN1::solver()
+{
+    return _solver;
+}
 
 EIHEN1Result * MilpHEN1::launch()
 {
+    QString msg;
+
     QList<METemperature> Tk;
 
     bool dataOk = prepareData(Tk);
@@ -132,13 +137,13 @@ EIHEN1Result * MilpHEN1::launch()
     switch(_solver)
     {
     case EIHEN1Parameters::GLPK :
-        launchOk = launchGLPK();
+        launchOk = launchGLPK(msg);
         if(launchOk)
             return  getGLPKResult(Tk);
         else
             return NULL;
     case EIHEN1Parameters::CBC :
-        launchOk = launchCBC();
+        launchOk = launchCBC(msg);
         if(launchOk)
             return  getCBCResult(Tk);
         else
@@ -150,49 +155,24 @@ EIHEN1Result * MilpHEN1::launch()
 
 void MilpHEN1::stop()
 {
-    // doesnt work
-    if(_glpThread)
-        _glpThread->quit();
-
-    // if cbc, kill processus : ! kill all cbc ! Dangerous !!
-#ifdef WIN32 // Win32
-    return false; // #TODO
-#else // UNIX environment
-
     if(_solver==EIHEN1Parameters::CBC)
     {
-        OMProcess qp("Kill cbc",true);
-        qp.setWorkingDirectory(_folder.absolutePath());
-
-        QStringList arguments;
-        arguments << "-c";
-        QString cmd = "killall cbc";
-        arguments << cmd;
-        qp.start("sh",arguments);
-        qp.waitForFinished(-1);
+        _cbcCtrl->stop();
     }
-#endif
+
+    if(_solver==EIHEN1Parameters::GLPK)
+    {
+        _glpkCtrl->stop();
+    }
 }
 
-
-void MilpHEN1::DataToFile(QString dataFilePath,
-                          QList<EIStream*> &eiProcessStreams,
-                          QList<EIStream*> &eiUtilityStreams,
-                          QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
-                          QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
-                          QMap<EIGroupFact*,EIGroup*> &factGroupMap,
+void MilpHEN1::prepareTk( const QList<EIStream*> &allStreams,
                           QList<METemperature> &Tk)
 {
 
-    //configuration                
-    bool allInB = _parameters->value((int)EIHEN1Parameters::ALLOWSEVERAL,QVariant(true)).toBool(); // if true, more than one heat exchanger is permitted between each couple of streams
-    bool allInNI = _parameters->value((int)EIHEN1Parameters::ALLOWNI,QVariant(true)).toBool();// if true, non-isothermal connections are allowed for every streams
-    bool allSplitsAllowed = _parameters->value((int)EIHEN1Parameters::ALLOWSPLITS,QVariant(true)).toBool(); // if true, splits are allowed for all streams
-    int kmax = _parameters->value((int)EIHEN1Parameters::KMAX,QVariant(10)).toInt();
-
+    //configuration
     bool splitTinterval = _parameters->value((int)EIHEN1Parameters::SPLITDT,QVariant(true)).toBool();
     double splitTstep = _parameters->value((int)EIHEN1Parameters::SPLITDTSTEP,QVariant(true)).toDouble();
-
 
 
     // Temperature interval sorting and spliting
@@ -206,9 +186,139 @@ void MilpHEN1::DataToFile(QString dataFilePath,
         qSort(Tk.begin(),Tk.end(),METemperature::ThoterThan); //T(0) > T(1) > T(2)...
     }
 
+    QList<int> tkConcerned,tkConcernedA,tkConcernedB;
+    QList<METemperature> TU;
+    QList<METemperature> TL;
+    METemperature curStreamTPinch;
+
+    // be sure each stream at least holds in three intervals
+    for(int i=0;i<allStreams.size();i++)
+    {
+        tkConcerned = EIReader::getTIntervalsConcerned(Tk,allStreams.at(i),false);
+        TU.clear();
+        TL.clear();
+        for(int j=0;j<tkConcerned.size();j++)
+        {
+            TU.push_back(Tk.at(tkConcerned.at(j)));
+            TL.push_back(Tk.at(tkConcerned.at(j)+1));
+        }
+
+        if(!_splitTPinch)
+        {
+
+            if(tkConcerned.size()<3)
+            {
+
+                Q_ASSERT(tkConcerned.size()>0);
+
+                if(tkConcerned.size()==1)
+                {
+                    Tk.insert(tkConcerned.at(0)+1,TL[0]+(TU[0]-TL[0])*1/3);
+                    Tk.insert(tkConcerned.at(0)+1,TL[0]+(TU[0]-TL[0])*2/3);
+                }
+                if(tkConcerned.size()==2)
+                {
+                    if((TU[0]-TL[0])>(TU[1]-TL[1]))
+                        Tk.insert(tkConcerned.at(0)+1,TL[0]+(TU[0]-TL[0])*1/2);
+                    else
+                        Tk.insert(tkConcerned.at(1)+1,TL[1]+(TU[1]-TL[1])*1/2);
+                }
+            }
+        }
+        else
+        {
+            // adding all streams TPinch (where TCorrected = TPinch)
+            if(allStreams.at(i)->isHot())
+                curStreamTPinch = _TPinch+allStreams.at(i)->_DTmin2;
+            else
+                curStreamTPinch =  _TPinch-allStreams.at(i)->_DTmin2;
+
+            if(!Tk.contains(curStreamTPinch))
+            {
+                Tk.push_back(curStreamTPinch);
+                qSort(Tk.begin(),Tk.end(),METemperature::ThoterThan); //T(0) > T(1) > T(2)...
+            }
+
+            // check in each zone, streams holds in at least 3 intervals
+            tkConcernedA.clear();
+            tkConcernedB.clear();
+            //divide zones
+            for(int iT=0;iT<tkConcerned.size();iT++)
+            {
+                if(Tk.at(tkConcerned.at(iT)) > curStreamTPinch) //use corrected T
+                {
+                    tkConcernedA.push_back(tkConcerned.at(iT));
+                }
+                else
+                {
+                    tkConcernedB.push_back(tkConcerned.at(iT));
+                }
+            }
+
+            // divide in zone A
+            if(tkConcernedA.size()==1)
+            {
+                Tk.insert(tkConcernedA.at(0)+1,TL[0]+(TU[0]-TL[0])*1/3);
+                Tk.insert(tkConcernedA.at(0)+1,TL[0]+(TU[0]-TL[0])*2/3);
+            }
+            if(tkConcernedA.size()==2)
+            {
+                if((TU[0]-TL[0])>(TU[1]-TL[1]))
+                    Tk.insert(tkConcernedA.at(0)+1,TL[0]+(TU[0]-TL[0])*1/2);
+                else
+                    Tk.insert(tkConcernedA.at(1)+1,TL[1]+(TU[1]-TL[1])*1/2);
+            }
+
+            // divide in zone B
+            if(tkConcernedB.size()==1)
+            {
+                Tk.insert(tkConcernedB.at(0)+1,TL[0]+(TU[0]-TL[0])*1/3);
+                Tk.insert(tkConcernedB.at(0)+1,TL[0]+(TU[0]-TL[0])*2/3);
+            }
+            if(tkConcernedB.size()==2)
+            {
+                if((TU[0]-TL[0])>(TU[1]-TL[1]))
+                    Tk.insert(tkConcernedB.at(0)+1,TL[0]+(TU[0]-TL[0])*1/2);
+                else
+                    Tk.insert(tkConcernedB.at(1)+1,TL[1]+(TU[1]-TL[1])*1/2);
+            }
+        }
+    }
+
+
+    //sort Tk in descending order !!!
+    qSort(Tk.begin(),Tk.end(),METemperature::ThoterThan); //T(0) > T(1) > T(2)...
+}
+
+
+void MilpHEN1::DataToFile(QString dataFilePath,
+                          QList<EIStream*> &eiProcessStreams,
+                          QList<EIStream*> &eiUtilityStreams,
+                          QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
+                          QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
+                          QMap<EIGroupFact*,EIGroup*> &factGroupMap,
+                          QList<METemperature> &Tk)
+{
+
+    //configuration
+    bool allInB = _parameters->value((int)EIHEN1Parameters::ALLOWSEVERAL,QVariant(true)).toBool(); // if true, more than one heat exchanger is permitted between each couple of streams
+    bool allInNI = _parameters->value((int)EIHEN1Parameters::ALLOWNI,QVariant(true)).toBool();// if true, non-isothermal connections are allowed for every streams
+    bool allSplitsAllowed = _parameters->value((int)EIHEN1Parameters::ALLOWSPLITS,QVariant(true)).toBool(); // if true, splits are allowed for all streams
+    int kmax = _parameters->value((int)EIHEN1Parameters::KMAX,QVariant(10)).toInt();
+
+    bool splitTinterval = _parameters->value((int)EIHEN1Parameters::SPLITDT,QVariant(true)).toBool();
+    double splitTstep = _parameters->value((int)EIHEN1Parameters::SPLITDTSTEP,QVariant(true)).toDouble();
+
+
+    QList<EIStream*> allStreams;
+    allStreams.append(eiUtilityStreams);
+    allStreams.append(eiProcessStreams);
+
+    // be sure each stream at least holds in three intervals
+    prepareTk(allStreams,Tk);
+
 
     QString zone("z1");
-
     QString zoneA("za"); //zone above
     QString zoneB("zb"); //zone below
 
@@ -254,24 +364,6 @@ void MilpHEN1::DataToFile(QString dataFilePath,
         huStreamsB = EIReader::getStreamsBelowT(_TPinch,huStreams,true);
         cuStreamsA = EIReader::getStreamsAboveT(_TPinch,cuStreams,true);
         cuStreamsB = EIReader::getStreamsBelowT(_TPinch,cuStreams,true);
-
-        // adding all streams TPinch (where TCorrected = TPinch)
-        METemperature curStreamTPinch;
-        for(int iH=0;iH<hotStreams.size();iH++)
-        {
-            curStreamTPinch = _TPinch+hotStreams.at(iH)->_DTmin2;
-            if(!Tk.contains(curStreamTPinch))
-                Tk.push_back(curStreamTPinch);
-        }
-        for(int iC=0;iC<coldStreams.size();iC++)
-        {
-            curStreamTPinch =  _TPinch-coldStreams.at(iC)->_DTmin2;
-            if(!Tk.contains(curStreamTPinch))
-                Tk.push_back(curStreamTPinch);
-        }
-
-        //sort Tk in descending order !!!
-        qSort(Tk.begin(),Tk.end(),METemperature::ThoterThan); //T(0) > T(1) > T(2)...
     }
 
 
@@ -558,8 +650,8 @@ void MilpHEN1::DataToFile(QString dataFilePath,
                 }
                 else
                 {
-                   setMiz.addItem(hotStreams.at(i)->name(),zone,QString::number(listiTconcerned.at(j)+1));
-                   setHmz.addItem(QString::number(listiTconcerned.at(j)+1),zone,hotStreams.at(i)->name());
+                    setMiz.addItem(hotStreams.at(i)->name(),zone,QString::number(listiTconcerned.at(j)+1));
+                    setHmz.addItem(QString::number(listiTconcerned.at(j)+1),zone,hotStreams.at(i)->name());
                 }
             }
         }
@@ -600,7 +692,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
                     if(Tk.at(listiTconcerned.at(j))+coldStreams.at(i)->_DTmin2 > _TPinch)
                     {
                         setNjz.addItem(coldStreams.at(i)->name(),zoneA,QString::number(listiTconcerned.at(j)+1));
-                         setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zoneA,coldStreams.at(i)->name());
+                        setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zoneA,coldStreams.at(i)->name());
                     }
                     else
                     {
@@ -610,8 +702,8 @@ void MilpHEN1::DataToFile(QString dataFilePath,
                 }
                 else
                 {
-                   setNjz.addItem(coldStreams.at(i)->name(),zone,QString::number(listiTconcerned.at(j)+1));
-                   setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zone,coldStreams.at(i)->name());
+                    setNjz.addItem(coldStreams.at(i)->name(),zone,QString::number(listiTconcerned.at(j)+1));
+                    setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zone,coldStreams.at(i)->name());
                 }
             }
         }
@@ -704,12 +796,26 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     dataText.append(paramUtFactMin.toString()+"\n");
 
 
+    //flowrates
+    MilpParam1D paramFi("Fi");
+    for(int i=0;i<hotStreams.size();i++)
+    {
+        curStream = hotStreams.at(i);
+        paramFi.addItem(curStream->name(),QString::number(curStream->massFlowNum().value(_MassFlowUnit),'g',20));
+    }
+    dataText.append(paramFi.toString()+"\n");
 
+    MilpParam1D paramFj("Fj");
+    for(int i=0;i<coldStreams.size();i++)
+    {
+        curStream = coldStreams.at(i);
+        paramFj.addItem(curStream->name(),QString::number(curStream->massFlowNum().value(_MassFlowUnit),'g',20));
+    }
+    dataText.append(paramFj.toString()+"\n");
 
 
     //DHimzH
-    //Cpim : not true cp : flow rate is defined as 1
-    // -> cp = DH/DT
+    //Cpim
     MilpParam3D paramDHimzH("DHimzH");
     MilpParam2D paramCpim("Cpim");
     QMultiMap<MilpKey2D,QString> mizValues = setMiz.values();
@@ -764,8 +870,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
 
 
     //DHjnzC
-    //Cpjn : not true cp : flow rate is defined as 1
-    // -> cp = DH/DT
+    //Cpjn
     MilpParam3D paramDHjnzC("DHjnzC");
     MilpParam2D paramCpjn("Cpjn");
     QMultiMap<MilpKey2D,QString> njzValues = setNjz.values();
@@ -808,7 +913,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     dataText.append(paramCpjn.toString()+"\n");
 
     //DTi
-   // METemperature dT;
+    // METemperature dT;
     MilpParam1D paramDTi("DTi");
     for(int iH=0;iH<hotStreams.size();iH++)
     {
@@ -946,35 +1051,22 @@ bool MilpHEN1::prepareData( QList<METemperature> & Tk)
     {
         // create .mps for Cbc
         QString mpsFilePath = _folder.absoluteFilePath(_mpsFileName);
-       ret = glp_write_mps(_glpProblem,GLP_MPS_FILE,NULL,mpsFilePath.toLatin1().data());
-       ok = ok && (ret==0);
+        ret = glp_write_mps(_glpProblem,GLP_MPS_FILE,NULL,mpsFilePath.toLatin1().data());
+        ok = ok && (ret==0);
     }
     return ok;
 }
 
-bool MilpHEN1::launchCBC()
+bool MilpHEN1::launchCBC(QString &msg)
 {
-    _cbcThread = new CbcHEN1Thread(_folder,_mpsFileName,_resFileName,_parameters);
-    _cbcThread->run();
-    return true;
-
-
+    _cbcCtrl = new CbcCtrl(_folder,_mpsFileName,_resFileName,_parameters);
+    return _cbcCtrl->run(msg);
 }
 
-bool MilpHEN1::launchGLPK()
+bool MilpHEN1::launchGLPK(QString &msg)
 {
-
-    // parameters
-    glp_iocp opt_mlp;
-    glp_init_iocp(&opt_mlp);
-    // enable presolve
-    //opt_mlp.presolve = GLP_ON;
-
-    int ret = glp_simplex(_glpProblem, NULL);
-    if(ret==0)
-        ret = glp_intopt(_glpProblem,  &opt_mlp);
-
-    return (ret==0);
+    _glpkCtrl = new GlpkCtrl(_glpProblem,_glpTran);
+    return _glpkCtrl->run(msg);
 }
 
 void MilpHEN1::printGlpkFileResult()
@@ -1017,7 +1109,7 @@ EIHEN1Result* MilpHEN1::getGLPKResult(const QList<METemperature> & Tk)
     int ret;
     try
     {
-    ret = glp_mpl_postsolve(_glpTran, _glpProblem, GLP_MIP);
+        ret = glp_mpl_postsolve(_glpTran, _glpProblem, GLP_MIP);
     }
     catch(std::exception &e)
     {
@@ -1061,10 +1153,6 @@ EIHEN1Result* MilpHEN1::getGLPKResult(const QList<METemperature> & Tk)
     result->_logFileName = _logFileName;
     result->_resFileName = _resFileName;
     result->_sensFileName = _sensFileName;
-
-    //delete
-    delete _glpThread;
-    _glpThread = NULL;
 
 
     return result;
@@ -1256,7 +1344,6 @@ EIHEN1Result* MilpHEN1::readCBCResult(const QString &txt,const QList<METemperatu
 
     result->setEIConns(readCBCEIConns(txt,Tk));
 
-
     return result;
 }
 
@@ -1314,6 +1401,10 @@ EIConns* MilpHEN1::readGLPKEIConns(glp_prob * glpProblem,QStringList colNames,co
     MilpVariableResult4D varQijmzH("qijmzH");
     GlpkTools::fill(varQijmzH,glpProblem,colNames);
 
+    // QijmzH
+    MilpVariableResult4D varQijnzC("qijnzC");
+    GlpkTools::fill(varQijnzC,glpProblem,colNames);
+
     // massFijmz
     MilpVariableResult4D varMassFijmz("massFijmz");
     GlpkTools::fill(varMassFijmz,glpProblem,colNames);
@@ -1323,7 +1414,8 @@ EIConns* MilpHEN1::readGLPKEIConns(glp_prob * glpProblem,QStringList colNames,co
     GlpkTools::fill(varMassFijnz,glpProblem,colNames);
 
 
-    return readEIConns(Tk,varKijmzH,varKijnzC,varKeijmzH,varKeijnzC,varQijmzH,varMassFijmz,varMassFijnz);
+    return readEIConns(Tk,varKijmzH,varKijnzC,varKeijmzH,varKeijnzC,varQijmzH,varQijnzC,varMassFijmz,varMassFijnz);
+
 }
 
 
@@ -1351,6 +1443,10 @@ EIConns* MilpHEN1::readCBCEIConns(const QString &txt,const QList<METemperature> 
     MilpVariableResult4D varQijmzH("qijmzH");
     CBCTools::fill(varQijmzH,txt);
 
+    // QijnzC
+    MilpVariableResult4D varQijnzC("qijnzC");
+    CBCTools::fill(varQijnzC,txt);
+
     // massFijmz
     MilpVariableResult4D varMassFijmz("massFijmz");
     CBCTools::fill(varMassFijmz,txt);
@@ -1359,9 +1455,17 @@ EIConns* MilpHEN1::readCBCEIConns(const QString &txt,const QList<METemperature> 
     MilpVariableResult4D varMassFijnz("massFijnz");
     CBCTools::fill(varMassFijnz,txt);
 
+    // Cpim
+    MilpVariableResult4D varCpim("Cpim");
+    CBCTools::fill(varCpim,txt);
+
+    // Cpjn
+    MilpVariableResult4D varCpjn("Cpjn");
+    CBCTools::fill(varCpjn,txt);
 
 
-    return readEIConns(Tk,varKijmzH,varKijnzC,varKeijmzH,varKeijnzC,varQijmzH,varMassFijmz,varMassFijnz);
+
+    return readEIConns(Tk,varKijmzH,varKijnzC,varKeijmzH,varKeijnzC,varQijmzH,varQijnzC,varMassFijmz,varMassFijnz);
 }
 
 
@@ -1370,7 +1474,8 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
                                const MilpVariableResult4D &varKijnzC,
                                const MilpVariableResult4D &varKeijmzH,
                                const MilpVariableResult4D &varKeijnzC,
-                               const  MilpVariableResult4D &varQijmzH,
+                               const MilpVariableResult4D &varQijmzH,
+                               const MilpVariableResult4D &varQijnzC,
                                const MilpVariableResult4D &varMassFijmz,
                                const MilpVariableResult4D &varMassFijnz
                                )
@@ -1383,6 +1488,8 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
     QList<MilpKey4D> beginCKeys = varKijnzC.values().keys(1);
 
 
+    qDebug(varKijnzC.toString().toLatin1().data());
+
     // get heat exchanger endkeys
     QList<MilpKey4D> endHKeys = varKeijmzH.values().keys(1);
     QList<MilpKey4D> endCKeys = varKeijnzC.values().keys(1);
@@ -1392,130 +1499,211 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
     int iEH,iBC,iEC;
     int kBH,kEH,kBC,kEC;
     bool okBH,okEH,okBC,okEC;
+    bool okCp;
     bool found;
     QString strHot,strCold;
-    MEQflow qflow;
+    MEQflow qflow,extQFlow;
+    METemperature TinA,ToutA,TinB,ToutB;
+    MilpKey4D curKey;
+    EIStream* hotStream;
+    EIStream* coldStream;
+    MEMassFlow hotMassFlow,coldMassFlow;
+    QString zone;
+    bool connOk;
+
     // for each hot beginning
     for(int iBH=0;iBH<beginHKeys.size();iBH++)
     {
         curBHKey=beginHKeys.at(iBH);
+
+        // if qijmzh = 0 at this place, update temperature interval (i3)
+        if(varQijmzH.values().value(curBHKey)==0)
+            curBHKey = MilpKey4D(curBHKey.i1(),curBHKey.i2(),QString::number(curBHKey.i3().toInt()+1),curBHKey.i4());
+
         strHot = curBHKey.i1();
         strCold = curBHKey.i2();
+        zone = curBHKey.i4();
 
-        // find hot end
+        hotStream = dynamic_cast<EIStream*>(_eiTree->findItem(strHot));
+        coldStream = dynamic_cast<EIStream*>(_eiTree->findItem(strCold));
 
-        iEH=0;
-        found=false;
-        while((iEH<endHKeys.size())&&(!found))
+        if(!hotStream || !coldStream)
         {
-            if((endHKeys.at(iEH).i1()==strHot)&&(endHKeys.at(iEH).i2()==strCold))
-                found=true;
-            else
-                iEH++;
+            if(!hotStream)
+                infoSender.send(Info("Unable to find stream "+strHot,ListInfo::ERROR2));
+            if(!coldStream)
+                infoSender.send(Info("Unable to find stream "+strCold,ListInfo::ERROR2));
         }
-        if(!found)
-            infoSender.debug("Error HEN: could not found HEN hot end (i1="+strHot+",i2="+strCold+")");
         else
         {
-            curEHKey = endHKeys.at(iEH);
+            // find hot end
 
-            // find cold begining
-            found = false;
-            iBC=0;
-
-            while((iBC<beginCKeys.size())&&(!found))
+            iEH=0;
+            found=false;
+            while((iEH<endHKeys.size())&&(!found))
             {
-                if((beginCKeys.at(iBC).i1()==strHot)&&(beginCKeys.at(iBC).i2()==strCold))
+                if((endHKeys.at(iEH).i1()==strHot)&&(endHKeys.at(iEH).i2()==strCold)&&(endHKeys.at(iEH).i4()==zone))
                     found=true;
                 else
-                    iBC++;
+                    iEH++;
             }
             if(!found)
-                infoSender.debug("Error HEN: could not found HEN cold begin (i1="+strHot+",i2="+strCold+")");
+                infoSender.debug("Error HEN: could not found HEN hot end (i1="+strHot+",i2="+strCold+")");
             else
             {
+                curEHKey = endHKeys.at(iEH);
 
-                curBCKey = beginCKeys.at(iBC);
+                // if qijmzh = 0 at this place, update temperature interval (i3)
+                if(varQijmzH.values().value(curEHKey)==0)
+                    curEHKey = MilpKey4D(curEHKey.i1(),curEHKey.i2(),QString::number(curEHKey.i3().toInt()-1),curEHKey.i4());
 
-                // find cold end
+                // find cold begining
                 found = false;
-                iEC=0;
+                iBC=0;
 
-                while((iEC<endCKeys.size())&&(!found))
+                while((iBC<beginCKeys.size())&&(!found))
                 {
-                    if((endCKeys.at(iEC).i1()==strHot)&&(endCKeys.at(iEC).i2()==strCold))
+                    if((beginCKeys.at(iBC).i1()==strHot)&&(beginCKeys.at(iBC).i2()==strCold)&&(beginCKeys.at(iBC).i4()==zone))
                         found=true;
                     else
-                        iEC++;
+                        iBC++;
                 }
                 if(!found)
-                    infoSender.debug("Error HEN: could not found HEN cold end (i1="+strHot+",i2="+strCold+")");
+                    infoSender.debug("Error HEN: could not found HEN cold begin (i1="+strHot+",i2="+strCold+")");
                 else
                 {
-                    curECKey = endCKeys.at(iEC);
 
-                    //Create connection
+                    curBCKey = beginCKeys.at(iBC);
 
 
-                    EIConn *newConn = new EIConn(_eiTree);
-                    // still does not support mass fractions -> set to 1
 
-                    kBH = curBHKey.i3().toInt(&okBH);
-                    kEH = curEHKey.i3().toInt(&okEH);
-                    kBC = curBCKey.i3().toInt(&okBC);
-                    kEC = curECKey.i3().toInt(&okEC);
+                    // if qijnzc = 0 at this place, update temperature interval (i3)
+                    if(varQijnzC.values().value(curBCKey)==0)
+                        curBCKey = MilpKey4D(curBCKey.i1(),curBCKey.i2(),QString::number(curBCKey.i3().toInt()+1),curBCKey.i4());
 
-                    Q_ASSERT(okBH && okEH && okBC && okEC);
+                    // find cold end
+                    found = false;
+                    iEC=0;
 
-                    if(kBC<=kEC)
+                    while((iEC<endCKeys.size())&&(!found))
                     {
-                        int a=2;
+                        if((endCKeys.at(iEC).i1()==strHot)&&(endCKeys.at(iEC).i2()==strCold)&&(endCKeys.at(iEC).i4()==zone))
+                            found=true;
+                        else
+                            iEC++;
                     }
-
-                    MilpKey4D curKey;
-
-                    //Hot mass fraction
-                    double hotMassFraction=-1;
-                    double oldHotMassFraction=-1;
-                    for(int k=kBH;k<=kEH;k++)
+                    if(!found)
+                        infoSender.debug("Error HEN: could not found HEN cold end (i1="+strHot+",i2="+strCold+")");
+                    else
                     {
-                        curKey=MilpKey4D(curBHKey.i1(),curBHKey.i2(),QString::number(k),curBHKey.i4());
+                        curECKey = endCKeys.at(iEC);
 
-                        hotMassFraction = varMassFijmz.values().value(curKey,-1);
+                        // if qijnzc = 0 at this place, update temperature interval (i3)
+                        if(varQijnzC.values().value(curECKey)==0)
+                            curECKey = MilpKey4D(curECKey.i1(),curECKey.i2(),QString::number(curECKey.i3().toInt()-1),curECKey.i4());
 
-                        // check that massFraction is constant in one heat hexchanger
-                      //  Q_ASSERT((fabs(oldHotMassFraction-hotMassFraction)<1e-5) || (oldHotMassFraction==-1));
-                        oldHotMassFraction = hotMassFraction;
+                        //Create connection
+                        EIConn *newConn = new EIConn();
+                        connOk = true;
+                        // still does not support mass fractions -> set to 1
+
+                        kBH = curBHKey.i3().toInt(&okBH);
+                        kEH = curEHKey.i3().toInt(&okEH);
+                        kBC = curBCKey.i3().toInt(&okBC);
+                        kEC = curECKey.i3().toInt(&okEC);
+
+                        Q_ASSERT(okBH && okEH && okBC && okEC);
+
+
+
+                        //Hot mass fraction
+                        hotMassFlow.setValue(-1);
+                        for(int k=kBH;k<=kEH;k++)
+                        {
+                            curKey=MilpKey4D(curBHKey.i1(),curBHKey.i2(),QString::number(k),curBHKey.i4());
+
+                            hotMassFlow.setValue(std::max(hotMassFlow.value(),varMassFijmz.values().value(curKey,-1)));
+
+                            // check that massFraction is constant in one heat hexchanger
+                        }
+                        // if only in one temperature interval, we consider no split.
+                        if(kBH==kEH)
+                            hotMassFlow = hotStream->massFlowNum();
+
+                        //cold mass fraction
+                        coldMassFlow.setValue(-1);
+                        for(int k=kBC;k<=kEC;k++)
+                        {
+                            curKey=MilpKey4D(curBCKey.i1(),curBCKey.i2(),QString::number(k),curBCKey.i4());
+                            coldMassFlow.setValue(std::max(coldMassFlow.value(),varMassFijnz.values().value(curKey,-1)));
+
+                            // check that massFraction is constant in one heat hexchanger
+
+                        }
+                        // if only in one temperature interval, we consider no split.
+                        if(kBC==kEC)
+                            coldMassFlow=coldStream->massFlowNum();
+
+
+                        //Tint and Tout
+
+                        //TinHot = TL+q/(m*cp)
+                        if(!varQijmzH.values().contains(curBHKey))
+                            connOk = false;
+
+                        extQFlow = MEQflow(varQijmzH.values().value(curBHKey,-1));
+                        TinA = Tk.at(kBH)+extQFlow.value()/(hotMassFlow.value()*hotStream->Cp(okCp));
+
+                        //ToutHot = TU-q/(m*cp)
+                        if(!varQijmzH.values().contains(curEHKey))
+                            connOk = false;
+
+                        extQFlow = MEQflow(varQijmzH.values().value(curEHKey,-1));
+                        if(kEH==kBH)
+                            ToutA = Tk.at(kEH);
+                        else
+                            ToutA = Tk.at(kEH-1)-extQFlow.value()/(hotMassFlow.value()*hotStream->Cp(okCp));
+
+                        //TinCold = TU - q/(m*cp)
+                        //EC corresponds to cold size (inlet)
+                        if(!varQijnzC.values().contains(curECKey))
+                            connOk = false;
+
+                        extQFlow = MEQflow(varQijnzC.values().value(curECKey,-1));
+                        TinB = Tk.at(kEC-1)-extQFlow.value()/(coldMassFlow.value()*coldStream->Cp(okCp));
+
+
+                        //ToutCold = TL+q/(m*cp)
+                        //EC corresponds to hot size (outlet)
+                        if(!varQijnzC.values().contains(curBCKey))
+                            connOk = false;
+
+                        extQFlow = MEQflow(varQijnzC.values().value(curBCKey,-1));
+                        if(kBC==kEC)
+                            ToutB = Tk.at(kBC-1);
+                        else
+                            ToutB  = Tk.at(kBC)+extQFlow.value()/(coldMassFlow.value()*coldStream->Cp(okCp));
+
+
+
+                        newConn->setA(hotStream->name(),TinA,ToutA,hotMassFlow);
+                        newConn->setB(coldStream->name(),TinB,ToutB,coldMassFlow);
+
+                        //calculate qflow
+
+                        qflow.setValue(0);
+                        for(int k=kBH;k<=kEH;k++)
+                        {
+                            curKey=MilpKey4D(curBHKey.i1(),curBHKey.i2(),QString::number(k),curBHKey.i4());
+                            qflow += MEQflow(varQijmzH.values().value(curKey,0),_QFlowUnit);
+                        }
+                        newConn->setQFlow(qflow);
+
+                        if(connOk)
+                            conns->addItem(newConn);
+                        else
+                            delete newConn;
                     }
-
-                    //cold mass fraction
-                    double coldMassFraction=-1;
-                    double oldColdMassFraction=-1;
-                    for(int k=kBC;k<=kEC;k++)
-                    {
-                        curKey=MilpKey4D(curBCKey.i1(),curBCKey.i2(),QString::number(k),curBCKey.i4());
-
-                        coldMassFraction = varMassFijnz.values().value(curKey,-1);
-
-                        // check that massFraction is constant in one heat hexchanger
-                      //  Q_ASSERT((fabs(oldColdMassFraction-coldMassFraction)<1e-5) || (oldColdMassFraction==-1));
-                        oldColdMassFraction = coldMassFraction;
-                    }
-
-
-                    newConn->setA(dynamic_cast<EIStream*>(_eiTree->findItem(strHot)),Tk.at(kBH-1),Tk.at(kEH),hotMassFraction);
-                    newConn->setB(dynamic_cast<EIStream*>(_eiTree->findItem(strCold)),Tk.at(kEC),Tk.at(kBC-1),coldMassFraction);
-
-                    //calculate qflow
-
-                    qflow.setValue(0);
-                    for(int k=kBH;k<=kEH;k++)
-                    {
-                        curKey=MilpKey4D(curBHKey.i1(),curBHKey.i2(),QString::number(k),curBHKey.i4());
-                        qflow += MEQflow(varQijmzH.values().value(curKey,0),_QFlowUnit);
-                    }
-                    newConn->setQFlow(qflow);
-                    conns->addItem(newConn);
                 }
             }
         }
@@ -1525,76 +1713,6 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
     return conns;
 
 
-}
-
-GlpkHEN1Thread::GlpkHEN1Thread(glp_prob* glpProblem,glp_tran* glpTran)
-{
-    _glpProblem = glpProblem;
-    _glpTran = glpTran;
-}
-
-void GlpkHEN1Thread::run()
-{
-    // parameters
-    glp_iocp opt_mlp;
-    glp_init_iocp(&opt_mlp);
-    // enable presolve
-    //opt_mlp.presolve = GLP_ON;
-
-    int ret = glp_simplex(_glpProblem, NULL);
-    ret = glp_intopt(_glpProblem,  &opt_mlp);
-}
-
-CbcHEN1Thread::CbcHEN1Thread(QDir folder,QString mpsFileName,QString solFileName,MOParameters *parameters)
-{
-    _folder = folder;
-    _mpsFileName = mpsFileName;
-    _solFileName = solFileName;
-    _parameters = parameters;
-}
-
-void CbcHEN1Thread::run()
-{
-    OMProcess qp("Cbc",true);
-    qp.setWorkingDirectory(_folder.absolutePath());
-
-
-    QString optPreprocessor="";
-    QString optIntegerTolerance="";
-    QString optPrimalTolerance="";
-
-    // preprocessor
-    EIHEN1Parameters::CbcPreprocessor iPreprocessor = (EIHEN1Parameters::CbcPreprocessor)_parameters->value(EIHEN1Parameters::CBCPREPROCESS).toInt();
-
-    int iParam = _parameters->findItem(EIHEN1Parameters::CBCPREPROCESS,MOParameter::INDEX);
-    if(iParam>-1)
-    {
-        MOParameterListed* preprocess = dynamic_cast<MOParameterListed*>(_parameters->items.at(iParam));
-        optPreprocessor= " -preprocess "+preprocess->strValue();
-    }
-
-    iParam = _parameters->findItem(EIHEN1Parameters::PRIMALTOLERANCE,MOParameter::INDEX);
-    if(iParam>-1)
-    {
-        MOParameter* primalTParam = dynamic_cast<MOParameter*>(_parameters->items.at(iParam));
-        optPrimalTolerance= " -primalTolerance "+QString::number(primalTParam->value().toDouble());
-    }
-
-
-    iParam = _parameters->findItem(EIHEN1Parameters::INTEGERTOLERANCE,MOParameter::INDEX);
-    if(iParam>-1)
-    {
-        MOParameter* integerTParam = dynamic_cast<MOParameter*>(_parameters->items.at(iParam));
-        optIntegerTolerance= " -integerTolerance "+QString::number(integerTParam->value().toDouble());
-    }
-
-
-    QStringList arguments;
-    arguments << "-c";
-    QString cmd = "cbc -import "+ _mpsFileName +optPreprocessor+optIntegerTolerance+optPrimalTolerance+" -solve -solution " + _solFileName;
-    arguments << cmd;
-    qp.start("sh",arguments);
-    qp.waitForFinished(-1);
 }
 
 

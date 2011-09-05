@@ -37,7 +37,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../Resources/mineit.qrc">
+          <iconset resource="../Resources/OMOptim.qrc">
            <normaloff>:/icons/Refresh</normaloff>:/icons/Refresh</iconset>
          </property>
         </widget>
@@ -145,7 +145,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
        </property>
        <property name="iconSize">
@@ -186,7 +186,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Delete</normaloff>:/icons/Delete</iconset>
        </property>
        <property name="iconSize">
@@ -262,7 +262,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
        </property>
        <property name="iconSize">
@@ -297,7 +297,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Delete</normaloff>:/icons/Delete</iconset>
        </property>
        <property name="iconSize">
@@ -346,7 +346,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
        </property>
        <property name="iconSize">
@@ -375,7 +375,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Delete</normaloff>:/icons/Delete</iconset>
        </property>
        <property name="iconSize">
@@ -398,7 +398,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../Resources/mineit.qrc"/>
+  <include location="../Resources/OMOptim.qrc"/>
  </resources>
  <connections/>
 </ui>

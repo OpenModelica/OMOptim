@@ -34,13 +34,13 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef MILPTARGET_H
 #define MILPTARGET_H
 
-#include <glpk.h>
+#include "glpk.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "EIItem.h"
@@ -53,7 +53,7 @@
 #include "MilpVariableResult.h"
 
 
-
+using namespace EI;
 class MilpTarget
 {
 public:

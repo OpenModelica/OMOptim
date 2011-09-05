@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MilpHEN1.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file MilpHEN1.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+        @version
 
   */
 #ifndef MILPHEN1_H
@@ -62,33 +62,10 @@
 #include <QtCore/QThread>
 #include "OMProcess.h"
 
+#include "GlpkCtrl.h"
+#include "CbcCtrl.h"
 
-
-class GlpkHEN1Thread : public QThread
-{
-public:
-    GlpkHEN1Thread(glp_prob*,glp_tran*);
-    void run(void);
-private :
-    glp_prob* _glpProblem;
-    glp_tran* _glpTran;
-
-};
-
-
-class CbcHEN1Thread : public QThread
-{
-public:
-    CbcHEN1Thread(QDir folder, QString mpsFileName,QString solFileName,MOParameters* parameters);
-    void run(void);
-
-private :
-    QString _mpsFileName;
-    QString _solFileName;
-    QDir _folder;
-    MOParameters* _parameters;
-
-};
+using namespace EI;
 
 
 
@@ -98,83 +75,92 @@ class MilpHEN1 :public QObject
 
 
 
-
-
 public:
-        MilpHEN1(EITree* eiTree,MOParameters *parameters,EIConnConstrs *_connConstrs,MOOptVector *variables,
-                 QDir folder,bool splitTPinch=false,METemperature TPinch = METemperature());
-	~MilpHEN1(void);
+    MilpHEN1(const EITree &eiTree,const MOParameters &parameters,const EIConnConstrs &connConstrs,const MOOptVector &variables,
+             QDir folder,bool splitTPinch=false,METemperature TPinch = METemperature());
+    ~MilpHEN1(void);
 
-        EIHEN1Result* launch();
-        void stop();
+    EIHEN1Result* launch();
+    void stop();
 
+    EIHEN1Parameters::Solver solver();
 
 private :
-        glp_prob* _glpProblem;
-        glp_tran *_glpTran;
-        GlpkHEN1Thread *_glpThread;
-        CbcHEN1Thread* _cbcThread;
-        EIHEN1Parameters::Solver _solver;
+    glp_prob* _glpProblem;
+    glp_tran *_glpTran;
+    CbcCtrl* _cbcCtrl;
+    GlpkCtrl* _glpkCtrl;
+    EIHEN1Parameters::Solver _solver;
 
 
 
-        bool prepareData(QList<METemperature> & Tk);
+    bool prepareData(QList<METemperature> & Tk);
 
 
-        bool launchCBC();
-        bool launchGLPK();
-
-
-
-        EIHEN1Result* getGLPKResult(const QList<METemperature> & Tk);
-        void printGlpkFileResult();
-         EIConns* readGLPKEIConns(glp_prob *,QStringList colNames,const QList<METemperature> & Tk);
-         EIHEN1Result* readGLPKResult(glp_prob *,const QList<METemperature> & Tk);
-
-        EIHEN1Result* getCBCResult(const QList<METemperature> & Tk);
-        EIHEN1Result* readCBCResult(const QString &txt,const QList<METemperature> & Tk);
-        EIConns* readCBCEIConns(const QString &txt, const QList<METemperature> & Tk);
-
-
-        EIConns* readEIConns(const QList<METemperature> & Tk, const MilpVariableResult4D &varKijmzH,
-                                    const MilpVariableResult4D &varKijnzC,
-                                       const MilpVariableResult4D &varKeijmzH,
-                                        const MilpVariableResult4D &varKeijnzC,
-                                      const  MilpVariableResult4D &varQijmzH,
-                                    const MilpVariableResult4D &varMassFijmz,
-                                    const MilpVariableResult4D &varMassFijnz);
-
-
-        void splitTk(QList<METemperature> & Tk, double maxDT);
-        void DataToFile(QString dataFilePath,
-	QList<EIStream*> &eiProcessStreams,
-	QList<EIStream*> &eiUtilityStreams,
-	QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
-	QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
-        QMap<EIGroupFact*,EIGroup*> &factGroupMap,
-                        QList<METemperature> &Tk);
+    bool launchCBC(QString &msg);
+    bool launchGLPK(QString &msg);
 
 
 
-        static int hook(void *info, const char *s);
+    EIHEN1Result* getGLPKResult(const QList<METemperature> & Tk);
+    void printGlpkFileResult();
+    EIConns* readGLPKEIConns(glp_prob *,QStringList colNames,const QList<METemperature> & Tk);
+    EIHEN1Result* readGLPKResult(glp_prob *,const QList<METemperature> & Tk);
+
+    EIHEN1Result* getCBCResult(const QList<METemperature> & Tk);
+    EIHEN1Result* readCBCResult(const QString &txt,const QList<METemperature> & Tk);
+    EIConns* readCBCEIConns(const QString &txt, const QList<METemperature> & Tk);
 
 
-        EITree* _eiTree;
-        MOOptVector *_variables;
-        QDir _folder;
-        QString _modFilePath;
-        QString _mpsFileName;
-        QString _dataFileName;
-        QString _resFileName;
-        QString _logFileName;
-        QString _sensFileName;
-        EIConnConstrs *_connConstrs;
-        MOParameters *_parameters;
-        bool _splitTPinch;
-        METemperature _TPinch;
+    EIConns* readEIConns ( const QList<METemperature> & Tk,
+                           const MilpVariableResult4D &varKijmzH,
+                           const MilpVariableResult4D &varKijnzC,
+                           const MilpVariableResult4D &varKeijmzH,
+                           const MilpVariableResult4D &varKeijnzC,
+                           const MilpVariableResult4D &varQijmzH,
+                           const MilpVariableResult4D &varQijnzC,
+                           const MilpVariableResult4D &varMassFijmz,
+                           const MilpVariableResult4D &varMassFijnz
+                           );
 
-        int _QFlowUnit;
-        int _TempUnit;
+
+    void splitTk(QList<METemperature> & Tk, double maxDT);
+    void DataToFile(QString dataFilePath,
+                    QList<EIStream*> &eiProcessStreams,
+                    QList<EIStream*> &eiUtilityStreams,
+                    QMultiMap<EIGroupFact*,EIStream*> &factStreamMap, // multimap <unit multiplier, Streams concerned>,
+                    QMap<EIGroupFact*,EIGroupFact*> &factsRelation, // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
+                    QMap<EIGroupFact*,EIGroup*> &factGroupMap,
+                    QList<METemperature> &Tk);
+
+    /**
+      * Tk is an essential parameter for resolution. It should be adapted to problem definition. This is what this function does
+      */
+    void prepareTk(const QList<EIStream*> &allStreams,
+                   QList<METemperature> &Tk);
+
+
+
+    static int hook(void *info, const char *s);
+
+
+    EITree* _eiTree;
+    MOOptVector *_variables;
+    QDir _folder;
+    QString _modFilePath;
+    QString _mpsFileName;
+    QString _dataFileName;
+    QString _resFileName;
+    QString _logFileName;
+    QString _sensFileName;
+    EIConnConstrs *_connConstrs;
+    MOParameters *_parameters;
+    bool _splitTPinch;
+    METemperature _TPinch;
+
+    int _QFlowUnit;
+    int _TempUnit;
+    int _MassFlowUnit;
 };
 
 

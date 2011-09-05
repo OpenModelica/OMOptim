@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #include "EIControler.h"
@@ -48,7 +48,9 @@
 #include <functional>
 #include "assert.h"
 
-        EIControler::EIControler()
+using namespace EI;
+
+EIControler::EIControler()
 {
 }
 
@@ -154,18 +156,18 @@ void EIControler::setItems(QDomElement & domEl,EIItem* rootEI)
 }
 
 
-QList<EIStream*> EIControler::splitStream(EIStream* toSplit,double firstFraction)
-{
-    if((firstFraction<0)||(firstFraction>1))
-        infoSender.debug("Error: firstFraction should be between 0 and 1 (here = "+QString::number(firstFraction)+")");
+//QList<EIStream*> EIControler::splitStream(EIStream* toSplit,double firstFraction)
+//{
+//    if((firstFraction<0)||(firstFraction>1))
+//        infoSender.debug("Error: firstFraction should be between 0 and 1 (here = "+QString::number(firstFraction)+")");
 
-    if(!toSplit->numerized())
-        infoSender.debug("Stream should be numerized before being splitted.");
+//    if(!toSplit->numerized())
+//        infoSender.debug("Stream should be numerized before being splitted.");
 
-    QList<EIStream*> streams;
-    EIStream* streamA = new EIStream(*toSplit);
-    EIStream* streamB = new EIStream(*toSplit);
+//    QList<EIStream*> streams;
+//    EIStream* streamA = new EIStream(*toSplit);
+//    EIStream* streamB = new EIStream(*toSplit);
 
-    streamA->_QflowNum * firstFraction;
-    streamA->_QflowNum = streamA->_QflowNum * (1-firstFraction);
-}
+//    streamA->_QflowNum * firstFraction;
+//    streamA->_QflowNum = streamA->_QflowNum * (1-firstFraction);
+//}

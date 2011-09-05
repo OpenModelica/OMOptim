@@ -9,6 +9,11 @@
 #include "ModClass.h"
 #include "ModModel.h"
 
+namespace EI
+{
+/** ModEIConverter provides functions to extract EIItems from modelica models.
+  *
+  */
 class ModEIConverter
 {
 public:
@@ -17,5 +22,5 @@ public:
     static EIStream* modClassToEIStream(ModClass*,EIItem* parent,MOomc*, bool &ok, QString &parentName );
     static EIGroup* modClassToEIGroup(ModClass*,EIItem* parent,MOomc*, bool &ok, QString &parentName );
 };
-
+}
 #endif // MODEICONVERTER_H

@@ -1,10 +1,10 @@
 // $Id$
-        /**
+/**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -28,19 +28,24 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIModelContainer.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIModelContainer.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
+
+
 #include "EIModelContainer.h"
 
-        EIModelContainer::EIModelContainer():EIItem(NULL,"Model")
+using namespace EI;
+
+
+EIModelContainer::EIModelContainer():EIItem(NULL,"Model")
 {
     setFieldValue(MODEL,QString());
 }
@@ -61,7 +66,7 @@ EIModelContainer::EIModelContainer(const EIModelContainer & item):EIItem(item)
     setFieldValue(MODEL,item._model);
 }
 
-EIItem* EIModelContainer::clone()
+EIItem* EIModelContainer::clone() const
 {
     return (EIItem*)(new EIModelContainer(*this));
 }
@@ -104,8 +109,8 @@ QVariant EIModelContainer::getFieldValue(int ifield, int role) const
         case CHECKED :
             return _checked;
         default :
-                return "unknown field";
-    }
+            return "unknown field";
+        }
     }
 }
 
@@ -120,8 +125,8 @@ QString EIModelContainer::sFieldName(int ifield, int role)
     case CHECKED :
         return "Checked";
     default :
-            return "unknown field";
-}
+        return "unknown field";
+    }
 }
 
 

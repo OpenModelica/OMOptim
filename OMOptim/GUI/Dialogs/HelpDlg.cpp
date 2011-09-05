@@ -5,7 +5,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
  	   
     Main contributor 2010, Hubert Thierot, CEP - ARMINES, Paris, France
 	Main contributor 2009, Hubert Thierot, CEP - ARMINES, Paris, France
@@ -15,8 +15,8 @@
 	This file is part of OpenModelica.
 
 	Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
-	c/o Linköpings universitet, Department of Computer and Information Science,
-	SE-58183 Linköping, Sweden.
+	c/o Linkpings universitet, Department of Computer and Information Science,
+	SE-58183 Linkping, Sweden.
 	All rights reserved.
 
 	THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 

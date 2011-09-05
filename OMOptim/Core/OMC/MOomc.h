@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef OMS_H
@@ -88,20 +88,20 @@ public :
 	QString getComponentModifierValue(QString componentName,QString modifierName);
 	bool setComponentModifiers(QString compName,QString model, QStringList modNames,QStringList modValues);
 	
-	QString getAnnotation(QString compName,QString compClass);
+        QString getAnnotation(QString compName,QString compClass,QString model);
 
 	int getConnectionNumber(QString className);
-	void getConnections(QString curComp,QStringList &aNames, QStringList &bNames);
-	bool deleteConnection(QString org,QString dest,QString model);
-	bool deleteConnections(QStringList orgs,QStringList dests,QString model);
-	bool deleteConnections(QStringList orgs,QList<QStringList> dests,QString model);
+        QMap<QString,QString> getConnections(const QString &curComp);
+        bool deleteConnection(const QString & shortOrg,const QString &  shortDest,const QString &  model);
+        bool deleteConnections(const QStringList &  shortOrgs,const QStringList &  shortDests,const QString &  model);
+        bool deleteConnections(const QStringList &  shortOrgs,const QList<QStringList> & dests,const QString &  model);
 
 	bool addConnection(QString org, QString dest);
 	bool addConnections(QStringList orgs, QStringList dests);
 	bool addConnections(QStringList orgs, QList<QStringList> dests);
 	
 	void getInheritedComponents(QString parentClass, QStringList & names, QStringList & classes);
-	void getContainedComponents(QString parentClass, QStringList & compNames,QStringList & compClasses);
+        void getContainedComponents(QString parentClass, QStringList & compNames,QStringList & compClasses,bool includeInherited=true);
 	
 	void readElementInfos(QString parentClass,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &compsNames,QStringList &compsClasses);
 

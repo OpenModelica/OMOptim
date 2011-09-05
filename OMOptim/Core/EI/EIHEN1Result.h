@@ -5,7 +5,7 @@
 @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
 Company : CEP - ARMINES (France)
 http://www-cep.ensmp.fr/english/
-@version 0.9 
+@version
 
 */
 #ifndef _EIHEN1RESULT_H
@@ -16,13 +16,16 @@ http://www-cep.ensmp.fr/english/
 #include "EIConns.h"
 #include "MOVector.h"
 #include "EIControler.h"
+#include "EIHEN.h"
+
+using namespace EI;
 
 class EIHEN1Result : public Result
 {
 public:
 	EIHEN1Result(Project*, Problem*);
         EIHEN1Result(Project* project,ModClassTree*,QDomElement domResult,Problem* problem);
-        EIHEN1Result(const EIHEN1Result &);
+        //EIHEN1Result(const EIHEN1Result &);
 	EIHEN1Result(void);
 	~EIHEN1Result(void);
 
@@ -43,9 +46,13 @@ public:
         EIConns* eiConns();
         void setEIConns(EIConns*);
 
+        EIHEN* eiHen();
+
+
     protected :
         EITree* _eiTree;
         EIConns* _eiConns;
+        EIHEN* _eiHEN;
 
     public :
         // file paths

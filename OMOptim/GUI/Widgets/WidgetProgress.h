@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetProgress.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file WidgetProgress.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 */
 
 #ifndef  WIDGETPROGRESS_H
@@ -51,9 +51,10 @@
 #include "MOOptPlot.h"
 #include "OptimResult.h"
 #include "ui_WidgetMooPlot.h"
+#include "Optimization.h"
 
 namespace Ui {
-    class WidgetProgressClass;
+class WidgetProgressClass;
 }
 
 
@@ -67,33 +68,37 @@ class WidgetProgress : public QWidget {
 public:
     explicit WidgetProgress(QWidget *parent);
     virtual ~WidgetProgress();
+    void setCurProblem(Problem*);
 
-	void updateCombos();
+    void updateCombos();
 
-	public slots:
-		void setProgress(float,int curEval,int totalEval);
-		void setProgress(float);
-		void newTask(QString);
-		void endTask();
-		void updateTimeLeft();
+public slots:
+
+    void setProgress(float,int curEval,int totalEval);
+    void setProgress(float);
+    void newTask(QString);
+    void endTask();
+    void updateTimeLeft();
+    void onPushedStop();
+    void onPushedQuickEnd();
 public:
     Ui::WidgetProgressClass *ui;
 
-	
+
 signals :
-	void pushedStop();
+    void askProblemStop(Problem*);
 
 private:
-	float fraction;
-	QString taskName;
+    Problem* _problem;
 
-	QTimer * timer;
-
-	QList<double> lastSpeeds;
-	int timeLeft;
-	QTime lastTime;
-	int nbSpeeds;
-	int period;
+    float _fraction;
+    QString _taskName;
+    QTimer * _timer;
+    QList<double> _lastSpeeds;
+    int _timeLeft;
+    QTime _lastTime;
+    int _nbSpeeds;
+    int _period;
 
 };
 

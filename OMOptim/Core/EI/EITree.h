@@ -1,10 +1,10 @@
 // $Id$
-        /**
+/**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file TreeEIStreams.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file TreeEIStreams.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #ifndef _TreeEIStreams_H
@@ -49,23 +49,27 @@
 
 
 
-        /**
+namespace EI
+{
+/**
         * \brief EITree is a container for eiItem hierarchy.
         *
         * EITree is a container for eiItem hierarchy. It provides managing function
         * and inherits QAbstractItemModel in order to provide easy display and editing.
         */
-        class EITree : public QAbstractItemModel
+class EITree : public QAbstractItemModel
 {
 
     Q_OBJECT
 
 public:
 
-            EITree(bool showFields=true,bool editable=true);
-
+    EITree(bool showFields=true,bool editable=true);
     EITree(const EITree &);
     EITree(QDomElement & domEl);
+
+    EITree & operator=(const EITree &);
+
 
     ~EITree(void);
 
@@ -87,8 +91,8 @@ public:
     void addEmptyStream(EIItem* parent);
 
     // find functions
-    EIItem* findItem(QString fullName);
-    EIItem* findItem(EI::Type eiType, QVariant itemFieldValue, int iField);
+    EIItem* findItem(QString fullName) const ;
+    EIItem* findItem(EI::Type eiType, QVariant itemFieldValue, int iField)const ;
 
     // abstract model functions
     QVariant data(const QModelIndex &index, int role) const;
@@ -115,19 +119,17 @@ public:
     EIItem* rootElement();
 
 
-    private :
-        EIItem* _rootElement;
-        bool _showFields;
-        bool _editable;
-        bool _enabled;
+private :
+    EIItem* _rootElement;
+    bool _showFields;
+    bool _editable;
+    bool _enabled;
 
-        static QColor utilityTextColor(){return QColor(139,69,0);}
-        static QColor processTextColor(){return QColor(85,107,47);}
-
-
-
+    static QColor utilityTextColor(){return QColor(139,69,0);}
+    static QColor processTextColor(){return QColor(85,107,47);}
 
 };
+}
 
 
 #endif

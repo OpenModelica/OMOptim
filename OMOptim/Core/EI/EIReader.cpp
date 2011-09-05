@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #include "EIReader.h"
@@ -48,6 +48,8 @@
 #include <functional>
 #include "assert.h"
 
+namespace EI
+{
 EIReader::EIReader()
 {
 }
@@ -94,7 +96,7 @@ EIItem* EIReader::findInDescendants(EIItem* parent,QString fullName)
 }
 
 /**
-* Description Find an item in descendants where fieldvalue of field iField == itemFieldValue.
+* Find an item in descendants where fieldvalue of field iField == itemFieldValue.
 * @warning if iField = Name : findInDescendants will compare with short name !! use findInDescendants instead.
 * @sa findInDescendants
 */
@@ -118,7 +120,7 @@ EIItem* EIReader::findInDescendants(EIItem* parent, EI::Type eiType, QVariant it
 
 
 
-QList<EIStream*> EIReader::getStreams(EIItem* parent)
+QList<EIStream*> EIReader::getStreams(const EIItem* parent)
 {
     QList<EIStream*> result;
 
@@ -133,7 +135,7 @@ QList<EIStream*> EIReader::getStreams(EIItem* parent)
     return result;
 }
 
-QList<EIItem*> EIReader::getItems(EIItem* parent,bool recursive,EI::Type filter)
+QList<EIItem*> EIReader::getItems(const EIItem* parent,bool recursive,EI::Type filter)
 {
     QList<EIItem*> result;
 
@@ -155,7 +157,7 @@ QList<EIItem*> EIReader::getItems(EIItem* parent,bool recursive,EI::Type filter)
     return result;
 }
 
-QList<EIStream*> EIReader::getValidNumerizedStreams(EIItem*parent,MOOptVector *variables,bool onlyChecked)
+QList<EIStream*> EIReader::getValidNumerizedStreams(const EIItem*parent,MOOptVector *variables,bool onlyChecked)
 {
     QList<EIStream*> result = getStreams(parent);
 
@@ -177,7 +179,7 @@ QList<EIStream*> EIReader::getValidNumerizedStreams(EIItem*parent,MOOptVector *v
     return result;
 }
 
-void EIReader::getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables,bool useCorrectedT)
+void EIReader::getValidTk(const EIItem* parent, QList<METemperature> & Tk,MOOptVector *variables,bool useCorrectedT)
 {
     QList<EIStream*> streams = getValidNumerizedStreams(parent,variables,true);
 
@@ -217,10 +219,10 @@ void EIReader::getValidTk(EIItem* parent, QList<METemperature> & Tk,MOOptVector 
 }
 
 /**
-* Description Look in item hierarchy for the first group with a variable factor.
+* Look in item hierarchy for the first group with a variable factor.
 * If not found, return false (fact and group are set to NULL)
 */
-bool EIReader::getFirstParentGroupFact(EIItem* item,EIGroupFact* &fact,EIGroup* &group)
+bool EIReader::getFirstParentGroupFact( EIItem* item,EIGroupFact* &fact,EIGroup* &group)
 {
     fact = NULL;
     group = NULL;
@@ -246,7 +248,7 @@ bool EIReader::getFirstParentGroupFact(EIItem* item,EIGroupFact* &fact,EIGroup* 
 * Check if parent, grand parent (...) is a fact variable group.
 */
 
-bool EIReader::isInFactVariable(EIItem* item)
+bool EIReader::isInFactVariable( EIItem* item)
 {
     EIGroupFact* fact;
     EIGroup* group;
@@ -258,7 +260,7 @@ bool EIReader::isInFactVariable(EIItem* item)
         return getFirstParentGroupFact(item,fact,group);
 }
 
-QStringList EIReader::getAllItemNames(EIItem* item,EI::Type filter)
+QStringList EIReader::getAllItemNames(const EIItem* item,EI::Type filter)
 {
     QStringList itemNames;
     EIItem* curChild;
@@ -341,7 +343,7 @@ MEQflow EIReader::getIntervalQFlow(METemperature T1,METemperature T2,EIStream* s
     METemperature dTstream = TStreamHot-TStreamCold;
     double ratio = dTint.value()/dTstream.value();
 
-    MEQflow dQ = stream->_QflowNum*ratio;
+    MEQflow dQ = stream->QflowNum()*ratio;
     Q_ASSERT(dQ.value()>=0);
     return dQ;
 }
@@ -412,5 +414,6 @@ bool EIReader::CpLowerThan(EIStream* s1, EIStream* s2)
 bool EIReader::CpGreaterThan( EIStream* s1,  EIStream* s2)
 {
     return !CpLowerThan(s1,s2);
+}
 }
 

@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_ALGOPARAMETER_H)
@@ -83,7 +83,7 @@ public:
 	static QString sFieldName(int ifield, int role);
 	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return AlgoParameter::sFieldName(i,role);};
 
-	AlgoParameter* clone();
+	AlgoParameter* clone() const;
 
 private :
 	QString _description;

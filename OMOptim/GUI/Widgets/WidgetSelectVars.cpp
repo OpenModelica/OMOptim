@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #include "WidgetSelectVars.h"
@@ -91,7 +91,7 @@ void WidgetSelectVars::addVariables()
 	foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
 	{
 		curSourceIndex = variableProxyModel->mapToSource(curProxyIndex);
-		varSelected=variables->items.at(curSourceIndex.row());
+                varSelected=variables->at(curSourceIndex.row());
 		
 		alreadyIn = selectedVariables->alreadyIn(varSelected->name());
 				

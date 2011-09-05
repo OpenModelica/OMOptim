@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "OptimResult.h"
@@ -62,20 +62,20 @@ OptimResult::OptimResult(Project* project, ModModelPlus* modModelPlus, Optimizat
 :Result(project,modClassTree,(Problem*)problem)
 {
     _modModelPlus = modModelPlus;
-    _modPlusCtrl = _modPlusCtrl;
+    _modPlusCtrl = modPlusCtrl;
 
-	_recomputedVariables = new MOOptVector(true,true);
-	_optObjectivesResults = new MOOptVector(false,true); //objectives are constant for one scan
-	_optVariablesResults= new MOOptVector(false,true); //optimized parameters are constant for one scan
+    _recomputedVariables = new MOOptVector(true,true,_modModelPlus);
+    _optObjectivesResults = new MOOptVector(false,true,_modModelPlus); //objectives are constant for one scan
+    _optVariablesResults= new MOOptVector(false,true,_modModelPlus); //optimized parameters are constant for one scan
 
-	// files to copy
+    // files to copy
     _filesToCopy << "iteration*.sav";
 
-	_optVarsFrontFileName = "optVarsFront.csv";
-	_allVarsFrontFileName = "allVarsFront.csv";
+    _optVarsFrontFileName = "optVarsFront.csv";
+    _allVarsFrontFileName = "allVarsFront.csv";
 
-	_curPoint = -1;
-	_curScan = -1;
+    _curPoint = -1;
+    _curScan = -1;
 
     _algo = algo;
 
@@ -127,20 +127,20 @@ void OptimResult::updateRecomputedPointsFromFolder()
 
             CSV::FileToVariableResult(_recomputedVariables,iPoint,pointFolder+QDir::separator()+"resultVar.csv");
             //int iRecVar;
-//            for(int iCurVar=0;iCurVar<pointVariables->items.size();iCurVar++)
+//            for(int iCurVar=0;iCurVar<pointVariables->size();iCurVar++)
 //            {
 //                //set value
-//                iRecVar = _recomputedVariables->findItem(pointVariables->items.at(iCurVar)->getFieldValue(Variable::NAME).toString());
+//                iRecVar = _recomputedVariables->findItem(pointVariables->at(iCurVar)->getFieldValue(Variable::NAME).toString());
 //                if(iRecVar>-1)
-//                    _recomputedVariables->items.at(iRecVar)->setFinalValueAtPoint(
-//                            pointVariables->items.at(iCurVar)->getFieldValue(Variable::VALUE).toDouble(),iPoint);
+//                    _recomputedVariables->at(iRecVar)->setFinalValueAtPoint(
+//                            pointVariables->at(iCurVar)->getFieldValue(Variable::VALUE).toDouble(),iPoint);
 //                else
 //                {
 //                    // variable found in file does not exist in _recomputedVariables
 //                    // add it
-//                    newVariableResult =  new VariableResult(*pointVariables->items.at(iCurVar));
+//                    newVariableResult =  new VariableResult(*pointVariables->at(iCurVar));
 //                    newVariableResult->setFinalValueAtPoint(iPoint,
-//                                                            pointVariables->items.at(iCurVar)->getFieldValue(Variable::VALUE).toDouble());
+//                                                            pointVariables->at(iCurVar)->getFieldValue(Variable::VALUE).toDouble());
 //                    _recomputedVariables->addItem(newVariableResult);
 
 //                    // display info
@@ -167,14 +167,14 @@ QString OptimResult::buildOptVarsFrontCSV(QString separator)
 	vector<int> varKeeped; // contains var index that are not in commun with objectives
 	vector<int> objKeeped;
 
-	for(iObj=0;iObj<_optObjectivesResults->items.size();iObj++)
+	for(iObj=0;iObj<_optObjectivesResults->size();iObj++)
 	{
-		objNames << _optObjectivesResults->items.at(iObj)->name();
+		objNames << _optObjectivesResults->at(iObj)->name();
 		objKeeped.push_back(iObj);
 	}
-	for(iVar=0;iVar<_optVariablesResults->items.size();iVar++)
+	for(iVar=0;iVar<_optVariablesResults->size();iVar++)
 	{
-		varNames << _optVariablesResults->items.at(iVar)->name();
+		varNames << _optVariablesResults->at(iVar)->name();
 	}
 
 	int iIdenticalObj;
@@ -190,15 +190,15 @@ QString OptimResult::buildOptVarsFrontCSV(QString separator)
 
 	
 	// writing names
-	for(iObj=0;iObj<_optObjectivesResults->items.size();iObj++)
+	for(iObj=0;iObj<_optObjectivesResults->size();iObj++)
 	{
-		csv += _optObjectivesResults->items.at(iObj)->name();
+		csv += _optObjectivesResults->at(iObj)->name();
 		csv += separator;
 	}
 
 	for(iVar=0;iVar<varKeeped.size();iVar++)
 	{
-		csv += _optVariablesResults->items.at(varKeeped.at(iVar))->name();
+		csv += _optVariablesResults->at(varKeeped.at(iVar))->name();
 		csv += separator;
 	}
 
@@ -216,14 +216,14 @@ QString OptimResult::buildOptVarsFrontCSV(QString separator)
 
 	for(iPoint = 0; iPoint < nbPoints; iPoint++)
 	{
-		for(iObj=0;iObj<_optObjectivesResults->items.size();iObj++)
+		for(iObj=0;iObj<_optObjectivesResults->size();iObj++)
 		{
-			csv += QString::number(_optObjectivesResults->items.at(iObj)->finalValue(0,iPoint));
+			csv += QString::number(_optObjectivesResults->at(iObj)->finalValue(0,iPoint));
 			csv += separator;
 		}
 		for(iVar=0;iVar<varKeeped.size();iVar++)
 		{
-			csv += QString::number(_optVariablesResults->items.at(varKeeped.at(iVar))->finalValue(0,iPoint));
+			csv += QString::number(_optVariablesResults->at(varKeeped.at(iVar))->finalValue(0,iPoint));
 			csv += separator;
 		}
 		// adding subModel index if necessary
@@ -240,7 +240,7 @@ QString OptimResult::buildOptVarsFrontCSV(QString separator)
 
 QString OptimResult::buildAllVarsFrontCSV(QString separator)
 {
-	int nbVars = _recomputedVariables->items.size();
+	int nbVars = _recomputedVariables->size();
 	QList<int> listVars;
 	for(int i=0;i<nbVars;i++)
 		listVars.push_back(i);
@@ -248,7 +248,7 @@ QString OptimResult::buildAllVarsFrontCSV(QString separator)
 	if(nbVars==0)
 		return QString();
 	
-	int nbPoints = _recomputedVariables->items.at(0)->nbPoints();
+	int nbPoints = _recomputedVariables->at(0)->nbPoints();
 	QList<int> listPoints;
 	for(int i=0;i<nbPoints;i++)
 		listPoints.push_back(i);
@@ -258,7 +258,7 @@ QString OptimResult::buildAllVarsFrontCSV(QString separator)
 
 QString OptimResult::buildAllVarsFrontCSV(QList<int> listPoints,QString separator)
 {
-	int nbVars = _recomputedVariables->items.size();
+	int nbVars = _recomputedVariables->size();
 	QList<int> listVars;
 	for(int i=0;i<nbVars;i++)
 		listVars.push_back(i);
@@ -275,12 +275,12 @@ QString OptimResult::buildAllVarsFrontCSV(QList<int> listVars, QList<int> listPo
 	QStringList varNames;
 	
 
-	if(_recomputedVariables->items.size()>0)
+	if(_recomputedVariables->size()>0)
 	{
 		// writing names
 		for(iVar=0;iVar<listVars.size();iVar++)
 		{
-			csv += _recomputedVariables->items.at(iVar)->name();
+			csv += _recomputedVariables->at(iVar)->name();
 			csv += separator;
 		}
 
@@ -299,9 +299,9 @@ QString OptimResult::buildAllVarsFrontCSV(QList<int> listVars, QList<int> listPo
 		{
 			for(iVar=0;iVar<listVars.size();iVar++)
 			{
-				if(listVars.at(iVar)<_recomputedVariables->items.size())
+				if(listVars.at(iVar)<_recomputedVariables->size())
 				{
-					csv += QString::number(_recomputedVariables->items.at(listVars.at(iVar))->finalValue(0,listPoints.at(iPoint)));
+					csv += QString::number(_recomputedVariables->at(listVars.at(iVar))->finalValue(0,listPoints.at(iPoint)));
 					csv += separator;
 				}
 			}

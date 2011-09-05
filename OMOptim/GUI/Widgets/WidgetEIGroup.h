@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 */
 
 #ifndef WIDGETEIGROUP_H
@@ -43,6 +43,7 @@
 #include "WidgetMOItem.h"
 #include "EIGroup.h"
 
+ using namespace EI;
 
 class WidgetEIGroup : public WidgetMOItem {
     Q_OBJECT

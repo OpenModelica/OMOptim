@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_MOVECTOR_H)
@@ -70,7 +70,7 @@ public:
 	MOVector(QString savedData);
 	MOVector(QDomElement & domList);
 
-	~MOVector();
+        virtual ~MOVector();
 
 	QStringList getItemNames();
 
@@ -82,7 +82,7 @@ public:
 	int rowCount(const QModelIndex &parent ) const;
 	int columnCount(const QModelIndex &parent ) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	QVariant data(const QModelIndex &index, int role) const;
+        virtual QVariant data(const QModelIndex &index, int role) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 	virtual void addItem(ItemClass*);
@@ -96,7 +96,7 @@ public:
 	void replaceIn(MOVector<ItemClass> *);
 
 	void cloneFromOtherVector(const MOVector*);
-	MOVector<ItemClass>* clone();
+        MOVector<ItemClass>* clone() const;
 	void clear();
 
 	QModelIndex index(int row, int column, const QModelIndex &parent)const;
@@ -104,6 +104,11 @@ public:
 	// save and load functions
 	virtual QString toSavingString();
 	virtual QDomElement toXmlData(QDomDocument & doc,QString listTitle);
+
+        //read and access functions
+        int size() const;
+        ItemClass* at(int i) const;
+
 
 protected :
         bool _deleteContentAfter; //should content be deleted with vector
@@ -312,10 +317,7 @@ QVariant MOVector<ItemClass>::data(const QModelIndex &index, int role) const
 	case Qt::DisplayRole :
 	case Qt::EditRole :
 		result = items.at(index.row())->getFieldValue(index.column(),role);
-		if(result.toDouble()==1E100)
-			return "1e100";
-		else
-			return result;
+                return result;
 		break;
 	case Qt::ToolTipRole :
 		return curItem->getStrToolTip();
@@ -488,16 +490,16 @@ void MOVector<ItemClass>::replaceIn(MOVector<ItemClass> *overVector)
     int iv,iov;
     QString curName;
 
-    for(iov=0;iov<overVector->items.size();iov++)
+    for(iov=0;iov<overVector->size();iov++)
     {
-        curName = overVector->items.at(iov)->name();
+        curName = overVector->at(iov)->name();
         iv=findItem(curName);
 
         if(iv!=-1)
         {
             delete items.at(iv);
             items.erase(items.begin()+iv,items.begin()+iv+1);
-            items.insert(items.begin()+iv,new ItemClass(*overVector->items.at(iov)));
+            items.insert(items.begin()+iv,new ItemClass(*overVector->at(iov)));
         }
         else
         {
@@ -515,15 +517,15 @@ void MOVector<ItemClass>::cloneFromOtherVector(const MOVector *vector_)
 	clear();
 	int i;
 	ItemClass* newItem;
-	for(i=0;i<vector_->items.size();i++)
+        for(i=0;i<vector_->size();i++)
 	{
-		newItem = new ItemClass(*vector_->items.at(i));
+                newItem = new ItemClass(*vector_->at(i));
 		addItem(newItem);
 	}
 }
 
 template<class ItemClass>
-MOVector<ItemClass>* MOVector<ItemClass>::clone()
+MOVector<ItemClass>* MOVector<ItemClass>::clone() const
 {
 	MOVector<ItemClass>* newVector = new MOVector<ItemClass>();
 
@@ -597,5 +599,18 @@ QModelIndex MOVector<ItemClass>::index(int row, int column, const QModelIndex &p
 	else
 		return createIndex(row,column);
 }
+
+template<class ItemClass>
+int MOVector<ItemClass>::size() const
+{
+    return items.size();
+}
+
+template<class ItemClass>
+ItemClass* MOVector<ItemClass>::at(int i) const
+{
+    return items.at(i);
+}
+
 
 #endif

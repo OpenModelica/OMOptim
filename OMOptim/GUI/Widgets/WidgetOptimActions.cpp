@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #include "WidgetOptimActions.h"
@@ -45,15 +45,17 @@ namespace Ui
     class WidgetOptimActionsClass;
 }
 
-WidgetOptimActions::WidgetOptimActions(Project* project,Optimization *problem,bool isResult,QWidget *parent)
+WidgetOptimActions::WidgetOptimActions(Project* project,Optimization *problem,bool isResult,Result* result,QWidget *parent)
     : QWidget(parent), _ui(new Ui::WidgetOptimActionsClass)
 {
     _ui->setupUi(this);
     _problem = problem;
+    _result = result;
     _project = project;
     _isResult = isResult;
 
     connect(_ui->pushLaunch,SIGNAL(clicked()),this,SLOT(launch()));
+    connect(_ui->pushRestore,SIGNAL(clicked()),this,SLOT(restoreProblem()));
 
     actualizeGui();
 }
@@ -84,7 +86,7 @@ void WidgetOptimActions::actualizeGui()
 
         // list of widgets to hide when problem is unsolved
         QWidgetList solvedWidgets;
-        solvedWidgets << _ui->pushRestore  << _ui->pushPursue ;
+        solvedWidgets << _ui->pushRestore  ;
 
         // if problem is solved
         if(_isResult)
@@ -94,7 +96,6 @@ void WidgetOptimActions::actualizeGui()
 
                 for(int i=0; i < solvedWidgets.size(); i++)
                         solvedWidgets.at(i)->show();
-
         }
         else
         {
@@ -104,4 +105,10 @@ void WidgetOptimActions::actualizeGui()
                 for(int i=0; i < solvedWidgets.size(); i++)
                         solvedWidgets.at(i)->hide();
         }
+}
+
+void WidgetOptimActions::restoreProblem()
+{
+    if(_isResult)
+        _project->restoreProblemFromResult(_result);
 }

@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #include "WidgetOptTable.h"
@@ -68,8 +68,8 @@ WidgetOptTable::~WidgetOptTable()
 void WidgetOptTable::fillOptTable()
 {
 
-	int nbObj = result->optObjectivesResults()->items.size();
-	int nbOpt = result->optVariablesResults()->items.size();
+	int nbObj = result->optObjectivesResults()->size();
+	int nbOpt = result->optVariablesResults()->size();
 	int nbPoints = result->optObjectivesResults()->nbPoints();
 	// headers
 	QStringList colHeaders;
@@ -91,30 +91,30 @@ void WidgetOptTable::fillOptTable()
 	for (int i=0;i<nbObj;i++)
 	{
 		ui->tableOpt->insertRow(curRow);
-		rowHeaders << result->optObjectivesResults()->items.at(i)->name();
+		rowHeaders << result->optObjectivesResults()->at(i)->name();
 		
-		objNames << result->optObjectivesResults()->items.at(i)->name();
+		objNames << result->optObjectivesResults()->at(i)->name();
 		for(int j=0;j<nbPoints;j++)
 		{
-			ui->tableOpt->setItem(curRow,j,new QTableWidgetItem(QString::number(result->optObjectivesResults()->items.at(i)->finalValue(0,j))));
+			ui->tableOpt->setItem(curRow,j,new QTableWidgetItem(QString::number(result->optObjectivesResults()->at(i)->finalValue(0,j))));
 		}
 		curRow++;
 	}
 
 	for (int i=0;i<nbOpt;i++)
 	{
-		if (!objNames.contains(result->optVariablesResults()->items.at(i)->name()))
+		if (!objNames.contains(result->optVariablesResults()->at(i)->name()))
 		{
 			ui->tableOpt->insertRow(curRow);
-			rowHeaders << result->optVariablesResults()->items.at(i)->name();
+			rowHeaders << result->optVariablesResults()->at(i)->name();
 
-			if(result->optVariablesResults()->items.at(i)->finalValuesAtScan(0).size()>0)
+			if(result->optVariablesResults()->at(i)->finalValuesAtScan(0).size()>0)
 			{
 				for(int j=0;j<nbPoints;j++)
 				{
 					QString msg = "Widget Opt Table Row : "+QString::number(i)+", column : "+QString::number(j) + "\n";
 					infoSender.debug(msg);
-					ui->tableOpt->setItem(curRow,j,new QTableWidgetItem(QString::number(result->optVariablesResults()->items.at(i)->finalValue(0,j))));
+					ui->tableOpt->setItem(curRow,j,new QTableWidgetItem(QString::number(result->optVariablesResults()->at(i)->finalValue(0,j))));
 				}
 			}
 			curRow++;

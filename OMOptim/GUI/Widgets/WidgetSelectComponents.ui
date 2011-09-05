@@ -41,7 +41,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
        </property>
       </widget>
@@ -58,7 +58,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../../Resources/mineit.qrc">
+        <iconset resource="../Resources/OMOptim.qrc">
          <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
        </property>
       </widget>
@@ -78,52 +78,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item row="2" column="5">
-      <widget class="QPushButton" name="pushRefreshLibrary">
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../Resources/mineit.qrc">
-         <normaloff>:/icons/Refresh</normaloff>:/icons/Refresh</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QPushButton" name="pushRefresh">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../Resources/mineit.qrc">
-         <normaloff>:/icons/Refresh</normaloff>:/icons/Refresh</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>16</width>
-         <height>16</height>
-        </size>
-       </property>
-      </widget>
      </item>
      <item row="2" column="1">
       <spacer name="horizontalSpacer_3">
@@ -170,8 +124,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../Resources/mineit.qrc"/>
-  <include location="../../Resources/mineit.qrc"/>
+  <include location="../Resources/OMOptim.qrc"/>
  </resources>
  <connections/>
 </ui>

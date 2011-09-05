@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #include "GuiTools.h"
@@ -93,20 +93,15 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
 }
 
 
-//void GuiTools::ModClassToTreeView(ModReader* _modReader,ModClass* _rootElement,QTreeView * _treeView,ModClassTree * _treeModel)
-//{
-//    _treeView->setModel(NULL);
-//    if(_treeModel)
-//        delete _treeModel;
-//    _treeModel = new ModClassTree(_modReader,_rootElement,(QObject*)_treeView);
-//    _treeView->setModel(_treeModel);
+ModClassTree* GuiTools::ModClassToTreeView(ModReader* modReader ,MOomc* moomc,const ModClass & modClass,QTreeView* treeView)
+{
+    ModClassTree* newTree = new ModClassTree(modReader,moomc/*,treeView*/);
+    newTree->addChild(newTree->rootElement(),modClass.clone());
 
-//    if(_rootElement)
-//    {
-//        connect(_rootElement,SIGNAL(addedChild(ModClass*)),_treeModel,SLOT(allDataChanged()));
-//        connect(_rootElement,SIGNAL(addedChild(ModClass*)),_treeView,SLOT(repaint()));
-//    }
-//}
+    treeView->reset();
+    treeView->setModel(newTree);
+    return newTree;
+}
 
 
 QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *model, QAbstractItemView *view,QLineEdit* lineEdit)
@@ -153,7 +148,6 @@ QMenu* GuiTools::createResultPopupMenu(Project* project, QWidget* mainWindow, co
 {
     QMenu *menu = new QMenu();
 
-    //Open folder
     //Open folder
     QAction *openFolderAct = new QAction("Open folder",menu);
     connect(openFolderAct,SIGNAL(triggered()),selectedResult,SLOT(openFolder()));

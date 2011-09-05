@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 
   */
 
@@ -71,7 +71,7 @@ ModModelPlus::ModModelPlus(MOomc* moomc, Project* project,ModClassTree* modClass
         _moomc = moomc;
         _modClassTree = modClassTree;
         _modModel = modModel_;
-        _variables = new MOVector<Variable>;
+        _variables = new Variables(this);
         _connections = new ModelicaConnections(modClassTree);
         _modifiers = new MOVector<ModelicaModifier>;
 
@@ -217,9 +217,9 @@ void ModModelPlus::addVariable(Variable* var)
 }
 
 /**
-* Description Returns pointer to variables.
+* Returns pointer to variables.
 */
-MOVector<Variable> * ModModelPlus::variables(bool readIfNot)
+Variables * ModModelPlus::variables(bool readIfNot)
 {
         if(!_variablesRead && readIfNot)
                 readVariables();
@@ -228,19 +228,19 @@ MOVector<Variable> * ModModelPlus::variables(bool readIfNot)
 }
 
 /**
-* Description Return a vector containg the variables concerning a child element
+* Returns a vector containg the variables concerning a child element
 * @Param _element : child element
 */
-MOVector<Variable>* ModModelPlus::variables(ModClass* element)
+Variables* ModModelPlus::variables(ModClass* element)
 {
-        MOVector<Variable>* elVars = new MOVector<Variable>;
+    Variables* elVars = new Variables(this);
         QString elName = element->name();
         QString curElName;
         Variable* curVar;
 
-        for(int i=0;i<_variables->items.size();i++)
+        for(int i=0;i<_variables->size();i++)
         {
-                curVar = _variables->items.at(i);
+                curVar = _variables->at(i);
                 curElName = curVar->name().section(".",0,-2);
 
                 if(QString::compare(curElName,elName,Qt::CaseInsensitive)==0)
@@ -343,12 +343,12 @@ bool ModModelPlus::readConnections(ModClass* element,bool includeChildren)
         QStringList aNames, bNames;
         QString aName,bName;
 
-        _moomc->getConnections(className,aNames,bNames);
+        QMap<QString,QString> conns = _moomc->getConnections(className);
 
-        for(int i=0;i<aNames.size();i++)
+        for(int i=0;i<conns.keys().size();i++)
         {
-                aName = _name+"."+aNames.at(i);
-                bName = _name+"."+bNames.at(i);
+                aName = _name+"."+conns.keys().at(i);
+                bName = _name+"."+conns.value(conns.keys().at(i));
                 addConnection(aName,bName);
         }
 
@@ -438,9 +438,8 @@ QString ModModelPlus::modModelName()
 
 bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
 {
-
         // delete org connections
-        _moomc->deleteConnections(blockSub->orgPorts,blockSub->orgConnectedComps,modModelName());
+        bool deleteOk = _moomc->deleteConnections(blockSub->orgPorts,blockSub->orgConnectedComps,modModelName());
 
         ModClass* orgClass = _modClassTree->findInDescendants(blockSub->orgComponent,_modModel);
         if(!orgClass)
@@ -459,7 +458,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
         if(orgComp)
         {
                 // first save annotation and modifiers
-                QString annotation = _moomc->getAnnotation(blockSub->orgComponent,orgComp->getModClassName());
+                QString annotation ;//= _moomc->getAnnotation(blockSub->orgComponent,blockSub->_modModel->name());
                 QStringList modifiersNames = _moomc->getComponentModifierNames(blockSub->orgComponent);
                 QStringList modifiersValues;
                 for(int i=0;i<modifiersNames.size();i++)

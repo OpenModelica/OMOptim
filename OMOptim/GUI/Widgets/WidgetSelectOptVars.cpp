@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #include "WidgetSelectOptVars.h"
@@ -165,7 +165,7 @@ void WidgetSelectOptVars::addOptVariables()
 	foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
 	{
 		curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-		selVar=_problem->modModelPlus()->variables()->items.at(curSourceIndex.row());
+		selVar=_problem->modModelPlus()->variables()->at(curSourceIndex.row());
 		alreadyIn = _problem->optimizedVariables()->alreadyIn(selVar->name());
 		if (!alreadyIn)
 		{
@@ -208,7 +208,7 @@ void WidgetSelectOptVars::addScannedVariables()
 	foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
 	{
 		curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-		selVar=_problem->modModelPlus()->variables()->items.at(curSourceIndex.row());
+		selVar=_problem->modModelPlus()->variables()->at(curSourceIndex.row());
 		alreadyIn = _problem->scannedVariables()->alreadyIn(selVar->name());
 		if (!alreadyIn)
 		{
@@ -265,11 +265,14 @@ void WidgetSelectOptVars::addOptObjectives()
 
 void WidgetSelectOptVars::deleteOptObjectives()
 {
-	QModelIndexList tableIndexes = _ui->tableObjectives->selectionModel()->selectedRows();
+        QModelIndexList indexList = _ui->tableObjectives->selectionModel()->selectedRows();
 	QList<int> rows;
-	for(int i=0;i<tableIndexes.size();i++)
+        QModelIndex curSourceIndex;
+
+        for(int i=0;i<indexList.size();i++)
 	{
-		rows.push_back(tableIndexes.at(i).row());
+            curSourceIndex = _objectiveProxyModel->mapToSource(indexList.at(i));
+            rows.push_back(curSourceIndex.row());
 	}
 	_problem->objectives()->removeRows(rows);
         _ui->tableObjectives->resizeColumnsToContents();

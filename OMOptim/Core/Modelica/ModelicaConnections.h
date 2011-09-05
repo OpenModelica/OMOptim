@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_MODELICACONNECTIONS_H)
@@ -82,10 +82,13 @@ public :
 	//void getOutside(ModClass* _element,bool includeChildren,QList<ModClass*> &_ports,QList<ModClass*> &_outsideComps);
 	void getOutside(ModClass* _element,bool includeChildren,QStringList &ports, QStringList &outsideComps);
 	void getOutside(ModClass* _element,bool includeChildren,QStringList &uniquePorts, QList<QStringList> &outsideComps);
-	QList<ModClass*> getOutsideConnectedComps(ModClass*,bool includeChildren);
-	QStringList getOutsideConnectedCompsNames(ModClass*,bool includeChildren,Modelica::NameFormat format);
-	QList<ModClass*> getOutsideConnectingPorts(ModClass*,bool includeChildren);
-	QStringList getOutsideConnectingPortsNames(ModClass*,bool includeChildren,Modelica::NameFormat format);
+//	QList<ModClass*> getOutsideConnectedComps(ModClass*,bool includeChildren);
+//	QStringList getOutsideConnectedCompsNames(ModClass*,bool includeChildren,Modelica::NameFormat format);
+//	QList<ModClass*> getOutsideConnectingPorts(ModClass*,bool includeChildren);
+//	QStringList getOutsideConnectingPortsNames(ModClass*,bool includeChildren,Modelica::NameFormat format);
+
+private :
+        bool portIsInElement(QString portName,QString elementName);
 
 };
 

@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #ifndef WidgetOptimActions_H
@@ -60,17 +60,22 @@ class WidgetOptimActions : public QWidget
 
     Q_OBJECT
 public:
-    WidgetOptimActions(Project* project,Optimization* problem,bool isResult,QWidget *parent);
+    WidgetOptimActions(Project* project,Optimization* problem,bool isResult,Result* result,QWidget *parent);
     virtual ~WidgetOptimActions();
 
 
     Ui::WidgetOptimActionsClass *_ui;
     Optimization* _problem;
+    Result* _result;
     Project* _project;
     bool _isResult;
+
     void actualizeGui();
+
 public slots :
         void launch();
+        void restoreProblem();
+
 
 };
 

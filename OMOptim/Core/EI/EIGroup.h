@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EIGroup.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EIGroup.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #ifndef _EIGroup_H
@@ -43,57 +43,59 @@
 #include "EIItem.h"
 #include "EIGroupFact.h"
 
-
+namespace EI
+{
 class EIGroup : public EIItem
 {
 public :
-	enum Field
-	{
-		//Modelica fields
-		NAME,
-		CHECKED,
-		FACTISVARIABLE,
-		FACTMIN,
-		FACTMAX,
-		FACT,
-		COSTFIX,
-		COSTMULT
-	};
+    enum Field
+    {
+        //Modelica fields
+        NAME,
+        CHECKED,
+        FACTISVARIABLE,
+        FACTMIN,
+        FACTMAX,
+        FACT,
+        COSTFIX,
+        COSTMULT
+    };
 
-	static const int nbFields = 8;
-	virtual unsigned getNbFields(){return nbFields;};
+    static const int nbFields = 8;
+    virtual unsigned getNbFields(){return nbFields;};
 
-	public:
-		EIGroup();
-		EIGroup(EIItem* _parent,QString _name);
-		EIGroup(const EIGroup &);
-		EIGroup(QDomElement &);
-		~EIGroup(void);
+public:
+    EIGroup();
+    EIGroup(EIItem* _parent,QString _name);
+    EIGroup(const EIGroup &);
+    EIGroup(QDomElement &);
+    ~EIGroup(void);
 
-		EIItem* clone();
+    virtual EIItem* clone() const;
 
-		virtual QString getClassName(){return "EIGroup";};
-		virtual EI::Type getEIType(){return EI::GROUP;};
+    virtual QString getClassName(){return "EIGroup";};
+    virtual EI::Type getEIType()const {return EI::GROUP;};
 
-		// access and edit functions
-		QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
-		bool setFieldValue(int iField, QVariant value);
-		static QString sFieldName(int field, int role);
-		QString getFieldName(int i, int role = Qt::DisplayRole){return EIGroup::sFieldName(i,role);};
-
-
-
-		EIGroupFact* getFact();
-		bool isFactVariable();
+    // access and edit functions
+    QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
+    bool setFieldValue(int iField, QVariant value);
+    static QString sFieldName(int field, int role);
+    QString getFieldName(int i, int role = Qt::DisplayRole){return EIGroup::sFieldName(i,role);};
 
 
-		
+
+    EIGroupFact* getFact();
+    bool isFactVariable();
+
+
+
 protected :
-	bool factIsVariable;
-	EIGroupFact fact;
-	double costFix;
-	double costMult;
+    bool factIsVariable;
+    EIGroupFact fact;
+    double costFix;
+    double costMult;
 };
+}
 
 
 

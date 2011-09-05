@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
 	Company : CEP - ARMINES (France)
 	http://www-cep.ensmp.fr/english/
-	@version 0.9 
+	@version 
 */
 
 #ifndef MAINWINDOW_H
@@ -47,7 +47,7 @@
 #include <QtCore/QMutex>
 #include "MOomc.h" 
 #include "Project.h"
-#include "tabProject.h"
+#include "TabProject.h"
 #include "MOMainTab.h"
 #include "ListInfo.h"
 #include "MyTextLog.h"
@@ -110,10 +110,10 @@ public slots :
 	void onConnectionsUpdated();
 	void onModifiersUpdated();
 	void onProblemBegun(Problem*);
-	void onProblemFinished(Problem*);
+        void onProblemFinished(Problem*,Result*);
 	void onNewProblemProgress(float);
 	void onNewProblemProgress(float,int,int);
-	void onProblemStopAsked();
+       // void onProblemStopAsked(Problem*);
 
 
         void removeResult();

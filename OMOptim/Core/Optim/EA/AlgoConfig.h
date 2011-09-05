@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_ALGOCONFIG_H)
@@ -90,7 +90,7 @@ public:
 		if(i<0)
 			return defaultValue;
 		else
-			return parameters->items.at(i)->getFieldValue(AlgoParameter::VALUE).toDouble();
+			return parameters->at(i)->getFieldValue(AlgoParameter::VALUE).toDouble();
 	}
 
 	virtual int getParameterValue(QString parameterName,int defaultValue)
@@ -99,7 +99,7 @@ public:
 		if(i<0)
 			return defaultValue;
 		else
-			return parameters->items.at(i)->getFieldValue(AlgoParameter::VALUE).toInt();
+			return parameters->at(i)->getFieldValue(AlgoParameter::VALUE).toInt();
 	}
 
 	virtual QString toString()

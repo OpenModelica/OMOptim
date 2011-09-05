@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef _OpenModelica_H
@@ -78,17 +78,27 @@ public:
 	~OpenModelica(void);
 
 	static bool compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder);
-	static void getInputVariablesFromFile(MOomc *_omc,QString, MOVector<Variable> *,QString _modelName);
-	static void getInputVariablesFromFile(MOomc *_omc,QTextStream *, MOVector<Variable> *,QString _modelName);
+        static void getInputVariablesFromTxtFile(MOomc *_omc,QString modModelName, MOVector<Variable> *,QString _modelName);
+        static void getInputVariablesFromTxtFile(MOomc *_omc,QTextStream *, MOVector<Variable> *,QString _modelName);
+        static bool getInputVariablesFromXmlFile(MOomc *_omc,QString,QString modModelName, MOVector<Variable> *);
+        static bool getInputVariablesFromXmlFile(MOomc *_omc,const QDomDocument &,QString modModelName, MOVector<Variable> *);
 	static bool getFinalVariablesFromFile(QString, MOVector<Variable> *,QString _modelName);
 	static bool getFinalVariablesFromFile(QTextStream *, MOVector<Variable> *,QString _modelName);
-	static void setInputVariables(QString, MOVector<Variable> *,QString _modModelName,MOParameters *parameters=NULL);
+        static void setInputVariablesTxt(QString, MOVector<Variable> *,QString modModelName,MOParameters *parameters=NULL);
+        static bool setInputXml(QString, MOVector<Variable> *, QString modelName,MOParameters *parameters=NULL);
         static void start(QString exeFile,int maxnsec);
 	static QString sciNumRx();
         static QString home();
 
-	// Parameters
         enum OMParameters{STOPVALUE,MAXSIMTIME};
+
+private :
+        static Variable* variableFromFmi(const QDomElement & ,QString modModelName, bool & ok);
+        static void setInputVariablesXml(QDomDocument &, QString modModelName,MOVector<Variable> *);
+        static void setInputParametersXml(QDomDocument &, MOParameters *);
+
+	// Parameters
+
 
 };
 

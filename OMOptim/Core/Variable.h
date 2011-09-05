@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_VARIABLE_H)
@@ -105,13 +105,13 @@ public:
 	Variable(QDomElement &);
 	~Variable(void);
 
-         Variable* clone();
+         Variable* clone() const;
 
 	virtual QString getClassName(){return "Variable";};
 
 public :
 	//Overwrited functions
-	//Variable* clone();
+	//Variable* clone() const;
 	virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
 	virtual bool setFieldValue(int ifield, QVariant value_);
 	static QString sFieldName(int field, int role);
@@ -124,6 +124,7 @@ public :
 	void setDescription(QString);
 	//void setType(int);
 	void setValue(double);
+        double value() const;
 	//void setMin(double);
 	//void setMax(double);	
 	//void setCategory(int);
@@ -131,6 +132,7 @@ public :
 	QString description();
 	virtual QString name(Modelica::NameFormat = Modelica::FULL) const;
 	virtual QString getStrToolTip();
+
 	
 protected :
 	// added fields
@@ -161,7 +163,7 @@ public:
 
 	~VariableResult(void);
 
-        VariableResult* clone();
+        VariableResult* clone() const;
 	virtual QString getClassName(){return "VariableResult";};
 
         static const int nbFields = 4;
@@ -172,7 +174,7 @@ private:
 
 public :
 	//Overwrited functions
-	//VariableResult* clone();
+	//VariableResult* clone() const;
 
 
 	//Added functions
@@ -272,7 +274,7 @@ public:
 	ScannedVariable(const Variable &);
 	ScannedVariable(QDomElement &);
 	~ScannedVariable(void);
-	//ScannedVariable* clone();
+	//ScannedVariable* clone() const;
 	virtual QString getClassName(){return "ScannedVariable";};
 
 public :

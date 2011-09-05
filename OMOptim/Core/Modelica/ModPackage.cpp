@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -28,14 +28,14 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
  	@file ModPackage.cpp
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "ModPackage.h"
@@ -54,4 +54,15 @@ ModPackage::~ModPackage()
 	clearDescendants();
 }
 
+ModClass* ModPackage::clone() const
+{
+    ModPackage* newModPackage = new ModPackage(_moomc,_parent,_name,_filePath);
+    newModPackage->_childrenReaden = _childrenReaden;
+
+    for(int i=0;i<children().size();i++)
+    {
+        newModPackage->addChild(child(i)->clone());
+    }
+    return newModPackage;
+}
 

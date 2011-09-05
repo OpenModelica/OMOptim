@@ -45,7 +45,7 @@ MilpVariableResult4D::MilpVariableResult4D(QString name)
 
 
 
-QString MilpVariableResult4D::toString()
+QString MilpVariableResult4D::toString() const
 {
 
         QString result;

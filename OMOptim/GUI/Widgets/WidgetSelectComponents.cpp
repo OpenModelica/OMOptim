@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetSelectComponents.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file WidgetSelectComponents.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 */
 
 #include "WidgetSelectComponents.h"
@@ -49,34 +49,28 @@ WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* pr
 {
     _ui->setupUi(this);
 
-	_project = project;
-	_problem = problem;
-        _isResult = isResult;
-
-	_treeModel = NULL;
-	_treeLibrary = NULL;
+    _project = project;
+    _problem = problem;
+    _isResult = isResult;
 
 
-	//Tree components
-        // #CHECK if one model could be connected to several treeView !!
-        _ui->treeLibrary->setModel(project->modClassTree());
-        //GuiTools::ModClassToTreeView(_project->modReader(),_project->rootModClass(),_ui->treeLibrary,modClassTree);
+    //Tree components
+    _ui->treeLibrary->setModel(project->modClassTree());
 
-	// Diagram of blocks
-	_blockScene = new BlockSubsScene(_problem->blockSubstitutions(),_problem->modModelPlus()->modModel(),
-                _project->modClassTree(),true);
-	_ui->graphBlocks->setScene(_blockScene);
-	_ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
-	connect(_blockScene, SIGNAL(zoomRect(QRectF)),
-		this, SLOT(doZoomRect(QRectF)));
-	_blockScene->zoomFit();
+    ModClassTree* modelTree = GuiTools::ModClassToTreeView(_project->modReader(),_project->moomc(),*_problem->modModelPlus()->modModel(),_ui->treeComponents);
+    modelTree->setShowComponent(true);
 
+    // Diagram of blocks
+    _blockScene = new BlockSubsScene(_problem->blockSubstitutions(),_problem->modModelPlus()->modModel(),
+                                     _project->modClassTree(),true);
+    _ui->graphBlocks->setScene(_blockScene);
+    _ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
+    connect(_blockScene, SIGNAL(zoomRect(QRectF)),
+            this, SLOT(doZoomRect(QRectF)));
+    _blockScene->zoomFit();
 
-	
-	connect(_ui->pushAddReplaced,SIGNAL(clicked()), this, SLOT(addReplacedComponent()));
-	connect(_ui->pushAddReplacing,SIGNAL(clicked()), this, SLOT(addReplacingComponent()));
-	connect(_project,SIGNAL(modsUpdated()),this,SLOT(actualizeModTree()));
-
+    connect(_ui->pushAddReplaced,SIGNAL(clicked()), this, SLOT(addReplacedComponent()));
+    connect(_ui->pushAddReplacing,SIGNAL(clicked()), this, SLOT(addReplacingComponent()));
 }
 
 WidgetSelectComponents::~WidgetSelectComponents()
@@ -87,125 +81,122 @@ WidgetSelectComponents::~WidgetSelectComponents()
 
 void WidgetSelectComponents::addReplacedComponent()
 {
-	QModelIndex index = _ui->treeComponents->currentIndex();
-	ModClass* curComponent = static_cast<ModClass*>(index.internalPointer());
+    QModelIndex index = _ui->treeComponents->currentIndex();
+    ModClass* curComponent = static_cast<ModClass*>(index.internalPointer());
 
 
-	QString replacedCompName = curComponent->name(Modelica::FULL);
+    QString replacedCompName = curComponent->name(Modelica::FULL);
 
-	QStringList alreadyReplaced = _problem->blockSubstitutions()->getReplacedComponentsNames();
+    QStringList alreadyReplaced = _problem->blockSubstitutions()->getReplacedComponentsNames();
 
-	bool ok=true;
+    bool ok=true;
 
-	if(!alreadyReplaced.contains(replacedCompName))
-	{
-		BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
-                        replacedCompName,QString(),_project->modClassTree(),true,ok);
+    if(!alreadyReplaced.contains(replacedCompName))
+    {
+        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
+                                                               replacedCompName,QString(),_project->modClassTree(),true,ok);
 
-		if(ok)
-			_problem->blockSubstitutions()->add(newBlockSub);
-		else
-			delete newBlockSub;
-	}
+        if(ok)
+            _problem->blockSubstitutions()->add(newBlockSub);
+        else
+            delete newBlockSub;
+    }
 
-	if(ok)
-		_blockScene->selectOrg(replacedCompName,true);
+    if(ok)
+        _blockScene->selectOrg(replacedCompName,true);
 }
 
 
 void WidgetSelectComponents::addReplacingComponent()
 {
 
-	 // looking for selected component to replace
-	QStringList replacedCompNames = _blockScene->getSelectedOrg();
+    // looking for selected component to replace
+    QStringList replacedCompNames = _blockScene->getSelectedOrg();
 
+    if(replacedCompNames.size()==1)
+    {
+        // replacing component
+        QModelIndex index = _ui->treeLibrary->currentIndex();
+        ModClass* curReplacingComponent = static_cast<ModClass*>(index.internalPointer());
+        QString replacingCompName = curReplacingComponent->name(Modelica::FULL);
 
-	if(replacedCompNames.size()==1)
-	{
-		// replacing component
-		QModelIndex index = _ui->treeLibrary->currentIndex();
-		ModClass* curReplacingComponent = static_cast<ModClass*>(index.internalPointer());
-		QString replacingCompName = curReplacingComponent->name(Modelica::FULL);
+        // look for an existing but empty block
+        bool ok;
+        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
+                                                               replacedCompNames.at(0),replacingCompName,
+                                                               _project->modClassTree(),true,ok);
 
-		// look for an existing but empty block
-		bool ok;
-		BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
-			replacedCompNames.at(0),replacingCompName,
-                        _project->modClassTree(),true,ok);
+        if(!ok)
+            delete newBlockSub;
+        else
+        {
+            if(openConnections(newBlockSub))
+            {
+                _problem->blockSubstitutions()->add(newBlockSub);
 
-		if(!ok)
-			delete newBlockSub;
-		else
-		{
-			if(openConnections(newBlockSub))
-			{
-				_problem->blockSubstitutions()->add(newBlockSub);
-
-				// refreshing gui
-				//actualizeReplacingComponentList();
-				_blockScene->selectSub(replacedCompNames.at(0),replacingCompName,true);
-			}
-		}
-	}
-	else
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Please select one and only one component to replace.");
-		msgBox.exec();
-	}
+                // refreshing gui
+                //actualizeReplacingComponentList();
+                _blockScene->selectSub(replacedCompNames.at(0),replacingCompName,true);
+            }
+        }
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Please select one and only one component to replace.");
+        msgBox.exec();
+    }
 }
 
 bool WidgetSelectComponents::openConnections(BlockSubstitution* blockSub)
 {
-	// creating form for specifying connections
-	BlockSubstituteConnDlg *form = new BlockSubstituteConnDlg(blockSub,this);
-	return (form->exec() == QDialog::Accepted);
+    // creating form for specifying connections
+    BlockSubstituteConnDlg *form = new BlockSubstituteConnDlg(blockSub,this);
+    return (form->exec() == QDialog::Accepted);
 }
 
 void WidgetSelectComponents::doZoomRect(QRectF _rect)
 {
-	_ui->graphBlocks->setSceneRect(_rect);
-	
+    _ui->graphBlocks->setSceneRect(_rect);
+
 }
 
 
 void WidgetSelectComponents::actualizeGui()
 {
-        //GuiTools::ModClassToTreeView(_project->modReader(),_problem->modModelPlus()->modModel(),_ui->treeComponents,_treeModel);
-        _ui->treeComponents->setModel(_project->modClassTree());
-	// list of widgets to hide when problem is solved
-	QWidgetList unsolvedWidgets;
-	unsolvedWidgets << _ui->pushAddReplaced << _ui->pushAddReplacing ;
+    // list of widgets to hide when problem is solved
+    QWidgetList unsolvedWidgets;
+    unsolvedWidgets << _ui->pushAddReplaced << _ui->pushAddReplacing ;
 
-	// list of widgets to hide when problem is unsolved
-	QWidgetList solvedWidgets;
+    // list of widgets to hide when problem is unsolved
+    QWidgetList solvedWidgets;
 
-	QList<QTableView*> tables;
+    QList<QTableView*> tables;
 
 
-	// if problem is solved
-        if(_isResult)
-	{
-		for(int i=0; i < unsolvedWidgets.size(); i++)
-			unsolvedWidgets.at(i)->hide();
+    // if problem is solved
+    if(_isResult)
+    {
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->hide();
 	
-		for(int i=0; i < solvedWidgets.size(); i++)
-			solvedWidgets.at(i)->show();
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->show();
 	
-		for(int i=0; i< tables.size(); i++)
-			tables.at(i)->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        for(int i=0; i< tables.size(); i++)
+            tables.at(i)->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-	}
-	else
-	{
-		for(int i=0; i < unsolvedWidgets.size(); i++)
-			unsolvedWidgets.at(i)->show();
+    }
+    else
+    {
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->show();
 	
-		for(int i=0; i < solvedWidgets.size(); i++)
-			solvedWidgets.at(i)->hide();
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->hide();
 	
-		for(int i=0; i< tables.size(); i++)
-			tables.at(i)->setEditTriggers(QAbstractItemView::DoubleClicked);
+        for(int i=0; i< tables.size(); i++)
+            tables.at(i)->setEditTriggers(QAbstractItemView::DoubleClicked);
 
-	}
+    }
 }

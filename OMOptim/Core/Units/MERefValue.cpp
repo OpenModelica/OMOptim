@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if defined(_MEREFVALUE_H)
@@ -133,7 +133,7 @@ unsigned MERefValue<DimValue>::nbUnits() const
   * @param modelName is used to add a prefix to reference before looking into variables (is used also without prefix if not found with)
   */
 template<class DimValue>
-double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName)
+double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName) const
 {
 	bool isNum;
     QString refName;
@@ -175,7 +175,7 @@ double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &
 		else
 		{
 			ok =  true;
-			result = variables->items.at(iVar)->finalValue(variables->curScan(),variables->curPoint());
+			result = variables->at(iVar)->finalValue(variables->curScan(),variables->curPoint());
 			result = dimValue->convert(result,this->iUnit(),iUnit);
 			return result;
 		}
@@ -187,7 +187,7 @@ double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &
   */
 
 template<class DimValue>
-QString  MERefValue<DimValue>::reference()
+QString  MERefValue<DimValue>::reference() const
 {
     bool isDouble;
     _value.toDouble(&isDouble);

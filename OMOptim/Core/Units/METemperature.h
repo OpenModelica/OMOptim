@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+        @version
 
   */
 #if !defined(_METEMPERATURE_H)
@@ -42,11 +42,12 @@
 
 #include "InfoSender.h"
 #include "MEDimValue.h"
+#include <cmath>
 
 class METemperature : public MEDimValue
 {
 public:
-	METemperature(double value=0,int unit=0);
+        METemperature(double value=-1,int unit=0);
         METemperature(const METemperature&);
 	~METemperature();
 
@@ -67,6 +68,8 @@ public:
         METemperature& operator-=(const double& diffTemp);
         METemperature operator-(const double& diffTemp) const;
         METemperature operator+(const double& diffTemp) const;
+        METemperature &operator=(const METemperature& b);
+        METemperature operator+(const METemperature& b) const;
         bool operator==(const METemperature& b) const;
         bool operator!=(const METemperature& b) const;
         bool operator<(const METemperature& b) const;
@@ -74,8 +77,11 @@ public:
         bool operator>(const METemperature& b) const;
         bool operator>=(const METemperature& b) const;
 
+        bool equals(const METemperature &b,double error=0) const;
+
         static bool TcolderThan(const METemperature T1, const METemperature T2){return T1<T2;};
         static bool ThoterThan(const METemperature T1, const METemperature T2){return T1>T2;};
+
 };
 
 

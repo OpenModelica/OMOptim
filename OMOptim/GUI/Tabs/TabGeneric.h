@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #ifndef TABGENERIC_H
@@ -43,7 +43,7 @@
 #include "MOTab.h"
 #include "MOItem.h"
 #include <QtGui/QWidget>
-#include "ui_tabGeneric.h"
+#include "ui_TabGeneric.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include "Project.h"

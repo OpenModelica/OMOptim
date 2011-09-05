@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_MOParameter_H)
@@ -97,7 +97,7 @@ public:
 	static QString sFieldName(int ifield, int role);
         virtual QString getFieldName(int i, int role = Qt::DisplayRole){return MOParameter::sFieldName(i,role);};
 
-        virtual MOParameter* clone();
+        virtual MOParameter* clone() const;
 
         void setEnablingIndex(int,QVariant enablingValue=true);
         int enablingIndex();
@@ -146,7 +146,7 @@ public:
         //MOParameterListed(QString);
         MOParameterListed(QDomElement & domEl);
         ~MOParameterListed(void);
-        virtual MOParameterListed* clone();
+        virtual MOParameterListed* clone() const;
 
         virtual QString getClassName(){return "MOParameterListed";};
 

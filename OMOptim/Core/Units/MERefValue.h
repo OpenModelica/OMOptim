@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_MEREFVALUE_H)
@@ -73,9 +73,9 @@ public:
 	int iUnit() const;
 	virtual QString unit(int iUnit) const;
 
-        double getNumValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName=QString());
+        double getNumValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName=QString()) const;
 
-        QString reference();
+        QString reference() const ;
 	
 	
 protected :

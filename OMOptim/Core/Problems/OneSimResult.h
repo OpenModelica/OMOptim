@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_ONESIMRESULTS_H)
@@ -42,6 +42,7 @@
 #include "Result.h"
 #include "MOVector.h"
 #include "MOOptVector.h"
+#include "Variables.h"
 
 #include <stdio.h>
 #include <QtCore/QObject>
@@ -77,20 +78,20 @@ public:
 	//******************
 	QDomElement toXmlData(QDomDocument &);
 	int problemType(){return Problem::ONESIMULATIONTYPE;};
-	
+        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
 
 
 protected :
 	//******************
 	// Attributes
 	//******************
-	MOVector<Variable> *_inputVariables;
+        Variables *_inputVariables;
 	MOOptVector *_finalVariables;
 
          //Model
         ModModelPlus* _modModelPlus;
         ModPlusCtrl* _modPlusCtrl;
-        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
+
 
 signals:
 	void valuesChanged();

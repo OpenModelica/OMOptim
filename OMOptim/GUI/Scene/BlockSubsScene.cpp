@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #include "BlockSubsScene.h"
@@ -235,7 +235,7 @@ void BlockSubsScene::refresh()
 //					int iLibrary = libraries->findItem(subs.at(j).section(".",0,0));
 //					if(iLibrary>-1)
 //					{
-//						ModClass* _subEl = libraries->items.at(iLibrary)->findComporModelInDescendants(subs.at(j));
+//						ModClass* _subEl = libraries->at(iLibrary)->findComporModelInDescendants(subs.at(j));
 //						if(_subEl)
 //						{
 //							BlockDrawItem* _curSubBlock = addSubBlock(_curOrgBlock,_subEl, QPoint());

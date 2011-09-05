@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #include "MOGuiTools.h"
@@ -47,11 +47,11 @@
 #include <QUrl>
 
 
-#include "tabOneSim.h"
-#include "tabOptimization.h"
+#include "TabOneSim.h"
+#include "TabOptimization.h"
 //#include "TabVariableDet.h"
-#include "tabResOneSim.h"
-#include "tabResOptimization.h"
+#include "TabResOneSim.h"
+#include "TabResOptimization.h"
 //#include "TabResVariableDet.h"
 #include "OneSimulation.h"
 #include "Optimization.h"

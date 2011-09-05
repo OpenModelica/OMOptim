@@ -34,7 +34,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 
   */
 
@@ -52,6 +52,7 @@
 #include "EIControler.h"
 #include "EIHEN1Parameters.h"
 
+using namespace EI;
 class EIProblem : public Problem
 {
     Q_OBJECT
@@ -67,7 +68,7 @@ public:
 
 
         virtual QDomElement toXmlData(QDomDocument &doc);
-        virtual Problem* clone(){return new EIProblem(*this);};
+        virtual Problem* clone()const{return new EIProblem(*this);};
         virtual Result* launch(ProblemConfig){return NULL;};
         virtual bool checkBeforeComp(QString&){return false;};
 
@@ -85,7 +86,6 @@ public:
 
         MOomc* _moomc;
         MOOptVector * _inputVars;
-
 
         EIConnConstrs* connConstrs();
         void setConnConstrs(EIConnConstrs*);

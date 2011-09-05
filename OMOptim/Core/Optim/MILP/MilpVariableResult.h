@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
         http://www-cep.ensmp.fr/english/
-        @version 0.9
+        @version
 
   */
 
@@ -118,9 +118,9 @@ class MilpVariableResult3D : public MilpVariableResult
 public:
     MilpVariableResult3D(QString name);
 
-    void clear(){_values.clear();};
-    void insertValue(MilpKey3D key,double value){_values.insert(key,value);};
-    QMap<MilpKey3D,double> values(){return _values;};
+    void clear(){_values.clear();}
+    void insertValue(MilpKey3D key,double value){_values.insert(key,value);}
+    QMap<MilpKey3D,double> values(){return _values;}
 
 
 
@@ -134,11 +134,11 @@ class MilpVariableResult4D : public MilpVariableResult
 public:
     MilpVariableResult4D(QString name);
 
-    void clear(){_values.clear();};
-    void insertValue(MilpKey4D key,double value){_values.insert(key,value);};
-    QMap<MilpKey4D,double> values()const {return _values;};
+    void clear(){_values.clear();}
+    void insertValue(MilpKey4D key,double value){_values.insert(key,value);}
+    QMap<MilpKey4D,double> values()const {return _values;}
 
-    QString toString();
+    QString toString() const;
 
 private :
 

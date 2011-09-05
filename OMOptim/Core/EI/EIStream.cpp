@@ -35,11 +35,13 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #include "EIStream.h"
 
+namespace EI
+{
 EIStream::EIStream(EIItem* parent, QString name)
     :EIItem(parent,name)
 {
@@ -53,6 +55,8 @@ EIStream::EIStream(EIItem* parent, QString name)
     defaultValues.insert(EIStream::TOUT_U,METemperature::C);
     defaultValues.insert(EIStream::QFLOW_V,0);
     defaultValues.insert(EIStream::QFLOW_U,MEQflow::W);
+    defaultValues.insert(EIStream::MASSFLOW_V,1);
+    defaultValues.insert(EIStream::MASSFLOW_U,MEMassFlow::KG_S);
     defaultValues.insert(EIStream::DTMIN2,0);
 
     for(int i=0;i<defaultValues.count();i++)
@@ -70,17 +74,19 @@ EIStream::EIStream(const EIStream & _stream):EIItem(_stream)
     _TinRef = _stream._TinRef;
     _ToutRef = _stream._ToutRef;
     _QflowRef = _stream._QflowRef;
+    _massFlowRef = _stream._massFlowRef;
     _DTmin2 = _stream._DTmin2;
 
     _TinNum = _stream._TinNum;
     _ToutNum = _stream._ToutNum;
     _QflowNum = _stream._QflowNum;
+    _massFlowNum = _stream._massFlowNum;
 
     _numerized = _stream._numerized;
 }
 
 
-EIItem* EIStream::clone()
+EIItem* EIStream::clone() const
 {
     return (EIItem*)(new EIStream(*this));
 }
@@ -103,7 +109,7 @@ EIStream::EIStream(QDomElement & domEl)
     }
 
     _editableFields << EIStream::NAME << EIStream::TIN_V << EIStream::TIN_U << EIStream::TOUT_V
-                    << EIStream::TOUT_U << EIStream::QFLOW_V << EIStream::QFLOW_U <<EIStream::DTMIN2;
+                    << EIStream::TOUT_U << EIStream::QFLOW_V << EIStream::QFLOW_U << EIStream::MASSFLOW_V << EIStream::MASSFLOW_U<<EIStream::DTMIN2;
 }
 
 QVariant EIStream::getFieldValue(int ifield, int role) const
@@ -130,6 +136,10 @@ QVariant EIStream::getFieldValue(int ifield, int role) const
             return _QflowRef.value();
         case QFLOW_U :
             return _QflowRef.unit();
+        case MASSFLOW_V :
+            return _massFlowRef.value();
+        case MASSFLOW_U :
+            return _massFlowRef.unit();
         case DTMIN2 :
             return _DTmin2;
         case CHECKED :
@@ -175,6 +185,16 @@ QString EIStream::sFieldName(int ifield, int role)
             return "[Qflow]";
         default :
             return "Qflow_Unit";
+        }
+    case MASSFLOW_V :
+        return "MassFlow";
+    case MASSFLOW_U :
+        switch(role)
+        {
+        case Qt::DisplayRole:
+            return "[Mflow]";
+        default :
+           return "Mflow_Unit";
         }
     case CHECKED :
         return "Checked";
@@ -223,6 +243,15 @@ bool EIStream::setFieldValue(int ifield,QVariant value_)
         else
             _QflowRef.setUnit(value_.toInt());
         break;
+    case MASSFLOW_V :
+        _massFlowRef.setValue(value_);
+        break;
+    case MASSFLOW_U :
+        if(value_.type()==QVariant::String)
+            ok=_massFlowRef.setUnit(value_.toString());
+        else
+            _massFlowRef.setUnit(value_.toInt());
+        break;
     case CHECKED :
         _checked =value_.toBool();
         break;
@@ -242,25 +271,27 @@ bool EIStream::setFieldValue(int ifield,QVariant value_)
 * Checks if _Tin, _Tout and Qflow references are found in variables, that _Tin != _Tout and QFlow >0
 * @return true if this EIStream is valid
 */
-bool EIStream::isValid(MOOptVector* variables, QString &errMsg)
+bool EIStream::isValid(MOOptVector* variables, QString &errMsg) const
 {
     bool ok = EIItem::isValid(variables,errMsg);
 
     //#TODO : do not recheck every times, store valid state
-    bool ok_Tin,ok_Tout,okQflow;
-    double num_Tin,num_Tout,numQFlow;
+    bool ok_Tin,ok_Tout,okQflow,okMassFlow;
+    double num_Tin,num_Tout,numQFlow,numMassFlow;
 
-    num_Tin = this->_TinRef.getNumValue(variables,METemperature::K,ok_Tin,model());
-    num_Tout = this->_ToutRef.getNumValue(variables,METemperature::K,ok_Tout,model());
-    numQFlow = this->_QflowRef.getNumValue(variables,MEQflow::W,okQflow,model());
+    num_Tin = _TinRef.getNumValue(variables,METemperature::K,ok_Tin,model());
+    num_Tout = _ToutRef.getNumValue(variables,METemperature::K,ok_Tout,model());
+    numQFlow = _QflowRef.getNumValue(variables,MEQflow::W,okQflow,model());
+    numMassFlow = _massFlowRef.getNumValue(variables,MEMassFlow::KG_S,okMassFlow,model());
 
     bool okDT = (num_Tin!=num_Tout);
     bool okQPos = (numQFlow>=0);
+    bool okMPos = (numMassFlow>=0);
 
-    return (ok&&okDT&&okQPos&&ok_Tin&&ok_Tout&&okQflow);
+    return (ok&&okDT&&okQPos&&ok_Tin&&ok_Tout&&okQflow&&okMPos);
 }
 
-bool EIStream::isHot(MOOptVector* variables)
+bool EIStream::isHot(MOOptVector* variables) const
 {
     bool ok_Tin,ok_Tout;
     return _TinRef.getNumValue(variables,METemperature::K,ok_Tin,model())>_ToutRef.getNumValue(variables,METemperature::K,ok_Tout,model());
@@ -271,15 +302,17 @@ bool EIStream::isHot(MOOptVector* variables)
 * This function is used to replace reference by its numerical value extracted from variables vector.
 * @return a list of references involved in _Tin, _Tout and Qflow.
 */
-QStringList EIStream::references()
+QStringList EIStream::references() const
 {
     QStringList refs;
 
     refs.push_back(this->_TinRef.reference());
     refs.push_back(this->_ToutRef.reference());
     refs.push_back(this->_QflowRef.reference());
+    refs.push_back(this->_massFlowRef.reference());
 
     refs.removeAll(QString());
+    refs.removeDuplicates();
 
     return refs;
 }
@@ -292,12 +325,13 @@ QStringList EIStream::references()
 */
 bool EIStream::numerize(MOOptVector* variables)
 {
-    bool ok1,ok2,ok3;
+    bool ok1,ok2,ok3,ok4;
     _TinNum.setValue(_TinRef.getNumValue(variables,METemperature::K,ok1,model()),METemperature::K);
     _ToutNum.setValue(_ToutRef.getNumValue(variables,METemperature::K,ok2,model()),METemperature::K);
     _QflowNum.setValue(_QflowRef.getNumValue(variables,MEQflow::W,ok3,model()),MEQflow::W);
+    _massFlowNum.setValue(_massFlowRef.getNumValue(variables,MEMassFlow::KG_S,ok4,model()),MEMassFlow::KG_S);
 
-    _numerized = (ok1 && ok2 && ok3);
+    _numerized = (ok1 && ok2 && ok3 && ok4);
 
     if(!_numerized)
     {
@@ -318,6 +352,7 @@ void EIStream::resetNumerize()
     _TinNum.setValue(0,0);
     _ToutNum.setValue(0,0);
     _QflowNum.setValue(0,0);
+    _massFlowNum.setValue(0,0);
     _numerized = false;
 }
 
@@ -326,6 +361,7 @@ void EIStream::resetNumerize()
 * Returns numerical value of Cp. Need numerization first. If numerization is not done, this function will do it
 * (using variables parameter)
 * If failed to numerize, ok is set to false, and returns -1.
+* Unit returned is kJ/kg.K
 */
 double EIStream::Cp(bool &ok,MOOptVector* variables)
 {
@@ -337,20 +373,24 @@ double EIStream::Cp(bool &ok,MOOptVector* variables)
         return -1;
     }
 
-    double tinval,toutval,qflowval;
+    double tinval,toutval,qflowval,massFlowVal;
 
     tinval = _TinNum.value(METemperature::K);
     toutval = _ToutNum.value(METemperature::K);
-    qflowval = _QflowNum.value(MEQflow::W);
+    qflowval = _QflowNum.value(MEQflow::KW);
+    massFlowVal = _massFlowNum.value(MEMassFlow::KG_S);
 
     if(tinval==toutval)
         return std::numeric_limits<double>::max();
     else
-        return fabs(qflowval/fabs(toutval-tinval));
+        return fabs(qflowval/(massFlowVal*fabs(toutval-tinval)));
 }
 
 METemperature EIStream::TinNum(bool useCorrectedT)
 {
+    if(!numerized())
+        numerize(NULL);
+
     if(!useCorrectedT)
     {
         return _TinNum;
@@ -369,6 +409,9 @@ METemperature EIStream::TinNum(bool useCorrectedT)
 
 METemperature EIStream::ToutNum(bool useCorrectedT)
 {
+    if(!numerized())
+        numerize(NULL);
+
     if(!useCorrectedT)
     {
         return _ToutNum;
@@ -383,4 +426,23 @@ METemperature EIStream::ToutNum(bool useCorrectedT)
         return _ToutNum+factor*_DTmin2;;
     }
 
+}
+
+
+MEMassFlow EIStream::massFlowNum()
+{
+    if(!numerized())
+        numerize(NULL);
+
+    return _massFlowNum;
+
+}
+
+MEQflow EIStream::QflowNum()
+{
+    if(!numerized())
+        numerize(NULL);
+
+    return _QflowNum;
+}
 }

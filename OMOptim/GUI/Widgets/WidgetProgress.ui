@@ -19,7 +19,28 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="horizontalSpacing">
+    <number>3</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QLabel" name="labelTask">
      <property name="text">
@@ -30,7 +51,7 @@
    <item row="0" column="1">
     <widget class="QProgressBar" name="progressBar">
      <property name="styleSheet">
-      <string>QProgressBar {
+      <string notr="true">QProgressBar {
      border: 2px solid grey;
      border-radius: 5px;
      text-align: center;
@@ -39,6 +60,7 @@ stop: 0 #fff,
 stop: 0.4999 #eee,
 stop: 0.5 #ddd,
 stop: 1 #eee );
+color: rgb(0, 0, 0);
  }
 
 QProgressBar::chunk {
@@ -58,12 +80,18 @@ border: 1px solid black;
    </item>
    <item row="0" column="2">
     <widget class="QLabel" name="labelTimeLeft">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Time left</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="3">
+   <item row="0" column="4">
     <widget class="QPushButton" name="pushStop">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -71,8 +99,27 @@ border: 1px solid black;
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>Stop</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QPushButton" name="pushQuickEnd">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Quick end</string>
      </property>
     </widget>
    </item>

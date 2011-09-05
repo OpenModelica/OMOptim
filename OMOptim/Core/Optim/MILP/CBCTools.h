@@ -1,4 +1,4 @@
-﻿// $Id: CBCTools.h 9418 2011-07-06 11:44:40Z hubert.thieriot $
+// $Id: CBCTools.h 9418 2011-07-06 11:44:40Z hubert.thieriot $
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #ifndef _CBCTOOLS_H

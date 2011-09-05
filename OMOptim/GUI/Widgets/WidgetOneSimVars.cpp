@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 */
 
 #include "WidgetOneSimVars.h"
@@ -117,7 +117,7 @@ void WidgetOneSimVars::addModVariables()
 	foreach(curProxyIndex, proxyIndexes)   // loop through
 	{
 		curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-		varProv = _variables->items.at(curSourceIndex.row());
+		varProv = _variables->at(curSourceIndex.row());
 		
 		alreadyIn = _problem->overwritedVariables()->alreadyIn(varProv->name());
 		if (!alreadyIn)
@@ -158,7 +158,7 @@ void WidgetOneSimVars::addScannedVariables()
 	foreach(curProxyIndex, proxyIndexes)   // loop through
 	{
 		curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-		varProv = _variables->items.at(curSourceIndex.row());
+		varProv = _variables->at(curSourceIndex.row());
 		
 		alreadyIn = _problem->scannedVariables()->alreadyIn(varProv->name());
 				

@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file HEN1Parameters.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file HEN1Parameters.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+        @version
 
   */
 
@@ -84,21 +84,26 @@ public :
         INTEGERTOLERANCE
     };
 
+    /**
+      * Provides parameters' predefinitions for HEN solving. Correponsing to different
+      * trade-offs speedness - precision.
+      */
+    enum predefinitions
+    {
+        SPEEDNESS,
+        AVERAGE,
+        PRECISION
+    };
+
     static void setDefaultParameters(MOParameters *parameters)
     {
-        parameters->addItem(new MOParameter((int)SPLITPINCH,"Split streams in two zones (below,above pinch)","PinchSplit",true,MOParameter::BOOL));
-        parameters->addItem(new MOParameter((int)ALLOWNI,"Allow non-isothermal","NI",true,MOParameter::BOOL));
+        parameters->addItem(new MOParameter((int)SPLITPINCH,"Split streams in two zones (below,above pinch)","PinchSplit",false,MOParameter::BOOL));
+        parameters->addItem(new MOParameter((int)ALLOWNI,"Allow non-isothermal","NI",false,MOParameter::BOOL));
         parameters->addItem(new MOParameter((int)ALLOWSPLITS,"Allow splits","S",true,MOParameter::BOOL));
         parameters->addItem(new MOParameter((int)ALLOWSEVERAL,"Allow several heat exchangers between two streams","B",false,MOParameter::BOOL));
         parameters->addItem(new MOParameter((int)KMAX,"Maximum heat exhangers between two streams","S",5,MOParameter::INT,1,std::numeric_limits<int>::max(),(int)ALLOWSEVERAL));
-        parameters->addItem(new MOParameter((int)SPLITDT,"Should we split temperature intervals (better if yes but computation time increased) ?","",true,MOParameter::BOOL));
-        parameters->addItem(new MOParameter((int)SPLITDTSTEP,"Maximum temperature interval (if an interval is higher, it will be splitted)","",1,MOParameter::DOUBLE,1E-10,std::numeric_limits<int>::max(),(int)SPLITDT));
-
-
-
-
-
-
+        parameters->addItem(new MOParameter((int)SPLITDT,"Should we split temperature intervals (better if yes but computation time increased) ?","",false,MOParameter::BOOL));
+        parameters->addItem(new MOParameter((int)SPLITDTSTEP,"Maximum temperature interval (if an interval is higher, it will be splitted)","",10,MOParameter::DOUBLE,1E-10,std::numeric_limits<int>::max(),(int)SPLITDT));
 
 
 
@@ -109,7 +114,7 @@ public :
             solverList.insert(CBC,"Cbc");
         parameters->addItem(new MOParameterListed((int)SOLVER,"Solver","",GLPK,solverList));
 
-         parameters->addItem(new MOParameter((int)LOGSENS,"Print sensitivity report (GLPK)","LOGSENS",true,MOParameter::BOOL,0,1,(int)SOLVER,(int)GLPK));
+        parameters->addItem(new MOParameter((int)LOGSENS,"Print sensitivity report (GLPK)","LOGSENS",true,MOParameter::BOOL,0,1,(int)SOLVER,(int)GLPK));
 
         if(CBCTools::isInstalled())
         {
@@ -137,6 +142,38 @@ public :
 
         }
     };
+
+
+    static void updateParameters(MOParameters *parameters, predefinitions predef)
+    {
+        switch(predef)
+        {
+        case SPEEDNESS :
+            parameters->setValue((int)SPLITPINCH,true);
+            parameters->setValue((int)ALLOWNI,false);
+            parameters->setValue((int)ALLOWSPLITS,true);
+            parameters->setValue((int)ALLOWSEVERAL,false);
+            parameters->setValue((int)SPLITDT,false);
+            break;
+        case AVERAGE :
+            parameters->setValue((int)SPLITPINCH,false);
+            parameters->setValue((int)ALLOWNI,false);
+            parameters->setValue((int)ALLOWSPLITS,true);
+            parameters->setValue((int)ALLOWSEVERAL,true);
+            parameters->setValue((int)KMAX,3);
+            parameters->setValue((int)SPLITDT,false);
+            break;
+        case PRECISION :
+            parameters->setValue((int)SPLITPINCH,false);
+            parameters->setValue((int)ALLOWNI,false);
+            parameters->setValue((int)ALLOWSPLITS,true);
+            parameters->setValue((int)ALLOWSEVERAL,true);
+            parameters->setValue((int)KMAX,3);
+            parameters->setValue((int)SPLITDT,true);
+            parameters->setValue((int)SPLITDTSTEP,5);
+            break;
+        }
+    }
 };
 
 #endif

@@ -35,12 +35,12 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 
   */
 #include "TableEIItems.h"
 
-TableEIItems::TableEIItems(EIItem * _rootElement,bool _editable,EI::Type _filter,bool _recursive)
+TableEIItems::TableEIItems(EI::EIItem * _rootElement,bool _editable,EI::Type _filter,bool _recursive)
     :editable(_editable)
 {
     rootElement = _rootElement;
@@ -90,7 +90,7 @@ QVariant TableEIItems::data(const QModelIndex &index, int role) const
 	if(index.column()<0 || index.column()>=columnCount())
             return QVariant();
 
-	EIItem *item = static_cast<EIItem*>(index.internalPointer());
+        EI::EIItem *item = static_cast<EI::EIItem*>(index.internalPointer());
 	if(!item)
             return QVariant();
 	
@@ -133,7 +133,7 @@ bool TableEIItems::setData(const QModelIndex &index, const QVariant &value, int 
 	if(index.parent().isValid())
 	{
             int checkState;
-            EIItem *item = static_cast<EIItem*>(index.internalPointer());
+            EI::EIItem *item = static_cast<EI::EIItem*>(index.internalPointer());
             if(item)
             {
                 switch(role)
@@ -187,9 +187,9 @@ QVariant TableEIItems::headerData(int section, Qt::Orientation orientation,
             switch(filter)
             {
             case EI::STREAM:
-                return EIStream::sFieldName(section,role);
+                return EI::EIStream::sFieldName(section,role);
             case EI::GROUP:
-                return EIGroup::sFieldName(section,role);
+                return EI::EIGroup::sFieldName(section,role);
             }
         }
     }

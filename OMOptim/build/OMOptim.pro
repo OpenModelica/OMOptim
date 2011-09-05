@@ -60,6 +60,8 @@ UI_DIR = ../debug/generatedfiles/ui
 MOC_DIR = ../debug/generatedfiles/moc
 RCC_DIR = ../debug/generatedfiles/rcc
 
+
+
 }else {
     LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
     -lomniORB414_rt \
@@ -81,6 +83,7 @@ RCC_DIR = ../debug/generatedfiles/rcc
 
 
 
+
 INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.4-mingw/include \
                $$(OMDEV)/lib/qwt-5.2.1-mingw/include \
                $$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/src \
@@ -90,6 +93,13 @@ INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.4-mingw/include \
     include(OMOptim.config)
 }
 #---------End WINDOWS
+
+
+CONFIG(debug, debug|release){
+    DEFINES+=DEBUG
+}
+
+
 
     DEFINES+= USEBLOCKSUB
 
@@ -103,10 +113,21 @@ contains(CONFIG,useei){
 
 	
     DEFINES+= USEEI
+
+win32 {
     LIBS +=	-L$$(GLPKLIB) \
                 -lglpk_4_44
+}else{
+    LIBS += -lglpk
+}
+
+RESOURCES += \
+    ../Core/Optim/MILP/OMOptimEI.qrc
+
     INCLUDEPATH += $$(GLPKINCLUDE)
     HEADERS +=  ../Core/Optim/MILP/GLPKTools.h \
+                ../Core/Optim/MILP/GlpkCtrl.h \
+                ../Core/Optim/MILP/CbcCtrl.h \
                 ../Core/Optim/MILP/MilpTarget.h \
                 ../Core/Optim/MILP/SimpleMilpTarget.h \
                 ../Core/Optim/MILP/MilpHEN1.h \
@@ -126,17 +147,15 @@ contains(CONFIG,useei){
                 ../Core/EI/EIModelExtractor.h \
                 ../Core/EI/EILinguist.h \
                 ../Core/EI/ModEIConverter.h \
-                ../Core/Problems/EIMER.h\
+                ../Core/Problems/EIMERProblem.h\
                 ../Core/EI/EIMERResult.h \
                 ../Core/EI/TableEIItems.h \
                 ../Core/EI/EITree.h \
                 ../Core/Tools/CCTools.h \
                 ../GUI/Plots/MOCCCurve.h \
                 ../GUI/Plots/MOCCPlot.h \
-                ../GUI/Tabs/TabEIProblem.h \
                 ../GUI/Widgets/WidgetEIGroup.h \
                 ../GUI/Widgets/WidgetEIInputVars.h \
-                ../GUI/Tabs/tabEITargetResult.h \
                 ../GUI/Widgets/WidgetTableEIGroups.h \
                 ../GUI/Widgets/WidgetCCPlot.h \
                 ../GUI/Widgets/WidgetTreeStreams.h \
@@ -144,7 +163,7 @@ contains(CONFIG,useei){
                 ../GUI/Widgets/WidgetTableStreams.h \
                 ../Core/EI/EIValueFiller.h \
                 ../GUI/Widgets/WidgetLaunchEI.h \
-                ../Core/Problems/EIHEN1.h \
+                ../Core/Problems/EIHEN1Problem.h \
                 ../Core/EI/EIHEN1Parameters.h \
                 ../Core/EI/EIMERParameters.h \
                 ../Core/EI/EITargetParameters.h \
@@ -153,13 +172,23 @@ contains(CONFIG,useei){
                 ../Core/EI/EIConns.h \
                 ../GUI/Widgets/WidgetEIConns.h \
                 ../GUI/Widgets/WidgetEITargetResult.h \
-                                ../GUI/Widgets/WidgetEIHEN1Result.h \
-                                    ../Core/EI/EIHEN1Result.h \
-    ../GUI/Tabs/tabEIHEN1Result.h \
+                ../GUI/Widgets/WidgetEIHEN1Result.h \
+    ../GUI/Tabs/TabEIHEN1Result.h \
+    ../GUI/Tabs/TabEIProblem.h \
+    ../GUI/Tabs/TabEITargetResult.h \
+                ../Core/EI/EIHEN1Result.h \
     ../Core/Optim/MILP/MilpSet.h \
     ../Core/Optim/MILP/MilpTools.h \
     ../Core/Optim/MILP/MilpParam.h \
-    ../Core/Optim/MILP/MilpVariableResult.h
+    ../Core/Optim/MILP/MilpVariableResult.h \
+    ../Core/EI/EIHEN.h\
+../Core/EI/EIHENNodes.h\
+    ../GUI/Scene/EIHENScene.h \
+    ../GUI/Scene/EIHENGraphicNode.h  \
+    ../GUI/Scene/EIHENGraphicEdge.h \
+../GUI/Scene/EIHENView.h \
+../GUI/Widgets/WidgetEIHENView.h \
+    ../Core/Modelica/ModelicaHENImplementer.h
 
     SOURCES +=  ../Core/EI/EITargetResult.cpp \
                 ../GUI/Tabs/TabEIProblem.cpp \
@@ -186,9 +215,9 @@ contains(CONFIG,useei){
                 ../Core/EI/EITree.cpp \
                 ../GUI/Plots/MOCCCurve.cpp \
                 ../GUI/Plots/MOCCPlot.cpp \
-                ../GUI/Tabs/tabEITargetResult.cpp \
+                ../GUI/Tabs/TabEITargetResult.cpp \
                 ../Core/Tools/CCTools.cpp \
-                ../Core/Problems/EIMER.cpp\
+                ../Core/Problems/EIMERProblem.cpp\
                 ../GUI/Widgets/WidgetEIGroup.cpp \
                 ../GUI/Widgets/WidgetEIInputVars.cpp \
                 ../GUI/Widgets/WidgetTableConnConstr.cpp \
@@ -199,17 +228,26 @@ contains(CONFIG,useei){
                 ../GUI/Widgets/WidgetLaunchEI.cpp \
                 ../GUI/Widgets/WidgetEITargetResult.cpp \
                                 ../GUI/Widgets/WidgetEIHEN1Result.cpp \
-                ../Core/Problems/EIHEN1.cpp \
+                ../Core/Problems/EIHEN1Problem.cpp \
                 ../Core/EI/EIHEN1Functions.cpp \
                 ../Core/EI/EIModelContainer.cpp \
                 ../Core/EI/EIConns.cpp \
                 ../GUI/Widgets/WidgetEIConns.cpp \
                                 ../Core/EI/EIHEN1Result.cpp \
-    ../GUI/Tabs/tabEIHEN1Result.cpp \
+    ../GUI/Tabs/TabEIHEN1Result.cpp \
     ../Core/Optim/MILP/MilpSet.cpp \
     ../Core/Optim/MILP/MilpTools.cpp \
     ../Core/Optim/MILP/MilpParam.cpp \
-    ../Core/Optim/MILP/MilpVariableResult.cpp
+    ../Core/Optim/MILP/MilpVariableResult.cpp \
+    ../Core/EI/EIHEN.cpp\
+./Core/EI/EIHENNodes.cpp\
+    ../GUI/Scene/EIHENScene.cpp\
+    ../GUI/Scene/EIHENGraphicNode.cpp  \
+    ../GUI/Scene/EIHENGraphicEdge.cpp \
+../GUI/Scene/EIHENView.cpp \
+../GUI/Widgets/WidgetEIHENView.cpp \
+    ../Core/Modelica/ModelicaHENImplementer.cpp
+
 
 
 
@@ -222,7 +260,8 @@ contains(CONFIG,useei){
                 ../GUI/Widgets/WidgetLaunchEI.ui \
                 ../GUI/Widgets/WidgetEIConns.ui \
                 ../GUI/Widgets/WidgetEITargetResult.ui \
-                                ../GUI/Widgets/WidgetEIHEN1Result.ui
+                ../GUI/Widgets/WidgetEIHEN1Result.ui \
+                  ../GUI/Widgets/WidgetEIHENView.ui
 }
 
 DEPENDPATH += . \
@@ -386,15 +425,6 @@ HEADERS += ../config.h \
            ../GUI/Tabs/MOTab.h \
            ../GUI/Tabs/MOTabBase.h \
            ../GUI/Tabs/TabGeneric.h \
-           ../GUI/Tabs/tabModelComponents.h \
-           ../GUI/Tabs/tabModelVariables.h \
-           ../GUI/Tabs/tabOMC.h \
-           ../GUI/Tabs/tabOneSim.h \
-           ../GUI/Tabs/tabOptimization.h \
-           ../GUI/Tabs/tabProject.h \
-           ../GUI/Tabs/tabResOneSim.h \
-           ../GUI/Tabs/tabResOptimization.h \
-           ../GUI/Tabs/tabResOptimization_Config.h \
            ../GUI/Tools/GuiTools.h \
            ../GUI/Tools/MOGuiTools.h \
            ../GUI/Tools/MOSplitter.h \
@@ -468,9 +498,23 @@ HEADERS += ../config.h \
     ../Core/Optim/EA/SPEA2/SPEA2Parameters.h \
     ../Core/Optim/EA/SPEA2Adaptative/SPEA2AdaptParameters.h \
     ../Core/Problems/Problems.h \
-    ../Core/Problems/Results.h
+    ../Core/Problems/Results.h \
+    ../Core/Optim/MILP/CBCTools.h \
+    ../Core/Tools/OMProcess.h \
+    ../Core/Units/MEMassFlow.h \
+    ../GUI/Tabs/TabModelComponents.h \
+    ../GUI/Tabs/TabModelVariables.h \
+    ../GUI/Tabs/TabOMC.h \
+    ../GUI/Tabs/TabOneSim.h \
+    ../GUI/Tabs/TabOptimization.h \
+    ../GUI/Tabs/TabProject.h \
+    ../GUI/Tabs/TabResOneSim.h \
+    ../GUI/Tabs/TabResOptimization.h \
+    ../GUI/Tabs/TabResOptimization_Config.h \
+    ../Core/Units/MESurface.h \
+    ../Core/Variables.h \
+    ../Core/OptObjectives.h
 
-   # ../Core/OMCasesOMProblem.h
 
 
 
@@ -482,14 +526,6 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Dialogs/HelpDlg.ui \
          ../GUI/Dialogs/newprojectform.ui \
          ../GUI/Dialogs/OtherDlg.ui \
-         ../GUI/Tabs/tabGeneric.ui \
-         ../GUI/Tabs/tabModelComponents.ui \
-         ../GUI/Tabs/tabModelVariables.ui \
-         ../GUI/Tabs/tabOMC.ui \
-         ../GUI/Tabs/tabOptimization.ui \
-         ../GUI/Tabs/tabProject.ui \
-         ../GUI/Tabs/tabResOptimization.ui \
-         ../GUI/Tabs/tabResOptimization_Config.ui \
          ../GUI/Widgets/WidgetBlocks.ui \
          ../GUI/Widgets/WidgetCalculateMooPoints.ui \
          ../GUI/Widgets/WidgetMOItem.ui \
@@ -508,7 +544,15 @@ FORMS += ../GUI/MainWindow.ui \
     ../GUI/Widgets/WidgetMooPointsList.ui \
     ../GUI/Widgets/WidgetProjectInfos.ui \
     ../GUI/Widgets/WidgetFilesList.ui \
-    ../GUI/Widgets/WidgetOptimActions.ui
+    ../GUI/Widgets/WidgetOptimActions.ui \
+    ../GUI/Tabs/TabResOptimization_Config.ui \
+    ../GUI/Tabs/TabResOptimization.ui \
+    ../GUI/Tabs/TabProject.ui \
+    ../GUI/Tabs/TabOptimization.ui \
+    ../GUI/Tabs/TabOMC.ui \
+    ../GUI/Tabs/TabModelVariables.ui \
+    ../GUI/Tabs/TabModelComponents.ui \
+    ../GUI/Tabs/TabGeneric.ui
  
 
 
@@ -588,15 +632,15 @@ SOURCES += ../main.cpp \
            ../GUI/Tabs/MOTab.cpp \
            ../GUI/Tabs/MOTabBase.cpp \
             ../GUI/Tabs/TabGeneric.cpp \
-           ../GUI/Tabs/tabModelComponents.cpp \
-           ../GUI/Tabs/tabModelVariables.cpp \
-           ../GUI/Tabs/tabOMC.cpp \
-           ../GUI/Tabs/tabOneSim.cpp \
-           ../GUI/Tabs/tabOptimization.cpp \
-           ../GUI/Tabs/tabProject.cpp \
-           ../GUI/Tabs/tabResOneSim.cpp \
-           ../GUI/Tabs/tabResOptimization.cpp \
-           ../GUI/Tabs/tabresoptimization_config.cpp \
+           ../GUI/Tabs/TabModelComponents.cpp \
+           ../GUI/Tabs/TabModelVariables.cpp \
+           ../GUI/Tabs/TabOMC.cpp \
+           ../GUI/Tabs/TabOneSim.cpp \
+           ../GUI/Tabs/TabOptimization.cpp \
+           ../GUI/Tabs/TabProject.cpp \
+           ../GUI/Tabs/TabResOneSim.cpp \
+           ../GUI/Tabs/TabResOptimization.cpp \
+           ../GUI/Tabs/Tabresoptimization_config.cpp \
            ../GUI/Tools/GuiTools.cpp \
            ../GUI/Tools/MOGuiTools.cpp \
            ../GUI/Tools/MOSplitter.cpp \
@@ -632,21 +676,26 @@ SOURCES += ../main.cpp \
            ../Core/Optim/EA/SPEA2Adaptative/SPEA2Adapt.cpp \
             ../Core/OMC/OMCHelper.cpp \
             ../Core/OMC/StringHandler.cpp \
-    ../Core/FileData/XML.cpp \
+            ../Core/FileData/XML.cpp \
             ../GUI/Widgets/WidgetMooPointsList.cpp \
             ../GUI/Widgets/WidgetProjectInfos.cpp \
-    ../GUI/Widgets/WidgetFilesList.cpp \
-    ../GUI/Widgets/WidgetOptimActions.cpp \
-    ../Core/Problems/OMCase.cpp \
-    ../Core/Problems/Problems.cpp \
-    ../Core/Problems/Results.cpp
+            ../GUI/Widgets/WidgetFilesList.cpp \
+            ../GUI/Widgets/WidgetOptimActions.cpp \
+            ../Core/Problems/OMCase.cpp \
+        ../Core/Problems/Problems.cpp \
+        ../Core/Problems/Results.cpp \
+    ../Core/Tools/OMProcess.cpp \
+    ../Core/Optim/MILP/GLPKTools.cpp \
+    ../Core/Optim/MILP/GlpkCtrl.cpp \
+    ../Core/Optim/MILP/CbcCtrl.cpp \
+    ../Core/Optim/MILP/CBCTools.cpp \
+    ../Core/Units/MEMassFlow.cpp \
+    ../Core/Units/MESurface.cpp \
+    ../Core/Variables.cpp \
+    ../Core/OptObjectives.cpp
 
 
-
-
-
-  #  ../Core/OMCasesOMProblem.cpp
-
-RESOURCES += ../GUI/Resources/OMOptim.qrc
+RESOURCES += \
+    ../GUI/Resources/OMOptim.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc

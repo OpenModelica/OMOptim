@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
         /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef _EASTDRESULT_H
@@ -78,19 +78,19 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
 
     //first define optVariableResult from optVariables
     VariableResult *curOptVarRes;
-    int nbOptVar = problem->optimizedVariables()->items.size();
+    int nbOptVar = problem->optimizedVariables()->size();
     for (int iOptVar = 0; iOptVar < nbOptVar; iOptVar++)
     {
-        curOptVarRes = new VariableResult(*problem->optimizedVariables()->items.at(iOptVar));
+        curOptVarRes = new VariableResult(*problem->optimizedVariables()->at(iOptVar));
         result->optVariablesResults()->addItem(curOptVarRes);
     }
 
     //first define optObjectiveResult from optObjective
     VariableResult *curOptObjRes;
-    int nbOptObj = problem->objectives()->items.size();
+    int nbOptObj = problem->objectives()->size();
     for (int iOptObj = 0; iOptObj < nbOptObj; iOptObj++)
     {
-        curOptObjRes = new VariableResult(*problem->objectives()->items.at(iOptObj));
+        curOptObjRes = new VariableResult(*problem->objectives()->at(iOptObj));
         result->optObjectivesResults()->addItem(curOptObjRes);
     }
 
@@ -100,9 +100,9 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     result->recomputedVariables()->items.clear();
     result->recomputedVariables()->setUseScan(useScan);
     VariableResult *curRecompVar;
-    for (int i=0;i<	problem->modModelPlus()->variables()->items.size();i++)
+    for (int i=0;i<	problem->modModelPlus()->variables()->size();i++)
     {
-        curRecompVar = new VariableResult(*problem->modModelPlus()->variables()->items.at(i));
+        curRecompVar = new VariableResult(*problem->modModelPlus()->variables()->at(i));
         result->recomputedVariables()->addItem(curRecompVar);
     }
 
@@ -123,7 +123,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
 
     for(int iVar=0; iVar<nbOptVar; iVar++)
     {
-        curOptVar = problem->optimizedVariables()->items.at(iVar);
+        curOptVar = problem->optimizedVariables()->at(iVar);
         iCorrRecompVar = result->recomputedVariables()->findItem(curOptVar->name());
 
         if(iCorrRecompVar<0)

@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version 0.9
+  @version
 */
 
 #include "MOParametersDlg.h"
@@ -45,7 +45,7 @@
 MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
 {
     this->setWindowTitle("Parameters");
-    //    if(parameters->items.size()==0)
+    //    if(parameters->size()==0)
     //    {
     //        // simulate an accept() (doesn't work in ctor)
     //        // no need to wait for a click on OK !
@@ -74,8 +74,8 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
     QStringList groups;
 
     QStringList paramNames;
-    for(int i=0;i<_parameters->items.size();i++)
-        paramNames.push_back(_parameters->items.at(i)->name());
+    for(int i=0;i<_parameters->size();i++)
+        paramNames.push_back(_parameters->at(i)->name());
 
     for(int i=0;i<paramNames.size();i++)
     {
@@ -101,7 +101,7 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
         int index1 = groups.indexOf(uniqueGroups.at(iG),index0);
         while(index1>-1)
         {
-            parameter = _parameters->items.at(index1);
+            parameter = _parameters->at(index1);
             // add setting
             QString dispName;
             if(parameter->name().contains("/"))
@@ -270,9 +270,9 @@ void MOParametersDlg::updateEnabled(QWidget* widgetChanged)
 
     MOParameter* curParam;
     QWidget* curWidget;
-    for(int i=0;i<_parameters->items.size();i++)
+    for(int i=0;i<_parameters->size();i++)
     {
-        curParam = _parameters->items.at(i);
+        curParam = _parameters->at(i);
         if(curParam->enablingIndex()==index)
         {
            curWidget = _mapValueWidgets.value(curParam->getFieldValue(MOParameter::INDEX).toInt(),NULL);
@@ -301,7 +301,7 @@ void MOParametersDlg::pushedOk()
     {
         curIndex = _mapValueWidgets.keys().at(i);
         iParam = _parameters->findItem(curIndex,MOParameter::INDEX);
-        curParam = _parameters->items.at(iParam);
+        curParam = _parameters->at(iParam);
         curWidget = _mapValueWidgets.value(curIndex);
 
         switch(curParam->getFieldValue(MOParameter::TYPE).toInt())
@@ -353,7 +353,7 @@ void MOParametersDlg::pushedDefault()
     {
         curIndex = _mapValueWidgets.keys().at(i);
         iParam = _parameters->findItem(curIndex,MOParameter::INDEX);
-        curParam = _parameters->items.at(iParam);
+        curParam = _parameters->at(iParam);
         curWidget = _mapValueWidgets.value(curIndex);
 
         // get default value

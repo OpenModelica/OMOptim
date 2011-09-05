@@ -1,4 +1,4 @@
-﻿// $Id$
+// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #ifndef _EASTDBOUNDS_H
@@ -70,14 +70,14 @@ inline static void setBounds(Optimization*,
 
 void EAStdBounds::setBounds(Optimization *_problem, QList<ModModelPlus*> _subModels,std::vector<eoRealInterval> &doubleBounds, std::vector<eoIntInterval> &intBounds, int &nbDouble, int &nbInt, int &nbBool)
 {
-	int nbVar = _problem->optimizedVariables()->items.size();
+	int nbVar = _problem->optimizedVariables()->size();
 	OptVariable* curVar;
 	eoRealInterval* realInterval;
 	eoIntInterval* intInterval;
 	double min,max;
 	for(int i=0; i<nbVar; i++)
 	{
-		curVar = _problem->optimizedVariables()->items.at(i);
+		curVar = _problem->optimizedVariables()->at(i);
                 min = curVar->optMin();
                 max = curVar->optMax();
 

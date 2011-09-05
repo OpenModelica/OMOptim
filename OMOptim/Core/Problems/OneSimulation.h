@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #if !defined(_ONESIMULATION_H)
@@ -53,7 +53,7 @@ public:
         //OneSimulation(void);
         OneSimulation(Project*,ModClassTree*,ModPlusCtrl*,ModModelPlus*);
 	OneSimulation(const OneSimulation &s);
-        Problem* clone();
+        Problem* clone() const;
 	~OneSimulation(void);
 
         static QString className(){return "OneSimulation";};
@@ -73,20 +73,22 @@ public:
 	void store(QString destFolder, QString tempDir);
 	QDomElement toXmlData(QDomDocument & doc);
 
-//	void readResults(QString dirPath);
+
+        bool canBeStoped();
+        void stop();
 	
 
 
 	// get functions
-	MOVector<Variable> *overwritedVariables(){return _overwritedVariables;};
+        Variables *overwritedVariables(){return _overwritedVariables;};
 	MOVector<ScannedVariable> *scannedVariables(){return _scannedVariables;};
         //OneSimResult* result() const;
 	ModModelPlus* modModelPlus();
 
 protected :
 	ModModelPlus* _modModelPlus;
-	MOVector<Variable> *_overwritedVariables;
-	MOVector<ScannedVariable> *_scannedVariables;
+        Variables *_overwritedVariables;
+        ScannedVariables *_scannedVariables;
 
 };
 

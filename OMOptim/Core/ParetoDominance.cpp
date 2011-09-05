@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "ParetoDominance.h"
@@ -53,12 +53,12 @@ ParetoDominance::~ParetoDominance(void)
 
 QList<int> ParetoDominance::getParetoSet(MOVector<OptObjective>* _objs,MOOptVector* _objResults)
 {
-	if((_objResults->items.size()==0)||(_objs->items.size()!=_objResults->items.size()))
+	if((_objResults->size()==0)||(_objs->size()!=_objResults->size()))
 		return QList<int>();
 
 	// Fulling set
 	QList<int> paretoSet;
-	for(int i=0;i<_objResults->items.at(0)->nbPoints();i++)
+	for(int i=0;i<_objResults->at(0)->nbPoints();i++)
 		paretoSet.push_back(i);
 
 	// Removing points by points when dominated
@@ -100,18 +100,18 @@ bool ParetoDominance::dominates(MOVector<OptObjective>* _objs,MOOptVector* _objR
 
 	QList<bool> dom;
 	
-	if(_objResults->items.size()==0)
+	if(_objResults->size()==0)
 		return false;
 
-	for (unsigned int iObj=0; iObj<_objResults->items.size(); iObj++)
+	for (unsigned int iObj=0; iObj<_objResults->size(); iObj++)
 	{
 		// first, we have to check if the 2 objective values are not equal for the ith objective
-		if ( fabs(_objResults->items.at(iObj)->finalValue(0,iPoint1) - _objResults->items.at(iObj)->finalValue(0,iPoint2)) > tolerance)
+		if ( fabs(_objResults->at(iObj)->finalValue(0,iPoint1) - _objResults->at(iObj)->finalValue(0,iPoint2)) > tolerance)
 		{
 			// if the ith objective have to be minimized...
-			if (_objs->items.at(iObj)->isMinimized())
+			if (_objs->at(iObj)->isMinimized())
 			{
-				if (_objResults->items.at(iObj)->finalValue(0,iPoint1) > _objResults->items.at(iObj)->finalValue(0,iPoint2))
+				if (_objResults->at(iObj)->finalValue(0,iPoint1) > _objResults->at(iObj)->finalValue(0,iPoint2))
 				{
 					dom.push_back(false);		// iPoint1 is not better than iPoint2
 				}
@@ -123,7 +123,7 @@ bool ParetoDominance::dominates(MOVector<OptObjective>* _objs,MOOptVector* _objR
 			// if the ith objective have to be maximized...
 			else
 			{
-				if (_objResults->items.at(iObj)->finalValue(0,iPoint1) < _objResults->items.at(iObj)->finalValue(0,iPoint2))
+				if (_objResults->at(iObj)->finalValue(0,iPoint1) < _objResults->at(iObj)->finalValue(0,iPoint2))
 				{
 					dom.push_back(false);		// iPoint1 is not better than iPoint2
 				}

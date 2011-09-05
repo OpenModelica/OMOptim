@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,12 +35,14 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+ 	@version 
 
   */
 #include "MOOptVector.h"
 
-MOOptVector::MOOptVector(bool useScan, bool usePoints)
+#include "ModModelPlus.h"
+
+MOOptVector::MOOptVector(bool useScan, bool usePoints, ModModelPlus* modModelPlus)
 {
 	_useScan = useScan;
 	_usePoints = usePoints;
@@ -50,6 +52,9 @@ MOOptVector::MOOptVector(bool useScan, bool usePoints)
 
 	_nbScans = 0;
 	_nbPoints = 0;
+
+        _modModelPlus = modModelPlus;
+        _displayShort = true;
 }
 
 
@@ -104,10 +109,22 @@ QVariant MOOptVector::data(const QModelIndex &index, int role) const
 {
 	if (!index.isValid()) return QVariant();
 
+        if(index.isValid()
+                && _modModelPlus
+                && (index.column()== VariableResult::NAME)
+                && (role==Qt::DisplayRole)
+                && _displayShort)
+        {
+            QString shortName = items.at(index.row())->name();
+            shortName = shortName.remove(QRegExp("^"+_modModelPlus->modModelName()+"."));
+            return QVariant(shortName);
+        }
+
+
 	if (role == Qt::DisplayRole || role == Qt::EditRole)
 	{
 
-		if(index.column()==Variable::VALUE)
+                if(index.column()==VariableResult::VALUE)
 		{
 			if(!isAvailablePoint(index.row(),((int)_useScan)*_curScan,((int)_usePoints)*_curPoint))  // several,none or non-calculated point selected
 			{
@@ -144,20 +161,7 @@ bool MOOptVector::isAvailablePoint(int iVar,int iScan,int iPoint) const
 	}
 }
 
-//
-//void MOOptVector::addItem(VariableResult* item_)
-//{
-//	// Add an item pointer in Vector
-//	int index=items.size();
-//	insertRow(index);//,createIndex(0,0));
-//	beginInsertRows(QModelIndex(),index,index);
-//	items.push_back(item_);
-//	endInsertRows();	
-//}
-
-
-
-MOOptVector* MOOptVector::clone()
+MOOptVector* MOOptVector::clone() const
 {
 
 	MOOptVector* newVector = new MOOptVector(_useScan,_usePoints);

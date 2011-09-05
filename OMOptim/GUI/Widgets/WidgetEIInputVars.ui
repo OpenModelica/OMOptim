@@ -30,8 +30,8 @@
           <property name="text">
            <string>References</string>
           </property>
-    </widget>
-   </item>
+         </widget>
+        </item>
         <item row="2" column="1" rowspan="4">
          <widget class="QListWidget" name="listReferencesModel"/>
         </item>
@@ -39,16 +39,16 @@
          <widget class="QLabel" name="label_5">
           <property name="text">
            <string>Corresponding models</string>
-     </property>
+          </property>
          </widget>
         </item>
         <item row="3" column="2">
          <widget class="QPushButton" name="allReferences">
-     <property name="text">
+          <property name="text">
            <string>allReferences</string>
-     </property>
-    </widget>
-   </item>
+          </property>
+         </widget>
+        </item>
         <item row="4" column="2">
          <widget class="QPushButton" name="missingReferences">
           <property name="text">
@@ -58,35 +58,35 @@
         </item>
         <item row="2" column="2">
          <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item row="5" column="2">
          <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-    </layout>
-   </item>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
      </layout>
-      </widget>
-     </item>
+    </widget>
+   </item>
    <item row="5" column="0" rowspan="3">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
@@ -95,69 +95,69 @@
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
-     <property name="text">
+        <property name="text">
          <string>Available result variables</string>
-     </property>
-    </widget>
-   </item>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
-    <widget class="QPushButton" name="pushRefreshList">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset resource="../Resources/mineit.qrc">
-       <normaloff>:/icons/Refresh</normaloff>:/icons/Refresh</iconset>
-     </property>
-    </widget>
-   </item>
+       <widget class="QPushButton" name="pushRefreshList">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../Resources/OMOptim.qrc">
+          <normaloff>:/icons/Refresh</normaloff>:/icons/Refresh</iconset>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="2">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Loaded variables</string>
-     </property>
-    </widget>
-   </item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Loaded variables</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="3">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="label">
-     <property name="text">
+          <property name="text">
            <string>Filter : </string>
-     </property>
-    </widget>
-   </item>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QLineEdit" name="lineVariableFilter"/>
-   </item>
+        </item>
        </layout>
       </item>
       <item row="2" column="2" rowspan="4" colspan="2">
        <widget class="QTableView" name="tableLoadedVariables">
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
-     </property>
-    </widget>
-   </item>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="4">
        <spacer name="verticalSpacer_4">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="3" column="4">
        <widget class="QPushButton" name="pushLoadVariables">
         <property name="minimumSize">
@@ -186,17 +186,17 @@
       </item>
       <item row="5" column="4">
        <spacer name="verticalSpacer_5">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="2" column="0" rowspan="4" colspan="2">
        <widget class="QListWidget" name="listAvailableVectors"/>
       </item>
@@ -206,7 +206,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../Resources/mineit.qrc"/>
+  <include location="../Resources/OMOptim.qrc"/>
  </resources>
  <connections/>
 </ui>
