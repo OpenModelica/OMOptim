@@ -115,8 +115,8 @@ contains(CONFIG,useei){
     DEFINES+= USEEI
 
 win32 {
-    LIBS +=	-L$$(GLPKLIB) \
-                -lglpk_4_44
+    LIBS +=	-L$$(OMDEV)/lib/glpk/lib \
+                -lglpk.dll
 }else{
     LIBS += -lglpk
 }
@@ -124,10 +124,11 @@ win32 {
 RESOURCES += \
     ../Core/Optim/MILP/OMOptimEI.qrc
 
-    INCLUDEPATH += $$(GLPKINCLUDE)
+    INCLUDEPATH += $$(OMDEV)/lib/glpk/include
     HEADERS +=  ../Core/Optim/MILP/GLPKTools.h \
                 ../Core/Optim/MILP/GlpkCtrl.h \
                 ../Core/Optim/MILP/CbcCtrl.h \
+                ../Core/Optim/MILP/CBCTools.h \
                 ../Core/Optim/MILP/MilpTarget.h \
                 ../Core/Optim/MILP/SimpleMilpTarget.h \
                 ../Core/Optim/MILP/MilpHEN1.h \
@@ -190,7 +191,11 @@ RESOURCES += \
 ../GUI/Widgets/WidgetEIHENView.h \
     ../Core/Modelica/ModelicaHENImplementer.h
 
-    SOURCES +=  ../Core/EI/EITargetResult.cpp \
+    SOURCES +=  ../Core/Optim/MILP/GLPKTools.cpp \
+                ../Core/Optim/MILP/GlpkCtrl.cpp \
+                ../Core/Optim/MILP/CbcCtrl.cpp \
+                ../Core/Optim/MILP/CBCTools.cpp \
+                ../Core/EI/EITargetResult.cpp \
                 ../GUI/Tabs/TabEIProblem.cpp \
                 ../Core/Problems/EIProblem.cpp \
                 ../Core/Problems/EITarget.cpp \
@@ -499,7 +504,6 @@ HEADERS += ../config.h \
     ../Core/Optim/EA/SPEA2Adaptative/SPEA2AdaptParameters.h \
     ../Core/Problems/Problems.h \
     ../Core/Problems/Results.h \
-    ../Core/Optim/MILP/CBCTools.h \
     ../Core/Tools/OMProcess.h \
     ../Core/Units/MEMassFlow.h \
     ../GUI/Tabs/TabModelComponents.h \
@@ -685,10 +689,6 @@ SOURCES += ../main.cpp \
         ../Core/Problems/Problems.cpp \
         ../Core/Problems/Results.cpp \
     ../Core/Tools/OMProcess.cpp \
-    ../Core/Optim/MILP/GLPKTools.cpp \
-    ../Core/Optim/MILP/GlpkCtrl.cpp \
-    ../Core/Optim/MILP/CbcCtrl.cpp \
-    ../Core/Optim/MILP/CBCTools.cpp \
     ../Core/Units/MEMassFlow.cpp \
     ../Core/Units/MESurface.cpp \
     ../Core/Variables.cpp \

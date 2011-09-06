@@ -948,9 +948,8 @@ void MainWindow::openUserManual()
 {
     QStringList pathTries;
 
-    pathTries << QApplication::applicationDirPath().replace("\\", "/")+QDir::separator()+"doc/OMOptim-UsersGuide.pdf";
-    pathTries << QApplication::applicationDirPath().replace("\\", "/")+QDir::separator()+"doc/OMOptimUsersGuide.pdf";
-    pathTries << OpenModelica::home().replace("\\", "/").append("/share/doc/omoptim/OMOptim-UsersGuide.pdf");
+    pathTries << QApplication::applicationDirPath().replace("\\", "/")+QDir::separator()+"../share/doc/omoptim/OMOptimUsersGuide.pdf";
+    pathTries << OpenModelica::home().replace("\\", "/").append("/share/doc/omoptim/OMOptimUsersGuide.pdf");
 
     int iTry=0;
     bool openOk=false;
