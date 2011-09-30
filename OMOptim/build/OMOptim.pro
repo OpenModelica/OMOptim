@@ -3,14 +3,10 @@ TARGET = OMOptim
 
 QT +=  core gui svg xml
 
-
-
-
+QMAKE_LFLAGS += -enable-auto-import
 
 # Define the preprocessor macro to get the application version in our application.
 #DEFINES += APP_VERSION=\\\"$$VERSION\\\"
-
-
 
 CONFIG += qt warn_off
 # if wants energy integration (pinch analysis)
@@ -39,8 +35,6 @@ versiontarget.commands = UpdateRevision.bat
 versiontarget.depends += FORCE
 PRE_TARGETDEPS += $$VERSION_HEADER
 QMAKE_EXTRA_TARGETS += versiontarget
-
-
 
 CONFIG(debug, debug|release){
     LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
