@@ -3,8 +3,6 @@ TARGET = OMOptim
 
 QT +=  core gui svg xml
 
-QMAKE_LFLAGS += -enable-auto-import
-
 # Define the preprocessor macro to get the application version in our application.
 #DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
@@ -14,6 +12,8 @@ CONFIG += qt warn_off
 
 # WINDOWS
 win32 {
+QMAKE_LFLAGS += -enable-auto-import
+
 DEFINES += __x86__ \
     __NT__ \
     __OSVERSION__=4 \
