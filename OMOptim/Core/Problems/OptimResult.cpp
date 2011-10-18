@@ -58,11 +58,10 @@ OptimResult::OptimResult():Result()
 }
 
 OptimResult::OptimResult(Project* project, ModModelPlus* modModelPlus, Optimization* problem, ModClassTree* modClassTree,
-                         ModPlusCtrl* modPlusCtrl,OptimAlgo* algo)
+                         OptimAlgo* algo)
 :Result(project,modClassTree,(Problem*)problem)
 {
     _modModelPlus = modModelPlus;
-    _modPlusCtrl = modPlusCtrl;
 
     _recomputedVariables = new MOOptVector(true,true,_modModelPlus);
     _optObjectivesResults = new MOOptVector(false,true,_modModelPlus); //objectives are constant for one scan

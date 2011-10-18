@@ -72,7 +72,7 @@ public:
 	MOOptVector* clone() const;
 	void addItem(VariableResult* item_);
 	
-
+        double value(const QString &name,bool &ok,int iScan=0,int iPoint=0);
 	void append(const MOOptVector &,bool makeACopy);
 	void clearAtiPoint(int iPoint);
 

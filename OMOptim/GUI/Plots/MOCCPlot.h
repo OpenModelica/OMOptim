@@ -185,7 +185,7 @@ MOCCPlot::MOCCPlot(EIMERResult* res)
     setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
     setMinimumSize(QSize());
 
-    setCCType(GCC);
+    setResult(res);
 }
 
 void MOCCPlot::setResult(EIMERResult* res)
@@ -202,10 +202,16 @@ void MOCCPlot::setResult(EIMERResult* res)
 
 void MOCCPlot::setTUnit(METemperature::Units newTUnit)
 {
+    QString msg = "MOCCPlot::setTUnit";
+    qDebug(msg.toLatin1().data());
+    clear();
+
     _TUnit = newTUnit;
     _result->curveCold->setTUnit(_TUnit);
     _result->curveHot->setTUnit(_TUnit);
     _result->curveGcc->setTUnit(_TUnit);
+    _result->curveIccProcess->setTUnit(_TUnit);
+    _result->curveIccUtilities->setTUnit(_TUnit);
 
 
     //update labels
@@ -221,12 +227,19 @@ void MOCCPlot::setTUnit(METemperature::Units newTUnit)
 
 void MOCCPlot::setQUnit(MEQflow::Units newQUnit)
 {
+    QString msg = "MOCCPlot::setTUnit";
+    qDebug(msg.toLatin1().data());
+
+    clear();
+
     _qflowUnit = newQUnit;
 
     //update curves
     _result->curveCold->setQUnit(_qflowUnit);
     _result->curveHot->setQUnit(_qflowUnit);
     _result->curveGcc->setQUnit(_qflowUnit);
+    _result->curveIccProcess->setQUnit(_qflowUnit);
+    _result->curveIccUtilities->setQUnit(_qflowUnit);
 
 
 
@@ -238,11 +251,12 @@ void MOCCPlot::setQUnit(MEQflow::Units newQUnit)
     this->setAxisTitle(QwtPlot::xBottom,xtitle);
 
     // replot
-    replot();
+    setCCType(_ccType);
 }
 
 void MOCCPlot::relaunch()
 {
+
     if(_result)
     {
         _result->problem()->launch(ProblemConfig());
@@ -295,6 +309,7 @@ void MOCCPlot::onClicked(const QwtDoublePoint & pos)
 void MOCCPlot::drawItems (QPainter *painter, const QRect &rect,
                            const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
 {
+
     QString msg = "MOCCPlot::drawItems";
     qDebug(msg.toLatin1().data());
 
@@ -328,10 +343,8 @@ void MOCCPlot::drawItems (QPainter *painter, const QRect &rect,
 
 void MOCCPlot::setCCType(int type)
 {
-
-    QString msg = "MOCCPlot::setCCType" + QString::number(type).toInt();
+    QString msg = "MOCCPlot::setCCType";
     qDebug(msg.toLatin1().data());
-
     clear();
 
     if(_result)
@@ -347,6 +360,10 @@ void MOCCPlot::setCCType(int type)
             break;
         case GCC :
             addCurve(_result->curveGcc);
+            break;
+        case ICC :
+            addCurve(_result->curveIccProcess);
+            addCurve(_result->curveIccUtilities);
             break;
         default :
             break;

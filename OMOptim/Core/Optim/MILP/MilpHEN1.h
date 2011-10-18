@@ -73,32 +73,48 @@ class MilpHEN1 :public QObject
 {
     Q_OBJECT
 
+    /**
+      * AutoPrecision is used in autoLaunch() function to specify user need : fast calculation or precise one.
+      */
+    enum AutoPrecision
+    {
+        FAST,
+        AVERAGE,
+        PRECISE
+    };
 
 
 public:
     MilpHEN1(const EITree &eiTree,const MOParameters &parameters,const EIConnConstrs &connConstrs,const MOOptVector &variables,
-             QDir folder,bool splitTPinch=false,METemperature TPinch = METemperature());
+             QDir folder,METemperature TPinch = METemperature());
     ~MilpHEN1(void);
 
     EIHEN1Result* launch();
+    EIHEN1Result* autoLaunch(AutoPrecision precision);
+
     void stop();
 
     EIHEN1Parameters::Solver solver();
+    bool shouldSplitTPinch();
+
+
 
 private :
     glp_prob* _glpProblem;
     glp_tran *_glpTran;
     CbcCtrl* _cbcCtrl;
     GlpkCtrl* _glpkCtrl;
-    EIHEN1Parameters::Solver _solver;
 
 
+
+    QString getModFilePath();
 
     bool prepareData(QList<METemperature> & Tk);
 
 
     bool launchCBC(QString &msg);
     bool launchGLPK(QString &msg);
+
 
 
 
@@ -120,7 +136,9 @@ private :
                            const MilpVariableResult4D &varQijmzH,
                            const MilpVariableResult4D &varQijnzC,
                            const MilpVariableResult4D &varMassFijmz,
-                           const MilpVariableResult4D &varMassFijnz
+                           const MilpVariableResult4D &varMassFijnz,
+                           const MilpVariableResult3D &Aijz,
+                           const MilpVariableResult4D &Aijzk
                            );
 
 
@@ -144,6 +162,15 @@ private :
     static int hook(void *info, const char *s);
 
 
+    /**
+      * initialize names'correspondances. In argument, all names involved in optimization.
+      */
+    void initCorresp(const QStringList &);
+    QString toShortName(QString);
+    QString toLongName(QString);
+
+
+
     EITree* _eiTree;
     MOOptVector *_variables;
     QDir _folder;
@@ -155,12 +182,25 @@ private :
     QString _sensFileName;
     EIConnConstrs *_connConstrs;
     MOParameters *_parameters;
-    bool _splitTPinch;
     METemperature _TPinch;
 
     int _QFlowUnit;
     int _TempUnit;
     int _MassFlowUnit;
+    int _surfaceUnit;
+    int _htUnit;
+    int _specCpUnit;
+
+private :
+    EIHEN1Result* autoLaunchFast();
+
+    EIHEN1Result* autoLaunchPrecise();
+    EIHEN1Result* launchCustom();
+
+
+
+    QMap<QString,QString> _corrNames; /** map of shortcut names : glpk has a maximum name length allowed*/
+
 };
 
 

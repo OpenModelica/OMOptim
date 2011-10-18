@@ -97,8 +97,20 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
 	
 	values.clear();
 	titles.clear();
-	values << OptObjective::NONE	<< OptObjective::SUM	<< OptObjective::AVERAGE	<< OptObjective::DEVIATION;
-	titles << "None"				<< "Sum"				<< "Average"				<< "Standard deviation";
+        values << OptObjective::NONE
+               << OptObjective::SUM
+               << OptObjective::AVERAGE
+               << OptObjective::DEVIATION
+               << OptObjective::MINIMUM
+               << OptObjective::MAXIMUM ;
+
+        titles << "None"
+               << "Sum"
+               << "Average"
+               << "Standard deviation"
+               << "Minimum"
+               << "Maximum";
+
 	GenericDelegate *scanFunctionDelegate = new GenericDelegate(values,titles,this);
 	_ui->tableObjectives->setItemDelegateForColumn(OptObjective::SCANFUNCTION,scanFunctionDelegate);
 	

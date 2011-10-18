@@ -66,6 +66,7 @@ WidgetCCPlot::WidgetCCPlot(EIMERResult* _result,QWidget *parent) :
     //*****************
     connect(ui->radioCC,SIGNAL(toggled(bool)),this,SLOT(setViewCC(bool)));
     connect(ui->radioGCC,SIGNAL(toggled(bool)),this,SLOT(setViewGCC(bool)));
+    connect(ui->radioICC,SIGNAL(toggled(bool)),this,SLOT(setViewICC(bool)));
     connect(ui->pushZoom,SIGNAL(clicked(bool)),plot1,SLOT(enableZoom(bool)));
     ui->radioGCC->setChecked(true);
     setViewGCC(true);
@@ -89,9 +90,11 @@ WidgetCCPlot::WidgetCCPlot(EIMERResult* _result,QWidget *parent) :
     connect(result,SIGNAL(updated()),this,SLOT(replot()));
     connect(result,SIGNAL(deleted()),this,SLOT(clear()));
 
+    setMERResult(_result);
     // gui
     actualizeGui();
 }
+
 
 WidgetCCPlot::~WidgetCCPlot()
 {
@@ -101,6 +104,8 @@ WidgetCCPlot::~WidgetCCPlot()
 
 void WidgetCCPlot::actualizeGui()
 {
+    QString msg = "WidgetCCPlot::ActualizeGUI";
+    qDebug(msg.toLatin1().data());
     plot1->replot();
     unitChanged();
 }
@@ -137,6 +142,18 @@ void WidgetCCPlot::setViewGCC(bool checked)
     }
 }
 
+void WidgetCCPlot::setViewICC(bool checked)
+{
+    QString msg = "WidgetCCPlot::setViewICC";
+    qDebug(msg.toLatin1().data());
+    if(checked)
+    {
+        plot1->setCCType(MOCCPlot::ICC);
+        if(!ui->radioICC->isChecked())
+            ui->radioICC->setChecked(true);
+    }
+}
+
 void WidgetCCPlot::setMERResult(EIMERResult* result_)
 {
     QString msg = "WidgetCCPlot::setMERResult";
@@ -144,10 +161,7 @@ void WidgetCCPlot::setMERResult(EIMERResult* result_)
 
     result = result_;
     plot1->setResult(result);
-    //    replot();
-    //    setViewCC(true);
     actualizeGui();
-
 }
 
 
@@ -165,10 +179,8 @@ void WidgetCCPlot::unitChanged()
     QString msg = "WidgetCCPlot::unitChanged";
     qDebug(msg.toLatin1().data());
 
-
     if(result)
     {
-
         _TUnit = (METemperature::Units)ui->comboUnitT->itemData(ui->comboUnitT->currentIndex()).toInt();
         _qflowUnit =  (MEQflow::Units)ui->comboUnitMER->itemData(ui->comboUnitMER->currentIndex()).toInt();
         int unitMERCold =  ui->comboUnitMERCold->itemData(ui->comboUnitMERCold->currentIndex()).toInt();
@@ -179,7 +191,6 @@ void WidgetCCPlot::unitChanged()
 
         plot1->setTUnit(_TUnit);
         plot1->setQUnit(_qflowUnit);
-
     }
     else
     {

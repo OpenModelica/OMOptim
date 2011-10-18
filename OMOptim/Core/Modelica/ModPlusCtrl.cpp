@@ -40,8 +40,11 @@
   */
 #include "ModPlusCtrl.h"
 
-ModPlusCtrl::ModPlusCtrl(ModModelPlus* modModelPlus,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName)
+#include "Project.h"
+
+ModPlusCtrl::ModPlusCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName)
 {
+    _project = project;
 	_modModelPlus = modModelPlus;
 	_mmoFolder = mmoFolder;
 	_moFilePath = moFilePath;

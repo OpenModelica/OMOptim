@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file EIReader.h
+        @file EIModelicaExtractor.h
         @brief Comments for file documentation.
         @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
         Company : CEP - ARMINES (France)
@@ -39,13 +39,12 @@
   */
 
 
-#ifndef EIMODELEXTRACTOR_H
-#define EIMODELEXTRACTOR_H
+#ifndef EIMODELICAEXTRACTOR_H
+#define EIMODELICAEXTRACTOR_H
 
 #include "ModModel.h"
 #include "ModClassTree.h"
 #include "EILinguist.h"
-#include "ModEIConverter.h"
 #include "EIStream.h"
 #include "EIGroup.h"
 #include "EIModelContainer.h"
@@ -54,15 +53,19 @@
 namespace EI
 {
 /**
-  * EIModelExtractor provides functions to read a modelica model and get all EIItems included in it. It groups all these items to a EIModelContainer.
+  * EIModelicaExtractor provides functions to read a modelica model and get all EIItems included in it. It groups all these items to a EIModelContainer.
   * @sa EIModelContainer
   */
-class EIModelExtractor
+class EIModelicaExtractor
 {
 public:
-    EIModelExtractor();
+    EIModelicaExtractor();
 
    static EIModelContainer* extractFromModClass(ModClass*,ModClassTree*,MOomc*);
+
+private :
+   static EIStream* modClassToEIStream(QString modelName,ModClass*,EIItem* parent,MOomc*, bool &ok, QString &parentName );
+   static EIGroup* modClassToEIGroup(QString modelName,ModClass*,EIItem* parent,MOomc*, bool &ok, QString &parentName );
 };
 }
 

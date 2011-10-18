@@ -45,6 +45,8 @@ EIMERResult::EIMERResult(void)
 	curveHot = new MOCCCurve(MOCCCurve::CCHOT);
 	curveCold = new MOCCCurve(MOCCCurve::CCCOLD);
 	curveGcc = new MOCCCurve(MOCCCurve::GCC);
+        curveIccProcess = new MOCCCurve(MOCCCurve::ICCPROCESS);
+        curveIccUtilities= new MOCCCurve(MOCCCurve::ICCUTILITIES);
 
 }
 
@@ -53,6 +55,9 @@ EIMERResult::EIMERResult(const EIMERResult &result)
 	curveHot =  new MOCCCurve(*result.curveHot);
 	curveCold = new MOCCCurve(*result.curveCold);
 	curveGcc = new MOCCCurve(*result.curveGcc);
+        curveIccProcess = new MOCCCurve(*result.curveIccProcess);
+        curveIccUtilities= new MOCCCurve(*result.curveIccUtilities);
+
 
 	_project = result._project;
 	_problem = result._problem;
@@ -60,13 +65,6 @@ EIMERResult::EIMERResult(const EIMERResult &result)
         TPinch = result.TPinch;
         MER = result.MER;
         MERCold = result.MERCold;
-
-	//resultVars = result.resultVars->clone();
-
-//	xDataHot = result.xDataHot;
-//	xDataCold = result.xDataCold;
-//	yDataHot = result.yDataHot;
-//	yDataCold = result.yDataCold;
 }
 
 EIMERResult::EIMERResult(Project* project, EIProblem * clonedProblem)
@@ -74,6 +72,8 @@ EIMERResult::EIMERResult(Project* project, EIProblem * clonedProblem)
 	curveHot = new MOCCCurve(MOCCCurve::CCHOT);
 	curveCold = new MOCCCurve(MOCCCurve::CCCOLD);
 	curveGcc = new MOCCCurve(MOCCCurve::GCC);
+        curveIccProcess = new MOCCCurve(MOCCCurve::ICCPROCESS);
+        curveIccUtilities= new MOCCCurve(MOCCCurve::ICCUTILITIES);
 
 	_project = project;
         _problem = clonedProblem;
@@ -86,6 +86,8 @@ EIMERResult::~EIMERResult(void)
     delete curveHot;
     delete curveCold;
     delete curveGcc;
+    delete curveIccProcess;
+    delete curveIccUtilities;
 }
 
 

@@ -33,12 +33,18 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
           <iconset resource="../Resources/OMOptim.qrc">
-           <normaloff>:/icons/Refresh</normaloff>:/icons/Refresh</iconset>
+           <normaloff>:/Refresh</normaloff>:/Refresh</iconset>
          </property>
         </widget>
        </item>
@@ -146,7 +152,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources/OMOptim.qrc">
-         <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
+         <normaloff>:/Add</normaloff>:/Add</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -187,7 +193,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources/OMOptim.qrc">
-         <normaloff>:/icons/Delete</normaloff>:/icons/Delete</iconset>
+         <normaloff>:/Delete</normaloff>:/Delete</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -263,7 +269,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources/OMOptim.qrc">
-         <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
+         <normaloff>:/Add</normaloff>:/Add</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -298,7 +304,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources/OMOptim.qrc">
-         <normaloff>:/icons/Delete</normaloff>:/icons/Delete</iconset>
+         <normaloff>:/Delete</normaloff>:/Delete</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -347,7 +353,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources/OMOptim.qrc">
-         <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
+         <normaloff>:/Add</normaloff>:/Add</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -376,7 +382,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources/OMOptim.qrc">
-         <normaloff>:/icons/Delete</normaloff>:/icons/Delete</iconset>
+         <normaloff>:/Delete</normaloff>:/Delete</iconset>
        </property>
        <property name="iconSize">
         <size>

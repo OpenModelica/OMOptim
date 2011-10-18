@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
 
 	// Starting
 	MainWindow w(project);
+   // w.setWindowTitle("CERES");
 	app->connect( app, SIGNAL( lastWindowClosed() ), &w, SLOT( quit() ) );
      
     w.show();
@@ -124,6 +125,10 @@ int main(int argc, char *argv[])
 	}
 
 	logFile.close();
+
+
+    // delete project
+    delete project;
 	return 0;
 }
 

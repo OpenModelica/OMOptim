@@ -51,7 +51,7 @@ class OneSimulation : public Problem
 
 public:
         //OneSimulation(void);
-        OneSimulation(Project*,ModClassTree*,ModPlusCtrl*,ModModelPlus*);
+        OneSimulation(Project*,ModClassTree*,ModModelPlus*);
 	OneSimulation(const OneSimulation &s);
         Problem* clone() const;
 	~OneSimulation(void);
@@ -60,11 +60,8 @@ public:
         virtual QString getClassName(){return OneSimulation::className();};
 
 
-        // Model controler
-        ModPlusCtrl* _modPlusCtrl; /** Pointer to ModModelPlus controler */
 
 	void setModModelPlus(ModModelPlus*);
-        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
 
 
 	//overwrited functions

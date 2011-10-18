@@ -44,199 +44,124 @@
 
 
 
-WidgetTreeStreams::WidgetTreeStreams(EITree* _eiTree, bool _showFields,bool _editable,
-                                     ModClassTree* _modClassTree, MOomc* _moomc,QWidget *parent,MOOptVector *_variables) :
+WidgetTreeStreams::WidgetTreeStreams(EITree* eiTree, bool showFields,bool editable,
+                                     ModClassTree* modClassTree, MOomc* moomc,QWidget *parent,MOOptVector *variables) :
     QWidget(parent),
-    ui(new Ui::WidgetTreeStreamsClass)
+    _ui(new Ui::WidgetTreeStreamsClass)
 {
-    ui->setupUi(this);
+    _ui->setupUi(this);
 	
-    modClassTree = _modClassTree;
-        moomc= _moomc;
+    _modClassTree = modClassTree;
+    _moomc= moomc;
 
-	variables = _variables;
-	editable = _editable;
-	showFields = _showFields;
+    _variables = variables;
+    _editable = editable;
+    _showFields = showFields;
 
 	//tree model
-        //eiTree = new EITree(rootEI,showFields,editable);
-        eiTree =_eiTree;
-	/*streamsProxyModel = new QSortFilterProxyModel();
-	streamsProxyModel->setSourceModel(eiTree);
-	*/
+    _eiTree = eiTree;
+
 	//buttons
-	if(!editable)
+    if(!_editable)
 	{
-		ui->pushAddGroup->hide();
-		ui->pushAddStream->hide();
-		ui->pushRemove->hide();
-        ui->pushLoadModel->hide();
+        _ui->pushAddGroup->hide();
+        _ui->pushAddStream->hide();
+        _ui->pushRemove->hide();
+        _ui->pushLoadModel->hide();
 	}
 	
 
 
-        treeView=new MyTreeView(this);
-        GuiTools::ModelToView(eiTree,treeView);
-	treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	ui->layoutTreeStreams->addWidget(treeView);
-        treeView->expandAll();
 
-	connect(ui->pushAddStream,SIGNAL(clicked()),this,SLOT(addEmptyStream()));
-	connect(ui->pushAddGroup,SIGNAL(clicked()),this,SLOT(addEmptyGroup()));
-	connect(ui->pushRemove,SIGNAL(clicked()),this,SLOT(removeItem()));
-        connect(ui->pushLoadModel,SIGNAL(clicked()),this,SIGNAL(EILoadModelAsked()));
-        connect(ui->pushResize,SIGNAL(clicked()),this,SLOT(resizeColumns()));
-	updateCompleters();
+    _treeView=new EITreeView(_eiTree,_editable,this,_variables);
+    _ui->layoutTreeStreams->addWidget(_treeView);
+    _treeView->expandAll();
 
+    connect(_ui->pushAddStream,SIGNAL(clicked()),this,SLOT(addEmptyStream()));
+    connect(_ui->pushAddGroup,SIGNAL(clicked()),this,SLOT(addEmptyGroup()));
+    connect(_ui->pushRemove,SIGNAL(clicked()),this,SLOT(removeItem()));
+    connect(_ui->pushLoadModel,SIGNAL(clicked()),this,SIGNAL(EILoadModelAsked()));
+
+    connect(_treeView,SIGNAL(selectGroupChanged(EIGroup*)),this,SLOT(onSelectGroupChanged(EIGroup*)));
+    connect(_treeView,SIGNAL(clicked(QModelIndex)),this,SLOT(onSelectItemChanged(QModelIndex)));
 
 	// hide columns
 	QList<int> varsColsToHide;
 	varsColsToHide << EIStream::CHECKED;
 	for(int i=0;i<varsColsToHide.size();i++)
-		treeView->setColumnHidden(varsColsToHide.at(i),true);
+        _treeView->setColumnHidden(varsColsToHide.at(i),true);
 	
-	// unit delegates
-	METemperature _temp;
-	QStringList Tunits= _temp.units();
-	QList<int> Tindexes;
-	for(int i=0;i<Tunits.size();i++)
-		Tindexes.push_back(i);
-
-	MEQflow _qflow;
-	QStringList Qunits= _qflow.units();
-	QList<int> Qindexes;
-	for(int i=0;i<Qunits.size();i++)
-		Qindexes.push_back(i);
-
-	tinUDlg = new GenericDelegate(Tindexes,Tunits,this);
-	toutUDlg = new GenericDelegate(Tindexes,Tunits,this);
-	qUDlg = new GenericDelegate(Qindexes,Qunits,this);
-	treeView->setItemDelegateForColumn(EIStream::TIN_U,tinUDlg);
-	treeView->setItemDelegateForColumn(EIStream::TOUT_U,toutUDlg);
-	treeView->setItemDelegateForColumn(EIStream::QFLOW_U,qUDlg);
-
 	//WidgetEIGroup
-    widgetEIGroup = new WidgetEIGroup(NULL,this,true);
-	widgetEIGroup->setVisible(false);
-	ui->layoutWidgetItem->addWidget(widgetEIGroup);
-	connect(treeView,SIGNAL(clicked(QModelIndex)),
-		this,SLOT(onSelectItemChanged(QModelIndex)));
+    _widgetEIGroup = new WidgetEIGroup(NULL,this,true);
+    _widgetEIGroup->setVisible(false);
+    _ui->layoutWidgetItem->addWidget(_widgetEIGroup);
 
-        //resize columns
-        GuiTools::resizeTreeViewColumns(treeView);
 }
 
 WidgetTreeStreams::~WidgetTreeStreams()
 {
-    delete ui;
-}
-
-EIItem* WidgetTreeStreams::getContainer(QModelIndex index)
-{
-	EIItem* item;
-        EIItem* parentItem;
-	if(index.isValid())
-	{
-		item = static_cast<EIItem*>(index.internalPointer());
-	}
-	else
-                return eiTree->rootElement();
-
-        parentItem = item;
-        while(parentItem!=eiTree->rootElement() && parentItem->getEIType()!=EI::GROUP && parentItem->getEIType()!=EI::GENERIC)
-                parentItem = parentItem->parent();
-
-        return parentItem;
+    delete _ui;
 }
 
 void WidgetTreeStreams::addEmptyStream()
 {
-	QModelIndex index = treeView->selectionModel()->currentIndex();
+    QModelIndex index = _treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
-        EIItem* parentItem = getContainer(index);
-         eiTree->addEmptyStream(parentItem);
+    EIItem* parentItem = _treeView->getContainer(index);
+    _eiTree->addEmptyStream(parentItem);
 
-        treeView->expand(eiTree->indexOf(parentItem));
-        treeView->resizeColumnToContents(0);
+    _treeView->expand(_eiTree->indexOf(parentItem));
+    _treeView->resizeColumnToContents(0);
 }
 
 
 
 void WidgetTreeStreams::addEmptyGroup()
 {
-	QModelIndex index = treeView->selectionModel()->currentIndex();
+    QModelIndex index = _treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
-        EIItem* parentItem = getContainer(index);
-        eiTree->addEmptyGroup(parentItem);
+    EIItem* parentItem = _treeView->getContainer(index);
+    _eiTree->addEmptyGroup(parentItem);
 
-	treeView->expand(index);
-        treeView->resizeColumnToContents(0);
+    _treeView->expand(index);
+    _treeView->resizeColumnToContents(0);
 }
 
-void WidgetTreeStreams::updateCompleters()
-{
-	if(variables)
-	{
-		QStringList varNames = variables->getItemNames();
-		compltDlg1 = new VarCompleterDelegate(varNames,this);
-		treeView->setItemDelegateForColumn(EIStream::TIN_V,compltDlg1);
-		compltDlg2 = new VarCompleterDelegate(varNames,this);
-		treeView->setItemDelegateForColumn(EIStream::TOUT_V,compltDlg2);
-		compltDlg3 = new VarCompleterDelegate(varNames,this);
-		treeView->setItemDelegateForColumn(EIStream::QFLOW_V,compltDlg3);
-	}
-}
 
 void WidgetTreeStreams::removeItem()
 {
-	QModelIndex index = treeView->selectionModel()->currentIndex();
+    QModelIndex index = _treeView->selectionModel()->currentIndex();
 	//index = streamsProxyModel->mapToSource(index);
-        eiTree->removeItem(index);
+    _eiTree->removeItem(index);
 
 	}
 
 void WidgetTreeStreams::refreshTree()
 {
-	treeView->setModel(NULL);
-	treeView->viewport()->update();
-	//treeView->setModel(streamsProxyModel);
-	treeView->setModel(eiTree);
-
-	for(int i=0;i<eiTree->columnCount();i++)
-	{
-		treeView->resizeColumnToContents(i);
+    _treeView->refresh();
 	}
-}
 
-void WidgetTreeStreams::setInputVars(MOOptVector* _variables)
+void WidgetTreeStreams::setInputVars(MOOptVector* variables)
 {
-	variables = _variables; //should change nothing, adress should stay similar
+    _variables = variables; //should change nothing, adress should stay similar
 
-	if(compltDlg1)
-	{
-		delete compltDlg1;
-		delete compltDlg2;
-		delete compltDlg3;
+    _treeView->updateCompleters(_variables);
 	}
 
-	updateCompleters();
-}
-
-void WidgetTreeStreams::onSelectItemChanged(QModelIndex _index)
+void WidgetTreeStreams::onSelectItemChanged(QModelIndex index)
 {
 	EIGroup* group = NULL;
 
-	int oldC=_index.column();
-	int oldR=_index.row();
+    int oldC=index.column();
+    int oldR=index.row();
 
-	if(!_index.isValid())
+    if(!index.isValid())
 		return;
 
-	//_index = streamsProxyModel->mapToSource(_index);
 	
-	if(_index.isValid())
+    if(index.isValid())
 	{
-		EIItem *item = static_cast<EIItem*>(_index.internalPointer());
+        EIItem *item = static_cast<EIItem*>(index.internalPointer());
 		group = dynamic_cast<EIGroup*>(item);
 	}
 	
@@ -248,17 +173,13 @@ void WidgetTreeStreams::onSelectItemChanged(QModelIndex _index)
 
 void WidgetTreeStreams::onSelectGroupChanged(EIGroup* group)
 {
-	widgetEIGroup->setItem(group);
+    _widgetEIGroup->setItem(group);
 
 	if(!group)
-		widgetEIGroup->hide();
+        _widgetEIGroup->hide();
 	else
-		widgetEIGroup->show();
+        _widgetEIGroup->show();
 }
 
 
 
-void WidgetTreeStreams::resizeColumns()
-{
-    GuiTools::resizeTreeViewColumns(treeView);
-}

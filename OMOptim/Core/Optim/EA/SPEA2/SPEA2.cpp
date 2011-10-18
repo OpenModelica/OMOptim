@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linkpings universitet, Department of Computer and Information Science,
- * SE-58183 Linkping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+ 	@version 0.9 
 
   */
 /*
@@ -97,15 +97,15 @@ SPEA2::SPEA2():EABase()
 	setDefaultParameters();
 }
 
-SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
-:EABase(project,problem,modClassTree,modPlusCtrl)
+SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree)
+:EABase(project,problem,modClassTree)
 {
 	setDefaultParameters();
 };
 
 
-SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,MOParameters* parameters)
-:EABase(project,problem,modClassTree,modPlusCtrl)
+SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree,MOParameters* parameters)
+:EABase(project,problem,modClassTree)
 {
        delete _parameters;
        _parameters = new MOParameters(*parameters);
@@ -121,7 +121,7 @@ QString SPEA2::name()
 	return("SPEA2");
 }
 
-SPEA2* SPEA2::clone() const
+EABase* SPEA2::clone() const
 {
 	SPEA2* newEA = new SPEA2(*this);
 	return newEA ;
@@ -189,7 +189,7 @@ Result* SPEA2::launch(QString tempDir)
 	{
 	case Problem::OPTIMIZATIONTYPE :
 		plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,
-                        _modClassTree,_modPlusCtrl);
+                        _modClassTree);
 		break;
 	}
         OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
@@ -299,7 +299,9 @@ Result* SPEA2::launch(QString tempDir)
 	//************************************/
         Result* result = buildResult(arch);
 
+
 	return result;
+	
 }
 
 

@@ -47,6 +47,8 @@
 #include "MEQflow.h"
 #include "MOomc.h"
 #include "MEMassFlow.h"
+#include "MEHTCoeff.h"
+#include "MESpecHeatCapacity.h"
 
 
 /** EIStream is used in energy integration. It contains all informations needed concerning a stream in this representation : heat and mass flows, inlet and outlet temperatures.
@@ -70,6 +72,8 @@ public:
         QFLOW_U,
         MASSFLOW_V,
         MASSFLOW_U,
+        HTCOEFF_V, // heat transfer coeff
+        HTCOEFF_U,
         DTMIN2
     };
 
@@ -84,7 +88,7 @@ public:
     bool isValid(MOOptVector*, QString &errMsg) const;
     bool isHot(MOOptVector* variables=NULL) const;
 
-    static const int nbFields = 11;
+    static const int nbFields = 13;
     virtual unsigned getNbFields(){return nbFields;};
 
 
@@ -101,6 +105,9 @@ public:
                 Note that could contain a numerical value (without reference) @sa MERefValue */
     MERefValue<MEMassFlow> _massFlowRef; /** Reference value of mass flow.
                 Note that could contain a numerical value (without reference) @sa MERefValue */
+    MERefValue<MEHTCoeff> _htCoeffRef; /** Reference value of heat transfer coefficient.
+                Note that could contain a numerical value (without reference) @sa MERefValue */
+
 
 
 
@@ -108,7 +115,7 @@ public:
 
     QStringList references() const ;
     bool numerize(MOOptVector* variables);
-    double Cp(bool &ok,MOOptVector* variables=NULL);
+    MESpecHeatCapacity Cp(bool &ok,MOOptVector* variables=NULL);
 
 
 
@@ -125,13 +132,15 @@ public:
     METemperature ToutNum(bool useCorrectedT) ;
     MEMassFlow massFlowNum();
     MEQflow QflowNum();
+    MEHTCoeff htCoeffNum();
 
 private :
     bool _numerized;
-    METemperature _TinNum; /** Numerical value of TinRef. Only pertinent when _numerized==true*/
-    METemperature _ToutNum; /** Numerical value of ToutRef. Only pertinent when _numerized==true*/
-    MEQflow _QflowNum; /** Numerical value of QflowRef. Only pertinent when _numerized==true*/
-    MEMassFlow _massFlowNum; /** Numerical value of MassFlowRef. Only pertinent when _numerized==true*/
+    METemperature _TinNum; /** Numerical value of _TinRef. Only pertinent when _numerized==true*/
+    METemperature _ToutNum; /** Numerical value of _ToutRef. Only pertinent when _numerized==true*/
+    MEQflow _QflowNum; /** Numerical value of _QflowRef. Only pertinent when _numerized==true*/
+    MEMassFlow _massFlowNum; /** Numerical value of _MassFlowRef. Only pertinent when _numerized==true*/
+    MEHTCoeff _htCoeffNum; /** Numerical value of _htCoeffRef. Only pertinent when _numerized==true*/
 };
 }
 

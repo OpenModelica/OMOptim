@@ -64,49 +64,13 @@ InfoSender::~InfoSender(void)
 
 void InfoSender::send(Info _info)
 {
-	QString prefix;
-	QString suffix;
 
-	switch(_info.infoType)
-	{
-	case ListInfo::NORMAL2 :
-		prefix = "Normal :";
-		suffix = "";
-		break;
-	case ListInfo::WARNING2 :
-		prefix = "Warning :";
-		suffix = "";
-		break;
-	case ListInfo::ERROR2 :
-		prefix = "<b><font color='red'>Error :";
-		suffix = "</font></b>";
-		break;
 		
-	case ListInfo::OMCNORMAL2 :
-		prefix = "OMCNormal :";
-		suffix = "";
-		break;
-	case ListInfo::OMCWARNING2 :
-		prefix = "OMCWarning :";
-		suffix = "";
-		break;
-	case ListInfo::OMCERROR2 :
-		prefix = "<b><font color='red'>OMCError :";
-		suffix = "</font></b>";
-		break;
-        case ListInfo::INFODEBUG :
-		prefix = "<b><font color='blue'>Debug :";
-		suffix = "</font></b>";
-		break;
-	}
-
 	if(logStream)
 	{
 		*logStream << QTime::currentTime().toString().toAscii().data();
 		*logStream << "\t";
-		*logStream << prefix;
 		*logStream << _info.infoMsg;
-                *logStream << suffix;
 		*logStream << "\n";
 	}
 	emit sent(_info);

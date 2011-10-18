@@ -43,6 +43,8 @@
 #include <QtGui>
 
 
+
+
 ModClassTree::ModClassTree(ModReader* modReader,MOomc* moomc,QObject *parent)
     : QAbstractItemModel(parent)
 {
@@ -53,6 +55,9 @@ ModClassTree::ModClassTree(ModReader* modReader,MOomc* moomc,QObject *parent)
     _enabled = true;
 
     _showComponents = false;
+
+    setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
+
 
 }
 
@@ -92,7 +97,14 @@ bool ModClassTree::addChild(ModClass* parent,ModClass* child)
 }
 
 
-
+/**
+* This function fills parent with its children. To achieve this, it calls MOOmc functions.
+* @arg depthMax : maximum depth filling should go (each time functions goes in children, grand children...
+* Depth is increased by one.
+* @arg curDepth : current depth.
+* @arg direction : allows to drive looking function along a path. This is especially used
+* to look for deep modelas without covering all items.
+*/
 void ModClassTree::readFromOmc(ModClass* parent,int depthMax,QString direction,int curDepth)
 {
     if(parent->_readMutex.tryLock())
@@ -105,9 +117,11 @@ void ModClassTree::readFromOmc(ModClass* parent,int depthMax,QString direction,i
 
             bool readPackages = (parent->getClassRestr()==Modelica::PACKAGE) || (parent->getClassRestr()==Modelica::GENERIC);
             bool readModels = (parent->getClassRestr()==Modelica::PACKAGE) || (parent->getClassRestr()==Modelica::GENERIC);
-            bool readComponents = (parent->getClassRestr()==Modelica::MODEL) || (parent->getClassRestr()==Modelica::GENERIC);
+            bool readComponents = (parent->getClassRestr()==Modelica::MODEL) || (parent->getClassRestr()==Modelica::GENERIC) || (parent->getClassRestr()==Modelica::COMPONENT);
+            bool readRecords = (parent->getClassRestr()==Modelica::PACKAGE) || (parent->getClassRestr()==Modelica::GENERIC)|| (parent->getClassRestr()==Modelica::COMPONENT);
 
             QString fullParentName = parent->name(Modelica::FULL);
+            QString parentClassName = parent->getModClassName();
             QString prefix;
             if(!fullParentName.isEmpty())
                 prefix = fullParentName+".";
@@ -138,12 +152,25 @@ void ModClassTree::readFromOmc(ModClass* parent,int depthMax,QString direction,i
                 }
             }
 
+            // read records
+            if(readRecords)
+            {
+                QStringList recordNames = _moomc->getRecords(fullParentName);
+                for(int i=0;i<recordNames.size();i++)
+                {
+                    newElement = new ModRecord(_moomc,parent,prefix+recordNames.at(i));
+                    if(addChild(parent,newElement))
+                        if((childrenDirection=="") || (childrenDirection==recordNames.at(i)))
+                            readFromOmc(newElement,depthMax,direction,curDepth+1);
+                }
+            }
+
             //read components
             if(readComponents)
             {
                 QStringList compNames;
                 QStringList compClasses;
-                _moomc->getContainedComponents(fullParentName,compNames,compClasses,true);
+                _moomc->getContainedComponents(parentClassName,compNames,compClasses,true);
                 for(int i=0;i<compNames.size();i++)
                 {
                     newElement = new ModComponent(_moomc,parent,prefix+compNames.at(i),compClasses.at(i));
@@ -161,7 +188,11 @@ void ModClassTree::readFromOmc(ModClass* parent,int depthMax,QString direction,i
     }
 }
 
-
+/**
+  * Another version of readFromOmc.
+  * @sa readFromOmc
+  * @todo benchmark reading functions
+  */
 void ModClassTree::readFromOmcV2(ModClass* parent,int depthMax,QString direction,int curDepth)
 {
     if(parent->_readMutex.tryLock())
@@ -180,8 +211,8 @@ void ModClassTree::readFromOmcV2(ModClass* parent,int depthMax,QString direction
             ModClass* newElement;
 
             //read packages, models and components
-            QStringList packagesClasses,modelsClasses,compsNames,compsClasses;
-            _moomc->readElementInfos(fullParentClass,packagesClasses,modelsClasses,compsNames,compsClasses);
+            QStringList packagesClasses,modelsClasses,recordNames,compsNames,compsClasses;
+            _moomc->readElementInfos(fullParentClass,packagesClasses,modelsClasses,recordNames,compsNames,compsClasses);
 
             // get inherited components
             QStringList inheritedCompNames,inheritedCompClasses;
@@ -225,6 +256,11 @@ void ModClassTree::readFromOmcV2(ModClass* parent,int depthMax,QString direction
     }
 }
 
+/**
+  * Another version of readFromOmc.
+  * @sa readFromOmc
+  * @todo benchmark reading functions
+  */
 void ModClassTree::readFromOmcV3(ModClass* parent,int depthMax,QString direction,int curDepth)
 {
     if(parent->_readMutex.tryLock())
@@ -243,7 +279,7 @@ void ModClassTree::readFromOmcV3(ModClass* parent,int depthMax,QString direction
             ModClass* newElement;
 
             //read packages, models and components
-            QStringList packagesClasses,modelsClasses,compsNames,compsClasses;
+            QStringList packagesClasses,modelsClasses,recordsNames,compsNames,compsClasses;
             bool foundInLib = false;
 
 
@@ -252,12 +288,12 @@ void ModClassTree::readFromOmcV3(ModClass* parent,int depthMax,QString direction
             {
                 // If class is already loaded in package, use its information
                 foundInLib = true;
-                childrenInfos(_corrLibComp,packagesClasses,modelsClasses,compsNames,compsClasses);
+                childrenInfos(_corrLibComp,packagesClasses,modelsClasses,recordsNames,compsNames,compsClasses);
             }
             else
             {
                 // Call parent->_moomc
-                _moomc->readElementInfos(fullParentClass,packagesClasses,modelsClasses,compsNames,compsClasses);
+                _moomc->readElementInfos(fullParentClass,packagesClasses,modelsClasses,recordsNames,compsNames,compsClasses);
                 // get inherited components
                 QStringList inheritedCompNames,inheritedCompClasses;
                 _moomc->getInheritedComponents(fullParentClass,inheritedCompNames,inheritedCompClasses);
@@ -305,85 +341,9 @@ void ModClassTree::readFromOmcV3(ModClass* parent,int depthMax,QString direction
 
 
 
-
-void ModClassTree::readFromOmcV4(ModClass* parent,int depthMax,QString direction,int curDepth)
-{
-    if(parent->_readMutex.tryLock())
-    {
-        if((curDepth<=depthMax)&&!parent->childrenReaden())
-        {
-            QString childrenDirection = direction.section(".",curDepth+1,curDepth+1);
-            QString fullParentClass = parent->getModClassName();
-            QString fullParentName = parent->name(Modelica::FULL);
-
-            QString prefix;
-            if(!fullParentName.isEmpty())
-                prefix = fullParentName+".";
-
-            ModClass* newElement;
-
-            //read packages, models and components
-            QStringList packagesClasses,modelsClasses,compsNames,compsClasses;
-            bool foundInLib = false;
-
-
-            ModClass* _corrLibComp = findInDescendants(fullParentName);
-            if(_corrLibComp)
-            {
-                // If class is already loaded in package, use its information
-                foundInLib = true;
-                childrenInfos(_corrLibComp,packagesClasses,modelsClasses,compsNames,compsClasses);
-            }
-            else
-            {
-                // Call parent->_moomc
-                _moomc->readElementInfos(fullParentClass,packagesClasses,modelsClasses,compsNames,compsClasses);
-                // get inherited components
-                QStringList inheritedCompNames,inheritedCompClasses;
-                _moomc->getInheritedComponents(fullParentClass,inheritedCompNames,inheritedCompClasses);
-                compsNames << inheritedCompNames;
-                compsClasses << inheritedCompClasses;
-            }
-
-
-            // adding child packages and read them
-            for(int i=0;i<packagesClasses.size();i++)
-            {
-                newElement = new ModPackage(_moomc,parent,prefix+packagesClasses.at(i));
-                if(addChild(parent,newElement))
-                    if((childrenDirection=="") || (childrenDirection==packagesClasses.at(i)))
-                        readFromOmcV3(newElement,depthMax,direction,curDepth+1);
-            }
-
-            // adding child models and read them
-            for(int i=0;i<modelsClasses.size();i++)
-            {
-                newElement = new ModModel(_moomc,parent,prefix+modelsClasses.at(i));
-                if(addChild(parent,newElement))
-                    if((childrenDirection=="") || (childrenDirection==modelsClasses.at(i)))
-                        readFromOmcV3(newElement,depthMax,direction,curDepth+1);
-            }
-
-            // adding child components and read them
-            for(int i=0;i<compsNames.size();i++)
-            {
-                newElement = new ModComponent(_moomc,parent,prefix+compsNames.at(i),compsClasses.at(i));
-                if(addChild(parent,newElement))
-                    if((childrenDirection=="") || (childrenDirection==compsClasses.at(i)))
-                        readFromOmcV3(newElement,depthMax,direction,curDepth+1);
-            }
-
-            parent->setChildrenReaden(true);
-
-            parent->emitModified();
-
-
-        }
-        parent->_readMutex.unlock();
-    }
-}
-
-
+/**
+  * Finding function : within parent, look for children whom fullname equals argument
+  */
 ModClass* ModClassTree::findInDescendants(QString fullName,ModClass* parent)
 {
     if(parent==NULL)
@@ -428,10 +388,46 @@ ModClass* ModClassTree::findInDescendants(QString fullName,ModClass* parent)
     }
     return NULL;
 }
+/**
+  * Finding function : returns all modClass whom classname equals argument className.
+  */
+QList<ModClass*> ModClassTree::findInDescendantsByClass(QString className,ModClass* parent)
+{
+    if(parent==NULL)
+        parent = _rootElement;
+
+    ModClass* curClass;
+    QList<ModClass*> curClasses;
+    int iChild;
+
+    int curDepth = parent->depth();
 
 
 
-QList<ModClass*> ModClassTree::findCompOfClassInDescendants(QString _className,ModClass* parent)
+    // then check children are readen
+    if(!parent->childrenReaden())
+{
+        // if not, check in its direction
+        readFromOmc(parent,curDepth+1,QString(),curDepth);
+    }
+
+    // looking if one child corresponds
+    for(iChild=0;iChild<parent->childCount();iChild++)
+    {
+        curClass = parent->child(iChild);
+        if(curClass->getModClassName()==className)
+            curClasses.push_back(curClass);
+
+        //look deeper in children
+        curClasses <<  findInDescendantsByClass(className,curClass);
+    }
+
+    return curClasses;
+
+}
+
+
+QList<ModClass*> ModClassTree::findCompOfClassInDescendants(QString className,ModClass* parent)
 {
     if(parent==NULL)
         parent = _rootElement;
@@ -448,7 +444,7 @@ QList<ModClass*> ModClassTree::findCompOfClassInDescendants(QString _className,M
     for(iChild=0;iChild<nbCompChild;iChild++)
     {
         curComponent = parent->compChild(iChild);
-        if(curComponent->getFieldValue(ModComponent::MODCLASSNAME)==_className)
+        if(curComponent->getFieldValue(ModComponent::MODCLASSNAME)==className)
             curComponents.push_back(curComponent);
     }
 
@@ -456,7 +452,7 @@ QList<ModClass*> ModClassTree::findCompOfClassInDescendants(QString _className,M
     iChild=0;
     while(iChild<nbCompChild)
     {
-        curComponents <<  findCompOfClassInDescendants(_className,parent->compChild(iChild));
+        curComponents <<  findCompOfClassInDescendants(className,parent->compChild(iChild));
         iChild++;
     }
 
@@ -464,7 +460,7 @@ QList<ModClass*> ModClassTree::findCompOfClassInDescendants(QString _className,M
     iChild=0;
     while(iChild<nbModelChild)
     {
-        curComponents <<   findCompOfClassInDescendants(_className,parent->modelChild(iChild));
+        curComponents <<   findCompOfClassInDescendants(className,parent->modelChild(iChild));
         iChild++;
     }
 
@@ -472,7 +468,7 @@ QList<ModClass*> ModClassTree::findCompOfClassInDescendants(QString _className,M
     iChild=0;
     while(iChild<nbPackageChild)
     {
-        curComponents <<  findCompOfClassInDescendants(_className,parent->packageChild(iChild));
+        curComponents <<  findCompOfClassInDescendants(className,parent->packageChild(iChild));
         iChild++;
     }
 
@@ -485,17 +481,6 @@ bool ModClassTree::isInDescendants(QString fullName,ModClass* parent)
     ModClass* foundClass = findInDescendants(fullName,parent);
     return (bool)(foundClass);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 int ModClassTree::columnCount(const QModelIndex &parent) const
@@ -511,7 +496,8 @@ QVariant ModClassTree::data(const QModelIndex &index, int role) const
         if (!index.isValid())
             return QVariant();
 
-        if (role != Qt::DisplayRole && role !=Qt::ToolTipRole)
+
+        if (role != Qt::DisplayRole && role !=Qt::ToolTipRole && role != Qt::DecorationRole)
             return QVariant();
 
         if(index.column()<0 || index.column()>=ModClass::nbFields)
@@ -521,6 +507,9 @@ QVariant ModClassTree::data(const QModelIndex &index, int role) const
 
         if(item)
         {
+            if(role==Qt::DecorationRole)
+                return getModelicaNodeIcon(item);
+
             // fullfiling is now done in ::fetchmore
             // if(!item->childrenReaden())
             // readFromOmcV2(item,1);
@@ -575,10 +564,12 @@ QVariant ModClassTree::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
+
+
 QStringList ModClassTree::mimeTypes() const
 {
     QStringList types;
-    types << "application/vnd.text.list";
+    types << "text/plain";
     return types;
 }
 
@@ -591,13 +582,14 @@ QMimeData* ModClassTree::mimeData(const QModelIndexList &indexes) const
     if(indexes.size()==1)
     {
         ModClass* _modEl = (ModClass*)indexes.at(0).internalPointer();
-        if(_modEl)
-        {
-            stream<< _modEl->name(Modelica::FULL);
+        mimeData->setText("MODELICA::"+_modEl->name(Modelica::FULL));
+        //        if(_modEl)
+        //        {
+        //            stream<< _modEl->name(Modelica::FULL);
+        //        }
         }
-    }
 
-    mimeData->setData("application/vnd.text.list", encodedData);
+    //    mimeData->setData("application/vnd.text.list", encodedData);
     return mimeData;
 }
 
@@ -737,6 +729,7 @@ bool ModClassTree::hasChildren ( const QModelIndex & parent ) const
     else
     {
         QStringList children = _moomc->getClassNames(parentElement->name());
+        children.removeAll(QString());
         return !children.isEmpty();
     }
 }
@@ -800,7 +793,7 @@ ModClass* ModClassTree::findItem(QString _fullName)
 
 
 
-void ModClassTree::childrenInfos(ModClass* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &compsNames,QStringList &compsClasses)
+void ModClassTree::childrenInfos(ModClass* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &recordsClasses,QStringList &compsNames,QStringList &compsClasses)
 {
     // read children if necessary
     if(!parent->childrenReaden())
@@ -812,12 +805,14 @@ void ModClassTree::childrenInfos(ModClass* parent,QStringList &packagesClasses,Q
     int nbCompChild = parent->compChildCount();
     int nbModelChild = parent->modelChildCount();
     int nbPackageChild = parent->packageChildCount();
+    int nbRecordChild = parent->recordChildCount();
 
     //clear
     packagesClasses.clear();
     modelsClasses.clear();
     compsClasses.clear();
     compsNames.clear();
+    recordsClasses.clear();
 
     // packages
     for(int i=0;i<nbPackageChild;i++)
@@ -826,6 +821,10 @@ void ModClassTree::childrenInfos(ModClass* parent,QStringList &packagesClasses,Q
     // models
     for(int i=0;i<nbModelChild;i++)
         modelsClasses.push_back(parent->modelChild(i)->name(Modelica::SHORT));
+
+    // records
+    for(int i=0;i<nbRecordChild;i++)
+        recordsClasses.push_back(parent->modelChild(i)->name(Modelica::SHORT));
 
     // components
     for(int i=0;i<nbCompChild;i++)
@@ -869,29 +868,29 @@ QStringList ModClassTree::getPorts(ModClass* parent,Modelica::NameFormat format)
 }
 
 
-QIcon ModClassTree::getModelicaNodeIcon(ModClass* modClass)
+QIcon ModClassTree::getModelicaNodeIcon(ModClass* modClass) const
 {
-    //    switch (modClass->getClassRestr())
-    //    {
-    //    case Modelica::MODEL
-    //    case StringHandler::MODEL:
-    //        return QIcon(":/Resources/icons/model-icon.png");
-    //    case StringHandler::CLASS:
-    //        return QIcon(":/Resources/icons/class-icon.png");
-    //    case StringHandler::CONNECTOR:
-    //        return QIcon(":/Resources/icons/connector-icon.png");
-    //    case StringHandler::RECORD:
-    //        return QIcon(":/Resources/icons/record-icon.png");
-    //    case StringHandler::BLOCK:
-    //        return QIcon(":/Resources/icons/block-icon.png");
-    //    case StringHandler::FUNCTION:
-    //        return QIcon(":/Resources/icons/function-icon.png");
-    //    case StringHandler::PACKAGE:
-    //        return QIcon(":/Resources/icons/package-icon.png");
-    //    case StringHandler::TYPE:
-    //        return QIcon(":/Resources/icons/type-icon.png");
-    //    }
+    switch (modClass->getClassRestr())
+    {
+    case Modelica::MODEL:
+        return QIcon(":/icons/model-icon.png");
+    case Modelica::CLASS:
+        return QIcon(":/icons/class-icon.png");
+    case Modelica::CONNECTOR:
+        return QIcon(":/icons/connector-icon.png");
+    case Modelica::RECORD:
+        return QIcon(":/icons/record-icon.png");
+    case Modelica::BLOCK:
+        return QIcon(":/icons/block-icon.png");
+    case Modelica::FUNCTION:
+        return QIcon(":/icons/function-icon.png");
+    case Modelica::PACKAGE:
+        return QIcon(":/icons/package-icon.png");
+    case Modelica::TYPE:
+        return QIcon(":/icons/type-icon.png");
+    default :
     return QIcon();
+}
 }
 
 bool ModClassTree::canFetchMore ( const QModelIndex & parent ) const
@@ -940,4 +939,8 @@ void ModClassTree::setShowComponent(bool showComponents)
         _showComponents = showComponents;
         endResetModel();
     }
+}
+Qt::DropActions ModClassTree::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
 }

@@ -49,6 +49,7 @@
 #include "MOParameter.h"
 
 class ModModelPlus;
+class Project;
 
 class ModPlusCtrl :public QObject
 {
@@ -69,7 +70,7 @@ class ModPlusCtrl :public QObject
                 DYMOLA
         };
 
-        ModPlusCtrl(ModModelPlus* modModelPlus,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName);
+        ModPlusCtrl(Project*,ModModelPlus* modModelPlus,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName);
         ~ModPlusCtrl(void);
 
         // Variables functions
@@ -105,6 +106,7 @@ protected:
         bool _copyAllMoOfFolder;
         MOParameters *_parameters;
         MOomc* _moomc;
+        Project* _project;
 
 };
 

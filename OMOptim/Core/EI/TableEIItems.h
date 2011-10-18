@@ -42,9 +42,7 @@
 
 #include "EIStream.h"
 #include "EIReader.h"
-#include "MOCCCurve.h"
 #include "MOVector.h"
-#include "CCTools.h"
 
 using namespace EI;
 class TableEIItems : public QAbstractItemModel

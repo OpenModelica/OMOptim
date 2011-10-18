@@ -124,6 +124,11 @@ Result* EIMERProblem::launch(ProblemConfig config)
     CCTools::buildGCCfromStreams(Tk,Qik,
                                  result->curveGcc);
 
+    CCTools::buildICCfromStreams(*_eiTree,
+                                 result->curveIccProcess,
+                                 result->curveIccUtilities,
+                                 includeUtilities);
+
     METemperature TPinch;
     MEQflow MER,MERCold;
 

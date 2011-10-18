@@ -223,6 +223,7 @@ public:
 	~OptVariable(void);
 	OptVariable(const OptVariable &);
 	OptVariable(QDomElement &);
+        OptVariable* clone() const;
 	virtual QString getClassName(){return "OptVariable";};
 
 
@@ -274,7 +275,7 @@ public:
 	ScannedVariable(const Variable &);
 	ScannedVariable(QDomElement &);
 	~ScannedVariable(void);
-	//ScannedVariable* clone() const;
+        ScannedVariable* clone() const;
 	virtual QString getClassName(){return "ScannedVariable";};
 
 public :

@@ -102,7 +102,7 @@ public:
 	// MO Item overwriting
 	virtual QString getFieldName(int iField,int iRole);
 	virtual unsigned getNbFields();
-	virtual QString getClassName(){return "Problem";};
+        virtual QString getClassName(){return "Problem";}
 
 
         // Stop functions
@@ -132,33 +132,30 @@ public:
         */
         virtual bool checkBeforeComp(QString & error) = 0;
 
-
-
 	// Managment functions
 	/**
         * Save problem information in XML form.
 	*/
 	virtual QDomElement toXmlData(QDomDocument & doc) = 0;
+        /**
+        * Store problem files in destFolder. Is called when a problem resolution is finished.
+        * @param destFolder destination folder path.
+        * @param tempDir dir from where problem files are copied
+        */
 	virtual void store(QString destFolder, QString tempDir);
         void setDefaultSaveFileName();
 
 	// Get functions
-	ProblemType type(){return _type;};
-        MOParameters* parameters(){return _parameters;};
+        ProblemType type(){return _type;}
+        MOParameters* parameters(){return _parameters;}
 
 	// Set functions
 	void setType(ProblemType);
 		
-public slots:
-        //virtual void onStopAsked(){};
-
-		
-
 signals:
-        //void finished(Problem*);
 	void newProgress(float);
 	void newProgress(float,int,int);
-        //void begun(Problem*);
+
 };
 
 

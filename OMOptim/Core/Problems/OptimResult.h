@@ -63,7 +63,7 @@ class OptimResult : public Result
 public:
 
 	OptimResult();
-        OptimResult(Project*, ModModelPlus*, Optimization*,ModClassTree*,ModPlusCtrl*,OptimAlgo* algo);
+        OptimResult(Project*, ModModelPlus*, Optimization*,ModClassTree*,OptimAlgo* algo);
 	OptimResult(const OptimResult &_res);
 	~OptimResult(void);
         static QString className(){return "OptimResult";};
@@ -113,7 +113,6 @@ public :
 
         ModModel* modModel(){return _modModelPlus->modModel();};
         ModModelPlus* modModelPlus(){return _modModelPlus;};
-        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
 
 protected:
 	int _curPoint;
@@ -130,7 +129,6 @@ protected:
 
         //Model
         ModModelPlus* _modModelPlus;
-        ModPlusCtrl* _modPlusCtrl;
 };
 
 

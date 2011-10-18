@@ -46,7 +46,8 @@
 class MEQflow : public MEDimValue
 {
 public:
-	MEQflow(double value=0,int unit=0);
+        MEQflow();
+        MEQflow(double value,int unit);
 	~MEQflow();
 
 	enum Units
@@ -67,10 +68,6 @@ public:
         MEQflow& operator-=(const MEQflow& b);
         MEQflow operator*(const double& fact) const;
 
-
-        bool operator==(const MEQflow& b) const;
-        bool operator>(const MEQflow& b) const;
-        bool operator<(const MEQflow& b) const;
 };
 
 

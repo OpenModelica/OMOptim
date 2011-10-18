@@ -25,7 +25,7 @@ class ModPlusDymolaCtrl :public ModPlusCtrl
         };
 
 public:
-        ModPlusDymolaCtrl(ModModelPlus* _model,MOomc* _oms,QString _mmoFolder,QString _moFilePath,QString modModelName);
+        ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* oms,QString mmoFolder,QString moFilePath,QString modModelName);
         ~ModPlusDymolaCtrl(void);
 
         void setMmoFolder(QString);

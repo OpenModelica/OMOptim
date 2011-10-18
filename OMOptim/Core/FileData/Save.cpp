@@ -184,10 +184,6 @@ void Save::saveProblem(Problem* problem)
     }
 }
 
-
-
-
-
 void Save::saveResult(Result* result)
 {
     switch (result->problemType())

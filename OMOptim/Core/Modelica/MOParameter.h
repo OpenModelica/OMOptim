@@ -64,7 +64,8 @@ public:
 		MIN,
 		MAX,
 		DESCRIPTION,
-		INDEX // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
+                INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
+                GROUP
 	};
 
 	
@@ -81,14 +82,14 @@ public:
 
         MOParameter();
         MOParameter(const MOParameter &);
-        MOParameter(int index,QString name,QString desc,QVariant defaultValue, Type type, QVariant minValue=0, QVariant maxValue=1,int enablingIndex=-1,QVariant enablingValue = true);
+        MOParameter(int index,QString name,QString desc,QVariant defaultValue, Type type, QVariant minValue=0, QVariant maxValue=std::numeric_limits<int>::max(),int enablingIndex=-1,QVariant enablingValue = true,QString group="");
         //MOParameter(QString);
         MOParameter(QDomElement & domEl);
         virtual ~MOParameter(void);
 
         virtual QString getClassName(){return "MOParameter";};
 
-	static const int nbFields = 8;
+        static const int nbFields = 9;
 	virtual unsigned getNbFields(){return nbFields;};
 
 
@@ -99,11 +100,12 @@ public:
 
         virtual MOParameter* clone() const;
 
-        void setEnablingIndex(int,QVariant enablingValue=true);
-        int enablingIndex();
-        QVariant enablingValue();
+        void addEnablingIndex(int,QVariant enablingValue);
+        QMap<int,QVariant> enablingIndexes() const;
+
 
         QVariant value(){return getFieldValue(VALUE);};
+        QString description(){return _description;};
 
 protected :
 	QString _description;
@@ -113,8 +115,10 @@ protected :
 	QVariant _min;
 	QVariant _max;
         int _index;
-        int _enablingIndex; // index of parameter that decides if it is enabled or not
-        QVariant _enablingValue; // value of enabling parameter (the one indexed by _enablingIndex) that enable this one
+        QMap<int,QVariant> _enablingIndexes; /** map of enabling parameter (the one indexed by key) that enable this one.
+            QVariant corresponds to the value the enabling parameter should take to enable this parameter*/
+
+        QString _group;
 };
 
 /**
@@ -135,7 +139,8 @@ public:
                 MIN,
                 MAX,
                 DESCRIPTION,
-                INDEX // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
+                INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
+                GROUP
         };
 
 
@@ -150,7 +155,7 @@ public:
 
         virtual QString getClassName(){return "MOParameterListed";};
 
-        static const int nbFields = 8;
+        static const int nbFields = 9;
         virtual unsigned getNbFields(){return nbFields;};
 
 
@@ -168,14 +173,18 @@ private :
 
 class MOParameters : public MOVector<MOParameter>
 {
-
-
 public :
         QVariant value(int index,QVariant defaultValue = QVariant());
         QVariant value(QString name,QVariant defaultValue = QVariant());
         bool setValue(int index,QVariant value);
-
+        QMultiMap<QString,MOParameter*> map() const;
+        void regroup(QString group,QList<int> indexes);
+        void addEnablingIndex(QList<int> enabledIndexes,int enablingIndex, QVariant enablingValue);
+        bool shouldBeEnabled(int index);
+        MOParameters* clone() const;
 };
+
+
 
 
 

@@ -88,7 +88,7 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
     MyTreeView* myTreeView = dynamic_cast<MyTreeView*>(view);
     if(myTreeView && model)
     {
-        connect(model,SIGNAL(dataChanged(QModelIndex,QModelIndex)),myTreeView,SLOT(onDataChanged(QModelIndex,QModelIndex)));
+        connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),myTreeView,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
     }
 }
 
@@ -298,6 +298,7 @@ void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & i
         simAction->setCheckable(true);
         simAction->setChecked(selectedModModelPlus->ctrlType()==curType);
         simAction->setData((int)curType);
+        menu->addAction(simAction);
         connect(simAction,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlType()));
         simulator->addAction(simAction);
     }
@@ -474,4 +475,9 @@ void GuiTools::resizeTableViewColumns(QTableView* tableView)
             tableView->setColumnWidth(i,curColWidth*fact);
         }
     }
+}
+
+QString GuiTools::launchBarStyleSheet()
+{
+    return "QFrame{background:qlineargradient(spread:repeat, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(65, 72, 89, 255), stop:0.466019 rgba(94, 105, 129, 255), stop:0.961165 rgba(65, 72, 89, 255));}";
 }

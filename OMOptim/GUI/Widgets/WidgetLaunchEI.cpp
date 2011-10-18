@@ -42,6 +42,7 @@
 #include "ui_WidgetLaunchEI.h"
 #include <QtGui/QErrorMessage>
 #include "QtGui/QListWidget"
+#include "GuiTools.h"
 
 
         WidgetLaunchEI::WidgetLaunchEI(EIProblem* problem,QWidget *parent) :
@@ -49,6 +50,7 @@
         _ui(new Ui::WidgetLaunchEIClass)
 {
     _ui->setupUi(this);
+    _ui->frame->setStyleSheet(GuiTools::launchBarStyleSheet());
 
 
     _problem = problem;

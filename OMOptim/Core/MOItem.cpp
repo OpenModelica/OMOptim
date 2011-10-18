@@ -160,7 +160,7 @@ bool MOItem::setFieldValue(int iField, QVariant value)
 
 bool MOItem::setFieldValue(QString field, QVariant value)
 {
-	int i = getFieldIndex(field);
+        int i = getFieldIndex(field,Qt::UserRole);
 	if(i>-1)
 	{
 		setFieldValue(i,value);

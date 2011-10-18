@@ -52,7 +52,7 @@ bool CbcCtrl::run(QString &msg)
     _process.start("sh",arguments);
     _process.waitForFinished(-1);
 
-    return success();
+    return success(msg);
 }
 
 void CbcCtrl::stop()
@@ -60,7 +60,7 @@ void CbcCtrl::stop()
     _process.kill();
 }
 
-bool CbcCtrl::success()
+bool CbcCtrl::success(QString &msg)
 {
     QFile file(_folder.absoluteFilePath(_solFileName));
     bool openOk = file.open(QIODevice::ReadOnly);
@@ -68,10 +68,11 @@ bool CbcCtrl::success()
         return false;
 
     QTextStream* in = new QTextStream(&file);
-    QString txt = in->read(10);
+    QString txt = in->readLine();
 
     // read if successfull
     bool isOptimal = (txt.indexOf("Optimal")==0);
-
+    if(!isOptimal)
+       msg = txt;
     return isOptimal;
 }

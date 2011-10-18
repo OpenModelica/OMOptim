@@ -42,21 +42,24 @@
 
 #include "ModClass.h"
 
+
+
+/**
+  * ModModel refers to a Modelica Model.
+  * @sa ModClass
+  */
 class ModModel : public ModClass
 {
 public:
 	ModModel(MOomc*);
-	ModModel(MOomc*,ModClass* _parent,QString _name,QString filePath="");
+        ModModel(MOomc*,ModClass* parent,QString name,QString filePath="");
 	~ModModel(void);
         virtual ModClass* clone() const;
-	virtual QString getClassName(){return "ModModel";};
 
+        virtual QString getClassName(){return "ModModel";}
+        virtual Modelica::ClassRestr getClassRestr(){return Modelica::MODEL;}
 
-	virtual Modelica::ClassRestr getClassRestr(){return Modelica::MODEL;};
 	
-	
-protected :
-
 };
 
 #endif

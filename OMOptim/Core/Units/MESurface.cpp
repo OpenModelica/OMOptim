@@ -40,6 +40,12 @@
   */
 #include "MESurface.h"
 
+MESurface::MESurface():
+MEDimValue()
+{
+}
+
+
 MESurface::MESurface(double value,int unit):
 MEDimValue(value,unit)
 {
@@ -103,27 +109,6 @@ double MESurface::convert(double value,int orgUnit,int dstUnit) const
 }
 
 
-bool MESurface::operator==(const MESurface& b) const
-{
-    return (value(_unit)==b.value(_unit));
-}
-
-/**
-  * maxRelDistance corresponds to relative distance between this and b.
-  * distance is calculated as follows :
-  * dist = abs((a-b)/min(a,b))
-  */
-bool MESurface::equals(const MESurface& b,double maxRelDistance) const
-{
-    double dist = fabs((b.value(_unit)-value(_unit))/std::min(b.value(_unit),value(_unit)));
-    return (dist<=maxRelDistance);
-}
-
-bool MESurface::operator!=(const MESurface& b) const
-{
-    return !(*this==b);
-}
-
 MESurface& MESurface::operator+=(const MESurface& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
@@ -146,21 +131,3 @@ MESurface MESurface::operator+(const MESurface& b) const
     return MESurface(value(_unit) + b.value(_unit),_unit);
 }
 
-
-bool MESurface::operator<(const MESurface& b) const
-{
-    return value(_unit)<b.value(_unit);
-}
-bool MESurface::operator>(const MESurface& b) const
-{
-    return value(_unit)>b.value(_unit);
-}
-
-bool MESurface::operator<=(const MESurface& b) const
-{
-    return value(_unit)<=b.value(_unit);
-}
-bool MESurface::operator>=(const MESurface& b) const
-{
-    return value(_unit)>=b.value(_unit);
-}

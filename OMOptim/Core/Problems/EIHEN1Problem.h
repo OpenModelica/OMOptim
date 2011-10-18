@@ -87,6 +87,9 @@ public:
     bool canBeStoped();
     void stop();
 
+
+
+
 private :
     MilpHEN1 *_milpHEN1;
 

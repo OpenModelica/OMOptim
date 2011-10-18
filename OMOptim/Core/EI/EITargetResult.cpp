@@ -40,10 +40,11 @@
   */
 #include "EITargetResult.h"
 
-EITargetResult::EITargetResult(void)
+EITargetResult::EITargetResult(Project* project)
 :Result()
 {
-        _eiTree = new EITree();
+    _project = project;
+    _eiTree = new EITree(project);
         _eiConns = new EIConns();
 
         _name = "EITargetResult";
@@ -52,7 +53,7 @@ EITargetResult::EITargetResult(Project* project, ModClassTree* modClassTree,Prob
 :Result(project,modClassTree,problem)
 {
 
-        _eiTree = new EITree();
+        _eiTree = new EITree(project);
         _eiConns = new EIConns();
 
 }
@@ -61,7 +62,7 @@ EITargetResult::EITargetResult(Project* project, ModClassTree* modClassTree,QDom
     :Result(project,modClassTree,problem)
 {
 
-    _eiTree = new EITree();
+    _eiTree = new EITree(project);
     _eiConns = new EIConns();
 
 
@@ -89,7 +90,7 @@ EITargetResult::EITargetResult(Project* project, ModClassTree* modClassTree,QDom
 
         // EIConns
         QDomElement domEIConns = domResult.firstChildElement("EIConns");
-        _eiConns->setItems(domEIConns,_eiTree);
+        _eiConns->setItems(domEIConns,*_eiTree);
 
         QDomElement cFiles = domResult.firstChildElement("Files");
         _logFileName = cFiles.attribute("LogFile");

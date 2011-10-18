@@ -27,7 +27,7 @@ class EIHEN_Node
 {
 
 public :
-    EIHEN_Node(QString stream):_stream(stream){};
+    EIHEN_Node(QString stream,QString dispStream=""):_stream(stream),_dispStream(dispStream){};
     virtual ~EIHEN_Node(){};
 
     virtual bool isValid(QString & msg)const=0;
@@ -47,13 +47,14 @@ public :
     METemperature _inletT;
     METemperature _outletT;
     QString _stream;
+    QString _dispStream;
 };
 
 
 class EIHEN_RootNode : public EIHEN_Node
 {
 public :
-    EIHEN_RootNode(QString stream):EIHEN_Node(stream){};
+    EIHEN_RootNode(QString stream,QString dispStream = ""):EIHEN_Node(stream,dispStream){};
     ~ EIHEN_RootNode(){};
 
     virtual EIHEN_Node* clone() const;
@@ -73,7 +74,8 @@ class EIHEN_EndNode : public EIHEN_Node
 {
 public :
 
-    EIHEN_EndNode(QString stream):EIHEN_Node(stream){};
+    EIHEN_EndNode(QString stream,QString dispStream = ""):EIHEN_Node(stream,dispStream){};
+
     ~ EIHEN_EndNode(){};
 
     EIHEN_Node* clone() const;
@@ -88,7 +90,7 @@ public :
 class EIHEN_HENode: public EIHEN_Node
 {
 public :
-    EIHEN_HENode(QString stream):EIHEN_Node(stream){};
+    EIHEN_HENode(QString stream,QString dispStream = ""):EIHEN_Node(stream,dispStream){};
     ~ EIHEN_HENode(){};
 
     EIHEN_Node* clone() const;
@@ -107,7 +109,7 @@ protected:
 class EIHEN_Splitter : public EIHEN_Node
 {
 public :
-    EIHEN_Splitter(QString stream):EIHEN_Node(stream){};
+    EIHEN_Splitter(QString stream,QString dispStream = ""):EIHEN_Node(stream,dispStream){};
     ~ EIHEN_Splitter(){};
 
     EIHEN_Node* clone() const;
@@ -121,7 +123,7 @@ public :
 class EIHEN_Mixer : public EIHEN_Node
 {
 public:
-    EIHEN_Mixer(QString stream):EIHEN_Node(stream){};
+    EIHEN_Mixer(QString stream,QString dispStream = ""):EIHEN_Node(stream,dispStream){};
     ~ EIHEN_Mixer(){};
 
     EIHEN_NodeType nodeType(){return NodeMixer;}

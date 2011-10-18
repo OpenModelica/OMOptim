@@ -44,7 +44,7 @@
 #include <QtGui/QWidget>
 #include<QtGui/QFileDialog>
 
-#include "MyTreeView.h"
+#include "EITreeView.h"
 #include "MyDelegates.h"
 #include "EITree.h"
 #include "MOTableView.h"
@@ -53,7 +53,7 @@
 #include "WidgetSelectModModel.h"
 #include "ModReader.h"
 #include "ModClass.h"
-#include "EIModelExtractor.h"
+#include "EIModelicaExtractor.h"
 #include "EIControler.h"
 
 namespace Ui {
@@ -69,49 +69,41 @@ class WidgetTreeStreams : public QWidget {
 
 
 public:
-        explicit WidgetTreeStreams(EITree* _eiTree,bool _showFields,bool _editable,
-                                   ModClassTree* _modClassTree,MOomc* _moomc,QWidget *parent,MOOptVector *_variables=NULL);
+    explicit WidgetTreeStreams(EITree* eiTree,bool showFields,bool editable,
+                               ModClassTree* modClassTree,MOomc* moomc,QWidget *parent,MOOptVector *variables=NULL);
     virtual ~WidgetTreeStreams();
 
 	void setInputVars(MOOptVector*);
         EIItem* getContainer(QModelIndex index);
 
-	void onSelectGroupChanged(EIGroup*);
-
 	public slots:
 		void addEmptyStream();
 		void addEmptyGroup();
-		void updateCompleters();
 		void removeItem();
 		void refreshTree();
 		void onSelectItemChanged(QModelIndex);
-                void resizeColumns();
+    void onSelectGroupChanged(EIGroup*);
 		
+    //      void resizeColumns();
+
          signals:
                 void EILoadModelAsked();
 		
 public:
-    Ui::WidgetTreeStreamsClass *ui;
-	EITree* eiTree;
+    Ui::WidgetTreeStreamsClass *_ui;
+    EITree* _eiTree;
 	//QSortFilterProxyModel *streamsProxyModel;
 
-        MOomc* moomc;
-        ModClassTree* modClassTree;
-        MyTreeView* treeView;
-	MOOptVector *variables;
-	VarCompleterDelegate *compltDlg1;
-	VarCompleterDelegate *compltDlg2;
-	VarCompleterDelegate *compltDlg3;
+    MOomc* _moomc;
+    ModClassTree* _modClassTree;
+    EITreeView* _treeView;
+    MOOptVector *_variables;
+    WidgetEIGroup* _widgetEIGroup;
 
-	WidgetEIGroup* widgetEIGroup;
-
-	GenericDelegate *tinUDlg;
-	GenericDelegate *toutUDlg;
-	GenericDelegate *qUDlg;
 
 private :
-	bool showFields;
-	bool editable;
+    bool _showFields;
+    bool _editable;
 };
 
 #endif 

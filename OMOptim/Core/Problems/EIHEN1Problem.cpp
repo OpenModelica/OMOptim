@@ -195,7 +195,7 @@ Result* EIHEN1Problem::launch(ProblemConfig config)
         setEITree(*filledEI);
 
         // create, connect and launch problem
-        _milpHEN1 = new MilpHEN1(*filledEI,*_parameters,*_connConstrs,*inputVars(),config.tempDir,splitPinch,TPinch);
+        _milpHEN1 = new MilpHEN1(*filledEI,*_parameters,*_connConstrs,*inputVars(),_project->tempPath(),TPinch);
 
         result = _milpHEN1->launch();
         if(result)

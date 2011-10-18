@@ -47,7 +47,8 @@
 class MEMassFlow : public MEDimValue
 {
 public:
-        MEMassFlow(double value=0,int unit=0);
+        MEMassFlow();
+        MEMassFlow(double value,int unit);
         MEMassFlow(const MEMassFlow&);
         ~MEMassFlow();
 
@@ -66,14 +67,9 @@ public:
         MEMassFlow& operator-=(const MEMassFlow&);
         MEMassFlow operator-(const MEMassFlow&) const;
         MEMassFlow operator+(const MEMassFlow&) const;
-        bool operator==(const MEMassFlow& b) const;
-        bool operator!=(const MEMassFlow& b) const;
-        bool operator<(const MEMassFlow& b) const;
-        bool operator<=(const MEMassFlow& b) const;
-        bool operator>(const MEMassFlow& b) const;
-        bool operator>=(const MEMassFlow& b) const;
+        MEMassFlow operator*(const double &) const;
 
-        bool equals(const MEMassFlow& b,double maxRelDistance) const;
+
 };
 
 

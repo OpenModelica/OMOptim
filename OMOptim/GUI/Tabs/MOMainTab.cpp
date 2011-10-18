@@ -150,6 +150,26 @@ void MOMainTab::removeTab(int index)
     }
 }
 
+void MOMainTab::enableCaseTab(OMCase* omCase)
+{
+
+    int i=0;
+    MOTabBase* tab;
+
+    bool found = false;
+    while(i<count() && !found)
+    {
+        tab = dynamic_cast<MOTabBase*>(widget(i));
+        if(tab && (tab->getItem()==omCase))
+            found =true;
+        else
+            i++;
+    }
+    if (found)
+        setCurrentIndex(i);
+}
+
+
 void MOMainTab::addProblemTab(Project *project, Problem * problem)
 {
         connect(problem,SIGNAL(renamed(QString)),this,SLOT(onProblemRenamed(QString)));

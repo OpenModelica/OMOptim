@@ -70,7 +70,9 @@ public:
 		NONE,
 		AVERAGE,
 		SUM,
-		DEVIATION
+                DEVIATION,
+                MINIMUM,
+                MAXIMUM
 	};
 
 	OptObjective();

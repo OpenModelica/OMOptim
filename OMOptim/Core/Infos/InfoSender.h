@@ -60,6 +60,9 @@ public:
 public slots :
 	void send(Info);
 	void debug(QString);
+        void sendWarning(QString msg){send(Info(msg,ListInfo::WARNING2));}
+        void sendError(QString msg){send(Info(msg,ListInfo::ERROR2));}
+        void sendNormal(QString msg){send(Info(msg,ListInfo::NORMAL2));}
 
 private :
 	QTextStream* logStream;

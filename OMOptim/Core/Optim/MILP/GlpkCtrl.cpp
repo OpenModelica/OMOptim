@@ -11,12 +11,23 @@ GlpkCtrl::GlpkCtrl(glp_prob* glpProblem,glp_tran* glpTran)
 void GlpkCallBack::foo_bar(glp_tree *tree, void *info)
 {
     if(stop())
+    {
         glp_ios_terminate(tree);
+}
+}
+/**
+     * This hook function will be called if an error occurs when
+     * calling the GLPK library.
+     */
+void GlpkCtrl::errorHook(void *in)
+{
+    qDebug(QString("error hook").toLatin1().data());
 }
 
 void GlpkCtrl::stop()
 {
      GlpkCallBack::setStop(true);
+    glp_error_(NULL,NULL);
 }
 
 
@@ -28,6 +39,8 @@ bool GlpkCtrl::run(QString &msg)
     glp_iocp parm;
     glp_init_iocp(&parm);
     parm.cb_func = GlpkCallBack::foo_bar;
+
+    glp_error_hook(errorHook, NULL);
 
     bool ok;
     int ret = glp_simplex(_glpProblem, NULL);

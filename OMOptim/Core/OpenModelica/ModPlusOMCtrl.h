@@ -47,15 +47,15 @@
 class ModPlusOMCtrl :public ModPlusCtrl
 {
 public:
-        ModPlusOMCtrl(ModModelPlus* _model,MOomc* _oms,QString _mmoFolder,QString _moFilePath,QString modModelName);
+        ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* oms,QString mmoFolder,QString moFilePath,QString modModelName);
         ~ModPlusOMCtrl(void);
 
         ModPlusCtrl::Type type();
         QString name();
 
         // Variables functions
-        bool readOutputVariables(MOVector<Variable> *,QString _resFile="");
-        bool readInitialVariables(MOVector<Variable> *,QString _initFile="");
+        bool readOutputVariables(MOVector<Variable> *,QString resFile="");
+        bool readInitialVariables(MOVector<Variable> *,QString initFile="");
 
         // Parameters
         void setDefaultParameters();
@@ -64,11 +64,13 @@ public:
         bool isCompiled();
         bool compile();
         bool createInitFile();
+
         // Simulate function
         bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy = QStringList());
         void setMmoFolder(QString _mmoFolder);
 private :
-        QString _initFile;
+        QString _initFileXml;
+        QString _initFileTxt;
         QString _resFile;
         QString _exeFile;
 

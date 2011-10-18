@@ -40,6 +40,11 @@
   */
 #include "MEMassFlow.h"
 
+MEMassFlow::MEMassFlow():
+MEDimValue()
+{
+}
+
 MEMassFlow::MEMassFlow(double value,int unit):
 MEDimValue(value,unit)
 {
@@ -103,27 +108,6 @@ double MEMassFlow::convert(double value,int orgUnit,int dstUnit) const
 }
 
 
-bool MEMassFlow::operator==(const MEMassFlow& b) const
-{
-    return (value(_unit)==b.value(_unit));
-}
-
-/**
-  * maxRelDistance corresponds to relative distance between this and b.
-  * distance is calculated as follows :
-  * dist = abs((a-b)/min(a,b))
-  */
-bool MEMassFlow::equals(const MEMassFlow& b,double maxRelDistance) const
-{
-    double dist = fabs((b.value(_unit)-value(_unit))/std::min(b.value(_unit),value(_unit)));
-    return (dist<=maxRelDistance);
-}
-
-bool MEMassFlow::operator!=(const MEMassFlow& b) const
-{
-    return !(*this==b);
-}
-
 MEMassFlow& MEMassFlow::operator+=(const MEMassFlow& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
@@ -146,21 +130,7 @@ MEMassFlow MEMassFlow::operator+(const MEMassFlow& b) const
     return MEMassFlow(value(_unit) + b.value(_unit),_unit);
 }
 
-
-bool MEMassFlow::operator<(const MEMassFlow& b) const
+MEMassFlow MEMassFlow::operator*(const double& mult) const
 {
-    return value(_unit)<b.value(_unit);
-}
-bool MEMassFlow::operator>(const MEMassFlow& b) const
-{
-    return value(_unit)>b.value(_unit);
-}
-
-bool MEMassFlow::operator<=(const MEMassFlow& b) const
-{
-    return value(_unit)<=b.value(_unit);
-}
-bool MEMassFlow::operator>=(const MEMassFlow& b) const
-{
-    return value(_unit)>=b.value(_unit);
+    return MEMassFlow(value(_unit) *mult,_unit);
 }

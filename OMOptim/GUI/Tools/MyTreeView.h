@@ -49,32 +49,15 @@ class MyTreeView :  public QTreeView
     Q_OBJECT
 
 public:
-    MyTreeView(QWidget* parent)
-        :QTreeView(parent)
-    {
+    MyTreeView(QWidget* parent);
 
-    };
-
-    ~MyTreeView(void)
-    {
-
-    };
-
-    int getColHintSize(int iCol)
-    {
-        return this->sizeHintForColumn(iCol);
-    };
+    ~MyTreeView(void);
+    int getColHintSize(int iCol);
 
 public slots :
-    void onDataChanged(QModelIndex indexA,QModelIndex indexB)
-    {
+    virtual void onDataChanged(const QModelIndex & indexA,const QModelIndex & indexB);
 
-        int col1 = std::min(indexA.column(),indexB.column());
-        int col2 = std::max(indexA.column(),indexB.column());
-
-        for(int i=col1;i<=col2;i++)
-            resizeColumnToContents(i);
-    }
+    void resizeColumns();
 
 
 };

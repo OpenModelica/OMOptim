@@ -42,7 +42,7 @@
 #include <QDesktopServices>
 MyTextLog::MyTextLog(void):QTextBrowser()
 {
-    connect(this,SIGNAL(anchorClicked(QUrl)),this,SLOT(openURL(QUrl)));
+    connect(this,SIGNAL(anchorClicked(QUrl)),this,SLOT(setSource(QUrl)));
 }
 
 MyTextLog::~MyTextLog(void)

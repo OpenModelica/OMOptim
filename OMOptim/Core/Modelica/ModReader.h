@@ -44,12 +44,16 @@
 #include "ModClass.h"
 #include "ModPackage.h"
 #include "ModModel.h"
-
+#include "ModRecord.h"
 #include "ModComponent.h"
 #include "MOSettings.h"
 
 class ModModelPlus;
 
+/**
+  * \brief ModReader offers reading and creating functions of modelica models.
+  * \todo Better split functions between ModClassTree and ModReader
+  */
 class ModReader : public QObject
 {
 	Q_OBJECT
@@ -62,10 +66,6 @@ public:
         void loadMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus,bool forceLoad = true);
         void loadMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad = true);
 	void refresh(ModClass* rootClass,QMap<ModModel*,ModModelPlus*> & mapModelPlus);
-
-
-
-
 
 	//edit functions
         ModClass* newModClass(QString className,QString filePath="");

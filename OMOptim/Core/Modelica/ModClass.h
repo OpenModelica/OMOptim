@@ -128,6 +128,7 @@ public:
 	int compChildCount();
 	int modelChildCount();
 	int packageChildCount();
+        int recordChildCount();
         int childCount() const;
 	QStringList getChildrenNames();
 	bool childrenReaden();
@@ -138,6 +139,7 @@ public:
         ModClass* compChild(int row) const;
         ModClass* modelChild(int row) const;
         ModClass* packageChild(int row) const;
+        ModClass* recordChild(int row) const;
 
 	
 

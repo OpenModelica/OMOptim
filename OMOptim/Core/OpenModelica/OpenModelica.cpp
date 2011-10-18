@@ -128,7 +128,8 @@ void OpenModelica::getInputVariablesFromTxtFile(MOomc *_omc,QTextStream * text, 
 
     // Get variables' names
     line = text->readLine();
-    QRegExp rx("(\\S)+\\s*//(\\S+)\\s*$");
+    QRegExp rx("^(\\S+)\\s*//(\\S+)\\s*$");
+    QRegExp rxDefault("^(\\S+)\\s*//[\\w||\\s]+//(\\S+)\\s*$");
     QStringList fields;
     while (!line.isEmpty()){
         if(rx.indexIn(line)>-1)
@@ -141,6 +142,17 @@ void OpenModelica::getInputVariablesFromTxtFile(MOomc *_omc,QTextStream * text, 
             //get datatype
             newVariable->setDataType(_omc->getPrimitiveDataType(newVariable->name()));
         }
+        else if(rxDefault.indexIn(line)>-1)
+        {
+            fields = rxDefault.capturedTexts();
+            newVariable = new Variable();
+            newVariable->setName(_modelName+"."+rxDefault.cap(2));
+            newVariable->setValue(rxDefault.cap(1).toDouble());
+            variables->addItem(newVariable);
+            //get datatype
+            newVariable->setDataType(_omc->getPrimitiveDataType(newVariable->name()));
+        }
+
         line=text->readLine();
     }
 }
@@ -528,8 +540,7 @@ void OpenModelica::start(QString exeFile,int maxnsec)
         infoSender.debug(msg);
         return;
     }
-
-
+    return;
 }
 
 QString OpenModelica::sciNumRx()

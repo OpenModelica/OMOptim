@@ -56,12 +56,174 @@ MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
 
 
 
-    _parameters = parameters;
+    _orgParameters = parameters;
+    _localParameters = _orgParameters->clone();
+
     _editable = editable;
+
+
     QGridLayout *newLayout = buildLayoutFromParameters();
     this->setLayout(newLayout);
 
 }
+
+//QGridLayout* MOParametersDlg::buildLayoutFromParameters()
+//{
+//    //Adding Layout
+//    QGridLayout *mainLayout = new QGridLayout(this);
+
+//    // get groups
+//    QMultiMap<QString,MOParameter*> map = _localParameters->map();
+//    QStringList groups = map.uniqueKeys();
+
+
+//    QStringList paramNames;
+//    for(int i=0;i<_localParameters->size();i++)
+//        paramNames.push_back(_localParameters->at(i)->name());
+
+
+//    MOParameter* parameter;
+//    MOParameterListed *paramList;
+//    // create group box
+//    for(int iG=0;iG<groups.size();iG++)
+//    {
+//        int iRow=0;
+//        QGroupBox *box = new QGroupBox(groups.at(iG),this);
+//        QGridLayout *boxLayout = new QGridLayout(box);
+//        QPushButton* newPush;
+
+//        for(int iP=0;iP<map.values(groups.at(iG)).size();iP++)
+//        {
+//            parameter = map.values(groups.at(iG)).at(iP);
+//            // add setting
+//            QString dispName;
+//            if(parameter->name().contains("/"))
+//                dispName = parameter->name().section("/",1,-1);
+//            else
+//                dispName = parameter->name();
+
+
+//            boxLayout->addWidget(new QLabel(dispName),iRow,0);
+//            boxLayout->addWidget(new QLabel(parameter->description()),iRow,3);
+
+//            int type = parameter->getFieldValue(MOParameter::TYPE).toInt();
+//            QWidget *valueWidget;
+//            QVariant value = parameter->getFieldValue(MOParameter::VALUE);
+
+//            switch(type)
+//            {
+//            case MOParameter::STRING :
+//                valueWidget = new QLineEdit(this);
+//                ((QLineEdit*)valueWidget)->setText(value.toString());
+//                break;
+//            case MOParameter::FILEPATH :
+//                valueWidget = new QLineEdit(this);
+//                ((QLineEdit*)valueWidget)->setText(value.toString());
+//                // add button
+//                newPush = new QPushButton("...",this);
+//                newPush->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
+//                _pathsMap.insert(newPush,((QLineEdit*)valueWidget));
+//                boxLayout->addWidget(newPush,iRow,2);
+//                connect(newPush,SIGNAL(clicked()),this,SLOT(onSelectFileClicked()));
+
+//                break;
+//            case MOParameter::FOLDERPATH :
+//                valueWidget = new QLineEdit(this);
+//                ((QLineEdit*)valueWidget)->setText(value.toString());
+//                //add button
+//                newPush = new QPushButton("...",this);
+//                newPush->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
+//                _pathsMap.insert(newPush,((QLineEdit*)valueWidget));
+//                boxLayout->addWidget(newPush,iRow,2);
+//                connect(newPush,SIGNAL(clicked()),this,SLOT(onSelectFolderClicked()));
+//                break;
+//            case MOParameter::DOUBLE :
+//                valueWidget = new QDoubleSpinBox(this);
+//                ((QDoubleSpinBox*)valueWidget)->setValue(value.toDouble());
+//                break;
+//            case MOParameter::INT :
+//                valueWidget = new QSpinBox(this);
+//                ((QSpinBox*)valueWidget)->setMinimum(-1);
+//                ((QSpinBox*)valueWidget)->setValue(value.toInt());
+//                break;
+//            case MOParameter::BOOL :
+//                valueWidget = new QCheckBox(this);
+//                Qt::CheckState state;
+//                if(value.toBool())
+//                    state = Qt::Checked;
+//                else
+//                    state = Qt::Unchecked;
+//                ((QCheckBox*)valueWidget)->setCheckState(state);
+//                break;
+//            case MOParameter::LIST :
+//                //if is a list, param should be a MOParameterListed
+//                valueWidget = new QComboBox(this);
+//                paramList = dynamic_cast<MOParameterListed*>(parameter);
+//                if(paramList)
+//                {
+//                    //adding list items in qcombobox
+//                    for(int iValue = 0 ; iValue<paramList->mapList().keys().size();iValue++)
+//                    {
+//                        ((QComboBox*)valueWidget)->addItem(
+//                                    paramList->mapList().values().at(iValue),
+//                                    paramList->mapList().keys().at(iValue));
+//                    }
+//                    // set current index
+//                    ((QComboBox*)valueWidget)->setCurrentIndex(((QComboBox*)valueWidget)->findData(value));
+//                    connect(((QComboBox*)valueWidget),SIGNAL(currentIndexChanged(int)),this,SLOT(onValueChanged()));
+//                }
+//                break;
+//            default :
+//                valueWidget = new QLineEdit(this);
+//                ((QLineEdit*)valueWidget)->setText(value.toString());
+//                break;
+
+//            }
+
+//            boxLayout->addWidget(valueWidget,iRow,1);
+//            valueWidget->setEnabled(_editable);
+
+
+//            // store (to save data when click ok)
+//            _mapValueWidgets.insert(parameter->getFieldValue(MOParameter::INDEX).toInt(),valueWidget);
+//            _paramNames.push_back(parameter->name());
+//            _paramTypes.push_back(type);
+
+
+//            iRow++;
+//        }
+//        box->setLayout(boxLayout);
+
+//        mainLayout->addWidget(box);
+//    }
+
+
+
+
+//    QHBoxLayout *buttonsLayout = new QHBoxLayout(this);
+//    QPushButton *pushDefault = new QPushButton("Restore default",this);
+//    QPushButton *pushCancel = new QPushButton("Cancel",this);
+//    QPushButton *pushOk = new QPushButton("Ok",this);
+
+//    buttonsLayout->addItem(new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Minimum));
+//    buttonsLayout->addWidget(pushDefault);
+//    buttonsLayout->addWidget(pushCancel);
+//    buttonsLayout->addWidget(pushOk);
+
+//    connect(pushCancel,SIGNAL(clicked()),this,SLOT(pushedCancel()));
+//    connect(pushOk,SIGNAL(clicked()),this,SLOT(pushedOk()));
+//    connect(pushDefault,SIGNAL(clicked()),this,SLOT(pushedDefault()));
+
+//    pushOk->setDefault(true);
+
+//    QWidget *buttonsWidget = new QWidget(this);
+//    buttonsWidget->setLayout(buttonsLayout);
+
+//    mainLayout->addWidget(buttonsWidget);
+
+//    return mainLayout;
+//}
+
 
 
 QGridLayout* MOParametersDlg::buildLayoutFromParameters()
@@ -70,38 +232,28 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
     QGridLayout *mainLayout = new QGridLayout(this);
 
     // get groups
-    QStringList uniqueGroups;
-    QStringList groups;
+    QMultiMap<QString,MOParameter*> map = _localParameters->map();
+    QStringList groups = map.uniqueKeys();
+
 
     QStringList paramNames;
-    for(int i=0;i<_parameters->size();i++)
-        paramNames.push_back(_parameters->at(i)->name());
+    for(int i=0;i<_localParameters->size();i++)
+        paramNames.push_back(_localParameters->at(i)->name());
 
-    for(int i=0;i<paramNames.size();i++)
-    {
-        if(paramNames.at(i).contains("/"))
-            groups.push_back(paramNames.at(i).section("/",0,0));
-        else
-            groups.push_back(QString());
-    }
-    uniqueGroups=groups;
-    LowTools::removeDuplicates(uniqueGroups);
-
+    QPushButton *newPush;
     MOParameter* parameter;
     MOParameterListed *paramList;
 
     // create group box
-    for(int iG=0;iG<uniqueGroups.size();iG++)
+    for(int iG=0;iG<groups.size();iG++)
     {
         int iRow=0;
-        QGroupBox *box = new QGroupBox(uniqueGroups.at(iG),this);
+        QGroupBox *box = new QGroupBox(groups.at(iG),this);
         QGridLayout *boxLayout = new QGridLayout(box);
 
-        int index0=0;
-        int index1 = groups.indexOf(uniqueGroups.at(iG),index0);
-        while(index1>-1)
+        for(int iP=0;iP<map.values(groups.at(iG)).size();iP++)
         {
-            parameter = _parameters->at(index1);
+            parameter = map.values(groups.at(iG)).at(iP);
             // add setting
             QString dispName;
             if(parameter->name().contains("/"))
@@ -109,7 +261,8 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
             else
                 dispName = parameter->name();
 
-            boxLayout->addWidget(new QLabel(dispName),iRow,0);
+            boxLayout->addWidget(new QLabel(parameter->description()),iRow,0);
+            //boxLayout->addWidget(new QLabel(dispName),iRow,0);
 
             int type = parameter->getFieldValue(MOParameter::TYPE).toInt();
             QWidget *valueWidget;
@@ -120,16 +273,29 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
             case MOParameter::STRING :
                 valueWidget = new QLineEdit(this);
                 ((QLineEdit*)valueWidget)->setText(value.toString());
+                connect(((QLineEdit*)valueWidget),SIGNAL(textChanged(QString)),this,SLOT(onValueChanged()));
                 break;
             case MOParameter::FILEPATH :
                 valueWidget = new QLineEdit(this);
                 ((QLineEdit*)valueWidget)->setText(value.toString());
+                connect(((QLineEdit*)valueWidget),SIGNAL(textChanged(QString)),this,SLOT(onValueChanged()));
                 // add button
+                newPush = new QPushButton("...",this);
+                newPush->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
+                _pathsMap.insert(newPush,((QLineEdit*)valueWidget));
+                boxLayout->addWidget(newPush,iRow,2);
+                connect(newPush,SIGNAL(clicked()),this,SLOT(onSelectFileClicked()));
                 break;
             case MOParameter::FOLDERPATH :
                 valueWidget = new QLineEdit(this);
                 ((QLineEdit*)valueWidget)->setText(value.toString());
+                connect(((QLineEdit*)valueWidget),SIGNAL(textChanged(QString)),this,SLOT(onValueChanged()));
                 //add button
+                newPush = new QPushButton("...",this);
+                newPush->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
+                _pathsMap.insert(newPush,((QLineEdit*)valueWidget));
+                boxLayout->addWidget(newPush,iRow,2);
+                connect(newPush,SIGNAL(clicked()),this,SLOT(onSelectFolderClicked()));
                 break;
 
             case MOParameter::DOUBLE :
@@ -138,12 +304,14 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
                 ((QDoubleSpinBox*)valueWidget)->setMaximum(parameter->getFieldValue(MOParameter::MAX).toDouble());
                 ((QDoubleSpinBox*)valueWidget)->setDecimals(10);
                 ((QDoubleSpinBox*)valueWidget)->setValue(value.toDouble());
+                connect(((QDoubleSpinBox*)valueWidget),SIGNAL(valueChanged(double)),this,SLOT(onValueChanged()));
                 break;
             case MOParameter::INT :
                 valueWidget = new QSpinBox(this);
                 ((QSpinBox*)valueWidget)->setMinimum(parameter->getFieldValue(MOParameter::MIN).toInt());
                 ((QSpinBox*)valueWidget)->setMaximum(parameter->getFieldValue(MOParameter::MAX).toInt());
                 ((QSpinBox*)valueWidget)->setValue(value.toInt());
+                connect(((QSpinBox*)valueWidget),SIGNAL(valueChanged(int)),this,SLOT(onValueChanged()));
                 break;
             case MOParameter::BOOL :
                 valueWidget = new QCheckBox(this);
@@ -152,7 +320,7 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
                     state = Qt::Checked;
                 else
                     state = Qt::Unchecked;
-                connect(((QCheckBox*)valueWidget),SIGNAL(stateChanged(int)),this,SLOT(onCheckedChanged()));
+                connect(((QCheckBox*)valueWidget),SIGNAL(stateChanged(int)),this,SLOT(onValueChanged()));
                 ((QCheckBox*)valueWidget)->setCheckState(state);
                 break;
             case MOParameter::LIST :
@@ -170,12 +338,13 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
                     }
                     // set current index
                     ((QComboBox*)valueWidget)->setCurrentIndex(((QComboBox*)valueWidget)->findData(value));
-                    connect(((QComboBox*)valueWidget),SIGNAL(currentIndexChanged(int)),this,SLOT(onCheckedChanged()));
+                    connect(((QComboBox*)valueWidget),SIGNAL(currentIndexChanged(int)),this,SLOT(onValueChanged()));
                 }
                 break;
             default :
                 valueWidget = new QLineEdit(this);
                 ((QLineEdit*)valueWidget)->setText(value.toString());
+                 connect(((QLineEdit*)valueWidget),SIGNAL(textChanged(QString)),this,SLOT(onValueChanged()));
                 break;
 
             }
@@ -189,8 +358,6 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
             _paramTypes.push_back(type);
 
             iRow++;
-            index0=index1;
-            index1 = groups.indexOf(uniqueGroups.at(iG),index0+1);
         }
         box->setLayout(boxLayout);
 
@@ -227,107 +394,99 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
     mainLayout->addWidget(buttonsWidget);
 
     if(_editable)
-        updateAllEnabled(); //update
+        updateEnabled(); //update
 
     return mainLayout;
 }
 
-void MOParametersDlg::onCheckedChanged()
+void MOParametersDlg::onValueChanged()
 {
 
     QWidget* widgetChanged = dynamic_cast<QWidget*>(sender());
 
-    if(widgetChanged)
-        updateEnabled(widgetChanged);
-}
-
-void MOParametersDlg::updateAllEnabled()
-{
-
-    QList<QWidget*> listWidget = _mapValueWidgets.values();
-
-    for(int i=0;i<listWidget.size();i++)
-        updateEnabled(listWidget.at(i));
-}
-
-
-void MOParametersDlg::updateEnabled(QWidget* widgetChanged)
-{
-
-    QVariant value;
+    // update value
     int index = _mapValueWidgets.key(widgetChanged,-1);
+    if(index>-1)
+        _localParameters->setValue(index,getValue(widgetChanged));
 
-    if(index==-1)
-        return;
+    // update enabled widgets
+    if(widgetChanged)
+        updateEnabled();
+}
 
-    QCheckBox* checkWidget = dynamic_cast<QCheckBox*>(widgetChanged);
-    if(checkWidget)
-        value = checkWidget->isChecked();
 
-    QComboBox* comboWidget = dynamic_cast<QComboBox*>(widgetChanged);
-    if(comboWidget)
-        value = comboWidget->itemData(comboWidget->currentIndex());
 
+void MOParametersDlg::updateEnabled()
+{
     MOParameter* curParam;
     QWidget* curWidget;
-    for(int i=0;i<_parameters->size();i++)
+    for(int i=0;i<_localParameters->size();i++)
     {
-        curParam = _parameters->at(i);
-        if(curParam->enablingIndex()==index)
-        {
+        curParam = _localParameters->at(i);
            curWidget = _mapValueWidgets.value(curParam->getFieldValue(MOParameter::INDEX).toInt(),NULL);
 
            if(curWidget)
            {
-               curWidget->setEnabled(value==curParam->enablingValue());
+            curWidget->setEnabled(_localParameters->shouldBeEnabled(i));
            }
         }
     }
+
+QVariant MOParametersDlg::getValue(QWidget* curWidget)
+{
+
+    QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
+    if(lineEdit)
+        return lineEdit->text();
+
+    QDoubleSpinBox* dblspinbox = dynamic_cast<QDoubleSpinBox*>(curWidget);
+    if(dblspinbox)
+        return dblspinbox->value();
+
+    QSpinBox* spinbox = dynamic_cast<QSpinBox*>(curWidget);
+    if(spinbox)
+        return spinbox->value();
+
+    QCheckBox* checkbox = dynamic_cast<QCheckBox*>(curWidget);
+    if(checkbox)
+        return checkbox->isChecked();
+
+    QComboBox* combo = dynamic_cast<QComboBox*>(curWidget);
+    if(combo)
+        return combo->itemData(combo->currentIndex());
 }
 
+void MOParametersDlg::setValue(QWidget* curWidget,QVariant value)
+    {
+
+    QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
+    if(lineEdit)
+        lineEdit->setText(value.toString());
+
+    QDoubleSpinBox* dblspinbox = dynamic_cast<QDoubleSpinBox*>(curWidget);
+    if(dblspinbox)
+        dblspinbox->setValue(value.toDouble());
+
+    QSpinBox* spinbox = dynamic_cast<QSpinBox*>(curWidget);
+    if(spinbox)
+        spinbox->setValue(value.toInt());
+
+    QCheckBox* checkbox = dynamic_cast<QCheckBox*>(curWidget);
+    if(checkbox)
+        checkbox->setChecked(value.toBool());
+
+    QComboBox* combo = dynamic_cast<QComboBox*>(curWidget);
+    if(combo)
+        {
+        combo->setCurrentIndex(combo->findData(value));
+        }
+
+    }
 
 
 void MOParametersDlg::pushedOk()
 {
-    QVariant curValue;
-    MOParameter* curParam;
-    QWidget* curWidget;
-    int curIndex;
-    int iParam;
-
-
-
-    for(int i=0;i<_mapValueWidgets.keys().size();i++)
-    {
-        curIndex = _mapValueWidgets.keys().at(i);
-        iParam = _parameters->findItem(curIndex,MOParameter::INDEX);
-        curParam = _parameters->at(iParam);
-        curWidget = _mapValueWidgets.value(curIndex);
-
-        switch(curParam->getFieldValue(MOParameter::TYPE).toInt())
-        {
-        case MOParameter::STRING:
-        case MOParameter::FILEPATH:
-        case MOParameter::FOLDERPATH:
-            curValue = ((QLineEdit*)curWidget)->text();
-            break;
-        case MOParameter::DOUBLE:
-            curValue = ((QDoubleSpinBox*)curWidget)->value();
-            break;
-        case MOParameter::INT:
-            curValue = ((QSpinBox*)curWidget)->value();
-            break;
-        case MOParameter::BOOL:
-            curValue = ((QCheckBox*)curWidget)->isChecked();
-            break;
-        case MOParameter::LIST:
-            curValue = ((QComboBox*)curWidget)->itemData(
-                        ((QComboBox*)curWidget)->currentIndex());
-            break;
-        }
-
-        curParam->setFieldValue(MOParameter::VALUE,curValue);
-    }
+    _orgParameters->cloneFromOtherVector(_localParameters);
     accept();
 }
 
@@ -348,44 +507,46 @@ void MOParametersDlg::pushedDefault()
     int iParam;
 
 
-
     for(int i=0;i<_mapValueWidgets.keys().size();i++)
     {
         curIndex = _mapValueWidgets.keys().at(i);
-        iParam = _parameters->findItem(curIndex,MOParameter::INDEX);
-        curParam = _parameters->at(iParam);
-        curWidget = _mapValueWidgets.value(curIndex);
+        iParam = _localParameters->findItem(curIndex,MOParameter::INDEX);
+        curParam = _localParameters->at(iParam);
+        curWidget = _mapValueWidgets.value(curIndex,NULL);
 
         // get default value
         defaultValue = curParam->getFieldValue(MOParameter::DEFAULTVALUE);
 
-        switch(_paramTypes.at(i))
-        {
-        case MOParameter::STRING:
-        case MOParameter::FILEPATH:
-        case MOParameter::FOLDERPATH:
-            ((QLineEdit*)curWidget)->setText(defaultValue.toString());
-            break;
-        case MOParameter::DOUBLE:
-            ((QDoubleSpinBox*)curWidget)->setValue(defaultValue.toDouble());
-            break;
-        case MOParameter::INT:
-            ((QSpinBox*)curWidget)->setValue(defaultValue.toInt());
-            break;
-        case MOParameter::BOOL:
-            Qt::CheckState state;
-            if(defaultValue.toBool())
-                state = Qt::Checked;
-            else
-                state = Qt::Unchecked;
-            ((QCheckBox*)curWidget)->setCheckState(state);
-            break;
-        case MOParameter::LIST:
-            // set current index
-            ((QComboBox*)curWidget)->setCurrentIndex(((QComboBox*)curWidget)->findData(defaultValue));
-            break;
-        }
+        setValue(curWidget,defaultValue);
     }
 }
 
+
+void MOParametersDlg::onSelectFileClicked()
+        {
+    QPushButton* button = dynamic_cast<QPushButton*>(sender());
+
+    QLineEdit* line = _pathsMap.value(button,NULL);
+
+    if(line)
+    {
+        QString filename = QFileDialog::getOpenFileName(this);
+        if(!filename.isEmpty())
+            line->setText(filename);
+        }
+    }
+
+void MOParametersDlg::onSelectFolderClicked()
+{
+    QPushButton* button = dynamic_cast<QPushButton*>(sender());
+
+    QLineEdit* line = _pathsMap.value(button,NULL);
+
+    if(line)
+    {
+        QString filename = QFileDialog::getExistingDirectory(this);
+        if(!filename.isEmpty())
+            line->setText(filename);
+}
+}
 

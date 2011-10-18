@@ -54,7 +54,7 @@
 #include <QtCore/QVariantList>
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
-
+#include <QtGui/QTabWidget>
 
 #include "MOParameter.h"
 #include "GuiTools.h"
@@ -71,21 +71,27 @@ public:
     MOParametersDlg(MOParameters *parameters, bool editable=true);
 
 
-private :
-    MOParameters *_parameters;
+protected :
+    QMap<QPushButton*,QLineEdit*> _pathsMap;
+    MOParameters *_localParameters;
+    MOParameters *_orgParameters;
     QMap<int,QWidget*> _mapValueWidgets;
     QStringList _paramNames;
     QVector<int> _paramTypes;
     bool _editable;
+
     QGridLayout* buildLayoutFromParameters();
-    void updateAllEnabled();
-    void updateEnabled(QWidget* widgetChanged);
+    void updateEnabled();
+    QVariant getValue(QWidget* curWidget);
+    void setValue(QWidget* curWidget,QVariant value);
 
 public slots:
-    void pushedOk();
+    virtual void pushedOk();
     void pushedCancel();
     void pushedDefault();
-    void onCheckedChanged();
+    void onValueChanged();
+    void onSelectFileClicked();
+    void onSelectFolderClicked();
 
 
 

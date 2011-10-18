@@ -84,10 +84,10 @@ ModModelPlus::ModModelPlus(MOomc* moomc, Project* project,ModClassTree* modClass
         _name = modModel_->name(Modelica::FULL);
 
         // Controller
-        _modPlusCtrls.insert(ModPlusCtrl::OPENMODELICA,new ModPlusOMCtrl(this,_moomc,mmoFolder(),modModel()->filePath(),modModelName()));
+        _modPlusCtrls.insert(ModPlusCtrl::OPENMODELICA,new ModPlusOMCtrl(_project,this,_moomc,mmoFolder(),modModel()->filePath(),modModelName()));
 
 #ifdef WIN32
-        _modPlusCtrls.insert(ModPlusCtrl::DYMOLA,new ModPlusDymolaCtrl(this,_moomc,mmoFolder(),modModel()->filePath(),modModelName()));
+        _modPlusCtrls.insert(ModPlusCtrl::DYMOLA,new ModPlusDymolaCtrl(_project,this,_moomc,mmoFolder(),modModel()->filePath(),modModelName()));
 #endif
 
 #if DEFAULTSIMULATOR==0
@@ -140,9 +140,8 @@ void ModModelPlus::save()
 
 void ModModelPlus::reloadModel()
 {
-        _modModel->reloadInOMC();
+    _project->reloadModModel(_modModel);
 }
-
 void ModModelPlus::setMmoFilePath(QString filePath)
 {
         _mmoFilePath = filePath;
@@ -440,7 +439,11 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
 {
         // delete org connections
         bool deleteOk = _moomc->deleteConnections(blockSub->orgPorts,blockSub->orgConnectedComps,modModelName());
-
+        QString modelName = modModelName();
+        QString shortOrg = blockSub->orgComponent;
+        shortOrg = shortOrg.remove(modelName+".");
+        QString shortSub = blockSub->subComponent;
+        shortSub = shortSub.remove(modelName+".");
         ModClass* orgClass = _modClassTree->findInDescendants(blockSub->orgComponent,_modModel);
         if(!orgClass)
         {
@@ -462,7 +465,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
                 QStringList modifiersNames = _moomc->getComponentModifierNames(blockSub->orgComponent);
                 QStringList modifiersValues;
                 for(int i=0;i<modifiersNames.size();i++)
-                        modifiersValues.push_back(_moomc->getComponentModifierValue(blockSub->orgComponent,modifiersNames.at(i)));
+                        modifiersValues.push_back(_moomc->getComponentModifierValue(modelName,shortOrg,modifiersNames.at(i)));
 
                 // delete org component
                 _moomc->deleteComponent(blockSub->orgComponent);

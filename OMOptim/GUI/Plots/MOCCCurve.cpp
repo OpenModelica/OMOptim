@@ -101,10 +101,6 @@ void MOCCCurve::setTUnit(METemperature::Units newTUnit)
     {
         _TUnit = newTUnit;
 
-        //change label
-        //#TODO
-
-
         //redraw
         setData(_xData,_yData);
     }
@@ -115,10 +111,6 @@ void MOCCCurve::setQUnit(MEQflow::Units newQUnit)
     if(newQUnit!=_qflowUnit)
     {
         _qflowUnit = newQUnit;
-
-        //change label
-        //#TODO
-
 
         //redraw
         setData(_xData,_yData);
@@ -165,7 +157,6 @@ void MOCCCurve::init()
 
 	case GCC : 
 	//curveGcc initialization
-	QwtSymbol sym;
 	sym.setStyle(QwtSymbol::Ellipse);
 	sym.setSize(3);
 	sym.setPen(QPen(Qt::red));
@@ -178,6 +169,37 @@ void MOCCCurve::init()
 	this->setItemAttribute(QwtPlotItem::AutoScale,true);
 	this->setRenderHint(QwtPlotItem::RenderAntialiased,true);
 	break;
+
+        case ICCPROCESS :
+        //curveinitialization
+        sym.setStyle(QwtSymbol::Ellipse);
+        sym.setSize(3);
+        sym.setPen(QPen(Qt::red));
+        sym.setBrush(QBrush(Qt::red));
+        pen.setColor(Qt::red);
+        pen.setWidth(2);
+        this->setSymbol(sym);
+        this->setPen(pen);
+        this->setStyle(QwtPlotCurve::Lines);
+        this->setItemAttribute(QwtPlotItem::AutoScale,true);
+        this->setRenderHint(QwtPlotItem::RenderAntialiased,true);
+        break;
+
+        case ICCUTILITIES :
+        //curve initialization
+        sym.setStyle(QwtSymbol::Ellipse);
+        sym.setSize(3);
+        sym.setPen(QPen(Qt::darkGreen));
+        sym.setBrush(QBrush(Qt::darkGreen));
+        pen.setColor(Qt::darkGreen);
+        pen.setWidth(2);
+        this->setSymbol(sym);
+        this->setPen(pen);
+        this->setStyle(QwtPlotCurve::Lines);
+        this->setItemAttribute(QwtPlotItem::AutoScale,true);
+        this->setRenderHint(QwtPlotItem::RenderAntialiased,true);
+        break;
+
 	}
 }
 

@@ -40,10 +40,12 @@
   */
 #include "EIHEN1Result.h"
 
-EIHEN1Result::EIHEN1Result(void)
+EIHEN1Result::EIHEN1Result(Project* project)
 :Result()
 {
-        _eiTree = new EITree();
+    _project = project;
+
+        _eiTree = new EITree(_project);
         _eiConns = new EIConns();
         _eiHEN = new EIHEN();
 }
@@ -53,7 +55,7 @@ EIHEN1Result::EIHEN1Result(Project* project, Problem* problem)
 	_project = project;
 	_problem = problem;
 
-        _eiTree = new EITree();
+        _eiTree = new EITree(project);
         _eiConns = new EIConns();
         _eiHEN = new EIHEN();
 
@@ -63,7 +65,7 @@ EIHEN1Result::EIHEN1Result(Project* project, ModClassTree* modClassTree,QDomElem
     :Result(project,modClassTree,problem)
 {
 
-    _eiTree = new EITree();
+    _eiTree = new EITree(project);
     _eiConns = new EIConns();
     _eiHEN = new EIHEN();
 
@@ -103,7 +105,7 @@ EIHEN1Result::EIHEN1Result(Project* project, ModClassTree* modClassTree,QDomElem
 
         // EIConns
         QDomElement domEIConns = domResult.firstChildElement("EIConns");
-        _eiConns->setItems(domEIConns,_eiTree);
+        _eiConns->setItems(domEIConns,*_eiTree);
 
         // building eiHEN
         _eiHEN->setData(*_eiTree,*_eiConns);

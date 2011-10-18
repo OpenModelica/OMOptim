@@ -55,7 +55,7 @@ void Dymola::verifyInstallation()
 }
 
 
-bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder,QString logFilePath)
+bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath)
 {
     // Create Dymola script
     QString filePath = storeFolder+QDir::separator()+"MOFirstRun.mos";
@@ -68,8 +68,9 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
 
     QString scriptText;
 
+    for(int i=0;i<moPaths.size();i++)
+        scriptText.append("openModel(\""+moPaths.at(i)+"\")\n");
 
-    scriptText.append("openModel(\""+moPath+"\")\n");
     scriptText.append("cd "+storeFolder+"\n");
     scriptText.append("experimentSetupOutput(textual=true)\n");
     scriptText.append("checkModel(\""+modelToConsider+"\",simulate=true)\n");
@@ -82,7 +83,7 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
 
 
     // Run script
-    QString dymolaPath = MOSettings::getValue("path/dymolaExe").toString();
+    QString dymolaPath = MOSettings::value("dymolaExe").toString();
     QFileInfo dymolaBin(dymolaPath);
     if(!dymolaBin.exists())
     {
@@ -119,7 +120,7 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
     }
 }
 
-bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
+bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString folder)
 {
     // Create Dymola script
     QString filePath = folder+QDir::separator()+"MOFirstRun.mos";
@@ -131,10 +132,13 @@ bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
     file.open(QIODevice::WriteOnly);
 
     QString scriptText;
-    scriptText.append("openModel(\""+moPath+"\")\n");
+    for(int i=0;i<moPaths.size();i++)
+        scriptText.append("openModel(\""+moPaths.at(i)+"\")\n");
+
     scriptText.append("cd "+folder+"\n");
     scriptText.append("translateModel(\""+modelToConsider+"\")\n");
     scriptText.append("exportInitialDsin(\"dsin.txt\")\n");
+    scriptText.append("savelog(\"buildlog.txt\")\n");
     scriptText.append("exit\n");
 
     QTextStream ts( &file );
@@ -142,7 +146,7 @@ bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder)
     file.close();
 
     // Run script
-    QString dymolaPath = MOSettings::getValue("path/dymolaExe").toString();
+    QString dymolaPath = MOSettings::value("dymolaExe").toString();
 
 
     QProcess simProcess;
@@ -287,7 +291,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
 	allDsinText = lines.join("\n");
 }
 
-void Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *variables,QString _modelName)
+bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *variables,QString modelName)
 
 {
     variables->clear();
@@ -313,7 +317,7 @@ void Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     line = text->readLine();
     while (!line.isEmpty()){
         newVariable = new Variable();
-        newVariable->setName(_modelName+"."+line);
+        newVariable->setName(modelName+"."+line);
         variables->addItem(newVariable);
         line=text->readLine();
     }
@@ -321,20 +325,24 @@ void Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
 
     nbv=variables->size();
 
-
     // Get variable's value, type, min, max, nature
     text->readLine(); // pass through double() line
     nv=0;
     line = text->readLine();
     while (!line.isEmpty())
     {
-
         linefields = line.split(" ", QString::SkipEmptyParts);
         if(linefields.size()<8)
         {
             // data has been stored on two lines
             line = text->readLine();
             linefields << line.split(" ", QString::SkipEmptyParts);
+        }
+        if((nv>=variables->size())||(linefields.size()!=8))
+        {
+            infoSender.sendError("Corrupted dsin file. Unable to read variables. Try to regenerate dsin file.");
+            variables->clear();
+            return false;
         }
 
         variables->items[nv]->setValue(linefields[1].toDouble());
@@ -352,47 +360,51 @@ void Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     line = text->readLine();
     nv=0;
     nbv=variables->size();
-    while (!text->atEnd() && nv<nbv){
+    while (!text->atEnd() && nv<nbv)
+    {
         variables->items[nv]->setDescription(line);
         line = text->readLine();
         nv++;
     }
+    return true;
 
 
 }
 
-void Dymola::getVariablesFromDsFile(QString fileName_, MOVector<Variable> *variables,QString _modelName)
+bool Dymola::getVariablesFromDsFile(QString fileName_, MOVector<Variable> *variables,QString _modelName)
 {
     variables->clear();
     QFileInfo fileinfo = QFileInfo(fileName_);
-
+    bool result = false;
     if (fileinfo.exists())
     {
         QFile file(fileinfo.filePath());
         file.open(QIODevice::ReadOnly);
         QTextStream* in = new QTextStream(&file);
-        getVariablesFromDsFile(in, variables,_modelName);
+        result = getVariablesFromDsFile(in, variables,_modelName);
         file.close();
     }
+    return result;
 }
 
-void Dymola::getFinalVariablesFromDsFile(QString fileName_, MOVector<Variable> *variables,QString _modelName)
+bool Dymola::getFinalVariablesFromDsFile(QString fileName_, MOVector<Variable> *variables,QString modelName)
 {
     variables->clear();
     QFileInfo fileinfo = QFileInfo(fileName_);
-
+    bool result = false;
     if (fileinfo.exists())
     {
         QFile file(fileinfo.filePath());
         file.open(QIODevice::ReadOnly);
         QTextStream* in = new QTextStream(&file);
-        getFinalVariablesFromDsFile(in, variables,_modelName);
+        result = getFinalVariablesFromDsFile(in, variables,modelName);
         file.close();
         delete in;
     }
+    return result;
 }
 
-void Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *variables,QString _modelName)
+bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *variables,QString _modelName)
 {
 
     variables->clear();
@@ -571,6 +583,8 @@ void Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
         delete [] data2[i];
     delete [] data2;
 
+    return true;
+
 }
 
 
@@ -601,7 +615,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         QString smallText;
         QStringList capLines;
         int index2;
-        int prec=MOSettings::getValue("Dymola/MaxDigitsDsin").toInt(); //number of decimals
+        int prec=MOSettings::value("MaxDigitsDsin").toInt(); //number of decimals
         QString value;
         for(int iV=0;iV<variables->size();iV++)
         {
@@ -632,12 +646,14 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
                 newLine1 = fields.at(1)+"\t"+ value +"\t";
                 newLine1 += fields.at(3)+"\t"+fields.at(4);
                 newLine2 = fields.at(5)+"\t"+fields.at(6)+"\t"+" # "+fields.at(7);
-                if(capLines.size()>1)
+                // if variable def were on two lines
+                if((capLines.size()>1)&& capLines.at(1).contains(QRegExp("\\S")))
                 {
                     allText = allText.replace(capLines.at(0)+"\n"+capLines.at(1),newLine1+"\n"+newLine2);
                 }
                 else
                 {
+                    // if variable def were on only one line
                     allText = allText.replace(capLines.at(0),newLine1+"\t"+newLine2);
                 }
                 qDebug(newLine1.toLatin1().data());
@@ -645,7 +661,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
             }
             else
             {
-                infoSender.send(Info("Warning : unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
+                infoSender.send(Info("Unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
             }
         }
 	
@@ -654,6 +670,9 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         fileinfo.setFile(fileName);
         file.setFileName(fileinfo.filePath());
         bool ok = file.open(QIODevice::WriteOnly);
+        if(!ok)
+            infoSender.send(Info("Unable to open file for writing :"+fileinfo.filePath(),ListInfo::ERROR2));
+
         QTextStream textWrite(&file);
         textWrite<<allText;
         file.close();

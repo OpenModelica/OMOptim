@@ -45,11 +45,10 @@
 #include "LowTools.h"
 
 
-Optimization::Optimization(Project* project,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,ModModelPlus* modModelPlus)
+Optimization::Optimization(Project* project,ModClassTree* modClassTree,ModModelPlus* modModelPlus)
     :Problem(project,modClassTree)
 {
     _modModelPlus = modModelPlus;
-    _modPlusCtrl = modPlusCtrl;
 
     _type = Problem::OPTIMIZATIONTYPE;
     _name="Optimization";
@@ -58,12 +57,9 @@ Optimization::Optimization(Project* project,ModClassTree* modClassTree,ModPlusCt
     _objectives = new OptObjectives(modModelPlus);
     _blockSubstitutions = new BlockSubstitutions();
 
-    _algos = OptimAlgoUtils::getNewAlgos(this,_modClassTree,_modPlusCtrl);
-    for(int i=0;i<_algos.size();i++)
-        connect(_algos.at(i),SIGNAL(configChanged()),this,SIGNAL(algoConfigsChanged()));
+    _algos = OptimAlgoUtils::getNewAlgos(this,_modClassTree);
 
     _iCurAlgo=0;
-
 }
 
 Optimization::Optimization(const Optimization &optim)
@@ -209,9 +205,9 @@ Result* Optimization::launch(ProblemConfig _config)
 
     // first create temp dir
     QDir dir;
-    if(dir.exists(_config.tempDir))
-        dir.rmdir(_config.tempDir);
-    dir.mkdir(_config.tempDir);
+    if(dir.exists(_project->tempPath()))
+        dir.rmdir(_project->tempPath());
+    dir.mkdir(_project->tempPath());
 
     //create different dymosim executable for blocksubstitutions
     QList<ModModelPlus*> _subModels;
@@ -219,7 +215,7 @@ Result* Optimization::launch(ProblemConfig _config)
 
     createSubExecs(_subModels,_subBlocks);
 
-    OptimResult* result = dynamic_cast<OptimResult*>(((EABase*)getCurAlgo())->launch(_config.tempDir));
+    OptimResult* result = dynamic_cast<OptimResult*>(((EABase*)getCurAlgo())->launch(_project->tempPath()));
 
     //fill problem in result
     if(result->problem()==NULL)
@@ -282,7 +278,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
             //Creating a new OneSimulation problem based on same model
             //and specifying overwrited variables from optimized variable values
             //*************************************************************
-            OneSimulation *oneSim = new OneSimulation(_project,result->modClassTree(),result->modPlusCtrl(),result->modModelPlus());
+            OneSimulation *oneSim = new OneSimulation(_project,result->modClassTree(),result->modModelPlus());
             Variable* overVar;
             for(int iOverVar=0;iOverVar < result->optVariablesResults()->size();iOverVar++)
             {
@@ -301,7 +297,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
             //****************************************************
             // Launch simulation
             //****************************************************
-            ProblemConfig config(_project->tempPath(),true);
+            ProblemConfig config;
             OneSimResult *oneSimRes = dynamic_cast<OneSimResult*>(oneSim->launch(config));
 
             if(!oneSimRes->isSuccess())

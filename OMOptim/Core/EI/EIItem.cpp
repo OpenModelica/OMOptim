@@ -364,7 +364,7 @@ void EIItem::clearDescendants()
 	 emit modified();
 }
 
-bool EIItem::addChild(EIItem *child)
+bool EIItem::addChild(EIItem *child, int i)
 {
 
 	bool ok=false;
@@ -377,7 +377,13 @@ bool EIItem::addChild(EIItem *child)
                         brothersNames.push_back(this->_children.at(i)->name());
 
 		child->checkUniqueItemName(brothersNames);
-                _children.push_back(child);
+                int index;
+                if(i>=0)
+                    index=i;
+                else
+                    index = _children.size()+i+1;
+		
+                _children.insert(i,child);
 		
 		ok = true;
 
@@ -389,6 +395,8 @@ bool EIItem::addChild(EIItem *child)
 
 	return ok;
 }
+
+
 
 
 void EIItem::setParent(EIItem *parent)
@@ -490,7 +498,7 @@ bool EIItem::isValid(MOOptVector* variables, QString &errMsg) const
 //        errMsg+= "empty name \n";
 //    }
 
-    bool hasAccent = (_name.indexOf(QRegExp("é|è|à|ü|ö|ô|â)"))>-1);
+    bool hasAccent = (_name.indexOf(QRegExp("é|è|� |ü|ö|ô|â)"))>-1);
     if(hasAccent)
     {
         ok = false;

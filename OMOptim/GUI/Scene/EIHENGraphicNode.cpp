@@ -111,10 +111,11 @@ QRectF EIHENGraphicNode::boundingRect() const
     switch(_node->nodeType())
     {
 
-    case NodeMixer :
+
     case NodeGeneric :
         return QRectF(-5,-15,10,30);
     case NodeSplitter :
+    case NodeMixer :
         return QRectF();
     case NodeEnd :
         return classicNodeRect(_node,false);
@@ -133,11 +134,12 @@ QPainterPath EIHENGraphicNode::shape() const
     QPainterPath path;
     switch(_node->nodeType())
     {
-    case NodeMixer :
+
     case NodeGeneric :
         path.addRect(-5,-15,10,30);
         break;
     case NodeSplitter :
+    case NodeMixer :
         break;
     case NodeEnd :
         path.addRect(classicNodeRect(_node,false));
@@ -167,11 +169,12 @@ void EIHENGraphicNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
     switch(_node->nodeType())
     {
-    case NodeMixer :
+
     case NodeGeneric :
         painter->drawRect(-5,-15,10,30);
         break;
     case NodeSplitter :
+    case NodeMixer :
         break;
     case NodeEnd :
         painter->drawRect(classicNodeRect(_node,false));

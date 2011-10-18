@@ -41,7 +41,7 @@
 #define _MOTHREADS_H
 
 #include "ModModelPlus.h"
-
+#include "EITree.h"
 
 
 #include "MOVector.h"
@@ -81,6 +81,26 @@ namespace MOThreads
                 void newProgress(float,int,int);
 
 	};
+
+
+
+        class OMCModelLoader : public QThread
+        {
+            Q_OBJECT
+        public:
+            OMCModelLoader(QString filePath,MOomc* omc);
+            QString _filePath;
+            QString _result;
+
+        public slots :
+            void onLoadedFile(QString filePath,QString result);
+
+        protected:
+            void run();
+        signals:
+            void loadFile(QString filePath);
+
+        };
 } //namespace
 
 #endif

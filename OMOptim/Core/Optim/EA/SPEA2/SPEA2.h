@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+ 	@version 0.9 
 
   */
 #if !defined(_SPEA2_H)
@@ -76,11 +76,11 @@ class SPEA2 : public EABase
 {
 public : 
 	SPEA2();
-        SPEA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*);
-        SPEA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*,MOParameters*);
+        SPEA2(Project*,Problem*,ModClassTree*);
+        SPEA2(Project*,Problem*,ModClassTree*,MOParameters*);
 	SPEA2(const SPEA2 &);
 
-	SPEA2* clone() const;
+        EABase* clone()const;
 
 	QList<int> compatibleOMCases();
 
@@ -102,7 +102,7 @@ Result* SPEA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
 	{
 	case Problem::OPTIMIZATIONTYPE :
                 result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,
-                                                                       _modClassTree,_modPlusCtrl,arch,_parameters);
+                                                                       _modClassTree,arch,_parameters);
 		break;
 	}
 	return result;

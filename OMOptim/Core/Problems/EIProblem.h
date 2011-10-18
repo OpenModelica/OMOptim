@@ -44,7 +44,7 @@
 #include "Problem.h"
 #include "EIItem.h"
 #include "EIModelContainer.h"
-#include "EIModelExtractor.h"
+#include "EIModelicaExtractor.h"
 #include "EIConnConstrs.h"
 #include "EIReader.h"
 #include "MOomc.h"
@@ -63,8 +63,8 @@ public:
         EIProblem(const EIProblem &);
         virtual ~EIProblem(void);
 
-        virtual void loadModel(ModClassTree*,ModModel*);
-        virtual void unloadModel(ModModel*,bool &ok);
+        virtual void loadModel(ModModel*);
+
 
 
         virtual QDomElement toXmlData(QDomDocument &doc);

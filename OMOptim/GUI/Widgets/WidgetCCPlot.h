@@ -70,10 +70,13 @@ public:
     virtual ~WidgetCCPlot();
 	 Ui::WidgetCCPlotClass *ui;
 
+public :
+         MOCCPlot *plot1; // makes it public could avoid segmentation fault (not sure)
+
 private :
 	EIMERResult* result;
 	WidgetTreeStreams* widgetTreeStreams;
-	MOCCPlot *plot1;
+
         MEQflow::Units _qflowUnit;
         METemperature::Units _TUnit;
 
@@ -84,6 +87,7 @@ public slots:
 	void unitChanged();
 	void setViewCC(bool checked);
 	void setViewGCC(bool checked);
+        void setViewICC(bool checked);
 	void actualizeGui();
         void setMERResult(EIMERResult*);
         void clear();

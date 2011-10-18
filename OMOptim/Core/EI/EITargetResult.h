@@ -27,7 +27,7 @@ class EITargetResult : public Result
 public:
         EITargetResult(Project*, ModClassTree*, Problem*);
         EITargetResult(Project* project,ModClassTree*,QDomElement domResult,Problem* problem);
-	EITargetResult(void);
+        EITargetResult(Project*);
 	~EITargetResult(void);
 
         double _totalCost;

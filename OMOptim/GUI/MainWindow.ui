@@ -18,7 +18,7 @@
     <normaloff>:/icons/Sync</normaloff>:/icons/Sync</iconset>
   </property>
   <property name="styleSheet">
-   <string/>
+   <string notr="true"/>
   </property>
   <property name="dockOptions">
    <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
@@ -48,6 +48,9 @@
         <verstretch>2</verstretch>
        </sizepolicy>
       </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -58,11 +61,6 @@
          <verstretch>10</verstretch>
         </sizepolicy>
        </property>
-       <zorder>dockLog</zorder>
-       <zorder>dockLog</zorder>
-       <zorder>dockLog</zorder>
-       <zorder>dockLog</zorder>
-       <zorder>dockLog</zorder>
       </widget>
      </widget>
     </item>
@@ -80,6 +78,9 @@
         <height>163</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="allowedAreas">
        <set>Qt::BottomDockWidgetArea</set>
       </property>
@@ -87,6 +88,9 @@
        <string>Log</string>
       </property>
       <widget class="QWidget" name="dockWidgetContents">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <layout class="QHBoxLayout">
         <property name="spacing">
          <number>0</number>
@@ -163,8 +167,6 @@
          </widget>
         </item>
        </layout>
-       <zorder>TabWidget</zorder>
-       <zorder></zorder>
       </widget>
      </widget>
     </item>
@@ -176,7 +178,7 @@
      <x>0</x>
      <y>0</y>
      <width>1146</width>
-     <height>27</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -219,11 +221,12 @@
      </property>
      <addaction name="actionOMCShell"/>
      <addaction name="actionOMCClear"/>
+     <addaction name="actionStartOmc"/>
     </widget>
     <addaction name="menuOMC"/>
     <addaction name="actionSettings"/>
    </widget>
-   <widget class="QMenu" name="menuOptions">
+   <widget class="QMenu" name="menuModels">
     <property name="title">
      <string>Models</string>
     </property>
@@ -239,7 +242,7 @@
     <addaction name="actionHelp"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuOptions"/>
+   <addaction name="menuModels"/>
    <addaction name="menuProblem"/>
    <addaction name="menuTools"/>
    <addaction name="menuDisplay"/>
@@ -247,6 +250,20 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockModels">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"> QDockWidget::title {
+background: qlineargradient(spread:repeat, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(65, 72, 89, 255), stop:0.466019 rgba(94, 105, 129, 255), stop:0.961165 rgba(65, 72, 89, 255))
+ }
+
+QDockWidget {
+color:white;
+ }
+
+</string>
+   </property>
    <property name="floating">
     <bool>false</bool>
    </property>
@@ -264,11 +281,29 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
     <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="margin">
+     <property name="spacing">
       <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>2</number>
      </property>
      <item>
       <widget class="QTreeView" name="treeModClass">
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
        <property name="headerHidden">
         <bool>true</bool>
        </property>
@@ -289,6 +324,20 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockProblems">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"> QDockWidget::title {
+background: qlineargradient(spread:repeat, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(65, 72, 89, 255), stop:0.466019 rgba(94, 105, 129, 255), stop:0.961165 rgba(65, 72, 89, 255))
+ }
+
+QDockWidget {
+color:white;
+ }
+
+</string>
+   </property>
    <property name="floating">
     <bool>false</bool>
    </property>
@@ -305,6 +354,9 @@
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_3">
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="spacing">
       <number>0</number>
@@ -313,12 +365,10 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QSplitter" name="splitter">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+      <widget class="QTreeView" name="treeOMCases">
+       <property name="headerHidden">
+        <bool>true</bool>
        </property>
-       <widget class="QTreeView" name="treeOMCases"/>
-       <widget class="QTreeView" name="treeResults"/>
       </widget>
      </item>
     </layout>
@@ -491,6 +541,11 @@
    </property>
    <property name="shortcut">
     <string>F1</string>
+   </property>
+  </action>
+  <action name="actionStartOmc">
+   <property name="text">
+    <string>Start omc</string>
    </property>
   </action>
  </widget>

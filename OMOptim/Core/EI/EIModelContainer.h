@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o Linkpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linkping, Sweden.
  *
  * All rights reserved.
  *
@@ -49,7 +49,7 @@ namespace EI
   * EIModelContainer is an EIItem that holds all EIItems of a modelica model. e.g. a modelica model can contains several EIGroups. The EIModelContainer corresponding to the modelica model
   * will have as children these EIGroups.
   * EIModelContainer holds a reference to modelica model concerned.
-  * @sa EIModelExtractor
+  * @sa EIModelicaExtractor
   */
 class EIModelContainer : public EIItem
 {

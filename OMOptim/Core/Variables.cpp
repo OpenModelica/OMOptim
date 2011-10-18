@@ -44,6 +44,36 @@ Variables* Variables::clone() const
     return newVector;
 }
 
+
+Qt::DropActions Variables::supportedDropActions() const{
+    return Qt::CopyAction | Qt::MoveAction;
+}
+
+QStringList Variables::mimeTypes () const
+{
+    QStringList types;
+    types << "text/plain";
+    return types;
+}
+
+QMimeData* Variables::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData *mimeData = new QMimeData();
+    QByteArray encodedData;
+
+    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+    if(indexes.size()==1)
+    {
+        Variable* item = (Variable*)indexes.at(0).internalPointer();
+        mimeData->setText("Variable::"+item->name(Modelica::FULL));
+    }
+
+//    mimeData->setData("application/vnd.text.list", encodedData);
+    return mimeData;
+}
+
+
+
 OptVariables::OptVariables(ModModelPlus* modModelPlus)
 {
     _modModelPlus = modModelPlus;

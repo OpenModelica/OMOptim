@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="icons">
+    <qresource prefix="/">
     <file alias="Undo">icons/Undo.png</file>
     <file>Mines.PNG</file>
     <file alias="Search">icons/Search.png</file>
@@ -12,5 +12,13 @@
     <file alias="Folder">icons/Folder.png</file>
     <file alias="Delete">icons/Delete.png</file>
     <file alias="Add">icons/Add.png</file>
+        <file>icons/type-icon.png</file>
+        <file>icons/block-icon.png</file>
+        <file>icons/class-icon.png</file>
+        <file>icons/connector-icon.png</file>
+        <file>icons/info-icon.png</file>
+        <file>icons/model-icon.png</file>
+        <file>icons/package-icon.png</file>
+        <file>icons/record-icon.png</file>
   </qresource>
 </RCC>

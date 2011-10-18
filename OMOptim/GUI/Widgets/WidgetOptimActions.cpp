@@ -38,7 +38,10 @@
  	@version 
 */
 
+
 #include "WidgetOptimActions.h"
+#include "GuiTools.h"
+
 
 namespace Ui
 {
@@ -49,6 +52,8 @@ WidgetOptimActions::WidgetOptimActions(Project* project,Optimization *problem,bo
     : QWidget(parent), _ui(new Ui::WidgetOptimActionsClass)
 {
     _ui->setupUi(this);
+   _ui->frame->setStyleSheet(GuiTools::launchBarStyleSheet());
+
     _problem = problem;
     _result = result;
     _project = project;

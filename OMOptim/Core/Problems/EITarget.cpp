@@ -119,7 +119,7 @@ Result* EITarget::launch(ProblemConfig config)
     else
     {
 
-        QDir tempDir(config.tempDir);
+        QDir tempDir(_project->tempPath());
         QString dataFilePath = tempDir.absoluteFilePath(name()+".dat");
 
         // replace ei references by values

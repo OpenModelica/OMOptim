@@ -70,7 +70,7 @@ class MilpVariableResult0D : public MilpVariableResult
 public:
     MilpVariableResult0D(QString name);
 
-    double value(){return _value;};
+    double value() const{return _value;};
     void setValue(double value){_value = value;};
 
 private :
@@ -84,7 +84,7 @@ public:
     MilpVariableResult1D(QString name);
 
 
-    QMap<QString,double> values(){return _values;};
+    QMap<QString,double> values() const{return _values;};
     void clear(){_values.clear();};
     void insertValue(QString key,double value){_values.insert(key,value);};
 
@@ -104,7 +104,7 @@ public:
 
     void clear(){_values.clear();};
     void insertValue(MilpKey2D key,double value){_values.insert(key,value);};
-    QMap<MilpKey2D,double> values(){return _values;};
+    QMap<MilpKey2D,double> values()const {return _values;};
 
 
 
@@ -120,7 +120,7 @@ public:
 
     void clear(){_values.clear();}
     void insertValue(MilpKey3D key,double value){_values.insert(key,value);}
-    QMap<MilpKey3D,double> values(){return _values;}
+    QMap<MilpKey3D,double> values() const{return _values;}
 
 
 

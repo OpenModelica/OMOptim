@@ -62,10 +62,10 @@
 using std::vector;
 class Project;
 
-
 /**
 * \brief ModModelPlus is a class dedicated to information storage concerning Modelica models.
 *
+* ModModelPlus is a class dedicated to information storage concerning Modelica models.
 * Each ModModelPlus is associated to a ModModel. ModModelPlus contains informations that are used within OMOptim and which concern corresponding ModModel.
 * These informations are variables, connections, modifiers (deprecated), dependencies...
 */

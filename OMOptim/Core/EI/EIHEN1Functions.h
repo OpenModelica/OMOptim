@@ -54,10 +54,10 @@ public:
     EIHEN1Functions();
 
 
-    static void buildHEN1(EITree* eiTree,MOOptVector* variables);
+    static void buildHEN1(EI::EITree* eiTree,MOOptVector* variables);
 
 
-    static void placeHE(QList<EIStream*> streams, EIStream* stream1, EIStream* stream2);
+    static void placeHE(QList<EI::EIStream*> streams, EI::EIStream* stream1, EI::EIStream* stream2);
 
 
     //static QString getSZ

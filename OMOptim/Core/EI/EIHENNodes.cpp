@@ -55,6 +55,13 @@ EIHEN_Node* EIHEN_EndNode::clone() const
 
 bool EIHEN_EndNode::isValid(QString &msg) const
 {
+    if(_inlets.size()>1)
+    {
+        msg += _stream + " end has several inlets but should have only one.";
+        msg+="\n";
+        return false;
+    }
+
     if(!_outlets.isEmpty())
     {
         msg += _stream + " end has outlets but should not have.";
@@ -133,7 +140,7 @@ bool EIHEN_Splitter::isValid(QString &msg) const
 
     for(int i=0;i<_outlets.size();i++)
     {
-        if(!_inletT.equals(_outlets.at(i)->_inletT,tempTolerance))
+        if(!_inletT.equalsRel(_outlets.at(i)->_inletT,tempTolerance))
         {
             msg += _stream + " splitter has different bound temperatures (";
             msg += _inletT.toString() + "!= " + _outlets.at(i)->_inletT.toString()+")";
@@ -144,11 +151,11 @@ bool EIHEN_Splitter::isValid(QString &msg) const
 
     //check massFlow (with tolerance)
 
-    MEMassFlow outFlow;
+    MEMassFlow outFlow(0,MEMassFlow::KG_S);
     for(int i=0;i<_outlets.size();i++)
         outFlow+=_outlets.at(i)->massFlow();
 
-    if((_inlets.size()==0)||!_inlets.at(0)->massFlow().equals(outFlow,massTolerance))
+    if((_inlets.size()==0)||!_inlets.at(0)->massFlow().equalsRel(outFlow,massTolerance))
     {
         msg+= _stream + "mass incoherency in splitter : ";
         msg+= _inlets.at(0)->massFlow().toString() +"!="+ outFlow.toString();
@@ -185,7 +192,7 @@ bool EIHEN_Mixer::isValid(QString & msg) const
     bool ok = true;
 
     double massTolerance = 0.01; // tolerance 1%
-    double tempTolerance = 0.01; // tolerance 1%
+    METemperature absTempTolerance(0.01,METemperature::K); // 0.01K
 
     if(_outlets.size()!=1)
     {
@@ -196,7 +203,7 @@ bool EIHEN_Mixer::isValid(QString & msg) const
 
     for(int i=0;i<_inlets.size();i++)
     {
-        if(!_outletT.equals(_inlets.at(i)->_outletT,tempTolerance))
+        if(!_outletT.equalsAbs(_inlets.at(i)->_outletT,absTempTolerance))
         {
             msg += _stream + " mixer has different bound temperatures (";
             msg += _outletT.toString() + "!= " + _inlets.at(i)->_outletT.toString()+")";
@@ -206,11 +213,11 @@ bool EIHEN_Mixer::isValid(QString & msg) const
     }
 
     //check massFlow
-    MEMassFlow inFlow;
+    MEMassFlow inFlow(0,MEMassFlow::KG_S);
     for(int i=0;i<_inlets.size();i++)
         inFlow+=_inlets.at(i)->massFlow();
 
-    if((_outlets.size()==0)||!_outlets.at(0)->massFlow().equals(inFlow,massTolerance))
+    if((_outlets.size()==0)||!_outlets.at(0)->massFlow().equalsRel(inFlow,massTolerance))
     {
         msg+= _stream + "mass incoherency in mixer : ";
         msg+= _outlets.at(0)->massFlow().toString() +"!="+ inFlow.toString();
@@ -235,8 +242,8 @@ EIHEN_HE::EIHEN_HE(EIHEN_Node* nodeA, EIHEN_Node* nodeB)
 {
     _nodeA = nodeA;
     _nodeB = nodeB;
-    _qflow = 0;
-    _A = 0;
+    _qflow = MEQflow();
+    _A = MESurface();
 }
 
 EIHEN_HE::EIHEN_HE(const EIHEN_HE &b)

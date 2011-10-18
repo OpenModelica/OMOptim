@@ -48,18 +48,24 @@
 #include "ModReader.h"
 #include "MOomc.h"
 
+
+
+/**
+  * \brief ModClassTree is a container of Modelica models, packages, records...
+  * ModClassTree is a container of Modelica models, packages, records...
+  * It represents items loaded in OMC. ModClassTree contains its own reading functions allowing
+  * it to fullfil itself communicating with OMC through _moomc.
+  *
+  * It inherits QAbstractItemModel in order to display contents easily in GUI (using a QTreeView).
+  */
+
 class ModClassTree : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
 
-
-
-
-
-
-    ModClassTree(ModReader* _modReader,MOomc* moomc,QObject *parent = 0);
+    ModClassTree(ModReader* modReader,MOomc* moomc,QObject *parent = 0);
     virtual ~ModClassTree();
     ModClass* rootElement()const {return _rootElement;}
 
@@ -68,20 +74,19 @@ public:
     void readFromOmc(ModClass*,int depthMax = 1000,  QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
     void readFromOmcV2(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0); 	//Read data and children with OMC calls
     void readFromOmcV3(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
-    void readFromOmcV4(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls, using OMEdit version
-
 
      bool addChild(ModClass* parent,ModClass* child);
 
     // Find functions
     bool isInDescendants(QString fullName,ModClass* parent=NULL);
     ModClass* findInDescendants(QString fullName,ModClass* parent=NULL);
+    QList<ModClass*> findInDescendantsByClass(QString _className,ModClass* parent=NULL);
     QList<ModClass*> findCompOfClassInDescendants(QString _className,ModClass* parent=NULL);
 
     ModModel* modelOf(ModClass* item);
     ModModel* modelOf(QString itemName);
 
-    void childrenInfos(ModClass* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &compsNames,QStringList &compsClasses);
+    void childrenInfos(ModClass* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &recordsClasses,QStringList &compsNames,QStringList &compsClasses);
 
     //*****************************
     //Ports
@@ -107,20 +112,22 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     ModClass* findItem(QString);
-
-
-    QStringList mimeTypes() const;
-    QMimeData* mimeData(const QModelIndexList &indexes) const;
-    QIcon getModelicaNodeIcon(ModClass* modClass);
+    QIcon getModelicaNodeIcon(ModClass* modClass) const;
     bool canFetchMore ( const QModelIndex & parent ) const;
     void fetchMore ( const QModelIndex & parent );
 
+    // drag and drop functions
+    QStringList mimeTypes() const;
+    QMimeData* mimeData(const QModelIndexList &indexes) const;
+    Qt::DropActions supportedDropActions() const;
+
     void setShowComponent(bool);
+
+
 
 protected :
     // add functions
     bool addModClass(ModClass* parent,QString className,QString filePath="");
-
 
 private:
     ModClass* _rootElement;

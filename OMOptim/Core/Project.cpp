@@ -222,6 +222,15 @@ void Project::storeMmoFilePath(QString mmoFilePath)
 }
 
 /**
+*	Reload the mo file of model and refresh entire tree
+*/
+void Project::reloadModModel(ModModel* modModel)
+{
+    modModel->reloadInOMC();
+    refreshAllMod();
+}
+
+/**
 * \brief
 *	Refresh modelica tree in GUI. Do not reload in OpenModelica ! Just reread hierarchy.
 */
@@ -481,10 +490,10 @@ void Project::addNewProblem(Problem::ProblemType problemType, ModModel* modelCon
     switch(problemType)
     {
     case Problem::ONESIMULATIONTYPE :
-        newProblem  = new OneSimulation(this,modClassTree(),_modPlusCtrl,modModelPlus);
+        newProblem  = new OneSimulation(this,modClassTree(),modModelPlus);
         break;
     case Problem::OPTIMIZATIONTYPE :
-        newProblem = new Optimization(this,modClassTree(),_modPlusCtrl,modModelPlus);
+        newProblem = new Optimization(this,modClassTree(),modModelPlus);
         break;
 #ifdef USEEI
     case Problem::EIPROBLEMTYPE:
@@ -608,7 +617,7 @@ void Project::launchProblem(Problem* problem)
 
 
         //Create problem thread
-        ProblemConfig config(tempPath());
+        ProblemConfig config;
         MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
 
         // connect signals
@@ -699,27 +708,6 @@ void Project::onProblemFinished(Problem* problem,Result* result)
     _launchedThreads.remove(problem);
 }
 
-
-void Project::removeProblem()
-{
-    // SLOT : sender is menu, data is containing problem number
-    QAction *action = qobject_cast<QAction *>(sender());
-    if (action)
-    {
-        removeProblem(action->data().toInt());
-    }
-}
-
-void Project::removeResult()
-{
-    // SLOT : sender is menu, data is containing problem number
-    QAction *action = qobject_cast<QAction *>(sender());
-    if (action)
-    {
-        removeResult(action->data().toInt());
-    }
-}
-
 Problem* Project::restoreProblemFromResult(int numResult)
 {
     return restoreProblemFromResult(_results->at(numResult));
@@ -748,62 +736,72 @@ Problem* Project::restoreProblemFromResult(Result* result)
 }
 
 
-void Project::removeResult(int num)
+void Project::removeResult(Result* result)
 {
+    int num = results()->items.indexOf(result);
+    if(num>-1)
+    {
     // result to be removed
-    emit beforeRemoveResult(num);
+        emit beforeRemoveResult(result);
 
     // remove folder and data
-    QString folder = QDir(_results->at(num)->saveFolder()).absolutePath();
+        QString folder = QDir(result->saveFolder()).absolutePath();
     LowTools::removeDir(folder);
     _results->removeRow(num);
 
     save();
 }
+}
 
 
-void Project::removeProblem(int num)
+void Project::removeProblem(Problem* problem)
 {
+    int num = problems()->items.indexOf(problem);
+    if(num>-1)
+    {
     // result to be removed
-    emit beforeRemoveProblem(num);
+        emit beforeRemoveProblem(problem);
 
     // remove folder and data
-    QString folder = QFileInfo(_problems->at(num)->saveFolder()).absolutePath();
+        QString folder = QFileInfo(problem->saveFolder()).absolutePath();
     LowTools::removeDir(folder);
     _problems->removeRow(num);
 
     save();
 }
+}
 
 
-bool Project::renameProblem(int i,QString newName)
+bool Project::renameProblem(Problem* problem,QString newName)
 {
     // test if name already exists
     if(_problems->findItem(newName)>-1)
         return false;
 
     // test if index is valid
-    if((i<0) || (i>_problems->rowCount()))
+    int i = _problems->items.indexOf(problem);
+    if(i<0)
         return false;
 
     // change name
-    _problems->at(i)->rename(newName,true);
+    problem->rename(newName,true);
     save();
     return true;
 }	
 
-bool Project::renameResult(int i,QString newName)
+bool Project::renameResult(Result* result,QString newName)
 {
     // test if name already exists
     if(_results->findItem(newName)>-1)
         return false;
 
     // test if index is valid
-    if((i<0) || (i>_results->rowCount()))
+    int i = _problems->items.indexOf(result);
+    if(i<0)
         return false;
 
     // change name
-    _results->at(i)->rename(newName,true);
+    result->rename(newName,true);
     save();
     return true;
 }
@@ -835,12 +833,13 @@ void Project::addNewOneSimulation()
     if(curModModel())
         this->addNewProblem(Problem::ONESIMULATIONTYPE,curModModel());
 }
-
+#ifdef USEEI
 void Project::addNewEIProblem()
 {
     if(curModModel())
         this->addNewProblem(Problem::EIPROBLEMTYPE,curModModel());
 }
+#endif
 
 //Problem* Project::curLaunchedProblem()
 //{

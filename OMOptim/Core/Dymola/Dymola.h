@@ -77,22 +77,21 @@ public:
 
 
 	static QString getExecutablePath();
-        static bool firstRun(QString moPath,QString modelToConsider,QString storeFolder,QString logFilePath);
-	static bool createDsin(QString moPath,QString modelToConsider,QString folder);
+        static bool firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath);
+        static bool createDsin(QStringList moPaths,QString modelToConsider,QString folder);
         static void start(QString path,QProcess &,int maxNSec=-1);
 	static void verifyInstallation();
 	//static QString getPreambleFromDsin(QTextStream *);
-	static void getVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);
-	static void getVariablesFromDsFile(QTextStream *, MOVector<Variable> *,QString _modelName);
+        static bool getVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);
+        static bool getVariablesFromDsFile(QTextStream *, MOVector<Variable> *,QString _modelName);
 
-	static void getFinalVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);
-	static void getFinalVariablesFromDsFile(QTextStream *, MOVector<Variable> *,QString _modelName);
+        static bool getFinalVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);
+        static bool getFinalVariablesFromDsFile(QTextStream *, MOVector<Variable> *,QString _modelName);
 
 	static void setVariablesToDsin(QString fileName,QString modelName, MOVector<Variable> *,MOParameters *parameters);
         static void writeParameters(QString &allDsinText,MOParameters *parameters);
 	static QString sciNumRx();
 	//static QString Dymola::variableToValueLines(Variable* variable);
-
 
 	// Parameters
         enum DymolaParameters{STOPTIME,TOLERANCE,NINTERVAL,SOLVER,MAXSIMTIME};

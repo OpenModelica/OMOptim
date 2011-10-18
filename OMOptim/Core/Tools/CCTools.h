@@ -43,7 +43,10 @@
 #include "MOOptVector.h"
 #include "MOCCCurve.h"
 #include "EIStream.h"
+#include "EITree.h"
 #include <QtCore/QObject>
+#include "EITools.h"
+
 
 namespace EI
 {
@@ -62,7 +65,13 @@ public:
                                     const QList<QList<MEQflow> > & Qik,
                                     MOCCCurve *gccCurve);
 
+    static void buildICCfromStreams(const EITree & eiTree,
+                                   MOCCCurve *iccProcess,
+                                   MOCCCurve *iccUtilities,
+                                    bool includeUtilities);
+
     static void getPinch(const QList<METemperature> & Tall,const QList<MEQflow>  &HCold,const QList<MEQflow>  &HHot, METemperature & TPinch, MEQflow & dHPinch);
+    static void getPinch(const QList<METemperature> & Tall,const QList<MEQflow>  &DH, METemperature & TPinch, MEQflow & dHPinch);
 
     static void getValues(const QList<METemperature> & Tk,
                           const QList<QList<MEQflow> > & Qik,

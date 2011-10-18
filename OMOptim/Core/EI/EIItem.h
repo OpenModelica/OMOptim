@@ -145,7 +145,7 @@ public:
     //*****************************
     //Children
     //*****************************
-    bool addChild(EIItem*);
+    bool addChild(EIItem*,int i=-1);
     void clearDescendants();
     virtual void clear();
     int streamChildCount() const ;

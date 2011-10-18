@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linkpings universitet, Department of Computer and Information Science,
- * SE-58183 Linkping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+ 	@version 0.9 
 
   */
 #if !defined(_SPEA2ADAPT_H)
@@ -75,10 +75,10 @@ class SPEA2Adapt : public EABase
 {
 public : 
 	SPEA2Adapt();
-        SPEA2Adapt(Project*,Problem*,ModClassTree*,ModPlusCtrl*);
-        SPEA2Adapt(Project*,Problem*,ModClassTree*,ModPlusCtrl*,MOParameters*);
+        SPEA2Adapt(Project*,Problem*,ModClassTree*);
+        SPEA2Adapt(Project*,Problem*,ModClassTree*,MOParameters*);
 	SPEA2Adapt(const SPEA2Adapt &);
-	SPEA2Adapt* clone() const;
+        EABase* clone() const;
 
 	QList<int> compatibleOMCases();
 	Result* launch(QString tempDir);
@@ -96,7 +96,7 @@ Result* SPEA2Adapt::buildResult(moeoUnboundedArchive<EOAdapt> & arch)
 	{
 	case Problem::OPTIMIZATIONTYPE :
                 result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,
-                                                                         _subBlocks,_modClassTree,_modPlusCtrl,arch,_parameters);
+                                                                         _subBlocks,_modClassTree,arch,_parameters);
 		break;
 	}
 	return result;

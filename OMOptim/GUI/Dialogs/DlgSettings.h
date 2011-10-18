@@ -54,33 +54,22 @@
 
 #include "Project.h"
 #include "MOSettings.h"
+#include "MOParametersDlg.h"
 
 
 
-class DlgSettings : public QDialog
+class DlgSettings : public MOParametersDlg
 {
 	Q_OBJECT
 
 public:
-	DlgSettings(MOSettings _settings);
+        DlgSettings(bool editable = true);
 
 
-private :
-	MOSettings settings;
-
-	// store widget and corresponding settings names and types
-	QVector<QWidget*> valueWidgets;
-	QStringList settingsNames;
-	QVector<int> settingsTypes;
-
-	QGridLayout* buildLayoutFromSettings();
 
 
 public slots:
 	void pushedOk();
-	void pushedCancel();
-	void pushedDefault();
-
 
 
 };

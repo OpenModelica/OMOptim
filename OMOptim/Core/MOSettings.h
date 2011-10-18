@@ -47,48 +47,25 @@
 #include <QtCore/QDir>
 #include <QtCore/QVector>
 
+#include "MOParameter.h"
 
 
 /** MOSettings is a classed used to store settings like recentFiles, gui positions...
   It's only using static functions and QSettings class.
   */
-
-
-class MOSettings
+class MOSettings : public MOParameters
 {
-public:
-	enum type
-	{
-		FOLDERPATH,
-		FILEPATH,
-		STRING,
-		BOOL,
-		INT,
-		DOUBLE
-	};
 public:
 	MOSettings(void);
 	~MOSettings(void);
 
+    static void initialize(bool preferDefault);
+    static void updateFromSavedValues();
+    static void save();
+    static void setFromDefaultValues();
 
-
-
-	static void initialize(bool eraseCurrentValues);
-
-	
-
-
-
-	static QStringList names;
-	static QStringList descs;
-	static QVector<int> types;
-	static QVariantList defaultValues;
-	
-	static void setValue(QString, QVariant);
-	static void setValue(int, QVariant);
-	static QVariant getValue(QString);
-	static QVariant getValue(int);
-
+    static QVariant value(int index,QVariant defaultValue = QVariant());
+    static QVariant value(QString name,QVariant defaultValue = QVariant());
 
 	// trick to have a "purely" static class
 	static MOSettings instance;

@@ -29,9 +29,10 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\..\bin\OMOptim.exe"; DestDir: {code:GetOMDir}\bin; Flags: ignoreversion
+Source: "..\..\bin\glpk_4_47.dll"; DestDir: {code:GetOMDir}\bin; Flags: ignoreversion
 
 ;Source:  "OMOptim.ico"; DestDir: {code:GetOMDir}\bin;
-Source:  "..\..\..\..\Documentation\OMDoc\OMOptim\OMOptimUsersGuide.pdf"; DestDir: {code:GetOMDir}\share\doc\omoptim;
+Source:  "..\..\..\..\..\Documentation\OMDoc\OMOptim\OMOptimUsersGuide.pdf"; DestDir: {code:GetOMDir}\share\doc\omoptim;
 
 Source: "..\..\build\version.txt"; DestDir: {tmp}; Flags: dontcopy
 
@@ -57,7 +58,7 @@ Root: HKCR; Subkey: "OMOptimFile\shell\open\command"; ValueType: string; ValueNa
 
 [Dirs]
 ;Name: {app}\Modelica
-;Name: {app}\Microsoft.VC90.CRT
+
 
 [Code]
 
@@ -108,7 +109,7 @@ begin
 
   OMDirPage := CreateInputDirPage(wpSelectDir,
     'OpenModelica Directory', '',
-    'Please select a location for OpenModelica. (We recommend the default.)',
+    'Please select OpenModelica main folder.',
     False, '');
   OMDirPage.Add('');
 
@@ -122,10 +123,9 @@ if RegQueryStringValue(HKCU, 'Environment',
   OMDir2 :=  OMDirPage.Values[0];
 
   LightMsgPage := CreateOutputMsgPage(wpWelcome,
-    'Installations préalables', 'Vérifiez que les programmes suivants sont installés sur votre ordinateur',
+    'Preconditions', 'This is an update only. Please be sure OpenModelica is already installed',
+    'Open Modelica ');
 
-    'Open Modelica ' #13#13 #13#13 + 'Visual Studio run-time libraries');
-    
     
     
     
@@ -140,15 +140,15 @@ if RegQueryStringValue(HKCU, 'Environment',
   URLLabel.Top := 20;
 
 
-  URLLabel2 := TNewStaticText.Create(LightMsgPage);
-  URLLabel2.Caption := 'Download VCRedist';
-  URLLabel2.Cursor := crHand;
-  URLLabel2.OnClick := @URLLabel2OnClick;
-  URLLabel2.Parent := LightMsgPage.Surface;
-  { Alter Font *after* setting Parent so the correct defaults are inherited first }
-  URLLabel2.Font.Style := URLLabel2.Font.Style + [fsUnderline];
-  URLLabel2.Font.Color := clBlue;
-  URLLabel2.Top := 75;
+ // URLLabel2 := TNewStaticText.Create(LightMsgPage);
+ // URLLabel2.Caption := 'Download VCRedist';
+ // URLLabel2.Cursor := crHand;
+ // URLLabel2.OnClick := @URLLabel2OnClick;
+ // URLLabel2.Parent := LightMsgPage.Surface;
+ // { Alter Font *after* setting Parent so the correct defaults are inherited first }
+ // URLLabel2.Font.Style := URLLabel2.Font.Style + [fsUnderline];
+ // URLLabel2.Font.Color := clBlue;
+ // URLLabel2.Top := 75;          
 
 end;
 
@@ -158,7 +158,7 @@ begin
   { Return the selected DataDir }
   //MsgBox(OMDirPage.Values[0], mbError, MB_OK);
 
-  {OMDirPage.Values[0] := %OPENMODELICAHOME}
+ // OMDirPage.Values[0] := %OPENMODELICAHOME
   Result := OMDirPage.Values[0];
   end;
 

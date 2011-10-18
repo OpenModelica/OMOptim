@@ -1,9 +1,14 @@
 #include "EIHEN.h"
 
+namespace EI
+{
 EIHEN::EIHEN()
 {
-    _massFlowError=0.001;
-    _tempError = 0.1;
+    // relative tolerance
+    _relMassFlowError=0.0001;
+    _relQFlowError=0.001;
+    _absTempError.setValue(0.001,METemperature::K);
+
 }
 
 EIHEN::~EIHEN()
@@ -16,7 +21,7 @@ EIHEN::~EIHEN()
 
 EIHEN & EIHEN::operator=(const EIHEN& b)
 {
-    _eiTree = b._eiTree;
+
 
     // copying nodes and map
     QMap<EIHEN_Node*,EIHEN_Node*> mapCorres; //<bNodePtr,thisNodePtr>
@@ -74,28 +79,29 @@ EIHEN & EIHEN::operator=(const EIHEN& b)
 bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
 {
     bool ok;
+    QString shortStreamName;
 
     EIStream* curStream;
     bool isHot;
     EIHEN_HENode* henode;
-    double massFlowError=0.001; // relative massflow error accepted (since MILP results have a limited precision)
-    METemperature tempError(0.1); //absolute temperature error accepted in junctions
-
-
-
+    MEMassFlow curStreamMFlow;
+    EIGroup* curGroup;
+    EIGroupFact* curGroupFact;
+    QList<EIHEN_Node*> pendingNodes;
 
     bool alreadyDone;
     //copying eiTree
-    _eiTree = eiTree;
+
 
     QStringList allStreams = eiConns.allStreams();
 
-    QList<EIHEN_Node*> pendingNodes;
 
     // creating nodes for each stream
     for(int i=0;i<allStreams.size();i++)
     {
         curStream = dynamic_cast<EIStream*>(eiTree.findItem(allStreams.at(i)));
+        pendingNodes.clear();
+
         if(curStream)
         {
             isHot = curStream->isHot();
@@ -117,8 +123,14 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
             _mapRoots.insert(curStream->name(),rootNode);
             rootNode->_outletT = allT.at(0);
             rootNode->_inletT = allT.at(0);
-            rootNode->setMassFlow(curStream->massFlowNum());
 
+            // get and ste mass flow
+            if(EIReader::getFirstParentGroupFact(curStream,curGroupFact,curGroup))
+                curStreamMFlow = curStream->massFlowNum()*curGroupFact->value;
+            else
+                curStreamMFlow = curStream->massFlowNum();
+
+            rootNode->setMassFlow(curStreamMFlow);
 
             pendingNodes.push_back(rootNode);
 
@@ -129,7 +141,7 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                 //if next temperatures are really near current one (i.e. difference under _tempError)
                 //consider next temperature as equivalent as this one (append corresponding eiconns)
 
-                while((iT+1<allT.size())&&(allT.at(iT+1).equals(allT.at(iT),_tempError)))
+                while((iT+1<allT.size())&&(allT.at(iT+1).equalsAbs(allT.at(iT),_absTempError)))
                 {
                     //append eiconns
                     comingConns.append(eiConns.filterTin(curStream->name(),allT.at(iT+1)));
@@ -144,6 +156,8 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                 // one pending-one coming
                 if(!alreadyDone && (pendingNodes.size()==1)&&(comingConns.size()==1))
                 {
+
+
                     alreadyDone = true;
 
                     // create new node
@@ -155,6 +169,9 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                     henode->_inletT = comingConns.at(0).Tin(curStream->name());
                     henode->_outletT = comingConns.at(0).Tout(curStream->name());
                     henode->_qFlow = comingConns.at(0).qFlow();
+
+                    Q_ASSERT( henode->_inletT.value(METemperature::K)>0);
+                    Q_ASSERT( henode->_outletT.value(METemperature::K)>0);
 
                     // connect it
                     connect(pendingNodes.at(0),henode);
@@ -177,6 +194,8 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                     hesplitter->_inletT = comingConns.at(0).Tin(curStream->name());
                     hesplitter->_outletT = hesplitter->_inletT;
 
+                    Q_ASSERT( hesplitter->_inletT.value(METemperature::K)>0);
+                    Q_ASSERT( hesplitter->_outletT.value(METemperature::K)>0);
 
                     // connect it
                     connect(pendingNodes.at(0),hesplitter);
@@ -197,12 +216,14 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                         henode->_qFlow = comingConns.at(iHe).qFlow();
 
 
+                        Q_ASSERT( henode->_inletT.value(METemperature::K)>0);
+                        Q_ASSERT( henode->_outletT.value(METemperature::K)>0);
 
                         //connect them
                         connect(hesplitter,henode);
 
                         // update pendingList
-                        pendingNodes.append(henode);
+                        pendingNodes.push_back(henode);
                     }
                 }
 
@@ -216,6 +237,8 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                     hemixer->_inletT = comingConns.at(0).Tin(curStream->name());
                     hemixer->_outletT = hemixer->_inletT;
 
+                    Q_ASSERT( hemixer->_inletT.value(METemperature::K)>0);
+                    Q_ASSERT( hemixer->_outletT.value(METemperature::K)>0);
 
                     // create henode
                     henode = new EIHEN_HENode(curStream->name());
@@ -228,12 +251,16 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                     henode->_qFlow = comingConns.at(0).qFlow();
 
 
+                    Q_ASSERT( henode->_inletT.value(METemperature::K)>0);
+                    Q_ASSERT( henode->_outletT.value(METemperature::K)>0);
+
+
                     // filter pendingNodes concerned (Tout(pendingNode)==Tin(comingNode))
                     QList<EIHEN_Node*> subPendingNodes;
 
                     for(int iPn=0;iPn<pendingNodes.size();iPn++)
                     {
-                        if(pendingNodes.at(iPn)->_outletT.equals(comingConns.at(0).Tin(curStream->name()),_tempError))
+                        if(pendingNodes.at(iPn)->_outletT.equalsAbs(comingConns.at(0).Tin(curStream->name()),_absTempError))
                         {
                             //connect concerned
                             connect(pendingNodes.at(iPn),hemixer);
@@ -297,7 +324,7 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                         while(!found && (iC<comingConns.size()))
                         {
                             //if corresponds
-                            if(curPMassFlow.equals(comingConns.at(iC).massFlow(curStream->name()),massFlowError))
+                            if(curPMassFlow.equalsRel(comingConns.at(iC).massFlow(curStream->name()),_relMassFlowError))
                             {
                                 found = true;
                                 //create henode
@@ -316,6 +343,7 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                                 //update
                                 pendingNodes.removeAt(0);
                                 comingConns.removeAt(iC);
+                                pendingNodes.push_back(henode);
                             }
                             else
                                 iC++;
@@ -382,10 +410,24 @@ bool EIHEN::setData( EITree & eiTree, const EIConns & eiConns)
                     endnode->_outletT=endnode->_inletT;
                     _allNodes.push_back(endnode);
 
-                    //connect
+                    if(pendingNodes.size()>1)
+                    {
+                        // create mixer
+                        // create a mixer (will be deleted if not needed or added otherwise)
+                        EIHEN_Mixer* hemixer = new EIHEN_Mixer(curStream->name());
+                        hemixer->_inletT = pendingNodes.at(0)->_outletT;
+                        hemixer->_outletT = hemixer->_inletT;
+                        _allNodes.push_back(hemixer);
+
                     for(int iP=0;iP<pendingNodes.size();iP++)
                     {
-                        connect(pendingNodes.at(iP),endnode);
+                            connect(pendingNodes.at(iP),hemixer);
+                    }
+                        connect(hemixer,endnode);
+                    }
+                    else
+                    {
+                        connect(pendingNodes.at(0),endnode);
                     }
 
                     //update pending nodes
@@ -416,13 +458,54 @@ bool EIHEN::isValid(QString & msg) const
     bool result = true;
     QString subMsg;
 
+    EIHEN_HENode* curHENode;
+    EIHEN_HENode* curHENode2;
+
     for(int i=0;i<_allNodes.size();i++)
     {
         subMsg.clear();
         result = result && _allNodes.at(i)->isValid(subMsg);
         msg += subMsg;
-    }
 
+        curHENode = dynamic_cast<EIHEN_HENode*>(_allNodes.at(i));
+
+        if(curHENode)
+        {
+            // check if heat exchanger exists
+            int iHE=0;
+            bool found=false;
+            while(!found && (iHE<hes().size()))
+            {
+                if(_hes.at(iHE)->nodeA()==curHENode)
+                {
+                    found = true;
+                    curHENode2 = dynamic_cast<EIHEN_HENode*>(_hes.at(iHE)->nodeB());
+    }
+                else if(_hes.at(iHE)->nodeB()==curHENode)
+                {
+                    found = true;
+                    curHENode2 =dynamic_cast<EIHEN_HENode*>( _hes.at(iHE)->nodeA());
+                }
+                if(!found)
+                    iHE++;
+            }
+            if(!found)
+            {
+                result = false;
+                msg += "Inconsistent : heat exchanger is absent (stream :"+curHENode->stream()+", qflow: "+curHENode->_qFlow.toString()+")\n";
+            }
+            else
+            {
+                //check qflows correspond
+                if(!curHENode2->_qFlow.equalsRel(curHENode->_qFlow,_relMassFlowError))
+                {
+                    result = false;
+                    msg += "Inconsistent : heat exchanger is incoherent (streams :"+curHENode->stream()+","+curHENode2->stream();
+                    msg+=" ; qflows : "+curHENode->_qFlow.toString()+","+curHENode2->_qFlow.toString()+")\n";
+                }
+            }
+        }
+    }
     return result;
 }
 
@@ -468,9 +551,9 @@ EIHEN_HENode* EIHEN::findHENode(const QString &stream,const METemperature &Tin, 
         if(curHeNode)
         {
             found = curHeNode->stream()==stream;
-            found = found && curHeNode->_inletT == Tin;
-            found = found && curHeNode->_outletT == Tout;
-            found = found && curHeNode->_qFlow == qflow;
+            found = found && curHeNode->_inletT.equalsAbs(Tin,_absTempError);
+            found = found && curHeNode->_outletT.equalsAbs(Tout,_absTempError);
+            found = found && curHeNode->_qFlow.equalsRel(qflow,_relQFlowError);
         }
         i++;
     }
@@ -507,5 +590,6 @@ METemperature EIHEN::Tmax()
         tmax = std::max(tmax, _allNodes.at(i)->_outletT);
     }
     return tmax;
+}
 }
 

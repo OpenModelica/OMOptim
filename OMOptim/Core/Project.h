@@ -117,7 +117,6 @@ private:
         Results* _results;
 	
 	ModReader* _modReader;
-	ModPlusCtrl* _modPlusCtrl;
         ModClassTree* _modClassTree;
 	QMap<ModModel*,ModModelPlus*> _mapModelPlus;
 
@@ -150,6 +149,7 @@ public:
 	bool compileModModelPlus(ModModelPlus*);
 	void storeMmoFilePath(QString mmoFilePath);
 	void refreshAllMod();
+    void reloadModModel(ModModel*);
 
 	//****************************
 	//Problem managment
@@ -160,8 +160,8 @@ public:
         void addResult(QString filePath);
 	void addProblem(QString filePath);
         void launchProblem(Problem*);
-        void removeResult(int num);
-	void removeProblem(int num);
+    void removeResult(Result*);
+    void removeProblem(Problem*);
 
 
 
@@ -187,7 +187,6 @@ public:
         Problems* problems(){return _problems;};
         Results* results(){return _results;};
 	ModReader* modReader(){return _modReader;};
-	ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
         ModClassTree* modClassTree(){return _modClassTree;};
         ModClass* rootModClass(){return _modClassTree->rootElement();};
 	QMap<ModModel*,ModModelPlus*> mapModelPlus(){return _mapModelPlus;};
@@ -211,21 +210,25 @@ public:
 	// Slots
 	//****************************	
 	public slots :
-                void removeResult();
-		void removeProblem();
+
+
+    // problems
                 Problem* restoreProblemFromResult(int numSolved);
                 Problem* restoreProblemFromResult(Result* result);
-		bool renameProblem(int, QString);
-                bool renameResult(int, QString);
-
+    bool renameProblem(Problem*, QString);
                 void onProblemFinished(Problem*,Result*);
 		void onProblemStopAsked(Problem*);
 
-		void onModClassSelectionChanged(QList<ModClass*> &classes);
-
                 void addNewOptimization();
                 void addNewOneSimulation();
+
+#ifdef USEEI
                 void addNewEIProblem();
+#endif
+
+    // others
+    bool renameResult(Result*, QString);
+    void onModClassSelectionChanged(QList<ModClass*> &classes);
 
 		//****************************
 		// Signals
@@ -245,8 +248,8 @@ public:
 		void modifiersUpdated();
 		void componentsUpdated();
 		void connectionsUpdated();
-                void beforeRemoveResult(int);
-		void beforeRemoveProblem(int);
+    void beforeRemoveResult(Result*);
+    void beforeRemoveProblem(Problem*);
 
 
 		void problemBegun(Problem*);

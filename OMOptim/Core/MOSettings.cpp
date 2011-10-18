@@ -42,10 +42,10 @@
 #include "Dymola.h"
 
 // tricks to have a "purely" static class
-QStringList MOSettings::names = QStringList();
-QStringList MOSettings::descs = QStringList();
-QVariantList MOSettings::defaultValues = QVariantList();
-QVector<int> MOSettings::types = QVector<int>();
+//QStringList MOSettings::names = QStringList();
+//QStringList MOSettings::descs = QStringList();
+//QVariantList MOSettings::defaultValues = QVariantList();
+//QVector<int> MOSettings::types = QVector<int>();
 
 MOSettings MOSettings::instance = MOSettings();
 
@@ -59,60 +59,71 @@ MOSettings::~MOSettings(void)
 }
 
 
-void MOSettings::initialize(bool eraseCurrentValues)
+void MOSettings::initialize(bool preferDefault)
 {
+    setFromDefaultValues();
+    if(!preferDefault)
+        updateFromSavedValues();
+    save();
+}
 
-        names.clear();
-        descs.clear();
-        types.clear();
-        defaultValues.clear();
+void MOSettings::updateFromSavedValues()
+{
+    QSettings globalSettings("MO", "Settings");
+    QString settingName;
+    QString group;
+    QVariant value;
+    for(int i=0;i<instance.items.size();i++)
+    {
+        group = instance.at(i)->getFieldValue(MOParameter::GROUP).toString();
 
+        settingName = instance.at(i)->name();
+        if(!group.isEmpty())
+            settingName = group+"/"+settingName;
 
-        QSettings settings("MO", "Settings");
+        value = globalSettings.value(settingName,QVariant());
+        if(!value.isNull())
+            instance.at(i)->setFieldValue(MOParameter::VALUE,value);
+    }
+}
 
-//	//*******************************
-//	// MO Extra Path
-//	//*******************************
-//	names << QString("path/mainFolder");
-//	descs << QString("Path of installation");
-//	defaultValues << getenv("MOPATH");
-//	types.push_back(FOLDERPATH);
+void MOSettings::save()
+{
+    QSettings globalSettings("MO", "Settings");
+    QString settingName;
+    QString group;
+    QVariant value;
+    for(int i=0;i<instance.items.size();i++)
+    {
+        group = instance.at(i)->getFieldValue(MOParameter::GROUP).toString();
 
-//	//*******************************
-//	// Default modelica library
-//	//*******************************
-//	names << QString("path/modLib");
-//	descs << QString("Path of modelica library");
-//	QString modLibPath(getenv("MOPATH"));
-//	modLibPath += QDir::separator();
-//	modLibPath += "Modelica";
-//	modLibPath += QDir::separator();
-//	modLibPath += "Modelica.mo";
-//	defaultValues << modLibPath;
-//	types.push_back(FILEPATH);
+        settingName = instance.at(i)->name();
+        if(!group.isEmpty())
+            settingName = group+"/"+settingName;
 
-//	//*******************************
-//	// Default ei library
-//	//*******************************
-//	names << QString("path/eiLib");
-//	descs << QString("Path of EI library");
-//	QString eiLibPath(getenv("MOPATH"));
-//	eiLibPath += QDir::separator();
-//	eiLibPath += "Modelica";
-//	eiLibPath += QDir::separator();
-//	eiLibPath += "EI.mo";
-//	defaultValues << eiLibPath;
-//	types.push_back(FILEPATH);
+        value = instance.at(i)->value();
+        globalSettings.setValue(settingName,value);
+    }
+}
+
+void MOSettings::setFromDefaultValues()
+{
+    QStringList names;
+    QStringList descs;
+    QStringList groups;
+    QVariantList defaultValues;
+    QVector<MOParameter::Type> types;
 
         //*******************************
         // Dymola path
         //*******************************
 #ifdef WIN32
-        names << QString("Dymola/dymolaExe");
+    names << QString("dymolaExe");
+    groups << "Dymola";
         descs << QString("Path of Dymola executable");
         QString dymolaPath = Dymola::getExecutablePath();
         defaultValues << dymolaPath;
-        types.push_back(FILEPATH);
+    types.push_back(MOParameter::FILEPATH);
 #endif
 
 //	//*******************************
@@ -127,79 +138,43 @@ void MOSettings::initialize(bool eraseCurrentValues)
         // Model depth read at beginning
         //*******************************
         names << QString("DepthReadWhileLoadingModModel");
+    groups << QString();
         descs << QString("Default reading depth in Modelica hierarchy (-1 : entire model)");
         defaultValues << 2;
-        types.push_back(INT);
+    types.push_back(MOParameter::INT);
 
         //*******************************
         // Max number of digits in dsin
         //*******************************
-        names << QString("Dymola/MaxDigitsDsin");
+    names << QString("MaxDigitsDsin");
+    groups << "Dymola";
         descs << QString("Maximum number of digits in dsin.txt");
         defaultValues << 5;
-        types.push_back(INT);
+    types.push_back(MOParameter::INT);
 
-//	//*******************************
-//	// Gnuplot enabling
-//	//*******************************
-//	names << QString("bool/useGnuplot");
-//	descs << QString("Use gnuplot for moo temp results");
-//	defaultValues << false;
-//	types.push_back(BOOL);
 
-//        //*******************************
-//        // Show dymosim window
-//        //*******************************
-//        names << QString("bool/showDymosim");
-//        descs << QString("Show Dymosim");
-//        defaultValues << false;
-//        types.push_back(BOOL);
+    // processing
+    MOParameter *param;
+    bool found;
+    int iP;
 
-//	//*******************************
-//	// Gnuplot path
-//	//*******************************
-//	names << QString("path/pgnuplotEXE");
-//	descs << QString("Path of pgnuplot executable");
-//	defaultValues << "pgnuplot.exe";
-//	types.push_back(FILEPATH);
-
-        //*******************************
-        // Milp files path
-        //*******************************
-#ifdef USEEI
-        names << QString("path/MILPFolder");
-        descs << QString("Folder of Milp models");
-        QString MOPath(getenv("MOPATH"));
-        defaultValues << MOPath+QDir::separator()+"Milp";
-        types.push_back(FOLDERPATH);
-#endif
         for(int i=0; i<names.size();i++)
         {
-                if(eraseCurrentValues || settings.value(names.at(i))==QVariant())
-                        settings.setValue(names.at(i),defaultValues.at(i));
+            // update
+            param = new MOParameter(i,names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
+            param->setFieldValue(MOParameter::GROUP,groups.at(i));
+            instance.addItem(param);
         }
 }
 
-
-
-void MOSettings::setValue(QString _name, QVariant _value)
+QVariant MOSettings::value(int index,QVariant defaultValue)
 {
-        QSettings globalSettings("MO", "Settings");
-        globalSettings.setValue(_name,_value);
+    return ((MOParameters*)(&instance))->value(index,defaultValue);
 }
 
-void MOSettings::setValue(int i, QVariant _value)
+QVariant MOSettings::value(QString name,QVariant defaultValue)
 {
-        QSettings globalSettings("MO", "Settings");
-        globalSettings.setValue(names.at(i),_value);
+    return ((MOParameters*)(&instance))->value(name,defaultValue);
 }
-QVariant MOSettings::getValue(QString _name)
-{
-        QSettings globalSettings("MO", "Settings");
-        return globalSettings.value(_name);
-}
-QVariant MOSettings::getValue(int i)
-{
-        QSettings globalSettings("MO", "Settings");
-        return globalSettings.value(names.at(i));
-}
+
+

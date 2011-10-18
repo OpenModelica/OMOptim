@@ -41,12 +41,11 @@ http://www-cep.ensmp.fr/english/
 #include "ModPlusOMCtrl.h"
 
 
-ModPlusOMCtrl::ModPlusOMCtrl(ModModelPlus* model,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName)
-    :ModPlusCtrl(model,moomc,mmoFolder,moFilePath,modModelName)
+ModPlusOMCtrl::ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName)
+    :ModPlusCtrl(project,model,moomc,mmoFolder,moFilePath,modModelName)
 {
-    QDir tDir(mmoFolder);
-
-    _initFile = _modModelName+"_init.xml";
+    _initFileTxt = _modModelName+"_init.txt";
+    _initFileXml = _modModelName+"_init.xml";
     _resFile = _modModelName+"_res.csv";
 #ifdef WIN32
     _exeFile = _modModelName+".exe";
@@ -97,30 +96,49 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
 {
 
 
+    QString initFileTxt;
+    QString initFileXml;
+
     bool authorizeRecreate=false;
     if(initFile.isEmpty())
     {
         authorizeRecreate=true;
-        initFile = _mmoFolder+QDir::separator()+_initFile;
+
+        initFileTxt = _mmoFolder+QDir::separator()+_initFileTxt;
+        initFileXml = _mmoFolder+QDir::separator()+_initFileXml;
+    }
+    else
+    {
+        if(initFile.right(3)=="xml")
+            initFileXml = initFile;
+
+        if(initFile.right(3)=="txt")
+            initFileTxt = initFile;
     }
 
     infoSender.send(Info("Reading initial variables in "+initFile,ListInfo::NORMAL2));
 
     initVariables->clear();
-    QFileInfo initFileInfo = QFileInfo(initFile);
 
-    if(!initFileInfo.exists()&&authorizeRecreate)
+    QFileInfo initFileInfoXml = QFileInfo(initFileXml);
+    QFileInfo initFileInfoTxt = QFileInfo(initFileTxt);
+
+    if(!initFileInfoXml.exists()&& !initFileInfoTxt.exists() && authorizeRecreate)
     {
         createInitFile();
     }
 
-    if(!initFileInfo.exists())
+    if(!initFileInfoXml.exists()&& !initFileInfoTxt.exists())
     {
         return false;
     }
     else
     {
-        OpenModelica::getInputVariablesFromXmlFile(_moomc,initFile,_modModelName,initVariables);
+        if(initFileInfoXml.exists())
+            OpenModelica::getInputVariablesFromXmlFile(_moomc,initFileXml,_modModelName,initVariables);
+        else if(initFileInfoTxt.exists())
+            OpenModelica::getInputVariablesFromTxtFile(_moomc,initFileTxt,initVariables,_modModelName);
+
         return true;
     }
 
@@ -139,11 +157,10 @@ bool ModPlusOMCtrl::compile()
     // Inform
     ListInfo::InfoNum iMsg;
     if(success)
-        iMsg = ListInfo::MODELCOMPILATIONSUCCESS;
+        infoSender.send(Info(ListInfo::MODELCOMPILATIONSUCCESS,_modModelName,logFile));
     else
-        iMsg = ListInfo::MODELCOMPILATIONFAIL;
+        infoSender.send(Info("Model "+_modModelName+" failed to compile. See OMC log tab for details.",ListInfo::ERROR2));
 
-    infoSender.send(Info(iMsg,_modModelName,logFile));
 
     return success;
 }
@@ -184,22 +201,35 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
     QDir modelTempDir(tempFolder);
     modelTempDir.mkdir(tempFolder);
 
-    // copy files in temp dir (#TODO : optimize with a config.updateTempDir in case of several consecutive launches)
+
+    /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QStringList allFilesToCopy;
     QDir mmoDir = QDir(_mmoFolder);
-    allFilesToCopy << mmoDir.filePath(_initFile) << mmoDir.filePath(_exeFile);
+    allFilesToCopy << mmoDir.filePath(_exeFile);
     allFilesToCopy.append(filesToCopy);
+    // choose init file (can take both)
+    bool txt=mmoDir.exists(_initFileTxt);
+    bool xml=mmoDir.exists(_initFileXml);
+    if(txt)
+        allFilesToCopy <<  mmoDir.filePath(_initFileTxt);
+    if(xml)
+        allFilesToCopy << mmoDir.filePath(_initFileXml);
+
+    if(!txt && ! xml)
+        infoSender.sendError("Unable to find an init file for model "+_modModelName);
 
     QDir tempDir = QDir(tempFolder);
     QFileInfo fileToCopyInfo;
     QFile fileToCopy;
-
+    bool copyOk;
     for(int i=0; i< allFilesToCopy.size();i++)
     {
         fileToCopy.setFileName(allFilesToCopy.at(i));
         fileToCopyInfo.setFile(fileToCopy);
         tempDir.remove(fileToCopyInfo.fileName());
-        fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
+        copyOk = fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
+        if(!copyOk)
+            infoSender.sendWarning("Unable to copy file in temp directory : "+fileToCopy.fileName()+" ("+fileToCopy.errorString()+")");
     }
 
 
@@ -209,15 +239,25 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
     for(int i=0;i<filesToRemove.size();i++)
         tempDir.remove(filesToRemove.at(i));
 
-    QString tempInitFile = tempDir.absoluteFilePath(_initFile);
+    QString tempInitFileXml = tempDir.absoluteFilePath(_initFileXml);
+    QString tempInitFileTxt = tempDir.absoluteFilePath(_initFileTxt);
     QString tempResFile = tempDir.absoluteFilePath(_resFile);
     QString tempExeFile = tempDir.absoluteFilePath(_exeFile);
 
 
-    // Specifying new Variables values in OM input file
-    OpenModelica::setInputXml(tempInitFile,inputVars,_modModelName,parameters());
+    QFileInfo initXmlInfo(tempInitFileXml);
+    QFileInfo initTxtInfo(tempInitFileTxt);
 
-    // Launching oepnmodelica
+    // use xml or txt init file ?
+    bool useXml = initXmlInfo.exists();
+
+    // Specifying new Variables values in OM input file
+    if(useXml)
+        OpenModelica::setInputXml(tempInitFileXml,inputVars,_modModelName,parameters());
+    else
+        OpenModelica::setInputVariablesTxt(tempInitFileTxt,inputVars,_modModelName,parameters());
+
+    // Launching openmodelica
     int maxNSec=-1;
     int iParam = _parameters->findItem((int)OpenModelica::MAXSIMTIME,MOParameter::INDEX);
     if(iParam>-1)

@@ -73,6 +73,10 @@ RCC_DIR = ../debug/generatedfiles/rcc
         UI_DIR = ../generatedfiles/ui
         MOC_DIR = ../generatedfiles/moc
         RCC_DIR = ../generatedfiles/rcc
+
+        contains(CONFIG,useei){
+               DESTDIR = ../binEI
+}
 }
 
 
@@ -109,16 +113,17 @@ contains(CONFIG,useei){
     DEFINES+= USEEI
 
 win32 {
-    LIBS +=	-L$$(OMDEV)/lib/glpk/lib \
-                -lglpk.dll
+    LIBS +=	-L$$(GLPKLIB)\
+                -lglpk_4_47
 }else{
     LIBS += -lglpk
 }
 
 RESOURCES += \
-    ../Core/Optim/MILP/OMOptimEI.qrc
+    ../Core/Optim/MILP/OMOptimEI.qrc\
+    ../Core/CERES/CERES.qrc
 
-    INCLUDEPATH += $$(OMDEV)/lib/glpk/include
+    INCLUDEPATH += $$(GLPKINCLUDE)
     HEADERS +=  ../Core/Optim/MILP/GLPKTools.h \
                 ../Core/Optim/MILP/GlpkCtrl.h \
                 ../Core/Optim/MILP/CbcCtrl.h \
@@ -139,9 +144,8 @@ RESOURCES += \
                 ../Core/EI/EIStream.h \
                 ../Core/EI/EITargetResult.h \
                 ../Core/EI/EITools.h \
-                ../Core/EI/EIModelExtractor.h \
+                ../Core/EI/EIModelicaExtractor.h \
                 ../Core/EI/EILinguist.h \
-                ../Core/EI/ModEIConverter.h \
                 ../Core/Problems/EIMERProblem.h\
                 ../Core/EI/EIMERResult.h \
                 ../Core/EI/TableEIItems.h \
@@ -183,7 +187,11 @@ RESOURCES += \
     ../GUI/Scene/EIHENGraphicEdge.h \
 ../GUI/Scene/EIHENView.h \
 ../GUI/Widgets/WidgetEIHENView.h \
-    ../Core/Modelica/ModelicaHENImplementer.h
+                ../Core/Modelica/ModelicaHENImplementer.h \
+                ../Core/EI/EIModelicaModifier.h \
+                ../Core/EI/EIModelicaHE.h \
+                ../Core/EI/CERESInfo.h\
+                ../GUI/Views/EITreeView.h
 
     SOURCES +=  ../Core/Optim/MILP/GLPKTools.cpp \
                 ../Core/Optim/MILP/GlpkCtrl.cpp \
@@ -206,8 +214,7 @@ RESOURCES += \
                 ../Core/EI/EIControler.cpp \
                 ../Core/EI/EIStream.cpp \
                 ../Core/EI/EITools.cpp \
-                ../Core/EI/EIModelExtractor.cpp \
-                ../Core/EI/ModEIConverter.cpp \
+                ../Core/EI/EIModelicaExtractor.cpp \
                 ../Core/EI/EIValueFiller.cpp \
                 ../Core/EI/EIMERResult.cpp \
                 ../Core/EI/TableEIItems.cpp \
@@ -245,7 +252,11 @@ RESOURCES += \
     ../GUI/Scene/EIHENGraphicEdge.cpp \
 ../GUI/Scene/EIHENView.cpp \
 ../GUI/Widgets/WidgetEIHENView.cpp \
-    ../Core/Modelica/ModelicaHENImplementer.cpp
+    ../Core/Modelica/ModelicaHENImplementer.cpp \
+    ../Core/EI/EIModelicaModifier.cpp \
+../Core/EI/EIModelicaHE.cpp\
+    ../Core/EI/CERESInfo.cpp\
+    ../GUI/Views/EITreeView.cpp
 
 
 
@@ -321,6 +332,7 @@ INCLUDEPATH += . \
               ../GUI/Scene \
               ../GUI/Tabs \
               ../GUI/Tools \
+              ../GUI/Views \
               ../GUI/Widgets \
               ../Core/Optim/EA \
               ../Core/Optim/MILP \
@@ -335,7 +347,8 @@ INCLUDEPATH += . \
               ../Core/Optim/EA/NSGA2 \
               ../Core/Optim/EA/Results \
               ../Core/Optim/EA/SPEA2 \
-              ../Core/Optim/EA/SPEA2Adaptative
+              ../Core/Optim/EA/SPEA2Adaptative \
+
 
 # Input
 HEADERS += ../config.h \
@@ -377,6 +390,7 @@ HEADERS += ../config.h \
            ../Core/Modelica/ModPackage.h \
            ../Core/Modelica/ModPlusCtrl.h \
            ../Core/Modelica/ModReader.h \
+           ../Core/Modelica/ModRecord.h \
            ../Core/OMC/commandunit.h \
            ../Core/OMC/inputcelldelegate.h \
            ../Core/OMC/MOomc.h \
@@ -511,7 +525,10 @@ HEADERS += ../config.h \
     ../GUI/Tabs/TabResOptimization_Config.h \
     ../Core/Units/MESurface.h \
     ../Core/Variables.h \
-    ../Core/OptObjectives.h
+    ../Core/OptObjectives.h \
+    ../Core/Units/MEHTCoeff.h \
+    ../Core/Units/MESpecHeatCapacity.h \
+    ../Core/Units/Units.h
 
 
 
@@ -587,6 +604,7 @@ SOURCES += ../main.cpp \
            ../Core/Modelica/ModPackage.cpp \
            ../Core/Modelica/ModPlusCtrl.cpp \
            ../Core/Modelica/ModReader.cpp \
+            ../Core/Modelica/ModRecord.cpp \
            ../Core/OMC/MOomc.cpp \
            ../Core/OMC/omc_communication.cpp \
            ../Core/OMC/omc_communicator.cpp \
@@ -686,10 +704,16 @@ SOURCES += ../main.cpp \
     ../Core/Units/MEMassFlow.cpp \
     ../Core/Units/MESurface.cpp \
     ../Core/Variables.cpp \
-    ../Core/OptObjectives.cpp
-
+    ../Core/OptObjectives.cpp \
+    ../Core/Units/MEHTCoeff.cpp \
+    ../Core/Units/MESpecHeatCapacity.cpp \
+    ../GUI/Tools/MyTreeView.cpp
 
 RESOURCES += \
     ../GUI/Resources/OMOptim.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc
+
+
+
+

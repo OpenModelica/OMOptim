@@ -68,8 +68,16 @@ public :
         FORCESOS
     };
 
+    enum preset
+    {
+        FAST,
+        PRECISE,
+        CUSTOM
+    };
+
     enum parameters
     {
+        PRESET,
         SPLITPINCH,//if true, split streams in two zones / pinch
         ALLOWNI,// if true, non-isothermal connections are allowed for every streams
         ALLOWSPLITS,// if true, splits are allowed for all streams
@@ -81,7 +89,9 @@ public :
         LOGSENS, //print sensitivity report (only for glpk)
         CBCPREPROCESS,
         PRIMALTOLERANCE,
-        INTEGERTOLERANCE
+        INTEGERTOLERANCE,
+        HECOSTA, // fix cost of an heat exchanger
+        HECOSTB // variable cost of an heat exchanger ($,€,£/m2)
     };
 
     /**
@@ -97,14 +107,26 @@ public :
 
     static void setDefaultParameters(MOParameters *parameters)
     {
-        parameters->addItem(new MOParameter((int)SPLITPINCH,"Split streams in two zones (below,above pinch)","PinchSplit",false,MOParameter::BOOL));
-        parameters->addItem(new MOParameter((int)ALLOWNI,"Allow non-isothermal","NI",false,MOParameter::BOOL));
-        parameters->addItem(new MOParameter((int)ALLOWSPLITS,"Allow splits","S",true,MOParameter::BOOL));
-        parameters->addItem(new MOParameter((int)ALLOWSEVERAL,"Allow several heat exchangers between two streams","B",false,MOParameter::BOOL));
-        parameters->addItem(new MOParameter((int)KMAX,"Maximum heat exhangers between two streams","S",5,MOParameter::INT,1,std::numeric_limits<int>::max(),(int)ALLOWSEVERAL));
-        parameters->addItem(new MOParameter((int)SPLITDT,"Should we split temperature intervals (better if yes but computation time increased) ?","",false,MOParameter::BOOL));
-        parameters->addItem(new MOParameter((int)SPLITDTSTEP,"Maximum temperature interval (if an interval is higher, it will be splitted)","",10,MOParameter::DOUBLE,1E-10,std::numeric_limits<int>::max(),(int)SPLITDT));
 
+        QMap<int,QString> presetList;
+        presetList.insert(CUSTOM,"Custom");
+        presetList.insert(FAST,"Fast");
+        presetList.insert(PRECISE,"Precise");
+        parameters->addItem(new MOParameterListed((int)PRESET,"Preset","Preset",CUSTOM,presetList));
+
+
+        parameters->addItem(new MOParameter((int)SPLITPINCH,"PinchSplit","Split streams in two zones (below,above pinch)",false,MOParameter::BOOL));
+        parameters->addItem(new MOParameter((int)ALLOWNI,"NI","Allow non-isothermal",false,MOParameter::BOOL));
+        parameters->addItem(new MOParameter((int)ALLOWSPLITS,"S","Allow splits",true,MOParameter::BOOL));
+        parameters->addItem(new MOParameter((int)ALLOWSEVERAL,"B","Allow several heat exchangers between two streams",false,MOParameter::BOOL));
+        parameters->addItem(new MOParameter((int)KMAX,"S","Maximum heat exhangers between two streams",5,MOParameter::INT,1,std::numeric_limits<int>::max(),(int)ALLOWSEVERAL));
+        parameters->addItem(new MOParameter((int)SPLITDT,"splitDT","Should we split temperature intervals (better if yes but computation time increased) ?",false,MOParameter::BOOL));
+        parameters->addItem(new MOParameter((int)SPLITDTSTEP,"splitdtstep","Maximum temperature interval (if an interval is higher, it will be splitted)",10,MOParameter::DOUBLE,1E-10,std::numeric_limits<int>::max(),(int)SPLITDT));
+
+
+        QList<int> grouped;
+        grouped << SPLITPINCH << ALLOWNI << ALLOWSPLITS << ALLOWSEVERAL << KMAX  << SPLITDT << SPLITDTSTEP;
+        parameters->regroup("Options",grouped);
 
 
         //solver choice
@@ -113,8 +135,7 @@ public :
         if(CBCTools::isInstalled())
             solverList.insert(CBC,"Cbc");
         parameters->addItem(new MOParameterListed((int)SOLVER,"Solver","",GLPK,solverList));
-
-        parameters->addItem(new MOParameter((int)LOGSENS,"Print sensitivity report (GLPK)","LOGSENS",true,MOParameter::BOOL,0,1,(int)SOLVER,(int)GLPK));
+        parameters->addItem(new MOParameter((int)LOGSENS,"LOGSENS","Print sensitivity report (GLPK)",true,MOParameter::BOOL,0,1,(int)SOLVER,(int)GLPK));
 
         if(CBCTools::isInstalled())
         {
@@ -130,17 +151,36 @@ public :
             cbcPreprocessList.insert(STRATEGY,"strategy");
             cbcPreprocessList.insert(AGGREGATE,"aggregate");
             cbcPreprocessList.insert(FORCESOS,"forcesos");
-            parameters->addItem(new MOParameterListed((int)CBCPREPROCESS,"Cbc preprocessor","",SOS,cbcPreprocessList,(int)SOLVER,(int)CBC));
-
+            parameters->addItem(new MOParameterListed((int)CBCPREPROCESS,"Cbcpreprocess","Cbc preprocessor",SOS,cbcPreprocessList,(int)SOLVER,(int)CBC));
 
 
             // tolerances
-            parameters->addItem(new MOParameter((int)PRIMALTOLERANCE,"Cbc : Primal tolerance ","",1E-7,MOParameter::DOUBLE,
+            parameters->addItem(new MOParameter((int)PRIMALTOLERANCE,"PRIMALTOLERANCE","Cbc : Primal tolerance ",1E-7,MOParameter::DOUBLE,
                                                 0,std::numeric_limits<int>::max(),(int)SOLVER,(int)CBC));
-            parameters->addItem(new MOParameter((int)INTEGERTOLERANCE,"Cbc : Integer tolerance","",1E-6,MOParameter::DOUBLE,
+            parameters->addItem(new MOParameter((int)INTEGERTOLERANCE,"INTEGERTOLERANCE","Cbc : Integer tolerance",1E-6,MOParameter::DOUBLE,
                                                 0,std::numeric_limits<int>::max(),(int)SOLVER,(int)CBC));
 
         }
+
+        grouped.clear();
+        grouped << SOLVER << LOGSENS << PRIMALTOLERANCE << INTEGERTOLERANCE << CBCPREPROCESS;
+        parameters->regroup("Solver",grouped);
+
+        // he cost parameters (default values from Barbaro publication)
+        parameters->addItem(new MOParameter((int)HECOSTA,"FixHECost","Fix cost of an heat exchanger ($)",5291.9,MOParameter::DOUBLE));
+        parameters->addItem(new MOParameter((int)HECOSTB,"VarHECost","Variable cost of an heat exchanger ($\/m2)",77.79,MOParameter::DOUBLE));
+        grouped.clear();
+        grouped << HECOSTA << HECOSTB;
+        parameters->regroup("Costs",grouped);
+
+        // all are enabled only if custom preset is selected
+        QList<int> presetedIndexes;
+        presetedIndexes  << SPLITPINCH << ALLOWNI << ALLOWSPLITS << ALLOWSEVERAL<<
+                KMAX<< SPLITDT<< SPLITDTSTEP<< SOLVER<< LOGSENS<< CBCPREPROCESS<< PRIMALTOLERANCE<<
+                INTEGERTOLERANCE;
+        parameters->addEnablingIndex(presetedIndexes,PRESET,CUSTOM);
+
+
     };
 
 
@@ -153,7 +193,8 @@ public :
             parameters->setValue((int)ALLOWNI,false);
             parameters->setValue((int)ALLOWSPLITS,true);
             parameters->setValue((int)ALLOWSEVERAL,false);
-            parameters->setValue((int)SPLITDT,false);
+            parameters->setValue((int)SPLITDT,true);
+            parameters->setValue((int)SPLITDTSTEP,50);
             break;
         case AVERAGE :
             parameters->setValue((int)SPLITPINCH,false);

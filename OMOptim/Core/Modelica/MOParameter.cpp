@@ -44,8 +44,7 @@
 MOParameter::MOParameter(){
 	_editableFields.clear();
 	_editableFields << MOParameter::VALUE;
-        _enablingIndex = -1;
-        _enablingValue = true;
+
 }
 
 MOParameter::MOParameter(const MOParameter & param):MOItem(param)
@@ -57,15 +56,22 @@ MOParameter::MOParameter(const MOParameter & param):MOItem(param)
 	_min = param._min;
 	_max = param._max;
 	_index = param._index;
-        _enablingIndex = param._enablingIndex;
-        _enablingValue = param._enablingValue;
+    _enablingIndexes = param._enablingIndexes;
+    _group = param._group;
 }
 
-MOParameter::MOParameter(int index,QString name,QString description, QVariant defaultValue, Type type, QVariant minValue, QVariant maxValue,int enablingIndex,QVariant enablingValue):
-    _index(index),_description(description),_defaultValue(defaultValue),_type(type),_min(minValue),_max(maxValue),_enablingIndex(enablingIndex),_enablingValue(enablingValue)
+MOParameter::MOParameter(int index,QString name,QString description, QVariant defaultValue, Type type, QVariant minValue, QVariant maxValue,int enablingIndex,QVariant enablingValue,QString group):
+    _index(index),_description(description),_defaultValue(defaultValue),_type(type),_min(minValue),_max(maxValue),_group(group)
 {
+    if(_name.isEmpty())
+    {
+        infoSender.debug("Creating a MOParameter with empty name !! Description : "+description);
+    }
+
 	_name = name;
 	_value = _defaultValue;
+
+    _enablingIndexes.insert(enablingIndex,enablingValue);
 
 	_filledFields.push_back(MOParameter::DEFAULTVALUE);
 	_filledFields.push_back(MOParameter::VALUE);
@@ -75,6 +81,7 @@ MOParameter::MOParameter(int index,QString name,QString description, QVariant de
 	_filledFields.push_back(MOParameter::TYPE);
 	_filledFields.push_back(MOParameter::DESCRIPTION);
 	_filledFields.push_back(MOParameter::INDEX);
+    _filledFields.push_back(MOParameter::GROUP);
 
 	_editableFields.clear();
 	_editableFields << MOParameter::VALUE;
@@ -133,6 +140,9 @@ bool MOParameter::setFieldValue(int ifield,QVariant value)
 		case INDEX:
 			_index=value.toInt();
 			break;
+        case GROUP:
+            _group=value.toString();
+            break;
 	}
 	if(!_filledFields.contains(ifield))
 		_filledFields.push_back(ifield);
@@ -169,6 +179,8 @@ QVariant MOParameter::getFieldValue(int ifield, int role) const
             return _defaultValue;
         case INDEX :
             return _index;
+        case GROUP :
+            return _group;
         default :
                 return "unknown field";
     }
@@ -201,26 +213,23 @@ QString MOParameter::sFieldName(int iField, int role)
 		return "Index";
 	case DEFAULTVALUE :
 		return "DefaultValue";
+    case GROUP :
+        return "Group";
 	default :
 		return "unknown field";
 	}
 }
 
-void MOParameter::setEnablingIndex(int index,QVariant value)
+void MOParameter::addEnablingIndex(int index,QVariant value)
 {
-    _enablingIndex = index;
-    _enablingValue = value;
+    _enablingIndexes.insert(index,value);
 }
 
-int MOParameter::enablingIndex()
+QMap<int,QVariant> MOParameter::enablingIndexes() const
 {
-    return _enablingIndex;
+    return _enablingIndexes;
 }
 
-QVariant MOParameter::enablingValue()
-{
-    return _enablingValue;
-}
 
 
 MOParameterListed::MOParameterListed(){
@@ -237,7 +246,7 @@ MOParameterListed::MOParameterListed(const MOParameterListed & param):MOParamete
 MOParameterListed::MOParameterListed(int index,QString name,QString description, QVariant defaultValue, QMap<int,QString> mapList,int enablingIndex,QVariant enablingValue):
     MOParameter(index,name,description,defaultValue,LIST),_mapList(mapList)
 {
-    setEnablingIndex(enablingIndex,enablingValue);
+    addEnablingIndex(enablingIndex,enablingValue);
 }
 
 
@@ -292,6 +301,9 @@ bool MOParameterListed::setFieldValue(int ifield,QVariant value)
                 case INDEX:
                         _index=value.toInt();
                         break;
+    case GROUP:
+        _group=value.toString();
+        break;
         }
         if(!_filledFields.contains(ifield))
                 _filledFields.push_back(ifield);
@@ -322,6 +334,8 @@ QVariant MOParameterListed::getFieldValue(int ifield, int role) const
             return _defaultValue;
         case INDEX :
             return _index;
+        case GROUP :
+            return _group;
         default :
                 return "unknown field";
         }
@@ -374,3 +388,67 @@ QVariant MOParameters::value(QString name,QVariant defaultValue)
     else
         return false;
  }
+
+QMultiMap<QString,MOParameter*> MOParameters::map() const
+{
+    QMultiMap<QString,MOParameter*> map;
+    for(int i=0;i<size();i++)
+        map.insert(this->at(i)->getFieldValue(MOParameter::GROUP).toString(),this->at(i));
+
+    return map;
+}
+
+void MOParameters::regroup(QString group,QList<int> indexes)
+{
+    int iParam;
+    for(int i=0;i<indexes.size();i++)
+    {
+        iParam = this->findItem(indexes.at(i),MOParameter::INDEX);
+        if(iParam>-1)
+            this->at(iParam)->setFieldValue(MOParameter::GROUP,group);
+    }
+}
+
+void MOParameters::addEnablingIndex(QList<int> enabledIndexes,int enablingIndex, QVariant enablingValue)
+{
+    int iParam;
+    for(int i=0;i<enabledIndexes.size();i++)
+    {
+        iParam = this->findItem(enabledIndexes.at(i),MOParameter::INDEX);
+        if(iParam>-1)
+            this->at(iParam)->addEnablingIndex(enablingIndex,enablingValue);
+    }
+}
+
+/**
+  Considering enablingIndex parameters and their values,
+  return whether or not parameter indicated by index should be enabled.
+  */
+bool MOParameters::shouldBeEnabled(int index)
+{
+    int iParam = this->findItem(index,MOParameter::INDEX);
+    if(iParam==-1)
+        return false;
+
+    QMap<int,QVariant> enablingIndexes = this->at(iParam)->enablingIndexes();
+    bool result = true;
+    int i=0;
+    int curKey;
+    while(result && (i<enablingIndexes.keys().size()))
+    {
+        curKey = enablingIndexes.keys().at(i);
+        if(curKey>-1)
+            result = result && (value(curKey)==enablingIndexes.value(curKey));
+        i++;
+    }
+    return result;
+}
+
+MOParameters* MOParameters::clone() const
+{
+    MOParameters* newVector = new MOParameters();
+    for(int i=0;i<this->size();i++)
+        newVector->addItem(this->at(i)->clone());
+    return newVector;
+}
+

@@ -223,6 +223,10 @@ QVariant OptObjective::getFieldValue(int ifield, int role) const
 					return "Sum";
 				case DEVIATION : 
 					return "Standard deviation";
+                                case MINIMUM :
+                                        return "Minimum";
+                                case MAXIMUM :
+                                        return "Maximum";
 				default :
 					return "-";
 				}

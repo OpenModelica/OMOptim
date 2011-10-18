@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 0.1 
+  @version 0.9 0.1
 
   */
 #ifndef _EAStdOptimizationEval_H
@@ -71,7 +71,6 @@ public:
     {
         _problem = EAStdOptimizationEval._problem;
         _project = EAStdOptimizationEval._project;
-        _modPlusCtrl = EAStdOptimizationEval._modPlusCtrl;
         _modClassTree = EAStdOptimizationEval._modClassTree;
         _tempDir = EAStdOptimizationEval._tempDir;
         _subModels = EAStdOptimizationEval._subModels;
@@ -85,11 +84,10 @@ public:
      * \brief Ctor.
      */
     EAStdOptimizationEval(Project* project,Optimization* problem,QList<ModModelPlus*> subModels,QString tempDir
-                          ,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
+                          ,ModClassTree* modClassTree)
 	{
         _project = project;
         _problem = problem;
-        _modPlusCtrl = modPlusCtrl;
         _modClassTree = modClassTree;
         _tempDir = tempDir;
         _subModels = subModels;
@@ -98,12 +96,12 @@ public:
 		/************************************
 		OBJECTIVE FUNCTIONS DEFINITION
 		************************************/
-        _nbObj = _problem->objectives()->size();
+        _nbObj = _problem->objectives()->items.size();
 		OptObjective::Direction objDirection;
 
 		for(unsigned int iObj=0;iObj<_nbObj;iObj++)
 		{
-			objDirection = problem->objectives()->at(iObj)->direction();
+            objDirection = problem->objectives()->items.at(iObj)->direction();
 			if(objDirection == OptObjective::MINIMIZE)
 			{
 				_bObjectives.push_back(true);
@@ -135,11 +133,11 @@ public:
 			/************************************
 			Creating a new OneSimulation
 			************************************/
-            OneSimulation *oneSim = new OneSimulation(_project,_project->modClassTree(),_modPlusCtrl,model);
+            OneSimulation *oneSim = new OneSimulation(_project,_project->modClassTree(),model);
             oneSim->_filesToCopy = _problem->_filesToCopy;
 			
 			//Reading chromosome and placing it in overwritedvariables
-            int nbVar = _problem->optimizedVariables()->size();
+            int nbVar = _problem->optimizedVariables()->items.size();
 			Variable* curVar;
 
 			int iDouble = 0;
@@ -148,7 +146,7 @@ public:
 
 			for(int i=0;i<nbVar;i++)
 			{
-                curVar = new Variable(*_problem->optimizedVariables()->at(i));
+                curVar = new Variable(*_problem->optimizedVariables()->items.at(i));
 				switch(curVar->getFieldValue(Variable::DATATYPE).toInt())
 				{
                                 case OMREAL :
@@ -182,7 +180,7 @@ public:
                 if((_subModels.size()>1)&&(iSubModel!=_previousSubModel))
 					refillTempDir = true;
 			}
-            ProblemConfig config(_tempDir,refillTempDir);
+            ProblemConfig config();
             OneSimResult *result =  dynamic_cast<OneSimResult*>(oneSim->launch(config));
 
             _previousSubModel = iSubModel;
@@ -190,17 +188,17 @@ public:
 			/************************************
 			Launch EI problem
                         ************************************/
-/*#ifdef USEEI
-            if(_problem->useEI())
-            {
-                if(_problem->eiProblem()->getClassName()=="EITarget")
-                {
-                    EITarget* eiTarget = dynamic_cast<EITarget*>(_problem->eiProblem());
-                    eiTarget->setInputVars(result->finalVariables());
-                    EITargetResult* eiResult = dynamic_cast<EITargetResult*>(eiTarget->launch(ProblemConfig()));
-                }
-            }
-#endif*/
+            //#ifdef USEEI
+            //            if(_problem->useEI())
+            //            {
+            //                if(_problem->eiProblem()->getClassName()=="EITarget")
+            //                {
+            //                    EITarget* eiTarget = dynamic_cast<EITarget*>(_problem->eiProblem());
+            //                    eiTarget->setInputVars(result->finalVariables());
+            //                    EITargetResult* eiResult = dynamic_cast<EITargetResult*>(eiTarget->launch(ProblemConfig()));
+            //                }
+            //            }
+            //#endif
 
 			/************************************
 			Read results
@@ -219,13 +217,13 @@ public:
 			{
                 //infoSender.send(( Info(ListInfo::ONESIMULATIONSUCCESS));
 				//Recover Objective values
-                int nbObj = _problem->objectives()->size();
+                int nbObj = _problem->objectives()->items.size();
 				int iObj=0;
 				double curObjResult;
 				
 				while(resultOk && (iObj<nbObj))
 				{
-                    curObj = _problem->objectives()->at(iObj);
+                    curObj = _problem->objectives()->items.at(iObj);
 					//looking for its value in finalVariables
 					curObjResult = VariablesManip::calculateObjValue(curObj,result->finalVariables(),resultOk,0);
 					objVec[iObj]=curObjResult;
@@ -266,7 +264,6 @@ protected:
     Optimization* _problem;
     Project* _project;
     ModClassTree* _modClassTree;
-    ModPlusCtrl* _modPlusCtrl;
     QList<ModModelPlus*> _subModels;
     std::vector<OneSimResult*> *_resultPoints;
     QString _tempDir;

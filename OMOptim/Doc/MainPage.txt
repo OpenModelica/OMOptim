@@ -10,12 +10,13 @@ Each session of the user corresponds to a project (class Project). Only one proj
 
 Project instance also holds controlers :
 	- Instance of OpenModelica communicator (class MOomc) : one instance spread in entire program through pointer.
-	- Instance of Modelica reader (class ModReader) : one instance spread in entire program through pointer.
-	- Instance of Modelica controller (class ModPlusCtrl) : one instance spread in entire program through pointer.
-	- Instance of Energy Integration reader (class EIReader) : one instance spread in entire program through pointer.
 	
 
+
 It's from Project that main managing functions are called : save, addProblem, launchProblem...
+	
+\image html Images/Project.png "Project overview" width=10cm
+
 	
 \section Problems
 Problems is a MOVector of Problem.

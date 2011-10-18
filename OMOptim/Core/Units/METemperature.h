@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
@@ -47,7 +47,8 @@
 class METemperature : public MEDimValue
 {
 public:
-        METemperature(double value=-1,int unit=0);
+    METemperature();
+    METemperature(double value,int unit);
         METemperature(const METemperature&);
 	~METemperature();
 
@@ -62,25 +63,20 @@ public:
 	unsigned nbUnits() const;
 	double convert(double value,int orgUnit,int dstUnit) const;
 
+    using MEDimValue::operator=;
+
 
         double operator-(const METemperature& b) const; //temperature difference
         METemperature& operator+=(const double& diffTemp);
         METemperature& operator-=(const double& diffTemp);
         METemperature operator-(const double& diffTemp) const;
         METemperature operator+(const double& diffTemp) const;
-        METemperature &operator=(const METemperature& b);
         METemperature operator+(const METemperature& b) const;
-        bool operator==(const METemperature& b) const;
-        bool operator!=(const METemperature& b) const;
-        bool operator<(const METemperature& b) const;
-        bool operator<=(const METemperature& b) const;
-        bool operator>(const METemperature& b) const;
-        bool operator>=(const METemperature& b) const;
+    bool equalsAbs(const METemperature& b,const METemperature & maxAbsDistance) const;
 
-        bool equals(const METemperature &b,double error=0) const;
 
-        static bool TcolderThan(const METemperature T1, const METemperature T2){return T1<T2;};
-        static bool ThoterThan(const METemperature T1, const METemperature T2){return T1>T2;};
+    static bool TcolderThan(const METemperature T1, const METemperature T2){return T1<T2;}
+    static bool ThoterThan(const METemperature T1, const METemperature T2){return T1>T2;}
 
 };
 

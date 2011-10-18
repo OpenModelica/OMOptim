@@ -69,6 +69,7 @@
 
 
 #include "MOomc.h"
+#include "MOThreads.h"
 
 //IAEX Headers
 #include "omcinteractiveenvironment.h"
@@ -170,7 +171,20 @@ QStringList MOomc::getPackages(QString parentClass)
     }
     return list;
 }
+QStringList MOomc::getRecords(QString parentClass)
+{
 
+    QStringList allClasses = getClassNames(parentClass);
+    QStringList models;
+
+    for(int i=0;i<allClasses.size();i++)
+    {
+        // check if it is a record
+        if(isRecord(parentClass+"."+allClasses.at(i)))
+            models.push_back(allClasses.at(i));
+    }
+    return models;
+}
 
 QStringList MOomc::getModels(QString parentClass)
 {
@@ -407,28 +421,82 @@ QStringList MOomc::getComponentModifierNames(QString componentName)
     }
 }
 
-QString MOomc::getComponentModifierValue(QString componentName,QString modifierName)
+QString MOomc::getFlattenedModel(const QString & modelName)
+{
+        QString flatcmd = "instantiateModel("+modelName+")";
+        QString flattened = evalCommand(flatcmd);
+
+        return flattened;
+}
+
+QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName)
+{
+
+    QString flattened = getFlattenedModel(modelName);
+    return getFlattenedModifierValue(modelName,componentName,modifierName,flattened);
+
+}
+
+
+
+QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName,const QString & flattenedModel)
+{
+    QStringList lines = flattenedModel.split("\n");
+
+    QRegExp modExp("[\\.]*"+componentName+"."+modifierName+"[\\.]*");
+
+    int iLine = lines.indexOf(modExp);
+
+    // 1st format : Real sterilisateur.Sterilisateur.FactMin = 0.0;
+    QRegExp exp1(".*"+componentName+"."+modifierName+"[\\s|=]*([\\S|\\\\|\"]*);");
+
+    int i1 =  lines.indexOf(exp1);
+
+    if((i1>-1)&&exp1.capturedTexts().size()==2)
+    {
+        QString result = exp1.capturedTexts().at(1);
+        result = result.remove(QRegExp("[\\\\|\"]*"));
+        return result;
+    }
+
+
+    // 2nd format with unit
+    QRegExp exp2(".*"+componentName+"."+modifierName+"\\(.*\\)[\\s|=]*(\\S*);");
+    int i2 = lines.indexOf(exp2);
+
+    if((i2>-1)&&exp2.capturedTexts().size()==2)
+        return exp2.capturedTexts().at(1);
+
+    return QString();
+}
+
+QString MOomc::getComponentModifierValue(QString modelName,QString shortComponentName,QString modifierName)
 {
     QStringList modifierNames;
     QString commandText,commandRes;
 
-    QStringList levelNames = componentName.split(".");
-    //Checking that component is a first level one
-    if(levelNames.size()!=2)
-    {
-        infoSender.send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
-        QString errorString;
-        return errorString;
-    }
-    else
-    {
-        commandText = "getComponentModifierValue(" + levelNames.at(0) +","+levelNames.at(1)+"."+modifierName+")";
+//    QStringList levelNames = componentName.split(".");
+//    //Checking that component is a first level one
+//    if(levelNames.size()!=2)
+//    {
+//        infoSender.send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
+//        QString errorString;
+//        return errorString;
+//    }
+//    else
+//    {
+        commandText = "getComponentModifierValue(" + modelName +","+shortComponentName+"."+modifierName+")";
         commandRes = evalCommand(commandText);
+        if(commandRes.contains("Error",Qt::CaseInsensitive))
+    {
+            infoSender.send( Info(ListInfo::OMSOBTMODIFIERSFAILED,shortComponentName));
+            return QString();
+    }
         commandRes.remove("=");
         commandRes.remove(" ");
         return commandRes;
+  //  }
     }
-}
 
 bool MOomc::setComponentModifiers(QString compName,QString model, QStringList modNames,QStringList modValues)
 {
@@ -454,6 +522,13 @@ bool MOomc::isConnector(QString className)
 bool MOomc::isModel(QString className)
 {
     QString commandText = "isModel(" + className +")";
+    QString commandRes= evalCommand(commandText);
+    return (commandRes=="true");
+}
+
+bool MOomc::isRecord(QString className)
+{
+    QString commandText = "isRecord(" + className +")";
     QString commandRes= evalCommand(commandText);
     return (commandRes=="true");
 }
@@ -499,7 +574,7 @@ QString MOomc::getAnnotation(QString compName,QString compClass,QString model)
 {
 
     QString annot;
-    //#TODO
+    /// \todo
 //    QString commandText = "list("+model+")";
 //    QString list= evalCommand(commandText);
 
@@ -691,12 +766,16 @@ QString MOomc::evalCommand(QString command)
 
     if (!mHasInitialized)
     {
-        if(!startServer())
-        {
-            infoSender.send(Info(QString("Unable to communicate with OMC ")));
+        infoSender.send(Info(QString("OMC not started. Please start it again (menu OMC->restart)"),ListInfo::WARNING2));
             return QString();
         }
-    }
+
+//        if(!startServer())
+//        {
+//            infoSender.send(Info(QString("Unable to communicate with OMC ")));
+//            return QString();
+//        }
+//    }
 
     // Send command to server
     try
@@ -927,19 +1006,15 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
             loadModel(depFiles.at(i),false,_depOk,_depError);
         }
 
-        filename.replace("\\","/");
-        QString cmd = QString("loadFile(\"") + filename + QString("\")");
-        infoSender.send( Info(QString("Loading file : " + filename),ListInfo::NORMAL2));
-        QString result = evalCommand(cmd);
+
+        QString result = loadFile(filename);//loadFileWThread(filename);
+
 
 
         // Restore file
         moDir.remove(filename);
         QFile moCopiedFile(copyPath);
         moCopiedFile.copy(filename);
-
-
-
 
         if(result.contains("true",Qt::CaseInsensitive))
         {
@@ -962,6 +1037,32 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
         error = "";
     }
 }
+
+QString MOomc::loadFile(QString filePath)
+{
+    filePath.replace("\\","/");
+    QString cmd = QString("loadFile(\"") + filePath + QString("\")");
+    infoSender.send( Info(QString("Loading file : " + filePath),ListInfo::NORMAL2));
+    QString result = evalCommand(cmd);
+
+    emit loadedFile(filePath,result);
+
+    return result;
+}
+
+QString MOomc::loadFileWThread(QString filePath)
+{
+    MOThreads::OMCModelLoader* loader = new MOThreads::OMCModelLoader(filePath,this);
+
+    loader->start(QThread::HighestPriority);
+    while (loader->isRunning())
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+
+    QString result = loader->_result;
+    delete loader;
+    return result;
+}
+
 void MOomc::loadStandardLibrary()
 {
     evalCommand("loadModel(Modelica)");
@@ -1052,6 +1153,7 @@ bool MOomc::startServer()
             {
                 msg = "Unable to find " + OMCHelper::applicationName + " server, Object reference file " + mObjectRefFile + " not created.";
                 throw std::runtime_error(msg.toStdString().c_str());
+                return false;
             }
         }
         // ORB initialization.
@@ -1307,7 +1409,7 @@ QStringList MOomc::getElementInfos(QString parentClass)
     return list;
 }
 
-void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &compsNames,QStringList &compsClasses)
+void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &recordNames,QStringList &compsNames,QStringList &compsClasses)
 {
     QString msg;
     msg.sprintf("Reading class infos : %s",parentClass.toLatin1().data());
@@ -1317,6 +1419,7 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
     modelsClasses.clear();
     compsNames.clear();
     compsClasses.clear();
+    recordNames.clear();
 
     QStringList elementsInfos = getElementInfos(parentClass);
     QString elementInfos;
@@ -1344,7 +1447,7 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
         // Package or Model
         if(type=="classdef")
         {
-            //get classrestriction (MODEL or PACKAGE)
+            //get classrestriction (MODEL or PACKAGE or RECORD)
             QString restr = LowTools::getValueFromElementInfo(elementInfos,"classrestriction");
 
             //get classname
@@ -1363,6 +1466,13 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
                 packagesClasses.push_back(className);
                 QString msg;
                 msg.sprintf("Adding package: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
+                infoSender.send(Info(msg,ListInfo::OMCNORMAL2));
+            }
+            if(restr.contains("RECORD"))
+            {
+                recordNames.push_back(className);
+                QString msg;
+                msg.sprintf("Adding record: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
                 infoSender.send(Info(msg,ListInfo::OMCNORMAL2));
             }
 

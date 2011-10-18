@@ -70,6 +70,7 @@ public:
         void addResultTab(Project *project, Result * result);
 	void removeTab(MOTabBase::TabType,QString name);
 	void removeTab(int);
+        void enableCaseTab(OMCase*);
 	
 
 public slots:

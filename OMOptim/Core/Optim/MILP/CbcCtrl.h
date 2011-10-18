@@ -21,7 +21,7 @@ private :
     MOParameters* _parameters;
     OMProcess _process;
 
-    bool success();
+    bool success(QString &msg);
 
 };
 

@@ -67,9 +67,6 @@ protected :
 
         //Model
 	ModModelPlus* _modModelPlus;
-        ModPlusCtrl* _modPlusCtrl;
-
-
         ScannedVariables *_scannedVariables;
         OptVariables *_optimizedVariables;
         OptObjectives *_objectives;
@@ -84,7 +81,7 @@ protected :
 
 public:
 	//Optimization(void);
-        Optimization(Project*,ModClassTree*,ModPlusCtrl*,ModModelPlus* _mainModelPlus);
+        Optimization(Project*,ModClassTree*,ModModelPlus* _mainModelPlus);
 	Optimization(const Optimization &);
         Problem* clone() const;
 	~Optimization(void);
@@ -94,7 +91,6 @@ public:
 
 	//Get functions
 	ModModelPlus* modModelPlus();
-        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
         ScannedVariables* scannedVariables(){return _scannedVariables;};
         OptVariables *optimizedVariables(){return _optimizedVariables;};
         OptObjectives *objectives(){return _objectives;};

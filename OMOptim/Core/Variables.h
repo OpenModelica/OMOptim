@@ -21,6 +21,11 @@ public:
     void setModModelPlus(ModModelPlus*);
     Variables* clone() const;
 
+    QStringList mimeTypes() const;
+    QMimeData* mimeData(const QModelIndexList &indexes) const;
+    Qt::DropActions supportedDropActions() const;
+
+
 private :
     ModModelPlus* _modModelPlus;
     bool _displayShort;

@@ -74,6 +74,8 @@ public :
 	MOCCCurve *curveHot;
 	MOCCCurve *curveCold;
 	MOCCCurve *curveGcc;
+        MOCCCurve *curveIccProcess;
+        MOCCCurve *curveIccUtilities;
 
 //	QList<double>  xDataHot;
 //	QList<double>  yDataHot;

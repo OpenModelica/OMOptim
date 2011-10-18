@@ -39,6 +39,8 @@
   */
 
 #include "EIConn.h"
+
+
 namespace EI
 {
 EIConn::EIConn()
@@ -61,6 +63,7 @@ EIConn::EIConn(const EIConn &b)
     _ToutB = b._ToutB;
     _flowB = b._flowB;
     _qFlow = b._qFlow;
+    _surface = b._surface;
 }
 
 EIConn& EIConn::operator=(const EIConn& b)
@@ -74,6 +77,7 @@ EIConn& EIConn::operator=(const EIConn& b)
     _ToutB = b._ToutB;
     _flowB = b._flowB;
     _qFlow = b._qFlow;
+    _surface = b._surface;
 }
 
 EIConn::EIConn(QDomElement &domEl, const EITree & eiTree)
@@ -122,6 +126,11 @@ void EIConn::setQFlow(MEQflow qFlow)
     _qFlow = qFlow;
 }
 
+void EIConn::setSurface(MESurface surface)
+{
+    _surface = surface;
+}
+
 
 QVariant EIConn::getFieldValue(int iField, int role ) const
 {
@@ -132,35 +141,39 @@ QVariant EIConn::getFieldValue(int iField, int role ) const
     case STREAMA :
         return _streamA;
     case FLOWA_V :
-        return _flowA.value();
+        return _flowA.strValue();
     case FLOWA_U :
         return _flowA.unit();
     case TINA_V :
-        return _TinA.value();
+        return _TinA.strValue();
     case TINA_U :
         return _TinA.unit();
     case TOUTA_V :
-        return _ToutA.value();
+        return _ToutA.strValue();
     case TOUTA_U :
         return _ToutA.unit();
     case STREAMB :
         return _streamB;
     case FLOWB_V :
-        return _flowB.value();
+        return _flowB.strValue();
     case FLOWB_U :
         return _flowB.unit();
     case TINB_V :
-        return _TinB.value();
+        return _TinB.strValue();
     case TINB_U :
         return _TinB.unit();
     case TOUTB_V :
-        return _ToutB.value();
+        return _ToutB.strValue();
     case TOUTB_U :
         return _ToutB.unit();
     case QFLOW_V :
-        return _qFlow.value();
+        return _qFlow.strValue();
     case QFLOW_U :
         return _qFlow.unit();
+    case SURFACE_V :
+        return _surface.strValue();
+    case SURFACE_U :
+        return _surface.unit();
     }
 
     return QVariant();
@@ -247,6 +260,16 @@ QString EIConn::sFieldName(int field, int role)
         default :
             return "QFlow_Unit";
         }
+    case SURFACE_V :
+        return "Surface";
+    case SURFACE_U :
+        switch(role)
+        {
+        case Qt::DisplayRole:
+            return "";
+        default :
+            return "Surface_Unit";
+    }
     }
     return QString();
 }
@@ -331,10 +354,19 @@ bool EIConn::setFieldValue(int field,QVariant value)
         else
             _qFlow.setUnit(value.toInt());
         break;
+    case SURFACE_V :
+        _surface.setValue(value.toDouble());
+        break;
+    case SURFACE_U :
+        if(value.type()==QVariant::String)
+            ok=_surface.setUnit(value.toString());
+        else
+            _surface.setUnit(value.toInt());
+        break;
     }
     return ok;
 }
-}
+
 
 
 METemperature EIConn::Tin(QString stream)const
@@ -371,4 +403,5 @@ MEMassFlow EIConn::massFlow(QString stream) const
         return _flowB;
 
     return MEMassFlow(-1,MEMassFlow::KG_S);
+}
 }

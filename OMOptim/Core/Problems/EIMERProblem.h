@@ -47,6 +47,7 @@
 #include "ModModelPlus.h"
 #include "EIValueFiller.h"
 #include "EIMERParameters.h"
+#include "CCTools.h"
 
 /*
  * \brief Class for MER (Energy integration) problem

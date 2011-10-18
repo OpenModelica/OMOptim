@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linkpings universitet, Department of Computer and Information Science,
- * SE-58183 Linkping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+ 	@version 0.9 
 
   */
 /*
@@ -99,15 +99,15 @@ SPEA2Adapt::SPEA2Adapt():EABase()
 	setDefaultParameters();
 }
 
-SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
-:EABase(project,problem,modClassTree,modPlusCtrl)
+SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassTree)
+:EABase(project,problem,modClassTree)
 {
 	setDefaultParameters();
 };
 
 
-SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,MOParameters* parameters)
-:EABase(project,problem,modClassTree,modPlusCtrl)
+SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassTree,MOParameters* parameters)
+:EABase(project,problem,modClassTree)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
@@ -117,7 +117,7 @@ SPEA2Adapt::SPEA2Adapt(const SPEA2Adapt & ea):EABase(ea)
 {
 }
 
-SPEA2Adapt* SPEA2Adapt::clone() const
+EABase* SPEA2Adapt::clone() const
 {
 	SPEA2Adapt* newEA = new SPEA2Adapt(*this);
 	return newEA ;
@@ -190,7 +190,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	{
 	case Problem::OPTIMIZATIONTYPE :
 		plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
-                        _modClassTree,_modPlusCtrl);
+                        _modClassTree);
 		break;
 	}
 	OMEAEvalFuncCounter<EOAdapt>* eval = new OMEAEvalFuncCounter<EOAdapt> (* plainEval,&OMEAProgress,nTotalEvals);
@@ -306,13 +306,13 @@ Result* SPEA2Adapt::launch(QString tempDir)
  //   checkpoint.add(averageStat);
  //   checkpoint.add(fdcStat);
 
-//	// The Stdout monitor will print parameters to the screen ...
-//    MyEoGnuplot1DMonitor monitor("export_monitor.xg",false);
-//    // when called by the checkpoint (i.e. at every generation)
-//    checkpoint.add(monitor);
+	// The Stdout monitor will print parameters to the screen ...
+    MyEoGnuplot1DMonitor monitor("export_monitor.xg",false);
+    // when called by the checkpoint (i.e. at every generation)
+    checkpoint.add(monitor);
 
-//    // the monitor will output a series of parameters: add them
-//    monitor.add(generationCounter);
+    // the monitor will output a series of parameters: add them
+    monitor.add(generationCounter);
    // monitor.add(eval);		// because now eval is an eoEvalFuncCounter!
     //monitor.add(bestStat);
     //monitor.add(SecondStat);
@@ -328,7 +328,6 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	//RUN THE ALGO
 	//************************************/
 	spea2(pop);
-
 
 	///************************************
 	//GETTING RESULT FROM FINAL ARCHIVE

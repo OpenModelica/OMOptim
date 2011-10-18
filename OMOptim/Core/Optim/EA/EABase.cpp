@@ -48,13 +48,12 @@ EABase::EABase(void)
 }
 
 
-EABase::EABase(Project* project,Problem* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
+EABase::EABase(Project* project,Problem* problem,ModClassTree* modClassTree)
 :OptimAlgo()
 {
 	_project = project;
 	_problem = problem;
         _modClassTree = modClassTree;
-        _modPlusCtrl = modPlusCtrl;
 	_stop = false;
 }
 
@@ -62,12 +61,10 @@ EABase::EABase(const EABase & eaBase)
     :OptimAlgo(eaBase)
 {
         _modClassTree = eaBase._modClassTree;
-        _modPlusCtrl = eaBase._modPlusCtrl;
 	_subModels = eaBase._subModels;
 	_subBlocks = eaBase._subBlocks;
 	_index = eaBase._index;
 	_stop = eaBase._stop;
-
 }
 
 EABase::~EABase(void)

@@ -50,11 +50,10 @@ OneSimResult::OneSimResult(void)
     _filesToCopy << "dsin.txt";
 }
 
-OneSimResult::OneSimResult(Project* project, ModModelPlus* model, OneSimulation* problem,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl)
+OneSimResult::OneSimResult(Project* project, ModModelPlus* model, OneSimulation* problem,ModClassTree* modClassTree)
     :Result(project,modClassTree,(Problem*)problem)
 {
     _modModelPlus = model;
-    _modPlusCtrl = modPlusCtrl;
 
     _inputVariables = new Variables(model);
     _finalVariables = new MOOptVector(true,false); //can have several scans but not several points

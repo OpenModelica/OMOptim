@@ -26,7 +26,7 @@ public:
 	EIHEN1Result(Project*, Problem*);
         EIHEN1Result(Project* project,ModClassTree*,QDomElement domResult,Problem* problem);
         //EIHEN1Result(const EIHEN1Result &);
-	EIHEN1Result(void);
+        EIHEN1Result(Project*);
 	~EIHEN1Result(void);
 
         double _totalCost;

@@ -40,6 +40,9 @@
   */
 
 #include "EIProblem.h"
+#include "OneSimulation.h"
+#include "OneSimResult.h"
+#include "Project.h"
 
 EIProblem::EIProblem(Project* project,ModClassTree* modClassTree,MOomc* moomc)
     :Problem(project,modClassTree)
@@ -47,7 +50,7 @@ EIProblem::EIProblem(Project* project,ModClassTree* modClassTree,MOomc* moomc)
     _type = Problem::EIPROBLEMTYPE;
     _name="EI";
 
-    _eiTree = new EITree();
+    _eiTree = new EITree(project);
 
     _moomc = moomc;
     _connConstrs = new EIConnConstrs();
@@ -89,7 +92,7 @@ EIProblem::EIProblem(Project* project,ModClassTree* modClassTree,MOomc* moomc,QD
     _type = Problem::EIPROBLEMTYPE;
     _name="EI";
 
-    _eiTree = new EITree();
+    _eiTree = new EITree(project);
 
     _moomc = moomc;
     _connConstrs = new EIConnConstrs();
@@ -145,36 +148,14 @@ QDomElement EIProblem::toXmlData(QDomDocument & doc)
 }
 
 
-void EIProblem::loadModel(ModClassTree* modClassTree,ModModel* loadedModel)
+void EIProblem::loadModel(ModModel* loadedModel)
 {
-    bool eraseExisting=true;
-    // be sure to read before loading
-    modClassTree->readFromOmcV2(loadedModel);
+    _eiTree->loadModel(loadedModel);
 
-    // extract ei information
-    EIItem* modelRootEI = EIModelExtractor::extractFromModClass(loadedModel,_modClassTree,_moomc);
 
-    bool unloadOk;
-    if(eraseExisting)
-        unloadModel(loadedModel,unloadOk);
-
-    if(unloadOk)
-        _eiTree->addChild(_eiTree->rootElement(),modelRootEI);
+   // delete simRes;
 }
 
-void EIProblem::unloadModel(ModModel* unloadedModel, bool &ok)
-{
-
-    EIItem*  eiItem = _eiTree->findItem(EI::MODELCONTAINER,unloadedModel->name(),EIModelContainer::MODEL);
-
-    ok= true;
-
-
-    if(eiItem)
-    {
-        ok = _eiTree->removeItem(eiItem);
-    }
-}
 
 EIConnConstrs* EIProblem::connConstrs()
 {

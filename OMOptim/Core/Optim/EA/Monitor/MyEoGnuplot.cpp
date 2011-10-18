@@ -1,4 +1,4 @@
-// $Id$
+﻿// $Id$
 /**
  * This file is part of OpenModelica.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+ 	@version 0.9 
 
   */
 #ifdef HAVE_CONFIG_H
@@ -82,7 +82,7 @@ void MyEoGnuplot::gnuplotCommand(const QString & _command)
 
 void MyEoGnuplot::initGnuPlot()
 {
-	bool useGnuplot = MOSettings::getValue("bool/useGnuplot").toBool();
+        bool useGnuplot = MOSettings::value("useGnuplot").toBool();
 	
 	if(!useGnuplot)
 	{
@@ -90,7 +90,7 @@ void MyEoGnuplot::initGnuPlot()
 	}
 	else
 	{	
-		QString pgnuplotFilePath = MOSettings::getValue("path/pgnuplotEXE").toString();
+                QString pgnuplotFilePath = MOSettings::value("pgnuplotEXE").toString();
 		//QString command("\""+pgnuplotFilePath+"\" -persist ");
 		QString command("\""+pgnuplotFilePath+"\"");
 		command.replace("/","\\");

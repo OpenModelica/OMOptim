@@ -72,7 +72,8 @@ public :
 	CCHOT,
 	CCCOLD,
 	GCC,
-	ICC,
+        ICCPROCESS,
+        ICCUTILITIES,
 	OTHER
 };
 

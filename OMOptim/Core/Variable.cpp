@@ -209,7 +209,7 @@ QString Variable::name(Modelica::NameFormat format) const
 	case Modelica::SHORT : 
 		return _name.section(".",-1,-1);
         case Modelica::WITHOUTROOT :
-		//#TODO check for grandchildren models
+                /// \todo check for grandchildren models
 		return _name.section(".",1,-1);
 	default :
 		return QString();
@@ -611,6 +611,11 @@ OptVariable::OptVariable(const OptVariable & var):Variable(var)
 	_optMax = var._optMax;
 }
 
+OptVariable* OptVariable::clone() const
+{
+    return new OptVariable(*this);
+}
+
 
 void OptVariable::initOptExtremum()
 {
@@ -791,6 +796,11 @@ ScannedVariable::ScannedVariable(const ScannedVariable & var):Variable(var)
 	_scanMin = var._scanMin;
 	_scanMax = var._scanMax;
 	_scanStep = var._scanStep;
+}
+
+ScannedVariable* ScannedVariable::clone() const
+{
+    return new ScannedVariable(*this);
 }
 
 

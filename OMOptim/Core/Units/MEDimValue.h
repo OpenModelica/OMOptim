@@ -44,11 +44,13 @@
 #include <QtCore/QAbstractTableModel>
 #include <QtCore/QTextStream>
 #include <QtCore/QStringList>
+#include <cmath>
 
 class MEDimValue
 {
 public:
-	MEDimValue(double value=0,int unit=0);
+        MEDimValue();
+        MEDimValue(double value,int unit);
 	virtual ~MEDimValue(void);
 
 	QStringList units()  const ;
@@ -62,16 +64,29 @@ public:
         virtual bool setUnit(QString iUnit);
 	double value(int iUnit) const;
         double value() const;
+        QString strValue(int iUnit) const;
+        QString strValue() const;
 	
         virtual QString toString() const {return QString::number(value(_unit))+" "+unit();}
 
         virtual MEDimValue & operator=(const MEDimValue &);
+        virtual bool operator<(const MEDimValue &) const;
+        virtual bool operator>(const MEDimValue &) const;
+        virtual bool operator==(const MEDimValue &) const;
+        virtual bool operator!=(const MEDimValue &) const;
+        virtual bool operator<=(const MEDimValue &) const;
+        virtual bool operator>=(const MEDimValue &) const;
+        virtual bool equalsRel(const MEDimValue& b,double maxRelDistance) const;
 
 
+        bool isValid() const;
+        void invalidate();
+        void validate();
 
 protected :
 	int _unit;
 	double _value;
+        bool _isValid;
 
 	virtual double convert(double value,int orgUnit,int dstUnit) const =0 ;
 };

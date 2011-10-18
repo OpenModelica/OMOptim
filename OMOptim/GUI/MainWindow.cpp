@@ -66,7 +66,6 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _ui->splitterH->setStretchFactor(1,10);
     delete _ui->widgetToDelete;
     _ui->treeOMCases->header()->setResizeMode(QHeaderView::Stretch);
-    _ui->treeResults->header()->setResizeMode(QHeaderView::Stretch);
     addDockWidget(Qt::BottomDockWidgetArea,_ui->dockLog,Qt::Vertical);
 
     // Actions
@@ -75,13 +74,15 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _ui->menuDisplay->addActions(dispActions);
 
     // Trees
-    _ui->treeOMCases->setModel(_project->problems());
-    _ui->treeResults->setModel(_project->results());
+    _casesTree = new OMCasesCombiner(_project->problems(),_project->results());
+    _ui->treeOMCases->setModel(_casesTree);
+    //_ui->treeResults->setModel(_project->results());
     //GuiTools::ModClassToTreeView(_project->modReader(),_project->rootModClass(),_ui->treeModClass,_project->modClassTree());
     _ui->treeModClass->setModel(_project->modClassTree());
     _ui->treeOMCases->setContextMenuPolicy(Qt::CustomContextMenu);
-    _ui->treeResults->setContextMenuPolicy(Qt::CustomContextMenu);
     _ui->treeModClass->setContextMenuPolicy(Qt::CustomContextMenu);
+    _ui->treeModClass->setDragEnabled(true);
+    _ui->treeModClass->setDragDropMode(QAbstractItemView::DragDrop);
 
     // progress dock
     // hide title
@@ -99,19 +100,25 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _ui->layoutProgress->addWidget(_widgetProgress);
     displayProgress(0);
 
+#ifdef USEEI
+    QAction* loadCERESInfo = new QAction("Load CERESInfo.mo",this);
+    _ui->menuModels->addAction(loadCERESInfo);
+    connect(loadCERESInfo,SIGNAL(triggered()),this,SLOT(loadCERESInfo()));
+
+
+#endif
+
+
     actualizeGuiFromProject();
 
     //*********************************
     // Signals for gui
     //*********************************
-    connect(_ui->treeOMCases, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableProblemTab(QModelIndex)));
-    connect(_ui->treeResults, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableResultTab(QModelIndex)));
+    connect(_ui->treeOMCases, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableOMCaseTab(QModelIndex)));
     connect(_ui->treeModClass, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModClass(QModelIndex)));
     connect(this, SIGNAL(sendInfo(Info)),this, SLOT( displayInfo(Info)));
-    connect (_ui->treeResults,SIGNAL(customContextMenuRequested(const QPoint &)),
-             this,SLOT(showResultPopup(const QPoint &)));
     connect (_ui->treeOMCases,SIGNAL(customContextMenuRequested(const QPoint &)),
-             this,SLOT(showProblemPopup(const QPoint &)));
+             this,SLOT(rightClickedOnCase(const QPoint &)));
     connect (_ui->treeModClass,SIGNAL(customContextMenuRequested(const QPoint &)),
              this,SLOT(showModClassTreePopup(const QPoint &)));
     connect (_tabMain,SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -134,6 +141,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionLoadMoFile,  SIGNAL(triggered()), this, SLOT(loadMoFile()));
     connect( _ui->actionLoadModelicaLibrary,  SIGNAL(triggered()), this, SLOT(loadModelicaLibrary()));
     connect( _ui->actionHelp, SIGNAL(triggered()),this, SLOT(openUserManual()));
+    connect( _ui->actionStartOmc,SIGNAL(triggered()),_project->moomc(),SLOT(startServer()));
 
     //*********************************
     // Signals for project, infos
@@ -148,7 +156,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     // Signals for problems
     //*********************************
     connect( _project, SIGNAL(addedProblem(Problem*)),this, SLOT(onAddedProblem(Problem*)));
-    connect( _project, SIGNAL(beforeRemoveProblem(int)),this, SLOT(removeProblemTab(int)));
+    connect( _project, SIGNAL(beforeRemoveProblem(Problem*)),this, SLOT(removeProblemTab(Problem*)));
     connect( _project, SIGNAL(problemBegun(Problem*)),this,SLOT(onProblemBegun(Problem*)));
     connect( _project, SIGNAL(problemFinished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
     connect( _project, SIGNAL(newProblemProgress(float)),this,SLOT(onNewProblemProgress(float)));
@@ -172,7 +180,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     //*********************************
     // Signals for solved problems
     //*********************************
-    connect(_project, SIGNAL(beforeRemoveResult(int)),this, SLOT(removeResultTab(int)));
+    connect(_project, SIGNAL(beforeRemoveResult(Result*)),this, SLOT(removeResultTab(Result*)));
     connect(_project, SIGNAL(addedResult(Result*)),this, SLOT(onAddedResult(Result*)));
 
     //*********************************
@@ -206,28 +214,52 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete _ui;
-    delete _project;
 }
 
 
 void MainWindow::displayInfo(Info i)
 {
-    QString msg = i.infoMsg;
+
+    // stylize message
+    QString prefix;
+    QString suffix;
+
     switch(i.infoType)
     {
-    case ListInfo::ERROR2 :
-    case ListInfo::OMCERROR2 :
-        msg.insert(0,"<b><font color='red'>");
-        msg.append("</font></b>");
+    case ListInfo::NORMAL2 :
+            prefix = "";
+            suffix = "";
         break;
     case ListInfo::WARNING2 :
+            prefix = "<b><font color='#FF7700'>Warning : ";
+            suffix = "</font></b>";
+            break;
+    case ListInfo::ERROR2 :
+            prefix = "<b><font color='red'>Error : ";
+            suffix = "</font></b>";
+            break;
+
+    case ListInfo::OMCNORMAL2 :
+            prefix = "OMCNormal :";
+            suffix = "";
+            break;
     case ListInfo::OMCWARNING2 :
-        msg.insert(0,"<b><font color='#FF7700'>");
-        msg.append("</font></b>");
+            prefix = "OMCWarning :";
+            suffix = "";
         break;
+    case ListInfo::OMCERROR2 :
+            prefix = "<b><font color='red'>OMCError : ";
+            suffix = "</font></b>";
+            break;
+    case ListInfo::INFODEBUG :
+            prefix = "<b><font color='blue'>Debug : ";
+            suffix = "</font></b>";
+            break;
     }
 
+    QString msg = prefix + i.infoMsg + suffix;
 
+    // display
     switch(i.infoType)
     {
     case ListInfo::NORMAL2 :
@@ -305,7 +337,7 @@ void MainWindow::saveProject()
             _filePath = QFileDialog::getSaveFileName(
                         this,
                         "MO - Save Project",
-                        QString::null,
+                        _project->name()+".min",
                         "MO project (*.min)" );
             if(!_filePath.isNull())
             {
@@ -439,7 +471,7 @@ void MainWindow::newOMCShell()
 
 void MainWindow::openSettings()
 {
-    DlgSettings *dlg = new DlgSettings(MOSettings());
+    DlgSettings *dlg = new DlgSettings(true);
     dlg->exec();
 }
 
@@ -451,60 +483,14 @@ void MainWindow::OMCClear()
     }
 }
 
-void MainWindow::enableProblemTab(QModelIndex index)
+void MainWindow::enableOMCaseTab(QModelIndex index)
 {
-    int i=0;
-    MOTabBase* tab;
-    if(_project->isDefined() && index.isValid())
+    if(index.isValid())
     {
-        if (index.row()<_project->problems()->size())
-        {
-            QString name = _project->problems()->at(index.row())->name();
-
-            bool found = false;
-            while(i<_tabMain->count() && !found)
-            {
-                tab = dynamic_cast<MOTabBase*>(_tabMain->widget(i));
-                if(tab && (_tabMain->tabText(i)==name)&&(tab->tabType()==MOTabBase::TABPROBLEM))
-                    found =true;
-                else
-                    i++;
+        OMCase* selectedCase = _casesTree->item(index);
+        _tabMain->enableCaseTab(selectedCase);
             }
-            if (found)
-                _tabMain->setCurrentIndex(i);
         }
-    }
-}
-
-
-
-
-void MainWindow::enableResultTab(QModelIndex index)
-{
-    int i=0;
-    MOTabBase* tab;
-    if(_project->isDefined() && index.isValid())
-    {
-        if (index.row()<_project->results()->size())
-        {
-            QString name = _project->results()->at(index.row())->name();
-
-            bool found = false;
-            while(i<_tabMain->count() && !found)
-            {
-                tab = dynamic_cast<MOTabBase*>(_tabMain->widget(i));
-                if(tab && (_tabMain->tabText(i)==name)&&(tab->tabType()==MOTabBase::TABSOLVEDPROBLEM))
-                    found =true;
-                else
-                    i++;
-            }
-            if (found)
-                _tabMain->setCurrentIndex(i);
-        }
-    }
-}
-
-
 
 void MainWindow::quit()
 {
@@ -520,9 +506,10 @@ void MainWindow::onProjectAboutToBeReset()
         _tabMain->removeTab(1);
     }
     _ui->treeOMCases->reset();
-    _ui->treeResults->reset();
+
     actualizeGuiFromProject();
 }
+
 void MainWindow::onAddedProblem(Problem* newProblem)
 {
     // Creating problem tab
@@ -561,31 +548,31 @@ void MainWindow::removeResult()
     {
         int iPb = action->data().toInt();
         if((iPb>-1) && (iPb<_project->results()->rowCount()))
-            removeResult(iPb);
+            removeResult(_project->results()->at(iPb));
     }
 }
 
 
-void MainWindow::removeResult(int num)
+void MainWindow::removeResult(Result* result)
 {
     QMessageBox msgBox;
     msgBox.setText("Removing solved problem cannot be undone.");
     QString msg;
-    msg.sprintf("Are you sure you want to remove %s ?",_project->results()->at(num)->name().toLatin1().data());
+    msg.sprintf("Are you sure you want to remove %s ?",result->name().toLatin1().data());
     msgBox.setInformativeText(msg);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Yes);
 
     if(msgBox.exec() == QMessageBox::Yes)
     {
-        _project->removeResult(num);
+        _project->removeResult(result);
     }
 }
 
-void MainWindow::removeResultTab(int num)
+void MainWindow::removeResultTab(Result* result)
 {
     //remove tab
-    _tabMain->removeTab(MOTabBase::TABSOLVEDPROBLEM,_project->results()->at(num)->name());
+    _tabMain->removeTab(MOTabBase::TABSOLVEDPROBLEM,result->name());
 }
 
 void MainWindow::removeProblem()
@@ -596,32 +583,32 @@ void MainWindow::removeProblem()
     {
         int iPb = action->data().toInt();
         if((iPb>-1) && (iPb<_project->problems()->rowCount()))
-            removeProblem(iPb);
+            removeProblem(_project->problems()->at(iPb));
     }
 }
 
 
-void MainWindow::removeProblem(int num)
+void MainWindow::removeProblem(Problem* problem)
 {
 
     QMessageBox msgBox;
     msgBox.setText("Removing problem cannot be undone.");
     QString msg;
-    msg.sprintf("Are you sure you want to remove %s ?",_project->problems()->at(num)->name().toLatin1().data());
+    msg.sprintf("Are you sure you want to remove %s ?",problem->name().toLatin1().data());
     msgBox.setInformativeText(msg);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Yes);
 
     if(msgBox.exec() == QMessageBox::Yes)
     {
-        _project->removeProblem(num);
+        _project->removeProblem(problem);
     }
 }
 
-void MainWindow::removeProblemTab(int num)
+void MainWindow::removeProblemTab(Problem* problem)
 {
     //remove tab
-    _tabMain->removeTab(MOTabBase::TABPROBLEM,_project->problems()->at(num)->name());
+    _tabMain->removeTab(MOTabBase::TABPROBLEM,problem->name());
 }
 
 void MainWindow::renameProblem()
@@ -632,19 +619,19 @@ void MainWindow::renameProblem()
     {
         int iPb = action->data().toInt();
         if((iPb>-1) && (iPb<_project->problems()->rowCount()))
-            renameProblem(iPb);
+            renameProblem(_project->problems()->at(iPb));
     }
 
 }
-void MainWindow::renameProblem(int i)
+void MainWindow::renameProblem(Problem* problem)
 {
     bool ok;
     QString newName = QInputDialog::getText(this, "Rename...",
-                                            "New name :", QLineEdit::Normal,_project->problems()->at(i)->name(),&ok);
+                                            "New name :", QLineEdit::Normal,problem->name(),&ok);
 
     if (ok && !newName.isEmpty())
     {
-        _project->renameProblem(i,newName);
+        _project->renameProblem(problem,newName);
     }
 }
 
@@ -657,19 +644,19 @@ void MainWindow::renameResult()
     {
         int iPb = action->data().toInt();
         if((iPb>-1) && (iPb<_project->results()->rowCount()))
-            renameResult(iPb);
+            renameResult(_project->results()->at(iPb));
     }
 
 }
-void MainWindow::renameResult(int i)
+void MainWindow::renameResult(Result* result)
 {
     bool ok;
     QString newName = QInputDialog::getText(this, "Rename...",
-                                            "New name :", QLineEdit::Normal,_project->results()->at(i)->name(),&ok);
+                                            "New name :", QLineEdit::Normal,result->name(),&ok);
 
     if (ok && !newName.isEmpty())
     {
-        _project->renameResult(i,newName);
+        _project->renameResult(result,newName);
     }
 }
 
@@ -677,43 +664,30 @@ void MainWindow::renameResult(int i)
 
 
 
-void MainWindow::showResultPopup(const QPoint & iPoint)
+void MainWindow::rightClickedOnCase(const QPoint & iPoint)
 {
-    //Popup on Result Tree
-    QModelIndex  index ;
-    index = _ui->treeResults->indexAt(iPoint);
-    if ( index.row() == -1 )
-    {
-        // no item selected
-    }
-    else
-    {
-        _ui->treeResults->setCurrentIndex(index);
-        Result *selectedResult = _project->results()->at(index.row());
-        QMenu *resultMenu = GuiTools::createResultPopupMenu(_project,this,_ui->treeResults->mapToGlobal(iPoint),selectedResult,index.row());
-        resultMenu->exec(_ui->treeResults->mapToGlobal(iPoint));
-    }
-}
-
-
-
-void MainWindow::showProblemPopup(const QPoint & iPoint)
-{
-    //Popup on Proble Tree
+    //Popup on cases tree
     QModelIndex  index ;
     index = _ui->treeOMCases->indexAt(iPoint);
-    if ( index.row() == -1 )
+    if ( !index.isValid() == -1 )
     {
         // no item selected
     }
     else
     {
-        _ui->treeOMCases->setCurrentIndex(index);
-        Problem *selectedProblem = _project->problems()->at(index.row());
-        QMenu * problemMenu = GuiTools::createProblemPopupMenu(_project,this,_ui->treeOMCases->mapToGlobal(iPoint),selectedProblem,index.row());
-        problemMenu->exec(_ui->treeOMCases->mapToGlobal(iPoint));
+        QMenu* caseMenu = NULL;
+        OMCase* selectedCase = _casesTree->item(index);
+
+        if(_project->problems()->contains(selectedCase))
+            caseMenu = GuiTools::createProblemPopupMenu(_project,this,_ui->treeOMCases->mapToGlobal(iPoint),dynamic_cast<Problem*>(selectedCase),index.row());
+        if(_project->results()->contains(selectedCase))
+            caseMenu = GuiTools::createResultPopupMenu(_project,this,_ui->treeOMCases->mapToGlobal(iPoint),dynamic_cast<Result*>(selectedCase),index.row());
+
+        if(caseMenu)
+            caseMenu->exec(_ui->treeOMCases->mapToGlobal(iPoint));
     }
-}
+    }
+
 
 void MainWindow::showModClassTreePopup(const QPoint & iPoint)
 {
@@ -904,6 +878,14 @@ void MainWindow::loadModelicaLibrary()
 {
     _project->loadModelicaLibrary();
 }
+
+#ifdef USEEI
+void MainWindow::loadCERESInfo()
+{
+    _project->loadMoFile(CERESInfo::getFilePath());
+    _project->refreshAllMod();
+}
+#endif
 
 void MainWindow::onSelectedModClass(QModelIndex index)
 {

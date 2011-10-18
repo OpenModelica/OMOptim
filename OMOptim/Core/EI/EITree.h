@@ -40,13 +40,15 @@
 #ifndef _TreeEIStreams_H
 #define _TreeEIStreams_H
 
-#include "TableEIItems.h"
-#include "MOCCCurve.h"
+
 #include "MOVector.h"
-#include "CCTools.h"
 #include "EIReader.h"
 #include "EIItem.h"
 
+
+class Project;
+class ModClassTree;
+class ModModel;
 
 
 namespace EI
@@ -64,9 +66,9 @@ class EITree : public QAbstractItemModel
 
 public:
 
-    EITree(bool showFields=true,bool editable=true);
+    EITree(Project* project,bool showFields=true,bool editable=true);
     EITree(const EITree &);
-    EITree(QDomElement & domEl);
+    EITree(Project*,QDomElement & domEl);
 
     EITree & operator=(const EITree &);
 
@@ -85,10 +87,13 @@ public:
     //edit function
     void uncheckUtilities();
 
+
     // add functions
-    bool addChild(EIItem* parent, EIItem* child);
+    bool addChild(EIItem* parent, EIItem* child, int i=-1);
     void addEmptyGroup(EIItem* parent);
     void addEmptyStream(EIItem* parent);
+    void loadModel(ModModel* loadedModel);
+    void unloadModel(ModModel* unloadedModel, bool &ok);
 
     // find functions
     EIItem* findItem(QString fullName) const ;
@@ -115,11 +120,22 @@ public:
 
     QDomElement toXmlData(QDomDocument & doc);
 
+    // drag and drop functions
+    QStringList mimeTypes() const;
+    QMimeData* mimeData(const QModelIndexList &indexes) const;
+    Qt::DropActions supportedDropActions() const;
+    bool dropMimeData(const QMimeData *data,
+    Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
-    EIItem* rootElement();
+
+    EIItem* rootElement() const;
+    Project* project(){return _project;}
+
+
 
 
 private :
+    Project* _project;
     EIItem* _rootElement;
     bool _showFields;
     bool _editable;

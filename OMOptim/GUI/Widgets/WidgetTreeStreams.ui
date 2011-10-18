@@ -14,7 +14,7 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0" rowspan="8" colspan="2">
+   <item row="1" column="0" rowspan="7" colspan="2">
     <layout class="QGridLayout" name="layoutTreeStreams"/>
    </item>
    <item row="2" column="2">
@@ -43,7 +43,7 @@
      </property>
     </spacer>
    </item>
-   <item row="8" column="2">
+   <item row="7" column="2">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -67,9 +67,12 @@
      <property name="text">
       <string>Add Stream</string>
      </property>
+     <property name="shortcut">
+      <string>+</string>
+     </property>
     </widget>
    </item>
-   <item row="0" column="3" rowspan="9">
+   <item row="0" column="3" rowspan="8">
     <layout class="QGridLayout" name="layoutWidgetItem">
      <property name="verticalSpacing">
       <number>2</number>
@@ -100,18 +103,8 @@
      <property name="text">
       <string>Remove</string>
      </property>
-    </widget>
-   </item>
-   <item row="7" column="2">
-    <widget class="QPushButton" name="pushResize">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Resize</string>
+     <property name="shortcut">
+      <string>Del</string>
      </property>
     </widget>
    </item>

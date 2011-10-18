@@ -114,6 +114,12 @@ double VariablesManip::calculateObjValue(OptObjective* optObj,MOVector<VariableR
 			case OptObjective::DEVIATION :
 				result = VariablesManip::calculateScanStandardDev(oneSimFinalVars->at(iVarObj),ok,iPoint);
 				break;
+        case OptObjective::MINIMUM :
+            result = VariablesManip::extractMinimum(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            break;
+        case OptObjective::MAXIMUM :
+            result = VariablesManip::extractMaximum(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            break;
 			default : 
 				result = oneSimFinalVars->at(iVarObj)->finalValue(0,iPoint);
 				ok=true;
@@ -180,3 +186,49 @@ double VariablesManip::calculateScanStandardDev(VariableResult* var,bool &ok, in
 	double stdDev = sqrt(variance);
 	return stdDev;
 }
+
+double VariablesManip::extractMinimum(VariableResult* var,bool &ok, int iPoint)
+{
+    int nbScans = var->nbScans();
+    double min;
+    if(nbScans==0)
+    {
+        ok=false;
+        return 0;
+    }
+    else
+    {
+         min = var->finalValue(0,iPoint);
+    }
+
+    for(int iScan=1;iScan<nbScans;iScan++)
+    {
+        min += std::min(min,var->finalValue(iScan,iPoint));
+    }
+    ok=true;
+    return min;
+}
+
+
+double VariablesManip::extractMaximum(VariableResult* var,bool &ok, int iPoint)
+{
+    int nbScans = var->nbScans();
+    double max;
+    if(nbScans==0)
+    {
+        ok=false;
+        return 0;
+    }
+    else
+    {
+         max = var->finalValue(0,iPoint);
+    }
+
+    for(int iScan=1;iScan<nbScans;iScan++)
+    {
+        max += std::max(max,var->finalValue(iScan,iPoint));
+    }
+    ok=true;
+    return max;
+}
+

@@ -159,6 +159,8 @@ bool EIGroup::setFieldValue(int ifield,QVariant value_)
 {
     bool ok=true;
 
+    try
+    {
     switch (ifield)
     {
     case NAME :
@@ -186,6 +188,12 @@ bool EIGroup::setFieldValue(int ifield,QVariant value_)
         _checked =value_.toBool();
         break;
     }
+    }
+    catch(std::exception &e)
+    {
+        return false;
+    }
+
     if(!_filledFields.contains(ifield))
         _filledFields.push_back(ifield);
 

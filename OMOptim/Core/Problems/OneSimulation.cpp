@@ -48,12 +48,12 @@
 #include "LowTools.h"
 #include "CSV.h"
 #include "reportingHook.h"
+#include "Project.h"
 
-OneSimulation::OneSimulation(Project* project,ModClassTree* modClassTree,ModPlusCtrl* modPlusCtrl,ModModelPlus* modModelPlus)
+OneSimulation::OneSimulation(Project* project,ModClassTree* modClassTree,ModModelPlus* modModelPlus)
     :Problem(project,modClassTree)
 {
 	_modModelPlus = modModelPlus;
-	_modPlusCtrl = modPlusCtrl;
 	_type = Problem::ONESIMULATIONTYPE;
 	_name="One Simulation";
 	
@@ -102,7 +102,7 @@ Result* OneSimulation::launch(ProblemConfig config){
         ModPlusCtrl* ctrl;
 	MOVector<Variable> updatedVariables(*_overwritedVariables);
 	
-        OneSimResult* result = new OneSimResult(_project,_modModelPlus,this,_modClassTree,_modPlusCtrl);
+        OneSimResult* result = new OneSimResult(_project,_modModelPlus,this,_modClassTree);
         result->setName(this->name()+" result");
 
 	
@@ -128,10 +128,12 @@ Result* OneSimulation::launch(ProblemConfig config){
 	{
 		// Update values
 		VariablesManip::updateScanValues(&updatedVariables,_scannedVariables,indexes);
+
+
 		// Simulate
 		curVariables.clear();
                 ctrl = _modModelPlus->ctrl();
-                curSimSuccess = ctrl->simulate(config.tempDir, &updatedVariables, &curVariables,_filesToCopy);
+                curSimSuccess = ctrl->simulate(_project->tempPath(), &updatedVariables, &curVariables,_filesToCopy);
                 allSimSuccess = allSimSuccess && curSimSuccess;
 
                 if(allSimSuccess)

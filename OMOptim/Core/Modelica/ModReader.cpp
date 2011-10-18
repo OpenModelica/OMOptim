@@ -84,26 +84,7 @@ void ModReader::loadMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModMo
 	//if(refreshAfter)
 	//	refresh(rootClass,mapModelPlus);
 }
-//void ModReader::addModClass(ModClass* parent,QString className,QString filePath)
-//{
-//	Modelica::ClassRestr restr = moomc->getClassRestriction(className);
 
-//		ModClass* newClass = NULL;
-//		switch(restr)
-//		{
-//		case Modelica::PACKAGE :
-//                        newClass = new ModPackage(moomc,parent,className,filePath);
-//			break;
-//		case Modelica::MODEL :
-//                        newClass = new ModModel(moomc,parent,className,filePath);
-//			break;
-//		}
-//		if(newClass)
-//		{
-//                        rootClass->addChild(newClass);
-//			readFromOmcV3(newClass,rootClass,getDepthMax());
-//		}
-//}
 
 ModClass* ModReader::newModClass(QString className,QString filePath)
 {
@@ -125,7 +106,7 @@ ModClass* ModReader::newModClass(QString className,QString filePath)
 
 int ModReader::getDepthMax()
 {
-	int depthMax = MOSettings::getValue("DepthReadWhileLoadingModModel").toInt();
+        int depthMax = MOSettings::value("DepthReadWhileLoadingModModel").toInt();
 	if(depthMax==-1)
 			depthMax = 100000;
 	return depthMax;

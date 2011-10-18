@@ -129,6 +129,7 @@ void EIHENScene::advance(EIHENGraphicNode* startGrNode,QList<EIHENGraphicNode*> 
 
 
         newGrNode->setX((TMax.value(METemperature::K)-Taverage.value(METemperature::K))*_TXFactor/*-newGrNode->boundingRect().width()/2*/);
+        Q_ASSERT(!std::isnan(newGrNode->x()));
 
         if(pendingNodes.size()>1)
         {

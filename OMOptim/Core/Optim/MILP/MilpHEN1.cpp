@@ -44,10 +44,12 @@
 #endif
 #include <cmath>
 
+#include "CERESInfo.h"
+
 bool GlpkCallBack::_stop;
 
 MilpHEN1::MilpHEN1(const EITree &eiTree,const MOParameters &parameters,const EIConnConstrs &connConstrs,
-                   const MOOptVector &variables,QDir folder,bool splitTPinch,METemperature TPinch)
+                   const MOOptVector &variables,QDir folder,METemperature TPinch)
 {
     _eiTree = new EITree(eiTree);
     _variables = new MOOptVector(variables);
@@ -55,34 +57,10 @@ MilpHEN1::MilpHEN1(const EITree &eiTree,const MOParameters &parameters,const EIC
     _parameters = new MOParameters(parameters);
 
     _folder = folder;
-    _splitTPinch = splitTPinch;
     _TPinch = TPinch;
 
+    _modFilePath = getModFilePath();
 
-    _solver = (EIHEN1Parameters::Solver)_parameters->value(EIHEN1Parameters::SOLVER).toInt();
-
-#ifdef DEBUG
-    // if debug, uses directly file in MILP folder (this folder is set in settings)
-    // this allows to modify .mod and launch computation without recomputing
-    QSettings settings("MO", "Settings");
-    QString milpFolder = settings.value("path/MILPFolder").toString();
-
-    QDir dir(milpFolder);
-    QFileInfo modFileInfo(dir,"MilpHEN.mod");
-    _modFilePath = modFileInfo.absoluteFilePath();
-
-    if(!modFileInfo.exists())
-    {
-        infoSender.send(Info(modFileInfo.absoluteFilePath()+" does not exists",ListInfo::ERROR2));
-    }
-
-#else
-    // if not debug, .mod file is taken from resource file
-    QFile orgModFile(":/MILP/MilpHEN.mod");
-    QFileInfo orgModFileInfo(orgModFile);
-    _modFilePath = folder.filePath(orgModFileInfo.fileName());
-    orgModFile.copy(_modFilePath);
-#endif
 
     _logFileName = "MILPLog.txt";
     _resFileName = "MILPResult.txt";
@@ -91,12 +69,48 @@ MilpHEN1::MilpHEN1(const EITree &eiTree,const MOParameters &parameters,const EIC
     _mpsFileName = "problem.mps";
 
 
-    _QFlowUnit = MEQflow::KW;
+    _QFlowUnit = MEQflow::W;
     _TempUnit = METemperature::K;
     _MassFlowUnit = MEMassFlow::KG_S;
+    _surfaceUnit = MESurface::M2;
+    _htUnit = MEHTCoeff::W_M2_K;
+    _specCpUnit = MESpecHeatCapacity::J_KG_K;
+
 
     _glpProblem = NULL;
 }
+
+QString MilpHEN1::getModFilePath()
+{
+
+#ifdef DEBUG
+    // if debug, uses directly file in MILP folder
+    // this allows to modify .mo and reload it without recompiling
+    QDir modDir(QApplication::applicationDirPath());
+    modDir.cdUp();
+    modDir.cd("Core");
+    modDir.cd("Optim");
+    modDir.cd("MILP");
+    QString modFilePath = modDir.absoluteFilePath("MilpHEN.mod");
+    return modFilePath;
+
+#else
+    // if not debug, .mo file is first copied from resource and then, its filepath is returned
+    QFile moFile(":/MILP/MilpHEN.mod");
+    qDebug(moFile.fileName().toLatin1().data());
+    QString newPath = QApplication::applicationDirPath()+QDir::separator()+QFileInfo(moFile).fileName();
+    QFileInfo newInfo(newPath);
+    if(newInfo.exists())
+        newInfo.absoluteDir().remove(newInfo.fileName());
+
+    moFile.copy(newPath);
+
+    return newPath;
+#endif
+
+}
+
+
 
 MilpHEN1::~MilpHEN1(void)
 {
@@ -119,10 +133,31 @@ int MilpHEN1::hook(void *info, const char *s)
 
 EIHEN1Parameters::Solver MilpHEN1::solver()
 {
-    return _solver;
+    return (EIHEN1Parameters::Solver)_parameters->value(EIHEN1Parameters::SOLVER).toInt();
+}
+
+bool MilpHEN1::shouldSplitTPinch()
+{
+    return _parameters->value((int)EIHEN1Parameters::SPLITPINCH).toBool();
 }
 
 EIHEN1Result * MilpHEN1::launch()
+{
+    switch(_parameters->value(EIHEN1Parameters::PRESET).toInt())
+    {
+    case EIHEN1Parameters::FAST :
+        return autoLaunchFast();
+
+    case EIHEN1Parameters::PRECISE :
+        return autoLaunchPrecise();
+
+    case EIHEN1Parameters::CUSTOM :
+        return launchCustom();
+
+    }
+}
+
+EIHEN1Result * MilpHEN1::launchCustom()
 {
     QString msg;
 
@@ -134,20 +169,26 @@ EIHEN1Result * MilpHEN1::launch()
     if(!dataOk)
         return NULL;
 
-    switch(_solver)
+    switch(solver())
     {
     case EIHEN1Parameters::GLPK :
         launchOk = launchGLPK(msg);
         if(launchOk)
             return  getGLPKResult(Tk);
         else
+        {
+            infoSender.send(Info("Problem failed : "+msg,ListInfo::ERROR2));
             return NULL;
+        }
     case EIHEN1Parameters::CBC :
         launchOk = launchCBC(msg);
         if(launchOk)
             return  getCBCResult(Tk);
         else
+        {
+            infoSender.send(Info("Problem failed : "+msg,ListInfo::ERROR2));
             return NULL;
+        }
     default:
         return NULL;
     }
@@ -155,12 +196,12 @@ EIHEN1Result * MilpHEN1::launch()
 
 void MilpHEN1::stop()
 {
-    if(_solver==EIHEN1Parameters::CBC)
+    if(solver()==EIHEN1Parameters::CBC)
     {
         _cbcCtrl->stop();
     }
 
-    if(_solver==EIHEN1Parameters::GLPK)
+    if(solver()==EIHEN1Parameters::GLPK)
     {
         _glpkCtrl->stop();
     }
@@ -203,7 +244,7 @@ void MilpHEN1::prepareTk( const QList<EIStream*> &allStreams,
             TL.push_back(Tk.at(tkConcerned.at(j)+1));
         }
 
-        if(!_splitTPinch)
+        if(!shouldSplitTPinch())
         {
 
             if(tkConcerned.size()<3)
@@ -310,9 +351,19 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     double splitTstep = _parameters->value((int)EIHEN1Parameters::SPLITDTSTEP,QVariant(true)).toDouble();
 
 
+    // get all streams
     QList<EIStream*> allStreams;
     allStreams.append(eiUtilityStreams);
     allStreams.append(eiProcessStreams);
+
+    // initialize corresponding names (if too long, shortened version will be used)
+    QStringList allNames;
+    for(int i=0;i<allStreams.size();i++)
+        allNames.push_back(allStreams.at(i)->name());
+    for(int i=0;i<factGroupMap.values().size();i++)
+        allNames.push_back(factGroupMap.values().at(i)->name());
+    initCorresp(allNames);
+
 
     // be sure each stream at least holds in three intervals
     prepareTk(allStreams,Tk);
@@ -353,7 +404,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     QList<EIStream*> cuStreamsA;
     QList<EIStream*> cuStreamsB;
 
-    if(_splitTPinch)
+    if(shouldSplitTPinch())
     {
         //use corrected check
         hotStreamsA = EIReader::getStreamsAboveT(_TPinch,hotStreams,true);
@@ -379,11 +430,10 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     //*************
     // sets
     //*************
-
     //Si : hot streams
     MilpSet0D setSi("Si");
     for(int i=0;i<hotStreams.size();i++)
-        setSi.addItem(hotStreams.at(i)->name());
+        setSi.addItem(toShortName(hotStreams.at(i)->name()));
     dataText.append(setSi.toString());
     dataText.append("\n");
 
@@ -391,16 +441,15 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     //Sj : cold streams
     MilpSet0D setSj("Sj");
     for(int i=0;i<coldStreams.size();i++)
-        setSj.addItem(coldStreams.at(i)->name());
+        setSj.addItem(toShortName(coldStreams.at(i)->name()));
     dataText.append(setSj.toString());
     dataText.append("\n");
-
 
     //HU : hot utility streams
     MilpSet0D setHU("HU");
 
     for(int i=0;i<huStreams.size();i++)
-        setHU.addItem(huStreams.at(i)->name());
+        setHU.addItem(toShortName(huStreams.at(i)->name()));
     dataText.append(setHU.toString());
     dataText.append("\n");
 
@@ -408,14 +457,14 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     MilpSet0D setCU("CU");
 
     for(int i=0;i<cuStreams.size();i++)
-        setCU.addItem(cuStreams.at(i)->name());
+        setCU.addItem(toShortName(cuStreams.at(i)->name()));
     dataText.append(setCU.toString());
     dataText.append("\n");
 
     // Sz : zones
     MilpSet0D setSz("Sz");
 
-    if(_splitTPinch)
+    if(shouldSplitTPinch())
     {
         setSz.addItem(zoneA);
         setSz.addItem(zoneB);
@@ -437,7 +486,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
         {
             //check if not forbidden
             if(!_connConstrs->isForbiddenMatch(hotStreams.at(iH)->name(),coldStreams.at(iC)->name(),mapForbidden))
-                setP.addItem("("+hotStreams.at(iH)->name()+","+coldStreams.at(iC)->name()+")");
+                setP.addItem("("+toShortName(hotStreams.at(iH)->name())+","+toShortName(coldStreams.at(iC)->name())+")");
         }
     }
     dataText.append(setP.toString());
@@ -473,11 +522,11 @@ void MilpHEN1::DataToFile(QString dataFilePath,
         //if allInNI, add all streams
         for(int iH=0;iH<hotStreams.size();iH++)
         {
-            setNIH.addItem(hotStreams.at(iH)->name());
+            setNIH.addItem(toShortName(hotStreams.at(iH)->name()));
         }
         for(int iC=0;iC<coldStreams.size();iC++)
         {
-            setNIC.addItem(coldStreams.at(iC)->name());
+            setNIC.addItem(toShortName(coldStreams.at(iC)->name()));
         }
     }
     dataText.append(setNIH.toString()+"\n");
@@ -487,35 +536,35 @@ void MilpHEN1::DataToFile(QString dataFilePath,
 
     //Hz : hot streams in z
     MilpSet1D setHz("Hz");
-    if(_splitTPinch)
+    if(shouldSplitTPinch())
     {
         for(int i=0;i<hotStreamsA.size();i++)
-            setHz.addItem(zoneA,hotStreamsA.at(i)->name());
+            setHz.addItem(zoneA,toShortName(hotStreamsA.at(i)->name()));
         for(int i=0;i<hotStreamsB.size();i++)
-            setHz.addItem(zoneB,hotStreamsB.at(i)->name());
+            setHz.addItem(zoneB,toShortName(hotStreamsB.at(i)->name()));
     }
     else
     {
         for(int i=0;i<hotStreams.size();i++)
-            setHz.addItem(zone,hotStreams.at(i)->name());
+            setHz.addItem(zone,toShortName(hotStreams.at(i)->name()));
     }
     dataText.append(setHz.toString());
     dataText.append("\n");
 
     //HUz : hot utility streams in z
     MilpSet1D setHUz("HUz");
-    if(_splitTPinch)
+    if(shouldSplitTPinch())
     {
         for(int i=0;i<huStreamsA.size();i++)
-            setHUz.addItem(zoneA,huStreamsA.at(i)->name());
+            setHUz.addItem(zoneA,toShortName(huStreamsA.at(i)->name()));
         for(int i=0;i<huStreamsB.size();i++)
-            setHUz.addItem(zoneB,huStreamsB.at(i)->name());
+            setHUz.addItem(zoneB,toShortName(huStreamsB.at(i)->name()));
     }
     else
     {
         for(int i=0;i<huStreams.size();i++)
         {
-            setHUz.addItem(zone,huStreams.at(i)->name());
+            setHUz.addItem(zone,toShortName(huStreams.at(i)->name()));
         }
     }
     dataText.append(setHUz.toString());
@@ -523,35 +572,35 @@ void MilpHEN1::DataToFile(QString dataFilePath,
 
     //Cz : cold streams in z
     MilpSet1D setCz("Cz");
-    if(_splitTPinch)
+    if(shouldSplitTPinch())
     {
         for(int i=0;i<coldStreamsA.size();i++)
-            setCz.addItem(zoneA,coldStreamsA.at(i)->name());
+            setCz.addItem(zoneA,toShortName(coldStreamsA.at(i)->name()));
         for(int i=0;i<coldStreamsB.size();i++)
-            setCz.addItem(zoneB,coldStreamsB.at(i)->name());
+            setCz.addItem(zoneB,toShortName(coldStreamsB.at(i)->name()));
     }
     else
     {
         for(int i=0;i<coldStreams.size();i++)
-            setCz.addItem(zone,coldStreams.at(i)->name());
+            setCz.addItem(zone,toShortName(coldStreams.at(i)->name()));
     }
     dataText.append(setCz.toString());
     dataText.append("\n");
 
     //CUz : cold utility streams in z
     MilpSet1D setCUz("CUz");
-    if(_splitTPinch)
+    if(shouldSplitTPinch())
     {
         for(int i=0;i<cuStreamsA.size();i++)
-            setCUz.addItem(zoneA,cuStreamsA.at(i)->name());
+            setCUz.addItem(zoneA,toShortName(cuStreamsA.at(i)->name()));
         for(int i=0;i<cuStreamsB.size();i++)
-            setCUz.addItem(zoneB,cuStreamsB.at(i)->name());
+            setCUz.addItem(zoneB,toShortName(cuStreamsB.at(i)->name()));
     }
     else
     {
         for(int i=0;i<cuStreams.size();i++)
         {
-            setCUz.addItem(zone,cuStreams.at(i)->name());
+            setCUz.addItem(zone,toShortName(cuStreams.at(i)->name()));
         }
     }
     dataText.append(setCUz.toString());
@@ -561,7 +610,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     // SUtGroups
     MilpSet0D setSUtGroups("SUtGroups");
     for(int i=0;i<factGroupMap.values().size();i++)
-        setSUtGroups.addItem(factGroupMap.values().at(i)->name());
+        setSUtGroups.addItem(toShortName(factGroupMap.values().at(i)->name()));
     dataText.append(setSUtGroups.toString());
     dataText.append("\n");
 
@@ -577,7 +626,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
         for(int iS=0;iS<factStreamMap.values(curGroupFact).size();iS++)
         {
             curStream = factStreamMap.values(curGroupFact).at(iS);
-            setSUtStrGroups.addItem("("+curGroup->name()+","+curStream->name()+") ");
+            setSUtStrGroups.addItem("("+toShortName(curGroup->name())+","+toShortName(curStream->name())+") ");
         }
     }
     dataText.append(setSUtStrGroups.toString());
@@ -593,7 +642,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
         allTempIntervals.push_back(QString::number(i+1));
     }
 
-    if(_splitTPinch)
+    if(shouldSplitTPinch())
     {
         setMz.addItems(zoneA,allTempIntervals);
         setMz.addItems(zoneB,allTempIntervals);
@@ -630,28 +679,28 @@ void MilpHEN1::DataToFile(QString dataFilePath,
             i0 = listiTconcerned.first();
             ifinal = listiTconcerned.last();
 
-            setMi0.addItem(hotStreams.at(i)->name(),QString::number(i0+1));
-            setMif.addItem(hotStreams.at(i)->name(),QString::number(ifinal+1));
+            setMi0.addItem(toShortName(hotStreams.at(i)->name()),QString::number(i0+1));
+            setMif.addItem(toShortName(hotStreams.at(i)->name()),QString::number(ifinal+1));
 
             for(int j=0;j<listiTconcerned.size();j++)
             {
-                if(_splitTPinch)
+                if(shouldSplitTPinch())
                 {
                     if(Tk.at(listiTconcerned.at(j))-hotStreams.at(i)->_DTmin2 > _TPinch) //use corrected T
                     {
-                        setMiz.addItem(hotStreams.at(i)->name(),zoneA,QString::number(listiTconcerned.at(j)+1));
-                        setHmz.addItem(QString::number(listiTconcerned.at(j)+1),zoneA,hotStreams.at(i)->name());
+                        setMiz.addItem(toShortName(hotStreams.at(i)->name()),zoneA,QString::number(listiTconcerned.at(j)+1));
+                        setHmz.addItem(QString::number(listiTconcerned.at(j)+1),zoneA,toShortName(hotStreams.at(i)->name()));
                     }
                     else
                     {
-                        setMiz.addItem(hotStreams.at(i)->name(),zoneB,QString::number(listiTconcerned.at(j)+1));
-                        setHmz.addItem(QString::number(listiTconcerned.at(j)+1),zoneB,hotStreams.at(i)->name());
+                        setMiz.addItem(toShortName(hotStreams.at(i)->name()),zoneB,QString::number(listiTconcerned.at(j)+1));
+                        setHmz.addItem(QString::number(listiTconcerned.at(j)+1),zoneB,toShortName(hotStreams.at(i)->name()));
                     }
                 }
                 else
                 {
-                    setMiz.addItem(hotStreams.at(i)->name(),zone,QString::number(listiTconcerned.at(j)+1));
-                    setHmz.addItem(QString::number(listiTconcerned.at(j)+1),zone,hotStreams.at(i)->name());
+                    setMiz.addItem(toShortName(hotStreams.at(i)->name()),zone,QString::number(listiTconcerned.at(j)+1));
+                    setHmz.addItem(QString::number(listiTconcerned.at(j)+1),zone,toShortName(hotStreams.at(i)->name()));
                 }
             }
         }
@@ -682,28 +731,28 @@ void MilpHEN1::DataToFile(QString dataFilePath,
             j0 = listiTconcerned.first();
             jfinal = listiTconcerned.last();
 
-            setNj0.addItem(coldStreams.at(i)->name(),QString::number(j0+1));
-            setNjf.addItem(coldStreams.at(i)->name(),QString::number(jfinal+1));
+            setNj0.addItem(toShortName(coldStreams.at(i)->name()),QString::number(j0+1));
+            setNjf.addItem(toShortName(coldStreams.at(i)->name()),QString::number(jfinal+1));
 
             for(int j=0;j<listiTconcerned.size();j++)
             {
-                if(_splitTPinch)
+                if(shouldSplitTPinch())
                 {
                     if(Tk.at(listiTconcerned.at(j))+coldStreams.at(i)->_DTmin2 > _TPinch)
                     {
-                        setNjz.addItem(coldStreams.at(i)->name(),zoneA,QString::number(listiTconcerned.at(j)+1));
-                        setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zoneA,coldStreams.at(i)->name());
+                        setNjz.addItem(toShortName(coldStreams.at(i)->name()),zoneA,QString::number(listiTconcerned.at(j)+1));
+                        setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zoneA,toShortName(coldStreams.at(i)->name()));
                     }
                     else
                     {
-                        setNjz.addItem(coldStreams.at(i)->name(),zoneB,QString::number(listiTconcerned.at(j)+1));
-                        setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zoneB,coldStreams.at(i)->name());
+                        setNjz.addItem(toShortName(coldStreams.at(i)->name()),zoneB,QString::number(listiTconcerned.at(j)+1));
+                        setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zoneB,toShortName(coldStreams.at(i)->name()));
                     }
                 }
                 else
                 {
-                    setNjz.addItem(coldStreams.at(i)->name(),zone,QString::number(listiTconcerned.at(j)+1));
-                    setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zone,coldStreams.at(i)->name());
+                    setNjz.addItem(toShortName(coldStreams.at(i)->name()),zone,QString::number(listiTconcerned.at(j)+1));
+                    setCnz.addItem(QString::number(listiTconcerned.at(j)+1),zone,toShortName(coldStreams.at(i)->name()));
                 }
             }
         }
@@ -718,12 +767,13 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     MilpSet2D setPimH("PimH");
     QStringList tempIntervals;
     QString hotStreamName,coldStreamName;
+
     for(int iH=0;iH<hotStreams.size();iH++)
     {
         hotStreamName = hotStreams.at(iH)->name();
-        tempIntervals = setMiz.items().values(MilpKey2D(hotStreamName,zone));
-        tempIntervals.append(setMiz.items().values(MilpKey2D(hotStreamName,zoneA)));
-        tempIntervals.append(setMiz.items().values(MilpKey2D(hotStreamName,zoneB)));
+        tempIntervals = setMiz.items().values(MilpKey2D(toShortName(hotStreamName),zone));
+        tempIntervals.append(setMiz.items().values(MilpKey2D(toShortName(hotStreamName),zoneA)));
+        tempIntervals.append(setMiz.items().values(MilpKey2D(toShortName(hotStreamName),zoneB)));
         tempIntervals.removeDuplicates();
 
         for(int iT=0;iT<tempIntervals.size();iT++)
@@ -733,7 +783,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
                 coldStreamName = coldStreams.at(iC)->name();
                 //check if not forbidden
                 if(!_connConstrs->isForbiddenMatch(hotStreams.at(iH)->name(),coldStreams.at(iC)->name(),mapForbidden))
-                    setPimH.addItem(hotStreamName,tempIntervals.at(iT),coldStreamName);
+                    setPimH.addItem(toShortName(hotStreamName),tempIntervals.at(iT),toShortName(coldStreamName));
             }
         }
     }
@@ -744,9 +794,9 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     for(int iC=0;iC<coldStreams.size();iC++)
     {
         coldStreamName = coldStreams.at(iC)->name();
-        tempIntervals = setNjz.items().values(MilpKey2D(coldStreamName,zone));
-        tempIntervals.append(setNjz.items().values(MilpKey2D(coldStreamName,zoneA)));
-        tempIntervals.append(setNjz.items().values(MilpKey2D(coldStreamName,zoneB)));
+        tempIntervals = setNjz.items().values(MilpKey2D(toShortName(coldStreamName),zone));
+        tempIntervals.append(setNjz.items().values(MilpKey2D(toShortName(coldStreamName),zoneA)));
+        tempIntervals.append(setNjz.items().values(MilpKey2D(toShortName(coldStreamName),zoneB)));
         tempIntervals.removeDuplicates();
 
         for(int iT=0;iT<tempIntervals.size();iT++)
@@ -756,7 +806,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
                 hotStreamName = hotStreams.at(iH)->name();
                 //check if not forbidden
                 if(!_connConstrs->isForbiddenMatch(hotStreams.at(iH)->name(),coldStreams.at(iC)->name(),mapForbidden))
-                    setPjnC.addItem(coldStreamName,tempIntervals.at(iT),hotStreamName);
+                    setPjnC.addItem(toShortName(coldStreamName),tempIntervals.at(iT),toShortName(hotStreamName));
             }
         }
     }
@@ -772,6 +822,26 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     dataText.append(paramKmax.toString()+"\n");
 
 
+    // he costs
+    double fixHEValue = _parameters->value(EIHEN1Parameters::HECOSTA).toDouble();
+    double varHEValue = _parameters->value(EIHEN1Parameters::HECOSTB).toDouble();
+    MilpParam2D paramCijA("cijA");
+    MilpParam2D paramCijF("cijF");
+    MilpKey2D curKey2;
+    for(int iH=0;iH<hotStreams.size();iH++)
+    {
+        for(int iC=0;iC<coldStreams.size();iC++)
+        {
+            curKey2 = MilpKey2D(toShortName(hotStreams.at(iH)->name()),toShortName(coldStreams.at(iC)->name()));
+            paramCijA.addItem(curKey2.row(),curKey2.col(),QString::number(fixHEValue));
+            paramCijF.addItem(curKey2.row(),curKey2.col(),QString::number(varHEValue));
+        }
+    }
+
+    dataText.append(paramCijA.toString()+"\n");
+    dataText.append(paramCijF.toString()+"\n");
+
+
     //Utility groups parameters
 
 
@@ -785,23 +855,23 @@ void MilpHEN1::DataToFile(QString dataFilePath,
         curGroupFact = factGroupMap.uniqueKeys().at(iFact);
         curGroup = factGroupMap.value(curGroupFact);
 
-        paramUtFactMax.addItem(curGroup->name(),QString::number(curGroupFact->max));
-        paramUtFactMin.addItem(curGroup->name(),QString::number(curGroupFact->min));
-        paramFixUtCost.addItem(curGroup->name(),curGroup->getFieldValue(EIGroup::COSTFIX).toString());
-        paramVarUtCost.addItem(curGroup->name(),curGroup->getFieldValue(EIGroup::COSTMULT).toString());
+        paramUtFactMax.addItem(toShortName(curGroup->name()),QString::number(curGroupFact->max));
+        paramUtFactMin.addItem(toShortName(curGroup->name()),QString::number(curGroupFact->min));
+        paramFixUtCost.addItem(toShortName(curGroup->name()),curGroup->getFieldValue(EIGroup::COSTFIX).toString());
+        paramVarUtCost.addItem(toShortName(curGroup->name()),curGroup->getFieldValue(EIGroup::COSTMULT).toString());
     }
+
     dataText.append(paramFixUtCost.toString()+"\n");
     dataText.append(paramVarUtCost.toString()+"\n");
     dataText.append(paramUtFactMax.toString()+"\n");
     dataText.append(paramUtFactMin.toString()+"\n");
-
 
     //flowrates
     MilpParam1D paramFi("Fi");
     for(int i=0;i<hotStreams.size();i++)
     {
         curStream = hotStreams.at(i);
-        paramFi.addItem(curStream->name(),QString::number(curStream->massFlowNum().value(_MassFlowUnit),'g',20));
+        paramFi.addItem(toShortName(curStream->name()),QString::number(curStream->massFlowNum().value(_MassFlowUnit),'g',20));
     }
     dataText.append(paramFi.toString()+"\n");
 
@@ -809,7 +879,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     for(int i=0;i<coldStreams.size();i++)
     {
         curStream = coldStreams.at(i);
-        paramFj.addItem(curStream->name(),QString::number(curStream->massFlowNum().value(_MassFlowUnit),'g',20));
+        paramFj.addItem(toShortName(curStream->name()),QString::number(curStream->massFlowNum().value(_MassFlowUnit),'g',20));
     }
     dataText.append(paramFj.toString()+"\n");
 
@@ -830,7 +900,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     for(int iH=0;iH<hotStreams.size();iH++)
     {
         hotStreamName = hotStreams.at(iH)->name();
-        Cp = hotStreams.at(iH)->Cp(CpOk);
+        Cp = hotStreams.at(iH)->Cp(CpOk).value(_specCpUnit);
 
         for(int iT=0;iT<allTempIntervals.size();iT++)
         {
@@ -841,25 +911,25 @@ void MilpHEN1::DataToFile(QString dataFilePath,
             inZoneB = false;
             inZone = false;
 
-            if(_splitTPinch)
+            if(shouldSplitTPinch())
             {
-                inZoneA = mizValues.contains(MilpKey2D(hotStreamName,zoneA),allTempIntervals.at(iT));
-                inZoneB = mizValues.contains(MilpKey2D(hotStreamName,zoneB),allTempIntervals.at(iT));
+                inZoneA = mizValues.contains(MilpKey2D(toShortName(hotStreamName),zoneA),allTempIntervals.at(iT));
+                inZoneB = mizValues.contains(MilpKey2D(toShortName(hotStreamName),zoneB),allTempIntervals.at(iT));
                 if(inZoneA)
-                    paramDHimzH.addItem(hotStreamName,allTempIntervals.at(iT),zoneA,QString::number(dQ.value(_QFlowUnit),'g',20));
+                    paramDHimzH.addItem(toShortName(hotStreamName),allTempIntervals.at(iT),zoneA,QString::number(dQ.value(_QFlowUnit),'g',20));
 
                 if(inZoneB)
-                    paramDHimzH.addItem(hotStreamName,allTempIntervals.at(iT),zoneB,QString::number(dQ.value(_QFlowUnit),'g',20));
+                    paramDHimzH.addItem(toShortName(hotStreamName),allTempIntervals.at(iT),zoneB,QString::number(dQ.value(_QFlowUnit),'g',20));
             }
             else
             {
-                inZone = mizValues.contains(MilpKey2D(hotStreamName,zone),allTempIntervals.at(iT));
+                inZone = mizValues.contains(MilpKey2D(toShortName(hotStreamName),zone),allTempIntervals.at(iT));
                 if(inZone)
-                    paramDHimzH.addItem(hotStreamName,allTempIntervals.at(iT),zone,QString::number(dQ.value(_QFlowUnit),'g',20));
+                    paramDHimzH.addItem(toShortName(hotStreamName),allTempIntervals.at(iT),zone,QString::number(dQ.value(_QFlowUnit),'g',20));
             }
 
             if(inZone || inZoneA || inZoneB)
-                paramCpim.addItem(hotStreamName,allTempIntervals.at(iT),QString::number(Cp,'g',20));
+                paramCpim.addItem(toShortName(hotStreamName),allTempIntervals.at(iT),QString::number(Cp,'g',20));
 
         }
     }
@@ -880,7 +950,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     for(int iC=0;iC<coldStreams.size();iC++)
     {
         coldStreamName = coldStreams.at(iC)->name();
-        Cp = coldStreams.at(iC)->Cp(CpOk);
+        Cp = coldStreams.at(iC)->Cp(CpOk).value(_specCpUnit);
         for(int iT=0;iT<allTempIntervals.size();iT++)
         {
             dQ = EIReader::getIntervalQFlow(Tk.at(allTempIntervals.at(iT).toInt()-1),Tk.at(allTempIntervals.at(iT).toInt()),coldStreams.at(iC),false);
@@ -890,23 +960,23 @@ void MilpHEN1::DataToFile(QString dataFilePath,
             inZoneB = false;
             inZone = false;
 
-            if(_splitTPinch)
+            if(shouldSplitTPinch())
             {
-                inZoneA = njzValues.contains(MilpKey2D(coldStreamName,zoneA),allTempIntervals.at(iT));
-                inZoneB = njzValues.contains(MilpKey2D(coldStreamName,zoneB),allTempIntervals.at(iT));
+                inZoneA = njzValues.contains(MilpKey2D(toShortName(coldStreamName),zoneA),allTempIntervals.at(iT));
+                inZoneB = njzValues.contains(MilpKey2D(toShortName(coldStreamName),zoneB),allTempIntervals.at(iT));
                 if(inZoneA)
-                    paramDHjnzC.addItem(coldStreamName,allTempIntervals.at(iT),zoneA,QString::number(dQ.value(_QFlowUnit),'g',20));
+                    paramDHjnzC.addItem(toShortName(coldStreamName),allTempIntervals.at(iT),zoneA,QString::number(dQ.value(_QFlowUnit),'g',20));
                 if(inZoneB)
-                    paramDHjnzC.addItem(coldStreamName,allTempIntervals.at(iT),zoneB,QString::number(dQ.value(_QFlowUnit),'g',20));
+                    paramDHjnzC.addItem(toShortName(coldStreamName),allTempIntervals.at(iT),zoneB,QString::number(dQ.value(_QFlowUnit),'g',20));
             }
             else
             {
-                inZone = njzValues.contains(MilpKey2D(coldStreamName,zone),allTempIntervals.at(iT));
+                inZone = njzValues.contains(MilpKey2D(toShortName(coldStreamName),zone),allTempIntervals.at(iT));
                 if(inZone)
-                    paramDHjnzC.addItem(coldStreamName,allTempIntervals.at(iT),zone,QString::number(dQ.value(_QFlowUnit),'g',20));
+                    paramDHjnzC.addItem(toShortName(coldStreamName),allTempIntervals.at(iT),zone,QString::number(dQ.value(_QFlowUnit),'g',20));
             }
             if(inZone || inZoneA || inZoneB)
-                paramCpjn.addItem(coldStreamName,allTempIntervals.at(iT),QString::number(Cp,'g',20));
+                paramCpjn.addItem(toShortName(coldStreamName),allTempIntervals.at(iT),QString::number(Cp,'g',20));
         }
     }
     dataText.append(paramDHjnzC.toString()+"\n");
@@ -918,7 +988,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     for(int iH=0;iH<hotStreams.size();iH++)
     {
         dT = hotStreams.at(iH)->TinNum(false) - hotStreams.at(iH)->ToutNum(false);
-        paramDTi.addItem(hotStreams.at(iH)->name(),QString::number(dT,'g',20));
+        paramDTi.addItem(toShortName(hotStreams.at(iH)->name()),QString::number(dT,'g',20));
     }
     dataText.append(paramDTi.toString()+"\n");
 
@@ -927,7 +997,7 @@ void MilpHEN1::DataToFile(QString dataFilePath,
     for(int iC=0;iC<coldStreams.size();iC++)
     {
         dT = coldStreams.at(iC)->ToutNum(false) - coldStreams.at(iC)->TinNum(false);
-        paramDTj.addItem(coldStreams.at(iC)->name(),QString::number(dT,'g',20));
+        paramDTj.addItem(toShortName(coldStreams.at(iC)->name()),QString::number(dT,'g',20));
     }
     dataText.append(paramDTj.toString()+"\n");
 
@@ -1047,7 +1117,7 @@ bool MilpHEN1::prepareData( QList<METemperature> & Tk)
     glp_mpl_build_prob(_glpTran, _glpProblem);
 
 
-    if(ok && _solver==EIHEN1Parameters::CBC)
+    if(ok && solver()==EIHEN1Parameters::CBC)
     {
         // create .mps for Cbc
         QString mpsFilePath = _folder.absoluteFilePath(_mpsFileName);
@@ -1068,6 +1138,7 @@ bool MilpHEN1::launchGLPK(QString &msg)
     _glpkCtrl = new GlpkCtrl(_glpProblem,_glpTran);
     return _glpkCtrl->run(msg);
 }
+
 
 void MilpHEN1::printGlpkFileResult()
 {
@@ -1133,6 +1204,8 @@ EIHEN1Result* MilpHEN1::getGLPKResult(const QList<METemperature> & Tk)
 
     // resume terminal output
     glp_term_hook(NULL, NULL);
+    //result error hook
+    glp_error_hook(NULL, NULL);
 
 
 
@@ -1140,7 +1213,7 @@ EIHEN1Result* MilpHEN1::getGLPKResult(const QList<METemperature> & Tk)
     EIHEN1Result* result;
     if(!_glpProblem)
     {
-        result = new EIHEN1Result();
+        result = new EIHEN1Result(_eiTree->project());
         result->setEITree(*_eiTree);
         result->setSuccess(false);
     }
@@ -1149,6 +1222,7 @@ EIHEN1Result* MilpHEN1::getGLPKResult(const QList<METemperature> & Tk)
         result = readGLPKResult(_glpProblem,Tk);
         glp_delete_prob(_glpProblem);
     }
+
 
     result->_logFileName = _logFileName;
     result->_resFileName = _resFileName;
@@ -1191,7 +1265,7 @@ EIHEN1Result* MilpHEN1::readGLPKResult(glp_prob * glpProblem,const QList<METempe
 {
 
     // clone eiTree
-    EIHEN1Result* result = new EIHEN1Result();
+    EIHEN1Result* result = new EIHEN1Result(_eiTree->project());
     result->setEITree(*_eiTree);
 
     // read if successfull
@@ -1283,7 +1357,7 @@ EIHEN1Result* MilpHEN1::readCBCResult(const QString &txt,const QList<METemperatu
 {
 
     // clone eiTree
-    EIHEN1Result* result = new EIHEN1Result();
+    EIHEN1Result* result = new EIHEN1Result(_eiTree->project());
     result->setEITree(*_eiTree);
 
     // read if successfull
@@ -1335,12 +1409,10 @@ EIHEN1Result* MilpHEN1::readCBCResult(const QString &txt,const QList<METemperatu
     CBCTools::fill(varTotalArea,-1,txt);
     result->_totalArea = varTotalArea.value();
 
-
     // read HENumber
     MilpVariableResult0D varHENumber("HENumber");
     CBCTools::fill(varHENumber,-1,txt);
     result->_HENumber = varHENumber.value();
-
 
     result->setEIConns(readCBCEIConns(txt,Tk));
 
@@ -1413,8 +1485,16 @@ EIConns* MilpHEN1::readGLPKEIConns(glp_prob * glpProblem,QStringList colNames,co
     MilpVariableResult4D varMassFijnz("massFijnz");
     GlpkTools::fill(varMassFijnz,glpProblem,colNames);
 
+    // aijz
+    MilpVariableResult3D varAijz("Aijz");
+    GlpkTools::fill(varAijz,glpProblem,colNames);
 
-    return readEIConns(Tk,varKijmzH,varKijnzC,varKeijmzH,varKeijnzC,varQijmzH,varQijnzC,varMassFijmz,varMassFijnz);
+    // aijzk
+    MilpVariableResult4D varAijzk("Aijzk");
+    GlpkTools::fill(varAijzk,glpProblem,colNames);
+
+    return readEIConns(Tk,varKijmzH,varKijnzC,varKeijmzH,varKeijnzC,varQijmzH,varQijnzC,
+                       varMassFijmz,varMassFijnz,varAijz,varAijzk);
 
 }
 
@@ -1455,17 +1535,16 @@ EIConns* MilpHEN1::readCBCEIConns(const QString &txt,const QList<METemperature> 
     MilpVariableResult4D varMassFijnz("massFijnz");
     CBCTools::fill(varMassFijnz,txt);
 
-    // Cpim
-    MilpVariableResult4D varCpim("Cpim");
-    CBCTools::fill(varCpim,txt);
+    // Aijz
+    MilpVariableResult3D varAijz("Aijz");
+    CBCTools::fill(varAijz,txt);
 
-    // Cpjn
-    MilpVariableResult4D varCpjn("Cpjn");
-    CBCTools::fill(varCpjn,txt);
+    // Aijz
+    MilpVariableResult4D varAijzk("Aijzk");
+    CBCTools::fill(varAijzk,txt);
 
 
-
-    return readEIConns(Tk,varKijmzH,varKijnzC,varKeijmzH,varKeijnzC,varQijmzH,varQijnzC,varMassFijmz,varMassFijnz);
+    return readEIConns(Tk,varKijmzH,varKijnzC,varKeijmzH,varKeijnzC,varQijmzH,varQijnzC,varMassFijmz,varMassFijnz,varAijz,varAijzk);
 }
 
 
@@ -1477,7 +1556,9 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
                                const MilpVariableResult4D &varQijmzH,
                                const MilpVariableResult4D &varQijnzC,
                                const MilpVariableResult4D &varMassFijmz,
-                               const MilpVariableResult4D &varMassFijnz
+                               const MilpVariableResult4D &varMassFijnz,
+                               const MilpVariableResult3D &varAijz,
+                               const MilpVariableResult4D &varAijzK
                                )
 {
 
@@ -1503,8 +1584,10 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
     bool found;
     QString strHot,strCold;
     MEQflow qflow,extQFlow;
+    MESurface surface;
     METemperature TinA,ToutA,TinB,ToutB;
     MilpKey4D curKey;
+    MilpKey3D curKey3;
     EIStream* hotStream;
     EIStream* coldStream;
     MEMassFlow hotMassFlow,coldMassFlow;
@@ -1617,12 +1700,12 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
 
 
                         //Hot mass fraction
-                        hotMassFlow.setValue(-1);
+                        hotMassFlow.setValue(0);
                         for(int k=kBH;k<=kEH;k++)
                         {
                             curKey=MilpKey4D(curBHKey.i1(),curBHKey.i2(),QString::number(k),curBHKey.i4());
 
-                            hotMassFlow.setValue(std::max(hotMassFlow.value(),varMassFijmz.values().value(curKey,-1)));
+                            hotMassFlow.setValue(std::max(hotMassFlow.value(),varMassFijmz.values().value(curKey,-1)),_MassFlowUnit);
 
                             // check that massFraction is constant in one heat hexchanger
                         }
@@ -1631,11 +1714,11 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
                             hotMassFlow = hotStream->massFlowNum();
 
                         //cold mass fraction
-                        coldMassFlow.setValue(-1);
+                        coldMassFlow.setValue(0);
                         for(int k=kBC;k<=kEC;k++)
                         {
                             curKey=MilpKey4D(curBCKey.i1(),curBCKey.i2(),QString::number(k),curBCKey.i4());
-                            coldMassFlow.setValue(std::max(coldMassFlow.value(),varMassFijnz.values().value(curKey,-1)));
+                            coldMassFlow.setValue(std::max(coldMassFlow.value(),varMassFijnz.values().value(curKey,-1)),_MassFlowUnit);
 
                             // check that massFraction is constant in one heat hexchanger
 
@@ -1651,38 +1734,41 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
                         if(!varQijmzH.values().contains(curBHKey))
                             connOk = false;
 
-                        extQFlow = MEQflow(varQijmzH.values().value(curBHKey,-1));
-                        TinA = Tk.at(kBH)+extQFlow.value()/(hotMassFlow.value()*hotStream->Cp(okCp));
-
+                        extQFlow = MEQflow(varQijmzH.values().value(curBHKey,-1),_QFlowUnit);
+                        TinA = Tk.at(kBH)+extQFlow.value()/(hotMassFlow.value(_MassFlowUnit)*hotStream->Cp(okCp).value(_specCpUnit));
+                        //Q_ASSERT(TinA.value(METemperature::K)>0);
                         //ToutHot = TU-q/(m*cp)
                         if(!varQijmzH.values().contains(curEHKey))
                             connOk = false;
 
-                        extQFlow = MEQflow(varQijmzH.values().value(curEHKey,-1));
+                        extQFlow = MEQflow(varQijmzH.values().value(curEHKey,-1),_QFlowUnit);
                         if(kEH==kBH)
                             ToutA = Tk.at(kEH);
                         else
-                            ToutA = Tk.at(kEH-1)-extQFlow.value()/(hotMassFlow.value()*hotStream->Cp(okCp));
+                            ToutA = Tk.at(kEH-1)-extQFlow.value()/(hotMassFlow.value(_MassFlowUnit)*hotStream->Cp(okCp).value(_specCpUnit));
+
+                        //Q_ASSERT(ToutA.value(METemperature::K)>0);
 
                         //TinCold = TU - q/(m*cp)
                         //EC corresponds to cold size (inlet)
                         if(!varQijnzC.values().contains(curECKey))
                             connOk = false;
 
-                        extQFlow = MEQflow(varQijnzC.values().value(curECKey,-1));
-                        TinB = Tk.at(kEC-1)-extQFlow.value()/(coldMassFlow.value()*coldStream->Cp(okCp));
-
+                        extQFlow = MEQflow(varQijnzC.values().value(curECKey,-1),_QFlowUnit);
+                        TinB = Tk.at(kEC-1)-extQFlow.value()/(coldMassFlow.value(_MassFlowUnit)*coldStream->Cp(okCp).value(_specCpUnit));
+                        //Q_ASSERT(TinB.value(METemperature::K)>0);
 
                         //ToutCold = TL+q/(m*cp)
                         //EC corresponds to hot size (outlet)
                         if(!varQijnzC.values().contains(curBCKey))
                             connOk = false;
 
-                        extQFlow = MEQflow(varQijnzC.values().value(curBCKey,-1));
+                        extQFlow = MEQflow(varQijnzC.values().value(curBCKey,-1),_QFlowUnit);
                         if(kBC==kEC)
                             ToutB = Tk.at(kBC-1);
                         else
-                            ToutB  = Tk.at(kBC)+extQFlow.value()/(coldMassFlow.value()*coldStream->Cp(okCp));
+                            ToutB  = Tk.at(kBC)+extQFlow.value()/(coldMassFlow.value(_MassFlowUnit)*coldStream->Cp(okCp).value(_specCpUnit));
+                        //Q_ASSERT(ToutB.value(METemperature::K)>0);
 
 
 
@@ -1690,14 +1776,18 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
                         newConn->setB(coldStream->name(),TinB,ToutB,coldMassFlow);
 
                         //calculate qflow
-
-                        qflow.setValue(0);
+                        qflow.setValue(0,_QFlowUnit);
                         for(int k=kBH;k<=kEH;k++)
                         {
                             curKey=MilpKey4D(curBHKey.i1(),curBHKey.i2(),QString::number(k),curBHKey.i4());
                             qflow += MEQflow(varQijmzH.values().value(curKey,0),_QFlowUnit);
                         }
                         newConn->setQFlow(qflow);
+
+                        // set surface
+                        curKey3 = MilpKey3D(curBHKey.i1(),curBHKey.i2(),curBHKey.i4());
+                        surface = MESurface(varAijz.values().value(curKey3,0),_surfaceUnit);
+                        newConn->setSurface(surface);
 
                         if(connOk)
                             conns->addItem(newConn);
@@ -1716,3 +1806,124 @@ EIConns* MilpHEN1::readEIConns(const QList<METemperature> & Tk,
 }
 
 
+/**
+  * Since HEN could take a long time and conver/diverge depending on solver,
+  * autoLaunch tries to provide automatic procedure to get result :
+  * e.g. by launching HEN with different parameters, stoping if taking too much time...
+  * Here procedure aims a short time resolution
+  */
+EIHEN1Result* MilpHEN1::autoLaunchFast()
+{
+     // set parameters
+    _parameters->setValue(EIHEN1Parameters::SPLITPINCH,false);
+    _parameters->setValue(EIHEN1Parameters::ALLOWNI,false);
+    _parameters->setValue(EIHEN1Parameters::ALLOWSPLITS,true);
+    _parameters->setValue(EIHEN1Parameters::ALLOWSEVERAL,false);
+    _parameters->setValue(EIHEN1Parameters::SPLITDT,true);
+    _parameters->setValue(EIHEN1Parameters::SPLITDTSTEP,15);
+    _parameters->setValue(EIHEN1Parameters::SOLVER,EIHEN1Parameters::GLPK);
+
+    EIHEN1Result* glpkResult =  launchCustom();
+    if(!glpkResult)
+    {
+        infoSender.send(Info("Did not work with GLPK, CBC will now be tried"));
+        _parameters->setValue(EIHEN1Parameters::SOLVER,EIHEN1Parameters::CBC);
+        _parameters->setValue(EIHEN1Parameters::CBCPREPROCESS,EIHEN1Parameters::OFF);
+        _parameters->setValue(EIHEN1Parameters::INTEGERTOLERANCE,10-4);
+        _parameters->setValue(EIHEN1Parameters::PRIMALTOLERANCE,10-5);
+
+        EIHEN1Result* cbcResult = launchCustom();
+        return cbcResult;
+
+    }
+
+}
+
+/**
+  * Since HEN could take a long time and conver/diverge depending on solver,
+  * autoLaunch tries to provide automatic procedure to get result :
+  * e.g. by launching HEN with different parameters, stoping if taking too much time...
+  * Here procedure aims a precise resolution
+  */
+EIHEN1Result* MilpHEN1::autoLaunchPrecise()
+{
+    // set parameters
+   _parameters->setValue(EIHEN1Parameters::SPLITPINCH,false);
+   _parameters->setValue(EIHEN1Parameters::ALLOWNI,false);
+   _parameters->setValue(EIHEN1Parameters::ALLOWSPLITS,true);
+   _parameters->setValue(EIHEN1Parameters::ALLOWSEVERAL,true);
+   _parameters->setValue(EIHEN1Parameters::KMAX,true);
+   _parameters->setValue(EIHEN1Parameters::SPLITDT,true);
+   _parameters->setValue(EIHEN1Parameters::SPLITDTSTEP,5);
+   _parameters->setValue(EIHEN1Parameters::SOLVER,EIHEN1Parameters::GLPK);
+
+   return launchCustom();
+}
+
+void MilpHEN1::initCorresp(const QStringList &longNames)
+{
+    int maxLength = 32;
+    if(longNames.isEmpty())
+        return;
+
+
+    QStringList commonSections;
+    QStringList curSections;
+    bool lengthExceed=false;
+
+    // initialize commonSections
+    commonSections = longNames.at(0).split(".");
+
+
+    // extract commonSections
+    for(int i=0;i<longNames.size();i++)
+    {
+        lengthExceed = lengthExceed || (longNames.at(i).length()>=maxLength);
+        curSections = longNames.at(i).split(".");
+        for(int j=0;j<commonSections.size();j++)
+        {
+            if((j>=curSections.size())||(curSections.at(j)!=commonSections.at(j)))
+                commonSections.replace(j,QString());
+        }
+    }
+
+    QString curShortName;
+    QString sectionToRemove;
+    int iFirstEmpty = commonSections.indexOf("");
+    if(iFirstEmpty==-1)
+        sectionToRemove=commonSections.join(".");
+    else
+    {
+        sectionToRemove = QStringList(commonSections.mid(0,iFirstEmpty)).join(".");
+    }
+    if(longNames.size()==1)
+    {
+        // if only one stream, let it an id !!
+        sectionToRemove = sectionToRemove.section(".",0,-2);
+    }
+
+    // if length exceeded, remove common sections
+    if(lengthExceed)
+    {
+        for(int i=0;i<longNames.size();i++)
+        {
+            curShortName = longNames.at(i);
+            if(curShortName==sectionToRemove)
+                curShortName = sectionToRemove.section(".",-1,-1);
+            else
+                curShortName = curShortName.remove(sectionToRemove+".");
+
+            _corrNames.insert(curShortName,longNames.at(i));
+        }
+    }
+}
+
+QString MilpHEN1::toShortName(QString longName)
+{
+    return _corrNames.key(longName,longName);
+}
+
+QString MilpHEN1::toLongName(QString shortName)
+{
+    return _corrNames.value(shortName,shortName);
+}

@@ -186,6 +186,16 @@ int ModClass::packageChildCount()
 	return nbPackage;
 }
 
+int ModClass::recordChildCount()
+{
+        int nbRecords=0;
+        for(int i=0;i<_children.size();i++)
+                if(_children.at(i)->getClassRestr()==Modelica::RECORD)
+                        nbRecords++;
+
+        return nbRecords;
+}
+
 ModClass* ModClass::child(int nRow) const
 {
 	if((nRow>-1)&&(nRow<_children.count()))
@@ -229,6 +239,25 @@ ModClass* ModClass::packageChild(int nRow) const
 	else
 		return NULL;
 }
+
+ModClass* ModClass::recordChild(int nRow) const
+{
+        int iCurRecord=-1;
+        int curIndex=0;
+        while((curIndex<_children.size())&&(iCurRecord<nRow))
+        {
+                if(_children.at(curIndex)->getClassRestr()==Modelica::PACKAGE)
+                        iCurRecord++;
+
+                curIndex++;
+        }
+
+        if(iCurRecord==nRow)
+                return _children.at(curIndex-1);
+        else
+                return NULL;
+}
+
 
 ModClass* ModClass::modelChild(int nRow) const
 {

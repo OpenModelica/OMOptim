@@ -66,6 +66,7 @@ param DTmnML{Sdt,Sdt};# mean logarithmic temperature difference between interval
 param Eijzmax{Si,Sj,Sz} default 100; #maximum number of heat exchanger between i and j authorized
 param Fi{Si} default 1; #flow rate of hot stream i
 param Fj{Sj} default 1; #flow rate of cold stream j
+param ToutVariable{Si union Sj} default 0, binary; #is Tout variable :massflow(T2)<=massflow(T1) when T1 nearer of Tin than T2
 
 ###  VARIABLES  ###
  var Aijz {i in Si,j in Sj,z in Sz}, >=0; #area for an exchanger matching hot stream i and cold stream j in zone z
@@ -94,9 +95,9 @@ var qaimjnz {i in Si,m in Sdt,j in Sj,n in Sdt,z in Sz}, >=0;#auxiliary continuo
  var Uijzk {i in Si,j in Sj,z in Sz,k in Sk},integer, >=0;# number of shells in the kth heat exchanger between hot stream i and cold stream j in zone z
 var Ximjnz {i in Si,m in Sdt,j in Sj,n in Sdt,z in Sz};# auxiliary continuous variable equal to zero when an exchanger ends at interval m for hot stream i and at interval
 #n for cold stream j. A value of one corresponds to all other cases.
-var YijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;# determines whether heat is being transferred from hot stream i at interval m to cold stream j. De?ned as binary
+var YijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, binary;# determines whether heat is being transferred from hot stream i at interval m to cold stream j. De?ned as binary
 #when (i, j) / ? B and as continuous when (i, j) ? B.
-var YijnzC {i in Si,j in Sj,n in Sdt,z in Sz}, >=0;# determines whether heat is being transferred from hot stream i to cold stream j at interval n. De?ned as binary
+var YijnzC {i in Si,j in Sj,n in Sdt,z in Sz}, binary;# determines whether heat is being transferred from hot stream i to cold stream j at interval n. De?ned as binary
 #when (i, j) / ? B and as continuous when (i, j) ? B.
 var aijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;#  auxiliary continuous variable equal to one when heat transfer from interval m of hot stream i to cold stream j
 var bijmzH {i in Si,j in Sj,m in Sdt,z in Sz}, >=0;
@@ -255,7 +256,7 @@ YijmzH[i,j,m,z] = sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KijmzH[i,j,l
 				-sum{l in Miz[i,z] : (l<= m-1) and (j in PimH[i,l])}(KeijmzH[i,j,l,z]);	
 
 
-s.t. eq25order 'Heat exchanger existence on hot streams - (i,j) in B - end after begining' {z in Sz, m in Mz[z], i in Hz[z], j in (Cz[z]) : (i,j) in B} :
+s.t. eq25order 'Heat exchanger existence on hot streams - end after begining' {z in Sz, m in Mz[z], i in Hz[z], j in (Cz[z])} :
 sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KijmzH[i,j,l,z])
 ,>= sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KeijmzH[i,j,l,z]);			
 
@@ -298,7 +299,7 @@ sum{l in Miz[i,z] : (l<= m) and (j in PimH[i,l])}(KijmzH[i,j,l,z])
 YijnzC[i,j,n,z] ,= sum{l in Njz[j,z] : (l<= n) and (i in PjnC[j,l])}(KijnzC[i,j,l,z])
 				-sum{l in Njz[j,z] : (l<= n-1) and (i in PjnC[j,l])}(KeijnzC[i,j,l,z]);		
 
-s.t. eq36order 'Heat exchanger existence on cold streams - (i,j) in B - end after begining' {z in Sz, n in Mz[z], j in Cz[z], i in Hz[z] : (i,j) in B} :
+s.t. eq36order 'Heat exchanger existence on cold streams  - end after begining' {z in Sz, n in Mz[z], j in Cz[z], i in Hz[z]} :
 sum{l in Njz[j,z] : (l<= n) and (i in PjnC[j,l])}(KijnzC[i,j,l,z])
 ,>= sum{l in Njz[j,z] : (l<= n) and (i in PjnC[j,l])}(KeijnzC[i,j,l,z]);				
 	

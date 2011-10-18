@@ -89,7 +89,7 @@ EIItem* EIReader::findInDescendants(EIItem* parent,QString fullName)
     for(int iChild=0;iChild<parent->childCount();iChild++)
     {
         curChild = parent->child(iChild);
-        if(curChild->name(EI::SHORT)==childShortName)
+        if(fullName.indexOf(curChild->name(EI::FULL))==0)
             return findInDescendants(curChild,fullName);
     }
     return NULL;
@@ -164,16 +164,20 @@ QList<EIStream*> EIReader::getValidNumerizedStreams(const EIItem*parent,MOOptVec
     EIStream* curStream;
     bool keep;
     int i=0;
+    QString error;
     while(i<result.size())
     {
         curStream = result.at(i);
-        QString error;
         keep = !onlyChecked || curStream->isChecked();
         keep = keep && curStream->isValid(variables,error);
         keep = keep && curStream->numerize(variables);
 
         if(!keep)
+        {
             result.removeAt(i);
+            if(curStream->isChecked())
+                infoSender.send(Info("Removed invalid stream ("+error+") :"+curStream->name()));
+        }
         else i++;
     }
     return result;
@@ -336,11 +340,11 @@ MEQflow EIReader::getIntervalQFlow(METemperature T1,METemperature T2,EIStream* s
 
     //if stream not in interval, return 0;
     if((TStreamHot<TIntCold)||(TStreamCold>TIntHot))
-        return 0;
+        return MEQflow(0,0);
 
 
-    METemperature dTint = std::min(TStreamHot,TIntHot)-std::max(TStreamCold,TIntCold);
-    METemperature dTstream = TStreamHot-TStreamCold;
+    METemperature dTint(std::min<METemperature>(TStreamHot,TIntHot)-std::max<METemperature>(TStreamCold,TIntCold),METemperature::K);
+    METemperature dTstream(TStreamHot-TStreamCold,METemperature::K);
     double ratio = dTint.value()/dTstream.value();
 
     MEQflow dQ = stream->QflowNum()*ratio;

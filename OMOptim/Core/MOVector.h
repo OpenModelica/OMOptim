@@ -92,6 +92,7 @@ public:
 	bool removeRows(QList<int> indexes);
 	int findItem(QString,Qt::CaseSensitivity=Qt::CaseInsensitive);
         int findItem(QVariant itemFieldValue,int iField);
+        bool contains(ItemClass*);
 	bool alreadyIn(QString);
 	void replaceIn(MOVector<ItemClass> *);
 
@@ -468,6 +469,12 @@ int MOVector<ItemClass>::findItem(QVariant itemFieldValue, int iField)
 }
 
 template<class ItemClass>
+bool MOVector<ItemClass>::contains(ItemClass* item)
+{
+    return items.contains(item);
+}
+
+template<class ItemClass>
 bool MOVector<ItemClass>::alreadyIn(QString itemName)
 {
 	int i = findItem(itemName);
@@ -519,7 +526,7 @@ void MOVector<ItemClass>::cloneFromOtherVector(const MOVector *vector_)
 	ItemClass* newItem;
         for(i=0;i<vector_->size();i++)
 	{
-                newItem = new ItemClass(*vector_->at(i));
+            newItem = vector_->at(i)->clone();
 		addItem(newItem);
 	}
 }
@@ -533,7 +540,7 @@ MOVector<ItemClass>* MOVector<ItemClass>::clone() const
 	ItemClass* newItem;
 	for(i=0;i<items.size();i++)
 	{
-		newItem = new ItemClass(*items.at(i));
+            newItem =items.at(i)->clone();
 		newVector->addItem(newItem);
 	}
 

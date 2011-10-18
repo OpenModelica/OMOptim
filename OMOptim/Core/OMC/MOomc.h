@@ -59,6 +59,18 @@
 class Project;
 class Variable;
 
+
+/**
+  * MOomc is dedicated to communication with OpenModelica through CORBA.
+  * Its main functions are to start OMC and call OMC API functions :
+  *     - load models
+  *     - simulate a model
+  *     - read its contents
+  *     - read connections
+  *     - modify models (connections, add components...)
+  *     -...
+  *
+  */
 class MOomc : public QObject
 {
 	Q_OBJECT
@@ -80,12 +92,16 @@ public :
 	QStringList getClassNames(QString parentClass = "");
 	QStringList getPackages(QString parentClass);
 	QStringList getModels(QString parentClass);
+        QStringList getRecords(QString parentClass);
 	QStringList getElementInfos(QString parentClass);
 
 	QStringList getParameterNames(QString parentClass, bool includeInherited=false);
 	QStringList getInheritedClasses(QString parentClass);
 	QStringList getComponentModifierNames(QString componentName);
-	QString getComponentModifierValue(QString componentName,QString modifierName);
+        QString getFlattenedModifierValue(const QString & modelName,const QString & shortComponentName,const QString & modifierName,const QString & flattenedModel);
+        QString getFlattenedModel(const QString & modelName);
+        QString getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName);
+        QString getComponentModifierValue(QString modelName,QString shortComponentName,QString modifierName);
 	bool setComponentModifiers(QString compName,QString model, QStringList modNames,QStringList modValues);
 	
         QString getAnnotation(QString compName,QString compClass,QString model);
@@ -103,15 +119,17 @@ public :
 	void getInheritedComponents(QString parentClass, QStringList & names, QStringList & classes);
         void getContainedComponents(QString parentClass, QStringList & compNames,QStringList & compClasses,bool includeInherited=true);
 	
-	void readElementInfos(QString parentClass,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &compsNames,QStringList &compsClasses);
+        void readElementInfos(QString parentClass,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &recordsNames,QStringList &compsNames,QStringList &compsClasses);
 
 	void loadModel(QString filename,bool force,bool &ok,QString & Error);
+
 	QStringList getDependenciesPaths(QString fileName,bool commentImportPaths);
 	void loadStandardLibrary();
 
 
 	bool isConnector(QString ClassName);
 	bool isModel(QString ClassName);
+        bool isRecord(QString ClassName);
 	bool isPackage(QString ClassName);
 	bool isPrimitive(QString ClassName);
 	bool isComponent(QString name);
@@ -142,20 +160,26 @@ public :
         //void setCommand(QString comm);
 //	void evalCommand();
 	void exit();
-	bool startServer();
+
 	void stopServer();
 	void clear();
 
 	
+        QString loadFileWThread(QString filePath);
+	
         //OmcCommunicator* getCommunicator();
 
+public slots :
+        QString loadFile(QString filePath);
+        bool startServer();
 	
+
 
 signals:
 	void startOMCThread(QString);
 	void finishOMCThread(QString);
+        void loadedFile(QString,QString);
 	
-
 
 private:
 //	void exceptionInEval(std::exception &e);

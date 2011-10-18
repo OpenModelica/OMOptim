@@ -61,7 +61,7 @@ class EABase : public OptimAlgo
 
 public:
 	EABase(void);
-        EABase(Project* project,Problem* problem,ModClassTree*,ModPlusCtrl*);
+        EABase(Project* project,Problem* problem,ModClassTree*);
 	EABase(const EABase &);
 	
         virtual ~EABase(void);
@@ -76,7 +76,6 @@ public:
 
 protected:
 
-        ModPlusCtrl* _modPlusCtrl;
         ModClassTree* _modClassTree;
 
 	// for Optimization problems

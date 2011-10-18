@@ -73,13 +73,13 @@ void CCTools::buildCCfromStreams(const QList<METemperature> & Tk,
     QList<MEQflow> HCold,HHot;
     MEQflow curQik;
 
-    HCold.push_back(0);
-    HHot.push_back(0);
+    HCold.push_back(MEQflow(0,0));
+    HHot.push_back(MEQflow(0,0));
 
     MEQflow curHCold, curHHot;
 
-    curHHot=0;
-    curHCold=0;
+    curHHot=MEQflow(0,0);
+    curHCold=MEQflow(0,0);
 
     for(int iK=0;iK<Tk.size()-1;iK++)
     {
@@ -134,7 +134,7 @@ void CCTools::buildGCCfromStreams(const QList<METemperature> & Tk,
 
     for(int i=0;i<Tk.size();i++)
     {
-        Tall.push_back(Tk.at(i).value(METemperature::K));
+        Tall.push_back(Tk.at(i));
         dH.push_back(coldCurve->XData().at(i)-hotCurve->XData().at(i));
     }
 
@@ -142,7 +142,94 @@ void CCTools::buildGCCfromStreams(const QList<METemperature> & Tk,
     gccCurve->setType(MOCCCurve::GCC);
 }
 
+void CCTools::buildICCfromStreams(const EITree &eiTree,
+                               MOCCCurve *iccProcess,
+                               MOCCCurve *iccUtilities,
+                                  bool includeUtilities)
+{
 
+    // get information
+    QList<EIStream*> eiProcessStreams;
+    QList<QList<MEQflow> > Qpk; //.at(iStream).at(iDTk)
+    QList<EIStream*> eiUtilityStreams;
+    QList<QList<MEQflow> > Quk;//.at(iStream).at(iDTk)
+    QMultiMap<EIGroupFact*,EIStream*> factStreamMap; // multimap <unit multiplier, Streams concerned>,
+    QMap<EIGroupFact*,EIGroupFact*> factsRelation; // map<child unit multiplier, parent unit multiplier> for constraint (e.g. fchild <= fparent * fchildmax)
+    QMap<EIGroupFact*,EIGroup*> factGroupMap;
+    QList<METemperature> Tk;
+
+    EITools::getTkQpkQuk(NULL,
+                         eiTree.rootElement(),Tk,
+                         eiProcessStreams,Qpk,
+                         eiUtilityStreams,Quk,
+                         factStreamMap,
+                         factsRelation,
+                         factGroupMap,
+                         true);
+
+
+    // build gcc with process
+    CCTools::buildGCCfromStreams(Tk,Qpk,iccProcess);
+
+    // build gcc with utilities
+    if(!includeUtilities)
+    {
+        iccUtilities = new MOCCCurve(MOCCCurve::ICCUTILITIES);
+    }
+    else
+    {
+        // first create normal one
+        QList<QList<MEQflow> > QukFact ; // Quk * multiplication factor obtained from Target
+        QList<MEQflow> curQList;
+        EIGroupFact* curFact;
+        double mult;
+        for(int iS=0;iS<eiUtilityStreams.size();iS++)
+        {
+            curFact = factStreamMap.key(eiUtilityStreams.at(iS),NULL);
+            if(curFact)
+                mult = curFact->value;
+            else
+                mult = 0;
+
+            curQList = Quk.at(iS);
+            for(int j=0;j<curQList.size();j++)
+            {
+                curQList.replace(j,curQList.at(j)*mult);
+            }
+            QukFact.push_back(curQList);
+
+        }
+
+        CCTools::buildGCCfromStreams(Tk,QukFact,iccUtilities);
+        // mirror effect now
+        QList<MEQflow>  revXData = iccUtilities->XData();
+        for(int i=0;i<revXData.size();i++)
+        {
+            revXData.replace(i,MEQflow(0,0)-revXData.at(i));
+        }
+
+        // horizontal translate
+        METemperature TPinch;
+        MEQflow dHPinch;
+        MEQflow translateH;
+        getPinch(Tk,iccProcess->XData(),TPinch,dHPinch);
+        int iTPinch = Tk.indexOf(TPinch);
+        if(iTPinch>-1)
+        {
+            translateH = MEQflow(0,0) - revXData.at(iTPinch);
+        }
+        for(int i=0;i<revXData.size();i++)
+        {
+            revXData.replace(i,revXData.at(i)+translateH);
+        }
+        iccUtilities->setData(revXData,iccUtilities->YData());
+    }
+
+
+    // set types
+    iccProcess->setType(MOCCCurve::ICCPROCESS);
+    iccUtilities->setType(MOCCCurve::ICCUTILITIES);
+}
 
 
 void CCTools::getPinch(const QList<METemperature>  &Tall,const QList<MEQflow>  &HCold,const QList<MEQflow>  &HHot, METemperature & TPinch, MEQflow & dHPinch)
@@ -152,8 +239,8 @@ void CCTools::getPinch(const QList<METemperature>  &Tall,const QList<MEQflow>  &
 
     if(Tall.size()==0)
     {
-        TPinch = 0;
-        dHPinch = 0;
+        TPinch = METemperature();
+        dHPinch = MEQflow();
         return;
     }
 
@@ -172,7 +259,39 @@ void CCTools::getPinch(const QList<METemperature>  &Tall,const QList<MEQflow>  &
         }
     }
     else
-        TPinch = -1;
+        TPinch = METemperature();
+}
+
+/**
+  * Finding pinch coordinates from dH = hCold - hHot
+  */
+void CCTools::getPinch(const QList<METemperature>  &Tall,const QList<MEQflow>  &dH, METemperature & TPinch, MEQflow & dHPinch)
+{
+
+
+    if(Tall.size()==0)
+    {
+        TPinch = METemperature();
+        dHPinch = MEQflow();
+        return;
+    }
+
+    // Getting pinch point
+    if(Tall.size()>1)
+    {
+        TPinch = Tall[0];
+        dHPinch = dH.at(0);
+        for(int iT=1;iT<Tall.size();iT++)
+        {
+            if(/*!LowTools::isNan(HCold[iT]) && !LowTools::isNan(HHot[iT]) &&*/ (dH.at(iT) < dHPinch))
+            {
+                dHPinch = dH.at(iT);
+                TPinch = Tall[iT];
+            }
+        }
+    }
+    else
+        TPinch = METemperature();
 }
 
 void CCTools::getValues(const QList<METemperature> & Tk,

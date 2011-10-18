@@ -64,7 +64,7 @@ class OneSimResult :
 
 public:
 	OneSimResult(void);
-        OneSimResult(Project* _project, ModModelPlus* _modModelPlus, OneSimulation* _problem,ModClassTree*,ModPlusCtrl*);
+        OneSimResult(Project* _project, ModModelPlus* _modModelPlus, OneSimulation* _problem,ModClassTree*);
 	~OneSimResult(void);
 
         static QString className(){return "OneSimResult";};
@@ -78,7 +78,6 @@ public:
 	//******************
 	QDomElement toXmlData(QDomDocument &);
 	int problemType(){return Problem::ONESIMULATIONTYPE;};
-        ModPlusCtrl* modPlusCtrl(){return _modPlusCtrl;};
 
 
 protected :
@@ -90,7 +89,6 @@ protected :
 
          //Model
         ModModelPlus* _modModelPlus;
-        ModPlusCtrl* _modPlusCtrl;
 
 
 signals:

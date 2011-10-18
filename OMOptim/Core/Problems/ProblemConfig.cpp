@@ -43,17 +43,16 @@
 ProblemConfig::ProblemConfig()
 {
 }
-ProblemConfig::ProblemConfig(QString _tempDir,bool _refill)
+ProblemConfig::ProblemConfig(bool _refill)
 {
-	tempDir = _tempDir;
 	refillTempDir = _refill;
 }
 
-ProblemConfig::ProblemConfig(QString _tempDir)
-{
-	tempDir = _tempDir;
-	refillTempDir = true;
-}
+//ProblemConfig::ProblemConfig(QString _tempDir)
+//{
+//	tempDir = _tempDir;
+//	refillTempDir = true;
+//}
 
 ProblemConfig::~ProblemConfig(void)
 {

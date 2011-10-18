@@ -58,7 +58,12 @@
 #include "WidgetSelectModModel.h"
 #include "AboutOMOptim.h"
 #include "OpenModelica.h"
+#include "OMCases.h"
 
+
+#ifdef USEEI
+#include "CERESInfo.h"
+#endif
 namespace Ui
 {
     class MainWindowClass;
@@ -81,8 +86,7 @@ public slots :
 	void onStartedOMCThread(QString);
 	void onFinishedOMCThread(QString);
 	void onTerminatingOMCThread(QString);
-	void enableProblemTab(QModelIndex);
-        void enableResultTab(QModelIndex);
+        void enableOMCaseTab(QModelIndex);
 	void onSelectedModClass(QModelIndex);
 
 
@@ -104,6 +108,10 @@ public slots :
 	void loadMoFile();
 	void loadModelicaLibrary();
 
+        #ifdef USEEI
+        void loadCERESInfo();
+        #endif
+
 	void onAddedProblem(Problem*);
         void onAddedResult(Result*);
 	void onComponentsUpdated();
@@ -117,21 +125,20 @@ public slots :
 
 
         void removeResult();
-        void removeResult(int);
-        void removeResultTab(int);
+        void removeResult(Result*);
+        void removeResultTab(Result*);
 
 	void removeProblem();
-	void removeProblem(int);
-	void removeProblemTab(int);
+        void removeProblem(Problem*);
+        void removeProblemTab(Problem*);
 
 	void renameProblem();
-	void renameProblem(int);
+        void renameProblem(Problem*);
         void renameResult();
-        void renameResult(int);
+        void renameResult(Result*);
 
 	// Pop-up menus
-        void showResultPopup(const QPoint & iPoint);
-	void showProblemPopup(const QPoint & iPoint);
+        void rightClickedOnCase(const QPoint & iPoint);
 	void showModClassTreePopup(const QPoint & iPoint);
 
 	//Recent files
@@ -166,6 +173,8 @@ private:
 
 private :
 	Project *_project;
+
+        OMCasesCombiner *_casesTree;
 
 	//Gui
     Ui::MainWindowClass *_ui;

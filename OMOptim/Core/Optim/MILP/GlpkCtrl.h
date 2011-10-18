@@ -24,6 +24,7 @@ public:
     GlpkCtrl(glp_prob*,glp_tran*);
 
     void stop();
+    static void errorHook(void *in);
     bool run(QString &msg);
 private :
     glp_prob* _glpProblem;

@@ -95,7 +95,7 @@ TabEIProblem::TabEIProblem(Project *project,EIProblem *problem, QWidget *parent)
     addDockWidget("Points and Scans",_widgetSelPointScan,_widgetTreeStreams);
     addDockWidget("Composites, MER",_widgetCCPlot,_widgetTreeStreams);
     addDockWidget("Connections",_widgetTableConnConstr,_widgetTreeStreams);
-    addFixedWidget("Launch",_widgetLaunchEI,Qt::BottomDockWidgetArea);
+    addFixedWidget("Launch",_widgetLaunchEI,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
     connect(_problem,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
   //  connect(_widgetEIInputVars,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
@@ -138,9 +138,6 @@ void TabEIProblem::onInputVarsModified()
 
 void TabEIProblem::onTargetAsked()
 {
-    QString tempDir = _project->tempPath();
-    ProblemConfig cfg;
-    cfg.tempDir = tempDir;
     _problemTarget->setEITree(*_problem->eiTree());
     _problemTarget->setInputVars(_problem->inputVars()->clone());
     _problemTarget->setConnConstrs(new EIConnConstrs(*_problem->connConstrs()));
@@ -149,18 +146,8 @@ void TabEIProblem::onTargetAsked()
     MOParametersDlg dlg(_problemTarget->parameters());
     if(dlg.exec()==QDialog::Accepted)
     {
+        _widgetCCPlot->setMERResult(NULL); // otherwise, segmentation fault when detaching curves
         _project->launchProblem(_problemTarget);
-
-
-        //EITargetResult* result = _problemTarget->launch(cfg);
-
-
-        // update target inputvars
-        // (useful if MER or HEN has launched some simulation -> keep results and avoid simulating several times)
-        //_problem->updateInputVars(_problemTarget->inputVars());
-
-//        if(result->isSuccess())
-//            _project->addResult(result);
     }
 }
 
@@ -168,7 +155,7 @@ void TabEIProblem::onMERAsked()
 {
     QString tempDir = _project->tempPath();
     ProblemConfig cfg;
-    cfg.tempDir = tempDir;
+    //cfg.tempDir = tempDir;
     _problemMER->setEITree(*_problem->eiTree());
     _problemMER->setInputVars(_problem->inputVars()->clone());
 
@@ -177,21 +164,25 @@ void TabEIProblem::onMERAsked()
 
     if(dlg.exec()==QDialog::Accepted)
     {
-        EIMERResult* oldResult = _resultMER;
+        _widgetCCPlot->setMERResult(NULL); // otherwise, segmentation fault when detaching curves
+
+        if(_resultMER)
+            delete _resultMER;
+
         _resultMER = dynamic_cast<EIMERResult*>(_problemMER->launch(cfg));
 
         // update target inputvars
         // (useful if MER has launched some simulation -> keep results and avoid simulating several times)
         _problemTarget->updateInputVars(_problemMER->inputVars());
 
-        // set result to composites
-        _widgetCCPlot->setMERResult(_resultMER);
-        delete oldResult;
-
         //change view to show composites
         _widgetCCPlot->raise();
         mapDockWidgets.key(_widgetCCPlot)->raise();
-        //_widgetCCPlot->actualizeGui();
+
+
+        // set result to composites
+        _widgetCCPlot->setMERResult(_resultMER);
+
     }
 }
 
@@ -199,7 +190,7 @@ void TabEIProblem::onHENAsked()
 {
     QString tempDir = _project->tempPath();
     ProblemConfig cfg;
-    cfg.tempDir = tempDir;
+    //cfg.tempDir = tempDir;
     _problemHEN->setEITree(*_problem->eiTree());
     _problemHEN->setInputVars(_problem->inputVars()->clone());
     _problemHEN->setConnConstrs(new EIConnConstrs(*_problem->connConstrs()));
@@ -207,6 +198,7 @@ void TabEIProblem::onHENAsked()
     MOParametersDlg dlg(_problemHEN->parameters());
     if(dlg.exec()==QDialog::Accepted)
     {
+        _widgetCCPlot->setMERResult(NULL);
          _project->launchProblem(_problemHEN);
     }
 }
@@ -217,8 +209,8 @@ void TabEIProblem::onEILoadModelAsked()
     if(widgetSelect->exec()==QDialog::Accepted)
     {
         ModModel* curModel = widgetSelect->selectedModel;
-        _problem->loadModel(_project->modClassTree(),curModel);
+        _problem->loadModel(curModel);
     }
-    _widgetTreeStreams->treeView->expandAll();
-    _widgetTreeStreams->treeView->resizeColumnToContents(0);
+    _widgetTreeStreams->_treeView->expandAll();
+    _widgetTreeStreams->_treeView->resizeColumnToContents(0);
 }

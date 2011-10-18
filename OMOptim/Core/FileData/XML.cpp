@@ -76,7 +76,7 @@ void XML::XMLToVariableResults(MOVector<VariableResult> &variables,QDomElement &
 				if(!fieldName.compare("Values"))
 				{
 					QString text = attributes.item(i).toAttr().value();
-					//#TODO Fill values
+                                        /// \todo Fill values
                                         infoSender.debug("XMLToVariableResults not implemented. Do not use!!");
 				}
 			}

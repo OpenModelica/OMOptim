@@ -95,7 +95,7 @@ EITargetResult* SimpleMilpTarget::launch()
 	EITargetResult* result;
 	if(!glpProblem)
 	{
-		result = new EITargetResult();
+                result = new EITargetResult(eiTree->project());
 		result->setSuccess(false);
 	}
 	else
@@ -355,7 +355,7 @@ EITargetResult* SimpleMilpTarget::readResult(glp_prob * glpProblem)
 {
 
 	// clone rootEI
-	EITargetResult* result = new EITargetResult();
+        EITargetResult* result = new EITargetResult(eiTree->project());
         result->setEITree(*eiTree);
 
 	// read if successfull

@@ -40,6 +40,11 @@
   */
 #include "METemperature.h"
 
+METemperature::METemperature():
+MEDimValue()
+{
+}
+
 METemperature::METemperature(double value,int unit):
 MEDimValue(value,unit)
 {
@@ -109,25 +114,19 @@ double METemperature::operator-(const METemperature& b) const
     return resValue;
 }
 
-bool METemperature::operator==(const METemperature& b) const
+/**
+  * maxAbsDistance corresponds to absolute distance between this and b.
+  * distance is calculated as follows :
+  * dist = abs(a-b)
+  */
+bool METemperature::equalsAbs(const METemperature& b,const METemperature & maxAbsDistance) const
 {
-    return (value(_unit)==b.value(_unit));
-}
-
-bool METemperature::operator!=(const METemperature& b) const
-{
-    return !(*this==b);
+    return (fabs(b.value(_unit)-value(_unit)) <= maxAbsDistance.value(_unit));
 }
 
 METemperature& METemperature::operator+=(const double& diffTemp)
 {
     _value += diffTemp;
-    return *this;
-}
-METemperature& METemperature::operator=(const METemperature& b)
-{
-    _value = b._value;
-    _unit = b._unit;
     return *this;
 }
 
@@ -150,27 +149,4 @@ METemperature METemperature::operator+(const double& diffTemp) const
 METemperature METemperature::operator+(const METemperature& b) const
 {
     return METemperature(_value+b.value(_unit),_unit);
-}
-
-bool METemperature::operator<(const METemperature& b) const
-{
-    return value(_unit)<b.value(_unit);
-}
-bool METemperature::operator>(const METemperature& b) const
-{
-    return value(_unit)>b.value(_unit);
-}
-
-bool METemperature::operator<=(const METemperature& b) const
-{
-    return value(_unit)<=b.value(_unit);
-}
-bool METemperature::operator>=(const METemperature& b) const
-{
-    return value(_unit)>=b.value(_unit);
-}
-
-bool METemperature::equals(const METemperature &b,double error) const
-{
-    return (fabs(value(_unit)-b.value(_unit))<=error);
 }

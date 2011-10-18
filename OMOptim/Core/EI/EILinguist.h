@@ -14,11 +14,11 @@ public :
         switch (type)
         {
         case EI::GROUP:
-            return "EI.EIGroup";
+            return "CERESInfo.EnergyIntegration.EIGroup";
         case EI::GENERIC:
             return "";
         case EI::STREAM:
-            return "EI.EIStream";
+            return "CERESInfo.EnergyIntegration.EIStream";
         default:
             // should never be reached
             return "";

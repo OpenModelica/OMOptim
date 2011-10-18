@@ -1,5 +1,7 @@
 #include "EIConns.h"
 
+namespace EI
+{
 EIConns::EIConns()
 {
 }
@@ -162,4 +164,5 @@ QList<EIConn> EIConns::filterTout(QString stream,METemperature Tout) const
         }
     }
     return result;
+}
 }

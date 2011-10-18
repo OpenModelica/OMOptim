@@ -99,6 +99,9 @@ public:
 	
         static void resizeTreeViewColumns(MyTreeView*);
         static void resizeTableViewColumns(QTableView*);
+
+
+        static QString launchBarStyleSheet();
 };
 
 

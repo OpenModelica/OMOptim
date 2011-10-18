@@ -46,7 +46,7 @@ EIStream::EIStream(EIItem* parent, QString name)
     :EIItem(parent,name)
 {
     _editableFields << EIStream::NAME << EIStream::TIN_V << EIStream::TIN_U << EIStream::TOUT_V << EIStream::TOUT_U
-                    << EIStream::QFLOW_V << EIStream::QFLOW_U << EIStream::DTMIN2;
+                    << EIStream::QFLOW_V << EIStream::QFLOW_U << EIStream::DTMIN2 << EIStream::HTCOEFF_U << EIStream::HTCOEFF_V;
 
     QMap<int,QVariant> defaultValues;
     defaultValues.insert(EIStream::TIN_V,0);
@@ -57,6 +57,8 @@ EIStream::EIStream(EIItem* parent, QString name)
     defaultValues.insert(EIStream::QFLOW_U,MEQflow::W);
     defaultValues.insert(EIStream::MASSFLOW_V,1);
     defaultValues.insert(EIStream::MASSFLOW_U,MEMassFlow::KG_S);
+    defaultValues.insert(EIStream::HTCOEFF_V,1);
+    defaultValues.insert(EIStream::HTCOEFF_U,MEHTCoeff::W_M2_K);
     defaultValues.insert(EIStream::DTMIN2,0);
 
     for(int i=0;i<defaultValues.count();i++)
@@ -75,12 +77,14 @@ EIStream::EIStream(const EIStream & _stream):EIItem(_stream)
     _ToutRef = _stream._ToutRef;
     _QflowRef = _stream._QflowRef;
     _massFlowRef = _stream._massFlowRef;
+    _htCoeffRef = _stream._htCoeffRef;
     _DTmin2 = _stream._DTmin2;
 
     _TinNum = _stream._TinNum;
     _ToutNum = _stream._ToutNum;
     _QflowNum = _stream._QflowNum;
     _massFlowNum = _stream._massFlowNum;
+    _htCoeffNum = _stream._htCoeffNum;
 
     _numerized = _stream._numerized;
 }
@@ -109,7 +113,8 @@ EIStream::EIStream(QDomElement & domEl)
     }
 
     _editableFields << EIStream::NAME << EIStream::TIN_V << EIStream::TIN_U << EIStream::TOUT_V
-                    << EIStream::TOUT_U << EIStream::QFLOW_V << EIStream::QFLOW_U << EIStream::MASSFLOW_V << EIStream::MASSFLOW_U<<EIStream::DTMIN2;
+                    << EIStream::TOUT_U << EIStream::QFLOW_V << EIStream::QFLOW_U << EIStream::MASSFLOW_V << EIStream::MASSFLOW_U
+                    << EIStream::HTCOEFF_U << EIStream::HTCOEFF_V <<EIStream::DTMIN2;
 }
 
 QVariant EIStream::getFieldValue(int ifield, int role) const
@@ -140,6 +145,10 @@ QVariant EIStream::getFieldValue(int ifield, int role) const
             return _massFlowRef.value();
         case MASSFLOW_U :
             return _massFlowRef.unit();
+        case HTCOEFF_V:
+            return _htCoeffRef.value();
+        case HTCOEFF_U :
+            return _htCoeffRef.unit();
         case DTMIN2 :
             return _DTmin2;
         case CHECKED :
@@ -196,10 +205,21 @@ QString EIStream::sFieldName(int ifield, int role)
         default :
            return "Mflow_Unit";
         }
+    case HTCOEFF_V :
+        return "Heat transfer coeff.";
+    case HTCOEFF_U :
+        switch(role)
+        {
+        case Qt::DisplayRole:
+            return "";
+        default :
+            return "htcoeff_unit";
+        }
     case CHECKED :
         return "Checked";
     case DTMIN2 :
         return "DTmin_2";
+
     default :
         return "unknown field";
     }
@@ -252,6 +272,15 @@ bool EIStream::setFieldValue(int ifield,QVariant value_)
         else
             _massFlowRef.setUnit(value_.toInt());
         break;
+    case HTCOEFF_V :
+        _htCoeffRef.setValue(value_);
+        break;
+    case HTCOEFF_U :
+        if(value_.type()==QVariant::String)
+            ok=_htCoeffRef.setUnit(value_.toString());
+        else
+            _htCoeffRef.setUnit(value_.toInt());
+        break;
     case CHECKED :
         _checked =value_.toBool();
         break;
@@ -275,20 +304,43 @@ bool EIStream::isValid(MOOptVector* variables, QString &errMsg) const
 {
     bool ok = EIItem::isValid(variables,errMsg);
 
-    //#TODO : do not recheck every times, store valid state
-    bool ok_Tin,ok_Tout,okQflow,okMassFlow;
-    double num_Tin,num_Tout,numQFlow,numMassFlow;
+    /// \todo : do not recheck every times, store valid state
+    bool ok_Tin,ok_Tout,okQflow,okMassFlow,okHTCoeff;
+    double num_Tin,num_Tout,numQFlow,numMassFlow,numHTCoeff,numSpeccp;
 
     num_Tin = _TinRef.getNumValue(variables,METemperature::K,ok_Tin,model());
     num_Tout = _ToutRef.getNumValue(variables,METemperature::K,ok_Tout,model());
     numQFlow = _QflowRef.getNumValue(variables,MEQflow::W,okQflow,model());
     numMassFlow = _massFlowRef.getNumValue(variables,MEMassFlow::KG_S,okMassFlow,model());
+    numHTCoeff = _htCoeffRef.getNumValue(variables,MEHTCoeff::W_M2_K,okHTCoeff,model());
 
     bool okDT = (num_Tin!=num_Tout);
     bool okQPos = (numQFlow>=0);
     bool okMPos = (numMassFlow>=0);
 
-    return (ok&&okDT&&okQPos&&ok_Tin&&ok_Tout&&okQflow&&okMPos);
+
+
+    // disp error fields in errMsg
+    errMsg = "";
+    QList<bool> listBools;
+    QStringList listFields;
+
+    listBools << okDT << okQPos << ok_Tin << ok_Tout << okQflow << okMPos << okHTCoeff;
+    listFields << "dT" << "Heat flow" << "Tin" << "Tout"  << "QFlow"  << "Mass flow" << " heat transfer coeff" ;
+
+    if(listBools.contains(false))
+    {
+        errMsg = "[";
+        for(int i=0;i<listBools.size();i++)
+        {
+            if(!listBools.at(i))
+                errMsg+=listFields.at(i)+",";
+}
+        errMsg.replace(errMsg.length()-1,1,"]");
+    }
+
+    return (ok&&okDT&&okQPos&&ok_Tin&&ok_Tout&&okQflow&&okMPos&&okHTCoeff);
+
 }
 
 bool EIStream::isHot(MOOptVector* variables) const
@@ -310,6 +362,7 @@ QStringList EIStream::references() const
     refs.push_back(this->_ToutRef.reference());
     refs.push_back(this->_QflowRef.reference());
     refs.push_back(this->_massFlowRef.reference());
+    refs.push_back(this->_htCoeffRef.reference());
 
     refs.removeAll(QString());
     refs.removeDuplicates();
@@ -325,13 +378,15 @@ QStringList EIStream::references() const
 */
 bool EIStream::numerize(MOOptVector* variables)
 {
-    bool ok1,ok2,ok3,ok4;
+    bool ok1,ok2,ok3,ok4,ok5;
+
     _TinNum.setValue(_TinRef.getNumValue(variables,METemperature::K,ok1,model()),METemperature::K);
     _ToutNum.setValue(_ToutRef.getNumValue(variables,METemperature::K,ok2,model()),METemperature::K);
     _QflowNum.setValue(_QflowRef.getNumValue(variables,MEQflow::W,ok3,model()),MEQflow::W);
     _massFlowNum.setValue(_massFlowRef.getNumValue(variables,MEMassFlow::KG_S,ok4,model()),MEMassFlow::KG_S);
+    _htCoeffNum.setValue(_htCoeffRef.getNumValue(variables,MEHTCoeff::W_M2_K,ok5,model()),MEHTCoeff::W_M2_K);
 
-    _numerized = (ok1 && ok2 && ok3 && ok4);
+    _numerized = (ok1 && ok2 && ok3 && ok4 && ok5);
 
     if(!_numerized)
     {
@@ -349,10 +404,11 @@ bool EIStream::numerized()
 
 void EIStream::resetNumerize()
 {
-    _TinNum.setValue(0,0);
-    _ToutNum.setValue(0,0);
-    _QflowNum.setValue(0,0);
-    _massFlowNum.setValue(0,0);
+    _TinNum.invalidate();
+    _ToutNum.invalidate();
+    _QflowNum.invalidate();
+    _massFlowNum.invalidate();
+    _htCoeffNum.invalidate();
     _numerized = false;
 }
 
@@ -363,14 +419,14 @@ void EIStream::resetNumerize()
 * If failed to numerize, ok is set to false, and returns -1.
 * Unit returned is kJ/kg.K
 */
-double EIStream::Cp(bool &ok,MOOptVector* variables)
+MESpecHeatCapacity EIStream::Cp(bool &ok,MOOptVector* variables)
 {
     // try to numerize if not done
     // if failure, return -1;
     if(!numerized()&&!numerize(variables))
     {
         ok=false;
-        return -1;
+        return MESpecHeatCapacity();
     }
 
     double tinval,toutval,qflowval,massFlowVal;
@@ -381,9 +437,9 @@ double EIStream::Cp(bool &ok,MOOptVector* variables)
     massFlowVal = _massFlowNum.value(MEMassFlow::KG_S);
 
     if(tinval==toutval)
-        return std::numeric_limits<double>::max();
+        return MESpecHeatCapacity(std::numeric_limits<double>::max(),MESpecHeatCapacity::J_KG_K);
     else
-        return fabs(qflowval/(massFlowVal*fabs(toutval-tinval)));
+        return MESpecHeatCapacity(fabs(qflowval/(massFlowVal*fabs(toutval-tinval))),MESpecHeatCapacity::KJ_KG_K);
 }
 
 METemperature EIStream::TinNum(bool useCorrectedT)
@@ -445,4 +501,13 @@ MEQflow EIStream::QflowNum()
 
     return _QflowNum;
 }
+
+MEHTCoeff EIStream::htCoeffNum()
+{
+    if(!numerized())
+        numerize(NULL);
+
+    return _htCoeffNum;
+}
+
 }

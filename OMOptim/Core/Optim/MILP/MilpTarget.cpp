@@ -62,17 +62,12 @@ MilpTarget::MilpTarget(EITree* eiTree,EIConnConstrs *connConstrs,
 #ifdef DEBUG
     // if debug, uses directly file in MILP folder (this folder is set in settings)
     // this allows to modify .mod and launch computation without recomputing
-    QSettings settings("MO", "Settings");
-    QString milpFolder = settings.value("path/MILPFolder").toString();
-
-    QDir dir(milpFolder);
-    QFileInfo modFileInfo(dir,"MilpTarget.mod");
-    _modFilePath = modFileInfo.absoluteFilePath();
-
-    if(!modFileInfo.exists())
-    {
-        infoSender.send(Info(modFileInfo.absoluteFilePath()+" does not exists",ListInfo::ERROR2));
-    }
+    QDir modDir(QApplication::applicationDirPath());
+    modDir.cdUp();
+    modDir.cd("Core");
+    modDir.cd("Optim");
+    modDir.cd("MILP");
+    _modFilePath = modDir.absoluteFilePath("MilpTarget.mod");
 
 #else
     // if not debug, .mod file is taken from resource file
@@ -124,7 +119,7 @@ EITargetResult* MilpTarget::launch()
     EITargetResult* result;
     if(!glpProblem)
     {
-        result = new EITargetResult();
+        result = new EITargetResult(_eiTree->project());
                 result->setEITree(*_eiTree);
         result->setSuccess(false);
     }
@@ -437,7 +432,7 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
 {
 
     // clone eiTree
-    EITargetResult* result = new EITargetResult();
+    EITargetResult* result = new EITargetResult(_eiTree->project());
     result->setEITree(*_eiTree);
 
     // read if successfull
@@ -481,7 +476,7 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
         if(curGroup)
         {
             value = mapGroupFacMul.value(groupName);
-            curGroup->getFact()->value = value;
+            curGroup->setFieldValue(EIGroup::FACT,value);
             if(value==0)
                 dynamic_cast<EIGroup*>(curGroup)->setChecked(false);
         }
@@ -510,6 +505,7 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
         {
             nameA = regExp.cap(1);
             nameB = regExp.cap(2);
+            k = regExp.cap(3).toInt();
 
             qflow = glp_mip_col_val(glpProblem,iCol+1); //iCol+1 since glp cols start at 1
             if(qflow!=0)
@@ -520,8 +516,8 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
                 if(streamA && streamB)
                 {
                     newEIConn = new EIConn();
-                    newEIConn->setA(streamA->name(),METemperature(),METemperature(),1);
-                    newEIConn->setB(streamB->name(),METemperature(),METemperature(),1);
+                    newEIConn->setA(streamA->name(),METemperature(),METemperature(),MEMassFlow());
+                    newEIConn->setB(streamB->name(),METemperature(),METemperature(),MEMassFlow());
                     newEIConn->setQFlow(MEQflow(qflow,MEQflow::KW));
                     result->eiConns()->addItem(newEIConn);
                 }
@@ -529,9 +525,6 @@ EITargetResult* MilpTarget::readResult(glp_prob * glpProblem)
         }
         iCol = colNames.indexOf(regExp,iCol+1);
     }
-
-   //recreate a MER to get new pinch temperature
-
 
     return result;
 }

@@ -41,9 +41,10 @@ http://www-cep.ensmp.fr/english/
 */
 #include "ModPlusDymolaCtrl.h"
 #include "reportingHook.h"
+#include "Project.h"
 
-ModPlusDymolaCtrl::ModPlusDymolaCtrl(ModModelPlus* model,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName)
-    :ModPlusCtrl(model,moomc,mmoFolder,moFilePath,modModelName)
+ModPlusDymolaCtrl::ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName)
+    :ModPlusCtrl(project,model,moomc,mmoFolder,moFilePath,modModelName)
 {
     _dsinFile = "dsin.txt";
     _dsresFile = "dsres.txt";
@@ -143,6 +144,9 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
 
 
     bool authorizeRecreate=false;
+     QString logFile = _mmoFolder+QDir::separator()+ "buildlog.txt";
+     if(QFile::exists(logFile))
+         QFile::remove(logFile);
 
     if(dsinFile.isEmpty())
     {
@@ -161,7 +165,8 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
 
     if(!QFile::exists(dsinFile))
     {
-        infoSender.send(Info("Unable to create DsinFile",ListInfo::ERROR2));
+        QString msg = "Unable to create DsinFile. See <A href=\"file:///"+ logFile +"\">log file</A> for detail.";
+              infoSender.send(Info(msg,ListInfo::ERROR2));
         return false;
     }
     else
@@ -177,10 +182,11 @@ bool ModPlusDymolaCtrl::compile()
 
     infoSender.send(Info("Compiling model "+_modModelName,ListInfo::NORMAL2));
 
-    QString logFilePath = _mmoFolder+QDir::separator()+"log.html";
+    //QString logFilePath = _mmoFolder+QDir::separator()+"log.html";
+    QString logFilePath = _mmoFolder+QDir::separator()+"buildlog.txt";
 
     // compile
-    bool success = Dymola::firstRun(_moFilePath,_modModelName,_mmoFolder,logFilePath);
+    bool success = Dymola::firstRun(_project->moFiles(),_modModelName,_mmoFolder,logFilePath);
 
     // Inform
     ListInfo::InfoNum iMsg;
@@ -234,7 +240,7 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
     QDir modelTempDir(tempFolder);
     modelTempDir.mkdir(tempFolder);
 
-    // copy files in temp dir (#TODO : optimize with a config.updateTempDir in case of several consecutive launches)
+    /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QStringList allFilesToCopy;
     QDir mmoDir = QDir(_mmoFolder);
     allFilesToCopy << mmoDir.filePath("dsin.txt") << mmoDir.filePath("dymosim.exe");
@@ -328,7 +334,7 @@ bool ModPlusDymolaCtrl::createDsin()
     }
 
     // compile
-    bool success = Dymola::createDsin(_moFilePath,_modModelName,_mmoFolder);
+    bool success = Dymola::createDsin(_project->moFiles(),_modModelName,_mmoFolder);
 
     // Return
     return success;

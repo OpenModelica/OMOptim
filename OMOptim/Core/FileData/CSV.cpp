@@ -356,7 +356,7 @@ void CSV::FileToVariables(MOVector<Variable>* variables, QString fileName)
         QFile frontFile(fileName);
         if(!frontFile.exists())
         {
-                // #TODO ERROR
+                /// \todo ERROR
         }
         frontFile.open(QIODevice::ReadOnly);
         QTextStream tsfront( &frontFile );

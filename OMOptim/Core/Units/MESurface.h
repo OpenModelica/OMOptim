@@ -47,7 +47,8 @@
 class MESurface : public MEDimValue
 {
 public:
-        MESurface(double value=0,int unit=0);
+        MESurface();
+        MESurface(double value,int unit);
         MESurface(const MESurface&);
         ~MESurface();
 
@@ -66,14 +67,7 @@ public:
         MESurface& operator-=(const MESurface&);
         MESurface operator-(const MESurface&) const;
         MESurface operator+(const MESurface&) const;
-        bool operator==(const MESurface& b) const;
-        bool operator!=(const MESurface& b) const;
-        bool operator<(const MESurface& b) const;
-        bool operator<=(const MESurface& b) const;
-        bool operator>(const MESurface& b) const;
-        bool operator>=(const MESurface& b) const;
 
-        bool equals(const MESurface& b,double maxDistance) const;
 };
 
 

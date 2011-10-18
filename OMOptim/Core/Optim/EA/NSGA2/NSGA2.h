@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linkpings universitet, Department of Computer and Information Science,
- * SE-58183 Linkping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+ 	@version 0.9 
 
   */
 #if !defined(_NSGA2_H)
@@ -78,10 +78,10 @@ class NSGA2 : public EABase
 {
 public : 
 	NSGA2();
-        NSGA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*);
-        NSGA2(Project*,Problem*,ModClassTree*,ModPlusCtrl*,MOParameters*);
+        NSGA2(Project*,Problem*,ModClassTree*);
+        NSGA2(Project*,Problem*,ModClassTree*,MOParameters*);
 	NSGA2(const NSGA2 &);
-	NSGA2* clone() const;
+        EABase* clone() const;
 
 	QList<int> compatibleOMCases();
 
@@ -105,7 +105,7 @@ Result* NSGA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
 	{
 	case Problem::OPTIMIZATIONTYPE :
 		result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,
-                        _modClassTree,_modPlusCtrl,arch,_parameters);
+                        _modClassTree,arch,_parameters);
 		break;
 	}
 	return result;

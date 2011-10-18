@@ -40,6 +40,12 @@
   */
 #include "MEQflow.h"
 
+
+MEQflow::MEQflow():
+MEDimValue()
+{
+}
+
 MEQflow::MEQflow(double value,int unit):
 MEDimValue(value,unit)
 {
@@ -123,20 +129,6 @@ MEQflow MEQflow::operator*(const double& fact) const
     return MEQflow(resValue,_unit);
 }
 
-bool MEQflow::operator==(const MEQflow& b) const
-{
-    return (value(_unit)==b.value(_unit));
-}
-
-bool MEQflow::operator>(const MEQflow& b) const
-{
-    return (value(_unit)>b.value(_unit));
-}
-
-bool MEQflow::operator<(const MEQflow& b) const
-{
-    return (value(_unit)<b.value(_unit));
-}
 
 MEQflow& MEQflow::operator+=(const MEQflow& b)
 {

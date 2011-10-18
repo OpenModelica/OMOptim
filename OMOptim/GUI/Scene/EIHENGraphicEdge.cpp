@@ -50,6 +50,12 @@ void EIHENGraphicEdge::adjust()
     _sourcePoint = line.p1();
     _destPoint = line.p2();
 
+    if(std::isnan(_sourcePoint.x()))
+        _sourcePoint.setX(0);
+    if(std::isnan(_destPoint.x()))
+        _destPoint.setX(0);
+
+
     switch(_source->node()->nodeType())
     {
     case NodeSplitter :
@@ -96,30 +102,10 @@ void EIHENGraphicEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
     // Draw the line itself
     painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+
     painter->drawLine(line1);
     painter->drawLine(line2);
     painter->drawLine(line3);
-
-//    // Draw the arrows
-//    if(_arrowSize>0)
-//    {
-//        double angle = ::acos(line.dx() / line.length());
-//        if (line.dy() >= 0)
-//            angle = TwoPi - angle;
-
-//        QPointF sourceArrowP1 = _sourcePoint + QPointF(sin(angle + Pi / 3) * _arrowSize,
-//                                                       cos(angle + Pi / 3) * _arrowSize);
-//        QPointF sourceArrowP2 = _sourcePoint + QPointF(sin(angle + Pi - Pi / 3) * _arrowSize,
-//                                                       cos(angle + Pi - Pi / 3) * _arrowSize);
-//        QPointF destArrowP1 = _destPoint + QPointF(sin(angle - Pi / 3) * _arrowSize,
-//                                                   cos(angle - Pi / 3) * _arrowSize);
-//        QPointF destArrowP2 = _destPoint + QPointF(sin(angle - Pi + Pi / 3) * _arrowSize,
-//                                                   cos(angle - Pi + Pi / 3) * _arrowSize);
-
-//        painter->setBrush(Qt::black);
-//        painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);
-//        painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
-//    }
 
 
 }

@@ -40,6 +40,11 @@
   */
 #include "MEDimValue.h"
 
+MEDimValue::MEDimValue()
+{
+    invalidate();
+}
+
 MEDimValue::MEDimValue(double value,int unit)
 {
 	setValue(value,unit);
@@ -59,11 +64,30 @@ double MEDimValue::value() const
         return _value;
 }
 
+QString MEDimValue::strValue(int iUnit) const
+{
+    if(isValid())
+        return QString::number(value(iUnit));
+    else
+        return "-";
+}
+
+QString MEDimValue::strValue() const
+{
+    if(isValid())
+        return QString::number(value());
+    else
+        return "-";
+}
+
+
 void MEDimValue::setValue(double value,int iUnit)
 {
 	_value = value; 
 	if(iUnit>-1)
 		_unit = iUnit;
+
+    validate();
 }
 
 void MEDimValue::setUnit(int iUnit)
@@ -88,6 +112,9 @@ bool MEDimValue::setValue(double value,QString unit)
 		return false;
 	else
 		setValue(value,iUnit);
+
+    validate();
+
 	return true;
 }
 
@@ -116,6 +143,75 @@ MEDimValue & MEDimValue::operator=(const MEDimValue &b)
 {
     _value = b._value;
     _unit = b._unit;
+    _isValid = b._isValid;
+}
+
+bool MEDimValue::operator<(const MEDimValue &b) const
+{
+    return value(_unit)<b.value(_unit);
+}
+
+bool MEDimValue::operator>(const MEDimValue &b) const
+{
+    return value(_unit)>b.value(_unit);
+}
+
+bool MEDimValue::operator==(const MEDimValue &b) const
+{
+    return value(_unit)==b.value(_unit);
+}
+
+bool MEDimValue::operator!=(const MEDimValue &b) const
+{
+    return value(_unit)!=b.value(_unit);
+}
+
+
+bool MEDimValue::operator<=(const MEDimValue &b) const
+{
+    return value(_unit)<=b.value(_unit);
+}
+
+bool MEDimValue::operator>=(const MEDimValue &b) const
+{
+    return value(_unit)>=b.value(_unit);
+}
+
+/**
+  * maxRelDistance corresponds to relative distance between this and b.
+  * distance is calculated as follows :
+  * dist = abs((a-b)/min(a,b))
+  */
+bool MEDimValue::equalsRel(const MEDimValue& b,double maxRelDistance) const
+{
+    double dist = fabs((b.value(_unit)-value(_unit))/std::min(b.value(_unit),value(_unit)));
+    return (dist<=maxRelDistance);
+}
+
+/**
+  * Returns true if this value has been initialized
+  */
+bool MEDimValue::isValid() const
+{
+    return _isValid;
+}
+
+/**
+  * Set this value invalid : its value has no more meaning and is considered as uninitialized.
+  * @sa isValid()
+  */
+void MEDimValue::invalidate()
+{
+    _isValid = false;
+}
+
+/**
+  * Set this value valid. Called when value is set.
+  * @sa isValid()
+  */
+void MEDimValue::validate()
+{
+    _isValid = true;
 }
 
 

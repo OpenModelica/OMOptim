@@ -89,11 +89,7 @@ void Problem::setType(ProblemType type)
 
 
 
-/**
-* Store problem files in destFolder. Is called when a problem resolution is finished.
-* @param destFolder destination folder path.
-* @param tempDir dir from where problem files are copied
-*/
+
 void Problem::store(QString destFolder, QString tempDir)
 {
     OMCase::store(destFolder,tempDir);

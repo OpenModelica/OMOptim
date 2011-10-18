@@ -158,7 +158,7 @@ void CBCTools::fill(MilpVariableResult4D &variable,const QString &txt)
 bool CBCTools::isInstalled()
 {
 #ifdef WIN32 // Win32
-    return false; // #TODO
+    return false; /// \todo
 #else // UNIX environment
 
     QProcess qp;

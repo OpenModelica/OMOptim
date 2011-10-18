@@ -46,12 +46,12 @@ class ProblemConfig
 {
 public:
 	ProblemConfig();
-	ProblemConfig(QString _tempDir);
-	ProblemConfig(QString _tempDir,bool _refill);
+//	ProblemConfig(QString _tempDir);
+        ProblemConfig(bool _refill);
 	~ProblemConfig(void);
 
 
-	QString tempDir;
+//	QString tempDir;
 	bool refillTempDir;
 };
 

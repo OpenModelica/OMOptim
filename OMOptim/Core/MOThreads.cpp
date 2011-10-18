@@ -94,4 +94,26 @@ void ProblemThread::onStopAsked()
     onFinished();
 }
 
+OMCModelLoader::OMCModelLoader(QString filePath,MOomc* omc)
+{
+
+    _filePath = filePath;
+
+    connect(this, SIGNAL(loadFile(QString)),
+            omc, SLOT(loadFile(QString)));
+
+    connect(omc,SIGNAL(loadedFile(QString,QString)),this,SLOT(onLoadedFile(QString,QString)));
+
+}
+
+void OMCModelLoader::run()
+{
+    emit loadFile(_filePath);
+}
+
+void OMCModelLoader::onLoadedFile(QString filePath,QString result)
+{
+    _result = result;
+}
+
 }

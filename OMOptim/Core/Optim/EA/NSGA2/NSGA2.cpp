@@ -3,8 +3,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linkpings universitet, Department of Computer and Information Science,
- * SE-58183 Linkping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+ 	@version 0.9 
 
   */
 /*
@@ -95,15 +95,15 @@ NSGA2::NSGA2():EABase()
 	setDefaultParameters();
 }
 
-NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree,ModPlusCtrl* _modPlusCtrl)
-:EABase(_project,_problem,_modClassTree,_modPlusCtrl)
+NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree)
+:EABase(_project,_problem,_modClassTree)
 {
 	setDefaultParameters();
 };
 
 
-NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree,ModPlusCtrl* _modPlusCtrl,MOParameters* parameters)
-:EABase(_project,_problem,_modClassTree,_modPlusCtrl)
+NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree,MOParameters* parameters)
+:EABase(_project,_problem,_modClassTree)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
@@ -113,7 +113,7 @@ NSGA2::NSGA2(const NSGA2 & ea):EABase(ea)
 {
 }
 
-NSGA2* NSGA2::clone() const
+EABase* NSGA2::clone() const
 {
 	NSGA2* newEA = new NSGA2(*this);
 	return newEA ;
@@ -193,7 +193,7 @@ Result* NSGA2::launch(QString tempDir)
 	switch(_problem->type())
 	{
 	case Problem::OPTIMIZATIONTYPE :
-                plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modClassTree,_modPlusCtrl);
+                plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modClassTree);
 		break;
 	}
         OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
@@ -306,11 +306,13 @@ Result* NSGA2::launch(QString tempDir)
 	nsgaII (pop);
 
 
+
+
+
 	///************************************
 	//GETTING RESULT FROM FINAL ARCHIVE
 	//************************************/
         Result* result = buildResult(arch);
-
 
 	return result;
 	

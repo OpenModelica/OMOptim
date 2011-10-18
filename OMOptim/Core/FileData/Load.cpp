@@ -98,8 +98,18 @@ bool Load::loadProject(QString filePath,Project* _project)
         if(!modelFileInfo.exists())
         {
             modelFileInfo=QFileInfo(projectDir,tmpPath); //stored in relative path
+            if(!modelFileInfo.exists())
+            {
+
+                infoSender.send(Info(ListInfo::MODELFILENOTEXISTS,tmpPath));
+            }
+            else
+            {
             tmpPath = modelFileInfo.canonicalFilePath();
+                modelMoFilePaths.push_back(tmpPath);
         }
+        }
+        else
         modelMoFilePaths.push_back(tmpPath);
     }
 
@@ -542,7 +552,7 @@ Problem* Load::newOneSimulation(QDomElement domProblem,Project* project)
 
     ModModelPlus* modModelPlus = project->modModelPlus(modModel);
     OneSimulation* problem= new OneSimulation(project,project->modClassTree(),
-                                              project->modPlusCtrl(),modModelPlus);
+                                              modModelPlus);
 
     // Infos
     problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
@@ -574,7 +584,7 @@ Result* Load::newOneSimulationResult(QDomElement domResult,Project* project,OneS
     if(domResult.isNull())
         return NULL;
 
-    OneSimResult* result = new OneSimResult(project,problem->modModelPlus(),problem,project->modClassTree(),problem->modPlusCtrl());
+    OneSimResult* result = new OneSimResult(project,problem->modModelPlus(),problem,project->modClassTree());
 
     Q_ASSERT(domResult.tagName()==OneSimResult::className());
 
@@ -618,7 +628,7 @@ Problem* Load::newOptimization(QDomElement domProblem,Project* project)
     // Create problem
     ModModelPlus* _modModelPlus = project->modModelPlus(_modModel);
     Optimization* problem= new Optimization(project,project->modClassTree(),
-                                            project->modPlusCtrl(),_modModelPlus);
+                                            _modModelPlus);
     // Infos
     problem->setType((Problem::ProblemType)domInfos.attribute("type", "" ).toInt());
     problem->setName(problemName);
@@ -676,7 +686,7 @@ Result* Load::newOptimizationResult(QDomElement domResult,Project* project,Optim
 
     Q_ASSERT(domResult.tagName()==OptimResult::className());
 
-    OptimResult* result = new OptimResult(project,optimization->modModelPlus(),optimization,project->modClassTree(),optimization->modPlusCtrl(),optimization->getCurAlgo());
+    OptimResult* result = new OptimResult(project,optimization->modModelPlus(),optimization,project->modClassTree(),optimization->getCurAlgo());
     result->setSuccess(true);
 
     //**********

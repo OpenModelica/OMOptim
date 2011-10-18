@@ -44,6 +44,7 @@
 #include "EIItem.h"
 #include "EIReader.h"
 #include "EITree.h"
+#include "MESurface.h"
 
 namespace EI
 {
@@ -73,10 +74,12 @@ public:
         TOUTB_U,
         QFLOW_V,
         QFLOW_U,
+        SURFACE_V,
+        SURFACE_U
     };
 
 
-    static const int nbFields = 17;
+    static const int nbFields = 19;
 
 
     EIConn();
@@ -95,6 +98,7 @@ public:
     void setA(const QString &a,const METemperature &Tina,const METemperature &Touta,MEMassFlow flowA);
     void setB(const QString &b,const METemperature &Tinb,const METemperature &Toutb,MEMassFlow flowB);
     void setQFlow(MEQflow);
+    void setSurface(MESurface);
 
     QString aName()const{return _streamA;}
     QString bName()const{return _streamB;}
@@ -104,6 +108,7 @@ public:
     METemperature ToutA()const{return _ToutA;}
     METemperature ToutB()const{return _ToutB;}
     MEQflow qFlow()const{return _qFlow;}
+    MESurface surface()const{return _surface;}
 
     METemperature Tin(QString stream)const;
     METemperature Tout(QString stream)const;
@@ -125,6 +130,7 @@ protected:
     MEQflow _qFlow;
     MEMassFlow _flowA;
     MEMassFlow _flowB;
+    MESurface _surface;
 
 };
 }
