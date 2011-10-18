@@ -44,10 +44,11 @@ public:
         // Compile function
         bool createDsin();
         bool isCompiled();
-        bool compile();
+        bool compile(const QStringList & moDependencies=QStringList());
 
         // Simulate function
-        bool simulate(QString tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy=QStringList());
+        bool simulate(QString tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,
+                      QStringList filesTocopy=QStringList(),QStringList moDependencies=QStringList());
         void stopSimulation();
         bool canBeStoped();
 

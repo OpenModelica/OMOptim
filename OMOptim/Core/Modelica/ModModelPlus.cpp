@@ -97,11 +97,6 @@ ModModelPlus::ModModelPlus(MOomc* moomc, Project* project,ModClassTree* modClass
 #endif
         // read function
         // readAll();
-
-        //Connect signals and slots for error and progress management
-        //connect(this, SIGNAL(sendInfo(Info*)),project, SIGNAL(sendInfo(Info*)));
-        connect(this, SIGNAL(sendProgress(float)),_project, SIGNAL(sendProgress(float)));
-        connect(this, SIGNAL(sendProgress(float,int,int)),_project, SIGNAL(sendProgress(float,int,int)));
 }
 
 ModModelPlus::~ModModelPlus()
@@ -111,8 +106,6 @@ ModModelPlus::~ModModelPlus()
         delete _variables;
 }
 
-
-
 void ModModelPlus::clear()
 {
         _isDefined = false;
@@ -120,7 +113,6 @@ void ModModelPlus::clear()
         _variablesRead = false;
         _modifiersRead = false;
         _connectionsRead = false;
-
 
         _name.clear();
         _mmoFilePath.clear();
@@ -136,7 +128,6 @@ void ModModelPlus::save()
         Save::saveModModelPlus(this);
         emit saved();
 }
-
 
 void ModModelPlus::reloadModel()
 {
@@ -178,8 +169,6 @@ QStringList ModModelPlus::neededFoldersNames()
         return _neededFolders;
 }
 
-
-
 bool ModModelPlus::isDefined()
 {
         return _isDefined;
@@ -204,6 +193,27 @@ ModPlusCtrl::Type ModModelPlus::ctrlType()
 void ModModelPlus::setModModel(ModModel* modModel)
 {
         _modModel = modModel;
+}
+
+void ModModelPlus::addMoDependency(const QString & dep)
+{
+    _moDependencies.push_back(dep);
+}
+
+void ModModelPlus::addMoDependencies(const QStringList & deps)
+{
+    _moDependencies.append(deps);
+}
+
+void ModModelPlus::setMoDependencies(const QStringList & deps)
+{
+    _moDependencies.clear();
+    _moDependencies.append(deps);
+}
+
+QStringList ModModelPlus::moDependencies() const
+{
+    return _moDependencies;
 }
 
 //************************
@@ -298,6 +308,12 @@ bool ModModelPlus::readAll()
         return _isDefined;
 }
 
+void ModModelPlus::loadDependencies()
+{
+    for(int i=0;i<_moDependencies.size();i++)
+        _moomc->loadFile(_moDependencies.at(i));
+}
+
 bool ModModelPlus::isCompiled()
 {
         return ctrl()->isCompiled();
@@ -305,7 +321,7 @@ bool ModModelPlus::isCompiled()
 
 bool ModModelPlus::compile()
 {
-        return ctrl()->compile();
+    return ctrl()->compile(moDependencies());
 }
 
 void ModModelPlus::addConnection(ModClass* a, ModClass* b)
@@ -397,10 +413,16 @@ void ModModelPlus::openMoFile()
         //LowTools::openFile(moFilePath());
 }
 
+void ModModelPlus::openDependenciesDlg()
+{
+    DlgSelectFiles dlgSelectFiles(_moDependencies,"*.mo");
+    dlgSelectFiles.exec();
+}
+
 void ModModelPlus::openParametersDlg()
 {
-        MOParametersDlg *parametersDlg = new MOParametersDlg(ctrl()->parameters());
-        parametersDlg->exec();
+    MOParametersDlg parametersDlg(ctrl()->parameters());
+    parametersDlg.exec();
 }
 
 QString ModModelPlus::modModelName()

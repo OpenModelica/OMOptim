@@ -62,11 +62,11 @@ public:
 
         // Compile function
         bool isCompiled();
-        bool compile();
-        bool createInitFile();
+        bool compile(const QStringList & moDeps = QStringList());
+        bool createInitFile(const QStringList & moDeps = QStringList());
 
         // Simulate function
-        bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy = QStringList());
+        bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy = QStringList(),QStringList moDependencies=QStringList());
         void setMmoFolder(QString _mmoFolder);
 private :
         QString _initFileXml;

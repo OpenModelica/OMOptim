@@ -1038,14 +1038,25 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
     }
 }
 
-QString MOomc::loadFile(QString filePath)
+QStringList MOomc::loadFiles(const QStringList & filePaths)
 {
-    filePath.replace("\\","/");
-    QString cmd = QString("loadFile(\"") + filePath + QString("\")");
-    infoSender.send( Info(QString("Loading file : " + filePath),ListInfo::NORMAL2));
+    QStringList result;
+    for(int i=0;i<filePaths.size();i++)
+    {
+        result.push_back(loadFile(filePaths.at(i)));
+    }
+    return result;
+}
+
+QString MOomc::loadFile(const QString & filePath)
+{
+    QString localFile = filePath;
+    localFile = localFile.replace("\\","/");
+    QString cmd = QString("loadFile(\"") + localFile + QString("\")");
+    infoSender.send( Info(QString("Loading file : " + localFile),ListInfo::NORMAL2));
     QString result = evalCommand(cmd);
 
-    emit loadedFile(filePath,result);
+    emit loadedFile(localFile,result);
 
     return result;
 }

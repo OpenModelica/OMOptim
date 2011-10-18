@@ -77,8 +77,8 @@ public:
 
 
 	static QString getExecutablePath();
-        static bool firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath);
-        static bool createDsin(QStringList moPaths,QString modelToConsider,QString folder);
+        static bool firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath,const QStringList & moDeps=QStringList());
+        static bool createDsin(QStringList moPaths,QString modelToConsider,QString folder,const QStringList & moDeps=QStringList());
         static void start(QString path,QProcess &,int maxNSec=-1);
 	static void verifyInstallation();
 	//static QString getPreambleFromDsin(QTextStream *);
@@ -91,7 +91,6 @@ public:
 	static void setVariablesToDsin(QString fileName,QString modelName, MOVector<Variable> *,MOParameters *parameters);
         static void writeParameters(QString &allDsinText,MOParameters *parameters);
 	static QString sciNumRx();
-	//static QString Dymola::variableToValueLines(Variable* variable);
 
 	// Parameters
         enum DymolaParameters{STOPTIME,TOLERANCE,NINTERVAL,SOLVER,MAXSIMTIME};

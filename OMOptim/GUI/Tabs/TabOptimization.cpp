@@ -68,7 +68,7 @@ MO2ColTab(project_->name(),problem_,false,parent)
         widgetOptParameters = new WidgetOptParameters(project,problem,false,this);
 	addDockWidget("Optimization",widgetOptParameters,widgetSelectOptVars);
 	
-        widgetFilesList = new WidgetFilesList(&problem->_filesToCopy,this);
+        widgetFilesList = new WidgetFilesList(problem->_filesToCopy,this);
         addDockWidget("Files",widgetFilesList,widgetSelectOptVars);
 
         widgetOptimActions = new WidgetOptimActions(project,problem,false,NULL,this);

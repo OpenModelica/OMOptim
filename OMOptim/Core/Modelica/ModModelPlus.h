@@ -57,6 +57,7 @@
 #include "ModPlusCtrl.h"
 #include "ModPlusDymolaCtrl.h"
 #include "Variables.h"
+#include "DlgSelectFiles.h"
 
 
 using std::vector;
@@ -88,6 +89,7 @@ protected :
         MOVector<ModelicaModifier> *_modifiers;
         QStringList _neededFiles;
         QStringList _neededFolders;
+    QStringList _moDependencies;
 
         MOomc* _moomc;
         Project* _project; // project or database (for signal emitting)
@@ -134,6 +136,10 @@ public:
         QMap<ModPlusCtrl::Type,ModPlusCtrl*>* ctrls();
         ModPlusCtrl::Type ctrlType();
         void setModModel(ModModel*);
+    void addMoDependency(const QString &);
+    void addMoDependencies(const QStringList &);
+    void setMoDependencies(const QStringList &);
+    QStringList moDependencies() const;
 
         //*************************
         // Path functions
@@ -156,6 +162,7 @@ public:
         //virtual bool readElements(bool readAll = false);
 
         bool readAll();
+    void loadDependencies();
 
         //************************
         //  Variables
@@ -192,8 +199,6 @@ public slots :
         bool compile();
 
 
-
-
         //************************
         // Others
         //************************
@@ -201,22 +206,18 @@ public slots :
                 void openMoFolder();
                 void openMmoFolder();
                 void openMoFile();
-//		void setCtrlOpenModelica();
-//		void setCtrlDymola();
                 void setCtrlType(ModPlusCtrl::Type);
                 void setCtrlType();
                 void openParametersDlg();
+    void openDependenciesDlg();
+
 
         virtual bool readConnections();
         virtual bool readVariables();
         void reloadModel();
 
 
-
 protected :
-
-
-
 
         //**************************************
         // Variables
@@ -230,8 +231,6 @@ protected :
         void addConnection(ModClass*, ModClass*);
         void addConnection(QString _aName,QString _bName);
 
-
-
 signals:
         void saved();
         void loaded();
@@ -240,8 +239,6 @@ signals:
         void componentsUpdated();
         void modifiersUpdated();
         void connectionsUpdated();
-        void sendProgress(float);
-        void sendProgress(float,int,int);
 };
 
 

@@ -56,13 +56,17 @@ OpenModelica::~OpenModelica(void)
 {
 }
 
-bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder)
+bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,const QStringList & moDeps)
 {
     // check if model already loaded
     QString loadedMoPath = _omc->getFileOfClass(modelToConsider);
 
     bool loadOk;
     QString loadError;
+
+    // load modependencies
+    _omc->loadFiles(moDeps);
+
     // if not already loaded, reload
     if(loadedMoPath.compare(moPath))
     {
@@ -394,13 +398,13 @@ bool OpenModelica::setInputXml(QString fileName, MOVector<Variable> *variables, 
     QFile file(fileName);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-        // infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+        infoSender.debug("setting input xml : load failed");
         return false;
     }
     else if( !doc.setContent(&file,&error) )
     {
+        infoSender.debug("setting input xml : file corrupted");
         file.close();
-        // infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
         return false;
     }
 
@@ -417,7 +421,8 @@ bool OpenModelica::setInputXml(QString fileName, MOVector<Variable> *variables, 
     {
         file.remove();
     }
-    ok = ok && file.open(QIODevice::WriteOnly);
+
+    ok = file.open(QIODevice::WriteOnly);
     QTextStream ts( &file );
     ts << doc.toString();
     file.close();

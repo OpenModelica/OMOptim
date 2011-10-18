@@ -54,7 +54,7 @@ MO2ColTab(project->name(),problem,false,parent)
     _widgetOneSimVars = new WidgetOneSimVars(project,problem,this);
     addDockWidget("Variables",_widgetOneSimVars);
 		
-    _widgetFilesList = new WidgetFilesList(&problem->_filesToCopy,this);
+    _widgetFilesList = new WidgetFilesList(problem->_filesToCopy,this);
     addDockWidget("Files",_widgetFilesList,_widgetOneSimVars);
 		
     mapDockWidgets.key(_widgetOneSimVars)->raise();

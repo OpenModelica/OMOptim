@@ -474,6 +474,17 @@ void Save::saveModModelPlus(ModModelPlus* modModelPlus)
 
     root.appendChild(cControlers);
 
+    // .mo dependencies
+    QDomElement cMoDeps = doc.createElement( "moDependencies" );
+    QString strMoDeps;
+    for (int nof=0;nof<modModelPlus->moDependencies().size();nof++)
+    {
+        strMoDeps.append(modModelPlus->moDependencies().at(nof)+";");
+    }
+    cMoDeps.setAttribute("list",strMoDeps);
+    root.appendChild(cMoDeps);
+
+
     //Writing in MO file
     QFile file(modModelPlus->mmoFilePath());
     QFileInfo fileInfo(modModelPlus->mmoFilePath());

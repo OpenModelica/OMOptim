@@ -528,7 +528,8 @@ HEADERS += ../config.h \
     ../Core/OptObjectives.h \
     ../Core/Units/MEHTCoeff.h \
     ../Core/Units/MESpecHeatCapacity.h \
-    ../Core/Units/Units.h
+    ../Core/Units/Units.h \
+    ../GUI/Dialogs/DlgSelectFiles.h
 
 
 
@@ -707,12 +708,15 @@ SOURCES += ../main.cpp \
     ../Core/OptObjectives.cpp \
     ../Core/Units/MEHTCoeff.cpp \
     ../Core/Units/MESpecHeatCapacity.cpp \
-    ../GUI/Tools/MyTreeView.cpp
+    ../GUI/Tools/MyTreeView.cpp \
+    ../GUI/Dialogs/DlgSelectFiles.cpp
 
 RESOURCES += \
     ../GUI/Resources/OMOptim.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc
+
+
 
 
 

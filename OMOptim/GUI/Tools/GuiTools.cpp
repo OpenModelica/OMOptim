@@ -244,7 +244,6 @@ void GuiTools::addCommonActions(QMenu* menu,Project* project, const QPoint & iPo
     QAction *reload = new QAction("Reload .mo file",menu);
     connect(reload,SIGNAL(triggered()),selectedModClass,SLOT(reloadInOMC()));
     menu->addAction(reload);
-
 }
 void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & iPoint,ModModel* selectedModel)
 {
@@ -281,6 +280,11 @@ void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & i
     QAction *setParameters = new QAction("Set parameters...",menu);
     connect(setParameters,SIGNAL(triggered()),selectedModModelPlus,SLOT(openParametersDlg()));
     menu->addAction(setParameters);
+
+    // Set mo dependencies
+    QAction *setMoDeps = new QAction("Set .mo dependencies ...",menu);
+    connect(setMoDeps,SIGNAL(triggered()),selectedModModelPlus,SLOT(openDependenciesDlg()));
+    menu->addAction(setMoDeps);
 
     //Select simulator
     QActionGroup *simulator = new QActionGroup(menu);

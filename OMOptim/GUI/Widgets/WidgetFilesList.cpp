@@ -43,15 +43,15 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetFilesList::WidgetFilesList(QStringList *filesList,QWidget *parent):
-    QWidget(parent),
+WidgetFilesList::WidgetFilesList(QStringList & filesList,QWidget *parent,QString filter):
+    QWidget(parent),_filesList(filesList),
     _ui(new Ui::WidgetFilesListClass)
 {
     _ui->setupUi(this);
-    _filesList = filesList;
+    _filter = filter;
 
-    for(int i=0;i<_filesList->size();i++)
-        _ui->filesList->addItem(_filesList->at(i));
+    for(int i=0;i<_filesList.size();i++)
+        _ui->filesList->addItem(_filesList.at(i));
 
     connect(_ui->pushAddFiles,SIGNAL(clicked()),this,SLOT(addFiles()));
     connect(_ui->pushRemoveFiles,SIGNAL(clicked()),this,SLOT(removeFiles()));
@@ -74,7 +74,7 @@ void WidgetFilesList::addFiles()
             this,
             "Files to copy for simulation",
             lastMoFolder,
-            "All files (*.*)" );
+            _filter );
 
     addFiles(fileNames);
 }
@@ -83,10 +83,10 @@ void WidgetFilesList::addFiles(QStringList list)
 {
     for(int i=0;i<list.size();i++)
     {
-        if(!_filesList->contains(list.at(i)))
+        if(!_filesList.contains(list.at(i)))
         {
             _ui->filesList->addItem(list.at(i));
-            _filesList->push_back(list.at(i));
+            _filesList.push_back(list.at(i));
         }
     }
 }
@@ -97,10 +97,10 @@ void WidgetFilesList::removeFiles()
         int iFile;
         for(int i=0;i<itemsList.size();i++)
 	{
-                iFile = _filesList->indexOf(itemsList.at(i)->text());
+                iFile = _filesList.indexOf(itemsList.at(i)->text());
                 if(iFile>-1)
                 {
-                    _filesList->removeAt(iFile);
+                    _filesList.removeAt(iFile);
                 }
 	}
         //remove from listWidget

@@ -170,7 +170,8 @@ public :
         //OmcCommunicator* getCommunicator();
 
 public slots :
-        QString loadFile(QString filePath);
+        QStringList loadFiles(const QStringList & filePath);
+        QString loadFile(const QString & filePath);
         bool startServer();
 	
 

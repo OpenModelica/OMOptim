@@ -403,12 +403,17 @@ Result* Load::newResult(QString filePath,Project* project)
     QDomElement domProblem = domCase.firstChildElement("OMProblem");
     Problem* problem = newProblem(domProblem,project);
 
+    if(!problem)
+    {
+        infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
+        return NULL;
+    }
 
     // create result
     QDomElement domResult = domCase.firstChildElement("OMResult");
     Result* result = newResult(domResult,project,problem,filePath);
 
-    if(!problem || !result)
+    if(!result)
     {
         infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
         return NULL;
@@ -428,7 +433,6 @@ Result* Load::newResult(QString filePath,Project* project)
 
 Result* Load::newResult(QDomElement domResult,Project* project,Problem* problem,QString filePath)
 {
-
     if(domResult.isNull())
         return NULL;
 
@@ -547,6 +551,7 @@ Problem* Load::newOneSimulation(QDomElement domProblem,Project* project)
     ModModel* modModel = project->findModModel(modelName);
     if(modModel == NULL)
     {
+        infoSender.sendWarning("Unable to find model "+modelName);
         return NULL;
     }
 
@@ -893,6 +898,13 @@ bool Load::loadModModelPlus(Project* project,QString mmoFilePath)
         QDomElement domOtherFiles = root.firstChildElement("OtherFiles");
         QString allOtherFiles = domOtherFiles.attribute( "list", "" );
         newModelPlus->setOtherFiles(allOtherFiles.split(";"));
+
+
+        // .mo dependencies
+        QDomElement domMoDeps = root.firstChildElement("moDependencies");
+        QString moDeps = domMoDeps.attribute( "list", "" );
+        newModelPlus->setMoDependencies(moDeps.split(";",QString::SkipEmptyParts));
+
         // Infos
         QDomElement domInfos = root.firstChildElement("Infos");
         newModelPlus->setInfos(domInfos.attribute("text",""));

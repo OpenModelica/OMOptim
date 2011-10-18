@@ -177,7 +177,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
     }
 }
 
-bool ModPlusDymolaCtrl::compile()
+bool ModPlusDymolaCtrl::compile(const QStringList & moDependencies)
 {
 
     infoSender.send(Info("Compiling model "+_modModelName,ListInfo::NORMAL2));
@@ -186,7 +186,7 @@ bool ModPlusDymolaCtrl::compile()
     QString logFilePath = _mmoFolder+QDir::separator()+"buildlog.txt";
 
     // compile
-    bool success = Dymola::firstRun(_project->moFiles(),_modModelName,_mmoFolder,logFilePath);
+    bool success = Dymola::firstRun(_project->moFiles(),_modModelName,_mmoFolder,logFilePath,moDependencies);
 
     // Inform
     ListInfo::InfoNum iMsg;
@@ -220,7 +220,7 @@ bool ModPlusDymolaCtrl::isCompiled()
 
 
 
-bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy)
+bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy,QStringList moDependencies)
 {
     // Info
     infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));

@@ -145,14 +145,14 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
     return true;
 }
 
-bool ModPlusOMCtrl::compile()
+bool ModPlusOMCtrl::compile(const QStringList & moDeps)
 {
 
     infoSender.send(Info("Compiling model "+_modModelName,ListInfo::NORMAL2));
 
     // compile
     QString logFile = _mmoFolder+_modModelName+".log";
-    bool success = OpenModelica::compile(_moomc,_moFilePath,_modModelName,_mmoFolder);
+    bool success = OpenModelica::compile(_moomc,_moFilePath,_modModelName,_mmoFolder,moDeps);
 
     // Inform
     ListInfo::InfoNum iMsg;
@@ -185,11 +185,13 @@ bool ModPlusOMCtrl::isCompiled()
 }
 
 
-bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy)
+bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy,QStringList moDependencies)
 {
     // Info
     infoSender.send(Info("Simulating model "+_modModelName,ListInfo::NORMAL2));
 
+    // load moDependencies
+    _moomc->loadFiles(moDependencies);
     // eventually compile model
     if(!isCompiled())
         compile();
@@ -219,17 +221,20 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
         infoSender.sendError("Unable to find an init file for model "+_modModelName);
 
     QDir tempDir = QDir(tempFolder);
+    infoSender.debug("Start copying in temp directory : "+tempFolder);
     QFileInfo fileToCopyInfo;
-    QFile fileToCopy;
+    //QFile fileToCopy;
     bool copyOk;
     for(int i=0; i< allFilesToCopy.size();i++)
     {
-        fileToCopy.setFileName(allFilesToCopy.at(i));
-        fileToCopyInfo.setFile(fileToCopy);
+        //fileToCopy.setFileName(allFilesToCopy.at(i));
+        fileToCopyInfo.setFile(allFilesToCopy.at(i));
         tempDir.remove(fileToCopyInfo.fileName());
-        copyOk = fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
+        copyOk = QFile::copy(allFilesToCopy.at(i),tempDir.filePath(fileToCopyInfo.fileName()));
+         //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
+        infoSender.debug("Copying in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
         if(!copyOk)
-            infoSender.sendWarning("Unable to copy file in temp directory : "+fileToCopy.fileName()+" ("+fileToCopy.errorString()+")");
+            infoSender.sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
     }
 
 
@@ -275,9 +280,9 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
     bool readOk = readOutputVariables(outputVars,tempResFile);
     return readOk;
 }
-bool ModPlusOMCtrl::createInitFile()
+bool ModPlusOMCtrl::createInitFile(const QStringList & moDeps)
 {
-    return compile();
+    return compile(moDeps);
 }
 
 void ModPlusOMCtrl::setMmoFolder(QString mmoFolder)

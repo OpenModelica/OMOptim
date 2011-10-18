@@ -55,7 +55,7 @@ void Dymola::verifyInstallation()
 }
 
 
-bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath)
+bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath,const QStringList & moDeps)
 {
     // Create Dymola script
     QString filePath = storeFolder+QDir::separator()+"MOFirstRun.mos";
@@ -67,6 +67,9 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
     file.open(QIODevice::WriteOnly);
 
     QString scriptText;
+
+    for(int i=0;i<moDeps.size();i++)
+         scriptText.append("openModel(\""+moDeps.at(i)+"\")\n");
 
     for(int i=0;i<moPaths.size();i++)
         scriptText.append("openModel(\""+moPaths.at(i)+"\")\n");
@@ -120,7 +123,7 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
     }
 }
 
-bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString folder)
+bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString folder,const QStringList & moDeps)
 {
     // Create Dymola script
     QString filePath = folder+QDir::separator()+"MOFirstRun.mos";
@@ -132,6 +135,9 @@ bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString fold
     file.open(QIODevice::WriteOnly);
 
     QString scriptText;
+    for(int i=0;i<moDeps.size();i++)
+        scriptText.append("openModel(\""+moDeps.at(i)+"\")\n");
+
     for(int i=0;i<moPaths.size();i++)
         scriptText.append("openModel(\""+moPaths.at(i)+"\")\n");
 
@@ -619,6 +625,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         QString value;
         for(int iV=0;iV<variables->size();iV++)
         {
+            infoSender.debug("Setting variable "+ varName+" in "+fileName);
 
             curVar = variables->at(iV);
             varName = curVar->name(Modelica::FULL);
@@ -638,6 +645,8 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
             index = rxLine.indexIn(smallText);
             if(index>-1)
             {
+
+
                 char format = 'E';
 
                 value = QString::number(curVar->getFieldValue(Variable::VALUE).toDouble(),format,prec);
@@ -649,12 +658,16 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
                 // if variable def were on two lines
                 if((capLines.size()>1)&& capLines.at(1).contains(QRegExp("\\S")))
                 {
-                    allText = allText.replace(capLines.at(0)+"\n"+capLines.at(1),newLine1+"\n"+newLine2);
+                    infoSender.debug("found variable. 2 lines. Total text captured:  "+rxLine.cap(0));
+                    allText = allText.replace(rxLine.cap(0),newLine1+"\n"+newLine2);
+                    infoSender.debug("New Text :  "+newLine1+"\n"+newLine2);
                 }
                 else
                 {
+                    infoSender.debug("found variable. 1 line. Total text captured:  "+rxLine.cap(0));
                     // if variable def were on only one line
-                    allText = allText.replace(capLines.at(0),newLine1+"\t"+newLine2);
+                    allText = allText.replace(rxLine.cap(0),newLine1+"\t"+newLine2);
+                    infoSender.debug("New Text :  "+newLine1+"\t"+newLine2);
                 }
                 qDebug(newLine1.toLatin1().data());
                 qDebug(newLine2.toLatin1().data());
