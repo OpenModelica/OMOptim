@@ -306,6 +306,7 @@ void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & i
         connect(simAction,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlType()));
         simulator->addAction(simAction);
     }
+    menu->addSeparator()->setText("");
 
 
 

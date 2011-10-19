@@ -638,7 +638,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
             smallText.clear();
             while(index2>-1)
             {
-                smallText += allText.mid(index2-300,300+varName.size())+"\n";
+                smallText += allText.mid(index2-300,310+varName.size()); // must capture end of line chars -> 310>300
                 index2 = allText.indexOf(varName,index2+1);
             }
 
@@ -659,7 +659,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
                 if((capLines.size()>1)&& capLines.at(1).contains(QRegExp("\\S")))
                 {
                     infoSender.debug("found variable. 2 lines. Total text captured:  "+rxLine.cap(0));
-                    allText = allText.replace(rxLine.cap(0),newLine1+"\n"+newLine2);
+                    allText = allText.replace(rxLine.cap(0),newLine1+"\n"+newLine2+"\n");
                     infoSender.debug("New Text :  "+newLine1+"\n"+newLine2);
                 }
                 else
@@ -669,8 +669,6 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
                     allText = allText.replace(rxLine.cap(0),newLine1+"\t"+newLine2);
                     infoSender.debug("New Text :  "+newLine1+"\t"+newLine2);
                 }
-                qDebug(newLine1.toLatin1().data());
-                qDebug(newLine2.toLatin1().data());
             }
             else
             {
@@ -678,8 +676,6 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
             }
         }
 	
-
-
         fileinfo.setFile(fileName);
         file.setFileName(fileinfo.filePath());
         bool ok = file.open(QIODevice::WriteOnly);
