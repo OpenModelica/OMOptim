@@ -38,7 +38,6 @@
 */
 
 #include "DlgSelectFiles.h"
-#include "AlgoParameter.h"
 #include "MOTableView.h"
 
 #include <QtGui/QScrollBar>
@@ -49,8 +48,6 @@ DlgSelectFiles::DlgSelectFiles(QStringList &filesList,QString filter)
     _filesLocal = _files;
     _filter = filter;
     _widgetSelectFiles = new WidgetFilesList(_filesLocal,this,_filter);
-
-
 
     QGridLayout* allLayout = new QGridLayout(this);
     QGridLayout* listLayout = new QGridLayout(this);

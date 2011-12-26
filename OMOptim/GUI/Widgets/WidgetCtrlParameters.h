@@ -44,13 +44,12 @@
 #include <QtGui/QWidget>
 #include<QtGui/QFileDialog>
 
-//#include "ui_WidgetCtrlParameters.h"
-#include "MyDelegates.h"
+#include "Tools/MyDelegates.h"
 #include "ModPlusCtrls.h"
 #include "MOTableView.h"
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 #include "Project.h"
-#include "MOParametersDlg.h"
+#include "Dialogs/MOParametersDlg.h"
 
 class QErrorMessage;
 
@@ -67,7 +66,6 @@ public:
 
 
 public:
-   // Ui::WidgetCtrlParametersClass *_ui;
 
 
 public slots :

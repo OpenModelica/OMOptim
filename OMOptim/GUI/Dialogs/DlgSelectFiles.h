@@ -54,7 +54,7 @@
 
 #include "MOVector.h"
 #include "Variable.h"
-#include "WidgetFilesList.h"
+#include "Widgets/WidgetFilesList.h"
 
 class DlgSelectFiles : public QDialog
 {

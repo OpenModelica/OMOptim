@@ -53,7 +53,7 @@ Project::Project()
     //    _curLaunchedProblem = NULL;
     setCurModClass(NULL);
 
-    _moomc = new MOomc("OMOptim",this,true);
+    _moomc = new MOomc("OMOptim",true);
     _modReader = new ModReader(_moomc);
     _modClassTree = new ModClassTree(_modReader,_moomc);
 
@@ -283,6 +283,47 @@ void Project::refreshAllMod()
 
 /**
 * \brief
+* Load a OMOptim plugin
+* \param moFilePath full file path of .dll
+* \param storePath yes/no should path be stored in project file
+* (as to be reloaded when loading project)
+* \param forceLoad yes/no should mo file be reloaded in OMC when already loaded in OMC
+*/
+bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
+{
+
+    bool tryLoad;
+
+    tryLoad = (forceLoad || !_pluginsLoaded.values().contains(pluginPath));
+
+    if(!tryLoad)
+        return false;
+
+    // first try to load
+    QPluginLoader loader(pluginPath);
+    QObject *plugin = loader.instance();
+    ProblemInterface* pbInter = qobject_cast<ProblemInterface*>(plugin);
+
+    if(pbInter)
+    {
+        infoSender.sendNormal("Loaded plugin successfully : "+pbInter->name());
+        this->addProblemInterface(pbInter);
+    }
+    else
+    {
+        infoSender.sendError("Loaded plugin failed : "+pluginPath
+                              +"\n("+loader.errorString()+")");
+    }
+
+    bool loadOk = (pbInter!=NULL);
+
+    // add to stored list
+    if(loadOk && storePath)
+        _pluginsLoaded.insert(pbInter->name(),pluginPath);
+}
+
+/**
+* \brief
 * Return selected ModModel. Return NULL if no ModModel selected.
 */
 ModModel* Project::curModModel()
@@ -445,6 +486,7 @@ bool Project::load(QString loadPath)
     }
     return loaded;
 }
+
 
 QString Project::filePath()
 {
@@ -746,6 +788,11 @@ QStringList Project::moFiles()
 QStringList Project::mmoFiles()
 {
     return _mmoFiles;
+}
+
+QMap<QString,QString> Project::pluginsLoaded()
+{
+    return _pluginsLoaded;
 }
 
 void Project::onModClassSelectionChanged(QList<ModClass*> &classes)

@@ -42,6 +42,7 @@
 #include "ui_newprojectform.h"
 #include <QtGui/QErrorMessage>
 
+
 newProjectForm::newProjectForm(QWidget *parent) :
     QDialog(parent),
     m_ui(new Ui::newProjectFormClass)

@@ -38,7 +38,7 @@
   @version
 */
 
-#include "WidgetCtrlParameters.h"
+#include "Widgets/WidgetCtrlParameters.h"
 #include <QtGui/QErrorMessage>
 
 

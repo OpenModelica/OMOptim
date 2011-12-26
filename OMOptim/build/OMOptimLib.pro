@@ -126,7 +126,6 @@ HEADERS += ../config.h \
            ../Core/OptObjective.h \
            ../Core/ParetoDominance.h \
            ../Core/Project.h \
-           ../Core/Software.h \
            ../Core/Variable.h \
            ../Core/VariablesManip.h \
            ../GUI/MainWindow.h \

@@ -142,9 +142,6 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
     if(!initFileInfoXml.exists()&& !initFileInfoTxt.exists() && authorizeRecreate)
     {
         createInitFile();
-        // refresh files' information (otherwise, does not detect file creation)
-        initFileInfoXml.refresh();
-        initFileInfoTxt.refresh();
     }
 
     if(!initFileInfoXml.exists()&& !initFileInfoTxt.exists())

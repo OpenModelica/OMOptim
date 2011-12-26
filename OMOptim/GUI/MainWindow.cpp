@@ -429,20 +429,7 @@ void MainWindow::loadPlugins()
 
     foreach (QString fileName, filenames)
     {
-        QPluginLoader loader(fileName);
-        QObject *plugin = loader.instance();
-        // load plugin
-        ProblemInterface* pbInter = qobject_cast<ProblemInterface*>(plugin);
-        if(pbInter)
-        {
-            QMessageBox::information(this,"Load plugin","Loaded plugin successfully : "+pbInter->name());
-            _project->addProblemInterface(pbInter);
-        }
-        else
-        {
-            QMessageBox::critical(this,"Load plugin","Loaded plugin failed : "+fileName
-                                  +"\n("+loader.errorString()+")");
-        }
+        _project->loadPlugin(fileName,true,true);
     }
 
     if(filenames.size()>0)

@@ -348,6 +348,20 @@ void Save::saveProject(Project* project)
         root.appendChild(cMmoFiles);
     }
 
+    // plugins loaded
+    QStringList pluginsPaths = project->pluginsLoaded().values();
+    if(pluginsPaths.size()>0)
+    {
+        QDomElement cPlugins = doc.createElement("Plugins");
+        for(int i=0;i<pluginsPaths.size();i++)
+        {
+            QDomElement cPlugin = doc.createElement("Plugin");
+            cPlugin.setAttribute("path",pluginsPaths.at(i));
+            cPlugins.appendChild(cPlugin);
+        }
+        root.appendChild(cPlugins);
+    }
+
     // Project problems
     if(project->problems()->size()>0)
     {

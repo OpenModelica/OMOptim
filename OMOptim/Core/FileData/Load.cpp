@@ -125,6 +125,18 @@ bool Load::loadProject(QString filePath,Project* _project)
         modelMmoFilePaths.push_back(tmpPath);
     }
 
+    // Plugins
+    QStringList pluginsPaths;
+    QDomElement domPlugins = root.firstChildElement("Plugins");
+    QDomNodeList listPlugins = domPlugins.elementsByTagName("Plugin");
+    for(int i=0;i<listPlugins.size();i++)
+    {
+        tmpPath = listPlugins.at(i).toElement().attribute("path", "" );
+        QFileInfo pluginFileInfo(tmpPath);
+        tmpPath = pluginFileInfo.canonicalFilePath();
+        pluginsPaths.push_back(tmpPath);
+    }
+
     // Problems to load
     QStringList problemsPaths;
     QDomElement domOMCases = root.firstChildElement("Problems");
@@ -172,6 +184,18 @@ bool Load::loadProject(QString filePath,Project* _project)
             infoSender.send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
         else
             _project->loadModModelPlus(modelMmoFilePaths.at(i));
+    }
+
+    //**************************************
+    // Reading plugins
+    //**************************************
+    for(int i=0;i<pluginsPaths.size();i++)
+    {
+        QFileInfo fileinfo = QFileInfo(pluginsPaths.at(i));
+        if (!fileinfo.exists())
+            infoSender.sendError("Plugin file does not exist : "+modelMmoFilePaths.at(i));
+        else
+            _project->loadPlugin(pluginsPaths.at(i));
     }
 
     //**************************************
