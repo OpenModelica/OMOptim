@@ -135,11 +135,19 @@ void MOSettings::setFromDefaultValues()
     descs << QString(" Path of Cbc executable <A href=\"http://www.coin-or.org/download/binary/Cbc/\">(download here)</A>");
     defaultValues << QString();
     types.push_back(MOParameter::FILEPATH);
-
-
-
 #endif
 
+
+    //*******************************
+    // Cplx path
+    //*******************************
+#ifdef WIN32
+    names << QString("cplxExe");
+    groups << "Milp solvers";
+    descs << QString(" Path of Cplx executable");
+    defaultValues << QString();
+    types.push_back(MOParameter::FILEPATH);
+#endif
 
     //	//*******************************
     //	// Quit omc at end of program
