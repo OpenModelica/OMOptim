@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/MILP">
-        <file>MilpHEN.mod</file>
-        <file>MilpTarget.mod</file>
-    </qresource>
-</RCC>

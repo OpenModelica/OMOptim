@@ -66,7 +66,7 @@ public:
 	~Save(void);
 
 	
-	static void saveProblem(Problem*);
+        //static void saveProblem(Problem*);
 
         static void saveResult(Result*);
         static void saveStdResult(Result*);

@@ -49,7 +49,7 @@
 #include "OptimAlgoUtils.h"
 #include "Optimization.h"
 #include "MOTableView.h"
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 #include "Project.h"
 #include "MOParametersDlg.h"
 

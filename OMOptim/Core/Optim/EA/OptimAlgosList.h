@@ -52,13 +52,14 @@
 
 
 namespace OptimAlgosList{
-	static const int nbMyAlgos = 3;
+        static const int nbMyAlgos = 4;
 
         enum _list
 {
 	iSPEA2Adapt,
 	iNSGA2,
-	iSPEA2
+        iSPEA2,
+        iSA1
 };
 }
 #endif

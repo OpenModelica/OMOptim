@@ -30,6 +30,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "..\..\bin\OMOptim.exe"; DestDir: {code:GetOMDir}\bin; Flags: ignoreversion
 Source: "..\..\bin\glpk_4_47.dll"; DestDir: {code:GetOMDir}\bin; Flags: ignoreversion
+Source: "..\..\Core\CERES\CERESInfo.mo"; DestDir: {code:GetOMDir}; Flags: ignoreversion
 
 ;Source:  "OMOptim.ico"; DestDir: {code:GetOMDir}\bin;
 Source:  "..\..\..\..\..\Documentation\OMDoc\OMOptim\OMOptimUsersGuide.pdf"; DestDir: {code:GetOMDir}\share\doc\omoptim;

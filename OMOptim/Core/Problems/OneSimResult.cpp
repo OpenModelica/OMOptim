@@ -39,33 +39,54 @@
 
   */
 #include "OneSimResult.h"
-
+#include "OneSimulation.h"
 
 OneSimResult::OneSimResult(void)
 {
-    _inputVariables = new Variables();
-    _finalVariables = new MOOptVector(true,false); //can have several scans but not several points
+    _inputVariables = new Variables(true);
+    _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
 
     // files to copy
     _filesToCopy << "dsin.txt";
 }
 
-OneSimResult::OneSimResult(Project* project, ModModelPlus* model, OneSimulation* problem,ModClassTree* modClassTree)
-    :Result(project,modClassTree,(Problem*)problem)
+OneSimResult::OneSimResult(Project* project, ModModelPlus* modelPlus, const OneSimulation &problem)
+    :Result(project,(const Problem&)problem)
 {
-    _modModelPlus = model;
+    _modModelPlus = modelPlus;
 
-    _inputVariables = new Variables(model);
-    _finalVariables = new MOOptVector(true,false); //can have several scans but not several points
+    _inputVariables = new Variables(true,modelPlus);
+    _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
 
     // files to copy
     _filesToCopy << "dsin.txt";
+}
+
+OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok)
+:Result(project,(const Problem&)problem)
+{
+
+    _modModelPlus = problem.modModelPlus();
+
+    ok = (domResult.tagName()==OneSimResult::className());
+
+    //Infos
+    QDomElement domResInfos = domResult.firstChildElement("Infos");
+    this->setName(domResInfos.attribute("name", "" ));
+
+    // input variables
+    _inputVariables = new Variables(true,_modModelPlus);
+
+    //FinalVariables
+    _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
+    QDomElement domFinalVars = domResult.firstChildElement("FinalVariables");
+    this->finalVariables()->setItems(domFinalVars);
 }
 
 OneSimResult::~OneSimResult(void)
 {
-    delete _inputVariables;
-    delete _finalVariables;
+    _inputVariables->deleteLater();
+    _finalVariables->deleteLater();
 }
 
 QDomElement OneSimResult::toXmlData(QDomDocument & doc)
@@ -77,7 +98,7 @@ QDomElement OneSimResult::toXmlData(QDomDocument & doc)
     // Problem definition
     QDomElement cInfos = doc.createElement("Infos");
     cInfos.setAttribute("name", _name);
-    cInfos.setAttribute("type", problemType());
+ //   cInfos.setAttribute("type", problemType());
     cResult.appendChild(cInfos);
 
     // Final variables

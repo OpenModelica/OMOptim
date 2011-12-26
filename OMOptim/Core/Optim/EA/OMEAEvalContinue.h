@@ -43,6 +43,7 @@
 
 #include <eoContinue.h>
 #include <eoEvalFuncCounter.h>
+//#include "continuator/moContinuator.h"
 
 /** 
  * Continues until a number of evaluations has been made
@@ -86,5 +87,49 @@ private:
   unsigned long repTotalEvaluations;
   bool* stop;
 };
+
+///**
+// * Continues until a number of evaluations has been made
+//*/
+//template< class EOT>
+//class MyEAEvalContinueMo: public moContinuator<EOT>
+//{
+//public:
+//  /// Ctor
+//  MyEAEvalContinueMo( eoEvalFuncCounter<EOT> & _eval, unsigned long _totalEval,bool* _stop)
+//          : eval(_eval), repTotalEvaluations( _totalEval ) {
+//    std::cout << "Ctor de eoEvalFuncCounter avec total = " << repTotalEvaluations << std::endl;
+//        stop = _stop;
+//};
+
+//  /** Returns false when a certain number of evaluations has been done
+//   */
+//  virtual bool operator() ( const eoPop<EOT>& _vEO ) {
+//          if (eval.value() >= repTotalEvaluations)
+//          {
+//                  std::cout << "STOP in MyEAEvalContinue: Reached maximum number of evaluations [" << repTotalEvaluations << "]\n";
+//                  return false;
+//          }
+//          if ((*stop))
+//          {
+//                  std::cout << "STOP asked by user. Reached" << repTotalEvaluations << "evaluations \n";
+//                return false;
+//          }
+//          return true;
+//  }
+
+//  /** Returns the number of generations to reach*/
+//  virtual unsigned long totalEvaluations( )
+//  {
+//    return repTotalEvaluations;
+//  };
+
+//  virtual std::string className(void) const { return "MyEAEvalContinue"; }
+//private:
+//  eoEvalFuncCounter<EOT> & eval;
+//  unsigned long repTotalEvaluations;
+//  bool* stop;
+//};
+
 
 #endif

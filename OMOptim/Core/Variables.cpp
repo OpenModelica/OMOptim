@@ -2,7 +2,8 @@
 
 #include "ModModelPlus.h"
 
-Variables::Variables(ModModelPlus* modModelPlus)
+Variables::Variables(bool owner,ModModelPlus* modModelPlus)
+    :MOVector<Variable>(owner)
 {
     _modModelPlus = modModelPlus;
     _displayShort = true;
@@ -41,6 +42,9 @@ Variables* Variables::clone() const
         newItem = new Variable(*items.at(i));
         newVector->addItem(newItem);
     }
+
+    newVector->_owner = _owner; // indeed, should always be true
+
     return newVector;
 }
 
@@ -74,7 +78,8 @@ QMimeData* Variables::mimeData(const QModelIndexList &indexes) const
 
 
 
-OptVariables::OptVariables(ModModelPlus* modModelPlus)
+OptVariables::OptVariables(bool owner,ModModelPlus* modModelPlus)
+    :MOVector<OptVariable>(owner)
 {
     _modModelPlus = modModelPlus;
     _displayShort = true;
@@ -113,12 +118,16 @@ OptVariables* OptVariables::clone() const
         newItem = new OptVariable(*items.at(i));
         newVector->addItem(newItem);
     }
+
+    newVector->_owner = _owner; // indeed, should always be true
+
     return newVector;
 }
 
 
 
-ScannedVariables::ScannedVariables(ModModelPlus* modModelPlus)
+ScannedVariables::ScannedVariables(bool owner, ModModelPlus* modModelPlus)
+    : MOVector<ScannedVariable>(owner)
 {
     _modModelPlus = modModelPlus;
     _displayShort = true;
@@ -157,5 +166,8 @@ ScannedVariables* ScannedVariables::clone() const
         newItem = new ScannedVariable(*items.at(i));
         newVector->addItem(newItem);
     }
+
+    newVector->_owner = _owner; // indeed, should always be true
+
     return newVector;
 }

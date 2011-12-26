@@ -61,9 +61,9 @@
 #include "Optimization.h"
 //#include "VariableDet.h"
 #include "OptimResult.h"
-#include "EAStdResult.h"
+#include "Results/EAStdResult.h"
 
-#include "EOStd.h"
+#include "Chromosome/EOStd.h"
 
 #include "NSGA2Parameters.h"
 
@@ -83,7 +83,7 @@ public :
 	NSGA2(const NSGA2 &);
         EABase* clone() const;
 
-	QList<int> compatibleOMCases();
+        bool acceptMultiObjectives();
 
 	Result* launch(QString tempDir);
 	QString name();
@@ -100,14 +100,8 @@ private :
 
 Result* NSGA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
 {
-	Result* result;
-	switch(_problem->type())
-	{
-	case Problem::OPTIMIZATIONTYPE :
-		result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,
-                        _modClassTree,arch,_parameters);
-		break;
-	}
+        Result* result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,
+                                                                      _subBlocks,arch);
 	return result;
 }
 

@@ -65,6 +65,7 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
     QString loadError;
 
     // load modependencies
+
     _omc->loadFiles(moDeps);
 
     // if not already loaded, reload

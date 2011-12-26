@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+  @version
 
   */
 #if !defined(_MOVECTOR_H)
@@ -65,10 +65,10 @@ public:
 	QList<ItemClass*> items;
 
 
-	MOVector();
+    MOVector(bool owner);
 	MOVector(const MOVector &);
-	MOVector(QString savedData);
-	MOVector(QDomElement & domList);
+    MOVector(QString savedData,bool owner);
+    MOVector(QDomElement & domList,bool owner);
 
         virtual ~MOVector();
 
@@ -110,10 +110,12 @@ public:
         int size() const;
         ItemClass* at(int i) const;
 
-
 protected :
-        bool _deleteContentAfter; //should content be deleted with vector
-
+    /**
+        * is this vector the owner of the content.
+        * If yes, content will be deleted with vector
+        */
+    bool _owner;
 };
 
 
@@ -121,27 +123,32 @@ protected :
 
 
 template<class ItemClass>
-MOVector<ItemClass>::MOVector() : QAbstractTableModel()
+MOVector<ItemClass>::MOVector(bool owner) : QAbstractTableModel()
 {
-    _deleteContentAfter = true;
+    _owner = owner;
 }
 
 
 
 template<class ItemClass>
-MOVector<ItemClass>::MOVector(const MOVector & test_)
+MOVector<ItemClass>::MOVector(const MOVector & copied)
 {
 	int iv;
-	for(iv=0;iv<test_.items.size();iv++)
+    for(iv=0;iv<copied.items.size();iv++)
 	{
                 //addItem(new ItemClass(*test_.items.at(iv)));
-            addItem(test_.items.at(iv)->clone());
+        addItem(copied.items.at(iv)->clone());
 	}
+
+    _owner = copied._owner; // indeed, should be true every time !!!
+
 }
 
 template<class ItemClass>
-MOVector<ItemClass>::MOVector(QString savedData)
+MOVector<ItemClass>::MOVector(QString savedData, bool owner)
 {
+
+    _owner = owner;
 
 	QStringList lineList = savedData.split("\n");
 	QStringList fields;
@@ -160,9 +167,11 @@ MOVector<ItemClass>::MOVector(QString savedData)
 
 
 template<class ItemClass>
-MOVector<ItemClass>::MOVector(QDomElement & domList)
+MOVector<ItemClass>::MOVector(QDomElement & domList, bool owner)
 {
+    _owner = owner;
 	setItems(domList);
+    connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
 
@@ -170,7 +179,7 @@ MOVector<ItemClass>::MOVector(QDomElement & domList)
 template<class ItemClass>
 MOVector<ItemClass>::~MOVector() 
 {
-    if(_deleteContentAfter)
+    if(_owner)
 	//delete contents
 	clear();
 }
@@ -308,7 +317,7 @@ QVariant MOVector<ItemClass>::data(const QModelIndex &index, int role) const
 
 	ItemClass* curItem;
 	if(index.row()<items.size() && index.column()<ItemClass::nbFields)
-	{		
+    {
 		curItem = items.at(index.row());
 	}
 	else
@@ -353,14 +362,14 @@ void MOVector<ItemClass>::addItem(ItemClass* item_)
 	insertRow(index);//,createIndex(0,0));
 	beginInsertRows(QModelIndex(),index,index);
 	items.push_back(item_);
-	endInsertRows();	
+    endInsertRows();
 }
 
 template<class ItemClass>
 bool MOVector<ItemClass>::removeRow(int index,const QModelIndex &parent)
 {
     return removeRows(index,1,parent);
-	}
+}
 
 
 /**
@@ -376,6 +385,7 @@ bool MOVector<ItemClass>::removeRows(int index, int count, const QModelIndex &pa
         beginRemoveRows(QModelIndex(),index,index+count-1);
 		for(int i=0;i<count;i++)
 		{
+            if(_owner)
 			delete items.at(index);
 			items.erase(items.begin()+index);
 		}
@@ -387,7 +397,6 @@ bool MOVector<ItemClass>::removeRows(int index, int count, const QModelIndex &pa
 		return false;
 	}
 }
-
 
 
 template<class ItemClass>
@@ -403,7 +412,7 @@ bool MOVector<ItemClass>::removeRows(QList<int> indexes)
 		removeRow(indexes.at(i));
 	}
 	return true;
-}
+    }
     return false;
 }
 
@@ -534,7 +543,7 @@ void MOVector<ItemClass>::cloneFromOtherVector(const MOVector *vector_)
 template<class ItemClass>
 MOVector<ItemClass>* MOVector<ItemClass>::clone() const
 {
-	MOVector<ItemClass>* newVector = new MOVector<ItemClass>();
+    MOVector<ItemClass>* newVector = new MOVector<ItemClass>(_owner);
 
 	int i;
 	ItemClass* newItem;

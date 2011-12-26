@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "WidgetProjectInfos.h"
+#include "Widgets/WidgetProjectInfos.h"
 
 
 
@@ -55,6 +55,7 @@ WidgetProjectInfos::WidgetProjectInfos(Project *project_,QList<QAction*> recentP
 	project = project_;
     connect(ui->pushNewProject, SIGNAL(clicked()), this, SIGNAL(newProject()));
     connect(ui->pushLoadProject, SIGNAL(clicked()), this, SIGNAL(loadProject()));
+    connect(ui->pushLoadPlugin,SIGNAL(clicked()),this,SIGNAL(loadPlugin()));
 
 //    ui->layoutRecents->setAlignment(Qt::AlignLeft);
 //    for(int i=0;i<recentProjActions.size();i++)

@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OMCase.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+  @file OMCase.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #if !defined(_OMCASE_H)
@@ -68,60 +68,60 @@ class OMCase: public MOItem
 
 protected :
 
-	// General information
-	Project* _project;
-ModClassTree* _modClassTree;
+    // General information
+    Project* _project;
+    ModClassTree* _modClassTree;
 
-// Files informations
-QString _saveFolder;
-QString _saveFileName;
-QStringList _neededFiles; /** Needed files for simulation */
+    // Files informations
+    QString _saveFolder;
+    QString _saveFileName;
+    QStringList _neededFiles; /** Needed files for simulation */
 
 
 public:
-QStringList _filesToCopy; /** Files to copy in temp directory of in save directory */
-QStringList _foldersToCopy; /** Files to copy in temp directory of in save directory */
+    QStringList _filesToCopy; /** Files to copy in temp directory of in save directory */
+    QStringList _foldersToCopy; /** Files to copy in temp directory of in save directory */
 
 
-// CTOR
-OMCase();
-OMCase(Project*,ModClassTree*);
-OMCase(const OMCase & s);
-virtual ~OMCase(void);
+    // CTOR
+    OMCase();
+    OMCase(Project*);
+    OMCase(const OMCase & s);
+    virtual ~OMCase(void);
 
-// Managment functions
-/**
-	* Description Save problem information in XML form.
-	*/
-virtual QDomElement toXmlData(QDomDocument & doc) = 0;
-virtual void store(QString destFolder, QString tempDir);
-virtual void rename(QString name,bool changeFolder);
+    // Managment functions
+    /**
+ * Description Save problem information in XML form.
+ */
+    virtual QDomElement toXmlData(QDomDocument & doc) = 0;
+    virtual void store(QString destFolder, QString tempDir);
+    virtual void rename(QString name,bool changeFolder);
 
-// Get functions
-QString saveFolder();
-QString saveFileName();
-QString entireSavePath();
-QStringList filesToCopy(){return _filesToCopy;};
-Project* project(){return _project;};
-ModClassTree* modClassTree(){return _modClassTree;};
+    // Get functions
+    QString saveFolder();
+    QString saveFileName();
+    QString entireSavePath();
+    QStringList filesToCopy(){return _filesToCopy;};
+    Project* project(){return _project;};
+    ModClassTree* modClassTree(){return _modClassTree;};
 
 
-// Set functions
-void setName(QString);
-void setSaveFolder(QString);
-virtual void setDefaultSaveFileName() = 0;
-void setEntireSavePath(QString);
-void setProject(Project*);
+    // Set functions
+    void setName(QString);
+    void setSaveFolder(QString);
+    virtual void setDefaultSaveFileName() = 0;
+    void setEntireSavePath(QString);
+    void setProject(Project*);
 
 public slots:
-/**
-* Open in an explorer the folder where OMCase is stored
-*/
-void openFolder();
+    /**
+    * Open in an explorer the folder where OMCase is stored
+    */
+    void openFolder();
 
 
 signals:
-void renamed(QString);
+    void renamed(QString);
 };
 
 

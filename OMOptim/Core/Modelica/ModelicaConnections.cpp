@@ -42,6 +42,7 @@
 #include "ModClass.h"
 
 ModelicaConnections::ModelicaConnections(ModClassTree* modClassTree)
+    :MOVector<ModelicaConnection>(true)
 {
     _modClassTree = modClassTree;
 }

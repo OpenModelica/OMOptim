@@ -42,30 +42,24 @@
 
 #include "Project.h"
 
-ModPlusCtrl::ModPlusCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName)
+ModPlusCtrl::ModPlusCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc)
 {
     _project = project;
 	_modModelPlus = modModelPlus;
-	_mmoFolder = mmoFolder;
-	_moFilePath = moFilePath;
-	_modModelName = modModelName;
 	_moomc = moomc;
+
+    // _parameters are not created here; it will be in inheriting classes
+
 }
 
 ModPlusCtrl::~ModPlusCtrl(void)
 {
 }
 
-void ModPlusCtrl::setMmoFolder(QString mmoFolder)
-{
-	_mmoFolder = mmoFolder;
-}
-void ModPlusCtrl::setMoFilePath(QString moFilePath)
-{
-	_moFilePath = moFilePath;
-}
 
 MOParameters* ModPlusCtrl::parameters()
 {
 	return _parameters;
 }
+
+

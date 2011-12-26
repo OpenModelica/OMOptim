@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,51 +35,51 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+  @version
 
   */
 #include "BlockSubstitution.h"
+#include "Project.h"
 
-BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model,ModClassTree* _modClassTree, QString _orgComponent, QString _subComponent,
-									 QStringList _orgPorts,QList<QStringList> _orgConnectedComps,
-									 QStringList _subPorts,QList<QStringList> _subConnectedComps)
+BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, QString orgComponent, QString subComponent,
+                                     QStringList orgPorts,QList<QStringList> orgConnectedComps,
+                                     QStringList subPorts,QList<QStringList> subConnectedComps)
 {
-	project = _project;
-	model = _model;
-        modClassTree = _modClassTree;
-	orgComponent = _orgComponent;
-	subComponent = _subComponent;
-	orgPorts = _orgPorts;
-	orgConnectedComps = _orgConnectedComps;
-	subPorts = _subPorts;
-	subConnectedComps = _subConnectedComps;
+    _project = project;
+    _model = model;
+    _orgComponent = orgComponent;
+    _subComponent = subComponent;
+    _orgPorts = orgPorts;
+    _orgConnectedComps = orgConnectedComps;
+    _subPorts = subPorts;
+    _subConnectedComps = subConnectedComps;
 }
 
 
 
-BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, ModelicaConnections* _connections, QString _orgComponent,QString _subComponent,ModClassTree* _modClassTree,bool doAutoConnect, bool &ok)
+BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, ModelicaConnections* connections, QString orgComponent,QString subComponent,bool doAutoConnect, bool &ok)
 {
 
-        ok = init(_project,_model,_connections,_orgComponent,_subComponent,_modClassTree);
+    ok = init(project,model,connections,orgComponent,subComponent);
 
 	if(doAutoConnect)
 		autoConnect();
 }
 
-BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, ModelicaConnections* _connections,QDomElement _domEl,ModClassTree* _modClassTree)
+BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, ModelicaConnections* connections,QDomElement domEl)
 {
 
-	if( _domEl.tagName() != "BlockSubstitution" )
+    if( domEl.tagName() != "BlockSubstitution" )
 	{
 		//sendInfo( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
 		return;
 	}
 
 	// get component names
-	QString _orgComponent;
-	QString _subComponent;
+    QString orgComponent;
+    QString subComponent;
 
-	QDomNode n1 = _domEl.firstChild();
+    QDomNode n1 = domEl.firstChild();
 	while( !n1.isNull() )
 	{
 		QDomElement e1 = n1.toElement();
@@ -87,22 +87,22 @@ BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, Mod
 		{
 			if( e1.tagName() == "ReplacedComponent" )
 			{
-				_orgComponent = e1.attribute("name", "" );
+                orgComponent = e1.attribute("name", "" );
 			}
 
 			if( e1.tagName() == "ReplacingComponent" )
 			{
-				_subComponent = e1.attribute("class", "" );
+                subComponent = e1.attribute("class", "" );
 			}
 		}
 		n1 = n1.nextSibling();
 	}
 
 	//build first version
-        bool ok = init(_project,_model,_connections,_orgComponent,_subComponent, _modClassTree);
+    bool ok = init(project,model,connections,orgComponent,subComponent);
 
 	// getting replacing connections
-	n1 = _domEl.firstChild();
+    n1 = domEl.firstChild();
 	while( !n1.isNull() )
 	{
 		QDomElement e1 = n1.toElement();
@@ -114,18 +114,18 @@ BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, Mod
 				QDomElement e2 = n2.toElement();
 				if( e2.tagName() == "Connection" )
 				{
-					QString  _from = e2.attribute("from", "" );
-					QString  _to = e2.attribute("to", "" );
+                    QString  from = e2.attribute("from", "" );
+                    QString  to = e2.attribute("to", "" );
 
-					QString _subPort = subComponent+"." + _from;
-					
+                    QString subPort = subComponent+"." + from;
+
 					//looking from corresponding port
-					int indexPort = subPorts.indexOf(_subPort);
+                    int indexPort = _subPorts.indexOf(subPort);
 					if(indexPort>-1)
 					{
-						QStringList curList = subConnectedComps.at(indexPort);
-						curList.append(_to);
-						subConnectedComps.replace(indexPort,curList);
+                        QStringList curList = _subConnectedComps.at(indexPort);
+                        curList.append(to);
+                        _subConnectedComps.replace(indexPort,curList);
 					}
 				}
 				n2 = n2.nextSibling();
@@ -136,60 +136,57 @@ BlockSubstitution::BlockSubstitution(Project* _project,ModModelPlus* _model, Mod
 }
 
 
-bool BlockSubstitution::init(Project * _project, ModModelPlus *_model, ModelicaConnections* _connections,QString _orgComponent, QString _subComponent, ModClassTree *_modClassTree)
+bool BlockSubstitution::init(Project * project, ModModelPlus *model, ModelicaConnections* connections,QString orgComponent, QString subComponent)
 {
-	project = _project;
-	model = _model;
-        modClassTree = _modClassTree;
+    _project = project;
+    _model = model;
+    _orgComponent = orgComponent;
+    _subComponent = subComponent;
 
 
-	orgComponent = _orgComponent;
-	subComponent = _subComponent;
-
-
-        ModClass* _orgElement = _modClassTree->findInDescendants(orgComponent);
-	if(_orgElement==NULL)
+    ModClass* orgElement = project->modClassTree()->findInDescendants(_orgComponent);
+    if(orgElement==NULL)
 	{
-                infoSender.debug(orgComponent + " not found.");
+        infoSender.debug(_orgComponent + " not found.");
 		return false;
 	}
-	_connections->getOutside(_orgElement,true,orgPorts,orgConnectedComps);
+    connections->getOutside(orgElement,true,_orgPorts,_orgConnectedComps);
 
 	if(!subComponent.isEmpty())
 	{
 		// reading subcomponent ports
-		ModClass* _subElement;
-		QString _libraryName = subComponent.section(".",0,0);
-		
-                        _subElement =  _modClassTree->findInDescendants(subComponent);
-			if(_subElement)
+        ModClass* subElement;
+        QString libraryName = _subComponent.section(".",0,0);
+
+        subElement =  project->modClassTree()->findInDescendants(_subComponent);
+        if(subElement)
 			{
-                                subPorts = modClassTree->getPorts(_subElement,Modelica::FULL);
-				for(int i=0;i<subPorts.size();i++)
+            _subPorts = _project->modClassTree()->getPorts(subElement,Modelica::FULL);
+            for(int i=0;i<_subPorts.size();i++)
 				{
-					subConnectedComps.push_back(QStringList());
+                _subConnectedComps.push_back(QStringList());
 				}
 			}
 	}
 	return true;
 }
 
-void BlockSubstitution::setSubComponent(QString _subComponent,bool doAutoConnect)
+void BlockSubstitution::setSubComponent(QString subComponent,bool doAutoConnect)
 {
-	subComponent = _subComponent;
-	subPorts.clear();
-	subConnectedComps.clear();
+    _subComponent = subComponent;
+    _subPorts.clear();
+    _subConnectedComps.clear();
 
 	// reading subcomponent ports
-	ModClass* _subElement;
-        _subElement = modClassTree->findInDescendants(subComponent);
-	
-	if(_subElement)
+    ModClass* subElement;
+    subElement = _project->modClassTree()->findInDescendants(_subComponent);
+
+    if(subElement)
 	{
-                subPorts = modClassTree->getPorts(_subElement,Modelica::FULL);
-		for(int i=0;i<subPorts.size();i++)
+        _subPorts = _project->modClassTree()->getPorts(subElement,Modelica::FULL);
+        for(int i=0;i<_subPorts.size();i++)
 		{
-			subConnectedComps.push_back(QStringList());
+            _subConnectedComps.push_back(QStringList());
 		}
 	}
 }
@@ -201,34 +198,34 @@ BlockSubstitution::~BlockSubstitution(void)
 BlockSubstitution* BlockSubstitution::clone() const
 {
 	BlockSubstitution* newBSub = new BlockSubstitution(
-                project,model,modClassTree,orgComponent, subComponent,
-									 orgPorts,orgConnectedComps,
-									 subPorts,subConnectedComps);
+                _project,_model,_orgComponent, _subComponent,
+                _orgPorts,_orgConnectedComps,
+                _subPorts,_subConnectedComps);
 	return newBSub;
 }
 
-void BlockSubstitution::copyFrom(BlockSubstitution *_org)
+void BlockSubstitution::copyFrom(BlockSubstitution *org)
 {
-	project = _org->project;
-	model = _org->model;
-	orgComponent = _org->orgComponent;
-	subComponent = _org->subComponent;
-	orgPorts= _org->orgPorts;
-	orgConnectedComps = _org->orgConnectedComps;
-	subPorts = _org->subPorts;
-	subConnectedComps = _org->subConnectedComps;
+    _project = org->_project;
+    _model = org->_model;
+    _orgComponent = org->_orgComponent;
+    _subComponent = org->_subComponent;
+    _orgPorts= org->_orgPorts;
+    _orgConnectedComps = org->_orgConnectedComps;
+    _subPorts = org->_subPorts;
+    _subConnectedComps = org->_subConnectedComps;
 }
 
 void BlockSubstitution::autoConnect()
 {
-	for(int iPort=0;iPort<subPorts.size();iPort++)
+    for(int iPort=0;iPort<_subPorts.size();iPort++)
 	{
-		QString _portName = subPorts.at(iPort);
-		
-		int index = orgPorts.indexOf(QRegExp(".*"+_portName.section(".",-1,-1)));
-		
+        QString portName = _subPorts.at(iPort);
+
+        int index = _orgPorts.indexOf(QRegExp(".*"+portName.section(".",-1,-1)));
+
 		if(index>-1)
-			subConnectedComps.replace(iPort,orgConnectedComps.at(index));
+            _subConnectedComps.replace(iPort,_orgConnectedComps.at(index));
 	}
 }
 
@@ -241,26 +238,26 @@ QDomElement BlockSubstitution::toXmlData(QDomDocument & doc)
 
 	// Replaced component
 	QDomElement cReplaced = doc.createElement("ReplacedComponent");
-	cReplaced.setAttribute("name", orgComponent);
+    cReplaced.setAttribute("name", _orgComponent);
 	cBlock.appendChild(cReplaced);
 
 	// Replacing component
 	QDomElement cReplacing = doc.createElement("ReplacingComponent");
-	cReplacing.setAttribute("class", subComponent);
-	
+    cReplacing.setAttribute("class", _subComponent);
+
 	// Org connections
-	for(int i=0; i < subPorts.size(); i++)
+    for(int i=0; i < _subPorts.size(); i++)
 	{
-		for(int j=0;j<subConnectedComps.at(i).size();j++)
+        for(int j=0;j<_subConnectedComps.at(i).size();j++)
 		{
 			QDomElement cConnect = doc.createElement("Connection");
-			cConnect.setAttribute("from", subPorts.at(i).section(".",-1,-1));
-			cConnect.setAttribute("to", subConnectedComps.at(i).at(j));
+            cConnect.setAttribute("from", _subPorts.at(i).section(".",-1,-1));
+            cConnect.setAttribute("to", _subConnectedComps.at(i).at(j));
 			cReplacing.appendChild(cConnect);
 		}
 	}
 	cBlock.appendChild(cReplacing);
-	
+
 
 	return cBlock;
 }

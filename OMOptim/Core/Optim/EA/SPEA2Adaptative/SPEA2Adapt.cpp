@@ -133,11 +133,9 @@ void SPEA2Adapt::setDefaultParameters()
     SPEA2AdaptParameters::setDefaultParameters(_parameters);
 }
 
-QList<int> SPEA2Adapt::compatibleOMCases()
+bool SPEA2Adapt::acceptMultiObjectives()
 {
-	QList<int> problems;
-	problems.push_back(Problem::OPTIMIZATIONTYPE);
-	return problems;
+    return true;
 }
 
 
@@ -161,12 +159,9 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	std::vector<eoIntInterval> intBounds;
 	int nbDouble=0,nbInt=0,nbBool=0;
 	
-	switch(_problem->type())
-	{
-	case Problem::OPTIMIZATIONTYPE :
+
 		EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
-		break;
-	}
+
 
 	/************************************
 	PROGRESS AND CONTINUATOR
@@ -186,13 +181,9 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	FITNESS EVALUATION
 	************************************/
 	moeoEvalFunc < EOAdapt > *plainEval;
-	switch(_problem->type())
-	{
-	case Problem::OPTIMIZATIONTYPE :
 		plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
                         _modClassTree);
-		break;
-	}
+
 	OMEAEvalFuncCounter<EOAdapt>* eval = new OMEAEvalFuncCounter<EOAdapt> (* plainEval,&OMEAProgress,nTotalEvals);
 
 

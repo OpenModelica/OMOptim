@@ -14,7 +14,7 @@
    <string>OMOptim</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="Resources/OMOptim.qrc">
+   <iconset>
     <normaloff>:/icons/Sync</normaloff>:/icons/Sync</iconset>
   </property>
   <property name="styleSheet">
@@ -192,20 +192,6 @@
     <addaction name="actionClearRecent"/>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menuProblem">
-    <property name="title">
-     <string>Problem</string>
-    </property>
-    <widget class="QMenu" name="menuAddProblem">
-     <property name="title">
-      <string>Add problem</string>
-     </property>
-     <addaction name="actionNewOneSimulation"/>
-     <addaction name="actionNewOptimization"/>
-     <addaction name="actionNewProblemEI"/>
-    </widget>
-    <addaction name="menuAddProblem"/>
-   </widget>
    <widget class="QMenu" name="menuDisplay">
     <property name="title">
      <string>Display</string>
@@ -241,11 +227,23 @@
     <addaction name="actionAboutQt"/>
     <addaction name="actionHelp"/>
    </widget>
+   <widget class="QMenu" name="menuPlugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+    <addaction name="actionLoadPlugins"/>
+   </widget>
+   <widget class="QMenu" name="menuProblems">
+    <property name="title">
+     <string>Problems</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuModels"/>
-   <addaction name="menuProblem"/>
+   <addaction name="menuProblems"/>
    <addaction name="menuTools"/>
    <addaction name="menuDisplay"/>
+   <addaction name="menuPlugins"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -316,7 +314,7 @@ color:white;
        </property>
        <property name="icon">
         <iconset resource="Resources/OMOptim.qrc">
-         <normaloff>:/icons/Folder</normaloff>:/icons/Folder</iconset>
+         <normaloff>:/Folder</normaloff>:/Folder</iconset>
        </property>
       </widget>
      </item>
@@ -546,6 +544,11 @@ color:white;
   <action name="actionStartOmc">
    <property name="text">
     <string>Start omc</string>
+   </property>
+  </action>
+  <action name="actionLoadPlugins">
+   <property name="text">
+    <string>Load plugins ...</string>
    </property>
   </action>
  </widget>

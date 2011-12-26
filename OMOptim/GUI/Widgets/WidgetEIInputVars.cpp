@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,20 +35,20 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+  @version
 */
 
-#include "WidgetEIInputVars.h"
+#include "Widgets/WidgetEIInputVars.h"
 #include <QtGui/QSortFilterProxyModel>
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 
 namespace Ui
 {
-	class WidgetEIInputVarsClass;
+class WidgetEIInputVarsClass;
 }
 
 WidgetEIInputVars::WidgetEIInputVars(Project *project_,MOOptVector *_inputVars,EIItem* _rootEI, QWidget *parent)
-: QWidget(parent),
+    : QWidget(parent),
  ui(new Ui::WidgetEIInputVarsClass)
 {
 
@@ -58,9 +58,9 @@ WidgetEIInputVars::WidgetEIInputVars(Project *project_,MOOptVector *_inputVars,E
 	project = project_;
 	inputVars = _inputVars;
     rootEI= _rootEI;
-		
+
 	loadedVarsProxyModel = GuiTools::ModelToViewWithFilter(inputVars,ui->tableLoadedVariables,ui->lineVariableFilter);
-	
+
 	// Hide columns
 	QList<int> varsColsToHide;
 	//varsColsToHide << VariableResult::MIN<< VariableResult::MAX<< VariableResult::TYPE<< Variable::CATEGORY<< VariableResult::DATATYPE<<VariableResult::VALUE;
@@ -85,30 +85,30 @@ WidgetEIInputVars::~WidgetEIInputVars()
 
 void WidgetEIInputVars::fillList()
 {
-	Result *curResult;
-	QListWidgetItem* item;
-	ui->listAvailableVectors->clear();
+//    Result *curResult;
+//    QListWidgetItem* item;
+//    ui->listAvailableVectors->clear();
 
-    for(int i=0;i<project->results()->size();i++)
-	{
-        curResult = project->results()->at(i);
+//    for(int i=0;i<project->results()->size();i++)
+//    {
+//        curResult = project->results()->at(i);
 
-        switch(curResult->problemType())
-		{
-		case Problem::OPTIMIZATIONTYPE :
-            item = new QListWidgetItem(curResult->name());
-				map.insert(item,dynamic_cast<OptimResult*>(curResult)->recomputedVariables());
-				ui->listAvailableVectors->addItem(item);
-				break;
-		case Problem::ONESIMULATIONTYPE :
-            item = new QListWidgetItem(curResult->name());
-				map.insert(item,dynamic_cast<OneSimResult*>(curResult)->finalVariables());
-				ui->listAvailableVectors->addItem(item);
-				break;
-		default :
-			break;
-		}
-	}
+//        switch(curResult->problemType())
+//        {
+//        case Problem::OPTIMIZATIONTYPE :
+//            item = new QListWidgetItem(curResult->name());
+//            map.insert(item,dynamic_cast<OptimResult*>(curResult)->recomputedVariables());
+//            ui->listAvailableVectors->addItem(item);
+//            break;
+//        case Problem::ONESIMULATIONTYPE :
+//            item = new QListWidgetItem(curResult->name());
+//            map.insert(item,dynamic_cast<OneSimResult*>(curResult)->finalVariables());
+//            ui->listAvailableVectors->addItem(item);
+//            break;
+//        default :
+//            break;
+//        }
+//    }
 }
 
 void WidgetEIInputVars::appendInputVars()
@@ -167,33 +167,33 @@ void WidgetEIInputVars::dispReferences()
 
 void WidgetEIInputVars::dispMissingReferences()
 {
-    ui->listReferences->clear();
-    ui->listReferencesModel->clear();
-    QMap<EIItem*,QStringList> mapRefs = EIValueFiller::getMissingReferences(rootEI,inputVars,true,project);
+    //    ui->listReferences->clear();
+    //    ui->listReferencesModel->clear();
+    //    QMap<EIItem*,QStringList> mapRefs = EIValueFiller::getMissingReferences(rootEI,inputVars,true,project);
 
-    QStringList curItemRefs;
+    //    QStringList curItemRefs;
 
-    QStringList refs;
+    //    QStringList refs;
 
 
-    EIItem* curItem;
-    for(int iK=0;iK<mapRefs.keys().size();iK++)
-    {
-        curItem = mapRefs.keys().at(iK);
-        curItemRefs = mapRefs.value(curItem);
-        for(int iR=0;iR<curItemRefs.size();iR++)
-            refs.push_back(curItemRefs.at(iR));
+    //    EIItem* curItem;
+    //    for(int iK=0;iK<mapRefs.keys().size();iK++)
+    //    {
+    //        curItem = mapRefs.keys().at(iK);
+    //        curItemRefs = mapRefs.value(curItem);
+    //        for(int iR=0;iR<curItemRefs.size();iR++)
+    //            refs.push_back(curItemRefs.at(iR));
 
-    }
-    ui->listReferences->addItems(refs);
-    QStringList corrModelsNames;
+    //    }
+    //    ui->listReferences->addItems(refs);
+    //    QStringList corrModelsNames;
 
-    ModModel* corrModel;
-    for(int i=0;i<refs.size();i++)
-    {
-        corrModel = project->modClassTree()->modelOf(refs.at(i));
-        if(corrModel)
-            corrModelsNames.push_back(corrModel->name());
-    }
-    ui->listReferencesModel->addItems(corrModelsNames);
+    //    ModModel* corrModel;
+    //    for(int i=0;i<refs.size();i++)
+    //    {
+    //        corrModel = project->modClassTree()->modelOf(refs.at(i));
+    //        if(corrModel)
+    //            corrModelsNames.push_back(corrModel->name());
+    //    }
+    //    ui->listReferencesModel->addItems(corrModelsNames);
 }

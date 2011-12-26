@@ -57,15 +57,15 @@
 
 class OneSimulation;
 
-class OneSimResult :
-	public Result
+class OneSimResult : public Result
 {
 	Q_OBJECT
 
 public:
 	OneSimResult(void);
-        OneSimResult(Project* _project, ModModelPlus* _modModelPlus, OneSimulation* _problem,ModClassTree*);
-	~OneSimResult(void);
+        OneSimResult(Project* project, ModModelPlus* modModelPlus, const OneSimulation & problem);
+        OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok);
+        virtual ~OneSimResult(void);
 
         static QString className(){return "OneSimResult";};
         virtual QString getClassName(){return OneSimResult::className();};
@@ -77,8 +77,6 @@ public:
 	// Methods
 	//******************
 	QDomElement toXmlData(QDomDocument &);
-	int problemType(){return Problem::ONESIMULATIONTYPE;};
-
 
 protected :
 	//******************

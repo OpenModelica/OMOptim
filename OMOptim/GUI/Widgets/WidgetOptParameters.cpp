@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "WidgetOptParameters.h"
+#include "Widgets/WidgetOptParameters.h"
 #include "ui_WidgetOptParameters.h"
 #include <QtGui/QErrorMessage>
 

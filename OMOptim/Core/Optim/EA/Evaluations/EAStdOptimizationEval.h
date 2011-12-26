@@ -133,9 +133,12 @@ public:
 			/************************************
 			Creating a new OneSimulation
 			************************************/
-            OneSimulation *oneSim = new OneSimulation(_project,_project->modClassTree(),model);
+            OneSimulation *oneSim = new OneSimulation(_project,model);
             oneSim->_filesToCopy = _problem->_filesToCopy;
 			
+            // copy controls
+            oneSim->setCtrls(*_problem->ctrls());
+
 			//Reading chromosome and placing it in overwritedvariables
             int nbVar = _problem->optimizedVariables()->items.size();
 			Variable* curVar;

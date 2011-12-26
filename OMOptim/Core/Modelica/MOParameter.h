@@ -173,7 +173,9 @@ private :
 
 class MOParameters : public MOVector<MOParameter>
 {
+    Q_OBJECT
 public :
+        MOParameters();
         QVariant value(int index,QVariant defaultValue = QVariant());
         QVariant value(QString name,QVariant defaultValue = QVariant());
         bool setValue(int index,QVariant value);
@@ -182,6 +184,10 @@ public :
         void addEnablingIndex(QList<int> enabledIndexes,int enablingIndex, QVariant enablingValue);
         bool shouldBeEnabled(int index);
         MOParameters* clone() const;
+
+signals :
+        void modified();
+
 };
 
 

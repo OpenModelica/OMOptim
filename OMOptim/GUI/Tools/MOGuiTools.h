@@ -40,7 +40,7 @@
 #ifndef MOGUITOOLS_H
 #define MOGUITOOLS_H
 
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 #include "MainWindow.h"
 
 

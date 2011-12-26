@@ -60,7 +60,7 @@
 #include <math.h>
 
 #include "SleeperThread.h"
-
+#include "InfoSender.h"
 
 
 class LowTools
@@ -75,6 +75,7 @@ public:
 	static bool removeDir(QString);
 	static void copyDir(QString,QString);
 
+        static QStringList getDuplicates(const QStringList & list);
 	static void removeDuplicates(QStringList & list);
 	static void removeDuplicates(QVector<double> & vector);
 	static void removeWhiteSpaceStrings(QStringList &list);

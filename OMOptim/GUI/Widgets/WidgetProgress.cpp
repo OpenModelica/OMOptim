@@ -38,7 +38,7 @@
   @version
 */
 
-#include "WidgetProgress.h"
+#include "Widgets/WidgetProgress.h"
 #include "ui_WidgetProgress.h"
 #include <QtGui/QErrorMessage>
 
@@ -177,17 +177,16 @@ void WidgetProgress::setCurProblem(Problem* problem)
 {
     _problem = problem;
 
-    if(!problem || !problem->canBeStoped())
+    if(!_problem || !_problem->canBeStoped())
         ui->pushStop->hide();
     else
         ui->pushStop->show();
 
-    Optimization* optim = dynamic_cast<Optimization*>(problem);
-
-    if(problem->type()==Problem::OPTIMIZATIONTYPE)
-        ui->pushQuickEnd->show();
-    else
+    if(!_problem || !_problem->hasQuickEndOption())
         ui->pushQuickEnd->hide();
+    else
+        ui->pushQuickEnd->show();
+
 }
 
 

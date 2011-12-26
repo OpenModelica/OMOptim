@@ -38,10 +38,10 @@
         @version
 */
 
-#include "WidgetMooPointsList.h"
+#include "Widgets/WidgetMooPointsList.h"
 #include "ui_WidgetMooPointsList.h"
 #include <QtGui/QErrorMessage>
-
+#include "MOParametersDlg.h"
 
 
         WidgetMooPointsList::WidgetMooPointsList(OptimResult* result,QWidget *parent) :
@@ -81,6 +81,12 @@
     //Shown points
     setOnlyPareto(_ui->pushPareto->isChecked());
     connect(_ui->pushPareto,SIGNAL(toggled(bool)),this,SLOT(setOnlyPareto(bool)));
+
+    connect(_ui->pushCalcSelected,SIGNAL(clicked()),
+            this,SLOT(recomputeSelectedPoints()));
+
+    connect(_ui->pushExport,SIGNAL(clicked()),
+            this,SLOT(exportSelectedPoints()));
 }
 
 WidgetMooPointsList::~WidgetMooPointsList()
@@ -122,6 +128,7 @@ void WidgetMooPointsList::showOnlyPoints(QList<int> _list)
     this->setShownPoints(_list);
 }
 
+
 void WidgetMooPointsList::showAllPoints()
 {
     // set all points
@@ -150,5 +157,52 @@ void WidgetMooPointsList::setOnlyPareto(bool onlyPareto)
         showParetoPoints();
     else
         showAllPoints();
+}
+
+
+void WidgetMooPointsList::recomputeSelectedPoints()
+{
+    std::vector<int> pointsList;
+    pointsList = this->_listPoints->getSelectedIndexes().toVector().toStdVector();
+
+
+    // parameters
+    MOParameters parameters;
+    int index=0;
+    parameters.addItem(new MOParameter(index,"forceRecompute","Should we simulate again already simulated points ?",false,MOParameter::BOOL));
+
+    MOParametersDlg dlg(&parameters);
+    if(dlg.exec()==QDialog::Accepted)
+    {
+        bool forceRecompute = parameters.value(index).toBool();
+        Optimization* problem = ((Optimization*)_result->problem());
+        problem->recomputePoints(_result,pointsList,forceRecompute);
+    }
+}
+
+void WidgetMooPointsList::exportSelectedPoints()
+{
+
+        // get file name
+        QString csvPath = QFileDialog::getSaveFileName(
+                this,
+                "MO - Export optimum points",
+                QString::null,
+                "CSV file (*.csv)" );
+
+        if(!csvPath.isNull())
+        {
+                QList<int> listPoints = this->_listPoints->getSelectedIndexes();
+                QString csvText = _result->buildAllVarsFrontCSV(listPoints);
+
+                QFile frontFile(csvPath);
+                if(frontFile.exists())
+                        frontFile.remove();
+
+                frontFile.open(QIODevice::WriteOnly);
+                QTextStream tsfront( &frontFile );
+                tsfront << csvText;
+                frontFile.close();
+        }
 }
 

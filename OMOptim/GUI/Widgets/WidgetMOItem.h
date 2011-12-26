@@ -67,14 +67,12 @@ public:
     WidgetMOItem(MOItem *_item,QWidget *parent,bool _forceEditable=false);
     virtual ~WidgetMOItem();
 
-
     Ui::WidgetMOItemClass *ui;
 
 public:
 	void setItem(MOItem*);
 
 protected :
-
 	
 	MOItem* item;
 	bool forceEditable;

@@ -44,15 +44,22 @@
 #include "OneSimResult.h"
 #include "ProblemConfig.h"
 #include "VariablesManip.h"
+#include "ModPlusCtrls.h"
 
 class Project;
+
+/**
+  * @brief Basic problem which consists in simulating a model with modified input variables.
+  */
 class OneSimulation : public Problem
 {
 
 public:
         //OneSimulation(void);
-        OneSimulation(Project*,ModClassTree*,ModModelPlus*);
+        OneSimulation(Project*,ModModelPlus*);
 	OneSimulation(const OneSimulation &s);
+        OneSimulation(QDomElement domProblem,Project* project,bool &ok);
+
         Problem* clone() const;
 	~OneSimulation(void);
 
@@ -60,9 +67,11 @@ public:
         virtual QString getClassName(){return OneSimulation::className();};
 
 
-
-	void setModModelPlus(ModModelPlus*);
-
+        ModPlusCtrl* ctrl();
+        ModPlusCtrls* ctrls();
+        ModPlusCtrl::Type ctrlType();
+        void setCtrlType(ModPlusCtrl::Type);
+        void setCtrls(const ModPlusCtrls &);
 
 	//overwrited functions
 	bool checkBeforeComp(QString & error);
@@ -77,15 +86,20 @@ public:
 
 
 	// get functions
-        Variables *overwritedVariables(){return _overwritedVariables;};
-	MOVector<ScannedVariable> *scannedVariables(){return _scannedVariables;};
-        //OneSimResult* result() const;
-	ModModelPlus* modModelPlus();
+        Variables *overwritedVariables() const {return _overwritedVariables;}
+        MOVector<ScannedVariable> *scannedVariables() const {return _scannedVariables;}
+        ModModelPlus* modModelPlus() const;
+public slots :
+        void setCtrlType();
 
 protected :
 	ModModelPlus* _modModelPlus;
         Variables *_overwritedVariables;
         ScannedVariables *_scannedVariables;
+
+        // Simulation controlers
+        ModPlusCtrls* _ctrls;
+
 
 };
 

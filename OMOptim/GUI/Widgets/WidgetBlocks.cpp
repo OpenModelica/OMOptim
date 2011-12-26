@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "WidgetBlocks.h"
+#include "Widgets/WidgetBlocks.h"
 #include "ui_WidgetBlocks.h"
 #include <QtGui/QErrorMessage>
 
@@ -93,8 +93,8 @@ void WidgetBlocks::onResultCurPointChanged()
 
 				for(int i=0;i<selectedBlocks->size();i++)
 				{
-					orgBlocks << selectedBlocks->at(i)->orgComponent;
-					subBlocks << selectedBlocks->at(i)->subComponent;
+                                        orgBlocks << selectedBlocks->at(i)->_orgComponent;
+                                        subBlocks << selectedBlocks->at(i)->_subComponent;
 				}
 				_blockScene->selectSubs(orgBlocks,subBlocks,true);	
 			}

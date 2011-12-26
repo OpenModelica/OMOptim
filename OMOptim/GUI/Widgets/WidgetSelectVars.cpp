@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,30 +35,27 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+  @version
 */
 
-#include "WidgetSelectVars.h"
+#include "Widgets/WidgetSelectVars.h"
 #include "ui_WidgetSelectVars.h"
 #include <QtGui/QErrorMessage>
 
 
-WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *_variables,QWidget *parent,MOVector<Variable> *_selectedVariables):
+WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *allVariables,QWidget *parent,MOVector<Variable> *selectedVariables):
     QWidget(parent),
     ui(new Ui::WidgetSelectVarsClass)
 {
     ui->setupUi(this);
-	
-	variables = _variables;
 
-	if(_selectedVariables)
-		selectedVariables = _selectedVariables->clone();
-	else
-		selectedVariables = new MOVector<Variable>();
+    _allVariables = allVariables;
 
-	variableProxyModel = GuiTools::ModelToViewWithFilter(variables,ui->listVars,ui->lineVariableFilter);
-	
-	ui->listSelectedVars->setModel(selectedVariables);
+    _selectedVariables = selectedVariables->clone();
+
+    variableProxyModel = GuiTools::ModelToViewWithFilter(_allVariables,ui->listVars,ui->lineVariableFilter);
+
+    ui->listSelectedVars->setModel(_selectedVariables);
 
 	connect(ui->pushAddVar,SIGNAL(clicked()),this,SLOT(addVariables()));
 	connect(ui->pushRemoveVar,SIGNAL(clicked()),this,SLOT(removeVariables()));
@@ -84,23 +81,23 @@ void WidgetSelectVars::addVariables()
 	QModelIndex curSourceIndex;
 	Variable* varSelected;
 	Variable *newVar;
-	
+
 	// Adding selected variables in overwritedVariables
 	bool alreadyIn;
-	
+
 	foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
 	{
 		curSourceIndex = variableProxyModel->mapToSource(curProxyIndex);
-                varSelected=variables->at(curSourceIndex.row());
-		
-		alreadyIn = selectedVariables->alreadyIn(varSelected->name());
-				
+        varSelected=_allVariables->at(curSourceIndex.row());
+
+        alreadyIn = _selectedVariables->alreadyIn(varSelected->name());
+
 		if (!alreadyIn)
 		{
 			newVar = new Variable(*varSelected);
-			selectedVariables->addItem(newVar);;
-		}			
+            _selectedVariables->addItem(newVar);;
 	}
+    }
 }
 
 void WidgetSelectVars::removeVariables()
@@ -109,13 +106,13 @@ void WidgetSelectVars::removeVariables()
 
 	for(int i=0;i<indexList.size();i++)
 	{
-		int iVar = selectedVariables->items.indexOf((Variable*)indexList.at(i).internalPointer());
+        int iVar = _selectedVariables->items.indexOf((Variable*)indexList.at(i).internalPointer());
 		if(iVar>-1)
-			selectedVariables->removeRow(iVar);
+            _selectedVariables->removeRow(iVar);
 	}
 }
 
 MOVector<Variable>* WidgetSelectVars::getSelectedVars()
 {
-	return selectedVariables;
+    return _selectedVariables;
 }

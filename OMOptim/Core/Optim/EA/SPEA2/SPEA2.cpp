@@ -76,7 +76,7 @@
 //-----------------------------------------------------------------------------
 
 #include "SPEA2.h"
-#include "EOStd.h"
+#include "Chromosome/EOStd.h"
 #include "EAStdInitBounded.h"
 #include "EAStdMutation.h"
 #include "SBCrossover.h"
@@ -133,13 +133,11 @@ void SPEA2::setDefaultParameters()
     SPEA2Parameters::setDefaultParameters(_parameters);
 }
 
-QList<int> SPEA2::compatibleOMCases()
-{
-	QList<int> _problems;
-	_problems.push_back(Problem::OPTIMIZATIONTYPE);
-	return _problems;
-}
 
+bool SPEA2::acceptMultiObjectives()
+{
+    return true;
+}
 
 // main
 Result* SPEA2::launch(QString tempDir)
@@ -162,13 +160,7 @@ Result* SPEA2::launch(QString tempDir)
 	std::vector<eoIntInterval> intBounds;
 	int nbDouble=0,nbInt=0,nbBool=0;
 
-	
-	switch(_problem->type())
-	{
-	case Problem::OPTIMIZATIONTYPE :
 		EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
-		break;
-	}
 
 	/************************************
 	PROGRESS
@@ -185,13 +177,9 @@ Result* SPEA2::launch(QString tempDir)
 	FITNESS EVALUATION
 	************************************/
 	moeoEvalFunc < EOStd > *plainEval;
-	switch(_problem->type())
-	{
-	case Problem::OPTIMIZATIONTYPE :
 		plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,
                         _modClassTree);
-		break;
-	}
+
         OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
 	state.storeFunctor(eval);
 

@@ -76,7 +76,7 @@ class MOomc : public QObject
 	Q_OBJECT
 
 public:
-	MOomc(QString appName,bool start = true);
+        MOomc(QString appName,QObject* parent,bool start = true);
 	~MOomc();
 
 

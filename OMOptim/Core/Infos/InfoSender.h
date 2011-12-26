@@ -64,11 +64,16 @@ public slots :
         void sendError(QString msg){send(Info(msg,ListInfo::ERROR2));}
         void sendNormal(QString msg){send(Info(msg,ListInfo::NORMAL2));}
 
+
+
 private :
 	QTextStream* logStream;
 
 signals :
 	void sent(Info);
+        void setCurrentTask(QString);
+        void increaseTaskProgress();
+        void noCurrentTask();
 };
 
 

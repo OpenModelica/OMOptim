@@ -59,18 +59,17 @@
 #include "MOVector.h"
 #include "ModClass.h"
 #include "CSV.h"
-#include "Software.h"
 #include "MOThreads.h"
 #include "Info.h"
 #include "Dymola.h"
-#include "EIControler.h"
-//#include "XML.h"
+
 
 #ifdef USEEI
 	#include "EITarget.h"
 	#include "EITargetResult.h"
         #include "EIHEN1Result.h"
         #include "EIHEN1Problem.h"
+        #include "EIControler.h"
 #endif
 
 class OptimResult;
@@ -81,28 +80,20 @@ class Load : public QObject
 public:
 	Load(void);
 	~Load(void);
-
 	
-        static Result* newResult(QString filePath,Project*);
-        static Result* newResult(QDomElement resultDom,Project*,Problem*,QString filePath);
-        static Problem* newProblem(QString filePath,Project*);
-        static Problem* newProblem(QDomElement problemDom,Project*);
+
+        static OMCase* newOMCase(QString filePath,Project*);
+//        static Result* newResult(QString filePath,Project*);
+//        static Problem* newProblem(QString filePath,Project*);
+
+
+
+
+//        static Result* newResult(QDomElement resultDom,Project*,const Problem & problem,QString filePath);
+    //    static Problem* newProblem(QString filePath,Project*);
 
 	static bool loadProject(QString,Project*);
 	static bool loadModModelPlus(Project*, QString mmoFilePath);
-	static void loadOptimValuesFromFrontFile(OptimResult*,QString);
-
-
-
-
-private:
-	
-	
-        static Problem* newOneSimulation(QDomElement,Project*);
-        static Problem* newOptimization(QDomElement,Project*);
-        static Result* newOneSimulationResult(QDomElement,Project*,OneSimulation*);
-        static Result* newOptimizationResult(QDomElement,Project*,Optimization*,QDir resultDir);
-	
 
 signals:
 	void sendInfo(Info*);

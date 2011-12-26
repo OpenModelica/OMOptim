@@ -17,11 +17,8 @@
 #include <QSettings>
 #include "MOThreads.h"
 #include "newprojectform.h"
-#include "Software.h"
 #include "ListInfo.h"
 #include <iostream>
-#include "OneSimulation.h"
-#include "TabOneSim.h"
 #include "MOGuiTools.h"
 #include "MOVector.h"
 #include "Variable.h"
@@ -73,6 +70,8 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     dispActions << _ui->dockLog->toggleViewAction();
     _ui->menuDisplay->addActions(dispActions);
 
+
+
     // Trees
     _casesTree = new OMCasesCombiner(_project->problems(),_project->results());
     _ui->treeOMCases->setModel(_casesTree);
@@ -108,6 +107,20 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 
 #endif
 
+    //Create the Statusbar
+    _statusBar = new QStatusBar();
+    _statusBar->setObjectName("statusBar");
+    _statusBar->setContentsMargins(0, 0, 1, 0);
+    _stProgressBar = new QProgressBar;
+    _stProgressBar->setMaximumWidth(300);
+    _stProgressBar->setTextVisible(false);
+    _statusBar->addPermanentWidget(_stProgressBar);
+    _statusBar->setVisible(false);
+    this->setStatusBar(_statusBar);
+
+    connect(&infoSender,SIGNAL(setCurrentTask(QString)),this,SLOT(setStatusBarText(QString)));
+    connect(&infoSender,SIGNAL(increaseTaskProgress()),this,SLOT(increaseStProgressBar()));
+    connect(&infoSender,SIGNAL(noCurrentTask()),this,SLOT(eraseStatusBarText(QString)));
 
     actualizeGuiFromProject();
 
@@ -125,14 +138,12 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
              this,SLOT(showTabTitlePopup(const QPoint &)));
     connect(_tabProject,SIGNAL(newProject()),this,SLOT(newProject()));
     connect(_tabProject,SIGNAL(loadProject()),this,SLOT(loadProject()));
+    connect(_tabProject,SIGNAL(loadPlugin()),this,SLOT(loadPlugins()));
 
     // Menus
     connect( _ui->actionNewProject, SIGNAL( triggered() ),this, SLOT( newProject()));
     connect( _ui->actionSaveProject, SIGNAL( triggered() ),this, SLOT( saveProject()));
     connect( _ui->actionLoadProject, SIGNAL( triggered() ),this, SLOT( loadProject()));
-    connect( _ui->actionNewOneSimulation, SIGNAL( triggered() ),this, SLOT( newOneSimulation()));
-    connect( _ui->actionNewOptimization, SIGNAL( triggered() ),this, SLOT( newOptimization()));
-    connect( _ui->actionNewProblemEI, SIGNAL( triggered() ),this, SLOT( newProblemEI()));
     connect( _ui->actionQuit, SIGNAL( triggered() ),this, SLOT( quit()));
     connect( _ui->actionOMCShell,SIGNAL( triggered() ),this, SLOT( newOMCShell()));
     connect( _ui->actionOMCClear,SIGNAL( triggered() ),this, SLOT( OMCClear()));
@@ -176,6 +187,10 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionAboutOMOptim,  SIGNAL(triggered()), this, SLOT(dispAboutOMOptim()));
 
 
+    //*********************************
+    // Signals for problem interfaces
+    //*********************************
+    connect(_project,SIGNAL(interfacesModified()),this,SLOT(updateProblemsMenu()));
 
     //*********************************
     // Signals for solved problems
@@ -197,6 +212,11 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect(_project->moomc(),SIGNAL(finishOMCThread(QString)),this,SLOT(onFinishedOMCThread(QString)));
 
     //*********************************
+    // Signals for plugins
+    //*********************************
+    connect(_ui->actionLoadPlugins,SIGNAL(triggered()),this,SLOT(loadPlugins()));
+
+    //*********************************
     // Reload gui configuration
     //*********************************
     readSettings();
@@ -208,6 +228,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _ui->actionNewProblemEI->setVisible(false);
 #endif
 
+    updateProblemsMenu();
 
 }
 
@@ -313,7 +334,7 @@ void MainWindow::newProject()
         _project->clear();
         _project->setName(form->projectName);
         _project->setIsDefined(true);
-	
+
         // save it (as it is first save, it will ask for path)
         saveProject();
     }
@@ -365,12 +386,6 @@ void MainWindow::loadProject()
 
     if (!filename.isNull())
     {
-        //        QMessageBox msgBox;
-        //        msgBox.setText("Project will be loaded. It may take a long time while application will seem freezed.");
-        //        msgBox.setIcon(QMessageBox::Information);
-        //        msgBox.exec();
-
-        //        msgBox.hide();
         bool loaded = _project->load(filename);
 
         if(loaded)
@@ -388,11 +403,6 @@ void MainWindow::loadProject()
 
 void MainWindow::loadProject(QString _fileName)
 {
-    //    QMessageBox msgBox;
-    //    msgBox.setText("Project will be loaded. It may take a long time while application will seem freezed.");
-    //    msgBox.exec();
-
-
     bool loaded = _project->load(_fileName);
     if(loaded)
     {
@@ -404,55 +414,63 @@ void MainWindow::loadProject(QString _fileName)
     actualizeGuiFromProject();
 }
 
+
+void MainWindow::loadPlugins()
+{
+    // get last plugin folder
+    QSettings settings("MO", "Settings");
+    QString folder = settings.value("MO/recentPluginsFolder").toString();
+
+    QStringList filenames = QFileDialog::getOpenFileNames(
+                this,
+                "OMOptim - Load plugins",
+                folder,
+                "OMOptim plugins (*.dll);; All files (*.*)" );
+
+    foreach (QString fileName, filenames)
+    {
+        QPluginLoader loader(fileName);
+        QObject *plugin = loader.instance();
+        // load plugin
+        ProblemInterface* pbInter = qobject_cast<ProblemInterface*>(plugin);
+        if(pbInter)
+        {
+            QMessageBox::information(this,"Load plugin","Loaded plugin successfully : "+pbInter->name());
+            _project->addProblemInterface(pbInter);
+        }
+        else
+        {
+            QMessageBox::critical(this,"Load plugin","Loaded plugin failed : "+fileName
+                                  +"\n("+loader.errorString()+")");
+        }
+    }
+
+    if(filenames.size()>0)
+    {
+        QDir dir(filenames.at(0));
+        settings.setValue("MO/recentPluginsFolder",dir.absolutePath());
+    }
+}
+
+
 void MainWindow::actualizeGuiFromProject()
 {
     _tabProject->actualizeGuiFromProject();
 
     // Menus and buttons
     _ui->actionSaveProject->setEnabled(_project->isDefined());
-    _ui->menuAddProblem->setEnabled(_project->isDefined());
+    _ui->menuProblems->setEnabled(_project->isDefined());
     _ui->actionDatabases->setEnabled(_project->isDefined());
     _ui->actionOMCShell->setEnabled(_project->isDefined());
     _ui->actionOMCClear->setEnabled(_project->isDefined());
     _ui->actionLoadMoFile->setEnabled(_project->isDefined());
     _ui->actionLoadModelicaLibrary->setEnabled(_project->isDefined());
 
+    this->setWindowTitle("OMOptim - "+_project->name());
+
 }
 
 
-void MainWindow::newOneSimulation()
-{
-    if(_project->isDefined())
-    {
-        // Creating Problem
-        WidgetSelectModModel* widgetSelect = new WidgetSelectModModel(_project->modClassTree(),this);
-        if(widgetSelect->exec()==QDialog::Accepted)
-        {
-            ModModel* curModel = widgetSelect->selectedModel;
-            _project->addNewProblem(Problem::ONESIMULATIONTYPE,curModel);
-        }
-    }
-}
-void MainWindow::newOptimization(){
-
-    if(_project->isDefined())
-    {
-        // Creating Problem
-        WidgetSelectModModel* widgetSelect = new WidgetSelectModModel(_project->modClassTree(),this);
-        if(widgetSelect->exec()==QDialog::Accepted)
-        {
-            ModModel* curModel = widgetSelect->selectedModel;
-            _project->addNewProblem(Problem::OPTIMIZATIONTYPE,curModel);
-        }
-    }
-}
-void MainWindow::newProblemEI()
-{
-    if(_project->isDefined())
-    {
-        _project->addNewProblem(Problem::EIPROBLEMTYPE,NULL);
-    }
-}
 void MainWindow::newOMCShell()
 {
     if(_project->isDefined())
@@ -505,7 +523,9 @@ void MainWindow::onProjectAboutToBeReset()
     {
         _tabMain->removeTab(1);
     }
+
     _ui->treeOMCases->reset();
+    _ui->treeModClass->reset();
 
     actualizeGuiFromProject();
 }
@@ -513,13 +533,27 @@ void MainWindow::onProjectAboutToBeReset()
 void MainWindow::onAddedProblem(Problem* newProblem)
 {
     // Creating problem tab
-    _tabMain->addProblemTab(_project,newProblem);
-    emit sendInfo(Info(ListInfo::ADDEDPROBLEM,newProblem->name()));
+    ProblemInterface* interface = _project->problemsInterfaces().interfaceOf(newProblem);
+
+    if(interface)
+    {
+        _tabMain->addProblemTab(newProblem,interface->createProblemTab(newProblem,this));
+    }
+
+    _tabMain->enableCaseTab(newProblem);
 }
+
 void MainWindow::onAddedResult(Result* newResult)
 {
     // Creating problem tab
-    _tabMain->addResultTab(_project,newResult);
+    ProblemInterface* interface = _project->problemsInterfaces().interfaceOf(newResult->problem());
+
+    if(interface)
+    {
+        _tabMain->addResultTab(newResult,interface->createResultTab(newResult,this));
+    }
+
+    _tabMain->enableCaseTab(newResult);
 }
 
 void MainWindow::onComponentsUpdated()
@@ -850,6 +884,11 @@ void MainWindow::onNewProblemProgress(float fraction,int curEval,int totalEval)
     _widgetProgress->setProgress(fraction,curEval,totalEval);
 }
 
+void MainWindow::showModClass(ModClass* modClass)
+{
+    _ui->treeModClass->expand(_project->modClassTree()->indexOf(modClass));
+}
+
 void MainWindow::loadMoFile()
 {
     //get last .mo folder
@@ -886,6 +925,77 @@ void MainWindow::loadCERESInfo()
     _project->refreshAllMod();
 }
 #endif
+
+
+void MainWindow::updateProblemsMenu()
+{
+    _ui->menuProblems->clear();
+    ProblemInterface* interface;
+    QStringList problemTypes;
+    QMenu* curMenu;
+
+    for(int i=0;i<_project->problemsInterfaces().uniqueInterfaces().size();i++)
+    {
+        interface = _project->problemsInterfaces().uniqueInterfaces().at(i);
+        problemTypes = interface->problemTypes();
+
+        if(problemTypes.size()>1)
+        {
+            curMenu = new QMenu(interface->name(),_ui->menuProblems);
+            _ui->menuProblems->addMenu(curMenu);
+        }
+        else
+            curMenu = _ui->menuProblems;
+
+        for(int j=0;j<interface->problemTypes().size();j++)
+        {
+            QAction *action = new QAction(interface->problemTypes().at(j),this);
+            action->setData(interface->problemTypes().at(j));
+            connect(action,SIGNAL(triggered()),this,SLOT(onPushedNewProblem()));
+
+            curMenu->addAction(action);
+        }
+    }
+}
+
+void MainWindow::onPushedNewProblem()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    QString problemType = action->data().toString();
+    ProblemInterface *interface = _project->problemsInterfaces().value(problemType,NULL);
+    if(interface)
+    {
+        bool pursue = true;
+
+        WidgetSelectModModel* widgetSelect;
+        QList<ModModelPlus*> modModelPlusList;
+        if(interface)
+        {
+            switch(interface->modModelPlusNeeds())
+            {
+            case ProblemInterface::NOMODMODELPLUS :
+                break;
+            case ProblemInterface::ONEMODMODELPLUS :
+                widgetSelect = new WidgetSelectModModel(_project->modClassTree(),this);
+                if(widgetSelect->exec()==QDialog::Accepted)
+                {
+                    ModModel* curModel = widgetSelect->selectedModel;
+                    modModelPlusList.push_back(_project->modModelPlus(curModel));
+                }
+                else
+                    pursue = false;
+                delete widgetSelect;
+                break;
+            case  ProblemInterface::SEVERALMODMODELPLUS :
+                /// @todo Manage several modmodelplus specification
+                break;
+            }
+            if(pursue)
+                _project->addNewProblem(interface,modModelPlusList,problemType);
+        }
+
+    }
+}
 
 void MainWindow::onSelectedModClass(QModelIndex index)
 {
@@ -940,4 +1050,35 @@ void MainWindow::openUserManual()
         openOk = QDesktopServices::openUrl(QUrl(QString("file:///").append(pathTries.at(iTry))));
         iTry++;
     }
+}
+
+//! shows the progress bar contained inside the status bar
+//! @see hideProgressBar()
+void MainWindow::showStatusBar()
+{
+    _statusBar->setVisible(true);
+}
+
+//! hides the progress bar contained inside the status bar
+//! @see showProgressBar()
+void MainWindow::hideStatusBar()
+{
+    _statusBar->setVisible(false);
+}
+
+//! increases the value of the progress bar contained inside the status bar
+void MainWindow::increaseStProgressBar()
+{
+    _stProgressBar->setValue(_stProgressBar->value()+1);
+}
+
+
+void MainWindow::setStatusBarText(QString text)
+{
+    _statusBar->showMessage(text);
+}
+
+void MainWindow::eraseStatusBarText()
+{
+    _statusBar->clearMessage();
 }

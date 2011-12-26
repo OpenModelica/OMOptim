@@ -57,7 +57,7 @@
 #include <QtGui/QTabWidget>
 
 #include "MOParameter.h"
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 #include "MOVector.h"
 
 

@@ -1,4 +1,4 @@
-/*! \mainpage My Personal Index Page
+/*! \mainpage OMOptim main structure
 
 
 \section Project
@@ -21,8 +21,8 @@ It's from Project that main managing functions are called : save, addProblem, la
 \section Problems
 Problems is a MOVector of Problem.
 \subsection Problem
-Problem is an abstract class corresponding to all kind of optimization problem we'll could have. Optimization, OneSimulation and ProblemTarget inherits Problem.
-Main function to implement is Problem::launch. It should return a result inheriting Result (cf. Problem class).
+Problem is an abstract class corresponding to all kind of optimization problem we'll could have. Optimization, OneSimulation and future other problems inherit Problem.
+Main functions to implement include Problem::launch which perform calculations, loading and saving functions. Lauching a problem should return a result inheriting Result (cf. Problem class).
 
 \section Modelica
 
@@ -34,7 +34,11 @@ ModReader allows to read modelica models information. Current implementation use
 
 \subsection Modelica controller (ModPlusCtrl)
 ModPlusCtrl allows to compile, simulate, read initial and final variables. It is an abstract class which must be implemented following the software we want to use.
-At this moment, only a Dymola version of ModPlusCtrl is implemented (ModPlusDymolaCtrl). 
+At this moment, only two controlers are implemented : one using OpenModelica (cf. ModPlusOMCtrl), the other using dymola (cf. ModPlusDymolaCtrl).
+
+\subsection ModModelPlus
+ModModelPlus allows to store informations about Modelica models but also to manage them. More precisely, it holds input variables of model, controller chosen and its parameters.
+It also allows to compile model, simulate it and read variables (calling the specified controller). In other words, it serves as an interface between problems requiring simulation data and different simulation softwares.
 
 
  **/

@@ -46,8 +46,7 @@ MOTableView::MOTableView(QWidget* parent):QTableView(parent)
 	
 	//_view->installEventFilter(this);
 	installEventFilter(this);
-	connect(this,SIGNAL(resize()),this,SLOT(adjustViewSize()));
-
+        horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 	verticalHeader()->hide();
 	
 	//edit triggers
@@ -60,37 +59,33 @@ MOTableView::~MOTableView()
 
 void MOTableView::adjustViewSize()
 {
-	//// Resize columns and rows.
-	//resizeRowsToContents();
-	//resizeColumnsToContents();
- //
-	//// Stretched column index.
-	//// This is the index of the column, which will have the dynamic width.
-	//int stretchedColumnIndex = 2;
- //
-	//// Complete width of view port.
-	//int totalWidth = viewport()->width();
-	//int availableWidth = totalWidth;
+//        // Resize columns and rows.
+//        resizeRowsToContents();
+//        resizeColumnsToContents();
 
-	//// Iterate all columns and give them the required size.
-	//// The last column should receive the left size.
-	//for( int i = 0; i < horizontalHeader()->count(); i++ )
-	//{
-	//		int reqColumnSize = columnWidth(i);
-	//		availableWidth -= reqColumnSize;
-	//}
+//        // Complete width of view port.
+//        int totalWidth = viewport()->width();
+//        int availableWidth = totalWidth;
 
-	//if( availableWidth > 0 && availableWidth<totalWidth )
-	//{
-	//	float ratio = (float)totalWidth/(float)(totalWidth-availableWidth);
-	//
-	//
-	//	for( int i = 0; i < horizontalHeader()->count(); i++ )
-	//	{
-	//		setColumnWidth(i,(int)(columnWidth(i)*ratio));
-	//	}
+//        // Iterate all columns and give them the required size.
+//        // The last column should receive the left size.
+//        for( int i = 0; i < horizontalHeader()->count(); i++ )
+//        {
+//                        int reqColumnSize = columnWidth(i);
+//                        availableWidth -= reqColumnSize;
+//        }
 
-	//}
+//        if( availableWidth > 0 && availableWidth<totalWidth )
+//        {
+//                float ratio = (float)totalWidth/(float)(totalWidth-availableWidth);
+
+
+//                for( int i = 0; i < horizontalHeader()->count(); i++ )
+//                {
+//                        setColumnWidth(i,(int)((float)columnWidth(i)*ratio));
+//                }
+
+//        }
 		
 }
 

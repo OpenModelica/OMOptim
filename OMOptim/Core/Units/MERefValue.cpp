@@ -46,12 +46,13 @@ template<class DimValue>
 MERefValue<DimValue>::MERefValue(QVariant value,int unit)
 {
 	setValue(value,unit);
-	dimValue = new DimValue();
+        //dimValue = new DimValue();
 }
 
 template<class DimValue>
 MERefValue<DimValue>::~MERefValue(void)
 {
+   // delete dimValue;
 }
 
 template<class DimValue>
@@ -78,6 +79,19 @@ bool MERefValue<DimValue>::setValue(QVariant value,QString unit)
 		setValue(value,iUnit);
 	return true;
 }
+template<class DimValue>
+void MERefValue<DimValue>::setValue(const MERefValue & value)
+{
+    _value = value.value();
+    _unit = value.iUnit();
+}
+
+template<class DimValue>
+void MERefValue<DimValue>::setValue(const DimValue & value)
+{
+    _value = value.value();
+    _unit = value.iUnit();
+}
 
 template<class DimValue>
 bool MERefValue<DimValue>::setUnit(QString unit)
@@ -100,7 +114,8 @@ void MERefValue<DimValue>::setUnit(int iUnit)
 template<class DimValue>
 QStringList MERefValue<DimValue>::units() const
 {
-	return dimValue->units();
+    DimValue dimValue;
+        return dimValue.units();
 }
 
 template<class DimValue>
@@ -124,7 +139,8 @@ QString MERefValue<DimValue>::unit(int iUnit) const
 template<class DimValue>
 unsigned MERefValue<DimValue>::nbUnits() const
 {
-	return dimValue->nbUnits();
+    DimValue dimValue;
+        return dimValue.nbUnits();
 }
 
 
@@ -133,16 +149,17 @@ unsigned MERefValue<DimValue>::nbUnits() const
   * @param modelName is used to add a prefix to reference before looking into variables (is used also without prefix if not found with)
   */
 template<class DimValue>
-double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName) const
+double MERefValue<DimValue>::numValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName) const
 {
 	bool isNum;
     QString refName;
+    DimValue dimValue;
 	double result = _value.toDouble(&isNum);
 	if(isNum)
 	{
-		dimValue->setValue(result,_unit);
+                dimValue.setValue(result,_unit);
 		ok=true;
-		return dimValue->value(iUnit);
+                return dimValue.value(iUnit);
 	}
 	else
 	{
@@ -176,10 +193,31 @@ double MERefValue<DimValue>::getNumValue(MOOptVector *variables,int iUnit,bool &
 		{
 			ok =  true;
 			result = variables->at(iVar)->finalValue(variables->curScan(),variables->curPoint());
-			result = dimValue->convert(result,this->iUnit(),iUnit);
+                        result = dimValue.convert(result,this->iUnit(),iUnit);
 			return result;
 		}
 	}
+}
+
+/** Returns numerical value of instance. If value contains a reference to a variable, it will be looked for in variables.
+  * @param ok is set to true if numerization was successful.
+  * @param modelName is used to add a prefix to reference before looking into variables (is used also without prefix if not found with)
+  */
+template<class DimValue>
+DimValue MERefValue<DimValue>::numValue(MOOptVector *variables,bool &ok,QString modelName) const
+{
+    return DimValue(numValue(variables,_unit,ok,modelName),_unit);
+}
+
+/** Returns numerical value of instance. Be careful, this should be done only if it is numerized.
+  */
+template<class DimValue>
+DimValue MERefValue<DimValue>::numValue() const
+{
+    bool isDouble;
+    DimValue result( _value.toDouble(&isDouble),_unit);
+    Q_ASSERT(isDouble);
+    return result;
 }
 
 /** If value contains a reference to a variable, returns this variable name.
@@ -196,6 +234,15 @@ QString  MERefValue<DimValue>::reference() const
         return _value.toString();
     else
         return QString();
+}
+
+template<class DimValue>
+bool  MERefValue<DimValue>::isNum() const
+{
+    bool isDouble;
+    _value.toDouble(&isDouble);
+
+    return isDouble;
 }
 
 #endif

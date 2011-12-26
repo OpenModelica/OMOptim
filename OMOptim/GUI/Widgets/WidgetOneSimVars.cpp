@@ -38,9 +38,10 @@
  	@version 
 */
 
-#include "WidgetOneSimVars.h"
+#include "Widgets/WidgetOneSimVars.h"
 #include <QtGui/QSortFilterProxyModel>
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
+#include "MyDelegates.h"
 
 namespace Ui
 {
@@ -80,10 +81,10 @@ WidgetOneSimVars::WidgetOneSimVars(Project *project,OneSimulation *problem, QWid
 	_ui->tableScannedVariables->resizeColumnsToContents();
 
         //delegates
-        DoubleSpinBoxDelegate* valueDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
-        DoubleSpinBoxDelegate* scanValueDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
-        DoubleSpinBoxDelegate* scanMinDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
-        DoubleSpinBoxDelegate* scanMaxDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* valueDelegate = new DoubleSpinBoxDelegate(this,30);
+        DoubleSpinBoxDelegate* scanValueDelegate = new DoubleSpinBoxDelegate(this,30);
+        DoubleSpinBoxDelegate* scanMinDelegate = new DoubleSpinBoxDelegate(this,30);
+        DoubleSpinBoxDelegate* scanMaxDelegate = new DoubleSpinBoxDelegate(this,30);
         _ui->tableOverwritedVariables->setItemDelegateForColumn(Variable::VALUE,valueDelegate);
         _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::VALUE,scanValueDelegate);
         _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANMIN,scanMinDelegate);
@@ -95,8 +96,10 @@ WidgetOneSimVars::WidgetOneSimVars(Project *project,OneSimulation *problem, QWid
 	connect(_ui->pushAddScanned, SIGNAL(clicked()), this, SLOT(addScannedVariables()));
 	connect(_ui->pushRemoveScanned, SIGNAL(clicked()), this, SLOT(deleteScannedVariables()));
 	connect(_ui->pushSimulate, SIGNAL(clicked()), this, SLOT(simulate()));
+        connect(_ui->pushReadVariables, SIGNAL(clicked()), this, SLOT(readVariables()));
 	
 }
+
 
 WidgetOneSimVars::~WidgetOneSimVars()
 {
@@ -190,4 +193,10 @@ void WidgetOneSimVars::deleteScannedVariables()
 void WidgetOneSimVars::simulate()
 {
         _project->launchProblem(_problem);
+}
+
+void WidgetOneSimVars::readVariables()
+{
+    ModModelPlus* modModelPlus = _problem->modModelPlus();
+    modModelPlus->readVariables(_problem->ctrl());
 }

@@ -46,8 +46,7 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include "Project.h"
-#include "MOTab.h"
-#include "WidgetTableStreams.h"
+#include "Tabs/MOTab.h"
 
 namespace Ui {
     class WidgetSelPointScanClass;

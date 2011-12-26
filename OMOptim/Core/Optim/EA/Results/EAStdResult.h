@@ -60,16 +60,14 @@
 {
 public :
 	inline static OptimResult* buildOptimResult(Project*,Optimization* ,QList<BlockSubstitutions*>,
-                                                    ModClassTree* modClassTree,
-                                                    moeoUnboundedArchive<EOT> & arch, MOParameters* parameters);
+                                                    moeoUnboundedArchive<EOT> & arch);
 };
 
 template<class EOT>
 OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* problem,QList<BlockSubstitutions*> subBlocks,
-                                                ModClassTree* modClassTree,
-                                                moeoUnboundedArchive<EOT> & arch, MOParameters* parameters)
+                                                moeoUnboundedArchive<EOT> & arch)
 {
-    OptimResult *result = new OptimResult(project,problem->modModelPlus(),problem,modClassTree,problem->getCurAlgo()->clone());
+    OptimResult *result = new OptimResult(project,problem->modModelPlus(),*problem,problem->getCurAlgo()->clone());
     result->setName(problem->name()+" result");
     result->_subBlocks = subBlocks;
 

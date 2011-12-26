@@ -46,7 +46,7 @@
 
 #include "OptimResult.h"
 #include "MOTableView.h"
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 
 
 class WidgetTableVar : public QWidget

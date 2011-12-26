@@ -47,37 +47,39 @@
 
 
 #include "BlockSubstituteConnDlg.h"
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 
 
-TabOptimization::TabOptimization(Project *project_,Optimization *problem_, QWidget *parent) :
-MO2ColTab(project_->name(),problem_,false,parent)
+TabOptimization::TabOptimization(Optimization *problem, QWidget *parent) :
+MO2ColTab(problem->project()->name(),problem,false,parent)
 {
-	project = project_;
-	problem = problem_;
-
+        _project = problem->project();
+        _problem = problem;
 	
-        widgetSelectOptVars = new WidgetSelectOptVars(problem,true,this);
-	addDockWidget("Variables",widgetSelectOptVars);
+        _widgetSelectOptVars = new WidgetSelectOptVars(_problem,true,this);
+        addDockWidget("Variables",_widgetSelectOptVars);
 
 #ifdef USEBLOCKSUB
-        widgetSelectComponents = new WidgetSelectComponents(project,problem,false,this);
-	addDockWidget("Components",widgetSelectComponents,widgetSelectOptVars);
+        _widgetSelectComponents = new WidgetSelectComponents(_project,_problem,false,this);
+        addDockWidget("Components",_widgetSelectComponents,_widgetSelectOptVars);
 #endif
 
-        widgetOptParameters = new WidgetOptParameters(project,problem,false,this);
-	addDockWidget("Optimization",widgetOptParameters,widgetSelectOptVars);
+        _widgetOptParameters = new WidgetOptParameters(_project,_problem,false,this);
+        addDockWidget("Optimization",_widgetOptParameters,_widgetSelectOptVars);
 	
-        widgetFilesList = new WidgetFilesList(problem->_filesToCopy,this);
-        addDockWidget("Files",widgetFilesList,widgetSelectOptVars);
+        _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
+        addDockWidget("Files",_widgetFilesList,_widgetSelectOptVars);
 
-        widgetOptimActions = new WidgetOptimActions(project,problem,false,NULL,this);
-        addFixedWidget("Launch",widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
+        _widgetCtrl = new WidgetCtrlParameters(_project,_problem->modModelPlus(),_problem->ctrls(),false,this);
+        addDockWidget("Simulator",_widgetCtrl,_widgetSelectOptVars);
+
+        _widgetOptimActions = new WidgetOptimActions(_project,_problem,false,NULL,this);
+        addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
 	actualizeGui();
 
         //change view to show variables
-        mapDockWidgets.key(widgetSelectOptVars)->raise();
+        mapDockWidgets.key(_widgetSelectOptVars)->raise();
 }
 
 TabOptimization::~TabOptimization()
@@ -88,11 +90,11 @@ TabOptimization::~TabOptimization()
 
 void TabOptimization::actualizeGui()
 {
-	widgetOptParameters->actualizeGui();
-	widgetSelectOptVars->actualizeGui();
+        _widgetOptParameters->actualizeGui();
+        _widgetSelectOptVars->actualizeGui();
 
 #ifdef USEBLOCKSUB
-	widgetSelectComponents->actualizeGui();
+        _widgetSelectComponents->actualizeGui();
 #endif
 }
 

@@ -53,6 +53,8 @@ class Project;
 
 class ModPlusCtrl :public QObject
 {
+    Q_OBJECT
+
     /*! \class ModPlusCtrl
     * \brief Class providing control functions for ModModelPlus.
     *
@@ -69,9 +71,11 @@ class ModPlusCtrl :public QObject
                 OPENMODELICA,
                 DYMOLA
         };
+        static const int nbTypes = 2;
 
-        ModPlusCtrl(Project*,ModModelPlus* modModelPlus,MOomc* moomc,QString mmoFolder,QString moFilePath,QString modModelName);
+        ModPlusCtrl(Project*,ModModelPlus* modModelPlus,MOomc* moomc);
         ~ModPlusCtrl(void);
+        virtual ModPlusCtrl* clone()=0;
 
         // Variables functions
         virtual bool readOutputVariables(MOVector<Variable> *,QString folder="") = 0;
@@ -94,21 +98,20 @@ class ModPlusCtrl :public QObject
         virtual void stopSimulation(){}
         virtual bool canBeStoped(){return false;}
 
-        virtual void setMmoFolder(QString);
-        void setMoFilePath(QString);
-
         MOParameters* parameters();
 
 protected:
         ModModelPlus* _modModelPlus;
-        QString _mmoFolder;
-        QString _moFilePath;
-        QString _modModelName;
         bool _copyAllMoOfFolder;
         MOParameters *_parameters;
         MOomc* _moomc;
         Project* _project;
 
+signals :
+        void modified();
+
 };
+
+
 
 #endif

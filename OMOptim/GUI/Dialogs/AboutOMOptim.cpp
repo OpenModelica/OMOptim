@@ -45,7 +45,6 @@
 #include "AboutOMOptim.h"
 #include "ui_AboutOMOptim.h"
 #include <QtGui/QErrorMessage>
-#include "Software.h"
 #include "ModModel.h"
 #include "version.h"
 #include <QtGui/QListWidget>

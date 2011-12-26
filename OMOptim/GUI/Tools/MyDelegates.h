@@ -48,6 +48,7 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QLineEdit>
 #include <QtGui/QDoubleSpinBox>
+#include <limits>
 
 
 
@@ -142,8 +143,8 @@ private:
 class DoubleSpinBoxDelegate : public QStyledItemDelegate
 {
 public :
-    DoubleSpinBoxDelegate(int decimals, double min, double max,QObject *parent = 0)
-    : QStyledItemDelegate(parent),_decimals(decimals),_min(min),_max(max)
+    DoubleSpinBoxDelegate(QObject *parent,int decimals, double min=-std::numeric_limits<double>::max(), double max=std::numeric_limits<double>::max())
+    : QStyledItemDelegate(parent),_min(min),_max(max),_decimals(decimals)
     {
 
     }

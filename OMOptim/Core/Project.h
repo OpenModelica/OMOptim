@@ -58,7 +58,6 @@
 #include "Problems.h"
 #include "Results.h"
 #include "MOomc.h"
-#include "Software.h"
 #include "ModPlusCtrl.h"
 #include "ModReader.h"
 #include "InfoSender.h"
@@ -73,8 +72,9 @@
 #include "Save.h"
 #include "Load.h"
 #include "MOThreads.h"
-#include "EABase.h"
+#include "EA/EABase.h"
 #include "ModClassTree.h"
+#include "ProblemInterface.h"
 
 #ifdef USEEI
 	#include "EITarget.h"
@@ -120,6 +120,9 @@ private:
         ModClassTree* _modClassTree;
 	QMap<ModModel*,ModModelPlus*> _mapModelPlus;
 
+    // Problems interfaces
+    ProblemInterfaces _problemsInterfaces;
+
 
 public:
 	Project();
@@ -144,9 +147,9 @@ public:
 	void setCurModClass(ModClass*);
 	ModModel* findModModel(QString name);
 	QList<ModModelPlus*> allModModelPlus();
-	bool addModModelPlus(ModModelPlus*);
-	bool compileModModel(ModModel*);
-	bool compileModModelPlus(ModModelPlus*);
+    void addModModelPlus(ModModelPlus*);
+//    bool compileModModel(ModModel*);
+//    bool compileModModelPlus(ModModelPlus*);
 	void storeMmoFilePath(QString mmoFilePath);
 	void refreshAllMod();
     void reloadModModel(ModModel*);
@@ -154,11 +157,12 @@ public:
 	//****************************
 	//Problem managment
 	//****************************	
-	void addNewProblem(Problem::ProblemType, ModModel*);
+    ProblemInterfaces problemsInterfaces(){return _problemsInterfaces;}
+    void addProblemInterface(ProblemInterface* problemInterface);
+    void addNewProblem(ProblemInterface* interface, QList<ModModelPlus*> modModelPlusList,QString problemType);
         void addResult(Result *);
 	void addProblem(Problem *);
-        void addResult(QString filePath);
-	void addProblem(QString filePath);
+    void addOMCase(QString filePath);
         void launchProblem(Problem*);
     void removeResult(Result*);
     void removeProblem(Problem*);
@@ -219,12 +223,7 @@ public:
                 void onProblemFinished(Problem*,Result*);
 		void onProblemStopAsked(Problem*);
 
-                void addNewOptimization();
-                void addNewOneSimulation();
 
-#ifdef USEEI
-                void addNewEIProblem();
-#endif
 
     // others
     bool renameResult(Result*, QString);
@@ -241,7 +240,6 @@ public:
 
 		void addedProblem(Problem*);
                 void addedResult(Result*);
-		//void addedLibrary(ModClass*);
 
 		void databasesUpdated();
 
@@ -261,7 +259,7 @@ public:
 		void curModModelChanged(ModModel*);
 
 		void modsUpdated();
-
+    void interfacesModified();
 
 };
 

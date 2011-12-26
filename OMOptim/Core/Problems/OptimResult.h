@@ -47,7 +47,7 @@
 #include "OneSimulation.h"
 #include "OneSimResult.h"
 #include <QtXml/QDomDocument>
-#include "BlockSubstitutions.h"
+#include "BlockSubs/BlockSubstitutions.h"
 #include "CSV.h"
 #include "ProblemConfig.h"
 
@@ -63,18 +63,17 @@ class OptimResult : public Result
 public:
 
 	OptimResult();
-        OptimResult(Project*, ModModelPlus*, Optimization*,ModClassTree*,OptimAlgo* algo);
+        OptimResult(Project*, ModModelPlus*,const Optimization &,OptimAlgo* algo);
+        OptimResult(Project*,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok);
 	OptimResult(const OptimResult &_res);
-	~OptimResult(void);
+        virtual ~OptimResult(void);
         static QString className(){return "OptimResult";};
-        virtual QString getClassName(){return OptimResult::className();};
+        virtual QString getClassName(){return OptimResult::className();}
 
 	QDomElement toXmlData(QDomDocument &);
-        int problemType(){return Problem::OPTIMIZATIONTYPE;};
 
         void updateRecomputedPointsFromFolder();
-
-
+        void loadOptimValuesFromFrontFile(QString fileName);
 
 	QString buildOptVarsFrontCSV(QString separator="\t");
 	QString buildAllVarsFrontCSV(QString separator="\t");
@@ -92,13 +91,13 @@ public:
 
 signals:
 	void curPointChanged();
-	void curScanChanged(int &);
+        void curScanChanged(int );
 
 	
 public :
-	MOOptVector *optVariablesResults(){return _optVariablesResults;};
-	MOOptVector *optObjectivesResults(){return _optObjectivesResults;};
-	MOOptVector *recomputedVariables(){return _recomputedVariables;};
+        MOOptVector *optVariablesResults(){return _optVariablesResults;}
+        MOOptVector *optObjectivesResults(){return _optObjectivesResults;}
+        MOOptVector *recomputedVariables(){return _recomputedVariables;}
 	
         QList<int> recomputedPoints(){return _recomputedPoints;};
 
@@ -111,8 +110,8 @@ public :
 	QString _optVarsFrontFileName;
 	QString _allVarsFrontFileName;
 
-        ModModel* modModel(){return _modModelPlus->modModel();};
-        ModModelPlus* modModelPlus(){return _modModelPlus;};
+        ModModel* modModel()const{return _modModelPlus->modModel();}
+        ModModelPlus* modModelPlus()const{return _modModelPlus;}
 
 protected:
 	int _curPoint;

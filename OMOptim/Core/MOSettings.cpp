@@ -114,42 +114,57 @@ void MOSettings::setFromDefaultValues()
     QVariantList defaultValues;
     QVector<MOParameter::Type> types;
 
-        //*******************************
-        // Dymola path
-        //*******************************
+    //*******************************
+    // Dymola path
+    //*******************************
 #ifdef WIN32
     names << QString("dymolaExe");
     groups << "Dymola";
-        descs << QString("Path of Dymola executable");
-        QString dymolaPath = Dymola::getExecutablePath();
-        defaultValues << dymolaPath;
+    descs << QString("Path of Dymola executable");
+    QString dymolaPath = Dymola::getExecutablePath();
+    defaultValues << dymolaPath;
     types.push_back(MOParameter::FILEPATH);
 #endif
 
-//	//*******************************
-//	// Quit omc at end of program
-//	//*******************************
-//	names << QString("stopOMCwhenQuit");
-//	descs << QString("Automatically end OMC when quitting");
-//        defaultValues << true;
-//	types.push_back(BOOL);
+    //*******************************
+    // Cbc path
+    //*******************************
+#ifdef WIN32
+    names << QString("cbcExe");
+    groups << "Milp solvers";
+    descs << QString(" Path of Cbc executable <A href=\"http://www.coin-or.org/download/binary/Cbc/\">(download here)</A>");
+    defaultValues << QString();
+    types.push_back(MOParameter::FILEPATH);
 
-        //*******************************
-        // Model depth read at beginning
-        //*******************************
-        names << QString("DepthReadWhileLoadingModModel");
+
+
+#endif
+
+
+    //	//*******************************
+    //	// Quit omc at end of program
+    //	//*******************************
+    //	names << QString("stopOMCwhenQuit");
+    //	descs << QString("Automatically end OMC when quitting");
+    //        defaultValues << true;
+    //	types.push_back(BOOL);
+
+    //*******************************
+    // Model depth read at beginning
+    //*******************************
+    names << QString("DepthReadWhileLoadingModModel");
     groups << QString();
-        descs << QString("Default reading depth in Modelica hierarchy (-1 : entire model)");
-        defaultValues << 2;
+    descs << QString("Default reading depth in Modelica hierarchy (-1 : entire model)");
+    defaultValues << 2;
     types.push_back(MOParameter::INT);
 
-        //*******************************
-        // Max number of digits in dsin
-        //*******************************
+    //*******************************
+    // Max number of digits in dsin
+    //*******************************
     names << QString("MaxDigitsDsin");
     groups << "Dymola";
-        descs << QString("Maximum number of digits in dsin.txt");
-        defaultValues << 5;
+    descs << QString("Maximum number of digits in dsin.txt");
+    defaultValues << 5;
     types.push_back(MOParameter::INT);
 
 
@@ -158,13 +173,13 @@ void MOSettings::setFromDefaultValues()
     bool found;
     int iP;
 
-        for(int i=0; i<names.size();i++)
-        {
+    for(int i=0; i<names.size();i++)
+    {
             // update
             param = new MOParameter(i,names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
             param->setFieldValue(MOParameter::GROUP,groups.at(i));
             instance.addItem(param);
-        }
+    }
 }
 
 QVariant MOSettings::value(int index,QVariant defaultValue)

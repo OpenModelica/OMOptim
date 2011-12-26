@@ -38,10 +38,9 @@
  	@version 
 */
 
-#include "WidgetMOItem.h"
+#include "Widgets/WidgetMOItem.h"
 #include "ui_WidgetMOItem.h"
 #include <QtGui/QErrorMessage>
-#include "Software.h"
 #include "ModModel.h"
 #include <QtGui/QListWidget>
 
@@ -55,7 +54,7 @@ ui(new Ui::WidgetMOItemClass)
 	forceEditable = _forceEditable;
 	itemWidget = NULL;
 	
-	ui->groupItem->setLayout(new QGridLayout(ui->groupItem));
+        ui->groupItem->setLayout(new QGridLayout(this));
 }
 
 WidgetMOItem::~WidgetMOItem()

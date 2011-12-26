@@ -119,6 +119,7 @@ public slots :
         void dataChangedRes( const QModelIndex & topLeft, const QModelIndex & bottomRight );
 
 
+
 private :
         QString _name;
         OMCases* _problems;

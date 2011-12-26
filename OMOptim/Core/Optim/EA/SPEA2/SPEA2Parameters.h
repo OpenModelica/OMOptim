@@ -76,7 +76,7 @@ public :
         parameters->addItem(new MOParameter(INTPCROSS,"IntPCross","Crossover probability for integer variables",0.25,MOParameter::DOUBLE,0,1));
         parameters->addItem(new MOParameter(BOOLPMUT,"BoolPMut","Mutation probability for boolean variables",0.35,MOParameter::DOUBLE,0,1));
         parameters->addItem(new MOParameter(BOOLPCROSS,"BoolPCross","Crossover probability for boolean variables",0.25,MOParameter::DOUBLE,0,1));
-        parameters->addItem(new MOParameter(SAVEFREQUENCY,"SaveFrequency","Population saving frequency (# generations, 0 = save only final state)",0,MOParameter::INT,0,10000000));
+        parameters->addItem(new MOParameter(SAVEFREQUENCY,"SaveFrequency","Population saving frequency (# generations, 0 = save only final state)",1,MOParameter::INT,0,10000000));
         parameters->addItem(new MOParameter(USESTARTFILE,"UseStartFile","Use start file (restart from previous result)",false,MOParameter::BOOL));
         parameters->addItem(new MOParameter(STARTFILEPATH,"StartFilePath","Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
     };

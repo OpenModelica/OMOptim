@@ -58,7 +58,7 @@ class BlockSubstitutions : public QObject,public QVector<BlockSubstitution*>
 
 public:
 	BlockSubstitutions(void);
-        BlockSubstitutions(Project* _project,ModModelPlus* _model,QDomElement _el,ModClassTree*);
+        BlockSubstitutions(Project* project,ModModelPlus* model,const QDomElement & el);
 	~BlockSubstitutions(void);
 
 	BlockSubstitutions* clone() const;

@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "WidgetToolBar.h"
+#include "Widgets/WidgetToolBar.h"
 #include "ui_WidgetToolBar.h"
 #include <QtGui/QErrorMessage>
 

@@ -46,7 +46,7 @@
 #include "ui_WidgetSelectComponents.h"
 #include "Optimization.h"
 #include "MOTableView.h"
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 #include "BlockSubsScene.h"
 #include "ModClassTree.h"
 

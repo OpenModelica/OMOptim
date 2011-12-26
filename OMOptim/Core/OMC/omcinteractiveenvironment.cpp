@@ -189,7 +189,7 @@ namespace IAEX
     catch( std::exception &e )
     {
       QString msg = e.what();
-      QMessageBox::warning( 0, "Error", msg, "OK" );
+      QMessageBox::warning( QApplication::activeWindow(), "Error", msg, "OK" );
     }
 
     return flag;

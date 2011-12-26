@@ -25,10 +25,10 @@ class ModPlusDymolaCtrl :public ModPlusCtrl
         };
 
 public:
-        ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* oms,QString mmoFolder,QString moFilePath,QString modModelName);
+        ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* omc);
         ~ModPlusDymolaCtrl(void);
+        ModPlusCtrl* clone();
 
-        void setMmoFolder(QString);
         ModPlusCtrl::Type type();
         QString name();
 

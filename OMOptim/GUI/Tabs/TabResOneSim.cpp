@@ -40,13 +40,13 @@
 
 #include "TabResOneSim.h"
 #include <QtGui/QSortFilterProxyModel>
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 
 
-TabResOneSim::TabResOneSim(Project *project,OneSimResult *result, QWidget *parent) :
-MO2ColTab(project->name(),result,false,parent)
+TabResOneSim::TabResOneSim(OneSimResult *result, QWidget *parent) :
+MO2ColTab(result->project()->name(),result,false,parent)
 {
-        _project = project;
+        _project = result->project();
         _result = result;
 
         OneSimulation* problem = dynamic_cast<OneSimulation*>(_result->problem());
@@ -57,40 +57,11 @@ MO2ColTab(project->name(),result,false,parent)
 
         addDockWidget("Input Variables",_inputTableVars );
         addDockWidget("Final Variables",_finalTableVars,_inputTableVars);
+
+        _widgetCtrl = new WidgetCtrlParameters(_project,problem->modModelPlus(),problem->ctrls(),true,this);
+        addDockWidget("Simulator",_widgetCtrl,_inputTableVars);
 		
         _finalTableVars->raise();
-		
-	//// Adding view list in combo
-	//viewList << "Problem" << "Variables" << "Composite curves" ;
-	//ui->comboDisp->addItems(viewList);
-
-	////Toolbars
-	//problemToolBar = new QToolBar(this);
-	//ui->layoutToolBar->addWidget(problemToolBar);
-	//
-	//compositesToolBar= new QToolBar(this);
-	//ui->layoutToolBar->addWidget(compositesToolBar);
-
-	//variablesToolBar = new QToolBar(this);
-	//ui->layoutToolBar->addWidget(variablesToolBar);
-
-
-	//// View widgets
-	//tabProblem = new TabOneSim(project,problem);
-	//ui->myLayout->addWidget(tabProblem);
-	//
-	//tabVariables = new TabResOneSim_Variables(project,problem->result());
-	//ui->myLayout->addWidget(tabVariables);
-	//
-	//tabComposites = new TabResOneSim_Composites(project,problem->result(),this,compositesToolBar);
-	//ui->myLayout->addWidget(tabComposites);
-
-	//curView = -1; // to force actualization
-	//updateView(2);
-
-	//// Connect signals and slots
-	//connect(ui->comboDisp,SIGNAL(activated(int)),
-	//	this,SLOT(updateView(int)));
 }
 
 TabResOneSim::~TabResOneSim()

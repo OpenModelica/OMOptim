@@ -42,7 +42,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources/OMOptim.qrc">
-         <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
+         <normaloff>:/Add</normaloff>:/Add</iconset>
        </property>
       </widget>
      </item>
@@ -59,7 +59,7 @@
        </property>
        <property name="icon">
         <iconset resource="../Resources/OMOptim.qrc">
-         <normaloff>:/icons/Add</normaloff>:/icons/Add</iconset>
+         <normaloff>:/Add</normaloff>:/Add</iconset>
        </property>
       </widget>
      </item>

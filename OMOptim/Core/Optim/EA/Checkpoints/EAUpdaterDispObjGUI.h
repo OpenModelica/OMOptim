@@ -58,4 +58,53 @@ class EAUpdaterDispObjGUI : public eoUpdater, public QObject
 
   };
 
+/**
+ * Display objective vectors in ModOpt Gui every generation.
+ */
+template < class MOEOT >
+class EAUpdaterDispObjGUIOneSol : public eoUpdater, public QObject
+  {
+
+  public:
+
+    /**
+     * Ctor
+     * @param _arch local archive
+     */
+    EAUpdaterDispObjGUIOneSol (MOEOT & _sol) :
+        sol(_sol), counter(0)
+    {
+        }
+
+
+    /**
+     * Saves the fitness of the archive's members into the file
+     */
+    void operator()()
+    {
+        QString msg = "Current gen. objective vector :";
+
+        for(int j=0;j<sol.objectiveVector().size();j++)
+        {
+            msg+=QString::number(sol.objectiveVector().at(j))+="\t";
+        }
+        msg +="\n";
+
+        infoSender.send(Info(msg));
+    }
+
+private:
+    /** local solution */
+    MOEOT & sol;
+    /** this variable is set to true if a new file have to be created each time () is called and to false if the file only HAVE to be updated */
+    bool count;
+    /** counter */
+    unsigned int counter;
+
+
+
+  };
+
+
+
 #endif /*EAUpdaterDispObjGUI_H_*/

@@ -41,6 +41,7 @@
 #define MAINWINDOW_H
 
 #include <QtGui/QMainWindow>
+#include <QtGui/QProgressBar>
 #include <QtGui/QWidget>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -53,12 +54,13 @@
 #include "MyTextLog.h"
 #include "DlgSettings.h"
 #include "ui_MainWindow.h"
-#include "WidgetProgress.h"
+#include "Widgets/WidgetProgress.h"
 #include <QtXml/QDomDocument>
-#include "WidgetSelectModModel.h"
+#include "Widgets/WidgetSelectModModel.h"
 #include "AboutOMOptim.h"
 #include "OpenModelica.h"
 #include "OMCases.h"
+#include "ProblemInterface.h"
 
 
 #ifdef USEEI
@@ -88,6 +90,7 @@ public slots :
 	void onTerminatingOMCThread(QString);
         void enableOMCaseTab(QModelIndex);
 	void onSelectedModClass(QModelIndex);
+        void updateProblemsMenu();
 
 
 	void actualizeGuiFromProject();
@@ -96,9 +99,7 @@ public slots :
 	void saveProject();
 	void loadProject();
 	void loadProject(QString);
-	void newOneSimulation();
-	void newOptimization();
-	void newProblemEI();
+        void loadPlugins();
 	void newOMCShell();
 	void OMCClear();
 	void quit();
@@ -112,6 +113,8 @@ public slots :
         void loadCERESInfo();
         #endif
 
+        void onPushedNewProblem();
+
 	void onAddedProblem(Problem*);
         void onAddedResult(Result*);
 	void onComponentsUpdated();
@@ -121,7 +124,8 @@ public slots :
         void onProblemFinished(Problem*,Result*);
 	void onNewProblemProgress(float);
 	void onNewProblemProgress(float,int,int);
-       // void onProblemStopAsked(Problem*);
+
+        void showModClass(ModClass*);
 
 
         void removeResult();
@@ -148,6 +152,14 @@ public slots :
 	// GUI configuration
 	void closeEvent(QCloseEvent *event);
 	void readSettings();
+
+        // status and progress bar
+        void showStatusBar();
+        void hideStatusBar();
+        void setStatusBarText(QString);
+        void eraseStatusBarText();
+        void increaseStProgressBar();
+
 
 	// about dialogs
 	void dispAboutOMOptim();
@@ -181,6 +193,8 @@ private :
 	MOMainTab *_tabMain;
 	TabProject *_tabProject;
 	WidgetProgress* _widgetProgress;
+        QStatusBar *_statusBar;
+        QProgressBar *_stProgressBar;
 	enum { MaxRecentFiles = 5 };
         QList<QAction*> _recentFileActs;
 

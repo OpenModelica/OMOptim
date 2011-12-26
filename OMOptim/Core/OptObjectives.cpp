@@ -2,7 +2,8 @@
 
 #include "ModModelPlus.h"
 
-OptObjectives::OptObjectives(ModModelPlus* modModelPlus)
+OptObjectives::OptObjectives(bool owner, ModModelPlus* modModelPlus)
+    :MOVector<OptObjective>(owner)
 {
     _modModelPlus = modModelPlus;
     _displayShort = true;

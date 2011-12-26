@@ -58,12 +58,12 @@
 #include "OneSimulation.h"
 #include "Optimization.h"
 #include "OptimResult.h"
-#include "EAStdResult.h"
-#include "SPEA2AdaptMutation.h"
-#include "EAAdaptReinitStdDev.h"
-#include "EOAdapt.h"
+#include "Results/EAStdResult.h"
+#include "SPEA2Adaptative/SPEA2AdaptMutation.h"
+#include "Init/EAAdaptReinitStdDev.h"
+#include "Chromosome/EOAdapt.h"
 
-#include "SPEA2AdaptParameters.h"
+#include "SPEA2Adaptative/SPEA2AdaptParameters.h"
 
 
 /********************************************************
@@ -80,7 +80,8 @@ public :
 	SPEA2Adapt(const SPEA2Adapt &);
         EABase* clone() const;
 
-	QList<int> compatibleOMCases();
+        bool acceptMultiObjectives();
+
 	Result* launch(QString tempDir);
 	QString name();
 	void setDefaultParameters();
@@ -91,14 +92,9 @@ private :
 
 Result* SPEA2Adapt::buildResult(moeoUnboundedArchive<EOAdapt> & arch)
 {
-	Result* result;
-	switch(_problem->type())
-	{
-	case Problem::OPTIMIZATIONTYPE :
-                result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,
-                                                                         _subBlocks,_modClassTree,arch,_parameters);
-		break;
-	}
+        Result* result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,
+                                                                         _subBlocks,arch);
+
 	return result;
 }
 

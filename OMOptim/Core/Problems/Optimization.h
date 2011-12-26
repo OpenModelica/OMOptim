@@ -49,8 +49,8 @@
 #include "OptimResult.h"
 #include "ProblemConfig.h"
 
-#include "BlockSubstitution.h"
-#include "BlockSubstitutions.h"
+#include "BlockSubs/BlockSubstitution.h"
+#include "BlockSubs/BlockSubstitutions.h"
 #include "OptObjectives.h"
 
 
@@ -72,6 +72,8 @@ protected :
         OptObjectives *_objectives;
 	BlockSubstitutions *_blockSubstitutions;
 
+        // Simulation controlers
+        ModPlusCtrls* _ctrls;
 
 	bool _useScan;
 
@@ -81,36 +83,44 @@ protected :
 
 public:
 	//Optimization(void);
-        Optimization(Project*,ModClassTree*,ModModelPlus* _mainModelPlus);
+        Optimization(Project*,ModModelPlus* modModelPlus);
 	Optimization(const Optimization &);
-        Problem* clone() const;
-	~Optimization(void);
+        Optimization(QDomElement domProblem,Project* project,bool &ok);
+        virtual Problem* clone() const;
+        virtual ~Optimization(void);
 
         static QString className(){return "Optimization";};
         virtual QString getClassName(){return Optimization::className();};
+        virtual bool hasQuickEndOption(){return true;}
 
 	//Get functions
-	ModModelPlus* modModelPlus();
-        ScannedVariables* scannedVariables(){return _scannedVariables;};
-        OptVariables *optimizedVariables(){return _optimizedVariables;};
-        OptObjectives *objectives(){return _objectives;};
-	BlockSubstitutions *blockSubstitutions(){return _blockSubstitutions;};
+        ModModelPlus* modModelPlus() const;
+        ScannedVariables* scannedVariables()const{return _scannedVariables;};
+        OptVariables *optimizedVariables()const{return _optimizedVariables;};
+        OptObjectives *objectives()const{return _objectives;};
+        BlockSubstitutions *blockSubstitutions()const{return _blockSubstitutions;};
 
 	
-	//overwrited functions
-	bool checkBeforeComp(QString & error);
-        Result* launch(ProblemConfig _config);
-	void store(QString destFolder, QString tempDir);
-	QDomElement toXmlData(QDomDocument & doc);
+        //overwrited functions (also virtual since other problems might inherit Optimization)
+        virtual bool checkBeforeComp(QString & error);
+        virtual Result* launch(ProblemConfig _config);
+        virtual void store(QString destFolder, QString tempDir);
+        virtual QDomElement toXmlData(QDomDocument & doc);
 	
 	//specific functions
 	void createSubExecs(QList<ModModelPlus*> & _subMod, QList<BlockSubstitutions*> & _subBlocks);
 
         //algo functions
         int getiCurAlgo();
-        OptimAlgo* getCurAlgo();
+        OptimAlgo* getCurAlgo() const;
         QStringList getAlgoNames();
         void setiCurAlgo(int);
+
+        // controlers
+        ModPlusCtrl* ctrl() const;
+        ModPlusCtrls* ctrls() const;
+        ModPlusCtrl::Type  ctrlType() const;
+        void setCtrlType(ModPlusCtrl::Type);
 
 
 	//block substitution
@@ -119,7 +129,7 @@ public:
 	int nbScans();
 
         // recompute points
-        void recomputePoints(OptimResult*, std::vector<int>,bool forceRecompute = false);
+        virtual void recomputePoints(OptimResult*, std::vector<int>,bool forceRecompute = false);
 	
 public slots :
         void onQuickEndAsked();

@@ -58,7 +58,7 @@
 
 class MainWindow;
 
-class MOMainTab :public QTabWidget
+class MOMainTab : public QTabWidget
 {
 	Q_OBJECT
 
@@ -66,8 +66,12 @@ public:
 	MOMainTab(QWidget *_mainWindow,Project* _project);
         virtual ~MOMainTab(void);
 
-	void addProblemTab(Project *project, Problem * problem);
-        void addResultTab(Project *project, Result * result);
+        void addProblemTab(Problem*,QWidget*);
+        void addResultTab(Result*,QWidget*);
+
+        void removeTab(Problem*);
+        void removeTab(Result*);
+
 	void removeTab(MOTabBase::TabType,QString name);
 	void removeTab(int);
         void enableCaseTab(OMCase*);
@@ -75,12 +79,13 @@ public:
 
 public slots:
 	void contextMenuEvent(QContextMenuEvent* pEvent);
-	void onProblemRenamed(QString);
-        void onTabCloseRequested(int index);
+        void onOMCaseRenamed(QString);
 
 private :
 	Project* project;
 	QWidget* mainWindow;
+        QMap<Problem*,QWidget*> _problemTabs;
+        QMap<Result*,QWidget*> _resultTabs;
 };
 
 #endif

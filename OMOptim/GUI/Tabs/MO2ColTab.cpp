@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "MO2ColTab.h"
+#include "Tabs/MO2ColTab.h"
 
 MO2ColTab::MO2ColTab(QString _projectName,MOItem* _mainItem,bool _closable,QWidget *parent)
 :MOTabCplx(_projectName,_mainItem,parent)
@@ -73,7 +73,7 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
 		dockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
 	else
 		dockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-	dockWidget->setLayout(new QGridLayout());
+        dockWidget->setLayout(new QGridLayout(this));
 	dockWidget->setWidget(widget);
 	dockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
 
@@ -105,7 +105,7 @@ void MO2ColTab::addFixedWidget(QString title,QWidget* widget,Qt::DockWidgetArea 
 	QDockWidget* dockWidget = new QDockWidget(title,this);
 	dockWidget->setObjectName(title);
 	dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-	dockWidget->setLayout(new QGridLayout());
+        dockWidget->setLayout(new QGridLayout(this));
 	dockWidget->setWidget(widget);
         dockWidget->setSizePolicy(widget->sizePolicy());
 	

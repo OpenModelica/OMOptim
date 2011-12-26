@@ -42,7 +42,8 @@
 
 #include "ModModelPlus.h"
 
-MOOptVector::MOOptVector(bool useScan, bool usePoints, ModModelPlus* modModelPlus)
+MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints, ModModelPlus* modModelPlus)
+    :MOVector<VariableResult>(owner)
 {
 	_useScan = useScan;
 	_usePoints = usePoints;
@@ -55,6 +56,8 @@ MOOptVector::MOOptVector(bool useScan, bool usePoints, ModModelPlus* modModelPlu
 
         _modModelPlus = modModelPlus;
         _displayShort = true;
+
+        connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
 
@@ -164,7 +167,7 @@ bool MOOptVector::isAvailablePoint(int iVar,int iScan,int iPoint) const
 MOOptVector* MOOptVector::clone() const
 {
 
-	MOOptVector* newVector = new MOOptVector(_useScan,_usePoints);
+        MOOptVector* newVector = new MOOptVector(_owner,_useScan,_usePoints);
 
 	int i;
 	VariableResult* newItem;

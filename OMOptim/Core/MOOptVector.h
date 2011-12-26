@@ -51,7 +51,7 @@ class MOOptVector : public MOVector<VariableResult>
 
 public:
 
-        MOOptVector(bool useScan, bool usePoints,ModModelPlus* modModelPlus = NULL);
+        MOOptVector(bool ownner,bool useScan, bool usePoints,ModModelPlus* modModelPlus = NULL);
 
 	QVariant data(const QModelIndex &index, int role) const;
 	//void addItem(VariableResult*);
@@ -93,6 +93,7 @@ signals:
 	void useScanChanged();
 	void nbScansChanged();
 	void nbPointsChanged();
+        void modified();
 };
 
 #endif

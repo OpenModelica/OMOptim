@@ -47,10 +47,10 @@ Result::Result()
 	_success = false;
         _problem = NULL;
 }
-Result::Result(Project* project,ModClassTree* modClassTree,Problem* clonedProblem)
-:OMCase(project,modClassTree)
+Result::Result(Project* project,const Problem & problem)
+:OMCase(project)
 {
-        _problem = clonedProblem;
+        _problem = problem.clone();
 	_success = false;
 
         if(_problem)
@@ -81,7 +81,8 @@ Result::Result(const Result &result)
 
 Result::~Result(void)
 {
-    delete _problem;
+    if(_problem)
+        _problem->deleteLater();
 }
 
 void Result::setDefaultSaveFileName()
@@ -106,12 +107,12 @@ Problem* Result::problem()
 	return _problem;
 }
 
-void Result::setProblem(Problem * clonedProblem)
+void Result::setProblem(const Problem & problem)
 {
-    if(_problem && (_problem!=clonedProblem))
-        delete _problem;
+    if(_problem)
+        _problem->deleteLater();
 
-    _problem = clonedProblem;
+    _problem = problem.clone();
 }
 
 bool Result::isSuccess()

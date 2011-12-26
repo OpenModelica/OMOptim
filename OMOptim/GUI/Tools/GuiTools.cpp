@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 
 
         GuiTools::GuiTools(void)
@@ -93,10 +93,13 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
 }
 
 
-ModClassTree* GuiTools::ModClassToTreeView(ModReader* modReader ,MOomc* moomc,const ModClass & modClass,QTreeView* treeView)
+ModClassTree* GuiTools::ModClassToTreeView(ModReader* modReader ,MOomc* moomc,const ModClass & modClass,QTreeView* treeView,bool showComponent)
 {
     ModClassTree* newTree = new ModClassTree(modReader,moomc/*,treeView*/);
-    newTree->addChild(newTree->rootElement(),modClass.clone());
+    newTree->setShowComponent(showComponent);
+    ModClass* root = modClass.clone();
+    root->clearDescendants(); // reset root : useful if showcomponents changed.
+    newTree->addChild(newTree->rootElement(),root);
 
     treeView->reset();
     treeView->setModel(newTree);
@@ -250,21 +253,21 @@ void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & i
 
     ModModelPlus* selectedModModelPlus = project->modModelPlus(selectedModel);
 
-    //Compile
-    QAction *compileModel = new QAction("Recompile model",menu);
-    connect(compileModel,SIGNAL(triggered()),selectedModModelPlus,SLOT(compile()));
-    menu->addAction(compileModel);
+//    //Compile
+//    QAction *compileModel = new QAction("Recompile model",menu);
+//    connect(compileModel,SIGNAL(triggered()),selectedModModelPlus,SLOT(compile()));
+//    menu->addAction(compileModel);
 
 
-    //Read variables
-    QAction *readVariables = new QAction("Read variables",menu);
-    connect(readVariables,SIGNAL(triggered()),selectedModModelPlus,SLOT(readVariables()));
-    menu->addAction(readVariables);
+//    //Read variables
+//    QAction *readVariables = new QAction("Read variables",menu);
+//    connect(readVariables,SIGNAL(triggered()),selectedModModelPlus,SLOT(readVariables()));
+//    menu->addAction(readVariables);
 
-    //Read connections
-    QAction *readConnections = new QAction("Read connections",menu);
-    connect(readConnections,SIGNAL(triggered()),selectedModModelPlus,SLOT(readConnections()));
-    menu->addAction(readConnections);
+//    //Read connections
+//    QAction *readConnections = new QAction("Read connections",menu);
+//    connect(readConnections,SIGNAL(triggered()),selectedModModelPlus,SLOT(readConnections()));
+//    menu->addAction(readConnections);
 
     //Add problem
     QMenu *addProblemMenu = menu->addMenu("Create problem");
@@ -276,52 +279,37 @@ void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & i
     connect(addEIProblem,SIGNAL(triggered()),project,SLOT(addNewEIProblem()));
 
 
-    //Set parameters
-    QAction *setParameters = new QAction("Set parameters...",menu);
-    connect(setParameters,SIGNAL(triggered()),selectedModModelPlus,SLOT(openParametersDlg()));
-    menu->addAction(setParameters);
+//    //Set parameters
+//    QAction *setParameters = new QAction("Set parameters...",menu);
+//    connect(setParameters,SIGNAL(triggered()),selectedModModelPlus,SLOT(openParametersDlg()));
+//    menu->addAction(setParameters);
 
     // Set mo dependencies
     QAction *setMoDeps = new QAction("Set .mo dependencies ...",menu);
     connect(setMoDeps,SIGNAL(triggered()),selectedModModelPlus,SLOT(openDependenciesDlg()));
     menu->addAction(setMoDeps);
 
-    //Select simulator
-    QActionGroup *simulator = new QActionGroup(menu);
-    simulator->setExclusive(true);
-    menu->addSeparator()->setText(tr("Simulator"));
+//    //Select simulator
+//    QActionGroup *simulator = new QActionGroup(menu);
+//    simulator->setExclusive(true);
+//    menu->addSeparator()->setText(tr("Simulator"));
 
-    ModPlusCtrl* curCtrl;
-    ModPlusCtrl::Type curType;
-    QList<ModPlusCtrl*> ctrls = selectedModModelPlus->ctrls()->values();
-    for(int i=0;i<ctrls.size();i++)
-    {
-        curCtrl = ctrls.at(i);
-        curType = selectedModModelPlus->ctrls()->key(curCtrl);
-        QAction* simAction = simulator->addAction(curCtrl->name());
-        simAction->setCheckable(true);
-        simAction->setChecked(selectedModModelPlus->ctrlType()==curType);
-        simAction->setData((int)curType);
-        menu->addAction(simAction);
-        connect(simAction,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlType()));
-        simulator->addAction(simAction);
-    }
-    menu->addSeparator()->setText("");
-
-
-
-
-
-//    QAction *dymola = simulator->addAction("Dymola");
-//    dymola->setCheckable(true);
-//    dymola->setChecked(selectedModModelPlus->ctrlType()==ModPlusCtrl::DYMOLA);
-
-//    QAction *openModelica = simulator->addAction("OpenModelica");
-//    openModelica->setCheckable(true);
-//    openModelica->setChecked(selectedModModelPlus->ctrlType()==ModPlusCtrl::OPENMODELICA);
-
-//    connect(openModelica,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlOpenModelica()));
-//    connect(dymola,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlDymola()));
+//    ModPlusCtrl* curCtrl;
+//    ModPlusCtrl::Type curType;
+//    QList<ModPlusCtrl*> ctrls = selectedModModelPlus->ctrls()->values();
+//    for(int i=0;i<ctrls.size();i++)
+//    {
+//        curCtrl = ctrls.at(i);
+//        curType = selectedModModelPlus->ctrls()->key(curCtrl);
+//        QAction* simAction = simulator->addAction(curCtrl->name());
+//        simAction->setCheckable(true);
+//        simAction->setChecked(selectedModModelPlus->ctrlType()==curType);
+//        simAction->setData((int)curType);
+//        menu->addAction(simAction);
+//        connect(simAction,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlType()));
+//        simulator->addAction(simAction);
+//    }
+//    menu->addSeparator()->setText("");
 
 }
 

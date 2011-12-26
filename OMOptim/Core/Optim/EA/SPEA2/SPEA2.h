@@ -60,9 +60,9 @@
 #include "OneSimulation.h"
 #include "Optimization.h"
 #include "OptimResult.h"
-#include "EAStdResult.h"
+#include "Results/EAStdResult.h"
 
-#include "SPEA2Parameters.h"
+#include "SPEA2/SPEA2Parameters.h"
 
 
 /********************************************************
@@ -70,7 +70,7 @@ First multi-objective genetic algorithm implementation.
 SPEA2 use NSGAII algorithm.
 It allows multi-objectives but only real variables (no integer)
 **********************************************************/
-#include "EOStd.h"
+#include "Chromosome/EOStd.h"
 
 class SPEA2 : public EABase
 {
@@ -82,7 +82,7 @@ public :
 
         EABase* clone()const;
 
-	QList<int> compatibleOMCases();
+        bool acceptMultiObjectives();
 
 	Result* launch(QString tempDir);
 	QString name();
@@ -97,14 +97,8 @@ private :
 
 Result* SPEA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
 {
-	Result* result;
-	switch(_problem->type())
-	{
-	case Problem::OPTIMIZATIONTYPE :
-                result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,
-                                                                       _modClassTree,arch,_parameters);
-		break;
-	}
+        Result* result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,arch);
+
 	return result;
 }
 

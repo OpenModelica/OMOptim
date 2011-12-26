@@ -356,7 +356,14 @@ QString MOParameterListed::sFieldName(int iField, int role)
 QString MOParameterListed::strValue()
 {
     return _mapList.value(_value.toInt());
-};
+}
+
+
+MOParameters::MOParameters()
+    :MOVector<MOParameter>(true)
+{
+    connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
+}
 
 QVariant MOParameters::value(int index,QVariant defaultValue)
 {

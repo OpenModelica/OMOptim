@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "WidgetSelectOptVars.h"
+#include "Widgets/WidgetSelectOptVars.h"
 #include "ui_WidgetSelectOptVars.h"
 #include <QtGui/QErrorMessage>
 
@@ -122,18 +122,18 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
         _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::DATATYPE,dataTypeDelegate);
 
 
-        DoubleSpinBoxDelegate* minDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
-        DoubleSpinBoxDelegate* maxDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* minDelegate = new DoubleSpinBoxDelegate(this,30);
+        DoubleSpinBoxDelegate* maxDelegate = new DoubleSpinBoxDelegate(this,30);
         _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::OPTMIN,minDelegate);
         _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::OPTMIN,maxDelegate);
 
-        DoubleSpinBoxDelegate* minObjDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
-        DoubleSpinBoxDelegate* maxObjDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* minObjDelegate = new DoubleSpinBoxDelegate(this,30);
+        DoubleSpinBoxDelegate* maxObjDelegate = new DoubleSpinBoxDelegate(this,30);
         _ui->tableObjectives->setItemDelegateForColumn(OptObjective::MIN,minDelegate);
         _ui->tableObjectives->setItemDelegateForColumn(OptObjective::MAX,maxDelegate);
 
-        DoubleSpinBoxDelegate* minScanDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
-        DoubleSpinBoxDelegate* maxScanDelegate = new DoubleSpinBoxDelegate(30,-std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),this);
+        DoubleSpinBoxDelegate* minScanDelegate = new DoubleSpinBoxDelegate(this,30);
+        DoubleSpinBoxDelegate* maxScanDelegate = new DoubleSpinBoxDelegate(this,30);
         _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANMIN,minScanDelegate);
         _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANMAX,maxScanDelegate);
 
@@ -334,5 +334,5 @@ void WidgetSelectOptVars::actualizeGui()
 
 void WidgetSelectOptVars::readVariables()
 {
-    _problem->modModelPlus()->readVariables();
+    _problem->modModelPlus()->readVariables(_problem->ctrl());
 }

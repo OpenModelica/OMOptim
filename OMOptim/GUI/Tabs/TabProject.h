@@ -47,7 +47,7 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include "Project.h"
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 
 #include <qwt_plot.h>
 #include <qwt_painter.h>
@@ -60,9 +60,7 @@
 #include <qwt_math.h>
 #include <qwt_picker.h>
 
-#include "WidgetProjectInfos.h"
-#include "TabModelVariables.h"
-#include "TabModelComponents.h"
+#include "Widgets/WidgetProjectInfos.h"
 #include "MOTab.h"
 
 namespace Ui {
@@ -88,6 +86,7 @@ public:
 signals:
     void newProject();
     void loadProject();
+    void loadPlugin();
 };
 
 

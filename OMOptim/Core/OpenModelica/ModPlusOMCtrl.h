@@ -47,8 +47,9 @@
 class ModPlusOMCtrl :public ModPlusCtrl
 {
 public:
-        ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* oms,QString mmoFolder,QString moFilePath,QString modModelName);
+        ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* oms);
         ~ModPlusOMCtrl(void);
+        ModPlusCtrl* clone();
 
         ModPlusCtrl::Type type();
         QString name();
@@ -67,7 +68,7 @@ public:
 
         // Simulate function
         bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy = QStringList(),QStringList moDependencies=QStringList());
-        void setMmoFolder(QString _mmoFolder);
+
 private :
         QString _initFileXml;
         QString _initFileTxt;

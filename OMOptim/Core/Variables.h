@@ -15,7 +15,7 @@ class ModModelPlus;
 class Variables : public MOVector<Variable>
 {
 public:
-    Variables(ModModelPlus* modModelPlus=NULL);
+    Variables(bool owner,ModModelPlus* modModelPlus=NULL);
 
     QVariant data(const QModelIndex &index, int role) const;
     void setModModelPlus(ModModelPlus*);
@@ -39,7 +39,7 @@ private :
 class OptVariables : public MOVector<OptVariable>
 {
 public:
-    OptVariables(ModModelPlus* modModelPlus=NULL);
+    OptVariables(bool owner,ModModelPlus* modModelPlus=NULL);
 
     QVariant data(const QModelIndex &index, int role) const;
     void setModModelPlus(ModModelPlus*);
@@ -59,7 +59,7 @@ private :
 class ScannedVariables : public MOVector<ScannedVariable>
 {
 public:
-    ScannedVariables(ModModelPlus* modModelPlus=NULL);
+    ScannedVariables(bool owner,ModModelPlus* modModelPlus=NULL);
 
     QVariant data(const QModelIndex &index, int role) const;
     void setModModelPlus(ModModelPlus*);

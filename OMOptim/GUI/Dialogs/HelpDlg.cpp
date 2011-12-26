@@ -45,7 +45,6 @@
 #include "HelpDlg.h"
 #include "ui_HelpDlg.h"
 #include <QtGui/QErrorMessage>
-#include "Software.h"
 #include "ModModel.h"
 
 #include <QtGui/QListWidget>

@@ -31,7 +31,7 @@ http://www-cep.ensmp.fr/english/
 
 
 
-        Dymola::Dymola(void)
+Dymola::Dymola(void)
 {
 }
 
@@ -192,9 +192,9 @@ QString Dymola::getExecutablePath()
     DWORD dwBufSize = sizeof(buf);
 
 
-	QString subkey("SOFTWARE\\Classes\\Applications\\Dymola.exe\\shell\\Run\\command");
+    QString subkey("SOFTWARE\\Classes\\Applications\\Dymola.exe\\shell\\Run\\command");
     
-	if( RegOpenKey(HKEY_LOCAL_MACHINE,VQTConvert::QString_To_LPCTSTR(subkey),&hKey) == ERROR_SUCCESS)
+    if( RegOpenKey(HKEY_LOCAL_MACHINE,VQTConvert::QString_To_LPCTSTR(subkey),&hKey) == ERROR_SUCCESS)
     {
         dwType = REG_SZ;
         if( RegQueryValueEx(hKey,NULL,NULL, &dwType, (BYTE*)buf, &dwBufSize) == ERROR_SUCCESS)
@@ -216,7 +216,7 @@ void Dymola::start(QString path,QProcess &simProcess,int maxNSec)
 {
 #ifdef WIN32
     simProcess.setWorkingDirectory(path);
-		
+
 
     QString appPath = "\""+path+"\\"+"Dymosim.exe\"";
 
@@ -243,7 +243,7 @@ void Dymola::start(QString path,QProcess &simProcess,int maxNSec)
 
 void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
 {
-	QString newLine;
+    QString newLine;
 
     QStringList lines = allDsinText.split("\n");
     int iLForm = lines.indexOf(QRegExp(".* # lform .*"));
@@ -255,12 +255,12 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
 
 
     int iPStopTime = parameters->findItem((int)Dymola::STOPTIME,MOParameter::INDEX);
-	int iLStopTime = lines.indexOf(QRegExp(".* # StopTime .*"));
+    int iLStopTime = lines.indexOf(QRegExp(".* # StopTime .*"));
     if((iLStopTime>-1) && (iPStopTime>-1))
     {
-		newLine =  "       "
-                   +parameters->at(iPStopTime)->getFieldValue(MOParameter::VALUE).toString()
-			+"                   # StopTime     Time at which integration stops";
+        newLine =  "       "
+                +parameters->at(iPStopTime)->getFieldValue(MOParameter::VALUE).toString()
+                +"                   # StopTime     Time at which integration stops";
         lines.replace(iLStopTime,newLine);
     }
 
@@ -269,8 +269,8 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     if((iLTolerance>-1) && (iPTolerance>-1))
     {
         newLine =  "       "
-                   +parameters->at(iPTolerance)->getFieldValue(MOParameter::VALUE).toString()
-                   +"                   # nInterval    Relative precision of signals for \n                            #              simulation, linearization and trimming";
+                +parameters->at(iPTolerance)->getFieldValue(MOParameter::VALUE).toString()
+                +"                   # nInterval    Relative precision of signals for \n                            #              simulation, linearization and trimming";
         lines.replace(iLTolerance,newLine);
     }
 
@@ -279,8 +279,8 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     if((iLnInterval>-1) && (iPnInterval>-1))
     {
         newLine =  "       "
-                   +parameters->at(iPnInterval)->getFieldValue(MOParameter::VALUE).toString()
-                   +"                   # nInterval    Number of communication intervals, if > 0";
+                +parameters->at(iPnInterval)->getFieldValue(MOParameter::VALUE).toString()
+                +"                   # nInterval    Number of communication intervals, if > 0";
         lines.replace(iLnInterval,newLine);
     }
 
@@ -289,12 +289,12 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     if((iLSolver>-1) && (iPSolver>-1))
     {
         newLine =  "       "
-                   +parameters->at(iPSolver)->getFieldValue(MOParameter::VALUE).toString()
-                   +"                   # Algorithm    Integration algorithm as integer";
+                +parameters->at(iPSolver)->getFieldValue(MOParameter::VALUE).toString()
+                +"                   # Algorithm    Integration algorithm as integer";
         lines.replace(iLSolver,newLine);
     }
 
-	allDsinText = lines.join("\n");
+    allDsinText = lines.join("\n");
 }
 
 bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *variables,QString modelName)
@@ -344,18 +344,25 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
             line = text->readLine();
             linefields << line.split(" ", QString::SkipEmptyParts);
         }
-        if((nv>=variables->size())||(linefields.size()!=8))
+        if(nv>=variables->size())
         {
             infoSender.sendError("Corrupted dsin file. Unable to read variables. Try to regenerate dsin file.");
             variables->clear();
             return false;
         }
-
-        variables->items[nv]->setValue(linefields[1].toDouble());
-        variables->items[nv]->setDataType(linefields[5].toInt()%4); // use %4 to avoid Dymola variable definition bug
-
+        if(linefields.size()<8)
+        {
+            infoSender.sendWarning("Cannot read variable information ["+variables->at(nv)->name()+"]. It will not be considered");
+            variables->items.removeAt(nv);
+        }
+        else
+        {
+            variables->items[nv]->setValue(linefields[1].toDouble());
+            variables->items[nv]->setDataType(linefields[5].toInt()%4); // use %4 to avoid Dymola variable definition bug
+            nv++;
+        }
         line = text->readLine();
-        nv++;
+
     }
 
     // Get variables' description
@@ -606,8 +613,8 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         QTextStream textRead(&file);
         QString allText = textRead.readAll();
         file.close();
-       
-		// change preamble
+
+        // change preamble
         writeParameters(allText,parameters);
 
         // change variable values
@@ -666,7 +673,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
                 {
                     infoSender.debug("found variable. 1 line. Total text captured:  "+rxLine.cap(0));
                     // if variable def were on only one line
-                    allText = allText.replace(rxLine.cap(0),newLine1+"\t"+newLine2);
+                    allText = allText.replace(rxLine.cap(0),newLine1+"\t"+newLine2+"\n");
                     infoSender.debug("New Text :  "+newLine1+"\t"+newLine2);
                 }
             }
@@ -675,7 +682,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
                 infoSender.send(Info("Unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
             }
         }
-	
+
         fileinfo.setFile(fileName);
         file.setFileName(fileinfo.filePath());
         bool ok = file.open(QIODevice::WriteOnly);

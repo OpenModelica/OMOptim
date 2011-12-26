@@ -40,7 +40,7 @@
 
 #include "TabProject.h"
 #include <QtGui/QSortFilterProxyModel>
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 
 
 namespace Ui
@@ -62,6 +62,7 @@ MOTabSimple(project_->name(),project_),ui(new Ui::TabProject_Class)
 
         connect(widgetInfos,SIGNAL(newProject()),this,SIGNAL(newProject()));
         connect(widgetInfos,SIGNAL(loadProject()),this,SIGNAL(loadProject()));
+        connect(widgetInfos,SIGNAL(loadPlugin()),this,SIGNAL(loadPlugin()));
 }
 
 TabProject::~TabProject()

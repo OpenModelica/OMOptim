@@ -45,7 +45,7 @@
 #include <QtGui/QWidget>
 #include<QtGui/QFileDialog>
 
-#include "WidgetList.h"
+#include "Widgets/WidgetList.h"
 #include "ParetoDominance.h"
 #include "Optimization.h"
 #include "OptimResult.h"
@@ -78,10 +78,14 @@ public :
 public slots :
     void setOnlyPareto(bool);
     void onExtSelectionChanged(QList<int>&);
+    void recomputeSelectedPoints();
+    void exportSelectedPoints();
+
 
 signals:
     void selectionChanged(QList<int>&);
     void shownPointsChanged(QList<int>&);
+    void pointsRecomputed();
 
 public:
     Ui::WidgetMooPointsListClass *_ui;

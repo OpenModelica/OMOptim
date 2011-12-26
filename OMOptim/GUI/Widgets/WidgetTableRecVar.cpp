@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,10 +35,10 @@
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
- 	@version 
+  @version
 */
 
-#include "WidgetTableRecVar.h"
+#include "Widgets/WidgetTableRecVar.h"
 #include "ui_WidgetTableRecVar.h"
 #include <QtGui/QErrorMessage>
 
@@ -49,33 +49,31 @@ WidgetTableRecVar::WidgetTableRecVar(OptimResult* result,QWidget *parent) :
     _ui(new Ui::WidgetTableRecVarClass)
 {
     _ui->setupUi(this);
-	
+
 	_result = result;
         Optimization* problem = dynamic_cast<Optimization*>(_result->problem());
-	
+
 	// recomputed table
 	_tableVariables = new MOTableView(this);
 	_ui->layoutTableVar->addWidget(_tableVariables);
 	GuiTools::ModelToViewWithFilter(_result->recomputedVariables(),_tableVariables,_ui->lineVariableFilter);
 	GuiTools::minimizeTableSize(_tableVariables);
 
-	
+
 	//slide
 	connect(_ui->spinScan,SIGNAL(valueChanged(int)),_ui->sliderScan,SLOT(setValue(int)));
 	connect(_ui->sliderScan,SIGNAL(valueChanged(int)),_ui->spinScan,SLOT(setValue(int)));
 	connect(_ui->spinScan,SIGNAL(valueChanged(int)),this,SLOT(onCurScanChanged(int)));
-	
+
 	_ui->sliderScan->setMinimum(0);
-        _ui->sliderScan->setMaximum(problem->nbScans()-1);
+    _ui->sliderScan->setMaximum(_result->recomputedVariables()->nbScans()-1);
 	_ui->spinScan->setMinimum(0);
-        _ui->spinScan->setMaximum(problem->nbScans()-1);
-	
+    _ui->spinScan->setMaximum(_result->recomputedVariables()->nbScans()-1);
+
 	bool show = _result->recomputedVariables()->getUseScan();
 	_ui->groupBox->setVisible(show);
-
-	
-	connect(_result,SIGNAL(pointsRecomputed()),this,SIGNAL(onPointsRecomputed()));
 }
+
 
 WidgetTableRecVar::~WidgetTableRecVar()
 {

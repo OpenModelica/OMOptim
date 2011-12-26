@@ -39,6 +39,7 @@
 
   */
 #include "MOThreads.h"
+#include <QtGui/QDialog>
 
 namespace MOThreads
 {
@@ -58,7 +59,18 @@ ProblemThread::ProblemThread(Problem* problem,ProblemConfig config)
 
 void ProblemThread::run()
 {
+    QString error;
+    bool ok = _problem->checkBeforeComp(error);
+    if(!ok)
+    {
+        infoSender.send(Info(error,ListInfo::WARNING2));
+        //QMessageBox::warning(QApplication::activeWindow(), "Error",error,QMessageBox::Ok,QMessageBox::Ok);
+        _result = NULL;
+    }
+    else
+    {
     emit begun(_problem);
+
     QString msg = "Launching problem : name = "+_problem->name()+" ; type = "+_problem->getClassName();
     infoSender.send(Info(msg));
     _launchDate = QDateTime::currentDateTime();
@@ -72,6 +84,7 @@ void ProblemThread::run()
         int nSec = _launchDate.secsTo(QDateTime::currentDateTime());
         _result->_duration = QTime(0,0,0,0);
         _result->_duration = _result->_duration.addSecs(nSec);
+    }
     }
 }
 

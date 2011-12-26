@@ -11,7 +11,6 @@
 #include "BlockSubstituteConnDlg.h"
 #include "ui_BlockSubstituteConnDlg.h"
 #include <QtGui/QErrorMessage>
-#include "Software.h"
 #include "ModModel.h"
 
 #include <QtGui/QListWidget>
@@ -66,7 +65,7 @@ void BlockSubstituteConnDlg::validate()
         {
             connComps.append(portCombos.at(i).at(j)->itemData(portCombos.at(i).at(j)->currentIndex()).toString());
         }
-        tmpBlockSub->subConnectedComps.replace(i,connComps);
+        tmpBlockSub->_subConnectedComps.replace(i,connComps);
     }
 
 
@@ -116,15 +115,15 @@ void BlockSubstituteConnDlg::initCombos()
 
 
     // create labels and layout
-    for(int i=0; i < tmpBlockSub->subPorts.size(); i++)
+    for(int i=0; i < tmpBlockSub->_subPorts.size(); i++)
     {
-        QList<QComboBox*> _curPortCombos;
-        QString _portName = tmpBlockSub->subPorts.at(i);
-        QString _portNameShort = _portName.section(".",-1,-1);
-        QLabel* _portLabel = new QLabel(_portNameShort,ui->groupConnections);
-        _portLabel->setObjectName(_portName);
-        ui->connLayout->addWidget(_portLabel,i*2,0);
-        portLabels.append(_portLabel);
+        QList<QComboBox*> curPortCombos;
+        QString portName = tmpBlockSub->_subPorts.at(i);
+        QString portNameShort = portName.section(".",-1,-1);
+        QLabel* portLabel = new QLabel(portNameShort,ui->groupConnections);
+        portLabel->setObjectName(portName);
+        ui->connLayout->addWidget(portLabel,i*2,0);
+        portLabels.append(portLabel);
 
         // add button
         if(isEditable)
@@ -132,40 +131,40 @@ void BlockSubstituteConnDlg::initCombos()
             QIcon icon1;
             icon1.addFile(QString::fromUtf8(":/icons/Add"), QSize(30,30), QIcon::Normal, QIcon::Off);
             QPushButton* newPush = new QPushButton(icon1,"",ui->groupConnections);
-            newPush->setObjectName(_portName+"push");
+            newPush->setObjectName(portName+"push");
             newPush->setMaximumSize(QSize(30,30));
             ui->connLayout->addWidget(newPush,i*2,1);
             connect(newPush,SIGNAL(clicked()),this,SLOT(addPortCombo()));
         }
 
-        QGridLayout* _portLayout = new QGridLayout(ui->groupConnections);
-        ui->connLayout->addLayout(_portLayout,2*i+1,0);
-        _portLayout->setObjectName(_portName+"layout");
-        portLayouts.append(_portLayout);
+        QGridLayout* portLayout = new QGridLayout(ui->groupConnections);
+        ui->connLayout->addLayout(portLayout,2*i+1,0);
+        portLayout->setObjectName(portName+"layout");
+        portLayouts.append(portLayout);
 
 
         // add combos in layout
-        if(tmpBlockSub->subConnectedComps.at(i).size()==0)
+        if(tmpBlockSub->_subConnectedComps.at(i).size()==0)
         {
-            _curPortCombos.append(addCombo(basicItems,basicItemsData,_portName));
+            curPortCombos.append(addCombo(basicItems,basicItemsData,portName));
         }
         else
         {
-            for(int j=0;j<tmpBlockSub->subConnectedComps.at(i).size();j++)
+            for(int j=0;j<tmpBlockSub->_subConnectedComps.at(i).size();j++)
             {
-                QString connComp = tmpBlockSub->subConnectedComps.at(i).at(j);
+                QString connComp = tmpBlockSub->_subConnectedComps.at(i).at(j);
                 if(!basicItemsData.contains(connComp))
                 {
                     infoSender.debug("ERROR in BlockSubstitutions initCombos()");
                 }
                 else
                 {
-                    _curPortCombos.append(addCombo(basicItems,basicItemsData,_portName,-1,connComp));
+                    curPortCombos.append(addCombo(basicItems,basicItemsData,portName,-1,connComp));
                 }
             }
         }
 
-        portCombos.append(_curPortCombos);
+        portCombos.append(curPortCombos);
     }
 
 
@@ -174,21 +173,21 @@ void BlockSubstituteConnDlg::initCombos()
 
 
 
-QComboBox* BlockSubstituteConnDlg::addCombo(QStringList items, QStringList itemsData,QString _portName,int iPos,QString dataSel)
+QComboBox* BlockSubstituteConnDlg::addCombo(QStringList items, QStringList itemsData,QString portName,int iPos,QString dataSel)
 {
 
 
-    int index = tmpBlockSub->subPorts.indexOf(_portName);
-    QGridLayout* _portLayout = portLayouts.at(index);
+    int index = tmpBlockSub->_subPorts.indexOf(portName);
+    QGridLayout* portLayout = portLayouts.at(index);
     if(iPos==-1)
-        iPos=_portLayout->rowCount()-1;
+        iPos=portLayout->rowCount()-1;
 
 
 
     // combobox
     QComboBox* newCB = new QComboBox(ui->groupConnections);
-    newCB->setObjectName(_portName+"##"+QString::number(iPos)+"##combo");
-    _portLayout->addWidget(newCB,2*iPos,0,1,2);
+    newCB->setObjectName(portName+"##"+QString::number(iPos)+"##combo");
+    portLayout->addWidget(newCB,2*iPos,0,1,2);
 
 
     //adding items in combo
@@ -204,7 +203,7 @@ QComboBox* BlockSubstituteConnDlg::addCombo(QStringList items, QStringList items
 
     // spacer
     QSpacerItem *spacer = new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
-    _portLayout->addItem(spacer,2*iPos+1,0,1,1);
+    portLayout->addItem(spacer,2*iPos+1,0,1,1);
 
     return newCB;
 }
@@ -212,10 +211,10 @@ QComboBox* BlockSubstituteConnDlg::addCombo(QStringList items, QStringList items
 void BlockSubstituteConnDlg::addPortCombo()
 {
     QPushButton *button = qobject_cast<QPushButton *>(sender());
-    QString _portName = button->objectName();
-    _portName.remove(_portName.lastIndexOf("push"),QString("push").length());
+    QString portName = button->objectName();
+    portName.remove(portName.lastIndexOf("push"),QString("push").length());
 
-    addCombo(basicItems,basicItemsData,_portName);
+    addCombo(basicItems,basicItemsData,portName);
 }
 
 
@@ -231,23 +230,23 @@ void BlockSubstituteConnDlg::fillBasicItems()
     basicItemsData.append("");
 
     // fill basic items from org
-    for(int i=0;i<tmpBlockSub->orgPorts.size();i++)
+    for(int i=0;i<tmpBlockSub->_orgPorts.size();i++)
     {
-        for(int j=0;j<tmpBlockSub->orgConnectedComps.at(i).size();j++)
+        for(int j=0;j<tmpBlockSub->_orgConnectedComps.at(i).size();j++)
         {
-            QString connComp =  tmpBlockSub->orgConnectedComps.at(i).at(j);
+            QString connComp =  tmpBlockSub->_orgConnectedComps.at(i).at(j);
             QString comboText = connComp;
-            comboText += " (connected to "+tmpBlockSub->orgPorts.at(i).section(".",-1,-1) +")";
+            comboText += " (connected to "+tmpBlockSub->_orgPorts.at(i).section(".",-1,-1) +")";
             basicItems.push_back(comboText);
             basicItemsData.push_back(connComp);
         }
     }
 
-    for(int i=0;i<tmpBlockSub->subPorts.size();i++)
+    for(int i=0;i<tmpBlockSub->_subPorts.size();i++)
     {
-        for(int j=0;j<tmpBlockSub->subConnectedComps.at(i).size();j++)
+        for(int j=0;j<tmpBlockSub->_subConnectedComps.at(i).size();j++)
         {
-            QString connComp =  tmpBlockSub->subConnectedComps.at(i).at(j);
+            QString connComp =  tmpBlockSub->_subConnectedComps.at(i).at(j);
             if(!basicItemsData.contains(connComp))
             {
                 QString comboText = connComp;

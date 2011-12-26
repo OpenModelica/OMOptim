@@ -46,7 +46,7 @@
 #include "ui_WidgetSelectOptVars.h"
 #include "OptimResult.h"
 #include "MOTableView.h"
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 #include "MyDelegates.h"
 
 namespace Ui {

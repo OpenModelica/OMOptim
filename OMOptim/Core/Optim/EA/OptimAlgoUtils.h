@@ -58,6 +58,8 @@ namespace OptimAlgoUtils{
                         return new SPEA2(_project,_problem,_modClassTree);
                 case OptimAlgosList::iSPEA2Adapt:
                         return new SPEA2Adapt(_project,_problem,_modClassTree);
+                case OptimAlgosList::iSA1:
+                        return new SA1(_project,_problem,_modClassTree);
 		default:
 			//Problem
 			return NULL;
@@ -71,10 +73,7 @@ namespace OptimAlgoUtils{
 		{
                         OptimAlgo* newAlgo;
                         newAlgo = getNewAlgo(problem->project(),problem,modClassTree,i);
-			if(newAlgo->compatibleOMCases().contains(problem->type()))
 				algos.push_back(newAlgo);
-			else
-				delete newAlgo;
 		}
 		return algos;
 	}

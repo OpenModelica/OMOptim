@@ -28,7 +28,7 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
         @file TabEIProblem.cpp
  	@brief Comments for file documentation.
@@ -43,12 +43,11 @@
 #include "MOOptPlot.h"
 #include "SimpleMilpTarget.h"
 
-
-TabEIProblem::TabEIProblem(Project *project,EIProblem *problem, QWidget *parent) :
-        MO2ColTab(project->name(),problem,false,parent)
+TabEIProblem::TabEIProblem(EIProblem *problem, QWidget *parent) :
+    MO2ColTab(problem->project()->name(),problem,false,parent)
 {
 
-    _project = project;
+    _project = problem->project();
     _problem = problem;
 
     //problem given in argument could be either a EITarget,EIMERProblem or EIHEN
@@ -56,19 +55,19 @@ TabEIProblem::TabEIProblem(Project *project,EIProblem *problem, QWidget *parent)
     if(dynamic_cast<EITarget*>(problem))
         _problemTarget = new EITarget(*dynamic_cast<EITarget*>(problem));
     else
-        _problemTarget = new EITarget(_project,_project->modClassTree(),_project->moomc());
+        _problemTarget = new EITarget(_project);
 
      // create new ProblemMER or copy from problem
     if(dynamic_cast<EIMERProblem*>(problem))
         _problemMER = new EIMERProblem(*dynamic_cast<EIMERProblem*>(problem));
     else
-        _problemMER = new EIMERProblem(_project,_project->modClassTree(),_project->moomc());
+        _problemMER = new EIMERProblem(_project);
 
     // create new ProblemHEN or copy from problem
     if(dynamic_cast<EIHEN1Problem*>(problem))
         _problemHEN = new EIHEN1Problem(*dynamic_cast<EIHEN1Problem*>(problem));
     else
-        _problemHEN = new EIHEN1Problem(_project,_project->modClassTree(),_project->moomc());
+        _problemHEN = new EIHEN1Problem(_project);
 
 
 
@@ -76,35 +75,37 @@ TabEIProblem::TabEIProblem(Project *project,EIProblem *problem, QWidget *parent)
     _resultMER = new EIMERResult();
 
     // Variables
-  //  _widgetEIInputVars = new WidgetEIInputVars(_project,_problem->inputVars(),_problem->eiTree()->rootElement(),this);
-    _widgetTreeStreams = new WidgetTreeStreams(_problem->eiTree(), true,true,_project->modClassTree(),_project->moomc(),this,_problem->inputVars());
+    _widgetTreeStreams = new WidgetTreeStreams(_problem->eiTree(), true,true,_project->modClassTree(),_project->moomc(),this);
 
     _widgetCCPlot = new WidgetCCPlot(_resultMER,this);
-    _widgetSelPointScan = new WidgetSelPointScan(problem->inputVars(),this);
     _widgetTableConnConstr = new WidgetTableConnConstr(
             _problem->connConstrs(),
             _problem->eiTree(),
             true,
             this);
+    _widgetCtrl = new WidgetCtrlParameters(project,_problem->modelsReferedCtrls(),false,this);
+
+
     _widgetLaunchEI = new WidgetLaunchEI(_problem,this);
 
 
 
   //  addDockWidget("Loaded variables",_widgetEIInputVars);
     addDockWidget("EI Streams",_widgetTreeStreams);
-    addDockWidget("Points and Scans",_widgetSelPointScan,_widgetTreeStreams);
     addDockWidget("Composites, MER",_widgetCCPlot,_widgetTreeStreams);
     addDockWidget("Connections",_widgetTableConnConstr,_widgetTreeStreams);
+    addDockWidget("Simulator",_widgetCtrl,_widgetTreeStreams);
     addFixedWidget("Launch",_widgetLaunchEI,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
-    connect(_problem,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
-  //  connect(_widgetEIInputVars,SIGNAL(inputVarsModified()),this,SLOT(onInputVarsModified()));
     connect(_widgetLaunchEI,SIGNAL(targetAsked()),this,SLOT(onTargetAsked()));
     connect(_widgetLaunchEI,SIGNAL(MERAsked()),this,SLOT(onMERAsked()));
     connect(_widgetLaunchEI,SIGNAL(HENAsked()),this,SLOT(onHENAsked()));
     connect(_widgetTreeStreams,SIGNAL(EILoadModelAsked()),this,SLOT(onEILoadModelAsked()));
 
-    updateSelPointScan();
+
+    // ctrl update
+    connect(_problem,SIGNAL(addedModelRef(ModModelPlus*)),this,SLOT(onAddedModelRef(ModModelPlus*)));
+    connect(_problem,SIGNAL(removedModelRef(ModModelPlus*)),this,SLOT(onRemovedModelRef(ModModelPlus*)));
 
     mapDockWidgets.key(_widgetTreeStreams)->raise();
     _widgetTreeStreams->raise();
@@ -114,8 +115,19 @@ TabEIProblem::TabEIProblem(Project *project,EIProblem *problem, QWidget *parent)
 
 TabEIProblem::~TabEIProblem()
 {
-    int a=2;
+    // first delete widgets
+    delete _widgetTreeStreams;
+    delete _widgetCCPlot;
+    delete _widgetTableConnConstr;
+    delete _widgetLaunchEI;
 
+    // then deletes problems and result
+    delete _problemMER;
+    if(_resultMER)
+        delete _resultMER;
+
+    delete _problemTarget;
+    delete _problemHEN;
 }
 
 void TabEIProblem::actualize()
@@ -124,28 +136,20 @@ void TabEIProblem::actualize()
     _widgetCCPlot->actualizeGui();
 }
 
-void TabEIProblem::updateSelPointScan()
-{
-    bool show = _problem->inputVars()->getUsePoints()||_problem->inputVars()->getUseScan();
-    setWidgetVisible(_widgetSelPointScan,show);
-}
-
-void TabEIProblem::onInputVarsModified()
-{
-    _widgetTreeStreams->setInputVars(_problem->inputVars());
-    updateSelPointScan();
-}
-
 void TabEIProblem::onTargetAsked()
 {
-    _problemTarget->setEITree(*_problem->eiTree());
-    _problemTarget->setInputVars(_problem->inputVars()->clone());
-    _problemTarget->setConnConstrs(new EIConnConstrs(*_problem->connConstrs()));
-
-
     MOParametersDlg dlg(_problemTarget->parameters());
     if(dlg.exec()==QDialog::Accepted)
     {
+
+        // Fill EITree First
+        //replace ei references by values
+        EITree* filledEI = EIValueFiller::getFilledEI(_problem->eiTree(),_problem->storedResults(),_project);
+
+        // Launch problem MER
+        _problemTarget->setEITree(*filledEI);
+    _problemTarget->setConnConstrs(new EIConnConstrs(*_problem->connConstrs()));
+
         _widgetCCPlot->setMERResult(NULL); // otherwise, segmentation fault when detaching curves
         _project->launchProblem(_problemTarget);
     }
@@ -153,17 +157,29 @@ void TabEIProblem::onTargetAsked()
 
 void TabEIProblem::onMERAsked()
 {
-    QString tempDir = _project->tempPath();
-    ProblemConfig cfg;
-    //cfg.tempDir = tempDir;
-    _problemMER->setEITree(*_problem->eiTree());
-    _problemMER->setInputVars(_problem->inputVars()->clone());
-
-
     MOParametersDlg dlg(_problemMER->parameters());
 
     if(dlg.exec()==QDialog::Accepted)
     {
+
+    ProblemConfig cfg;
+
+        // Fill EITree First
+        //replace ei references by values
+        EITree* filledEI = EIValueFiller::getFilledEI(_problem->eiTree(),_problem->storedResults(),_project);
+        _problemMER->setEITree(*filledEI);
+
+        // check
+        QString error;
+        bool ok = _problemMER->checkBeforeComp(error);
+        if(!ok)
+        {
+            infoSender.send(Info(error,ListInfo::WARNING2));
+            QMessageBox::warning(QApplication::activeWindow(), "Error",error,QMessageBox::Ok,QMessageBox::Ok);
+        }
+        else
+        {
+
         _widgetCCPlot->setMERResult(NULL); // otherwise, segmentation fault when detaching curves
 
         if(_resultMER)
@@ -173,7 +189,7 @@ void TabEIProblem::onMERAsked()
 
         // update target inputvars
         // (useful if MER has launched some simulation -> keep results and avoid simulating several times)
-        _problemTarget->updateInputVars(_problemMER->inputVars());
+            //_problemTarget->updateInputVars(_problemMER->inputVars());
 
         //change view to show composites
         _widgetCCPlot->raise();
@@ -184,15 +200,21 @@ void TabEIProblem::onMERAsked()
         _widgetCCPlot->setMERResult(_resultMER);
 
     }
+    }
 }
 
 void TabEIProblem::onHENAsked()
 {
     QString tempDir = _project->tempPath();
     ProblemConfig cfg;
-    //cfg.tempDir = tempDir;
-    _problemHEN->setEITree(*_problem->eiTree());
-    _problemHEN->setInputVars(_problem->inputVars()->clone());
+
+    // Fill EITree First
+    //replace ei references by values
+    EITree* filledEI = EIValueFiller::getFilledEI(_problem->eiTree(),_problem->storedResults(),_project);
+
+    // Launch problem MER
+    _problemHEN->setEITree(*filledEI);
+
     _problemHEN->setConnConstrs(new EIConnConstrs(*_problem->connConstrs()));
 
     MOParametersDlg dlg(_problemHEN->parameters());
@@ -213,4 +235,14 @@ void TabEIProblem::onEILoadModelAsked()
     }
     _widgetTreeStreams->_treeView->expandAll();
     _widgetTreeStreams->_treeView->resizeColumnToContents(0);
+}
+
+void TabEIProblem::onAddedModelRef(ModModelPlus*)
+{
+    _widgetCtrl->update(_problem->modelsReferedCtrls());
+}
+
+void TabEIProblem::onRemovedModelRef(ModModelPlus*)
+{
+    _widgetCtrl->update(_problem->modelsReferedCtrls());
 }

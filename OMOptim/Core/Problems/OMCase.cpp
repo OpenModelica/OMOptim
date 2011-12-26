@@ -41,19 +41,25 @@
 #include "OMCase.h"
 #include "LowTools.h"
 #include "EABase.h"
+#include "Project.h"
 
 OMCase::OMCase(void)
 {
+    QString msg = "new OMCase"+name();
+    qDebug(msg.toLatin1().data());
 }
 
-OMCase::OMCase(Project* project,ModClassTree* modClassTree)
+
+OMCase::OMCase(Project* project)
 {
     _project = project;
-    _modClassTree = modClassTree;
+    _modClassTree = _project->modClassTree();
 }
 
 OMCase::OMCase(const OMCase &omCase)
 {
+
+
     _name = omCase._name;
     _project = omCase._project;
     _modClassTree = omCase._modClassTree;
@@ -62,10 +68,13 @@ OMCase::OMCase(const OMCase &omCase)
     _filesToCopy = omCase._filesToCopy;
     _saveFolder = omCase._saveFolder;
     _saveFileName = omCase._saveFileName;
+
+    QString msg = "new OMCase"+name();
+    qDebug(msg.toLatin1().data());
 }
 
 OMCase::~OMCase(void)
-{
+{  
     QString msg = "deleted OMCase"+name();
     qDebug(msg.toLatin1().data());
 }

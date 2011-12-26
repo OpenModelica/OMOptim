@@ -42,32 +42,34 @@
 
 #include "Optimization.h"
 #include "Project.h"
-#include "MO2ColTab.h"
+#include "Tabs/MO2ColTab.h"
 
-#include "WidgetOptParameters.h"
-#include "WidgetSelectOptVars.h"
-#include "WidgetSelectComponents.h"
-#include "WidgetFilesList.h"
-#include "WidgetOptimActions.h"
+#include "Widgets/WidgetOptParameters.h"
+#include "Widgets/WidgetSelectOptVars.h"
+#include "Widgets/WidgetSelectComponents.h"
+#include "Widgets/WidgetFilesList.h"
+#include "Widgets/WidgetOptimActions.h"
+#include "Widgets/WidgetCtrlParameters.h"
 
 
 class TabOptimization : public MO2ColTab {
     Q_OBJECT
 
 public:
-	TabOptimization(Project *project, Optimization *problem_, QWidget *parent);
+        TabOptimization(Optimization *problem, QWidget *parent);
     ~TabOptimization();
     TabType tabType(){return TABPROBLEM;};
 
-	Project *project;
-	Optimization *problem;
+        Project *_project;
+        Optimization *_problem;
 
 
-	WidgetOptParameters *widgetOptParameters;
-	WidgetSelectOptVars *widgetSelectOptVars;
-	WidgetSelectComponents *widgetSelectComponents;
-        WidgetFilesList *widgetFilesList;
-        WidgetOptimActions *widgetOptimActions;
+        WidgetOptParameters *_widgetOptParameters;
+        WidgetSelectOptVars *_widgetSelectOptVars;
+        WidgetSelectComponents *_widgetSelectComponents;
+        WidgetFilesList *_widgetFilesList;
+        WidgetOptimActions *_widgetOptimActions;
+        WidgetCtrlParameters *_widgetCtrl;
 
 
 	void actualizeGui();

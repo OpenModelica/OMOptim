@@ -42,23 +42,26 @@
 #include "LowTools.h"
 #include "EABase.h"
 
-Problem::Problem(Project* project,ModClassTree* modClassTree)
-    :OMCase(project,modClassTree)
+Problem::Problem(Project* project)
+    :OMCase(project)
 {
-        _type = UNDEFINEDTYPE;
+        _parameters = new MOParameters();
+}
+
+Problem::Problem(QDomElement domProblem,Project* project,bool &ok)
+    :OMCase(project)
+{
         _parameters = new MOParameters();
 }
 
 Problem::Problem(const Problem &problem)
 :OMCase(problem)
 {
-	_type = problem._type;
         _parameters = new  MOParameters(*problem._parameters);
 }
 
 Problem::~Problem(void)
 {
-    qDebug("deleting Problem");
     delete _parameters;
 }
 
@@ -78,15 +81,6 @@ unsigned Problem::getNbFields()
 {
 	return 1;
 }
-
-
-
-void Problem::setType(ProblemType type)
-{
-	_type=type;
-}
-
-
 
 
 

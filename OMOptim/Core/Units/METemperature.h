@@ -72,7 +72,7 @@ public:
         METemperature operator-(const double& diffTemp) const;
         METemperature operator+(const double& diffTemp) const;
         METemperature operator+(const METemperature& b) const;
-    bool equalsAbs(const METemperature& b,const METemperature & maxAbsDistance) const;
+    bool equalsAbs(const METemperature& b,const double & maxAbsDistance) const;
 
 
     static bool TcolderThan(const METemperature T1, const METemperature T2){return T1<T2;}

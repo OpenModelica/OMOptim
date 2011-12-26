@@ -153,49 +153,49 @@ Save::~Save(void)
 
 
 
-void Save::saveProblem(Problem* problem)
-{
-    // Root element
-    QDomDocument doc("OMCase");
-    QDomElement caseRoot = doc.createElement("OMCase");
-    doc.appendChild(caseRoot);
+//void Save::saveProblem(Problem* problem)
+//{
+//    // Root element
+//    QDomDocument doc("OMCase");
+//    QDomElement caseRoot = doc.createElement("OMCase");
+//    doc.appendChild(caseRoot);
 
-    QDomElement problemRoot = doc.createElement("OMProblem");
-    QDomElement problemEl = problem->toXmlData(doc);
-    caseRoot.appendChild(problemRoot);
-    problemRoot.appendChild(problemEl);
+//    QDomElement problemRoot = doc.createElement("OMProblem");
+//    QDomElement problemEl = problem->toXmlData(doc);
+//    caseRoot.appendChild(problemRoot);
+//    problemRoot.appendChild(problemEl);
 
-    // Writing to file
-    if(!problem->saveFileName().isEmpty())
-    {
-	QFile file(problem->entireSavePath());
-	QFileInfo fileInfo(problem->entireSavePath());
-	QDir dir = fileInfo.absoluteDir();
-	dir.mkpath(dir.absolutePath());
+//    // Writing to file
+//    if(!problem->saveFileName().isEmpty())
+//    {
+//	QFile file(problem->entireSavePath());
+//	QFileInfo fileInfo(problem->entireSavePath());
+//	QDir dir = fileInfo.absoluteDir();
+//	dir.mkpath(dir.absolutePath());
 
-	if(file.exists())
-	{
-            file.remove();
-	}
-	file.open(QIODevice::WriteOnly);
-	QTextStream ts( &file );
-	ts << doc.toString();
-	file.close();
-    }
-}
+//	if(file.exists())
+//	{
+//            file.remove();
+//	}
+//	file.open(QIODevice::WriteOnly);
+//	QTextStream ts( &file );
+//	ts << doc.toString();
+//	file.close();
+//    }
+//}
 
 void Save::saveResult(Result* result)
 {
-    switch (result->problemType())
-    {
-    case Problem::OPTIMIZATIONTYPE:
-        saveOptimResult((OptimResult*) result);
-        break;
-    default :
-        saveStdResult(result);
-        break;
+//    switch (result->problemType())
+//    {
+//    case Problem::OPTIMIZATIONTYPE:
+//        saveOptimResult((OptimResult*) result);
+//        break;
+//    default :
+//        saveStdResult(result);
+//        break;
 
-    }
+//    }
 }
 void Save::saveStdResult(Result* result)
 {
@@ -394,15 +394,23 @@ void Save::saveProject(Project* project)
     file.close();
 
     // Saving solved OMCases
+    Result* curResult;
     for (int nr=0;nr<project->results()->size();nr++)
     {
-        Save::saveResult(project->results()->at(nr));
+        curResult = project->results()->at(nr);
+        ProblemInterface* interface = project->problemsInterfaces().interfaceOf(curResult->problem());
+        if(interface)
+            interface->saveResult(curResult);
     }
 
     // Saving OMCases
+    Problem* curProblem;
     for (int nr=0;nr<project->problems()->size();nr++)
     {
-        Save::saveProblem(project->problems()->at(nr));
+        curProblem = project->problems()->at(nr);
+        ProblemInterface* interface = project->problemsInterfaces().interfaceOf(curProblem);
+        if(interface)
+            interface->saveProblem(curProblem);
     }
 
     // Saving ModModelPlus
@@ -447,32 +455,7 @@ void Save::saveModModelPlus(ModModelPlus* modModelPlus)
     QDomElement cVariables = modModelPlus->variables()->toXmlData(doc,"Variables");
     root.appendChild(cVariables);
 
-    // Controlers
-    QDomElement cControlers = doc.createElement("Controlers");
-    cControlers.setAttribute("curType",(int)modModelPlus->ctrlType());
 
-
-    // Controler parameters
-    QList<QDomElement> cCtrls;
-    QList<QDomElement> cCtrlsParams;
-    QDomElement ccurCtrl;
-    QDomElement ccurParams;
-    ModPlusCtrl* curCtrl;
-    for(int iCtrl=0;iCtrl<modModelPlus->ctrls()->values().size();iCtrl++)
-    {
-        curCtrl = modModelPlus->ctrls()->values().at(iCtrl);
-        ccurCtrl = doc.createElement("Controler");
-        ccurCtrl.setAttribute("type",(int)curCtrl->type());
-        ccurParams = curCtrl->parameters()->toXmlData(doc,"parameters");
-
-        ccurCtrl.appendChild(ccurParams);
-        cControlers.appendChild(ccurCtrl);
-
-        cCtrls.push_back(ccurCtrl);
-        cCtrlsParams.push_back(ccurParams);
-    }
-
-    root.appendChild(cControlers);
 
     // .mo dependencies
     QDomElement cMoDeps = doc.createElement( "moDependencies" );

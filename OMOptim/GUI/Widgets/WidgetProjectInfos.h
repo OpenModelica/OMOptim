@@ -46,7 +46,7 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include "Project.h"
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 #include "LowTools.h"
 
 #include <qwt_plot.h>
@@ -83,6 +83,7 @@ public:
 signals:
     void newProject();
     void loadProject();
+    void loadPlugin();
 
 };
 

@@ -38,12 +38,12 @@
  	@version 
 */
 
-#include "WidgetFilesList.h"
+#include "Widgets/WidgetFilesList.h"
 #include "ui_WidgetFilesList.h"
 #include <QtGui/QErrorMessage>
 
 
-WidgetFilesList::WidgetFilesList(QStringList & filesList,QWidget *parent,QString filter):
+WidgetFilesList::WidgetFilesList(QStringList & filesList,QWidget *parent,QString filter,QString infos):
     QWidget(parent),_filesList(filesList),
     _ui(new Ui::WidgetFilesListClass)
 {
@@ -52,6 +52,8 @@ WidgetFilesList::WidgetFilesList(QStringList & filesList,QWidget *parent,QString
 
     for(int i=0;i<_filesList.size();i++)
         _ui->filesList->addItem(_filesList.at(i));
+
+    setInfos(infos);
 
     connect(_ui->pushAddFiles,SIGNAL(clicked()),this,SLOT(addFiles()));
     connect(_ui->pushRemoveFiles,SIGNAL(clicked()),this,SLOT(removeFiles()));
@@ -89,6 +91,15 @@ void WidgetFilesList::addFiles(QStringList list)
             _filesList.push_back(list.at(i));
         }
     }
+}
+
+void WidgetFilesList::setInfos(const QString &infos)
+{
+    _ui->labelInfos->setText(infos);
+    if(infos.isEmpty())
+        _ui->labelInfos->hide();
+    else
+        _ui->labelInfos->show();
 }
 
 void WidgetFilesList::removeFiles()

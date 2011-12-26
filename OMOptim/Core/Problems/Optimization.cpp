@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -45,21 +45,24 @@
 #include "LowTools.h"
 
 
-Optimization::Optimization(Project* project,ModClassTree* modClassTree,ModModelPlus* modModelPlus)
-    :Problem(project,modClassTree)
+Optimization::Optimization(Project* project,ModModelPlus* modModelPlus)
+    :Problem(project)
 {
     _modModelPlus = modModelPlus;
 
-    _type = Problem::OPTIMIZATIONTYPE;
     _name="Optimization";
-    _optimizedVariables = new OptVariables(modModelPlus);
-    _scannedVariables = new ScannedVariables(modModelPlus);
-    _objectives = new OptObjectives(modModelPlus);
+    _optimizedVariables = new OptVariables(true,modModelPlus);
+    _scannedVariables = new ScannedVariables(true,modModelPlus);
+    _objectives = new OptObjectives(true,modModelPlus);
     _blockSubstitutions = new BlockSubstitutions();
 
     _algos = OptimAlgoUtils::getNewAlgos(this,_modClassTree);
 
     _iCurAlgo=0;
+
+    // ctrls
+    _ctrls = new ModPlusCtrls(project,modModelPlus);
+
 }
 
 Optimization::Optimization(const Optimization &optim)
@@ -72,6 +75,7 @@ Optimization::Optimization(const Optimization &optim)
     _scannedVariables = optim._scannedVariables->clone();
     _objectives = optim._objectives->clone();
     _blockSubstitutions = optim._blockSubstitutions->clone();
+    _ctrls = optim._ctrls->clone();
 
 
     //cloning algos
@@ -95,12 +99,105 @@ Optimization::~Optimization()
     for(int i=0;i<_algos.size();i++)
         delete _algos.at(i);
 
-    delete _optimizedVariables;
-    delete _objectives;
-    delete _blockSubstitutions;
+    _optimizedVariables->deleteLater();
+    _objectives->deleteLater();
+    _blockSubstitutions->deleteLater();
+    _ctrls->deleteLater();
 
 }
 
+
+Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
+    :Problem(project)
+{
+    // initialization
+    _modModelPlus = NULL;
+    _algos = OptimAlgoUtils::getNewAlgos(this,_modClassTree);
+
+    // look for modmodelplus
+    QDomElement domInfos;
+    ok = !domProblem.isNull();
+    ok = ok && (domProblem.tagName()==Optimization::className());
+    if(ok)
+    {
+        domInfos = domProblem.firstChildElement("Infos");
+        QString modelName = domInfos.attribute("model");
+
+        // Find modModelPlus
+        ModModel* modModel = _project->findModModel(modelName);
+        if(modModel == NULL)
+        {
+            infoSender.sendWarning("Unable to find model "+modelName);
+            ok = false;
+
+        }
+        _modModelPlus = project->modModelPlus(modModel);
+    }
+
+    if(!_modModelPlus)
+    {
+        ok = false;
+        //initialize default(otherwise seg fault in destructor)
+        _optimizedVariables = new OptVariables(true);
+        _scannedVariables = new ScannedVariables(true);
+        _objectives = new OptObjectives(true);
+        _blockSubstitutions = new BlockSubstitutions();
+        _ctrls = new ModPlusCtrls(project,NULL);
+    }
+    else
+    {
+
+        // finishing initialization
+        _optimizedVariables = new OptVariables(_modModelPlus);
+        _scannedVariables = new ScannedVariables(_modModelPlus);
+        _objectives = new OptObjectives(_modModelPlus);
+        _blockSubstitutions = new BlockSubstitutions();
+
+        _iCurAlgo=0;
+
+
+        // Infos
+        this->setName(domInfos.attribute("name", "" ));
+
+        // Optimized Variables
+        QDomElement domOptVars = domProblem.firstChildElement("OptimizedVariables");
+        this->optimizedVariables()->setItems(domOptVars);
+
+        // Objectives
+        QDomElement domObj = domProblem.firstChildElement("Objectives");
+        this->objectives()->setItems(domObj);
+
+        // Scanned Variables
+        QDomElement domScann = domProblem.firstChildElement("ScannedVariables");
+        this->scannedVariables()->setItems(domScann);
+
+        // Files to copy
+        QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
+        QString text = cFilesToCopy.text();
+        this->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
+
+        // Controlers
+        QDomElement cControlers = domProblem.firstChildElement("Controlers");
+        _ctrls = new ModPlusCtrls(project,_modModelPlus,cControlers);
+
+        // BlockSubstitutions
+        QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
+        this->setBlockSubstitutions(new BlockSubstitutions(project,_modModelPlus,domBlockSubs));
+
+        // EA
+        QDomElement domEA = domProblem.firstChildElement("EA");
+        QDomElement domEAInfos = domEA.firstChildElement("Infos");
+        if(!domEAInfos.isNull())
+        {
+            this->setiCurAlgo(domEAInfos.attribute("num", "" ).toInt());
+        }
+        QDomElement domEAParameters = domEA.firstChildElement("Parameters");
+        if(!domEAParameters.isNull())
+        {
+            this->getCurAlgo()->_parameters->update(domEAParameters);
+        }
+    }
+}
 /** Launch optimization procedure. checkBeforeComp() is not called in this function.
 *   Be sure it has been called previously.
 */
@@ -168,6 +265,16 @@ bool Optimization::checkBeforeComp(QString & error)
         nbErrors++;
     }
 
+    // check if optimization algorithm compatible with objectives number
+    if((_objectives->size()>1) && ! getCurAlgo()->acceptMultiObjectives())
+    {
+        ok = false;
+        curError = "Current alogrithm does not support multi-objectives";
+        error += curError + "\n";
+        nbErrors++;
+    }
+
+
     // check if objectives have scan function
     if(_scannedVariables->size()>0)
     {
@@ -216,10 +323,6 @@ Result* Optimization::launch(ProblemConfig _config)
     createSubExecs(_subModels,_subBlocks);
 
     OptimResult* result = dynamic_cast<OptimResult*>(((EABase*)getCurAlgo())->launch(_project->tempPath()));
-
-    //fill problem in result
-    if(result->problem()==NULL)
-        result->setProblem(this->clone());
 
     result->setName(this->name()+" result");
 
@@ -278,7 +381,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
             //Creating a new OneSimulation problem based on same model
             //and specifying overwrited variables from optimized variable values
             //*************************************************************
-            OneSimulation *oneSim = new OneSimulation(_project,result->modClassTree(),result->modModelPlus());
+            OneSimulation *oneSim = new OneSimulation(_project,result->modModelPlus());
             Variable* overVar;
             for(int iOverVar=0;iOverVar < result->optVariablesResults()->size();iOverVar++)
             {
@@ -380,8 +483,8 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
     for(int i=0; i < _blockSubstitutions->getSize();i++)
     {
         BlockSubstitution *curBlockSub = _blockSubstitutions->getAt(i);
-        if(!curBlockSub->subComponent.isEmpty())
-            map.insert(curBlockSub->orgComponent,curBlockSub->subComponent);
+        if(!curBlockSub->_subComponent.isEmpty())
+            map.insert(curBlockSub->_orgComponent,curBlockSub->_subComponent);
     }
 
     int nbOrgs = map.uniqueKeys().size();
@@ -439,12 +542,12 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
         ModModel* newModModel = new ModModel(_project->moomc(),_project->rootModClass(),_modModelPlus->modModelName(),newMoPath);
 
         // create new modModelPlus
-        ModModelPlus* newModModelPlus = new ModModelPlus(_project->moomc(),_project,_project->modClassTree(),newModModel);
+        ModModelPlus* newModModelPlus = new ModModelPlus(_project,newModModel);
         newModModelPlus->setMmoFilePath(newMmoFilePath);
 
         // apply blocksubs
         BlockSubstitutions *curSubBlocks = new BlockSubstitutions();
-	
+
         oneChange = false;
         for(int i=0; i<index.size();i++)
         {
@@ -465,7 +568,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 
         if(oneChange)
         {
-            bool compiledOk = newModModelPlus->compile();
+            bool compiledOk = newModModelPlus->compile(ctrl());
 
             if(compiledOk)
             {
@@ -486,7 +589,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
     }
 }
 
-ModModelPlus* Optimization::modModelPlus()
+ModModelPlus* Optimization::modModelPlus() const
 {
     return _modModelPlus;
 }
@@ -494,7 +597,7 @@ ModModelPlus* Optimization::modModelPlus()
 void Optimization::setBlockSubstitutions(BlockSubstitutions* blockSubstitutions)
 {
     if(_blockSubstitutions)
-        delete _blockSubstitutions;
+        _blockSubstitutions->deleteLater();
 
     _blockSubstitutions = blockSubstitutions;
 }
@@ -517,7 +620,6 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     QDomElement cInfos = doc.createElement("Infos");
     cProblem.appendChild(cInfos);
     cInfos.setAttribute("name", name());
-    cInfos.setAttribute("type", type());
     cInfos.setAttribute("model", _modModelPlus->modModelName());
 
     // Optimized variables
@@ -535,6 +637,10 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     //BlockSubstitutions
     QDomElement cBlocks = _blockSubstitutions->toXmlData(doc);
     cProblem.appendChild(cBlocks);
+
+    // Controlers
+    QDomElement cControlers = ctrls()->toXmlData(doc);
+    cProblem.appendChild(cControlers);
 
     // Files to copy
     QDomElement cFilesToCopy = doc.createElement("FilesToCopy");
@@ -579,7 +685,7 @@ int Optimization::getiCurAlgo()
     return _iCurAlgo;
 }
 
-OptimAlgo* Optimization::getCurAlgo()
+OptimAlgo* Optimization::getCurAlgo() const
 {
     if((_iCurAlgo>-1)&&(_iCurAlgo<_algos.size()))
         return _algos.at(_iCurAlgo);
@@ -594,7 +700,6 @@ QStringList Optimization::getAlgoNames()
     for(int i=0;i<_algos.size();i++)
         names.push_back(_algos.at(i)->name());
     return names;
-
 }
 
 void Optimization::setiCurAlgo(int iCurAlgo)
@@ -610,4 +715,27 @@ void Optimization::setiCurAlgo(int iCurAlgo)
 void Optimization::onQuickEndAsked()
 {
     getCurAlgo()->onQuickEndAsked();
+}
+
+
+
+
+ModPlusCtrl* Optimization::ctrl() const
+{
+    return _ctrls->currentCtrl();
+}
+
+ModPlusCtrls* Optimization::ctrls() const
+{
+    return _ctrls;
+}
+
+ModPlusCtrl::Type  Optimization::ctrlType() const
+{
+    return _ctrls->currentCtrlType();
+}
+
+void Optimization::setCtrlType(ModPlusCtrl::Type type)
+{
+    _ctrls->setCurrentCtrlType(type);
 }

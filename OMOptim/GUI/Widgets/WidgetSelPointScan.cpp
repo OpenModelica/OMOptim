@@ -38,9 +38,9 @@
  	@version 
 */
 
-#include "WidgetSelPointScan.h"
+#include "Widgets/WidgetSelPointScan.h"
 #include <QtGui/QSortFilterProxyModel>
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 
 namespace Ui
 {

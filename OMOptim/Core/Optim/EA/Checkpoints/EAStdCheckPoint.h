@@ -50,6 +50,9 @@
 #include <utils/selectors.h>
 #include <utils/eoParser.h>
 #include <utils/eoState.h>
+
+//#include "continuator/moCheckpoint.h"
+
 #include <metric/moeoContributionMetric.h>
 #include <metric/moeoEntropyMetric.h>
 #include <utils/moeoArchiveUpdater.h>
@@ -61,6 +64,7 @@
 #include <QtCore/QObject>
 #include "EAUpdaterDispObjGUI.h"
 #include "MOParameter.h"
+//#include "myEOArchiveUpdater.h"
 
 bool testDirRes(std::string _dirName, bool _erase);
 
@@ -125,7 +129,8 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
   // Archive
   //////////////////
   // update the archive every generation
-  moeoArchiveUpdater < MOEOT > * updater = new moeoArchiveUpdater < MOEOT > (_archive, _pop);
+
+  moeoArchiveUpdater< MOEOT > * updater = new moeoArchiveUpdater < MOEOT > (_archive, _pop);
   _state.storeFunctor(updater);
   checkpoint.add(*updater);
   
@@ -169,5 +174,113 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
   // and that's it for the (control and) output
   return checkpoint;
 }
+
+
+///**
+// * This functions allows to build an moCheckPoint for multi-objective optimization from the parser (partly taken from make_checkpoint_pareto.h)
+// * @param _parser the parser
+// * @param _state to store allocated objects
+// * @param _eval the funtions evaluator
+// * @param _continue the stopping crietria
+// * @param _sol the solution
+// * @param _archive the archive of non-dominated solutions
+// */
+//template < class MOEOT >
+//moCheckpoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _state, eoEvalFuncCounter < MOEOT > & _eval,
+//                                                                                         eoContinue < MOEOT > & _continue, MOEOT & _sol, moeoArchive < MOEOT > & _archive,
+//                                                       Project* _project, MOParameters *_parameters,QString tempDir)
+//{
+//  moCheckpoint < MOEOT > & checkpoint = _state.storeFunctor(new moCheckpoint < MOEOT > (_continue));
+//  /* the objective vector type */
+//  typedef typename MOEOT::ObjectiveVector ObjectiveVector;
+
+
+//  QString saveFolder = tempDir;
+//  QString genSaveFilePath = tempDir+QDir::separator() + "iteration";
+//  QString archSaveFilePath = tempDir+QDir::separator() + "archive";
+//  QString contribSaveFilePath = tempDir+QDir::separator() + "contribution";
+//  QString secondStatsSaveFilePath = tempDir+QDir::separator() + "secondStats";
+//  QString bestStatsSaveFilePath = tempDir+QDir::separator() + "bestStats";
+
+
+//    unsigned int saveFreq = _parameters->value("SaveFrequency",50).toInt();
+//    unsigned int maxIter = _parameters->value("MaxIterations",50).toInt();
+
+
+
+//  eoValueParam<unsigned int> *evalCounter = new eoValueParam<unsigned int>(0, "Gen.");
+//  // Create an incrementor (sub-class of eoUpdater).
+//  eoIncrementor<unsigned int> & increment = _state.storeFunctor( new eoIncrementor<unsigned int>(evalCounter->value()) );
+//  // Add it to the checkpoint
+//  checkpoint.add(increment);
+
+
+//  //////////////////////////////////
+//  // State saver
+//  //////////////////////////////
+//  eoCountedStateSaver *stateSaver1;
+//  if(saveFreq==0)
+//  {
+//          //just save last state (saveFreq is replaced by maximum number of iterations in order to avoid intermediate saving)
+//          stateSaver1 = new eoCountedStateSaver(maxIter, _state, genSaveFilePath.toStdString(),true);
+//  }
+//  else
+//  {
+//          // save every "savefreq" generations
+//          stateSaver1 = new eoCountedStateSaver(saveFreq, _state, genSaveFilePath.toStdString(),true);
+//  }
+//  _state.storeFunctor(stateSaver1);
+//  checkpoint.add(*stateSaver1);
+
+
+//  ///////////////////
+//  // Archive
+//  //////////////////
+//  // update the archive every generation
+
+//  myEOArchiveUpdater< MOEOT > * updater = new myEOArchiveUpdater < MOEOT > (_archive, _sol);
+//  _state.storeFunctor(updater);
+//  checkpoint.add(*updater);
+
+//  // display obj vector in GUI
+//  EAUpdaterDispObjGUI < MOEOT > * disp_updater = new EAUpdaterDispObjGUI < MOEOT > (_archive);
+//  _state.storeFunctor(disp_updater);
+//  checkpoint.add(*disp_updater);
+
+//  // store the objective vectors contained in the archive every generation
+//   moeoArchiveObjectiveVectorSavingUpdater < MOEOT > * save_updater = new moeoArchiveObjectiveVectorSavingUpdater < MOEOT > (_archive, archSaveFilePath.toStdString(),true);
+//  _state.storeFunctor(save_updater);
+//  checkpoint.add(*save_updater);
+
+
+//  // store the contribution of the non-dominated solutions
+//  moeoContributionMetric < ObjectiveVector > * contribution = new moeoContributionMetric < ObjectiveVector >;
+//  moeoBinaryMetricSavingUpdater < MOEOT > * contribution_updater = new moeoBinaryMetricSavingUpdater < MOEOT > (*contribution, _archive, contribSaveFilePath.toStdString());
+//  _state.storeFunctor(contribution_updater);
+//  checkpoint.add(*contribution_updater);
+
+//  // Stats
+//  eoFileMonitor *bestStatsFileMonitor = new eoFileMonitor(bestStatsSaveFilePath.toStdString());
+//  checkpoint.add(*bestStatsFileMonitor);
+//  _state.storeFunctor(bestStatsFileMonitor);
+
+//  eoFileMonitor *secondStatsFileMonitor = new eoFileMonitor(secondStatsSaveFilePath.toStdString());
+//  checkpoint.add(*secondStatsFileMonitor);
+//  _state.storeFunctor(secondStatsFileMonitor);
+
+//  eoBestFitnessStat<MOEOT> *bestStat = new   eoBestFitnessStat<MOEOT>;
+//  checkpoint.add(*bestStat);
+//  _state.storeFunctor(bestStat);
+//  bestStatsFileMonitor->add(*bestStat);
+//  // Second moment stats: average and stdev
+//  eoSecondMomentStats<MOEOT> *secondStat = new eoSecondMomentStats<MOEOT>;
+//  checkpoint.add(*secondStat);
+//  _state.storeFunctor(secondStat);
+//  secondStatsFileMonitor->add(*secondStat);
+
+
+//  // and that's it for the (control and) output
+//  return checkpoint;
+//}
 
 #endif

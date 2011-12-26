@@ -38,7 +38,7 @@
   @version
 */
 
-#include "WidgetSelectComponents.h"
+#include "Widgets/WidgetSelectComponents.h"
 #include "ui_WidgetSelectComponents.h"
 #include <QtGui/QErrorMessage>
 
@@ -57,8 +57,8 @@ WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* pr
     //Tree components
     _ui->treeLibrary->setModel(project->modClassTree());
 
-    ModClassTree* modelTree = GuiTools::ModClassToTreeView(_project->modReader(),_project->moomc(),*_problem->modModelPlus()->modModel(),_ui->treeComponents);
-    modelTree->setShowComponent(true);
+    ModClassTree* modelTree = GuiTools::ModClassToTreeView(_project->modReader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
+                                                           _ui->treeComponents,true);
 
     // Diagram of blocks
     _blockScene = new BlockSubsScene(_problem->blockSubstitutions(),_problem->modModelPlus()->modModel(),
@@ -94,7 +94,7 @@ void WidgetSelectComponents::addReplacedComponent()
     if(!alreadyReplaced.contains(replacedCompName))
     {
         BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
-                                                               replacedCompName,QString(),_project->modClassTree(),true,ok);
+                                                               replacedCompName,QString(),true,ok);
 
         if(ok)
             _problem->blockSubstitutions()->add(newBlockSub);
@@ -123,8 +123,7 @@ void WidgetSelectComponents::addReplacingComponent()
         // look for an existing but empty block
         bool ok;
         BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
-                                                               replacedCompNames.at(0),replacingCompName,
-                                                               _project->modClassTree(),true,ok);
+                                                               replacedCompNames.at(0),replacingCompName,true,ok);
 
         if(!ok)
             delete newBlockSub;

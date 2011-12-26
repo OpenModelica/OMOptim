@@ -60,7 +60,7 @@
 #include <QApplication>
 
 //#include "CCTools.h"
-//#include "MOCCCurve.h"
+//#include "Plots/MOCCCurve.h"
 
 
 
@@ -70,7 +70,7 @@ class MOPlot : public QwtPlot
 	Q_OBJECT 
 public:
 	inline MOPlot(void);
-	~MOPlot(void){};
+    inline ~MOPlot(void);
         inline void addCurve(QwtPlotCurve *curve);
         inline void setCurves(QList<QwtPlotCurve*> & _curves);
 	inline int getNearestPointIndex(QwtPlotCurve *,const QwtDoublePoint &);
@@ -175,6 +175,14 @@ MOPlot::MOPlot()
 	connect (zoomer1,SIGNAL(zoomed (const QwtDoubleRect &)),this,SLOT(zoomed (const QwtDoubleRect &)));
 	setEnabledZoom(false);
 
+}
+
+MOPlot::~MOPlot()
+{
+    //detach curves because they will be deleted elsewhere
+    // and should not be deleted here
+    for(int i=0;i<curves.size();i++)
+        curves.at(i)->detach();
 }
 
 void MOPlot::setCurves(QList<QwtPlotCurve*>& _curves)

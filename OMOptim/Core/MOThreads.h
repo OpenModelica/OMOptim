@@ -41,8 +41,6 @@
 #define _MOTHREADS_H
 
 #include "ModModelPlus.h"
-#include "EITree.h"
-
 
 #include "MOVector.h"
 #include <QtCore/QThread>

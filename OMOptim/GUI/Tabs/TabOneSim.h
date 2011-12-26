@@ -45,7 +45,7 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include "Project.h"
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 
 #include <qwt_plot.h>
 #include <qwt_painter.h>
@@ -58,13 +58,14 @@
 #include <qwt_math.h>
 #include <qwt_picker.h>
 
-#include "WidgetFilesList.h"
-#include "WidgetOneSimVars.h"
-#include "MO2ColTab.h"
-#include "WidgetTableVar.h"
+#include "Widgets/WidgetFilesList.h"
+#include "Widgets/WidgetOneSimVars.h"
+#include "Tabs/MO2ColTab.h"
+#include "Widgets/WidgetTableVar.h"
+#include "Widgets/WidgetCtrlParameters.h"
 
 #ifdef USEEI
-	#include "WidgetCCPlot.h"
+	#include "Widgets/WidgetCCPlot.h"
 #endif
 
 
@@ -73,7 +74,7 @@ class TabOneSim : public MO2ColTab {
     Q_OBJECT
 
 public:
-    TabOneSim(Project *project,OneSimulation *problem,QWidget *parent = 0);
+    TabOneSim(OneSimulation *problem,QWidget *parent = 0);
     ~TabOneSim();
     TabType tabType(){return TABPROBLEM;};
 
@@ -83,6 +84,8 @@ public:
 private :
         WidgetOneSimVars *_widgetOneSimVars;
         WidgetFilesList *_widgetFilesList;
+        WidgetCtrlParameters *_widgetCtrl;
+
 
 
 };

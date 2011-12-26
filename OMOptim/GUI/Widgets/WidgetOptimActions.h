@@ -75,6 +75,10 @@ public:
 public slots :
         void launch();
         void restoreProblem();
+        void onShowModelAsked();
+
+signals:
+        void showModclass(ModClass*);
 
 
 };

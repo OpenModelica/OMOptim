@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "WidgetCalculateMooPoints.h"
+#include "Widgets/WidgetCalculateMooPoints.h"
 #include "ui_WidgetCalculateMooPoints.h"
 #include <QtGui/QErrorMessage>
 #include "QtGui/QListWidget"
@@ -65,8 +65,6 @@ WidgetCalculateMooPoints::~WidgetCalculateMooPoints()
 {
     delete _ui;
 }
-
-
 void WidgetCalculateMooPoints::recomputeSelectedPoints()
 {
 	std::vector<int> pointsList;
@@ -81,19 +79,19 @@ void WidgetCalculateMooPoints::recomputeSelectedPoints()
 
 void WidgetCalculateMooPoints::exportSelectedPoints()
 {
-	
+
 	// get file name
 	QString csvPath = QFileDialog::getSaveFileName(
 		this,
 		"MO - Export optimum points",
 		QString::null,
 		"CSV file (*.csv)" );
-	
+
 	if(!csvPath.isNull())
 	{
                 QList<int> listPoints = _widgetMooPointsList->_listPoints->getSelectedIndexes();
                 QString csvText = _result->buildAllVarsFrontCSV(listPoints);
-		
+
 		QFile frontFile(csvPath);
 		if(frontFile.exists())
 			frontFile.remove();
@@ -104,3 +102,4 @@ void WidgetCalculateMooPoints::exportSelectedPoints()
 		frontFile.close();
 	}
 }
+

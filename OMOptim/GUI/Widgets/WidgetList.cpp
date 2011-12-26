@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "WidgetList.h"
+#include "Widgets/WidgetList.h"
 
 WidgetList::WidgetList(QWidget *_parent):QListWidget(_parent)
 {

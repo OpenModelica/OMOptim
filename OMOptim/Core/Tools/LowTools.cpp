@@ -58,7 +58,7 @@ bool LowTools::removeDir(QString folder)
 	{
 		bool removed,tempBool;
 
-		QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
+                QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
 		QString provFile;
 		for (int indf=0;indf<files.size();indf++)
 		{
@@ -85,7 +85,7 @@ bool LowTools::removeDir(QString folder)
 			
 			if(!removed)
 			{
-			//	emit sendInfo( Info(ListInfo::TEMPFOLDERUNREMOVABLE,folder));
+                                infoSender.send(Info(ListInfo::FOLDERUNREMOVABLE,folder));
 				return false;
 			}
 		}
@@ -121,6 +121,18 @@ void LowTools::copyDir(QString org,QString dest)
 			QFile::copy(orgFilePath,destFilePath);
 		}
 	}
+}
+
+QStringList LowTools::getDuplicates(const QStringList & list)
+{
+    QStringList result;
+
+    for(int i=0;i<list.size();i++)
+    {
+        if(list.indexOf(list.at(i),i+1)>-1)
+            result.push_back(list.at(i));
+    }
+    return result;
 }
 
 void LowTools::removeDuplicates(QVector<double> &vector)

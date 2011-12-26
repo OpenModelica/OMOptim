@@ -41,7 +41,6 @@
 #define _OPTIMALGO_H
 
 #include <QtCore/QObject>
-//#include "AlgoConfig.h"
 #include "MOParameter.h"
 
 class Problem;
@@ -57,9 +56,15 @@ public:
         OptimAlgo(const OptimAlgo &);
 	
         virtual OptimAlgo* clone() const = 0;
-	virtual QList<int> compatibleOMCases() = 0;
 	virtual QString name() =0;
 	virtual void setProblem(Problem* _problem);
+
+
+        /**
+          * \brief Determines if algorithm accepts or not several objectives.
+          * Determines if algorithm accepts or not several objectives. Pure virtual function.
+          */
+        virtual bool acceptMultiObjectives() = 0;
 
         virtual void setDefaultParameters() = 0;
         virtual void onQuickEndAsked(){};

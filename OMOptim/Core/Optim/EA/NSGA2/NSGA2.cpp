@@ -76,7 +76,7 @@
 //-----------------------------------------------------------------------------
 
 #include "NSGA2.h"
-#include "EOStd.h"
+#include "Chromosome/EOStd.h"
 #include "EAStdInitBounded.h"
 #include "EAStdMutation.h"
 #include "SBCrossover.h"
@@ -129,18 +129,11 @@ void NSGA2::setDefaultParameters()
     NSGA2Parameters::setDefaultParameters(_parameters);
 }
 
-QList<int> NSGA2::compatibleOMCases()
+
+bool NSGA2::acceptMultiObjectives()
 {
-	QList<int> _problems;
-	_problems.push_back(Problem::OPTIMIZATIONTYPE);
-	return _problems;
+    return true;
 }
-
-
-
-
-
-
 
 
 // main
@@ -166,17 +159,8 @@ Result* NSGA2::launch(QString tempDir)
 	std::vector<eoIntInterval> intBounds;
 	int nbDouble=0,nbInt=0,nbBool=0;
 
-
-	
-	switch(_problem->type())
-	{
-	case Problem::OPTIMIZATIONTYPE :
 		EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
-		break;
-	/*case VARIABLEDETERMINATION :
-		EAStdBounds::setBounds((VariableDet*)_problem,index,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
-		break;*/
-	}
+
 
 	/************************************
 	PROGRESS
@@ -189,17 +173,11 @@ Result* NSGA2::launch(QString tempDir)
 	/************************************
 	FITNESS EVALUATION
 	************************************/
-	moeoEvalFunc < EOStd > *plainEval;
-	switch(_problem->type())
-	{
-	case Problem::OPTIMIZATIONTYPE :
-                plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modClassTree);
-		break;
-	}
+        moeoEvalFunc < EOStd > *plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modClassTree);
+
         OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
 	state.storeFunctor(eval);
 
-	
 
 	//************************************
 	//INITIAL POPULATION
@@ -296,7 +274,7 @@ Result* NSGA2::launch(QString tempDir)
 	///************************************
 	//BUILD NSGA-II
 	//************************************/
-	
+
 
 	NSGA2Algo<EOStd> nsgaII (checkpoint,*eval, *xover, *mutation);
 

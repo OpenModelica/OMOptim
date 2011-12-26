@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "WidgetSelectModModel.h"
+#include "Widgets/WidgetSelectModModel.h"
 #include "ui_WidgetSelectModModel.h"
 #include <QtGui/QErrorMessage>
 

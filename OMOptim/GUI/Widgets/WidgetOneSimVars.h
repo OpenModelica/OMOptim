@@ -46,9 +46,7 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include "Project.h"
-#include "MOTab.h"
-#include "WidgetTableStreams.h"
-
+#include "Tabs/MOTab.h"
 namespace Ui {
     class WidgetOneSimVarsClass;
 }
@@ -77,8 +75,7 @@ public slots :
 	void addScannedVariables();
 	void deleteScannedVariables();
 	void simulate();
-
-    
+        void readVariables();
 };
 
 #endif // WidgetOneSimVarsCLASS_H

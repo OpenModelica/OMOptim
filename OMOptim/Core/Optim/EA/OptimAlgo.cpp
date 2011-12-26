@@ -64,3 +64,5 @@ void OptimAlgo::setProblem(Problem* problem)
 {
 	_problem = problem;
 }
+
+

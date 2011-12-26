@@ -38,7 +38,7 @@
  	@version 
 */
 
-#include "WidgetTableVar.h"
+#include "Widgets/WidgetTableVar.h"
 
 
 

@@ -45,9 +45,9 @@
 #include <QtGui/QWidget>
 #include<QtGui/QFileDialog>
 
-#include "WidgetList.h"
+#include "Widgets/WidgetList.h"
 #include "ParetoDominance.h"
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 #include "Optimization.h"
 #include "OptimResult.h"
 #include "ui_WidgetMooPlot.h"

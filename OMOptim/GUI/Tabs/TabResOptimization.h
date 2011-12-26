@@ -46,7 +46,7 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include "Project.h"
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 #include "OptimResult.h"
 
 #include <qwt_plot.h>
@@ -61,15 +61,15 @@
 #include <qwt_picker.h>
 
 #include "TabOptimization.h"
-#include "MO2ColTab.h"
-#include "WidgetBlocks.h"
-#include "WidgetMooPlot.h"
-#include "WidgetMooPointsList.h"
-#include "WidgetOptTable.h"
-#include "WidgetTableRecVar.h"
-#include "WidgetToolBar.h"
-#include "WidgetCalculateMooPoints.h"
-#include "WidgetOptimActions.h"
+#include "Tabs/MO2ColTab.h"
+#include "Widgets/WidgetBlocks.h"
+#include "Widgets/WidgetMooPlot.h"
+#include "Widgets/WidgetMooPointsList.h"
+#include "Widgets/WidgetOptTable.h"
+#include "Widgets/WidgetTableRecVar.h"
+#include "Widgets/WidgetToolBar.h"
+#include "Widgets/WidgetCalculateMooPoints.h"
+#include "Widgets/WidgetOptimActions.h"
 
 namespace Ui {
     class TabResOptimizationClass;
@@ -79,7 +79,7 @@ class TabResOptimization : public MO2ColTab {
     Q_OBJECT
 
 public:
-        TabResOptimization(Project *project, OptimResult *result, QWidget *parent = 0);
+        TabResOptimization(OptimResult *result, QWidget *parent = 0);
         virtual ~TabResOptimization();
     TabType tabType(){return TABSOLVEDPROBLEM;};
 
@@ -90,8 +90,8 @@ public:
         WidgetMooPointsList* _widgetMooPointsList;
         WidgetMooPlot* _widgetMooPlot;
         WidgetTableRecVar* _widgetTableRecVar;
-        WidgetCalculateMooPoints* _widgetCalculateMooPoints;
         WidgetOptimActions* _widgetOptimActions;
+        WidgetCtrlParameters *_widgetCtrl;
 
 
 };

@@ -77,7 +77,6 @@ void ModClassTree::clear()
 
 bool ModClassTree::addModClass(ModClass* parent,QString className,QString filePath)
 {
-
     bool ok=false;
     ModClass* newClass = _modReader->newModClass(className,filePath);
 
@@ -330,9 +329,7 @@ void ModClassTree::readFromOmcV3(ModClass* parent,int depthMax,QString direction
             }
 
             parent->setChildrenReaden(true);
-
             parent->emitModified();
-
 
         }
         parent->_readMutex.unlock();
@@ -706,6 +703,9 @@ QModelIndex ModClassTree::parent(const QModelIndex &index) const
 }
 bool ModClassTree::hasChildren ( const QModelIndex & parent ) const
 {
+    bool hasChildren;
+    bool triedToFind;
+
     if(!_enabled)
         return false;
 
@@ -728,9 +728,33 @@ bool ModClassTree::hasChildren ( const QModelIndex & parent ) const
     }
     else
     {
+        triedToFind = true;
+        hasChildren = false;
+
         QStringList children = _moomc->getClassNames(parentElement->name());
         children.removeAll(QString());
-        return !children.isEmpty();
+        if(!children.isEmpty())
+            hasChildren = true;
+        else if(parentElement->getClassRestr()==Modelica::MODEL)
+        {
+            if(!_showComponents)
+            {
+                hasChildren = false;
+                triedToFind = false;
+    }
+            else
+            {
+                // look if has component children
+                QStringList compNames;
+                QStringList compClasses;
+                _moomc->getContainedComponents(parentElement->getModClassName(),compNames,compClasses,true);
+                hasChildren = (!compNames.isEmpty());
+            }
+        }
+        if(triedToFind && !hasChildren)
+            parentElement->setChildrenReaden(true); // avoid re-reading
+
+        return hasChildren;
     }
 }
 int ModClassTree::rowCount(const QModelIndex &parent) const

@@ -28,7 +28,7 @@
      </item>
     </layout>
    </item>
-   <item row="16" column="0" colspan="3">
+   <item row="16" column="0" colspan="6">
     <layout class="QGridLayout" name="gridLayout_2">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
@@ -48,8 +48,8 @@
         <string>Simulate</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>:/icons/Play</normaloff>:/icons/Play</iconset>
+        <iconset resource="../Resources/OMOptim.qrc">
+         <normaloff>:/Play</normaloff>:/Play</iconset>
        </property>
       </widget>
      </item>
@@ -252,6 +252,17 @@
      </property>
      <property name="cornerButtonEnabled">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="pushReadVariables">
+     <property name="text">
+      <string>Update variables</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../Resources/OMOptim.qrc">
+       <normaloff>:/Refresh</normaloff>:/Refresh</iconset>
      </property>
     </widget>
    </item>

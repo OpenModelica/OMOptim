@@ -83,7 +83,8 @@
 using namespace std;
 
 
-MOomc::MOomc(QString appName,bool start)
+MOomc::MOomc(QString appName,QObject* parent, bool start)
+    :QObject(parent)
 {
     nbCalls = 0;
     mName = appName;
@@ -100,6 +101,8 @@ MOomc::MOomc(QString appName,bool start)
 
 MOomc::~MOomc()
 {
+    qDebug("deleting MOomc");
+
     stopServer();
     //delete delegate_;
 }

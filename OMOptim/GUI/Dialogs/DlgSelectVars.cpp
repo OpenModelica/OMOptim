@@ -39,7 +39,6 @@
 */
 
 #include "DlgSelectVars.h"
-#include "AlgoParameter.h"
 #include "MOTableView.h"
 
 #include <QtGui/QScrollBar>

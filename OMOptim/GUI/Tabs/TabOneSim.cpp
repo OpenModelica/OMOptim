@@ -40,22 +40,25 @@
 
 #include "TabOneSim.h"
 #include <QtGui/QSortFilterProxyModel>
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 
 
-TabOneSim::TabOneSim(Project *project,OneSimulation *problem, QWidget *parent) :
-MO2ColTab(project->name(),problem,false,parent)
+TabOneSim::TabOneSim(OneSimulation *problem, QWidget *parent) :
+MO2ColTab(problem->project()->name(),problem,false,parent)
 {
 	
-    _project = project;
+    _project = problem->project();
     _problem = problem;
 
 	// Variables
-    _widgetOneSimVars = new WidgetOneSimVars(project,problem,this);
+    _widgetOneSimVars = new WidgetOneSimVars(_project,_problem,this);
     addDockWidget("Variables",_widgetOneSimVars);
 		
-    _widgetFilesList = new WidgetFilesList(problem->_filesToCopy,this);
+    _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
     addDockWidget("Files",_widgetFilesList,_widgetOneSimVars);
+
+    _widgetCtrl = new WidgetCtrlParameters(_project,_problem->modModelPlus(),_problem->ctrls(),false,this);
+    addDockWidget("Simulator",_widgetCtrl,_widgetOneSimVars);
 		
     mapDockWidgets.key(_widgetOneSimVars)->raise();
 }

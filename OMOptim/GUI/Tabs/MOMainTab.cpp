@@ -49,8 +49,6 @@ MOMainTab::MOMainTab(QWidget* _mainWindow,Project* _project):QTabWidget(_mainWin
 
         setContentsMargins(2,0,2,0);
         setTabsClosable(false);
-
-        connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(onTabCloseRequested(int)));
 }
 
 MOMainTab::~MOMainTab(void)
@@ -112,8 +110,6 @@ void MOMainTab::contextMenuEvent(QContextMenuEvent* pEvent)
           resultMenu->exec(this->mapToGlobal(pEvent->pos()));
       }
   }
-
-
 }
 
 void MOMainTab::removeTab(MOTabBase::TabType type,QString name)
@@ -147,12 +143,12 @@ void MOMainTab::removeTab(int index)
 
         // delete widget
         tabWidget->deleteLater();
+        //delete tabWidget;
     }
 }
 
 void MOMainTab::enableCaseTab(OMCase* omCase)
 {
-
     int i=0;
     MOTabBase* tab;
 
@@ -169,153 +165,89 @@ void MOMainTab::enableCaseTab(OMCase* omCase)
         setCurrentIndex(i);
 }
 
-
-void MOMainTab::addProblemTab(Project *project, Problem * problem)
+void MOMainTab::addProblemTab(Problem* problem,QWidget* widget)
 {
-        connect(problem,SIGNAL(renamed(QString)),this,SLOT(onProblemRenamed(QString)));
-        switch(problem->type())
-        {
-        case Problem::ONESIMULATIONTYPE:
-                {
-                        //adding tab
-                        TabOneSim* newTab = new TabOneSim(project,(OneSimulation*)problem,this);
-                        newTab->setBackgroundRole(QPalette::Window);
-                        newTab->setAutoFillBackground(true);
-                        newTab->setWindowTitle(problem->name());
+    connect(problem,SIGNAL(renamed(QString)),this,SLOT(onOMCaseRenamed(QString)));
 
-                        //Adding tab
-                        addTab(newTab,problem->name());
-                        setCurrentWidget(newTab);
-                        break;
-                }
-        case Problem::OPTIMIZATIONTYPE:
-                {
-                        //adding tab
-                        TabOptimization* newTab = new TabOptimization(project,(Optimization*)problem,this);
-                        newTab->setBackgroundRole(QPalette::Window);
-                        newTab->setAutoFillBackground(true);
-                        newTab->setWindowTitle(problem->name());
-
-                        //Adding tab
-                        addTab(newTab,problem->name());
-                        setCurrentWidget(newTab);
-                        break;
-                }
-#ifdef USEEI
-        case Problem::EIPROBLEMTYPE:
-                {
-                        //adding tab
-                        TabEIProblem* newTab = new TabEIProblem(project,(EIProblem*)problem,this);
-                        newTab->setBackgroundRole(QPalette::Window);
-                        newTab->setAutoFillBackground(true);
-                        newTab->setWindowTitle(problem->name());
-
-
-                        //Adding tab
-                        addTab(newTab,problem->name());
-                        setCurrentWidget(newTab);
-                        break;
-                }
-#endif
-        }
-
+    _problemTabs.insert(problem,widget);
+    this->addTab(widget,problem->name());
 }
 
-void MOMainTab::addResultTab(Project *project, Result * result)
+void MOMainTab::addResultTab(Result* result,QWidget* widget)
+{
+    connect(result,SIGNAL(renamed(QString)),this,SLOT(onOMCaseRenamed(QString)));
+
+    _resultTabs.insert(result,widget);
+    this->addTab(widget,result->name());
+}
+
+void MOMainTab::removeTab(Problem* problem)
+{
+    QWidget* widget = _problemTabs.value(problem,NULL);
+
+    if(widget)
+        {
+        int index = this->indexOf(widget);
+        if(index>-1)
+                {
+            this->removeTab(index);
+            _problemTabs.remove(problem);
+                }
+                }
+}
+
+void MOMainTab::removeTab(Result* result)
 {
 
-        connect(result,SIGNAL(renamed(QString)),this,SLOT(onProblemRenamed(QString)));
-switch(result->problemType())
+    QWidget* widget = _resultTabs.value(result,NULL);
+
+    if(widget)
+                {
+        int index = this->indexOf(widget);
+        if(index>-1)
         {
-        case Problem::ONESIMULATIONTYPE:
-                {
-                        //adding table
-                        TabResOneSim* newTab = new TabResOneSim(project,(OneSimResult*)result,this);
-                        newTab->setBackgroundRole(QPalette::Window);
-                        newTab->setAutoFillBackground(true);
-                        newTab->setWindowTitle(result->name());
-
-                        //Adding tab
-                        addTab(newTab,result->name());
-                        setCurrentWidget(newTab);
-                        break;
+            this->removeTab(index);
+            _resultTabs.remove(result);
                 }
-        case Problem::OPTIMIZATIONTYPE:
-                {
-                        //adding table
-                        TabResOptimization* newTab = new TabResOptimization(project,(OptimResult*)result,this);
-                        newTab->setBackgroundRole(QPalette::Window);
-                        newTab->setAutoFillBackground(true);
-                        newTab->setWindowTitle(result->name());
-
-                        //Adding tab
-                        addTab(newTab,result->name());
-                        setCurrentWidget(newTab);
-                        break;
-                }
-
-#ifdef USEEI
-        case Problem::EITARGETTYPE:
-                {
-                        //adding tab
-                        TabEITargetResult* newTab = new TabEITargetResult(project,(EITargetResult*)result,this);
-                        newTab->setBackgroundRole(QPalette::Window);
-                        newTab->setAutoFillBackground(true);
-                        newTab->setWindowTitle(result->name());
-
-                        //Adding tab
-                        addTab(newTab,result->name());
-                        setCurrentWidget(newTab);
-                        break;
-                }
-
-        case Problem::EIHEN1TYPE:
-                {
-                        //adding tab
-                        TabEIHEN1Result* newTab = new TabEIHEN1Result(project,(EIHEN1Result*)result,this);
-                        newTab->setBackgroundRole(QPalette::Window);
-                        newTab->setAutoFillBackground(true);
-                        newTab->setWindowTitle(result->name());
-
-                        //Adding tab
-                        addTab(newTab,result->name());
-                        setCurrentWidget(newTab);
-                        break;
-                }
-#endif
         }
 }
 
-void MOMainTab::onProblemRenamed(QString newName)
+void MOMainTab::onOMCaseRenamed(QString newName)
 {
-
-        void* _sender = qobject_cast<OMCase *>(sender());
-
-
 
 
         // find tab corresponding
-        int iTab=0;
-        bool found=false;
-        MOTabBase* curTab;
-        while((iTab<count())&&!found)
+        Problem* problem = qobject_cast<Problem*>(sender());
+        if(problem)
         {
-                curTab = dynamic_cast<MOTabBase*>(widget(iTab));
-                if(curTab)
+            QWidget* widget = _problemTabs.value(problem,NULL);
+            if(widget)
                 {
-                        if(curTab->getItem()==_sender)
-                                found = true;
+                int index = this->indexOf(widget);
+                if(index>-1)
+                {
+                    this-> setTabText(index,newName);
+                }
+            }
+        }
                         else
-                                iTab++;
+        {
+            Result* result = qobject_cast<Result*>(sender());
+            if(result)
+            {
+                QWidget* widget = _resultTabs.value(result,NULL);
+                if(widget)
+                {
+                    int index = this->indexOf(widget);
+                    if(index>-1)
+                    {
+                        this-> setTabText(index,newName);
                 }
         }
-
-        if(found)
-                setTabText(iTab,newName);
+            }
+        }
 }
 
 
-void MOMainTab::onTabCloseRequested(int index)
-{
-    this->removeTab(index);
-}
+
+

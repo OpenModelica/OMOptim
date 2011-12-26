@@ -58,7 +58,7 @@
 #include <QtCore/QFileInfo>
 #include "Info.h"
 #include <QtXml/QDomDocument>
-#include "OptimAlgo.h"
+#include "EA/OptimAlgo.h"
 #include "OMCase.h"
 
 class Problem;
@@ -73,24 +73,21 @@ class Result: public OMCase
    */
 
 public :
-        QTime _duration;
-        QDateTime _date;
+        QTime _duration; /// duration of the computation who led to this result
+        QDateTime _date; /// launching date of the computation who led to this result
 
 protected :
-	bool _success;
-
-
-        Problem* _problem; //cloned version of original problem
+        bool _success; /// is the result a success
+        Problem* _problem; /// cloned version of original problem
 
 
 public:
 	Result();
-        Result(Project*,ModClassTree*,Problem* = NULL);
+        Result(Project*,const Problem &);
 	Result(const Result &r);
         virtual ~Result(void);
 
-	virtual int problemType()=0;
-	virtual QDomElement toXmlData(QDomDocument &)=0;
+        virtual QDomElement toXmlData(QDomDocument &)=0; ///@sa OMCase::toXmlData(QDomDocument &doc)
 
         void setDefaultSaveFileName();
 
@@ -103,7 +100,7 @@ public:
 	Problem* problem();
 	bool isSuccess();
 
-	void setProblem(Problem*);
+        void setProblem(const Problem &);
 	void setSuccess(bool);
 
 };

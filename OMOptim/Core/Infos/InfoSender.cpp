@@ -47,6 +47,7 @@ InfoSender::InfoSender()
 {
 	logStream = NULL;
 }
+
 InfoSender::InfoSender(QTextStream* _logStream)
 {
 	logStream = _logStream;
@@ -64,9 +65,7 @@ InfoSender::~InfoSender(void)
 
 void InfoSender::send(Info _info)
 {
-
-		
-	if(logStream)
+        if(logStream)
 	{
 		*logStream << QTime::currentTime().toString().toAscii().data();
 		*logStream << "\t";

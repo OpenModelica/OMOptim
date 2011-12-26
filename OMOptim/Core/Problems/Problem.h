@@ -49,7 +49,7 @@
 #include "ModModelPlus.h"
 #include "Result.h"
 #include "ProblemConfig.h"
-#include "OptimAlgo.h"
+#include "EA/OptimAlgo.h"
 #include "ModClass.h"
 #include "ModClassTree.h"
 #include "ModPlusCtrl.h"
@@ -72,33 +72,23 @@ class Problem: public OMCase
 {
 	Q_OBJECT
 
-public :
-	enum ProblemType{
-                UNDEFINEDTYPE = -1,
-                ONESIMULATIONTYPE,
-                OPTIMIZATIONTYPE,
-                EIPROBLEMTYPE,
-                EITARGETTYPE,
-                EIMERTYPE,
-                EIHEN1TYPE
-	};
-
 protected :
 
 	// General information
-	ProblemType _type;
-
         MOParameters* _parameters;
+
 
 public:
 	
 	// CTOR
-        Problem(Project*,ModClassTree*);
+        Problem(Project*);
+        Problem(QDomElement domProblem,Project* project,bool &ok);
 	Problem(const Problem & s);
 	virtual ~Problem(void);
 	
         virtual Problem* clone() const =0;
-	
+
+
 	// MO Item overwriting
 	virtual QString getFieldName(int iField,int iRole);
 	virtual unsigned getNbFields();
@@ -106,7 +96,9 @@ public:
 
 
         // Stop functions
-        virtual bool canBeStoped(){return false;}
+        virtual bool canBeStoped(){return false;}/// does the problem resolution can be stoped at any time
+        virtual bool hasQuickEndOption(){return false;}/// does the problem resolution can be shortened at any time
+
         virtual void stop(){};
 
         // Infos
@@ -146,11 +138,8 @@ public:
         void setDefaultSaveFileName();
 
 	// Get functions
-        ProblemType type(){return _type;}
         MOParameters* parameters(){return _parameters;}
 
-	// Set functions
-	void setType(ProblemType);
 		
 signals:
 	void newProgress(float);

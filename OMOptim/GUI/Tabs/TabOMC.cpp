@@ -43,7 +43,7 @@
 #include <QtGui/QtGui>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QTextBlock>
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 
 
         namespace Ui
@@ -87,7 +87,7 @@ TabOMC::TabOMC(Project *project_,QWidget *parent) :
     {
         QString msg = e.what();
         msg += "\nCould not create command completion class!";
-        QMessageBox::warning( 0, "Error", msg, "OK" );
+        QMessageBox::warning( QApplication::activeWindow(), "Error", msg, "OK" );
     }
 
     // add function names for code completion

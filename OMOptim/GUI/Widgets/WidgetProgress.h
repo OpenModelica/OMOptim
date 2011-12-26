@@ -46,9 +46,9 @@
 #include<QtGui/QFileDialog>
 #include <QtCore/QTimer>
 #include <QtCore/QTime>
-#include "WidgetList.h"
+#include "Widgets/WidgetList.h"
 
-#include "MOOptPlot.h"
+#include "Plots/MOOptPlot.h"
 #include "OptimResult.h"
 #include "ui_WidgetMooPlot.h"
 #include "Optimization.h"

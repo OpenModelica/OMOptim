@@ -38,7 +38,7 @@
         @version
 */
 
-#include "WidgetMooPlot.h"
+#include "Widgets/WidgetMooPlot.h"
 #include "ui_WidgetMooPlot.h"
 #include <QtGui/QErrorMessage>
 

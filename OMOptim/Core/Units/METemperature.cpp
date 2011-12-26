@@ -119,9 +119,9 @@ double METemperature::operator-(const METemperature& b) const
   * distance is calculated as follows :
   * dist = abs(a-b)
   */
-bool METemperature::equalsAbs(const METemperature& b,const METemperature & maxAbsDistance) const
+bool METemperature::equalsAbs(const METemperature& b,const double& diffTemp) const
 {
-    return (fabs(b.value(_unit)-value(_unit)) <= maxAbsDistance.value(_unit));
+    return (fabs(b.value(_unit)-value(_unit)) <= diffTemp);
 }
 
 METemperature& METemperature::operator+=(const double& diffTemp)

@@ -38,10 +38,10 @@
  	@version 
 */
 
-#include "WidgetOptTable.h"
+#include "Widgets/WidgetOptTable.h"
 #include "ui_WidgetOptTable.h"
 #include <QtGui/QErrorMessage>
-#include "GuiTools.h"
+#include "Tools/GuiTools.h"
 
 
 WidgetOptTable::WidgetOptTable(OptimResult* _result,QWidget *parent) :
