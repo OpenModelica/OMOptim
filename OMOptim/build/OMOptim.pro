@@ -76,6 +76,7 @@ DEPENDPATH += . \
 
 INCLUDEPATH += . \
               .. \
+              ../../ \
               ../Core \
               ../GUI \
               ../Vld \
