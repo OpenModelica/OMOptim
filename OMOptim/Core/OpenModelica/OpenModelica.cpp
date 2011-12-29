@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -43,6 +43,7 @@ http://www-cep.ensmp.fr/english/
 
 
 #include "OpenModelica.h"
+#include "ModPlusOMCtrl.h"
 
 
 
@@ -319,7 +320,7 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
         int iCurVar;
         Variable* curVar;
         QStringList fields;
-	
+
         for(int iV=0;iV<variables->size();iV++)
         {
             curVar = variables->at(iV);
@@ -343,11 +344,14 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
         }
 
         // Parameters to write in init file
-
+        /// @deprecated Now OM uses xml input.
         if(parameters)
         {
-            QList<OMParameters> initParameters; // parameters to specify in init file
-            initParameters << STOPVALUE;
+            QList<ModPlusOMCtrl::Parameters> initParameters; // parameters to specify in init file
+            initParameters << ModPlusOMCtrl::STOPTIME;
+
+            QStringList paramIndicators;
+            paramIndicators << "stop value";
 
 
             QVariant paramValue;
@@ -360,7 +364,7 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
                 if(iP>-1)
                 {
                     curParam = parameters->at(iP);
-                    paramName = curParam->name();
+                    paramName = paramIndicators.at(i);
                     paramValue = curParam->getFieldValue(MOParameter::VALUE);
                     rxLine.setPattern(sciNumRx()+"\\s*(//[\\w*|\\s*]*//|//)\\s*"+paramName);
                     index = rxLine.indexIn(allText);
@@ -498,10 +502,40 @@ void OpenModelica::setInputVariablesXml(QDomDocument & doc, QString modelName, M
 
 void OpenModelica::setInputParametersXml(QDomDocument &doc,MOParameters *parameters)
 {
+    QDomElement xfmi = doc.firstChildElement("fmiModelDescription");
+    QDomElement oldxfmi = xfmi;
+
+    QDomElement xExp = xfmi.firstChildElement("DefaultExperiment");
+    QDomElement oldxExp = xExp;
 
 
 
+    MOParameter * curParam;
+    for(int i=0;i<parameters->size();i++)
+    {
+        curParam = parameters->at(i);
 
+        if(!curParam->name().contains(" ")) // remove old parameters, temporary
+        {
+            // if solver, use string value
+            if(curParam->index()==ModPlusOMCtrl::SOLVER)
+            {
+                MOParameterListed* paramSolver = dynamic_cast<MOParameterListed*>(curParam);
+                xExp.setAttribute(paramSolver->name(),paramSolver->strValue());
+            }
+            else
+            {
+                xExp.setAttribute(curParam->name(),curParam->value().toString());
+            }
+        }
+    }
+
+    // force output to be csv
+    xExp.setAttribute("outputFormat","csv");
+
+    // update xfmi with new vars
+    xfmi.replaceChild(xExp,oldxExp);
+    doc.replaceChild(xfmi,oldxfmi);
 }
 
 

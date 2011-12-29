@@ -46,7 +46,12 @@
 
 class ModPlusOMCtrl :public ModPlusCtrl
 {
-public:
+    public:
+
+    enum Parameters{STOPTIME,MAXSIMTIME,SOLVER,TOLERANCE,STEPSIZE,STARTTIME};
+    enum Solvers{DASSL,EULER};
+
+
         ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* oms);
         ~ModPlusOMCtrl(void);
         ModPlusCtrl* clone();

@@ -90,7 +90,7 @@ public:
 	static QString sciNumRx();
         static QString home();
 
-        enum OMParameters{STOPVALUE,MAXSIMTIME};
+
 
 private :
         static Variable* variableFromFmi(const QDomElement & ,QString modModelName, bool & ok);

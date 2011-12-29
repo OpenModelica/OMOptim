@@ -93,8 +93,19 @@ QString ModPlusOMCtrl::name()
 // Parameters
 void ModPlusOMCtrl::setDefaultParameters()
 {
-    _parameters->addItem(new MOParameter(OpenModelica::STOPVALUE,"stop value","Stop value",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
-    _parameters->addItem(new MOParameter((int)OpenModelica::MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
+    _parameters->addItem(new MOParameter(STOPTIME,"stopTime","Stop time",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+
+    QMap<int,QString> mapSolvers;
+    mapSolvers.insert(ModPlusOMCtrl::DASSL,"dassl");
+    mapSolvers.insert(ModPlusOMCtrl::EULER,"euler");
+
+    _parameters->addItem( new MOParameterListed((int)SOLVER,"solver","Solver",ModPlusOMCtrl::DASSL,mapSolvers));
+
+    _parameters->addItem(new MOParameter(TOLERANCE,"tolerance","Tolerance",1e-6,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+    _parameters->addItem(new MOParameter(STEPSIZE,"stepSize","Step size",0.002,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+    _parameters->addItem(new MOParameter(STARTTIME,"startTime","Start time",0,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+
+    _parameters->addItem(new MOParameter((int)MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
 }
 
 bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString resFile)
@@ -280,7 +291,7 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
 
     // Launching openmodelica
     int maxNSec=-1;
-    int iParam = _parameters->findItem((int)OpenModelica::MAXSIMTIME,MOParameter::INDEX);
+    int iParam = _parameters->findItem((int)MAXSIMTIME,MOParameter::INDEX);
     if(iParam>-1)
         maxNSec=_parameters->at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
 

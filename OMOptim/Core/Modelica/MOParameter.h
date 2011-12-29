@@ -102,6 +102,7 @@ public:
 
         void addEnablingIndex(int,QVariant enablingValue);
         QMap<int,QVariant> enablingIndexes() const;
+        int index(){return _index;}
 
 
         QVariant value(){return getFieldValue(VALUE);};
