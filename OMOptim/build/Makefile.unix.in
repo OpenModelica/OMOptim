@@ -17,7 +17,7 @@ $(NAME): Makefile $(NAME).config
 build: $(NAME)
 
 Makefile: $(NAME).pro $(NAME).config
-	$(QMAKE)
+	$(QMAKE) $<
 Makefile.unix: Makefile.unix.in
 	(cd $(top_dir); ./config.status)
 $(NAME).config: $(NAME).config.in
