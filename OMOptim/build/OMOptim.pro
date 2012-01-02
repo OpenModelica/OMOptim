@@ -308,7 +308,8 @@ HEADERS += ../config.h \
     ../GUI/Widgets/WidgetCtrlParameters.h \
     ../Core/Problems/ProblemInterface.h \
     ../Core/Problems/optimizationinterface.h \
-    ../Core/Problems/onesimulationinterface.h
+    ../Core/Problems/onesimulationinterface.h \
+    ../GUI/Tools/qsciencespinbox.h
 
 
 
@@ -488,12 +489,15 @@ SOURCES += ../main.cpp \
     ../GUI/Widgets/WidgetCtrlParameters.cpp \
     ../Core/Problems/optimizationinterface.cpp \
     ../Core/Problems/onesimulationinterface.cpp \
-    ../Core/Problems/ProblemInterface.cpp
+    ../Core/Problems/ProblemInterface.cpp \
+    ../GUI/Tools/qsciencespinbox.cpp
 
 RESOURCES += \
     ../GUI/Resources/OMOptim.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc
+
+
 
 
 

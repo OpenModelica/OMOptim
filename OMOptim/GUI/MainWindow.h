@@ -63,9 +63,6 @@
 #include "ProblemInterface.h"
 
 
-#ifdef USEEI
-#include "CERESInfo.h"
-#endif
 namespace Ui
 {
     class MainWindowClass;

@@ -46,10 +46,10 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QSpinBox>
 #include <QtGui/QCheckBox>
-#include <QtGui/QDoubleSpinBox>
 #include "MOItem.h"
 #include "ui_WidgetMOItem.h"
 #include <QtGui/QLabel>
+#include "qsciencespinbox.h"
 
 namespace Ui {
     class WidgetMOItem;

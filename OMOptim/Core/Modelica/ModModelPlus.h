@@ -64,9 +64,10 @@ class Project;
 /**
 * \brief ModModelPlus is a class dedicated to information storage concerning Modelica models.
 *
-* ModModelPlus is a class dedicated to information storage concerning Modelica models.
+* ModModelPlus is a class dedicated to information storage concerning Modelica models (ModModel).
 * Each ModModelPlus is associated to a ModModel. ModModelPlus contains informations that are used within OMOptim and which concern corresponding ModModel.
 * These informations are variables, connections, modifiers (deprecated), dependencies...
+* It is also responsible for compiling and reading functions, though these functions require a controler (ModPlusCtrl).
 */
 class ModModelPlus : public MOItem
 {

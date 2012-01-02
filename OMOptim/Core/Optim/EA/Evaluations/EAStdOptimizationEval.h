@@ -46,9 +46,6 @@
 #include "VariablesManip.h"
 #include "float.h"
 
-#ifdef USEEI
-#include "EITarget.h"
-#endif
 
         /** \class EAStdOptimizationEval is a function for evaluating fitness of an individual.
           * For each individual, it :

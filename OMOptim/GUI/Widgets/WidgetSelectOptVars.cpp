@@ -125,18 +125,21 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
         DoubleSpinBoxDelegate* minDelegate = new DoubleSpinBoxDelegate(this,30);
         DoubleSpinBoxDelegate* maxDelegate = new DoubleSpinBoxDelegate(this,30);
         _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::OPTMIN,minDelegate);
-        _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::OPTMIN,maxDelegate);
+        _ui->tableOptimizedVariables->setItemDelegateForColumn(OptVariable::OPTMAX,maxDelegate);
 
         DoubleSpinBoxDelegate* minObjDelegate = new DoubleSpinBoxDelegate(this,30);
         DoubleSpinBoxDelegate* maxObjDelegate = new DoubleSpinBoxDelegate(this,30);
-        _ui->tableObjectives->setItemDelegateForColumn(OptObjective::MIN,minDelegate);
-        _ui->tableObjectives->setItemDelegateForColumn(OptObjective::MAX,maxDelegate);
+        _ui->tableObjectives->setItemDelegateForColumn(OptObjective::MIN,minObjDelegate);
+        _ui->tableObjectives->setItemDelegateForColumn(OptObjective::MAX,maxObjDelegate);
 
         DoubleSpinBoxDelegate* minScanDelegate = new DoubleSpinBoxDelegate(this,30);
         DoubleSpinBoxDelegate* maxScanDelegate = new DoubleSpinBoxDelegate(this,30);
+        DoubleSpinBoxDelegate* valueScanDelegate = new DoubleSpinBoxDelegate(this,30);
+        DoubleSpinBoxDelegate* stepScanDelegate = new DoubleSpinBoxDelegate(this,30);
         _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANMIN,minScanDelegate);
         _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANMAX,maxScanDelegate);
-
+        _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::VALUE,valueScanDelegate);
+        _ui->tableScannedVariables->setItemDelegateForColumn(ScannedVariable::SCANSTEP,stepScanDelegate);
 
 	//buttons
 	connect(_ui->pushAddVariables, SIGNAL(clicked()), this, SLOT(addOptVariables()));

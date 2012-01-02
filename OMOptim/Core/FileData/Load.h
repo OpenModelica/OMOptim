@@ -64,14 +64,6 @@
 #include "Dymola.h"
 
 
-#ifdef USEEI
-	#include "EITarget.h"
-	#include "EITargetResult.h"
-        #include "EIHEN1Result.h"
-        #include "EIHEN1Problem.h"
-        #include "EIControler.h"
-#endif
-
 class OptimResult;
 
 class Load : public QObject

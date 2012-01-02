@@ -47,27 +47,29 @@ WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,
     QWidget(parent),
     _ui(new Ui::WidgetOptParametersClass)
 {
+    this->setLocale(QLocale::C);
+
     _ui->setupUi(this);
-	
-	_project = project;
-	_problem = problem;
-        _isResult = isResult;
+
+    _project = project;
+    _problem = problem;
+    _isResult = isResult;
 
 
-	connect(_ui->pushEAParameters, SIGNAL(clicked()), this, SLOT(openAlgoParameters()));
+    connect(_ui->pushEAParameters, SIGNAL(clicked()), this, SLOT(openAlgoParameters()));
 
-	//changed algorithm
-	connect(_ui->comboAlgo, SIGNAL(currentIndexChanged(int)),this, SLOT(changedAlgorithm()));
+    //changed algorithm
+    connect(_ui->comboAlgo, SIGNAL(currentIndexChanged(int)),this, SLOT(changedAlgorithm()));
 
-	//Algorithm box
-	QStringList _algoNames = _problem->getAlgoNames();
-	int iCurAlgo = _problem->getiCurAlgo();
-	_ui->comboAlgo->addItems(_algoNames);
-	if(iCurAlgo>=0)
-		_ui->comboAlgo->setCurrentIndex(iCurAlgo);
+    //Algorithm box
+    QStringList _algoNames = _problem->getAlgoNames();
+    int iCurAlgo = _problem->getiCurAlgo();
+    _ui->comboAlgo->addItems(_algoNames);
+    if(iCurAlgo>=0)
+        _ui->comboAlgo->setCurrentIndex(iCurAlgo);
 
-	// actualize gui
-//	onAlgosConfigChanged();
+    // actualize gui
+    //	onAlgosConfigChanged();
 
 
 	

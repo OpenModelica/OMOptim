@@ -99,13 +99,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _ui->layoutProgress->addWidget(_widgetProgress);
     displayProgress(0);
 
-#ifdef USEEI
-    QAction* loadCERESInfo = new QAction("Load CERESInfo.mo",this);
-    _ui->menuModels->addAction(loadCERESInfo);
-    connect(loadCERESInfo,SIGNAL(triggered()),this,SLOT(loadCERESInfo()));
 
-
-#endif
 
     //Create the Statusbar
     _statusBar = new QStatusBar();
@@ -224,12 +218,8 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     //*********************************
     // Configuration
     //*********************************
-#ifndef USEEI
-    _ui->actionNewProblemEI->setVisible(false);
-#endif
 
     updateProblemsMenu();
-
 }
 
 MainWindow::~MainWindow()
@@ -248,34 +238,34 @@ void MainWindow::displayInfo(Info i)
     switch(i.infoType)
     {
     case ListInfo::NORMAL2 :
-            prefix = "";
-            suffix = "";
+        prefix = "";
+        suffix = "";
         break;
     case ListInfo::WARNING2 :
-            prefix = "<b><font color='#FF7700'>Warning : ";
-            suffix = "</font></b>";
-            break;
+        prefix = "<b><font color='#FF7700'>Warning : ";
+        suffix = "</font></b>";
+        break;
     case ListInfo::ERROR2 :
-            prefix = "<b><font color='red'>Error : ";
-            suffix = "</font></b>";
-            break;
+        prefix = "<b><font color='red'>Error : ";
+        suffix = "</font></b>";
+        break;
 
     case ListInfo::OMCNORMAL2 :
-            prefix = "OMCNormal :";
-            suffix = "";
-            break;
+        prefix = "OMCNormal :";
+        suffix = "";
+        break;
     case ListInfo::OMCWARNING2 :
-            prefix = "OMCWarning :";
-            suffix = "";
+        prefix = "OMCWarning :";
+        suffix = "";
         break;
     case ListInfo::OMCERROR2 :
-            prefix = "<b><font color='red'>OMCError : ";
-            suffix = "</font></b>";
-            break;
+        prefix = "<b><font color='red'>OMCError : ";
+        suffix = "</font></b>";
+        break;
     case ListInfo::INFODEBUG :
-            prefix = "<b><font color='blue'>Debug : ";
-            suffix = "</font></b>";
-            break;
+        prefix = "<b><font color='blue'>Debug : ";
+        suffix = "</font></b>";
+        break;
     }
 
     QString msg = prefix + i.infoMsg + suffix;
@@ -379,8 +369,8 @@ void MainWindow::loadProject()
 
 
     QString filename = QFileDialog::getOpenFileName(
-		this,
-		"MO - Open Project",
+                this,
+                "MO - Open Project",
                 getLastProjectFolder(),
                 "MO project (*.min)" );
 
@@ -421,11 +411,15 @@ void MainWindow::loadPlugins()
     QSettings settings("MO", "Settings");
     QString folder = settings.value("MO/recentPluginsFolder").toString();
 
+    QString filters = "All files (*.*)";
+#ifdef WIN32
+    filters = "OMOptim plugins (*.dll);; All files (*.*)";
+#endif
     QStringList filenames = QFileDialog::getOpenFileNames(
                 this,
                 "OMOptim - Load plugins",
                 folder,
-                "OMOptim plugins (*.dll);; All files (*.*)" );
+                filters );
 
     foreach (QString fileName, filenames)
     {
@@ -494,8 +488,8 @@ void MainWindow::enableOMCaseTab(QModelIndex index)
     {
         OMCase* selectedCase = _casesTree->item(index);
         _tabMain->enableCaseTab(selectedCase);
-            }
-        }
+    }
+}
 
 void MainWindow::quit()
 {
@@ -707,7 +701,7 @@ void MainWindow::rightClickedOnCase(const QPoint & iPoint)
         if(caseMenu)
             caseMenu->exec(_ui->treeOMCases->mapToGlobal(iPoint));
     }
-    }
+}
 
 
 void MainWindow::showModClassTreePopup(const QPoint & iPoint)
@@ -883,10 +877,10 @@ void MainWindow::loadMoFile()
     QString lastMoFolder = settings.value("LastMoFolder").toString();
 
     QStringList fileNames = QFileDialog::getOpenFileNames(
-		this,
-		"MO - Add .mo file to project",
+                this,
+                "MO - Add .mo file to project",
                 lastMoFolder,
-		"Modelica file (*.mo)" );
+                "Modelica file (*.mo)" );
 
     for(int i=0;i<fileNames.size();i++)
         _project->loadMoFile(fileNames.at(i));

@@ -420,11 +420,6 @@ color:white;
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionNewOneSimulation">
-   <property name="text">
-    <string>Simulation</string>
-   </property>
-  </action>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
@@ -438,19 +433,9 @@ color:white;
     <string>Log</string>
    </property>
   </action>
-  <action name="actionNewOptimization">
-   <property name="text">
-    <string>Optimization</string>
-   </property>
-  </action>
   <action name="actionOMC">
    <property name="text">
     <string>OMC</string>
-   </property>
-  </action>
-  <action name="actionAttachDatabase">
-   <property name="text">
-    <string>Attach database...</string>
    </property>
   </action>
   <action name="actionDatabases">
@@ -463,16 +448,6 @@ color:white;
     <string>Clear recent files list</string>
    </property>
   </action>
-  <action name="actionRecompileModel">
-   <property name="text">
-    <string>Recompile model</string>
-   </property>
-  </action>
-  <action name="actionUpdateDsin">
-   <property name="text">
-    <string>Update dsin.txt ...</string>
-   </property>
-  </action>
   <action name="actionOMCShell">
    <property name="text">
     <string>Shell</string>
@@ -483,11 +458,6 @@ color:white;
     <string>Clear</string>
    </property>
   </action>
-  <action name="actionNewVariableDet">
-   <property name="text">
-    <string>Variable determination</string>
-   </property>
-  </action>
   <action name="actionSettings">
    <property name="text">
     <string>Settings...</string>
@@ -496,26 +466,6 @@ color:white;
   <action name="actionLoadMoFile">
    <property name="text">
     <string>Load Mo File...</string>
-   </property>
-  </action>
-  <action name="actionEITarget">
-   <property name="text">
-    <string>EITarget</string>
-   </property>
-  </action>
-  <action name="actionNewMER">
-   <property name="text">
-    <string>MER</string>
-   </property>
-  </action>
-  <action name="actionNewTarget">
-   <property name="text">
-    <string>Target</string>
-   </property>
-  </action>
-  <action name="actionNewProblemEI">
-   <property name="text">
-    <string>EI</string>
    </property>
   </action>
   <action name="actionAboutOMOptim">

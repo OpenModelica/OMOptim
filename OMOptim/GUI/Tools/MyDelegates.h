@@ -50,6 +50,8 @@
 #include <QtGui/QDoubleSpinBox>
 #include <limits>
 
+#include "qsciencespinbox.h"
+
 
 
 class GenericDelegate : public QStyledItemDelegate
@@ -153,7 +155,8 @@ public :
                                                  const QStyleOptionViewItem &/* option */,
                                                  const QModelIndex &/* index */) const
     {
-        QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
+        QScienceSpinBox *editor = new QScienceSpinBox(parent);
+
         editor->setMinimum(_min);
         editor->setMaximum(_max);
         editor->setDecimals(_decimals);

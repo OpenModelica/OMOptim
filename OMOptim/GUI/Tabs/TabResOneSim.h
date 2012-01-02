@@ -63,10 +63,6 @@
 #include "Tabs/MO2ColTab.h"
 #include "Widgets/WidgetTableVar.h"
 
-#ifdef USEEI
-#include "Widgets/WidgetCCPlot.h"
-#endif
-
 
 
 class TabResOneSim : public MO2ColTab {

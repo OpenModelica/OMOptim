@@ -76,11 +76,6 @@
 #include "ModClassTree.h"
 #include "ProblemInterface.h"
 
-#ifdef USEEI
-#include "EITarget.h"
-#include "EIReader.h"
-#include "EIHEN1Problem.h"
-#endif
 
 
 /*

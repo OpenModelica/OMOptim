@@ -50,12 +50,6 @@
 #include "MOTab.h"
 #include "Project.h"
 
-#ifdef USEEI
-#include "TabEITargetResult.h"
-#include "TabEIHEN1Result.h"
-#include "TabEIProblem.h"
-#endif
-
 class MainWindow;
 
 class MOMainTab : public QTabWidget

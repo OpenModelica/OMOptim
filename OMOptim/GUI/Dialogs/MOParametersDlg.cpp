@@ -41,9 +41,11 @@
 #include "MOParametersDlg.h"
 #include "MOTableView.h"
 #include <QtGui/QScrollBar>
+#include "qsciencespinbox.h"
 
 MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
 {
+    this->setLocale(QLocale::C);
     this->setWindowTitle("Parameters");
     //    if(parameters->size()==0)
     //    {
@@ -52,8 +54,6 @@ MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
     //        setResult(QDialog::Accepted);
     //        QApplication::postEvent( this, new QCloseEvent() );
     //    }
-
-
 
 
     _orgParameters = parameters;
@@ -299,12 +299,12 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
                 break;
 
             case MOParameter::DOUBLE :
-                valueWidget = new QDoubleSpinBox(this);
-                ((QDoubleSpinBox*)valueWidget)->setMinimum(parameter->getFieldValue(MOParameter::MIN).toDouble());
-                ((QDoubleSpinBox*)valueWidget)->setMaximum(parameter->getFieldValue(MOParameter::MAX).toDouble());
-                ((QDoubleSpinBox*)valueWidget)->setDecimals(10);
-                ((QDoubleSpinBox*)valueWidget)->setValue(value.toDouble());
-                connect(((QDoubleSpinBox*)valueWidget),SIGNAL(valueChanged(double)),this,SLOT(onValueChanged()));
+                valueWidget = new QScienceSpinBox(this);
+                ((QScienceSpinBox*)valueWidget)->setMinimum(parameter->getFieldValue(MOParameter::MIN).toDouble());
+                ((QScienceSpinBox*)valueWidget)->setMaximum(parameter->getFieldValue(MOParameter::MAX).toDouble());
+                ((QScienceSpinBox*)valueWidget)->setDecimals(10);
+                ((QScienceSpinBox*)valueWidget)->setValue(value.toDouble());
+                connect(((QScienceSpinBox*)valueWidget),SIGNAL(valueChanged(double)),this,SLOT(onValueChanged()));
                 break;
             case MOParameter::INT :
                 valueWidget = new QSpinBox(this);
@@ -439,7 +439,7 @@ QVariant MOParametersDlg::getValue(QWidget* curWidget)
     if(lineEdit)
         return lineEdit->text();
 
-    QDoubleSpinBox* dblspinbox = dynamic_cast<QDoubleSpinBox*>(curWidget);
+    QScienceSpinBox* dblspinbox = dynamic_cast<QScienceSpinBox*>(curWidget);
     if(dblspinbox)
         return dblspinbox->value();
 
@@ -463,7 +463,7 @@ void MOParametersDlg::setValue(QWidget* curWidget,QVariant value)
     if(lineEdit)
         lineEdit->setText(value.toString());
 
-    QDoubleSpinBox* dblspinbox = dynamic_cast<QDoubleSpinBox*>(curWidget);
+    QScienceSpinBox* dblspinbox = dynamic_cast<QScienceSpinBox*>(curWidget);
     if(dblspinbox)
         dblspinbox->setValue(value.toDouble());
 

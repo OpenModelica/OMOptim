@@ -70,6 +70,8 @@ int main(int argc, char *argv[])
 
 	// Application
 	QApplication *app = new QApplication(argc,argv);
+
+
         // Setting the Application version
         //app->setApplicationVersion(APP_VERSION);
         QString version = QString::number(Version::MAJOR)+"."+QString::number(Version::MINOR)+"."+QString::number(Version::REVISION);

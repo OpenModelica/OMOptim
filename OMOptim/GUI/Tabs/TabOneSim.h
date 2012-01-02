@@ -64,9 +64,7 @@
 #include "Widgets/WidgetTableVar.h"
 #include "Widgets/WidgetCtrlParameters.h"
 
-#ifdef USEEI
-	#include "Widgets/WidgetCCPlot.h"
-#endif
+
 
 
 

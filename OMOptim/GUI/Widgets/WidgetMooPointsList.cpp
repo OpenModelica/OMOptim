@@ -1,5 +1,5 @@
 // $Id$
-        /**
+/**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
@@ -44,9 +44,9 @@
 #include "MOParametersDlg.h"
 
 
-        WidgetMooPointsList::WidgetMooPointsList(OptimResult* result,QWidget *parent) :
-        QWidget(parent),
-        _ui(new Ui::WidgetMooPointsListClass)
+WidgetMooPointsList::WidgetMooPointsList(OptimResult* result,QWidget *parent) :
+    QWidget(parent),
+    _ui(new Ui::WidgetMooPointsListClass)
 {
     _ui->setupUi(this);
 
@@ -96,7 +96,7 @@ WidgetMooPointsList::~WidgetMooPointsList()
 
 void WidgetMooPointsList::onExtSelectionChanged(QList<int> & list)
 {
-        _listPoints->setSelectedIndexes(list);
+    _listPoints->setSelectedIndexes(list);
 }
 
 void WidgetMooPointsList::setShownPoints(QList<int> list)
@@ -183,26 +183,26 @@ void WidgetMooPointsList::recomputeSelectedPoints()
 void WidgetMooPointsList::exportSelectedPoints()
 {
 
-        // get file name
-        QString csvPath = QFileDialog::getSaveFileName(
+    // get file name
+    QString csvPath = QFileDialog::getSaveFileName(
                 this,
                 "MO - Export optimum points",
                 QString::null,
                 "CSV file (*.csv)" );
 
-        if(!csvPath.isNull())
-        {
-                QList<int> listPoints = this->_listPoints->getSelectedIndexes();
-                QString csvText = _result->buildAllVarsFrontCSV(listPoints);
+    if(!csvPath.isNull())
+    {
+        QList<int> listPoints = this->_listPoints->getSelectedIndexes();
+        QString csvText = _result->buildAllVarsFrontCSV(listPoints);
 
-                QFile frontFile(csvPath);
-                if(frontFile.exists())
-                        frontFile.remove();
+        QFile frontFile(csvPath);
+        if(frontFile.exists())
+            frontFile.remove();
 
-                frontFile.open(QIODevice::WriteOnly);
-                QTextStream tsfront( &frontFile );
-                tsfront << csvText;
-                frontFile.close();
-        }
+        frontFile.open(QIODevice::WriteOnly);
+        QTextStream tsfront( &frontFile );
+        tsfront << csvText;
+        frontFile.close();
+    }
 }
 
