@@ -59,7 +59,7 @@
 #include "Results.h"
 #include "MOomc.h"
 #include "ModPlusCtrl.h"
-#include "ModReader.h"
+#include "ModLoader.h"
 #include "InfoSender.h"
 #include "MOVector.h"
 #include "SleeperThread.h"
@@ -114,12 +114,15 @@ private:
     Problems* _problems;
     Results* _results;
 
-    ModReader* _modReader;
+    ModLoader* _modLoader;
     ModClassTree* _modClassTree;
     QMap<ModModel*,ModModelPlus*> _mapModelPlus;
 
     // Problems interfaces
     ProblemInterfaces _problemsInterfaces;
+
+    // Info sender
+  //  InfoSener* _infoSender;
 
 
 public:
@@ -185,11 +188,12 @@ public:
     QStringList moFiles();
     QStringList mmoFiles();
     QMap<QString,QString> pluginsLoaded();
+   // InfoSender* infoSender();
 
     MOomc* moomc(){return _moomc;};
     Problems* problems(){return _problems;};
     Results* results(){return _results;};
-    ModReader* modReader(){return _modReader;};
+    ModLoader* modLoader(){return _modLoader;};
     ModClassTree* modClassTree(){return _modClassTree;};
     ModClass* rootModClass(){return _modClassTree->rootElement();};
     QMap<ModModel*,ModModelPlus*> mapModelPlus(){return _mapModelPlus;};

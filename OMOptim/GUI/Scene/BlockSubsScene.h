@@ -46,7 +46,7 @@
 #include "BlockDrawItem.h"
 #include "ModClass.h"
 #include "ModModel.h"
-#include "ModReader.h"
+#include "ModLoader.h"
 #include "BlockSubstituteConnDlg.h"
 
 #include <QtGui/QGraphicsSceneEvent>

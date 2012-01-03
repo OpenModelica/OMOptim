@@ -172,13 +172,13 @@ bool OpenModelica::getInputVariablesFromXmlFile(MOomc *omc,QString filePath, QSt
     QFile file(filePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-        // infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+        // InfoSender::instance()->send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
         return false;
     }
     else if( !doc.setContent(&file,&error) )
     {
         file.close();
-        // infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
+        // InfoSender::instance()->send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
         return false;
     }
     file.close();
@@ -339,7 +339,7 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
             }
             else
             {
-                infoSender.send(Info("Warning : unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
+                InfoSender::instance()->send(Info("Warning : unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
             }
         }
 
@@ -379,7 +379,7 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
                     }
                     else
                     {
-                        infoSender.send(Info("Warning : unable to set parameter value (not found in init file):"+paramName,ListInfo::ERROR2));
+                        InfoSender::instance()->send(Info("Warning : unable to set parameter value (not found in init file):"+paramName,ListInfo::ERROR2));
                     }
                 }
             }
@@ -403,12 +403,12 @@ bool OpenModelica::setInputXml(QString fileName, MOVector<Variable> *variables, 
     QFile file(fileName);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-        infoSender.debug("setting input xml : load failed");
+        InfoSender::instance()->debug("setting input xml : load failed");
         return false;
     }
     else if( !doc.setContent(&file,&error) )
     {
-        infoSender.debug("setting input xml : file corrupted");
+        InfoSender::instance()->debug("setting input xml : file corrupted");
         file.close();
         return false;
     }
@@ -577,7 +577,7 @@ void OpenModelica::start(QString exeFile,int maxnsec)
     if(!ok)
     {
         QString msg("CreateProcess failed (%d).");
-        infoSender.debug(msg);
+        InfoSender::instance()->debug(msg);
         return;
     }
     return;

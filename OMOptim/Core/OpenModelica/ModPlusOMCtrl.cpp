@@ -110,7 +110,7 @@ void ModPlusOMCtrl::setDefaultParameters()
 
 bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString resFile)
 {
-    infoSender.send(Info("Reading final variables in "+resFile,ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Reading final variables in "+resFile,ListInfo::NORMAL2));
 
     if(resFile.isEmpty())
         resFile = _resFile;
@@ -143,7 +143,7 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
             initFileTxt = initFile;
     }
 
-    infoSender.send(Info("Reading initial variables in "+initFile,ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Reading initial variables in "+initFile,ListInfo::NORMAL2));
 
     initVariables->clear();
 
@@ -175,7 +175,7 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
 bool ModPlusOMCtrl::compile(const QStringList & moDeps)
 {
 
-    infoSender.send(Info("Compiling model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Compiling model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
 
     // compile
     QString logFile = _modModelPlus->mmoFolder()+_modModelPlus->modModelName()+".log";
@@ -184,9 +184,9 @@ bool ModPlusOMCtrl::compile(const QStringList & moDeps)
     // Inform
     ListInfo::InfoNum iMsg;
     if(success)
-        infoSender.send(Info(ListInfo::MODELCOMPILATIONSUCCESS,_modModelPlus->modModelName(),logFile));
+        InfoSender::instance()->send(Info(ListInfo::MODELCOMPILATIONSUCCESS,_modModelPlus->modModelName(),logFile));
     else
-        infoSender.send(Info("Model "+_modModelPlus->modModelName()+" failed to compile. See OMC log tab for details.",ListInfo::ERROR2));
+        InfoSender::instance()->send(Info("Model "+_modModelPlus->modModelName()+" failed to compile. See OMC log tab for details.",ListInfo::ERROR2));
 
 
     return success;
@@ -215,7 +215,7 @@ bool ModPlusOMCtrl::isCompiled()
 bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy,QStringList moDependencies)
 {
     // Info
-    infoSender.send(Info("Simulating model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Simulating model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
 
     // load moDependencies
     _moomc->loadFiles(moDependencies);
@@ -245,10 +245,10 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
         allFilesToCopy << mmoDir.filePath(_initFileXml);
 
     if(!txt && ! xml)
-        infoSender.sendError("Unable to find an init file for model "+_modModelPlus->modModelName());
+        InfoSender::instance()->sendError("Unable to find an init file for model "+_modModelPlus->modModelName());
 
     QDir tempDir = QDir(tempFolder);
-    infoSender.debug("Start copying in temp directory : "+tempFolder);
+    InfoSender::instance()->debug("Start copying in temp directory : "+tempFolder);
     QFileInfo fileToCopyInfo;
     //QFile fileToCopy;
     bool copyOk;
@@ -259,9 +259,9 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
         tempDir.remove(fileToCopyInfo.fileName());
         copyOk = QFile::copy(allFilesToCopy.at(i),tempDir.filePath(fileToCopyInfo.fileName()));
          //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
-        infoSender.debug("Copying in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
+        InfoSender::instance()->debug("Copying in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
         if(!copyOk)
-            infoSender.sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
+            InfoSender::instance()->sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
     }
 
 

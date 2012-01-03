@@ -127,7 +127,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         ModModel* modModel = _project->findModModel(modelName);
         if(modModel == NULL)
         {
-            infoSender.sendWarning("Unable to find model "+modelName);
+            InfoSender::instance()->sendWarning("Unable to find model "+modelName);
             ok = false;
 
         }
@@ -337,7 +337,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
     int nbPoints = iPoints.size();
 
     //Info
-    infoSender.send( Info(ListInfo::RECOMPUTINGPOINTS,QString::number(nbPoints)));
+    InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTS,QString::number(nbPoints)));
 
     //Execution
     QString resultFolder = result->saveFolder();
@@ -373,7 +373,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
                 removed = dir.rmdir(pointSaveFolder);
                 if (!removed)
                 {
-                    infoSender.send (Info(ListInfo::FOLDERUNREMOVABLE,pointSaveFolder));
+                    InfoSender::instance()->send (Info(ListInfo::FOLDERUNREMOVABLE,pointSaveFolder));
                 }
             }
 
@@ -405,11 +405,11 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
 
             if(!oneSimRes->isSuccess())
             {
-                infoSender.send( Info(ListInfo::RECOMPUTINGPOINTFAILED,QString::number(iPoint)));
+                InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTFAILED,QString::number(iPoint)));
             }
             else
             {
-                infoSender.send( Info(ListInfo::RECOMPUTINGPOINTSUCCESS,QString::number(iPoint)));
+                InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTSUCCESS,QString::number(iPoint)));
 
                 //****************************************************
                 // Filing recomputedVariables values
@@ -438,7 +438,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
                         QString msg;
                         msg.sprintf("Variable %s added in recomputed variables list",
                                     newVariableResult->name().toLatin1().data());
-                        infoSender.debug(msg);
+                        InfoSender::instance()->debug(msg);
                     }
                     // update objective value if necessary (should'nt be the case, but if model has been changed)
                     int iObj = result->optObjectivesResults()->findItem(curFinalVariable->name());
@@ -466,7 +466,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
         else
         {
             QString msg = "Point " + QString::number(iPoint)+" already computed. Won't be recomputed";
-            infoSender.send(Info(msg,ListInfo::NORMAL2));
+            InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
         }
     }
 }
@@ -519,7 +519,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
         }
         msg.remove(msg.size()-1,1);
         msg +="\n \n";
-        infoSender.debug(msg);
+        InfoSender::instance()->debug(msg);
 
 
         // create folder
@@ -577,11 +577,11 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
                 subBlocks.push_back(curSubBlocks);
                 _foldersToCopy << newFolder;
 
-                infoSender.send( Info(ListInfo::SUBMODELADDED,newName));
+                InfoSender::instance()->send( Info(ListInfo::SUBMODELADDED,newName));
             }
             else
             {
-                infoSender.send( Info(ListInfo::SUBMODELNOTADDED,newName));
+                InfoSender::instance()->send( Info(ListInfo::SUBMODELNOTADDED,newName));
             }
         }
         iCase++;

@@ -9,7 +9,7 @@ Problem* OneSimulationInterface::createNewProblem(Project* project,const QList<M
 
     if(modModelPlusList.size()!=1)
     {
-        infoSender.send(Info("Model for one simulation problem not defined",ListInfo::ERROR2));
+        InfoSender::instance()->send(Info("Model for one simulation problem not defined",ListInfo::ERROR2));
         return NULL;
     }
     else
@@ -73,7 +73,7 @@ Result* OneSimulationInterface::loadResult(QFileInfo saveFile,const QDomElement 
 
     if(!ok)
     {
-        infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
+        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
         return NULL;
     }
 
@@ -84,7 +84,7 @@ Result* OneSimulationInterface::loadResult(QFileInfo saveFile,const QDomElement 
 
     if(!result)
     {
-        infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
+        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
         return NULL;
     }
 

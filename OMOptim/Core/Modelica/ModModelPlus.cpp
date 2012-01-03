@@ -433,7 +433,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
         QString msg;
         msg.sprintf("Could not apply component substitution : component %s not found",
                     blockSub->_orgComponent.utf16());
-        infoSender.send(Info(msg,ListInfo::WARNING2));
+        InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
         return false;
     }
 

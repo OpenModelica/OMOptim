@@ -27,6 +27,7 @@ QScienceSpinBox::QScienceSpinBox(QWidget * parent)
         this->lineEdit()->setValidator(v);
 
         this->setLocale(QLocale::C);
+        this->setButtonSymbols(QAbstractSpinBox::NoButtons);
 }
 
 void QScienceSpinBox::initLocalValues(QWidget *parent)

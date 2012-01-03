@@ -76,7 +76,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _casesTree = new OMCasesCombiner(_project->problems(),_project->results());
     _ui->treeOMCases->setModel(_casesTree);
     //_ui->treeResults->setModel(_project->results());
-    //GuiTools::ModClassToTreeView(_project->modReader(),_project->rootModClass(),_ui->treeModClass,_project->modClassTree());
+    //GuiTools::ModClassToTreeView(_project->modLoader(),_project->rootModClass(),_ui->treeModClass,_project->modClassTree());
     _ui->treeModClass->setModel(_project->modClassTree());
     _ui->treeOMCases->setContextMenuPolicy(Qt::CustomContextMenu);
     _ui->treeModClass->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -112,9 +112,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _statusBar->setVisible(false);
     this->setStatusBar(_statusBar);
 
-    connect(&infoSender,SIGNAL(setCurrentTask(QString)),this,SLOT(setStatusBarText(QString)));
-    connect(&infoSender,SIGNAL(increaseTaskProgress()),this,SLOT(increaseStProgressBar()));
-    connect(&infoSender,SIGNAL(noCurrentTask()),this,SLOT(eraseStatusBarText(QString)));
+
 
     actualizeGuiFromProject();
 
@@ -148,25 +146,15 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionHelp, SIGNAL(triggered()),this, SLOT(openUserManual()));
     connect( _ui->actionStartOmc,SIGNAL(triggered()),_project->moomc(),SLOT(startServer()));
 
-    //*********************************
-    // Signals for project, infos
-    //*********************************
-    connect(_project, SIGNAL(projectAboutToBeReset()),this, SLOT(onProjectAboutToBeReset()));
-    connect(_project, SIGNAL(projectChanged()),this, SLOT( actualizeGuiFromProject()));
-    connect(_project, SIGNAL(sendProgress(float)), this, SLOT(displayProgress(float)));
-    connect(_project, SIGNAL(sendProgress(float,int,int)), this, SLOT(displayProgress(float,int,int)));
-    connect(&infoSender, SIGNAL(sent(Info)),this, SLOT( displayInfo(Info)));
 
     //*********************************
-    // Signals for problems
+    // Signals for informations
     //*********************************
-    connect( _project, SIGNAL(addedProblem(Problem*)),this, SLOT(onAddedProblem(Problem*)));
-    connect( _project, SIGNAL(beforeRemoveProblem(Problem*)),this, SLOT(removeProblemTab(Problem*)));
-    connect( _project, SIGNAL(problemBegun(Problem*)),this,SLOT(onProblemBegun(Problem*)));
-    connect( _project, SIGNAL(problemFinished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
-    connect( _project, SIGNAL(newProblemProgress(float)),this,SLOT(onNewProblemProgress(float)));
-    connect( _project, SIGNAL(newProblemProgress(float,int,int)),this,SLOT(onNewProblemProgress(float,int,int)));
-    connect( _widgetProgress, SIGNAL(askProblemStop(Problem*)),_project,SLOT(onProblemStopAsked(Problem*)));
+    connect(InfoSender::instance(),SIGNAL(setCurrentTask(QString)),this,SLOT(setStatusBarText(QString)));
+    connect(InfoSender::instance(),SIGNAL(increaseTaskProgress()),this,SLOT(increaseStProgressBar()));
+    connect(InfoSender::instance(),SIGNAL(noCurrentTask()),this,SLOT(eraseStatusBarText(QString)));
+    connect(InfoSender::instance(), SIGNAL(sent(Info)),this, SLOT( displayInfo(Info)));
+
 
     //*********************************
     // Signals for ModClass
@@ -181,29 +169,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionAboutOMOptim,  SIGNAL(triggered()), this, SLOT(dispAboutOMOptim()));
 
 
-    //*********************************
-    // Signals for problem interfaces
-    //*********************************
-    connect(_project,SIGNAL(interfacesModified()),this,SLOT(updateProblemsMenu()));
 
-    //*********************************
-    // Signals for solved problems
-    //*********************************
-    connect(_project, SIGNAL(beforeRemoveResult(Result*)),this, SLOT(removeResultTab(Result*)));
-    connect(_project, SIGNAL(addedResult(Result*)),this, SLOT(onAddedResult(Result*)));
-
-    //*********************************
-    // Signals for model
-    //*********************************
-    connect(_project,SIGNAL(connectionsUpdated()),this,SLOT(onConnectionsUpdated()));
-    connect(_project,SIGNAL(componentsUpdated()),this,SLOT(onComponentsUpdated()));
-    connect(_project,SIGNAL(modifiersUpdated()),this,SLOT(onModifiersUpdated()));
-
-    //*********************************
-    // Signals for MOomc
-    //*********************************
-    connect(_project->moomc(),SIGNAL(startOMCThread(QString)),this,SLOT(onStartedOMCThread(QString)));
-    connect(_project->moomc(),SIGNAL(finishOMCThread(QString)),this,SLOT(onFinishedOMCThread(QString)));
 
     //*********************************
     // Signals for plugins
@@ -449,6 +415,57 @@ void MainWindow::actualizeGuiFromProject()
 
     this->setWindowTitle("OMOptim - "+_project->name());
 
+    //*********************************
+    // Signals for project, infos
+    //*********************************
+
+    // first disconnect existing signal-slots
+    _project->disconnect(this);
+
+    connect(_project, SIGNAL(projectAboutToBeReset()),this, SLOT(onProjectAboutToBeReset()));
+    connect(_project, SIGNAL(projectChanged()),this, SLOT( actualizeGuiFromProject()));
+    connect(_project, SIGNAL(sendProgress(float)), this, SLOT(displayProgress(float)));
+    connect(_project, SIGNAL(sendProgress(float,int,int)), this, SLOT(displayProgress(float,int,int)));
+
+
+    //*********************************
+    // Signals for problems
+    //*********************************
+    connect( _project, SIGNAL(addedProblem(Problem*)),this, SLOT(onAddedProblem(Problem*)));
+    connect( _project, SIGNAL(beforeRemoveProblem(Problem*)),this, SLOT(removeProblemTab(Problem*)));
+    connect( _project, SIGNAL(problemBegun(Problem*)),this,SLOT(onProblemBegun(Problem*)));
+    connect( _project, SIGNAL(problemFinished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
+    connect( _project, SIGNAL(newProblemProgress(float)),this,SLOT(onNewProblemProgress(float)));
+    connect( _project, SIGNAL(newProblemProgress(float,int,int)),this,SLOT(onNewProblemProgress(float,int,int)));
+
+
+    _widgetProgress->disconnect(SIGNAL(askProblemStop(Problem*)));
+    connect( _widgetProgress, SIGNAL(askProblemStop(Problem*)),_project,SLOT(onProblemStopAsked(Problem*)));
+
+
+    //*********************************
+    // Signals for problem interfaces
+    //*********************************
+    connect(_project,SIGNAL(interfacesModified()),this,SLOT(updateProblemsMenu()));
+
+    //*********************************
+    // Signals for solved problems
+    //*********************************
+    connect(_project, SIGNAL(beforeRemoveResult(Result*)),this, SLOT(removeResultTab(Result*)));
+    connect(_project, SIGNAL(addedResult(Result*)),this, SLOT(onAddedResult(Result*)));
+
+    //*********************************
+    // Signals for model
+    //*********************************
+    connect(_project,SIGNAL(connectionsUpdated()),this,SLOT(onConnectionsUpdated()));
+    connect(_project,SIGNAL(componentsUpdated()),this,SLOT(onComponentsUpdated()));
+    connect(_project,SIGNAL(modifiersUpdated()),this,SLOT(onModifiersUpdated()));
+
+    //*********************************
+    // Signals for MOomc
+    //*********************************
+    connect(_project->moomc(),SIGNAL(startOMCThread(QString)),this,SLOT(onStartedOMCThread(QString)));
+    connect(_project->moomc(),SIGNAL(finishOMCThread(QString)),this,SLOT(onFinishedOMCThread(QString)));
 }
 
 

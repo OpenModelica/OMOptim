@@ -57,7 +57,7 @@ WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* pr
     //Tree components
     _ui->treeLibrary->setModel(project->modClassTree());
 
-    ModClassTree* modelTree = GuiTools::ModClassToTreeView(_project->modReader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
+    ModClassTree* modelTree = GuiTools::ModClassToTreeView(_project->modLoader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
                                                            _ui->treeComponents,true);
 
     // Diagram of blocks

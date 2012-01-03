@@ -45,7 +45,7 @@
 #include <QVariant>
 
 #include "ModClass.h"
-#include "ModReader.h"
+#include "ModLoader.h"
 #include "MOomc.h"
 
 
@@ -57,6 +57,8 @@
   * it to fullfil itself communicating with OMC through _moomc.
   *
   * It inherits QAbstractItemModel in order to display contents easily in GUI (using a QTreeView).
+  *
+  * \todo Better split functions between ModClassTree and ModLoader
   */
 
 class ModClassTree : public QAbstractItemModel
@@ -65,7 +67,7 @@ class ModClassTree : public QAbstractItemModel
 
 public:
 
-    ModClassTree(ModReader* modReader,MOomc* moomc,QObject *parent = 0);
+    ModClassTree(ModLoader* modLoader,MOomc* moomc,QObject *parent = 0);
     virtual ~ModClassTree();
     ModClass* rootElement()const {return _rootElement;}
 
@@ -124,14 +126,9 @@ public:
     void setShowComponent(bool);
 
 
-
-protected :
-    // add functions
-    bool addModClass(ModClass* parent,QString className,QString filePath="");
-
 private:
     ModClass* _rootElement;
-    ModReader* _modReader;
+    ModLoader* _modLoader;
     bool _enabled;
     MOomc* _moomc;
 

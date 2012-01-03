@@ -171,7 +171,7 @@ MOVector<ItemClass>::MOVector(QDomElement & domList, bool owner)
 {
     _owner = owner;
 	setItems(domList);
-    connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
+    t(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
 
@@ -272,7 +272,7 @@ void MOVector<ItemClass>::append(const MOVector &_vector,bool makeACopy)
 		}
 		else
 		{
-			infoSender.debug("replace item in vector (name : "+_vector.items.at(i)->name()+")");
+                        InfoSender::instance()->debug("replace item in vector (name : "+_vector.items.at(i)->name()+")");
 			delete items.at(iCurItem);
 			if(makeACopy)
 				items.replace(iCurItem,new ItemClass(*_vector.items.at(i)));
@@ -521,7 +521,7 @@ void MOVector<ItemClass>::replaceIn(MOVector<ItemClass> *overVector)
         {
             QString msg;
             msg.sprintf("Variable %s not found in vector. Could not replace.",curName.utf16());
-            infoSender.debug(msg);
+            InfoSender::instance()->debug(msg);
         }
     }
 }

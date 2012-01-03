@@ -147,7 +147,7 @@ bool BlockSubstitution::init(Project * project, ModModelPlus *model, ModelicaCon
     ModClass* orgElement = project->modClassTree()->findInDescendants(_orgComponent);
     if(orgElement==NULL)
 	{
-        infoSender.debug(_orgComponent + " not found.");
+        InfoSender::instance()->debug(_orgComponent + " not found.");
 		return false;
 	}
     connections->getOutside(orgElement,true,_orgPorts,_orgConnectedComps);

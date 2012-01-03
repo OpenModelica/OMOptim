@@ -76,7 +76,7 @@ void VariablesManip::updateScanValues(MOVector<Variable> *vars, MOVector<Scanned
         {
             QString msg;
             msg.sprintf("in updateScanValues(), unable to find variable %s",curName.utf16());
-            infoSender.debug(msg);
+            InfoSender::instance()->debug(msg);
         }
     }
 }
@@ -97,7 +97,7 @@ double VariablesManip::calculateObjValue(OptObjective* optObj,MOVector<VariableR
 	double result;
 	if(iVarObj==-1)
 	{
-            infoSender.send(Info("Could not find variable "+optObj->name()+". Setting value to 0",ListInfo::WARNING2));
+            InfoSender::instance()->send(Info("Could not find variable "+optObj->name()+". Setting value to 0",ListInfo::WARNING2));
             ok = false;
             return 0;
 	}

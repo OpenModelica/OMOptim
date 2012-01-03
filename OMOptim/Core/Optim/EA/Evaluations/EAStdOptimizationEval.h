@@ -215,7 +215,7 @@ public:
 			}
 			else
 			{
-                //infoSender.send(( Info(ListInfo::ONESIMULATIONSUCCESS));
+                //InfoSender::instance()->send(( Info(ListInfo::ONESIMULATIONSUCCESS));
 				//Recover Objective values
                 int nbObj = _problem->objectives()->items.size();
 				int iObj=0;

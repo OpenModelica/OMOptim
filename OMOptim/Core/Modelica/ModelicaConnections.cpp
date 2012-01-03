@@ -193,10 +193,10 @@ ModelicaConnections* ModelicaConnections::filter(ModClass* element,bool includeC
 //	for(int i=0;i<elConn->size();i++)
 //	{
 //		aName = elConn->at(i)->getA();
-//		aModClass = modReader->findInDescendants(element,aName);
+//		aModClass = modLoader->findInDescendants(element,aName);
 //		
 //		bName = elConn->at(i)->getB();
-//		bModClass = modReader->findInDescendants(element,bName);
+//		bModClass = modLoader->findInDescendants(element,bName);
 //		
 //
 //		if(aModClass)

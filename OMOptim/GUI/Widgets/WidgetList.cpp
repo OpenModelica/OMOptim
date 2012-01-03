@@ -74,7 +74,7 @@ bool WidgetList::setSelectedIndexes(QList<int> _newIndexes)
 				{
                                     QString msg;
                                     msg.sprintf("WidgetList : unable to find item %d in list",_newIndexes.at(i));
-                                    infoSender.debug(msg);
+                                    InfoSender::instance()->debug(msg);
 				}
 			}
 			ignoreChange=false;

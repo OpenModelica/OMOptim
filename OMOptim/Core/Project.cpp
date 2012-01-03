@@ -54,12 +54,15 @@ Project::Project()
     setCurModClass(NULL);
 
     _moomc = new MOomc("OMOptim",true);
-    _modReader = new ModReader(_moomc);
-    _modClassTree = new ModClassTree(_modReader,_moomc);
+    _modLoader = new ModLoader(_moomc);
+    _modClassTree = new ModClassTree(_modLoader,_moomc);
 
     // add interfaces for OneSimulation and Optimization
     addProblemInterface(new OneSimulationInterface());
     addProblemInterface(new OptimizationInterface());
+
+    // create infosender
+  //  _infoSender = new InfoSender();
 }
 
 Project::~Project()
@@ -75,10 +78,12 @@ Project::~Project()
         _modClassTree->deleteLater();
 
     _moomc->deleteLater();
-    _modReader->deleteLater();
+    _modLoader->deleteLater();
 
     for(int i=0;i<_problemsInterfaces.uniqueInterfaces().size();i++)
         _problemsInterfaces.uniqueInterfaces().at(i)->deleteLater();
+
+    //delete _infoSender;
 }
 
 QString Project::getFieldName(int iField, int role)
@@ -153,7 +158,7 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
         _moFiles.push_back(moFilePath);
 
     // load moFile ...
-    _modReader->loadMoFile(rootModClass(),moFilePath,_mapModelPlus,forceLoad);
+    _modLoader->loadMoFile(rootModClass(),moFilePath,_mapModelPlus,forceLoad);
 
     // and read it add class in ModClassTree
     refreshAllMod();
@@ -177,7 +182,7 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
     }
 
     // load _moFiles and read them
-    _modReader->loadMoFiles(rootModClass(),moFilePaths,_mapModelPlus,forceLoad);
+    _modLoader->loadMoFiles(rootModClass(),moFilePaths,_mapModelPlus,forceLoad);
 
     refreshAllMod();
 }
@@ -240,8 +245,7 @@ void Project::reloadModModel(ModModel* modModel)
 */
 void Project::refreshAllMod()
 {
-    QStringList omcClasses = _moomc->getClassNames();
-    QStringList loadedClasses = rootModClass()->getChildrenNames();
+
     QMap<QString,ModModelPlus*> strMapModelPlus;
 
     // Copy map information (using string instead of ModModel*)
@@ -254,11 +258,6 @@ void Project::refreshAllMod()
 
     _modClassTree->clear();
     _modClassTree->readFromOmc(_modClassTree->rootElement(),2);
-
-    //    for(int iO=0;iO<omcClasses.size();iO++)
-    //    {
-    //        _modClassTree->addModClass(rootModClass(),omcClasses.at(iO),_moomc->getFileOfClass(omcClasses.at(iO)));
-    //    }
 
     // refreshing map
     _mapModelPlus.clear();
@@ -306,12 +305,12 @@ bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
 
     if(pbInter)
     {
-        infoSender.sendNormal("Loaded plugin successfully : "+pbInter->name());
+        InfoSender::instance()->sendNormal("Loaded plugin successfully : "+pbInter->name());
         this->addProblemInterface(pbInter);
     }
     else
     {
-        infoSender.sendError("Loaded plugin failed : "+pluginPath
+        InfoSender::instance()->sendError("Loaded plugin failed : "+pluginPath
                               +"\n("+loader.errorString()+")");
     }
 
@@ -475,12 +474,12 @@ bool Project::load(QString loadPath)
 
     if (loaded)
     {
-        emit infoSender.send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
+        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
         emit projectChanged();
     }
     else
     {
-        emit infoSender.send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
+        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
         clear();
         emit projectChanged();
     }
@@ -609,7 +608,7 @@ void Project::launchProblem(Problem* problem)
     if(!_problemLaunchMutex.tryLock())
     {
         QString msg = "Another problem is already running. Could not launch a new one.";
-        infoSender.send(Info(msg));
+        InfoSender::instance()->send(Info(msg));
     }
     else
     {
@@ -655,12 +654,12 @@ void Project::onProblemFinished(Problem* problem,Result* result)
         if(!result->isSuccess())
         {
             QString msg = "Problem "+ problem->getClassName()+ " has failed";
-            infoSender.send(Info(msg,ListInfo::ERROR2));
+            InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
         }
         else
         {
             QString msg = "Problem "+ problem->getClassName()+ " succeeded";
-            infoSender.send(Info(msg,ListInfo::NORMAL2));
+            InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
 
             if(result->name().isEmpty())
                 result->setName(result->problem()->name()+" result");
@@ -773,7 +772,7 @@ void Project::terminateOmsThreads()
         for(int i=0;i<_moomc->getThreads().size();i++)
         {
             QString msg ="Stopping "+_moomc->getThreadsNames().at(i);
-            infoSender.send(Info(msg,ListInfo::NORMAL2));
+            InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
             _moomc->getThreads().at(i)->terminate();
         }
     }

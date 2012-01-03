@@ -340,7 +340,7 @@ double VariableResult::finalValue(int iScan,int iPoint) const
 	{
 		QString msg;
 		msg = "Error reading final value of variable \""+name()+"\" , iScan : "+QString::number(iScan) + " iPoint : "+QString::number(iPoint)+"\n"; 
-		infoSender.debug(msg);
+		InfoSender::instance()->debug(msg);
 		return LowTools::nan();
 	}
 }
@@ -383,7 +383,7 @@ void VariableResult::setFinalValuesAtScan(int iScan,const std::vector<double> & 
 	{
 		QString msg;
 		msg = "Error setting final values of variable \""+name()+"\" , iScan : "+QString::number(iScan) + "\n"; 
-		infoSender.debug(msg);
+		InfoSender::instance()->debug(msg);
 	}
 }
 
@@ -460,7 +460,7 @@ void VariableResult::appendFinalValue(double value,int iScan)
 	{
                 QString msg;
                 msg.sprintf("appdendFinalValue with iScan > finalValues.nbScans (variable : %s",name().utf16());
-		infoSender.send(Info(msg,ListInfo::INFODEBUG));
+		InfoSender::instance()->send(Info(msg,ListInfo::INFODEBUG));
 	}
 		
 	_finalValues.at(iScan).push_back(value);
@@ -1084,7 +1084,7 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
 //	{
 //		QString msg;
 //		msg = "Error setting final values of variable \""+name()+"\" , iScan : "+QString::number(iScan) + "\n"; 
-//		infoSender.debug(msg);
+//		InfoSender::instance()->debug(msg);
 //	}
 //}
 //

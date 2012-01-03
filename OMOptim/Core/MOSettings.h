@@ -55,10 +55,8 @@
   */
 class MOSettings : public MOParameters
 {
-public:
-	MOSettings(void);
-	~MOSettings(void);
 
+public :
     static void initialize(bool preferDefault);
     static void updateFromSavedValues();
     static void save();
@@ -66,9 +64,15 @@ public:
 
     static QVariant value(int index,QVariant defaultValue = QVariant());
     static QVariant value(QString name,QVariant defaultValue = QVariant());
+    static MOSettings* instance();
 
-	// trick to have a "purely" static class
-	static MOSettings instance;
+private :
+    MOSettings(void);
+    ~MOSettings(void);
+
+
+    // this is a singleton
+    static MOSettings* _instance;
 };
 
 

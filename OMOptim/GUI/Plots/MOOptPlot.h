@@ -310,7 +310,7 @@ void MOOptPlot::refresh(int iCurve = 0)
                         QString msg;
                         msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
                                     iPoint,std::min(xData.size(),yData.size()));
-                        infoSender.debug(msg);
+                        InfoSender::instance()->debug(msg);
                     }
 		}
 		curve1->setRawData(_dataX,_dataY,nbPoints);
@@ -337,7 +337,7 @@ void MOOptPlot::refresh(int iCurve = 0)
                                 QString msg;
                                 msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
                                             iPoint,std::min(xData.size(),yData.size()));
-                                infoSender.debug(msg);
+                                InfoSender::instance()->debug(msg);
                             }
 			}
 			curve2->setRawData(_dataX,_dataY,selectedPoints.size());

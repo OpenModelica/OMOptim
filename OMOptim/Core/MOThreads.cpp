@@ -63,7 +63,7 @@ void ProblemThread::run()
     bool ok = _problem->checkBeforeComp(error);
     if(!ok)
     {
-        infoSender.send(Info(error,ListInfo::WARNING2));
+        InfoSender::instance()->send(Info(error,ListInfo::WARNING2));
         //QMessageBox::warning(QApplication::activeWindow(), "Error",error,QMessageBox::Ok,QMessageBox::Ok);
         _result = NULL;
     }
@@ -72,7 +72,7 @@ void ProblemThread::run()
     emit begun(_problem);
 
     QString msg = "Launching problem : name = "+_problem->name()+" ; type = "+_problem->getClassName();
-    infoSender.send(Info(msg));
+    InfoSender::instance()->send(Info(msg));
     _launchDate = QDateTime::currentDateTime();
     _result = _problem->launch(_config);
 

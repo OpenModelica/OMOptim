@@ -93,9 +93,9 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
 }
 
 
-ModClassTree* GuiTools::ModClassToTreeView(ModReader* modReader ,MOomc* moomc,const ModClass & modClass,QTreeView* treeView,bool showComponent)
+ModClassTree* GuiTools::ModClassToTreeView(ModLoader* modLoader ,MOomc* moomc,const ModClass & modClass,QTreeView* treeView,bool showComponent)
 {
-    ModClassTree* newTree = new ModClassTree(modReader,moomc/*,treeView*/);
+    ModClassTree* newTree = new ModClassTree(modLoader,moomc/*,treeView*/);
     newTree->setShowComponent(showComponent);
     ModClass* root = modClass.clone();
     root->clearDescendants(); // reset root : useful if showcomponents changed.

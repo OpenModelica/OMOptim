@@ -33,7 +33,7 @@ Source: "..\..\bin\glpk_4_47.dll"; DestDir: {code:GetOMDir}\bin; Flags: ignoreve
 
 
 ;Source:  "OMOptim.ico"; DestDir: {code:GetOMDir}\bin;
-Source:  "..\..\..\..\..\Documentation\OMDoc\OMOptim\OMOptimUsersGuide.pdf"; DestDir: {code:GetOMDir}\share\doc\omoptim;
+Source:  "..\..\..\..\..\Documentation\Doc\OMOptimUsersGuide.pdf"; DestDir: {code:GetOMDir}\share\doc\omoptim;
 
 Source: "..\..\build\version.txt"; DestDir: {tmp}; Flags: dontcopy
 

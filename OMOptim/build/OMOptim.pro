@@ -153,7 +153,7 @@ HEADERS += ../config.h \
            ../Core/Modelica/ModModelPlus.h \
            ../Core/Modelica/ModPackage.h \
            ../Core/Modelica/ModPlusCtrl.h \
-           ../Core/Modelica/ModReader.h \
+           ../Core/Modelica/ModLoader.h \
            ../Core/Modelica/ModRecord.h \
            ../Core/OMC/commandunit.h \
            ../Core/OMC/inputcelldelegate.h \
@@ -381,7 +381,7 @@ SOURCES += ../main.cpp \
            ../Core/Modelica/ModModelPlus.cpp \
            ../Core/Modelica/ModPackage.cpp \
            ../Core/Modelica/ModPlusCtrl.cpp \
-           ../Core/Modelica/ModReader.cpp \
+           ../Core/Modelica/ModLoader.cpp \
             ../Core/Modelica/ModRecord.cpp \
            ../Core/OMC/MOomc.cpp \
            ../Core/OMC/omc_communication.cpp \

@@ -11,7 +11,7 @@ Problem* OptimizationInterface::createNewProblem(Project* project,const QList<Mo
 
     if(modModelPlusList.size()!=1)
     {
-        infoSender.send(Info("Model for optimization problem not defined",ListInfo::ERROR2));
+        InfoSender::instance()->send(Info("Model for optimization problem not defined",ListInfo::ERROR2));
         return NULL;
     }
     else
@@ -90,7 +90,7 @@ Result* OptimizationInterface::loadResult(QFileInfo saveFile,const QDomElement &
 
     if(!ok)
     {
-        infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
+        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
         return NULL;
     }
 
@@ -101,7 +101,7 @@ Result* OptimizationInterface::loadResult(QFileInfo saveFile,const QDomElement &
 
     if(!result)
     {
-        infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
+        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
         return NULL;
     }
 

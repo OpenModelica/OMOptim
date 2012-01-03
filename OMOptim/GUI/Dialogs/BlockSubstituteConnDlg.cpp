@@ -155,7 +155,7 @@ void BlockSubstituteConnDlg::initCombos()
                 QString connComp = tmpBlockSub->_subConnectedComps.at(i).at(j);
                 if(!basicItemsData.contains(connComp))
                 {
-                    infoSender.debug("ERROR in BlockSubstitutions initCombos()");
+                    InfoSender::instance()->debug("ERROR in BlockSubstitutions initCombos()");
                 }
                 else
                 {

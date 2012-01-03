@@ -228,7 +228,7 @@ Result* SPEA2::launch(QString tempDir)
 		}
 		catch(std::exception &e)
 		{
-			infoSender.debug("loading start file failed :"+QString(e.what()));
+			InfoSender::instance()->debug("loading start file failed :"+QString(e.what()));
 			loadFailed = true;
 		}
 	}

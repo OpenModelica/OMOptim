@@ -45,7 +45,7 @@
 #include "MOVector.h"
 #include "MOomc.h"
 #include "Info.h"
-#include "ModReader.h"
+#include "ModLoader.h"
 #include "ModelicaConnections.h"
 #include "ModelicaModifier.h"
 #include "BlockSubs/BlockSubstitution.h"

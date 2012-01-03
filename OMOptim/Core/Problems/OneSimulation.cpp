@@ -92,7 +92,7 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     ModModel* modModel = _project->findModModel(modelName);
     if(modModel == NULL)
     {
-        infoSender.sendWarning("Unable to find model "+modelName);
+        InfoSender::instance()->sendWarning("Unable to find model "+modelName);
         ok = false;
     }
 

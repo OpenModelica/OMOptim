@@ -237,7 +237,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 		}
 		catch(std::exception &e)
 		{
-                    infoSender.send(Info("Loading start file failed :"+QString(e.what()),ListInfo::WARNING2));
+                    InfoSender::instance()->send(Info("Loading start file failed :"+QString(e.what()),ListInfo::WARNING2));
 			loadFailed = true;
 		}
                 bool reinitStdDev= _parameters->value(SPEA2AdaptParameters::REINITSTDDEV).toBool();

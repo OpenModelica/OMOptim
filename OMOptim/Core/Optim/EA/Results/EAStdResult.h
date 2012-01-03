@@ -128,7 +128,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
         {
             QString msg;
             msg.sprintf("Unable to find variable %s in result file",curOptVar->name().utf16());
-            infoSender.debug(msg);
+            InfoSender::instance()->debug(msg);
         }
         else
         {

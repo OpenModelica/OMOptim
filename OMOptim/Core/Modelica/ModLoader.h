@@ -28,37 +28,52 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file DlgSettings.cpp
+        @file ModLoader.h
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
  	http://www-cep.ensmp.fr/english/
  	@version 
 
-*/
+  */
+#ifndef _ModLoader_H
+#define _ModLoader_H
 
-#include "DlgSettings.h"
-#include "MOTableView.h"
-#include "LowTools.h"
-#include <QtGui/QGroupBox>
-#include <QtGui/QCheckBox>
-DlgSettings::DlgSettings(bool editable)
-    :MOParametersDlg(MOSettings::instance(),editable)
+#include "Modelica.h"
+#include "ModClass.h"
+#include "ModPackage.h"
+#include "ModModel.h"
+#include "ModRecord.h"
+#include "ModComponent.h"
+#include "MOSettings.h"
+
+class ModModelPlus;
+
+/**
+  * \brief ModLoader offers loading functions for openmodelica.
+  */
+class ModLoader : public QObject
 {
-}
+	Q_OBJECT
+
+public:
+
+        ModLoader(MOomc *moomc);
+
+	// Load functions
+        void loadMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus,bool forceLoad = true);
+        void loadMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad = true);
+
+        int getDepthMax();
+
+private :
+        MOomc* _moomc;
 
 
 
-	
-void DlgSettings::pushedOk()
-{
-    _orgParameters->cloneFromOtherVector(_localParameters);
+};
 
-    // save in QSettings
-    MOSettings::save();
 
-	accept();
-}
 
+#endif

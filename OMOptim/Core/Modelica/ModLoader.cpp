@@ -28,8 +28,9 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModReader.h
+        @file ModLoader.cpp
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
@@ -37,47 +38,63 @@
  	@version 
 
   */
-#ifndef _ModReader_H
-#define _ModReader_H
+#include "ModLoader.h"
 
-#include "Modelica.h"
-#include "ModClass.h"
-#include "ModPackage.h"
-#include "ModModel.h"
-#include "ModRecord.h"
-#include "ModComponent.h"
-#include "MOSettings.h"
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QMutex>
 
-class ModModelPlus;
 
-/**
-  * \brief ModReader offers reading and creating functions of modelica models.
-  * \todo Better split functions between ModClassTree and ModReader
-  */
-class ModReader : public QObject
+ModLoader::ModLoader(MOomc *moomc)
 {
-	Q_OBJECT
-
-public:
-
-	ModReader(MOomc *_oms);
-
-	// Load functions
-        void loadMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus,bool forceLoad = true);
-        void loadMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad = true);
-	void refresh(ModClass* rootClass,QMap<ModModel*,ModModelPlus*> & mapModelPlus);
-
-	//edit functions
-        ModClass* newModClass(QString className,QString filePath="");
-        int getDepthMax();
-
-private :
-	MOomc* moomc;
+        _moomc = moomc;
+}
 
 
 
-};
+void ModLoader::loadMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad)
+{
+	// Read it in moomc
+	QFile file(filePath);
+	if( !file.open( QIODevice::ReadOnly ) )
+	{
+		//InfoSender::instance()->send( Info(ListInfo::FILENOTEXISTS,filePath));
+		return ;
+	}
+	file.close();
+
+	// loading file in moomc
+	QString error;
+	bool loadOk;
+
+	// Load file
+        _moomc->loadModel(filePath,forceLoad,loadOk,error);
+     //   QStringList newClasses = _moomc->getClassesOfFile(filePath);
+
+	////Refresh
+	//if(refreshAfter)
+	//	refresh(rootClass,mapModelPlus);
+}
+
+void ModLoader::loadMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad)
+{
+	for(int i=0;i<filePaths.size();i++)
+                loadMoFile(rootClass,filePaths.at(i),mapModelPlus,forceLoad);
+	////Refresh
+	//if(refreshAfter)
+	//	refresh(rootClass,mapModelPlus);
+}
 
 
 
-#endif
+int ModLoader::getDepthMax()
+{
+        int depthMax = MOSettings::value("DepthReadWhileLoadingModModel").toInt();
+	if(depthMax==-1)
+			depthMax = 100000;
+	return depthMax;
+}
+
+
+
+

@@ -45,10 +45,10 @@
 
 
 
-ModClassTree::ModClassTree(ModReader* modReader,MOomc* moomc,QObject *parent)
+ModClassTree::ModClassTree(ModLoader* modLoader,MOomc* moomc,QObject *parent)
     : QAbstractItemModel(parent)
 {
-    _modReader = modReader;
+    _modLoader = modLoader;
     _moomc = moomc;
     _rootElement = new ModClass(_moomc);
 
@@ -75,15 +75,6 @@ void ModClassTree::clear()
     endResetModel();
 }
 
-bool ModClassTree::addModClass(ModClass* parent,QString className,QString filePath)
-{
-    bool ok=false;
-    ModClass* newClass = _modReader->newModClass(className,filePath);
-
-    if(newClass)
-        ok = addChild(parent,newClass);
-    return ok;
-}
 
 bool ModClassTree::addChild(ModClass* parent,ModClass* child)
 {
@@ -385,6 +376,7 @@ ModClass* ModClassTree::findInDescendants(QString fullName,ModClass* parent)
     }
     return NULL;
 }
+
 /**
   * Finding function : returns all modClass whom classname equals argument className.
   */
@@ -423,7 +415,9 @@ QList<ModClass*> ModClassTree::findInDescendantsByClass(QString className,ModCla
 
 }
 
-
+/**
+  * Finding function : returns all components whom classname equals argument className.
+  */
 QList<ModClass*> ModClassTree::findCompOfClassInDescendants(QString className,ModClass* parent)
 {
     if(parent==NULL)
@@ -472,7 +466,9 @@ QList<ModClass*> ModClassTree::findCompOfClassInDescendants(QString className,Mo
     return curComponents;
 }
 
-
+/**
+  * Returns whether or not a ModClass is in this tree.
+  */
 bool ModClassTree::isInDescendants(QString fullName,ModClass* parent)
 {
     ModClass* foundClass = findInDescendants(fullName,parent);
@@ -951,7 +947,7 @@ void ModClassTree::fetchMore ( const QModelIndex & parent )
     if(item)
     {
         if(!item->childrenReaden())
-            readFromOmc(item,_modReader->getDepthMax());
+            readFromOmc(item,_modLoader->getDepthMax());
     }
 }
 

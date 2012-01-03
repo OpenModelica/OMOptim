@@ -319,7 +319,7 @@ void OptimResult::updateRecomputedPointsFromFolder()
             //                    QString msg;
             //                    msg.sprintf("Variable %s added in recomputed variables list",
             //                                newVariableResult->getFieldValue(VariableResult::NAME).toString().utf16());
-            //                    infoSender.send(Info(msg,ListInfo::NORMAL2));
+            //                    InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
             //                }
             //            }
         }

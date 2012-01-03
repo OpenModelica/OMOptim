@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file main.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+  @file main.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 */
 
 #include <QtGui/QApplication>
@@ -63,75 +63,75 @@ CORBA::ORB_var orb;
 int main(int argc, char *argv[])
 {
 
-	// Register Info as a metaType
-	// Needed for Info communication between threads
-	int a = qRegisterMetaType<Info>();
+    // Register Info as a metaType
+    // Needed for Info communication between threads
+    int a = qRegisterMetaType<Info>();
 
 
-	// Application
-	QApplication *app = new QApplication(argc,argv);
+    // Application
+    QApplication *app = new QApplication(argc,argv);
 
 
-        // Setting the Application version
-        //app->setApplicationVersion(APP_VERSION);
-        QString version = QString::number(Version::MAJOR)+"."+QString::number(Version::MINOR)+"."+QString::number(Version::REVISION);
-        app->setApplicationVersion(version);
+    // Setting the Application version
+    //app->setApplicationVersion(APP_VERSION);
+    QString version = QString::number(Version::MAJOR)+"."+QString::number(Version::MINOR)+"."+QString::number(Version::REVISION);
+    app->setApplicationVersion(version);
 
-	// Settings
-	MOSettings::initialize(false);
-	
-	// Style
-	MOStyleSheet::initialize(qApp);
- 
-	// Project
+    // Settings
+    MOSettings::initialize(false);
+
+    // Style
+    MOStyleSheet::initialize(qApp);
+
+    // Project
     Project* project = new Project();
-	
-	// Message handler
-	QString logFilePath = app->applicationDirPath()+QDir::separator()+"MOLog.txt";
-	QFile logFile(logFilePath);
-	logFile.open(QIODevice::WriteOnly);
 
-	
-//#ifdef _DEBUG
-	QTextStream logStream(&logFile);
-	infoSender.setLogStream(&logStream);
-//#endif
+    // Message handler
+    QString logFilePath = app->applicationDirPath()+QDir::separator()+"MOLog.txt";
+    QFile logFile(logFilePath);
+    logFile.open(QIODevice::WriteOnly);
 
-	// Starting
-	MainWindow w(project);
-   // w.setWindowTitle("CERES");
-	app->connect( app, SIGNAL( lastWindowClosed() ), &w, SLOT( quit() ) );
-     
+
+    //#ifdef _DEBUG
+    QTextStream logStream(&logFile);
+    InfoSender::instance()->setLogStream(&logStream);
+    //#endif
+
+    // Starting
+    MainWindow w(project);
+    // w.setWindowTitle("CERES");
+    app->connect( app, SIGNAL( lastWindowClosed() ), &w, SLOT( quit() ) );
+
     w.show();
 
-        //load file
-        if(argc>1)
-        {
-            QString fileName(argv[1]);
-            fileName = fileName.remove("\"");
-            project->load(fileName);
-        }
+    //load file
+    if(argc>1)
+    {
+        QString fileName(argv[1]);
+        fileName = fileName.remove("\"");
+        project->load(fileName);
+    }
 
-	try
-	{
-		app->exec();
-	}
-        catch(std::exception &e)
-	{
-                QString msg(e.what());
-		infoSender.debug(msg);
-//#ifdef _DEBUG
-		logStream.flush();
-		logFile.close();
-//#endif
-	}
+    try
+    {
+        app->exec();
+    }
+    catch(std::exception &e)
+    {
+        QString msg(e.what());
+        InfoSender::instance()->debug(msg);
+        //#ifdef _DEBUG
+        logStream.flush();
+        logFile.close();
+        //#endif
+    }
 
-	logFile.close();
+    logFile.close();
 
 
     // delete project
     delete project;
-	return 0;
+    return 0;
 }
 
 

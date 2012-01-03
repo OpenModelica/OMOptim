@@ -41,21 +41,17 @@
 #include "InfoSender.h"
 #include "MOThreads.h"
 
-InfoSender infoSender;
+// Global static pointer used to ensure a single instance of the class.
+InfoSender* InfoSender::_instance = NULL;
 
 InfoSender::InfoSender()
 {
-	logStream = NULL;
+        _logStream = NULL;
 }
 
-InfoSender::InfoSender(QTextStream* _logStream)
+void InfoSender::setLogStream(QTextStream* logStream)
 {
-	logStream = _logStream;
-}
-
-void InfoSender::setLogStream(QTextStream* _logStream)
-{
-	logStream = _logStream;
+        _logStream = logStream;
 }
 
 
@@ -63,20 +59,35 @@ InfoSender::~InfoSender(void)
 {
 }
 
-void InfoSender::send(Info _info)
+InfoSender* InfoSender::instance()
 {
-        if(logStream)
-	{
-		*logStream << QTime::currentTime().toString().toAscii().data();
-		*logStream << "\t";
-		*logStream << _info.infoMsg;
-		*logStream << "\n";
-	}
-	emit sent(_info);
+    // instance pointer is stored in qapp properties : allows to share with plugins
+    // Otherwise, plugins create a new instance
+    // A correct way would be to build an OMOptim shared lib, that exe and plugin would share
+    if(!_instance)
+    {
+        if(qApp->property("InfoSender").isValid())
+        {
+            _instance = dynamic_cast<InfoSender*>(qApp->property("InfoSender").value<QObject*>());
+        }
+        else
+        {
+            _instance = new InfoSender();
+            qApp->setProperty("InfoSender",qVariantFromValue(qobject_cast<QObject*>(_instance)));
+        }
+    }
+    return _instance;
 }
 
-void InfoSender::debug(QString msg)
+void InfoSender::send(Info info)
 {
-        Info _info(msg,ListInfo::INFODEBUG);
-	send(_info);
+        if(_logStream)
+	{
+                *_logStream << QTime::currentTime().toString().toAscii().data();
+                *_logStream << "\t";
+                *_logStream << info.infoMsg;
+                *_logStream << "\n";
+	}
+        emit sent(info);
 }
+

@@ -41,13 +41,8 @@
 #include "MOSettings.h"
 #include "Dymola.h"
 
-// tricks to have a "purely" static class
-//QStringList MOSettings::names = QStringList();
-//QStringList MOSettings::descs = QStringList();
-//QVariantList MOSettings::defaultValues = QVariantList();
-//QVector<int> MOSettings::types = QVector<int>();
 
-MOSettings MOSettings::instance = MOSettings();
+MOSettings* MOSettings::_instance = NULL;
 
 
 MOSettings::MOSettings(void)
@@ -56,6 +51,27 @@ MOSettings::MOSettings(void)
 
 MOSettings::~MOSettings(void)
 {
+    int a=2;
+}
+
+MOSettings* MOSettings::instance()
+{
+    // instance pointer is stored in qapp properties : allows to share with plugins
+    // Otherwise, plugins create a new instance
+    // A correct way would be to build an OMOptim shared lib, that exe and plugin would share
+    if(!_instance)
+    {
+        if(qApp->property("MOSettings").isValid())
+        {
+            _instance = dynamic_cast<MOSettings*>(qApp->property("MOSettings").value<QObject*>());
+        }
+        else
+        {
+            _instance = new MOSettings();
+            qApp->setProperty("MOSettings",qVariantFromValue(qobject_cast<QObject*>(_instance)));
+        }
+    }
+    return _instance;
 }
 
 
@@ -73,17 +89,17 @@ void MOSettings::updateFromSavedValues()
     QString settingName;
     QString group;
     QVariant value;
-    for(int i=0;i<instance.items.size();i++)
+    for(int i=0;i<instance()->items.size();i++)
     {
-        group = instance.at(i)->getFieldValue(MOParameter::GROUP).toString();
+        group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
 
-        settingName = instance.at(i)->name();
+        settingName = instance()->at(i)->name();
         if(!group.isEmpty())
             settingName = group+"/"+settingName;
 
         value = globalSettings.value(settingName,QVariant());
         if(!value.isNull())
-            instance.at(i)->setFieldValue(MOParameter::VALUE,value);
+            instance()->at(i)->setFieldValue(MOParameter::VALUE,value);
     }
 }
 
@@ -93,15 +109,15 @@ void MOSettings::save()
     QString settingName;
     QString group;
     QVariant value;
-    for(int i=0;i<instance.items.size();i++)
+    for(int i=0;i<instance()->items.size();i++)
     {
-        group = instance.at(i)->getFieldValue(MOParameter::GROUP).toString();
+        group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
 
-        settingName = instance.at(i)->name();
+        settingName = instance()->at(i)->name();
         if(!group.isEmpty())
             settingName = group+"/"+settingName;
 
-        value = instance.at(i)->value();
+        value = instance()->at(i)->value();
         globalSettings.setValue(settingName,value);
     }
 }
@@ -131,7 +147,7 @@ void MOSettings::setFromDefaultValues()
     //*******************************
 #ifdef WIN32
     names << QString("cbcExe");
-    groups << "Milp solvers";
+    groups << "Milp";
     descs << QString(" Path of Cbc executable <A href=\"http://www.coin-or.org/download/binary/Cbc/\">(download here)</A>");
     defaultValues << QString();
     types.push_back(MOParameter::FILEPATH);
@@ -143,7 +159,7 @@ void MOSettings::setFromDefaultValues()
     //*******************************
 #ifdef WIN32
     names << QString("cplxExe");
-    groups << "Milp solvers";
+    groups << "Milp";
     descs << QString(" Path of Cplx executable");
     defaultValues << QString();
     types.push_back(MOParameter::FILEPATH);
@@ -178,26 +194,24 @@ void MOSettings::setFromDefaultValues()
 
     // processing
     MOParameter *param;
-    bool found;
-    int iP;
 
     for(int i=0; i<names.size();i++)
     {
             // update
             param = new MOParameter(i,names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
             param->setFieldValue(MOParameter::GROUP,groups.at(i));
-            instance.addItem(param);
+            instance()->addItem(param);
     }
 }
 
 QVariant MOSettings::value(int index,QVariant defaultValue)
 {
-    return ((MOParameters*)(&instance))->value(index,defaultValue);
+    return ((MOParameters*)(instance()))->value(index,defaultValue);
 }
 
 QVariant MOSettings::value(QString name,QVariant defaultValue)
 {
-    return ((MOParameters*)(&instance))->value(name,defaultValue);
+    return ((MOParameters*)(instance()))->value(name,defaultValue);
 }
 
 

@@ -14,5 +14,5 @@ OMProcess::OMProcess(QString appName, bool dispOut, QObject *parent) :
 void OMProcess::onReadyRead()
 {
     QString msg = "["+_appName+"] : "+QString(readAllStandardOutput());
-    infoSender.send(Info(msg));
+    InfoSender::instance()->send(Info(msg));
 }

@@ -90,7 +90,7 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
     QFileInfo dymolaBin(dymolaPath);
     if(!dymolaBin.exists())
     {
-        infoSender.send(Info("Dymola executable not found. Please verify path in Settings",ListInfo::ERROR2));
+        InfoSender::instance()->send(Info("Dymola executable not found. Please verify path in Settings",ListInfo::ERROR2));
         return false;
     }
     else
@@ -106,13 +106,13 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
         args.push_back(filePath);
 
         //start process
-        infoSender.send(Info("Launching Dymola..."));
+        InfoSender::instance()->send(Info("Launching Dymola..."));
         scriptProcess.start(dymolaPath,args);
         bool ok = scriptProcess.waitForFinished(-1);
         if(!ok)
         {
             QString msg("CreateProcess failed");
-            infoSender.debug(msg);
+            InfoSender::instance()->debug(msg);
             return false;
         }
 
@@ -166,13 +166,13 @@ bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString fold
         dsinFile.remove();
 
     // launch script
-    infoSender.send(Info("Launching Dymola..."));
+    InfoSender::instance()->send(Info("Launching Dymola..."));
     simProcess.start(dymolaPath, args);
     bool ok = simProcess.waitForFinished(-1);
     if(!ok)
     {
         QString msg("CreateProcess failed");
-        infoSender.debug(msg);
+        InfoSender::instance()->debug(msg);
         return false;
     }
 
@@ -233,7 +233,7 @@ void Dymola::start(QString path,QProcess &simProcess,int maxNSec)
     if(!ok)
     {
         QString msg("CreateProcess failed.");
-        infoSender.debug(msg);
+        InfoSender::instance()->debug(msg);
         simProcess.close();
         return;
     }
@@ -346,13 +346,13 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
         }
         if(nv>=variables->size())
         {
-            infoSender.sendError("Corrupted dsin file. Unable to read variables. Try to regenerate dsin file.");
+            InfoSender::instance()->sendError("Corrupted dsin file. Unable to read variables. Try to regenerate dsin file.");
             variables->clear();
             return false;
         }
         if(linefields.size()<8)
         {
-            infoSender.sendWarning("Cannot read variable information ["+variables->at(nv)->name()+"]. It will not be considered");
+            InfoSender::instance()->sendWarning("Cannot read variable information ["+variables->at(nv)->name()+"]. It will not be considered");
             variables->items.removeAt(nv);
         }
         else
@@ -632,7 +632,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         QString value;
         for(int iV=0;iV<variables->size();iV++)
         {
-            infoSender.debug("Setting variable "+ varName+" in "+fileName);
+            InfoSender::instance()->debug("Setting variable "+ varName+" in "+fileName);
 
             curVar = variables->at(iV);
             varName = curVar->name(Modelica::FULL);
@@ -665,21 +665,21 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
                 // if variable def were on two lines
                 if((capLines.size()>1)&& capLines.at(1).contains(QRegExp("\\S")))
                 {
-                    infoSender.debug("found variable. 2 lines. Total text captured:  "+rxLine.cap(0));
+                    InfoSender::instance()->debug("found variable. 2 lines. Total text captured:  "+rxLine.cap(0));
                     allText = allText.replace(rxLine.cap(0),newLine1+"\n"+newLine2+"\n");
-                    infoSender.debug("New Text :  "+newLine1+"\n"+newLine2);
+                    InfoSender::instance()->debug("New Text :  "+newLine1+"\n"+newLine2);
                 }
                 else
                 {
-                    infoSender.debug("found variable. 1 line. Total text captured:  "+rxLine.cap(0));
+                    InfoSender::instance()->debug("found variable. 1 line. Total text captured:  "+rxLine.cap(0));
                     // if variable def were on only one line
                     allText = allText.replace(rxLine.cap(0),newLine1+"\t"+newLine2+"\n");
-                    infoSender.debug("New Text :  "+newLine1+"\t"+newLine2);
+                    InfoSender::instance()->debug("New Text :  "+newLine1+"\t"+newLine2);
                 }
             }
             else
             {
-                infoSender.send(Info("Unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
+                InfoSender::instance()->send(Info("Unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
             }
         }
 
@@ -687,7 +687,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         file.setFileName(fileinfo.filePath());
         bool ok = file.open(QIODevice::WriteOnly);
         if(!ok)
-            infoSender.send(Info("Unable to open file for writing :"+fileinfo.filePath(),ListInfo::ERROR2));
+            InfoSender::instance()->send(Info("Unable to open file for writing :"+fileinfo.filePath(),ListInfo::ERROR2));
 
         QTextStream textWrite(&file);
         textWrite<<allText;

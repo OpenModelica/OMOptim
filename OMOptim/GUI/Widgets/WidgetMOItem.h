@@ -49,7 +49,7 @@
 #include "MOItem.h"
 #include "ui_WidgetMOItem.h"
 #include <QtGui/QLabel>
-#include "qsciencespinbox.h"
+#include "Tools/qsciencespinbox.h"
 
 namespace Ui {
     class WidgetMOItem;

@@ -80,7 +80,7 @@ public:
 
 	static QSortFilterProxyModel * ModelToViewWithFilter(QAbstractItemModel *, QAbstractItemView *,QLineEdit*);
 	static void ModelToView(QAbstractItemModel *, QAbstractItemView *);
-    static ModClassTree* ModClassToTreeView(ModReader*,MOomc*,const ModClass &,QTreeView*,bool showComponent);
+    static ModClassTree* ModClassToTreeView(ModLoader*,MOomc*,const ModClass &,QTreeView*,bool showComponent);
 
 	//ModClass popup menus
     static QMenu* newModClassPopupMenu(Project*,const QPoint &,ModClass*);

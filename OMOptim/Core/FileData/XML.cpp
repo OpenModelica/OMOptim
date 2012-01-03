@@ -77,7 +77,7 @@ void XML::XMLToVariableResults(MOVector<VariableResult> &variables,QDomElement &
 				{
 					QString text = attributes.item(i).toAttr().value();
                                         /// \todo Fill values
-                                        infoSender.debug("XMLToVariableResults not implemented. Do not use!!");
+                                        InfoSender::instance()->debug("XMLToVariableResults not implemented. Do not use!!");
 				}
 			}
 			variables.addItem(newVar);		

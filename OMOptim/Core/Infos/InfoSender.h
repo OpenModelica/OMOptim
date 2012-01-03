@@ -45,39 +45,38 @@
 #include <QTime>
 
 /** InfoSender is used to send information to GUI or to console.
-It contains a global variable infoSender shared among all project files*/
+It contains a single instance shared within entire project*/
 
 class InfoSender : public QObject
 {
 	Q_OBJECT
 
+
 public:
-	InfoSender();
-	InfoSender(QTextStream* _logStream);
-	void setLogStream(QTextStream* _logStream);
-	~InfoSender(void);
+    static InfoSender* instance();
+    void setLogStream(QTextStream* logStream);
+    ~InfoSender(void);
 
 public slots :
-	void send(Info);
-	void debug(QString);
-        void sendWarning(QString msg){send(Info(msg,ListInfo::WARNING2));}
-        void sendError(QString msg){send(Info(msg,ListInfo::ERROR2));}
-        void sendNormal(QString msg){send(Info(msg,ListInfo::NORMAL2));}
+    void send(Info);
+    void debug(QString msg){send(Info(msg,ListInfo::INFODEBUG));}
+    void sendWarning(QString msg){send(Info(msg,ListInfo::WARNING2));}
+    void sendError(QString msg){send(Info(msg,ListInfo::ERROR2));}
+    void sendNormal(QString msg){send(Info(msg,ListInfo::NORMAL2));}
 
-
-
-private :
-	QTextStream* logStream;
 
 signals :
-	void sent(Info);
-        void setCurrentTask(QString);
-        void increaseTaskProgress();
-        void noCurrentTask();
+    void sent(Info);
+    void setCurrentTask(QString);
+    void increaseTaskProgress();
+    void noCurrentTask();
+
+private :
+    QTextStream* _logStream;
+    InfoSender();
+    static InfoSender* _instance;
 };
-
-
-//Global variable !!
-extern InfoSender infoSender;
+//Q_DECLARE_METATYPE(InfoSender)
+//Q_DECLARE_INTERFACE(InfoSender,"com.OMOptim.InfoSender/1.0")
 
 #endif

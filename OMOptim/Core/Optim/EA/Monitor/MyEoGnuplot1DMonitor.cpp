@@ -72,7 +72,7 @@ void MyEoGnuplot1DMonitor::FirstPlot()
 {
     if (this->vec.size() < 2)
     {
-		infoSender.debug("GnuplotMonitor : Must have some stats to plot!");
+		InfoSender::instance()->debug("GnuplotMonitor : Must have some stats to plot!");
     }
     QString command;
 

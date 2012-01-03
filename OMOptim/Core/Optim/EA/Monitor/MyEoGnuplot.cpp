@@ -95,7 +95,7 @@ void MyEoGnuplot::initGnuPlot()
 		QString command("\""+pgnuplotFilePath+"\"");
 		command.replace("/","\\");
 
-		infoSender.debug("Loading gnuplot : "+pgnuplotFilePath);
+		InfoSender::instance()->debug("Loading gnuplot : "+pgnuplotFilePath);
 		FILE *gnuplotPipe = popen(command.toAscii().data(),"w");
 
 #ifdef WIN32
@@ -106,11 +106,11 @@ void MyEoGnuplot::initGnuPlot()
 		//pipeOpen = (gnuplotPipe!=NULL);
 		if(!pipeOpen)
 		{
-			infoSender.debug("Failed loading gnuplot");	
+			InfoSender::instance()->debug("Failed loading gnuplot");	
 		}
 		else
 		{
-			infoSender.debug("Succesfully loaded gnuplot");
+			InfoSender::instance()->debug("Succesfully loaded gnuplot");
 			gnuplotCommand("set terminal wxt");
 		}
 	}

@@ -51,7 +51,7 @@ Load::~Load(void)
 bool Load::loadProject(QString filePath,Project* _project)
 {
 
-    infoSender.send(Info(ListInfo::LOADINGPROJECT,filePath));
+    InfoSender::instance()->send(Info(ListInfo::LOADINGPROJECT,filePath));
     _project->clear();
     _project->setFilePath(filePath);
     QDir projectDir(_project->folder());
@@ -63,20 +63,20 @@ bool Load::loadProject(QString filePath,Project* _project)
     QFile file(filePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-        infoSender.send( Info(ListInfo::PROJECTFILENOTEXISTS,filePath));
+        InfoSender::instance()->send( Info(ListInfo::PROJECTFILENOTEXISTS,filePath));
         return false;
     }
     if( !doc.setContent( &file ) )
     {
         file.close();
-        infoSender.send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+        InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
         return false;
     }
     file.close();
     QDomElement root = doc.documentElement();
     if( root.tagName() != "MOProject" )
     {
-        infoSender.send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+        InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
         return false;
     }
 
@@ -101,7 +101,7 @@ bool Load::loadProject(QString filePath,Project* _project)
             if(!modelFileInfo.exists())
             {
 
-                infoSender.send(Info(ListInfo::MODELFILENOTEXISTS,tmpPath));
+                InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,tmpPath));
             }
             else
             {
@@ -170,7 +170,7 @@ bool Load::loadProject(QString filePath,Project* _project)
     {
         QFileInfo fileinfo = QFileInfo(modelMoFilePaths.at(i));
         if (!fileinfo.exists())
-            infoSender.send(Info(ListInfo::MODELFILENOTEXISTS,modelMoFilePaths.at(i)));
+            InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMoFilePaths.at(i)));
     }
     _project->loadMoFiles(modelMoFilePaths);
 
@@ -181,7 +181,7 @@ bool Load::loadProject(QString filePath,Project* _project)
     {
         QFileInfo fileinfo = QFileInfo(modelMmoFilePaths.at(i));
         if (!fileinfo.exists())
-            infoSender.send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
+            InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
         else
             _project->loadModModelPlus(modelMmoFilePaths.at(i));
     }
@@ -193,7 +193,7 @@ bool Load::loadProject(QString filePath,Project* _project)
     {
         QFileInfo fileinfo = QFileInfo(pluginsPaths.at(i));
         if (!fileinfo.exists())
-            infoSender.sendError("Plugin file does not exist : "+modelMmoFilePaths.at(i));
+            InfoSender::instance()->sendError("Plugin file does not exist : "+modelMmoFilePaths.at(i));
         else
             _project->loadPlugin(pluginsPaths.at(i));
     }
@@ -220,7 +220,7 @@ bool Load::loadProject(QString filePath,Project* _project)
 //	QFile file(filePath);
 //	if( !file.open( QIODevice::ReadOnly ) )
 //	{
-//		infoSender.send( Info(ListInfo::RESULTFILENOTEXISTS,filePath));
+//		InfoSender::instance()->send( Info(ListInfo::RESULTFILENOTEXISTS,filePath));
 //		return NULL;
 //	}
 //
@@ -228,7 +228,7 @@ bool Load::loadProject(QString filePath,Project* _project)
 //	if( !doc.setContent( &file,false,&erreur ) )
 //	{
 //		file.close();
-//		infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
+//		InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
 //		return NULL;
 //	}
 //	file.close();
@@ -267,14 +267,14 @@ bool Load::loadProject(QString filePath,Project* _project)
 //	QFile file(filePath);
 //	if( !file.open( QIODevice::ReadOnly ) )
 //	{
-//		infoSender.send( Info(ListInfo::RESULTFILENOTEXISTS,filePath));
+//		InfoSender::instance()->send( Info(ListInfo::RESULTFILENOTEXISTS,filePath));
 //		return NULL;
 //	}
 //
 //	if( !doc.setContent( &file ) )
 //	{
 //		file.close();
-//		infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
+//		InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
 //		return NULL;
 //	}
 //	file.close();
@@ -326,14 +326,14 @@ bool Load::loadProject(QString filePath,Project* _project)
 ////	QFile file(filePath);
 ////	if( !file.open( QIODevice::ReadOnly ) )
 ////	{
-////		infoSender.send( Info(ListInfo::RESULTFILENOTEXISTS,filePath));
+////		InfoSender::instance()->send( Info(ListInfo::RESULTFILENOTEXISTS,filePath));
 ////		return NULL;
 ////	}
 ////
 ////	if( !doc.setContent( &file ) )
 ////	{
 ////		file.close();
-////		infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
+////		InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
 ////		return NULL;
 ////	}
 ////	file.close();
@@ -412,13 +412,13 @@ OMCase* Load::newOMCase(QString filePath,Project* project)
     QFile file(filePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-        infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+        InfoSender::instance()->send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
         return NULL;
     }
     else if( !doc.setContent(&file,&error) )
     {
         file.close();
-        infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,filePath));
+        InfoSender::instance()->send( Info(ListInfo::PROBLEMFILECORRUPTED,filePath));
         return NULL;
     }
     file.close();
@@ -445,7 +445,7 @@ OMCase* Load::newOMCase(QString filePath,Project* project)
     }
     else
     {
-        infoSender.sendError("Following problem type not managed : "+problemType+" ["+filePath+"]");
+        InfoSender::instance()->sendError("Following problem type not managed : "+problemType+" ["+filePath+"]");
     }
 
     return omCase;
@@ -458,13 +458,13 @@ OMCase* Load::newOMCase(QString filePath,Project* project)
 //    QFile file(filePath);
 //    if( !file.open( QIODevice::ReadOnly ) )
 //    {
-//        infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+//        InfoSender::instance()->send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
 //        return NULL;
 //    }
 //    else if( !doc.setContent(&file,&error) )
 //    {
 //        file.close();
-//        infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,filePath));
+//        InfoSender::instance()->send( Info(ListInfo::PROBLEMFILECORRUPTED,filePath));
 //        return NULL;
 //    }
 //    file.close();
@@ -476,7 +476,7 @@ OMCase* Load::newOMCase(QString filePath,Project* project)
 
 //    if(!problem)
 //    {
-//        infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
+//        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
 //        return NULL;
 //    }
 
@@ -486,7 +486,7 @@ OMCase* Load::newOMCase(QString filePath,Project* project)
 
 //    if(!result)
 //    {
-//        infoSender.send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
+//        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,filePath));
 //        return NULL;
 //    }
 
@@ -553,13 +553,13 @@ OMCase* Load::newOMCase(QString filePath,Project* project)
 //    QFile file(filePath);
 //    if( !file.open( QIODevice::ReadOnly ) )
 //    {
-//        infoSender.send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+//        InfoSender::instance()->send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
 //        return NULL;
 //    }
 //    else if( !doc.setContent(&file,&error) )
 //    {
 //        file.close();
-//        infoSender.send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
+//        InfoSender::instance()->send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
 //        return NULL;
 //    }
 //    file.close();
@@ -591,7 +591,7 @@ OMCase* Load::newOMCase(QString filePath,Project* project)
 
 bool Load::loadModModelPlus(Project* project,QString mmoFilePath)
 {
-    infoSender.send( Info(ListInfo::LOADINGMODEL,mmoFilePath));
+    InfoSender::instance()->send( Info(ListInfo::LOADINGMODEL,mmoFilePath));
 
     // Open file
     QDomDocument doc( "MOModelXML" );
@@ -600,14 +600,14 @@ bool Load::loadModModelPlus(Project* project,QString mmoFilePath)
     QFile file(mmoFilePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-        infoSender.send( Info(ListInfo::MODELFILENOTEXISTS,mmoFilePath));
+        InfoSender::instance()->send( Info(ListInfo::MODELFILENOTEXISTS,mmoFilePath));
         return false;
     }
     QString error;
     if( !doc.setContent( &file,&error ) )
     {
         file.close();
-        infoSender.send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
+        InfoSender::instance()->send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
         return false;
     }
     file.close();
@@ -615,7 +615,7 @@ bool Load::loadModModelPlus(Project* project,QString mmoFilePath)
     if( root.tagName() != "MOModel" )
     {
         error = "Root tagname should be <MOModel>";
-        infoSender.send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
+        InfoSender::instance()->send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
         return false;
     }
     // Read file

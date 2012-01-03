@@ -43,7 +43,7 @@ class EAUpdaterDispObjGUI : public eoUpdater, public QObject
 			}
 			msg +="\n";
 		}
-		infoSender.send(Info(msg));
+		InfoSender::instance()->send(Info(msg));
     }
 
   private:
@@ -90,7 +90,7 @@ class EAUpdaterDispObjGUIOneSol : public eoUpdater, public QObject
         }
         msg +="\n";
 
-        infoSender.send(Info(msg));
+        InfoSender::instance()->send(Info(msg));
     }
 
 private:

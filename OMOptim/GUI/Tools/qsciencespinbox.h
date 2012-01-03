@@ -12,36 +12,37 @@ static bool isIntermediateValueHelper(qint64 num, qint64 minimum, qint64 maximum
 
 class QScienceSpinBox : public QDoubleSpinBox
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     QScienceSpinBox(QWidget * parent = 0);
 
-        int decimals() const;
-        void setDecimals(int value);
+    int decimals() const;
+    void setDecimals(int value);
 
     QString textFromValue ( double value ) const;
     double valueFromText ( const QString & text ) const;
 
 private:
-        int dispDecimals;
+    int dispDecimals;
     QChar delimiter, thousand;
-        QDoubleValidator * v;
+    QDoubleValidator * v;
 
 
 private:
-        void initLocalValues(QWidget *parent);
+    void initLocalValues(QWidget *parent);
     bool isIntermediateValue(const QString &str) const;
     QVariant validateAndInterpret(QString &input, int &pos, QValidator::State &state) const;
-        QValidator::State validate(QString &text, int &pos) const;
-        void fixup(QString &input) const;
-        QString stripped(const QString &t, int *pos) const;
-        double round(double value) const;
-        void stepBy(int steps);
+    QValidator::State validate(QString &text, int &pos) const;
+    void fixup(QString &input) const;
+    QString stripped(const QString &t, int *pos) const;
+    double round(double value) const;
+    void stepBy(int steps);
 
 public slots:
-        void stepDown();
-        void stepUp();
+    void stepDown();
+    void stepUp();
 
 };
+
 
 #endif

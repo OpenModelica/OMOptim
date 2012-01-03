@@ -156,7 +156,7 @@ QStringList MOomc::getPackages(QString parentClass)
 
     if(commandRes.contains("error",Qt::CaseInsensitive))
     {
-        //infoSender.send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
+        //InfoSender::instance()->send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
         return QStringList();
 
     }
@@ -213,7 +213,7 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
 
     QString msg;
     msg.sprintf("Reading components of class %s ",parentClass.toLatin1().data());
-    infoSender.send(Info(msg,ListInfo::OMCNORMAL2));
+    InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
 
     commandRes= evalCommand("getComponents(" + parentClass +")");
 
@@ -221,7 +221,7 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
     {
         if(!isPrimitive(parentClass))
         {
-            infoSender.send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
+            InfoSender::instance()->send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
         }
         return;
     }
@@ -400,7 +400,7 @@ QStringList MOomc::getComponentModifierNames(QString componentName)
     //Checking that component is a first level one
     if(levelNames.size()!=2)
     {
-        infoSender.send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
+        InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
         return QStringList();
     }
     else
@@ -410,7 +410,7 @@ QStringList MOomc::getComponentModifierNames(QString componentName)
 
         if(commandRes.indexOf("Class getConnectionCount (its type)  not found in scope <global scope>")>-1)
         {
-            infoSender.send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
+            InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
             return QStringList();
         }
 
@@ -479,7 +479,7 @@ QString MOomc::getComponentModifierValue(QString modelName,QString shortComponen
 //    //Checking that component is a first level one
 //    if(levelNames.size()!=2)
 //    {
-//        infoSender.send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
+//        InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
 //        QString errorString;
 //        return errorString;
 //    }
@@ -489,7 +489,7 @@ QString MOomc::getComponentModifierValue(QString modelName,QString shortComponen
         commandRes = evalCommand(commandText);
         if(commandRes.contains("Error",Qt::CaseInsensitive))
     {
-            infoSender.send( Info(ListInfo::OMSOBTMODIFIERSFAILED,shortComponentName));
+            InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,shortComponentName));
             return QString();
     }
         commandRes.remove("=");
@@ -652,7 +652,7 @@ bool MOomc::deleteConnection(const QString & org,const QString & dest, const QSt
     if((existingConns.value(shortOrg) == shortDest)||(existingConns.value(shortDest) == shortOrg))
     {
         QString msg = "deleting connection didn't work ["+org+","+dest+"]";
-        infoSender.send(Info(msg,ListInfo::WARNING2));
+        InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
         return false;
     }
     else
@@ -761,18 +761,18 @@ QString MOomc::evalCommand(QString command)
 {
 
     QString msg;
-    infoSender.send( Info(msg.sprintf("OMC : %s",command.toLatin1().data()),ListInfo::OMCNORMAL2));
+    InfoSender::instance()->send( Info(msg.sprintf("OMC : %s",command.toLatin1().data()),ListInfo::OMCNORMAL2));
     nbCalls++;
 
     if (!mHasInitialized)
     {
-        infoSender.send(Info(QString("OMC not started. Please start it again (menu OMC->restart)"),ListInfo::WARNING2));
+        InfoSender::instance()->send(Info(QString("OMC not started. Please start it again (menu OMC->restart)"),ListInfo::WARNING2));
             return QString();
         }
 
 //        if(!startServer())
 //        {
-//            infoSender.send(Info(QString("Unable to communicate with OMC ")));
+//            InfoSender::instance()->send(Info(QString("Unable to communicate with OMC ")));
 //            return QString();
 //        }
 //    }
@@ -783,7 +783,7 @@ QString MOomc::evalCommand(QString command)
         //mResult = mOMC->sendExpression(command.toLatin1());
         mResult = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
        // logOMCMessages(command);
-        infoSender.send(Info(getResult(),ListInfo::OMCNORMAL2));
+        InfoSender::instance()->send(Info(getResult(),ListInfo::OMCNORMAL2));
     }
     catch(CORBA::Exception&)
     {
@@ -792,7 +792,7 @@ QString MOomc::evalCommand(QString command)
             return QString();
 
        QFile::remove(mObjectRefFile);
-        infoSender.send(Info(QString("Communication with OMC server has lost ")));
+        InfoSender::instance()->send(Info(QString("Communication with OMC server has lost ")));
     }
 
     return getResult();
@@ -802,10 +802,10 @@ QString MOomc::evalCommand(QString command)
 
 
     //QString msg;
-    //infoSender.send( Info(msg.sprintf("OMC : %s",_command.toLatin1().data()),ListInfo::OMCNORMAL2));
+    //InfoSender::instance()->send( Info(msg.sprintf("OMC : %s",_command.toLatin1().data()),ListInfo::OMCNORMAL2));
     //delegate_->evalExpression( _command );
     //QString result = delegate_->result();
-    //infoSender.send(Info(result,ListInfo::OMCNORMAL2));
+    //InfoSender::instance()->send(Info(result,ListInfo::OMCNORMAL2));
     //if(result.compare("NOT RESPONDING",Qt::CaseInsensitive)==0)
     //{
     //	// restart server
@@ -843,7 +843,7 @@ QString MOomc::evalCommand(QString command)
 //
 //		// get result
 //		msg = delegate_->result();
-//		infoSender.send(Info(msg,ListInfo::OMCNORMAL2));
+//		InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
 //
 //		//if(msg.contains("error",Qt::CaseInsensitive))
 //		if(true)
@@ -861,7 +861,7 @@ QString MOomc::evalCommand(QString command)
 //			}
 //			msg = delegate_->result();
 //			if(msg!="\"\"")
-//				infoSender.send(Info(msg,ListInfo::OMCERROR2));
+//				InfoSender::instance()->send(Info(msg,ListInfo::OMCERROR2));
 //		}
 //	}
 //	else
@@ -869,13 +869,13 @@ QString MOomc::evalCommand(QString command)
 //		if( startServer() )
 //		{
 //			msg ="No OMC server started - restarted OMC\n" ;
-//			infoSender.send(Info(msg,ListInfo::WARNING2));
+//			InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
 //			goto eval;
 //		}
 //		else
 //		{
 //			msg="No OMC server started - unable to restart OMC\n";
-//			infoSender.send(  Info(msg,ListInfo::ERROR2));
+//			InfoSender::instance()->send(  Info(msg,ListInfo::ERROR2));
 //		}
 //	}
 //	return;
@@ -890,7 +890,7 @@ QString MOomc::evalCommand(QString command)
 //    {
 //        msg = "Command did not achieve properly :"+QString( e.what() )+"\n";
 //        msg = msg + "Trying to reconnect...\n";
-//        infoSender.send( Info(msg,ListInfo::WARNING2));
+//        InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
 
 //        delegate_->closeConnection();
 //        delegate_->reconnect();
@@ -899,7 +899,7 @@ QString MOomc::evalCommand(QString command)
 //    catch( exception &e )
 //    {
 //        // unable to reconnect
-//        infoSender.send(  Info("Still did not work. Aborting.",ListInfo::ERROR2));
+//        InfoSender::instance()->send(  Info("Still did not work. Aborting.",ListInfo::ERROR2));
 
 //    }
 //}
@@ -1018,7 +1018,7 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
 
         if(result.contains("true",Qt::CaseInsensitive))
         {
-            infoSender.send(Info(ListInfo::MODELLOADSUCCESS,filename));
+            InfoSender::instance()->send(Info(ListInfo::MODELLOADSUCCESS,filename));
             ok = true;
             error = "";
 
@@ -1027,12 +1027,12 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
         {
             ok = false;
             error = result;
-            infoSender.send(Info(ListInfo::MODELLOADFAIL,filename,error));
+            InfoSender::instance()->send(Info(ListInfo::MODELLOADFAIL,filename,error));
         }
     }
     else
     {
-        infoSender.send( Info(QString("Model file already loaded - ignoring. (" + filename + ")"),ListInfo::NORMAL2));
+        InfoSender::instance()->send( Info(QString("Model file already loaded - ignoring. (" + filename + ")"),ListInfo::NORMAL2));
         ok = true;
         error = "";
     }
@@ -1053,7 +1053,7 @@ QString MOomc::loadFile(const QString & filePath)
     QString localFile = filePath;
     localFile = localFile.replace("\\","/");
     QString cmd = QString("loadFile(\"") + localFile + QString("\")");
-    infoSender.send( Info(QString("Loading file : " + localFile),ListInfo::NORMAL2));
+    InfoSender::instance()->send( Info(QString("Loading file : " + localFile),ListInfo::NORMAL2));
     QString result = evalCommand(cmd);
 
     emit loadedFile(localFile,result);
@@ -1124,7 +1124,7 @@ bool MOomc::startServer()
         QString omcPath;
 #ifdef WIN32
         if (!omhome)
-            infoSender.send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
+            InfoSender::instance()->send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
         omcPath = QString( omhome ) + "bin/omc.exe";
 #else /* unix */
         omcPath = (omhome ? QString(omhome)+"bin/omc" : QString(CONFIG_DEFAULT_OPENMODELICAHOME) + "/bin/omc");
@@ -1186,14 +1186,14 @@ bool MOomc::startServer()
     catch(std::exception &e)
     {
         QString msg = e.what();
-        infoSender.send(Info(msg,ListInfo::ERROR2));
+        InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
         mHasInitialized = false;
         return false;
     }
     catch (CORBA::Exception&)
     {
         QString msg = "Unable to communicate with OMC";
-        infoSender.send(Info(msg,ListInfo::ERROR2));
+        InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
         mHasInitialized = false;
         return false;
     }
@@ -1205,7 +1205,7 @@ bool MOomc::startServer()
     {
         if (!dir.mkdir(OMCHelper::tmpPath))
         {
-            infoSender.send(Info( QString("Failed to create temp dir ").append(OMCHelper::tmpPath),ListInfo::ERROR2));
+            InfoSender::instance()->send(Info( QString("Failed to create temp dir ").append(OMCHelper::tmpPath),ListInfo::ERROR2));
             return false;
         }
     }
@@ -1226,7 +1226,7 @@ bool MOomc::startServer()
 
     //if(!isStarted)
     //{
-    //	infoSender.send( Info("Starting OMC...",ListInfo::NORMAL2));
+    //	InfoSender::instance()->send( Info("Starting OMC...",ListInfo::NORMAL2));
     //	try
     //	{
     //		delegate_ = new IAEX::OmcInteractiveEnvironment();
@@ -1239,18 +1239,18 @@ bool MOomc::startServer()
     //		omc_version_.remove( "\"" );
 
     //		msg = "OMC " + omc_version_ + " now started.";
-    //		infoSender.send( Info(msg,ListInfo::NORMAL2));
+    //		InfoSender::instance()->send( Info(msg,ListInfo::NORMAL2));
 
     //	}
     //	catch( exception &e )
     //	{
     //		msg = e.what();
-    //		infoSender.send( Info(msg,ListInfo::WARNING2));
+    //		InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
 
     //		if( !IAEX::OmcInteractiveEnvironment::startOMC() )
     //		{
     //			msg= "Unable to start OMC.";
-    //			infoSender.send( Info(msg,ListInfo::ERROR2));
+    //			InfoSender::instance()->send( Info(msg,ListInfo::ERROR2));
     //			isStarted = false;
     //		}
     //		else
@@ -1263,7 +1263,7 @@ bool MOomc::startServer()
     //				// give OMC time to start up
     //				msg = "Unable to connect to OMC Server. Trying to reconnect (";
     //				msg += QString::number(i+1) + "/" + QString::number(nMax) + ") ...";
-    //				infoSender.send( Info(msg,ListInfo::WARNING2));
+    //				InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
 
     //				SleeperThread::msleep( 1000 );
 
@@ -1277,12 +1277,12 @@ bool MOomc::startServer()
     //					omc_version_ = delegate_->result();
     //					omc_version_.remove( "\"" );
     //					msg = "OMC " + omc_version_ + " now started.";
-    //					infoSender.send( Info(msg,ListInfo::NORMAL2));
+    //					InfoSender::instance()->send( Info(msg,ListInfo::NORMAL2));
     //				}
     //				catch( exception &e )
     //				{
     //					msg = e.what();
-    //					infoSender.send( Info(msg,ListInfo::WARNING2));
+    //					InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
     //					i++;
     //				}
     //			}
@@ -1301,7 +1301,7 @@ void MOomc::stopServer()
     {
         QString quit = "quit()";
         mOMC->sendExpression( quit.toLatin1() );
-        infoSender.send( Info("Quiting OMC...",ListInfo::NORMAL2));
+        InfoSender::instance()->send( Info("Quiting OMC...",ListInfo::NORMAL2));
     }
     mHasInitialized = false;
 }
@@ -1424,7 +1424,7 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
 {
     QString msg;
     msg.sprintf("Reading class infos : %s",parentClass.toLatin1().data());
-    infoSender.send(Info(msg,ListInfo::OMCNORMAL2));
+    InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
 
     packagesClasses.clear();
     modelsClasses.clear();
@@ -1470,21 +1470,21 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
                 modelsClasses.push_back(className);
                 QString msg;
                 msg.sprintf("Adding model: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
-                infoSender.send(Info(msg,ListInfo::OMCNORMAL2));
+                InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
             }
             if(restr.contains("PACKAGE"))
             {
                 packagesClasses.push_back(className);
                 QString msg;
                 msg.sprintf("Adding package: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
-                infoSender.send(Info(msg,ListInfo::OMCNORMAL2));
+                InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
             }
             if(restr.contains("RECORD"))
             {
                 recordNames.push_back(className);
                 QString msg;
                 msg.sprintf("Adding record: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
-                infoSender.send(Info(msg,ListInfo::OMCNORMAL2));
+                InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
             }
 
 

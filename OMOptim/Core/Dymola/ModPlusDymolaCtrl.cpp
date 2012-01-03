@@ -119,7 +119,7 @@ bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,Q
 
 bool ModPlusDymolaCtrl::readOutputVariablesDSFINAL(MOVector<Variable> *finalVariables, QString dsfinalFile)
 {
-    infoSender.send(Info("Reading final variables in "+dsfinalFile,ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Reading final variables in "+dsfinalFile,ListInfo::NORMAL2));
 
     finalVariables->clear();
     QFileInfo dsfinalInfo = QFileInfo(dsfinalFile);
@@ -135,7 +135,7 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSFINAL(MOVector<Variable> *finalVari
 
 bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariables, QString dsresFile)
 {
-    infoSender.send(Info("Reading final variables in "+dsresFile,ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Reading final variables in "+dsresFile,ListInfo::NORMAL2));
 
     finalVariables->clear();
 
@@ -170,7 +170,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
         dsinFile = _modModelPlus->mmoFolder()+QDir::separator()+_dsinFile;
     }
 
-    infoSender.send(Info("Reading initial variables in "+dsinFile,ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Reading initial variables in "+dsinFile,ListInfo::NORMAL2));
 
     initVariables->clear();
 
@@ -182,13 +182,13 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
     if(!QFile::exists(dsinFile))
     {
         QString msg = "Unable to create DsinFile. See <A href=\"file:///"+ logFile +"\">log file</A> for detail.";
-              infoSender.send(Info(msg,ListInfo::ERROR2));
+              InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
         return false;
     }
     else
     {
         Dymola::getVariablesFromDsFile(dsinFile,initVariables,_modModelPlus->modModelName());
-        infoSender.send(Info(ListInfo::READVARIABLESSUCCESS));
+        InfoSender::instance()->send(Info(ListInfo::READVARIABLESSUCCESS));
         return true;
     }
 }
@@ -196,7 +196,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
 bool ModPlusDymolaCtrl::compile(const QStringList & moDependencies)
 {
 
-    infoSender.send(Info("Compiling model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Compiling model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
 
     //QString logFilePath = _mmoFolder+QDir::separator()+"log.html";
     QString logFilePath = _modModelPlus->mmoFolder()+QDir::separator()+"buildlog.txt";
@@ -211,7 +211,7 @@ bool ModPlusDymolaCtrl::compile(const QStringList & moDependencies)
     else
         iMsg = ListInfo::MODELCOMPILATIONFAIL;
 
-    infoSender.send(Info(iMsg,_modModelPlus->modModelName(),logFilePath));
+    InfoSender::instance()->send(Info(iMsg,_modModelPlus->modModelName(),logFilePath));
 
     return success;
 }
@@ -239,7 +239,7 @@ bool ModPlusDymolaCtrl::isCompiled()
 bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy,QStringList moDependencies)
 {
     // Info
-    infoSender.send(Info("Simulating model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Simulating model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
 
     // eventually compile model
     if(!this->isCompiled())
@@ -302,12 +302,12 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
 
     if(!success)
     {
-        infoSender.send(Info(ListInfo::ONESIMULATIONFAILED,logFile));
+        InfoSender::instance()->send(Info(ListInfo::ONESIMULATIONFAILED,logFile));
         return false;
     }
     else
     {
-        infoSender.send(Info(ListInfo::ONESIMULATIONSUCCESS,logFile));
+        InfoSender::instance()->send(Info(ListInfo::ONESIMULATIONSUCCESS,logFile));
     }
 
     bool readOk = readOutputVariables(outputVars,tempFolder);

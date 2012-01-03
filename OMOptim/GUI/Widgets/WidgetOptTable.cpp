@@ -113,7 +113,7 @@ void WidgetOptTable::fillOptTable()
 				for(int j=0;j<nbPoints;j++)
 				{
 					QString msg = "Widget Opt Table Row : "+QString::number(i)+", column : "+QString::number(j) + "\n";
-					infoSender.debug(msg);
+					InfoSender::instance()->debug(msg);
 					ui->tableOpt->setItem(curRow,j,new QTableWidgetItem(QString::number(result->optVariablesResults()->at(i)->finalValue(0,j))));
 				}
 			}

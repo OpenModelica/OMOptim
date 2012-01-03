@@ -212,7 +212,7 @@ void MOOptVector::append(const MOOptVector &vector,bool makeACopy)
 		}
 		else
 		{
-			infoSender.debug("replace item in vector (name : "+vector.items.at(i)->name()+")");
+                        InfoSender::instance()->debug("replace item in vector (name : "+vector.items.at(i)->name()+")");
 			delete items.at(iCurItem);
 			if(makeACopy)
 				items.replace(iCurItem,new VariableResult(*vector.items.at(i)));

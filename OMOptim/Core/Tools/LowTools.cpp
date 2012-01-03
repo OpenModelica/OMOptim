@@ -85,7 +85,7 @@ bool LowTools::removeDir(QString folder)
 			
 			if(!removed)
 			{
-                                infoSender.send(Info(ListInfo::FOLDERUNREMOVABLE,folder));
+                                InfoSender::instance()->send(Info(ListInfo::FOLDERUNREMOVABLE,folder));
 				return false;
 			}
 		}
