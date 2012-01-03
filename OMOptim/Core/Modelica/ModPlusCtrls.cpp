@@ -6,7 +6,7 @@
 
 ModPlusCtrls::ModPlusCtrls(Project* project,ModModelPlus* modModelPlus)
 {
-    QString msg = "new ModPlusCtrls ["+QString::number((int)this,16)+"]";
+    QString msg = "new ModPlusCtrls ["+QString::number((long)this,16)+"]";
     qDebug(msg.toLatin1().data());
 
     _project = project;
@@ -30,7 +30,7 @@ ModPlusCtrls::ModPlusCtrls(Project* project,ModModelPlus* modModelPlus)
 
 ModPlusCtrls::ModPlusCtrls(Project* project,ModModelPlus* modModelPlus,const QDomElement & cControlers)
 {
-    QString msg = "new ModPlusCtrls ["+QString::number((int)this,16)+"]";
+    QString msg = "new ModPlusCtrls ["+QString::number((long)this,16)+"]";
     qDebug(msg.toLatin1().data());
 
     _project = project;
@@ -89,7 +89,7 @@ ModPlusCtrls::~ModPlusCtrls()
     {
         delete values().at(i);
     }
-    QString msg = "delete ModPlusCtrls ["+QString::number((int)this,16)+"]";
+    QString msg = "delete ModPlusCtrls ["+QString::number((long)this,16)+"]";
     qDebug(msg.toLatin1().data());
 }
 
