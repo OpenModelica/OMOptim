@@ -89,7 +89,7 @@ class ModPlusCtrl :public QObject
         virtual void setDefaultParameters() = 0;
 
         // Info function
-        virtual ModPlusCtrl::Type type() = 0;
+        virtual ModPlusCtrl::Type type()const = 0;
         virtual QString name() = 0;
 
         // Simulate function
@@ -99,6 +99,14 @@ class ModPlusCtrl :public QObject
         virtual bool canBeStoped(){return false;}
 
         MOParameters* parameters();
+
+        bool operator==(const ModPlusCtrl &) const;
+
+        friend bool operator==(const ModPlusCtrl & a,const ModPlusCtrl & b)
+        {
+            return (a.type()==b.type());
+        }
+
 
 protected:
         ModModelPlus* _modModelPlus;

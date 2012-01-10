@@ -177,14 +177,16 @@ class MOParameters : public MOVector<MOParameter>
     Q_OBJECT
 public :
         MOParameters();
-        QVariant value(int index,QVariant defaultValue = QVariant());
-        QVariant value(QString name,QVariant defaultValue = QVariant());
+        QVariant value(int index,QVariant defaultValue = QVariant()) const;
+        QVariant value(QString name,QVariant defaultValue = QVariant()) const;
         bool setValue(int index,QVariant value);
         QMultiMap<QString,MOParameter*> map() const;
         void regroup(QString group,QList<int> indexes);
         void addEnablingIndex(QList<int> enabledIndexes,int enablingIndex, QVariant enablingValue);
         bool shouldBeEnabled(int index);
         MOParameters* clone() const;
+
+        bool operator==(const MOParameters& b)const;
 
 signals :
         void modified();

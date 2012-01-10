@@ -107,4 +107,14 @@ QDomElement OneSimResult::toXmlData(QDomDocument & doc)
     return cResult;
 }
 
+ModPlusCtrl* OneSimResult::modPlusCtrl()
+{
+    OneSimulation* oneSim = dynamic_cast<OneSimulation*>(_problem);
+    if(oneSim)
+    {
+        return oneSim->ctrl();
+    }
+    else
+        return NULL;
+}
 

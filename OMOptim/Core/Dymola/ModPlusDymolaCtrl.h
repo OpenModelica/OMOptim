@@ -18,18 +18,20 @@ http://www-cep.ensmp.fr/english/
 class ModPlusDymolaCtrl :public ModPlusCtrl
 {
 
-        enum OutputReadMode
-        {
-                DSFINAL,
-                DSRES
-        };
+
 
 public:
+    enum OutputReadMode
+    {
+            DSFINAL,
+            DSRES
+    };
+
         ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* omc);
         ~ModPlusDymolaCtrl(void);
         ModPlusCtrl* clone();
 
-        ModPlusCtrl::Type type();
+        ModPlusCtrl::Type type() const;
         QString name();
 
         // Variables functions

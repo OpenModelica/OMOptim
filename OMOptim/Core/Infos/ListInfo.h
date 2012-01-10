@@ -205,8 +205,8 @@ namespace ListInfo{
 		{READCONNECTIONSSUCCESS, "Reading model connections has run successfully.",NORMAL2},
 
 		//MOomc
-		{OMSOBTMODIFIERSFAILED, "Cannot obtain modifiers from component %s. ",WARNING2},
-		{OMSGETCOMPERROR, "Modelica Error : impossible to get components of class %s.",ERROR2},
+                {OMSOBTMODIFIERSFAILED, "Cannot obtain modifiers from component %s. ",OMCWARNING2},
+                {OMSGETCOMPERROR, "Modelica Error : impossible to get components of class %s.",OMCERROR2},
 
 		//MOITEM
 		{PROBLEMREADINGLINE, "Line is corrupted. Item won't be imported (%s)",WARNING2},

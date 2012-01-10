@@ -50,7 +50,6 @@ ModPlusDymolaCtrl::ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc*
     _dsresFile = "dsres.txt";
     _dsfinalFile = "dsfinal.txt";
     _copyAllMoOfFolder = true;
-    _outputReadMode = DSFINAL;
 
     _parameters = new MOParameters();
     setDefaultParameters();
@@ -69,14 +68,13 @@ ModPlusCtrl* ModPlusDymolaCtrl::clone()
     cloned->_dsinFile = _dsinFile;
     cloned->_dsresFile = _dsresFile;
     cloned->_dsfinalFile = _dsfinalFile;
-    cloned->_outputReadMode = _outputReadMode;
     cloned->_copyAllMoOfFolder = _copyAllMoOfFolder;
     cloned->_parameters = _parameters->clone();
 
     return cloned;
 }
 
-ModPlusCtrl::Type ModPlusDymolaCtrl::type()
+ModPlusCtrl::Type ModPlusDymolaCtrl::type() const
 {
     return ModPlusCtrl::DYMOLA;
 }
@@ -99,6 +97,11 @@ void ModPlusDymolaCtrl::setDefaultParameters()
 
     _parameters->addItem( new MOParameterListed((int)Dymola::SOLVER,"Solver","Solver",Dymola::DASSL,mapSolvers));
     _parameters->addItem(new MOParameter((int)Dymola::MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
+
+    QMap<int,QString> finalFiles;
+    finalFiles.insert(DSFINAL,"dsfinal");
+    finalFiles.insert(DSRES,"dsres");
+    _parameters->addItem( new MOParameterListed((int)Dymola::FINALFILE,"Final file considered","File where variables are read (longer if dsres but all variables are within)",DSFINAL,finalFiles));
 }
 
 bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString folder)
@@ -107,7 +110,8 @@ bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,Q
         folder = _modModelPlus->mmoFolder();
     QDir dir(folder);
 
-    switch(_outputReadMode)
+    int outputFile = _parameters->value(Dymola::FINALFILE,DSFINAL).toInt();
+    switch(outputFile)
     {
     case DSFINAL :
         return readOutputVariablesDSFINAL(finalVariables,dir.absoluteFilePath(_dsfinalFile));

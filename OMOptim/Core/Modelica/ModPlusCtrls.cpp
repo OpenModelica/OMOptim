@@ -17,7 +17,7 @@ ModPlusCtrls::ModPlusCtrls(Project* project,ModModelPlus* modModelPlus)
         {
             ModPlusCtrl* newCtrl;
             newCtrl = getNewCtrl((ModPlusCtrl::Type)i,project,modModelPlus);
-            this->insert((ModPlusCtrl::Type)i,newCtrl);
+            this->insertCtrl((ModPlusCtrl::Type)i,newCtrl);
         }
 
 #if DEFAULTSIMULATOR==0
@@ -107,8 +107,10 @@ ModPlusCtrls* ModPlusCtrls::clone()
     // then add cloned
     for(int i=0;i<keys().size();i++)
     {
-        cloned->insert(this->keys().at(i),this->value(keys().at(i))->clone());
+        cloned->insertCtrl(this->keys().at(i),this->value(keys().at(i))->clone());
     }
+
+
 
     cloned->_ctrlType = _ctrlType;
 
@@ -181,13 +183,14 @@ void ModPlusCtrls::setCurrentCtrlType(ModPlusCtrl::Type type)
 
      // add clones
      ModPlusCtrl::Type curType;
-     ModPlusCtrl* curCtrl;
+     ModPlusCtrl* newCtrl;
      for(int i=0;i<newCtrls.keys().size();i++)
      {
          curType = newCtrls.keys().at(i);
-         curCtrl = newCtrls.value(curType);
-         this->insertCtrl(curType,curCtrl->clone());
+         newCtrl = newCtrls.value(curType)->clone();
+         this->insertCtrl(curType,newCtrl);
      }
+     this->_ctrlType = newCtrls._ctrlType;
  }
 
 void ModPlusCtrls::insertCtrl(ModPlusCtrl::Type i,ModPlusCtrl* ctrl)

@@ -145,6 +145,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionLoadModelicaLibrary,  SIGNAL(triggered()), this, SLOT(loadModelicaLibrary()));
     connect( _ui->actionHelp, SIGNAL(triggered()),this, SLOT(openUserManual()));
     connect( _ui->actionStartOmc,SIGNAL(triggered()),_project->moomc(),SLOT(startServer()));
+    connect( _ui->actionClearLog,SIGNAL(triggered()),this,SLOT(clearLog()));
 
 
     //*********************************
@@ -193,6 +194,12 @@ MainWindow::~MainWindow()
     delete _ui;
 }
 
+void MainWindow::clearLog()
+{
+    _textLog->clear();
+    _ui->textDebug->clear();
+    _ui->textOMC->clear();
+}
 
 void MainWindow::displayInfo(Info i)
 {
@@ -498,6 +505,7 @@ void MainWindow::OMCClear()
         _project->moomc()->clear();
     }
 }
+
 
 void MainWindow::enableOMCaseTab(QModelIndex index)
 {

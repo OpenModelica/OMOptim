@@ -56,7 +56,7 @@ class ModPlusOMCtrl :public ModPlusCtrl
         ~ModPlusOMCtrl(void);
         ModPlusCtrl* clone();
 
-        ModPlusCtrl::Type type();
+        ModPlusCtrl::Type type() const;
         QString name();
 
         // Variables functions

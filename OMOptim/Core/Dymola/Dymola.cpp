@@ -76,6 +76,7 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
 
     scriptText.append("cd "+storeFolder+"\n");
     scriptText.append("experimentSetupOutput(textual=true)\n");
+    scriptText.append("Advanced.StoreProtectedVariables:=true;\n");
     scriptText.append("checkModel(\""+modelToConsider+"\",simulate=true)\n");
     scriptText.append("savelog(\""+logFilePath+"\")\n");
     scriptText.append("exit\n");

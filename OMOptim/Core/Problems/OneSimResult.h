@@ -72,6 +72,7 @@ public:
 
 	MOVector<Variable> *inputVariables(){return _inputVariables;};
 	MOOptVector *finalVariables(){return _finalVariables;};
+        ModPlusCtrl* modPlusCtrl();
 
 	//******************
 	// Methods

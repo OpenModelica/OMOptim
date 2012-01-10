@@ -78,6 +78,7 @@ public:
 
 
 public slots :
+        void clearLog();
 	void displayInfo(Info);
 	void displayProgress(float);
 	void displayProgress(float,int,int);

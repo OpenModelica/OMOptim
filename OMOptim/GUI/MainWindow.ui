@@ -196,6 +196,7 @@
     <property name="title">
      <string>Display</string>
     </property>
+    <addaction name="actionClearLog"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -499,6 +500,11 @@ color:white;
   <action name="actionLoadPlugins">
    <property name="text">
     <string>Load plugins ...</string>
+   </property>
+  </action>
+  <action name="actionClearLog">
+   <property name="text">
+    <string>clear Log</string>
    </property>
   </action>
  </widget>

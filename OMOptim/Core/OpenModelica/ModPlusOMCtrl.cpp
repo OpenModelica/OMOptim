@@ -79,7 +79,7 @@ ModPlusCtrl* ModPlusOMCtrl::clone()
     return cloned;
 }
 
-ModPlusCtrl::Type ModPlusOMCtrl::type()
+ModPlusCtrl::Type ModPlusOMCtrl::type() const
 {
     return ModPlusCtrl::OPENMODELICA;
 }

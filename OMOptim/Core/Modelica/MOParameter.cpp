@@ -365,7 +365,7 @@ MOParameters::MOParameters()
     connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
-QVariant MOParameters::value(int index,QVariant defaultValue)
+QVariant MOParameters::value(int index,QVariant defaultValue) const
 {
     int iParam = this->findItem(index,MOParameter::INDEX);
     if(iParam>-1)
@@ -374,7 +374,7 @@ QVariant MOParameters::value(int index,QVariant defaultValue)
         return defaultValue;
 }
 
-QVariant MOParameters::value(QString name,QVariant defaultValue)
+QVariant MOParameters::value(QString name,QVariant defaultValue) const
 {
     int iParam = this->findItem(name,MOParameter::NAME);
     if(iParam>-1)
@@ -459,3 +459,19 @@ MOParameters* MOParameters::clone() const
     return newVector;
 }
 
+bool MOParameters::operator==(const MOParameters& b)const
+{
+    if(this->size()!=b.size())
+        return false;
+
+    bool equals = true;
+    int curIndex;
+    int i=0;
+    while(equals && (i<size()))
+    {
+        curIndex = this->at(i)->index();
+        equals = equals && (this->at(i)->value()==b.value(curIndex));
+        i++;
+    }
+    return equals;
+}

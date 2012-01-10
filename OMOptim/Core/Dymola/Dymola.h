@@ -93,7 +93,7 @@ public:
 	static QString sciNumRx();
 
 	// Parameters
-        enum DymolaParameters{STOPTIME,TOLERANCE,NINTERVAL,SOLVER,MAXSIMTIME};
+        enum DymolaParameters{STOPTIME,TOLERANCE,NINTERVAL,SOLVER,MAXSIMTIME,FINALFILE};
         enum DymolaSolvers{DASSL=8,EULER=11};
 
 };

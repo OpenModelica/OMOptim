@@ -69,6 +69,9 @@ void ModLoader::loadMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,M
 
 	// Load file
         _moomc->loadModel(filePath,forceLoad,loadOk,error);
+
+        if(rootClass)
+            rootClass->setChildrenReaden(false); // force to reread (untested)
      //   QStringList newClasses = _moomc->getClassesOfFile(filePath);
 
 	////Refresh
