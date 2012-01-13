@@ -630,11 +630,6 @@ bool Load::loadModModelPlus(Project* project,QString mmoFilePath)
     else
     {
         ModModelPlus* newModelPlus = new ModModelPlus(project,modModel);
-        // Other files
-        QDomElement domOtherFiles = root.firstChildElement("OtherFiles");
-        QString allOtherFiles = domOtherFiles.attribute( "list", "" );
-        newModelPlus->setOtherFiles(allOtherFiles.split(";"));
-
 
         // .mo dependencies
         QDomElement domMoDeps = root.firstChildElement("moDependencies");

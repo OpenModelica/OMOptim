@@ -42,6 +42,7 @@
 #include <QDesktopServices>
 MyTextLog::MyTextLog(void):QTextBrowser()
 {
+    setAcceptRichText(true);
     connect(this,SIGNAL(anchorClicked(QUrl)),this,SLOT(setSource(QUrl)));
 }
 

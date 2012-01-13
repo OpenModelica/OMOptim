@@ -98,8 +98,7 @@ protected :
     bool _modifiersRead; /// @deprecated Never been used. Maybe in the future... @sa _modifiers
     bool _connectionsRead;/// indicates whether variables have been read or not
 
-    QString _mmoFilePath; // .mmo filepath
-    QStringList _otherFiles;
+    QString _mmoFilePath; /// File path of file where all informations are stored
     QString _infos;
 
 public:
@@ -112,11 +111,8 @@ public:
     //*************************
     // Get / Set functions
     //*************************
-    void setOtherFiles(QStringList);
     void setInfos(QString);
-    QStringList otherFiles();
     QString infos();
-    void clearOtherFiles();
     ModModel* modModel();
     QString getFieldName(int,int role){return "-";};
     unsigned getNbFields(){return 0;};

@@ -75,7 +75,7 @@ protected :
     QMap<QPushButton*,QLineEdit*> _pathsMap;
     MOParameters *_localParameters;
     MOParameters *_orgParameters;
-    QMap<int,QWidget*> _mapValueWidgets;
+    QMap<MOParameter*,QWidget*> _mapValueWidgets;
     QStringList _paramNames;
     QVector<int> _paramTypes;
     bool _editable;

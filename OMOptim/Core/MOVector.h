@@ -76,7 +76,7 @@ public:
 
     void append(std::vector<ItemClass*>* toAppend);
     void setItems(QDomElement & domList);
-    void append(const MOVector &,bool makeACopy);
+    virtual void append(const MOVector &,bool makeACopy);
     void update(const QDomElement & domList);
 
     int rowCount(const QModelIndex &parent ) const;

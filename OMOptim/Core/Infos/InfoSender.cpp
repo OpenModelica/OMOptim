@@ -88,6 +88,9 @@ void InfoSender::send(Info info)
                 *_logStream << info.infoMsg;
                 *_logStream << "\n";
 	}
+        if(info.infoType==ListInfo::INFODEBUG)
+            qDebug(info.infoMsg.toLatin1().data());
+
         emit sent(info);
 }
 

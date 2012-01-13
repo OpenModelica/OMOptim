@@ -220,12 +220,6 @@ Variables* ModModelPlus::variables(ModClass* element)
 }
 
 
-
-QStringList ModModelPlus::otherFiles()
-{
-    return _otherFiles;
-}
-
 QString ModModelPlus::infos()
 {
     return _infos;
@@ -235,23 +229,7 @@ ModModel* ModModelPlus::modModel()
 {
     return _modModel;
 }
-void ModModelPlus::clearOtherFiles()
-{
-    _otherFiles.clear();
-}
-void ModModelPlus::setOtherFiles(QStringList otherFiles)
-{
-    int i=0;
-    // removing empty files and caracters
-    while(i <otherFiles.size())
-    {
-        if(otherFiles[i].replace(" ","").isEmpty())
-            otherFiles.removeAt(i);
-        else
-            i++;
-    }
-    _otherFiles= otherFiles;
-}
+
 void ModModelPlus::setInfos(QString infos)
 {
     _infos = infos;

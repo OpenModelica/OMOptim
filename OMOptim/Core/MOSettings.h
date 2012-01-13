@@ -61,6 +61,7 @@ public :
     static void updateFromSavedValues();
     static void save();
     static void setFromDefaultValues();
+    static void addParameters(MOParameters*,QString tabName = "");
 
     static QVariant value(int index,QVariant defaultValue = QVariant());
     static QVariant value(QString name,QVariant defaultValue = QVariant());

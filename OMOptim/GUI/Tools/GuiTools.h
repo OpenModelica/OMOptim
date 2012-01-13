@@ -132,5 +132,4 @@ signals :
     void deletePressed();
 };
 
-
 #endif

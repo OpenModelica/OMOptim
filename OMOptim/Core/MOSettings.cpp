@@ -51,7 +51,6 @@ MOSettings::MOSettings(void)
 
 MOSettings::~MOSettings(void)
 {
-    int a=2;
 }
 
 MOSettings* MOSettings::instance()
@@ -142,28 +141,6 @@ void MOSettings::setFromDefaultValues()
     types.push_back(MOParameter::FILEPATH);
 #endif
 
-    //*******************************
-    // Cbc path
-    //*******************************
-#ifdef WIN32
-    names << QString("cbcExe");
-    groups << "Milp";
-    descs << QString(" Path of Cbc executable <A href=\"http://www.coin-or.org/download/binary/Cbc/\">(download here)</A>");
-    defaultValues << QString();
-    types.push_back(MOParameter::FILEPATH);
-#endif
-
-
-    //*******************************
-    // Cplx path
-    //*******************************
-#ifdef WIN32
-    names << QString("cplxExe");
-    groups << "Milp";
-    descs << QString(" Path of Cplx executable");
-    defaultValues << QString();
-    types.push_back(MOParameter::FILEPATH);
-#endif
 
     //	//*******************************
     //	// Quit omc at end of program
@@ -202,6 +179,14 @@ void MOSettings::setFromDefaultValues()
             param->setFieldValue(MOParameter::GROUP,groups.at(i));
             instance()->addItem(param);
     }
+}
+
+void MOSettings::addParameters(MOParameters* addedParams, QString tabName)
+{
+    for(int i=0;i<addedParams->size();i++)
+        instance()->addItem(addedParams->at(i));
+
+    updateFromSavedValues();
 }
 
 QVariant MOSettings::value(int index,QVariant defaultValue)

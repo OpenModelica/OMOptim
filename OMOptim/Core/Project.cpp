@@ -307,6 +307,10 @@ bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
     {
         InfoSender::instance()->sendNormal("Loaded plugin successfully : "+pbInter->name());
         this->addProblemInterface(pbInter);
+
+        // added corresponding settings
+        MOParameters* pluginParams = pbInter->parameters();
+        MOSettings::addParameters(pluginParams,pbInter->name());
     }
     else
     {

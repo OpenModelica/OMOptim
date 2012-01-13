@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -344,7 +344,7 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
             default :
                 valueWidget = new QLineEdit(this);
                 ((QLineEdit*)valueWidget)->setText(value.toString());
-                 connect(((QLineEdit*)valueWidget),SIGNAL(textChanged(QString)),this,SLOT(onValueChanged()));
+                connect(((QLineEdit*)valueWidget),SIGNAL(textChanged(QString)),this,SLOT(onValueChanged()));
                 break;
 
             }
@@ -353,7 +353,7 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
             valueWidget->setEnabled(_editable);
 
             // store (to save data when click ok)
-            _mapValueWidgets.insert(parameter->getFieldValue(MOParameter::INDEX).toInt(),valueWidget);
+            _mapValueWidgets.insert(parameter,valueWidget);
             _paramNames.push_back(parameter->name());
             _paramTypes.push_back(type);
 
@@ -405,9 +405,9 @@ void MOParametersDlg::onValueChanged()
     QWidget* widgetChanged = dynamic_cast<QWidget*>(sender());
 
     // update value
-    int index = _mapValueWidgets.key(widgetChanged,-1);
-    if(index>-1)
-        _localParameters->setValue(index,getValue(widgetChanged));
+    MOParameter* param = _mapValueWidgets.key(widgetChanged,NULL);
+    if(param)
+        param->setFieldValue(MOParameter::VALUE,getValue(widgetChanged));
 
     // update enabled widgets
     if(widgetChanged)
@@ -423,14 +423,14 @@ void MOParametersDlg::updateEnabled()
     for(int i=0;i<_localParameters->size();i++)
     {
         curParam = _localParameters->at(i);
-           curWidget = _mapValueWidgets.value(curParam->getFieldValue(MOParameter::INDEX).toInt(),NULL);
+        curWidget = _mapValueWidgets.value(curParam,NULL);
 
-           if(curWidget)
-           {
+        if(curWidget)
+        {
             curWidget->setEnabled(_localParameters->shouldBeEnabled(i));
-           }
         }
     }
+}
 
 QVariant MOParametersDlg::getValue(QWidget* curWidget)
 {
@@ -457,7 +457,7 @@ QVariant MOParametersDlg::getValue(QWidget* curWidget)
 }
 
 void MOParametersDlg::setValue(QWidget* curWidget,QVariant value)
-    {
+{
 
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
     if(lineEdit)
@@ -477,11 +477,11 @@ void MOParametersDlg::setValue(QWidget* curWidget,QVariant value)
 
     QComboBox* combo = dynamic_cast<QComboBox*>(curWidget);
     if(combo)
-        {
+    {
         combo->setCurrentIndex(combo->findData(value));
-        }
-
     }
+
+}
 
 
 void MOParametersDlg::pushedOk()
@@ -509,10 +509,10 @@ void MOParametersDlg::pushedDefault()
 
     for(int i=0;i<_mapValueWidgets.keys().size();i++)
     {
-        curIndex = _mapValueWidgets.keys().at(i);
-        iParam = _localParameters->findItem(curIndex,MOParameter::INDEX);
-        curParam = _localParameters->at(iParam);
-        curWidget = _mapValueWidgets.value(curIndex,NULL);
+//        curIndex = _mapValueWidgets.keys().at(i);
+//        iParam = _localParameters->findItem(curIndex,MOParameter::INDEX);
+        curParam = _mapValueWidgets.keys().at(i);
+        curWidget = _mapValueWidgets.value(curParam,NULL);
 
         // get default value
         defaultValue = curParam->getFieldValue(MOParameter::DEFAULTVALUE);
@@ -523,7 +523,7 @@ void MOParametersDlg::pushedDefault()
 
 
 void MOParametersDlg::onSelectFileClicked()
-        {
+{
     QPushButton* button = dynamic_cast<QPushButton*>(sender());
 
     QLineEdit* line = _pathsMap.value(button,NULL);
@@ -533,8 +533,8 @@ void MOParametersDlg::onSelectFileClicked()
         QString filename = QFileDialog::getOpenFileName(this);
         if(!filename.isEmpty())
             line->setText(filename);
-        }
     }
+}
 
 void MOParametersDlg::onSelectFolderClicked()
 {
@@ -547,6 +547,6 @@ void MOParametersDlg::onSelectFolderClicked()
         QString filename = QFileDialog::getExistingDirectory(this);
         if(!filename.isEmpty())
             line->setText(filename);
-}
+    }
 }
 

@@ -3,6 +3,11 @@
 #include <QStringList>
 
 
+ProblemInterface::ProblemInterface()
+{
+    initParameters();
+}
+
 bool ProblemInterface::saveProblem(Problem* problem)
 {
     // Root element
@@ -82,6 +87,17 @@ bool ProblemInterface::saveResult(Result* result)
     }
 }
 
+void ProblemInterface::initParameters()
+{
+    _parameters = new MOParameters();
+}
+
+MOParameters* ProblemInterface::parameters()
+{
+    return _parameters;
+}
+
+
 bool ProblemInterfaces::addProblemInterface(ProblemInterface* interface)
 {
     QStringList problemNames = interface->problemTypes();
@@ -143,3 +159,4 @@ QList<ProblemInterface*> ProblemInterfaces::uniqueInterfaces()
 
     return res;
 }
+

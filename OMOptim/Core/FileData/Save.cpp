@@ -450,16 +450,6 @@ void Save::saveModModelPlus(ModModelPlus* modModelPlus)
     cBasic.setAttribute( "modelName", modModelPlus->modModelName());
     root.appendChild(cBasic);
 
-    // OtherFiles
-    QDomElement cOtherFiles = doc.createElement( "OtherFiles" );
-    QString strOtherFiles;
-    for (int nof=0;nof<modModelPlus->otherFiles().size();nof++)
-    {
-        strOtherFiles.append(modModelPlus->otherFiles().at(nof)+";");
-    }
-    cOtherFiles.setAttribute("list",strOtherFiles);
-    root.appendChild(cOtherFiles);
-
     // Infos
     QDomElement cInfos = doc.createElement( "Infos" );
     cInfos.setAttribute("text",modModelPlus->infos());

@@ -204,6 +204,8 @@ void MainWindow::clearLog()
 void MainWindow::displayInfo(Info i)
 {
 
+    QTextCharFormat infoFormat;
+
     // stylize message
     QString prefix;
     QString suffix;
@@ -213,50 +215,67 @@ void MainWindow::displayInfo(Info i)
     case ListInfo::NORMAL2 :
         prefix = "";
         suffix = "";
+        infoFormat.setForeground(Qt::black);
+        infoFormat.setFontWeight(QFont::Normal);
         break;
     case ListInfo::WARNING2 :
         prefix = "<b><font color='#FF7700'>Warning : ";
         suffix = "</font></b>";
+        infoFormat.setForeground(Qt::darkYellow);
+        infoFormat.setFontWeight(QFont::Bold);
         break;
     case ListInfo::ERROR2 :
         prefix = "<b><font color='red'>Error : ";
         suffix = "</font></b>";
+        infoFormat.setForeground(Qt::red);
+        infoFormat.setFontWeight(QFont::Bold);
         break;
 
     case ListInfo::OMCNORMAL2 :
         prefix = "OMCNormal :";
         suffix = "";
+        infoFormat.setForeground(Qt::black);
+        infoFormat.setFontWeight(QFont::Normal);
         break;
     case ListInfo::OMCWARNING2 :
         prefix = "OMCWarning :";
         suffix = "";
+        infoFormat.setForeground(Qt::darkYellow);
+        infoFormat.setFontWeight(QFont::Bold);
         break;
     case ListInfo::OMCERROR2 :
         prefix = "<b><font color='red'>OMCError : ";
         suffix = "</font></b>";
+        infoFormat.setForeground(Qt::red);
+        infoFormat.setFontWeight(QFont::Bold);
         break;
     case ListInfo::INFODEBUG :
         prefix = "<b><font color='blue'>Debug : ";
         suffix = "</font></b>";
+        infoFormat.setForeground(Qt::blue);
+        infoFormat.setFontWeight(QFont::Bold);
         break;
     }
 
-    QString msg = prefix + i.infoMsg + suffix;
-
+    // QString msg = prefix + i.infoMsg + suffix;
+    QString msg = i.infoMsg;
     // display
     switch(i.infoType)
     {
     case ListInfo::NORMAL2 :
     case ListInfo::WARNING2 :
     case ListInfo::ERROR2 :
+        _textLog->setCurrentCharFormat(infoFormat);
         _textLog->append(msg);
         break;
     case ListInfo::OMCNORMAL2 :
     case ListInfo::OMCWARNING2 :
     case ListInfo::OMCERROR2 :
+        _ui->textOMC->setCurrentCharFormat(infoFormat);
         _ui->textOMC->append(msg);
         break;
     case ListInfo::INFODEBUG :
+        _ui->textDebug->setCurrentCharFormat(infoFormat);
         _ui->textDebug->append(msg);
         break;
     }
@@ -281,8 +300,6 @@ void MainWindow::onTerminatingOMCThread(QString _name)
     msg.sprintf("%s terminated",_name.utf16());
     _ui->textOMC->append(msg);
 }
-
-
 
 void MainWindow::newProject()
 {

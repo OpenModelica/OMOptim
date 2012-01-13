@@ -7,11 +7,13 @@
 #include <QFileInfo>
 #include <QDomElement>
 
+
 class Project;
 class MOTabBase;
 class ModModelPlus;
 class Result;
 class Problem;
+class MOParameters;
 
 /**
   * @brief ProblemInterface is used to connect problems to OMOptim.
@@ -31,6 +33,7 @@ public :
         SEVERALMODMODELPLUS
     };
 
+    ProblemInterface();
     virtual ~ProblemInterface(){}
 
     virtual Problem* createNewProblem(Project*,const QList<ModModelPlus*> &,QString problemType) = 0;
@@ -49,6 +52,12 @@ public :
     virtual Result* loadResult(QFileInfo loadedFile,const QDomElement & domOMCase,Project*) = 0;
 
 
+    // parameters
+    virtual void initParameters();
+    virtual MOParameters* parameters();
+
+protected :
+    MOParameters *_parameters;
  };
 
 class ProblemInterfaces :  public QMap<QString,ProblemInterface*>
@@ -62,9 +71,6 @@ public :
     ProblemInterface* interfaceOf(QString problemType);
 
     QList<ProblemInterface*> uniqueInterfaces();
-
-
-
 };
 
 
