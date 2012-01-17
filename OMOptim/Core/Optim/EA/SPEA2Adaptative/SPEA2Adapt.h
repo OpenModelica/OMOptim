@@ -75,8 +75,8 @@ class SPEA2Adapt : public EABase
 {
 public : 
 	SPEA2Adapt();
-        SPEA2Adapt(Project*,Problem*,ModClassTree*);
-        SPEA2Adapt(Project*,Problem*,ModClassTree*,MOParameters*);
+        SPEA2Adapt(Project*,Problem*,ModItemsTree*);
+        SPEA2Adapt(Project*,Problem*,ModItemsTree*,MOParameters*);
 	SPEA2Adapt(const SPEA2Adapt &);
         EABase* clone() const;
 

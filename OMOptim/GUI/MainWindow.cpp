@@ -76,12 +76,12 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _casesTree = new OMCasesCombiner(_project->problems(),_project->results());
     _ui->treeOMCases->setModel(_casesTree);
     //_ui->treeResults->setModel(_project->results());
-    //GuiTools::ModClassToTreeView(_project->modLoader(),_project->rootModClass(),_ui->treeModClass,_project->modClassTree());
-    _ui->treeModClass->setModel(_project->modClassTree());
+    //GuiTools::ModItemToTreeView(_project->modLoader(),_project->rootModItem(),_ui->treeModItem,_project->modClassTree());
+    _ui->treeModItem->setModel(_project->modClassTree());
     _ui->treeOMCases->setContextMenuPolicy(Qt::CustomContextMenu);
-    _ui->treeModClass->setContextMenuPolicy(Qt::CustomContextMenu);
-    _ui->treeModClass->setDragEnabled(true);
-    _ui->treeModClass->setDragDropMode(QAbstractItemView::DragDrop);
+    _ui->treeModItem->setContextMenuPolicy(Qt::CustomContextMenu);
+    _ui->treeModItem->setDragEnabled(true);
+    _ui->treeModItem->setDragDropMode(QAbstractItemView::DragDrop);
 
     // progress dock
     // hide title
@@ -120,12 +120,12 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     // Signals for gui
     //*********************************
     connect(_ui->treeOMCases, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableOMCaseTab(QModelIndex)));
-    connect(_ui->treeModClass, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModClass(QModelIndex)));
+    connect(_ui->treeModItem, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
     connect(this, SIGNAL(sendInfo(Info)),this, SLOT( displayInfo(Info)));
     connect (_ui->treeOMCases,SIGNAL(customContextMenuRequested(const QPoint &)),
              this,SLOT(rightClickedOnCase(const QPoint &)));
-    connect (_ui->treeModClass,SIGNAL(customContextMenuRequested(const QPoint &)),
-             this,SLOT(showModClassTreePopup(const QPoint &)));
+    connect (_ui->treeModItem,SIGNAL(customContextMenuRequested(const QPoint &)),
+             this,SLOT(showModItemsTreePopup(const QPoint &)));
     connect (_tabMain,SIGNAL(customContextMenuRequested(const QPoint &)),
              this,SLOT(showTabTitlePopup(const QPoint &)));
     connect(_tabProject,SIGNAL(newProject()),this,SLOT(newProject()));
@@ -158,9 +158,9 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 
 
     //*********************************
-    // Signals for ModClass
+    // Signals for ModItem
     //*********************************
-    connect(_ui->treeModClass, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModClass(QModelIndex)));
+    connect(_ui->treeModItem, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
     connect( _ui->pushLoadMoFile,  SIGNAL(clicked()), this, SLOT(loadMoFile()));
 
     //*********************************
@@ -221,7 +221,7 @@ void MainWindow::displayInfo(Info i)
     case ListInfo::WARNING2 :
         prefix = "<b><font color='#FF7700'>Warning : ";
         suffix = "</font></b>";
-        infoFormat.setForeground(Qt::darkYellow);
+        infoFormat.setForeground(QBrush(QColor(255,119,0)));
         infoFormat.setFontWeight(QFont::Bold);
         break;
     case ListInfo::ERROR2 :
@@ -258,7 +258,8 @@ void MainWindow::displayInfo(Info i)
     }
 
     // QString msg = prefix + i.infoMsg + suffix;
-    QString msg = i.infoMsg;
+    QString timePrefix = "["+QTime::currentTime().toString()+"] ";
+    QString msg = timePrefix + i.infoMsg;
     // display
     switch(i.infoType)
     {
@@ -331,7 +332,7 @@ void MainWindow::saveProject()
         QString _filePath = _project->filePath() ;
         if(_filePath.length())
         {
-            _project->save();
+            _project->save(true);
         }
         else
         {
@@ -343,7 +344,7 @@ void MainWindow::saveProject()
             if(!_filePath.isNull())
             {
                 _project->setFilePath(_filePath);
-                _project->save();
+                _project->save(true);
             }
         }
 
@@ -548,7 +549,7 @@ void MainWindow::onProjectAboutToBeReset()
     }
 
     _ui->treeOMCases->reset();
-    _ui->treeModClass->reset();
+    _ui->treeModItem->reset();
 
     actualizeGuiFromProject();
 }
@@ -746,21 +747,21 @@ void MainWindow::rightClickedOnCase(const QPoint & iPoint)
 }
 
 
-void MainWindow::showModClassTreePopup(const QPoint & iPoint)
+void MainWindow::showModItemsTreePopup(const QPoint & iPoint)
 {
-    // Popup on ModClass Tree
+    // Popup on ModItem Tree
     QModelIndex  index ;
-    index = _ui->treeModClass->indexAt(iPoint);
+    index = _ui->treeModItem->indexAt(iPoint);
     if ( !index.isValid())
     {
         // no item selected
     }
     else
     {
-        ModClass* selectedModClass = static_cast<ModClass*>(index.internalPointer());
-        QMenu * modClassMenu= GuiTools::newModClassPopupMenu(_project,_ui->treeOMCases->mapToGlobal(iPoint),selectedModClass);
+        ModItem* selectedModItem = static_cast<ModItem*>(index.internalPointer());
+        QMenu * modClassMenu= GuiTools::newModItemPopupMenu(_project,_ui->treeOMCases->mapToGlobal(iPoint),selectedModItem);
         if(modClassMenu)
-            modClassMenu->exec(_ui->treeModClass->mapToGlobal(iPoint));
+            modClassMenu->exec(_ui->treeModItem->mapToGlobal(iPoint));
     }
 }
 
@@ -907,9 +908,9 @@ void MainWindow::onNewProblemProgress(float fraction,int curEval,int totalEval)
     _widgetProgress->setProgress(fraction,curEval,totalEval);
 }
 
-void MainWindow::showModClass(ModClass* modClass)
+void MainWindow::showModItem(ModItem* modClass)
 {
-    _ui->treeModClass->expand(_project->modClassTree()->indexOf(modClass));
+    _ui->treeModItem->expand(_project->modClassTree()->indexOf(modClass));
 }
 
 void MainWindow::loadMoFile()
@@ -1020,17 +1021,17 @@ void MainWindow::onPushedNewProblem()
     }
 }
 
-void MainWindow::onSelectedModClass(QModelIndex index)
+void MainWindow::onSelectedModItem(QModelIndex index)
 {
     if(index.isValid())
     {
-        ModClass* _modClass = static_cast<ModClass*>(index.internalPointer());
+        ModItem* _modClass = static_cast<ModItem*>(index.internalPointer());
 
         if(_modClass)
-            _project->setCurModClass(_modClass);
+            _project->setCurModItem(_modClass);
     }
     else
-        _project->setCurModClass(NULL);
+        _project->setCurModItem(NULL);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

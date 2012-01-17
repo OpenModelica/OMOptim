@@ -40,21 +40,21 @@
 #ifndef _ModModel_H
 #define _ModModel_H
 
-#include "ModClass.h"
+#include "ModItem.h"
 
 
 
 /**
   * ModModel refers to a Modelica Model.
-  * @sa ModClass
+  * @sa ModItem
   */
-class ModModel : public ModClass
+class ModModel : public ModItem
 {
 public:
 	ModModel(MOomc*);
-        ModModel(MOomc*,ModClass* parent,QString name,QString filePath="");
+        ModModel(MOomc*,ModItem* parent,QString name,QString filePath="");
 	~ModModel(void);
-        virtual ModClass* clone() const;
+        virtual ModItem* clone() const;
 
         virtual QString getClassName(){return "ModModel";}
         virtual Modelica::ClassRestr getClassRestr(){return Modelica::MODEL;}

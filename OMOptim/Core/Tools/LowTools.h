@@ -85,6 +85,7 @@ public:
 	static QString getValueFromElementInfo(QString elementInfoLine,QString fieldName);
 
 	static int round(double);
+        static double roundToMultiple(double value, double multiple);
 	static QList<int> nextIndex(QList<int> oldIndex, QList<int>  maxIndex);
 
 	static bool isNan(double d);

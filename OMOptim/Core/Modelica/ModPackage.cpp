@@ -40,12 +40,12 @@
   */
 #include "ModPackage.h"
 
-ModPackage::ModPackage(MOomc* _oms):ModClass(_oms)
+ModPackage::ModPackage(MOomc* _oms):ModItem(_oms)
 {
 }
 
-ModPackage::ModPackage(MOomc* _oms,ModClass* _parent,QString _name,QString _filePath)
-:ModClass(_oms,_parent,_name,_filePath)
+ModPackage::ModPackage(MOomc* _oms,ModItem* _parent,QString _name,QString _filePath)
+:ModItem(_oms,_parent,_name,_filePath)
 {
 }
 
@@ -54,7 +54,7 @@ ModPackage::~ModPackage()
 	clearDescendants();
 }
 
-ModClass* ModPackage::clone() const
+ModItem* ModPackage::clone() const
 {
     ModPackage* newModPackage = new ModPackage(_moomc,_parent,_name,_filePath);
     newModPackage->_childrenReaden = _childrenReaden;

@@ -245,6 +245,14 @@ int LowTools::round(double d)
 	return (int)(d+0.5);
 }
 
+double LowTools::roundToMultiple(double value, double multiple)
+{
+    if(multiple==0)
+        return value;
+
+    return multiple * round(value/multiple);
+}
+
 bool LowTools::isNan(double d)
 {
 	return (d!=d);

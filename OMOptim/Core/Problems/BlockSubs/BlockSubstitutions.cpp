@@ -123,7 +123,7 @@ QStringList BlockSubstitutions::getReplacingComponentNames(QString _replaced)
 	return replacingNames;
 }
 
-QStringList BlockSubstitutions::getReplacingComponentNames(ModClass* replacedComp)
+QStringList BlockSubstitutions::getReplacingComponentNames(ModItem* replacedComp)
 {
         return getReplacingComponentNames(replacedComp->name(Modelica::FULL));
 }

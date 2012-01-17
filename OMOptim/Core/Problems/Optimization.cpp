@@ -539,7 +539,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
         moFile.copy(newMoPath);
 
         // create new modModel
-        ModModel* newModModel = new ModModel(_project->moomc(),_project->rootModClass(),_modModelPlus->modModelName(),newMoPath);
+        ModModel* newModModel = new ModModel(_project->moomc(),_project->rootModItem(),_modModelPlus->modModelName(),newMoPath);
 
         // create new modModelPlus
         ModModelPlus* newModModelPlus = new ModModelPlus(_project,newModModel);

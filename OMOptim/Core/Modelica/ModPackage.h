@@ -40,21 +40,21 @@
 #ifndef _ModPackage_H
 #define _ModPackage_H
 
-#include "ModClass.h"
+#include "ModItem.h"
 
 
 /**
   * ModPackage refers to a Modelica package.
-  * @sa ModClass
+  * @sa ModItem
   */
 
-class ModPackage : public ModClass
+class ModPackage : public ModItem
 {
 	public:
 		ModPackage(MOomc*);
-                ModPackage(MOomc*,ModClass* parent,QString name,QString filePath="");
+                ModPackage(MOomc*,ModItem* parent,QString name,QString filePath="");
 		~ModPackage(void);
-                virtual ModClass* clone() const;
+                virtual ModItem* clone() const;
                 virtual QString getClassName(){return "ModPackage";}
                 virtual Modelica::ClassRestr getClassRestr(){return Modelica::PACKAGE;}
 

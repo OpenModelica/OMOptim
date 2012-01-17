@@ -43,7 +43,7 @@
 #include "EABase.h"
 #include "Project.h"
 #include "Problem.h"
-#include "ModClassTree.h"
+#include "ModItemsTree.h"
 #include "Result.h"
 #include "Results/EAStdResult.h"
 #include "Optimization.h"
@@ -63,8 +63,8 @@ class SA1 : public EABase
 {
 public :
         SA1();
-        SA1(Project*,Problem*,ModClassTree*);
-        SA1(Project*,Problem*,ModClassTree*,MOParameters*);
+        SA1(Project*,Problem*,ModItemsTree*);
+        SA1(Project*,Problem*,ModItemsTree*,MOParameters*);
         SA1(const SA1 &);
         SA1* clone() const;
 

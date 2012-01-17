@@ -91,6 +91,7 @@ public :
 	//Modelica functions
 	QStringList getClassNames(QString parentClass = "");
 	QStringList getPackages(QString parentClass);
+        QStringList getClasses(QString parentClass);
 	QStringList getModels(QString parentClass);
         QStringList getRecords(QString parentClass);
 	QStringList getElementInfos(QString parentClass);
@@ -130,6 +131,7 @@ public :
 	bool isConnector(QString ClassName);
 	bool isModel(QString ClassName);
         bool isRecord(QString ClassName);
+        bool isClass(QString ClassName);
 	bool isPackage(QString ClassName);
 	bool isPrimitive(QString ClassName);
 	bool isComponent(QString name);

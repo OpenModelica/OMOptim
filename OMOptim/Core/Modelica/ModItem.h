@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModClass.h
+        @file ModItem.h
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
@@ -37,8 +37,8 @@
  	@version 
 
   */
-#ifndef _ModClass_H
-#define _ModClass_H
+#ifndef _ModItem_H
+#define _ModItem_H
 
 #include <QtCore/QDir>
 #include <QtCore/QMutex>
@@ -53,14 +53,14 @@
 
 #include "LowTools.h"
 
-class ModClass : public MOItem
+class ModItem : public MOItem
 {
 	Q_OBJECT
 
     /**
-    * \brief ModClass is a class corresponding to a Modelica item (like a Model, a Component, a Block, a Record...)
+    * \brief ModItem is a class corresponding to a Modelica item (like a Model, a Component, a Block, a Record...)
     *
-    * A ModClass can correspond to any modelica item. It is inherited by specific classes (like ModModel for modelica models, ModPackage for modelica packages).
+    * A ModItem can correspond to any modelica item. It is inherited by specific classes (like ModModel for modelica models, ModPackage for modelica packages).
     * This class provides basic structure and functions of Modelica items.
     */
 
@@ -71,8 +71,8 @@ protected:
 	bool _childrenReaden;
 	MOomc* _moomc;
 	QString _filePath;
-	ModClass *_parent;
-	QList<ModClass*> _children;
+        ModItem *_parent;
+        QList<ModItem*> _children;
 	
 public :
 	QMutex _readMutex;
@@ -80,13 +80,13 @@ public :
 	// Functions
 	//***********************
 public:
-	ModClass(MOomc*);
-	ModClass(MOomc*,ModClass* _parent,QString _name,QString filePath);
-	virtual QString getClassName(){return "ModClass";};
+        ModItem(MOomc*);
+        ModItem(MOomc*,ModItem* _parent,QString _name,QString filePath="");
+        virtual QString getClassName(){return "ModItem";};
 
-        virtual ModClass* clone() const;
-	//virtual ModClass* cloneStructure(QString newName); // clone all fields excepted connections and variables
-	virtual ~ModClass(void);
+        virtual ModItem* clone() const;
+        //virtual ModItem* cloneStructure(QString newName); // clone all fields excepted connections and variables
+        virtual ~ModItem(void);
 	virtual Modelica::ClassRestr getClassRestr(){return Modelica::GENERIC;};	
 	
 	// Data fields and management
@@ -103,14 +103,14 @@ public:
 	virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
 	virtual bool setFieldValue(int iField, QVariant value);
 	static QString sFieldName(int field, int role);
-	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModClass::sFieldName(i,role);};
+        virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModItem::sFieldName(i,role);};
 
-	virtual QString getModClassName();
+        virtual QString getModItemName();
 	void emitModified();
 
 	// Parent
-        ModClass* parent();
-	void setParent(ModClass *);
+        ModItem* parent();
+        void setParent(ModItem *);
 
 	// Local information
 	QString name(Modelica::NameFormat = Modelica::FULL);
@@ -122,7 +122,7 @@ public:
 	//*****************************
 	//Children
 	//*****************************
-	bool addChild(ModClass*);
+        bool addChild(ModItem*);
 	void clearDescendants();
 	virtual void clear();
 	int compChildCount();
@@ -135,11 +135,11 @@ public:
 	void setChildrenReaden(bool);
         int indexInParent();
 
-        ModClass* child(int row) const;
-        ModClass* compChild(int row) const;
-        ModClass* modelChild(int row) const;
-        ModClass* packageChild(int row) const;
-        ModClass* recordChild(int row) const;
+        ModItem* child(int row) const;
+        ModItem* compChild(int row) const;
+        ModItem* modelChild(int row) const;
+        ModItem* packageChild(int row) const;
+        ModItem* recordChild(int row) const;
 
 	
 
@@ -155,7 +155,7 @@ public:
 
 signals:
 	//void connectionsUpdated();
-	void addedChild(ModClass*);
+        void addedChild(ModItem*);
 	void modified();
 	void cleared();
 };

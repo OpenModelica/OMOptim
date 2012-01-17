@@ -41,7 +41,7 @@
 #define _MODPLUSCTRL_H
 
 #include "Modelica.h"
-#include "ModClass.h"
+#include "ModItem.h"
 #include "ModPackage.h"
 #include "ModModel.h"
 #include "ModComponent.h"
@@ -98,13 +98,24 @@ class ModPlusCtrl :public QObject
         virtual void stopSimulation(){}
         virtual bool canBeStoped(){return false;}
 
-        MOParameters* parameters();
+        MOParameters* parameters() const;
 
         bool operator==(const ModPlusCtrl &) const;
 
         friend bool operator==(const ModPlusCtrl & a,const ModPlusCtrl & b)
         {
-            return (a.type()==b.type());
+            bool sameType =  (a.type()==b.type());
+
+            if(!sameType)
+                return false;
+            else
+            {
+                bool sameParameters = ((*a.parameters())==(*b.parameters()));
+                return sameParameters;
+            }
+
+
+
         }
 
 

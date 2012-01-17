@@ -46,7 +46,7 @@ ModelicaModifier::ModelicaModifier(void)
 	_name = "_";
 }
 
-ModelicaModifier::ModelicaModifier(QString componentName,QString modifierName,QString value,QString description,ModClass* component)
+ModelicaModifier::ModelicaModifier(QString componentName,QString modifierName,QString value,QString description,ModItem* component)
 {
 	_componentName = componentName;
 	_name = modifierName;
@@ -101,7 +101,7 @@ void ModelicaModifier::setValue(QString value)
 	_value = value;
 }
 
-void ModelicaModifier::setComponent(ModClass *component)
+void ModelicaModifier::setComponent(ModItem *component)
 {
 	if(!_filledFields.contains(ModelicaModifier::COMPONENT_NAME))
 		_filledFields.push_back(ModelicaModifier::COMPONENT_NAME);

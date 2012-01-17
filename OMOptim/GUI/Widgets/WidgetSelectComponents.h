@@ -48,7 +48,7 @@
 #include "MOTableView.h"
 #include "Tools/GuiTools.h"
 #include "BlockSubsScene.h"
-#include "ModClassTree.h"
+#include "ModItemsTree.h"
 
 namespace Ui {
     class WidgetSelectComponentsClass;

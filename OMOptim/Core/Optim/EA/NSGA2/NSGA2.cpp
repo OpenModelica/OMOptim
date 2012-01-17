@@ -95,14 +95,14 @@ NSGA2::NSGA2():EABase()
 	setDefaultParameters();
 }
 
-NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree)
+NSGA2::NSGA2(Project* _project,Problem* _problem,ModItemsTree* _modClassTree)
 :EABase(_project,_problem,_modClassTree)
 {
 	setDefaultParameters();
 };
 
 
-NSGA2::NSGA2(Project* _project,Problem* _problem,ModClassTree* _modClassTree,MOParameters* parameters)
+NSGA2::NSGA2(Project* _project,Problem* _problem,ModItemsTree* _modClassTree,MOParameters* parameters)
 :EABase(_project,_problem,_modClassTree)
 {
     delete _parameters;

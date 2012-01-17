@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file ModClassTree.h
+  @file ModItemsTree.h
   @brief Comments for file documentation.
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
@@ -37,64 +37,64 @@
   @version
 
   */
-#ifndef ModClassTree_H
-#define ModClassTree_H
+#ifndef ModItemsTree_H
+#define ModItemsTree_H
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
 
-#include "ModClass.h"
+#include "ModItem.h"
 #include "ModLoader.h"
 #include "MOomc.h"
 
 
 
 /**
-  * \brief ModClassTree is a container of Modelica models, packages, records...
-  * ModClassTree is a container of Modelica models, packages, records...
-  * It represents items loaded in OMC. ModClassTree contains its own reading functions allowing
+  * \brief ModItemsTree is a container of Modelica models, packages, records...
+  * ModItemsTree is a container of Modelica models, packages, records...
+  * It represents items loaded in OMC. ModItemsTree contains its own reading functions allowing
   * it to fullfil itself communicating with OMC through _moomc.
   *
   * It inherits QAbstractItemModel in order to display contents easily in GUI (using a QTreeView).
   *
-  * \todo Better split functions between ModClassTree and ModLoader
+  * \todo Better split functions between ModItemsTree and ModLoader
   */
 
-class ModClassTree : public QAbstractItemModel
+class ModItemsTree : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
 
-    ModClassTree(ModLoader* modLoader,MOomc* moomc,QObject *parent = 0);
-    virtual ~ModClassTree();
-    ModClass* rootElement()const {return _rootElement;}
+    ModItemsTree(ModLoader* modLoader,MOomc* moomc,QObject *parent = 0);
+    virtual ~ModItemsTree();
+    ModItem* rootElement()const {return _rootElement;}
 
 
     // Read and fullfill functions
-    void readFromOmc(ModClass*,int depthMax = 1000,  QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
-    void readFromOmcV2(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0); 	//Read data and children with OMC calls
-    void readFromOmcV3(ModClass*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
+    void readFromOmc(ModItem*,int depthMax = 1000,  QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
+    void readFromOmcV2(ModItem*,int depthMax = 1000, QString direction ="", int curDepth = 0); 	//Read data and children with OMC calls
+    void readFromOmcV3(ModItem*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
 
-     bool addChild(ModClass* parent,ModClass* child);
+     bool addChild(ModItem* parent,ModItem* child);
 
     // Find functions
-    bool isInDescendants(QString fullName,ModClass* parent=NULL);
-    ModClass* findInDescendants(QString fullName,ModClass* parent=NULL);
-    QList<ModClass*> findInDescendantsByClass(QString _className,ModClass* parent=NULL);
-    QList<ModClass*> findCompOfClassInDescendants(QString _className,ModClass* parent=NULL);
+    bool isInDescendants(QString fullName,ModItem* parent=NULL);
+    ModItem* findInDescendants(QString fullName,ModItem* parent=NULL);
+    QList<ModItem*> findInDescendantsByClass(QString _className,ModItem* parent=NULL);
+    QList<ModItem*> findCompOfClassInDescendants(QString _className,ModItem* parent=NULL);
 
-    ModModel* modelOf(ModClass* item);
+    ModModel* modelOf(ModItem* item);
     ModModel* modelOf(QString itemName);
 
-    void childrenInfos(ModClass* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &recordsClasses,QStringList &compsNames,QStringList &compsClasses);
+    void childrenInfos(ModItem* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &recordsClasses,QStringList &compsNames,QStringList &compsClasses);
 
     //*****************************
     //Ports
     //*****************************
-    QList<ModClass*> getPorts(ModClass* parent);
-    QStringList getPorts(ModClass* parent,Modelica::NameFormat format);
+    QList<ModItem*> getPorts(ModItem* parent);
+    QStringList getPorts(ModItem* parent,Modelica::NameFormat format);
 
     // remove functions
     void clear();
@@ -108,13 +108,13 @@ public:
                         int role = Qt::DisplayRole) const;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex indexOf(ModClass*,int column=0);
+    QModelIndex indexOf(ModItem*,int column=0);
     QModelIndex parent(const QModelIndex &index) const;
     bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    ModClass* findItem(QString);
-    QIcon getModelicaNodeIcon(ModClass* modClass) const;
+    ModItem* findItem(QString);
+    QIcon getModelicaNodeIcon(ModItem* ModItem) const;
     bool canFetchMore ( const QModelIndex & parent ) const;
     void fetchMore ( const QModelIndex & parent );
 
@@ -127,7 +127,7 @@ public:
 
 
 private:
-    ModClass* _rootElement;
+    ModItem* _rootElement;
     ModLoader* _modLoader;
     bool _enabled;
     MOomc* _moomc;

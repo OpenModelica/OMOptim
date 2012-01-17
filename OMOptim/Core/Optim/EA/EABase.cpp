@@ -48,7 +48,7 @@ EABase::EABase(void)
 }
 
 
-EABase::EABase(Project* project,Problem* problem,ModClassTree* modClassTree)
+EABase::EABase(Project* project,Problem* problem,ModItemsTree* modClassTree)
 :OptimAlgo()
 {
 	_project = project;

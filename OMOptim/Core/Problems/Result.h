@@ -49,7 +49,7 @@
 
 #include "ModModelPlus.h"
 #include "ModPlusCtrl.h"
-#include "ModClassTree.h"
+#include "ModItemsTree.h"
 #include "Problem.h"
 #include "MOVector.h"
 #include "QtCore/QTime"

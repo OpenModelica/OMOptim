@@ -47,8 +47,8 @@
 #include <QtCore/QFileInfo>
 
 #include "ModModelPlus.h"
-#include "ModClass.h"
-#include "ModClassTree.h"
+#include "ModItem.h"
+#include "ModItemsTree.h"
 #include "ModPlusCtrl.h"
 #include "InfoSender.h"
 
@@ -70,7 +70,7 @@ protected :
 
     // General information
     Project* _project;
-    ModClassTree* _modClassTree;
+    ModItemsTree* _modClassTree;
 
     // Files informations
     QString _saveFolder;
@@ -103,7 +103,7 @@ public:
     QString entireSavePath();
     QStringList filesToCopy(){return _filesToCopy;};
     Project* project(){return _project;};
-    ModClassTree* modClassTree(){return _modClassTree;};
+    ModItemsTree* modClassTree(){return _modClassTree;};
 
 
     // Set functions

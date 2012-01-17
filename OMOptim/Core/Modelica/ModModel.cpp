@@ -40,12 +40,12 @@
   */
 #include "ModModel.h"
 
-ModModel::ModModel(MOomc* moomc):ModClass(moomc)
+ModModel::ModModel(MOomc* moomc):ModItem(moomc)
 {
 }
 
-ModModel::ModModel(MOomc* moomc,ModClass* parent,QString name,QString filePath)
-:ModClass(moomc,parent,name,filePath)
+ModModel::ModModel(MOomc* moomc,ModItem* parent,QString name,QString filePath)
+:ModItem(moomc,parent,name,filePath)
 {
 }
 
@@ -54,7 +54,7 @@ ModModel::~ModModel()
 	clearDescendants();
 }
 
-ModClass* ModModel::clone() const
+ModItem* ModModel::clone() const
 {
     ModModel* newModModel = new ModModel(_moomc,_parent,_name,_filePath);
     newModModel->_childrenReaden = _childrenReaden;

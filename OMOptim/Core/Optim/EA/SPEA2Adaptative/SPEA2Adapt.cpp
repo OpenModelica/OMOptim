@@ -99,14 +99,14 @@ SPEA2Adapt::SPEA2Adapt():EABase()
 	setDefaultParameters();
 }
 
-SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassTree)
+SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModItemsTree* modClassTree)
 :EABase(project,problem,modClassTree)
 {
 	setDefaultParameters();
 };
 
 
-SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModClassTree* modClassTree,MOParameters* parameters)
+SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModItemsTree* modClassTree,MOParameters* parameters)
 :EABase(project,problem,modClassTree)
 {
     delete _parameters;

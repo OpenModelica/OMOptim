@@ -48,7 +48,7 @@
 
 namespace OptimAlgoUtils{
 
-        static OptimAlgo* getNewAlgo(Project* _project,Problem* _problem,ModClassTree* _modClassTree,int iAlgo)
+        static OptimAlgo* getNewAlgo(Project* _project,Problem* _problem,ModItemsTree* _modClassTree,int iAlgo)
 	{
 		switch(iAlgo)
 		{
@@ -66,7 +66,7 @@ namespace OptimAlgoUtils{
 		}
 	}
 
-        static QList<OptimAlgo*> getNewAlgos(Problem *problem,ModClassTree* modClassTree)
+        static QList<OptimAlgo*> getNewAlgos(Problem *problem,ModItemsTree* modClassTree)
 	{
                 QList<OptimAlgo*> algos;
                 for(int i=0;i<OptimAlgosList::nbMyAlgos;i++)

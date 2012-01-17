@@ -140,8 +140,8 @@ HEADERS += ../config.h \
            ../Core/Infos/Info.h \
            ../Core/Infos/InfoSender.h \
            ../Core/Infos/ListInfo.h \
-           ../Core/Modelica/ModClass.h \
-           ../Core/Modelica/ModClassTree.h \
+           ../Core/Modelica/ModItem.h \
+           ../Core/Modelica/ModItemsTree.h \
            ../Core/Modelica/ModComponent.h \
            ../Core/Modelica/Modelica.h \
            ../Core/Modelica/ModelicaConnection.h \
@@ -369,8 +369,8 @@ SOURCES += ../main.cpp \
            ../Core/FileData/Save.cpp \
            ../Core/Infos/Info.cpp \
            ../Core/Infos/InfoSender.cpp \
-           ../Core/Modelica/ModClass.cpp \
-           ../Core/Modelica/ModClassTree.cpp \
+           ../Core/Modelica/ModItem.cpp \
+           ../Core/Modelica/ModItemsTree.cpp \
            ../Core/Modelica/ModComponent.cpp \
            ../Core/Modelica/ModelicaConnection.cpp \
            ../Core/Modelica/ModelicaConnections.cpp \

@@ -73,7 +73,7 @@
 #include "Load.h"
 #include "MOThreads.h"
 #include "EA/EABase.h"
-#include "ModClassTree.h"
+#include "ModItemsTree.h"
 #include "ProblemInterface.h"
 
 
@@ -101,7 +101,7 @@ private:
     //Misc
     QString _filePath;
     bool _isdefined;
-    ModClass* _curModClass;
+    ModItem* _curModItem;
     MOomc *_moomc;
 
     // Models
@@ -115,7 +115,7 @@ private:
     Results* _results;
 
     ModLoader* _modLoader;
-    ModClassTree* _modClassTree;
+    ModItemsTree* _modClassTree;
     QMap<ModModel*,ModModelPlus*> _mapModelPlus;
 
     // Problems interfaces
@@ -145,7 +145,7 @@ public:
     ModModelPlus* newModModelPlus(ModModel* model);
     ModModel* curModModel();
     ModModelPlus* curModModelPlus();
-    void setCurModClass(ModClass*);
+    void setCurModItem(ModItem*);
     ModModel* findModModel(QString name);
     QList<ModModelPlus*> allModModelPlus();
     void addModModelPlus(ModModelPlus*);
@@ -194,8 +194,8 @@ public:
     Problems* problems(){return _problems;};
     Results* results(){return _results;};
     ModLoader* modLoader(){return _modLoader;};
-    ModClassTree* modClassTree(){return _modClassTree;};
-    ModClass* rootModClass(){return _modClassTree->rootElement();};
+    ModItemsTree* modClassTree(){return _modClassTree;};
+    ModItem* rootModItem(){return _modClassTree->rootElement();};
     QMap<ModModel*,ModModelPlus*> mapModelPlus(){return _mapModelPlus;};
 
 
@@ -203,7 +203,9 @@ public:
     //****************************
     // Save/ Load functions
     //****************************
-    void save();
+    void save(bool saveAllOMCases);
+    void save(Problem*);
+    void save(Result*);
     bool load(QString);
 
     //****************************
@@ -235,7 +237,7 @@ public slots :
 
     // others
     bool renameResult(Result*, QString);
-    void onModClassSelectionChanged(QList<ModClass*> &classes);
+    void onModItemSelectionChanged(QList<ModItem*> &classes);
 
     //****************************
     // Signals
@@ -263,7 +265,7 @@ signals:
     void newProblemProgress(float,int,int);
     void problemFinished(Problem*,Result*);
 
-    void curModClassChanged(ModClass*);
+    void curModItemChanged(ModItem*);
     void curModModelChanged(ModModel*);
 
     void modsUpdated();

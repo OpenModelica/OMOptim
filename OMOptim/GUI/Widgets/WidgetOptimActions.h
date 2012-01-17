@@ -78,7 +78,7 @@ public slots :
         void onShowModelAsked();
 
 signals:
-        void showModclass(ModClass*);
+        void showModclass(ModItem*);
 
 
 };

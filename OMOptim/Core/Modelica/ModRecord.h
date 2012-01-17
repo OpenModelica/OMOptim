@@ -40,15 +40,15 @@
 #ifndef _ModRecord_H
 #define _ModRecord_H
 
-#include "ModClass.h"
+#include "ModItem.h"
 
-class ModRecord : public ModClass
+class ModRecord : public ModItem
 {
 public:
 	ModRecord(MOomc*);
-	ModRecord(MOomc*,ModClass* _parent,QString _name,QString filePath="");
+	ModRecord(MOomc*,ModItem* _parent,QString _name,QString filePath="");
 	~ModRecord(void);
-        virtual ModClass* clone() const;
+        virtual ModItem* clone() const;
 	virtual QString getClassName(){return "ModRecord";};
 
 

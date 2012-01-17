@@ -30,7 +30,7 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModClass.cpp
+ 	@file ModItem.cpp
  	@brief Comments for file documentation.
  	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
  	Company : CEP - ARMINES (France)
@@ -38,10 +38,10 @@
  	@version 
 
   */
-#include "ModClass.h"
+#include "ModItem.h"
 
 
-ModClass::ModClass(MOomc* moomc)
+ModItem::ModItem(MOomc* moomc)
 {
 	_moomc = moomc;
 	_childrenReaden = false;
@@ -49,7 +49,7 @@ ModClass::ModClass(MOomc* moomc)
 }
 
 
-ModClass::ModClass(MOomc* moomc,ModClass* parent,QString fullname,QString filePath = "")
+ModItem::ModItem(MOomc* moomc,ModItem* parent,QString fullname,QString filePath)
 {
 	_moomc = moomc;
 	_parent = parent;
@@ -58,25 +58,25 @@ ModClass::ModClass(MOomc* moomc,ModClass* parent,QString fullname,QString filePa
 	_childrenReaden = false;
 }
 
-ModClass* ModClass::clone() const
+ModItem* ModItem::clone() const
 {
-    ModClass* newModClass = new ModClass(_moomc,_parent,_name,_filePath);
-    newModClass->_childrenReaden = _childrenReaden;
+    ModItem* newModItem = new ModItem(_moomc,_parent,_name,_filePath);
+    newModItem->_childrenReaden = _childrenReaden;
 
     for(int i=0;i<_children.size();i++)
     {
-        newModClass->addChild(_children.at(i)->clone());
+        newModItem->addChild(_children.at(i)->clone());
     }
-    return newModClass;
+    return newModItem;
 }
 
-ModClass::~ModClass(void)
+ModItem::~ModItem(void)
 {
     emit deleted();
 	clearDescendants();
 }
 
-QVariant ModClass::getFieldValue(int iField, int role) const
+QVariant ModItem::getFieldValue(int iField, int role) const
 {
 	switch(iField)
 	{
@@ -92,7 +92,7 @@ QVariant ModClass::getFieldValue(int iField, int role) const
 	}
 }
 
-bool ModClass::setFieldValue(int iField, QVariant value)
+bool ModItem::setFieldValue(int iField, QVariant value)
 {
 	try{
 		switch(iField)
@@ -113,7 +113,7 @@ bool ModClass::setFieldValue(int iField, QVariant value)
 	}
 }
 
-QString ModClass::sFieldName(int iField, int role)
+QString ModItem::sFieldName(int iField, int role)
 {
 	switch(iField)
 	{
@@ -126,17 +126,17 @@ QString ModClass::sFieldName(int iField, int role)
 	}
 }
 
-ModClass* ModClass::parent()
+ModItem* ModItem::parent()
 {
 		return _parent;
 }
 
-int ModClass::childCount() const
+int ModItem::childCount() const
 {
 	return _children.size();
 }
 
-QStringList ModClass::getChildrenNames()
+QStringList ModItem::getChildrenNames()
 {
 	QStringList result;
 	for(int i=0;i<this->childCount();i++)
@@ -146,17 +146,17 @@ QStringList ModClass::getChildrenNames()
 	return result;
 }
 
-bool ModClass::childrenReaden()
+bool ModItem::childrenReaden()
 {
 	return _childrenReaden;
 }
 
-void ModClass::setChildrenReaden(bool childrenReaden)
+void ModItem::setChildrenReaden(bool childrenReaden)
 {
 	_childrenReaden = childrenReaden;
 }
 
-int ModClass::compChildCount()
+int ModItem::compChildCount()
 {
 	int nbComp=0;
 	for(int i=0;i<_children.size();i++)
@@ -166,7 +166,7 @@ int ModClass::compChildCount()
 	return nbComp;
 }
 
-int ModClass::modelChildCount()
+int ModItem::modelChildCount()
 {
 	int nbModel=0;
 	for(int i=0;i<_children.size();i++)
@@ -176,7 +176,7 @@ int ModClass::modelChildCount()
 	return nbModel;
 }
 
-int ModClass::packageChildCount()
+int ModItem::packageChildCount()
 {
 	int nbPackage=0;
 	for(int i=0;i<_children.size();i++)
@@ -186,7 +186,7 @@ int ModClass::packageChildCount()
 	return nbPackage;
 }
 
-int ModClass::recordChildCount()
+int ModItem::recordChildCount()
 {
         int nbRecords=0;
         for(int i=0;i<_children.size();i++)
@@ -196,7 +196,7 @@ int ModClass::recordChildCount()
         return nbRecords;
 }
 
-ModClass* ModClass::child(int nRow) const
+ModItem* ModItem::child(int nRow) const
 {
 	if((nRow>-1)&&(nRow<_children.count()))
 		return _children.at(nRow);
@@ -204,7 +204,7 @@ ModClass* ModClass::child(int nRow) const
 		return NULL;
 }
 
-ModClass* ModClass::compChild(int nRow) const
+ModItem* ModItem::compChild(int nRow) const
 {
 	int iCurComp=-1;
 	int curIndex=0;
@@ -222,7 +222,7 @@ ModClass* ModClass::compChild(int nRow) const
 		return NULL;
 }
 
-ModClass* ModClass::packageChild(int nRow) const
+ModItem* ModItem::packageChild(int nRow) const
 {
 	int iCurPackage=-1;
 	int curIndex=0;
@@ -240,7 +240,7 @@ ModClass* ModClass::packageChild(int nRow) const
 		return NULL;
 }
 
-ModClass* ModClass::recordChild(int nRow) const
+ModItem* ModItem::recordChild(int nRow) const
 {
         int iCurRecord=-1;
         int curIndex=0;
@@ -259,7 +259,7 @@ ModClass* ModClass::recordChild(int nRow) const
 }
 
 
-ModClass* ModClass::modelChild(int nRow) const
+ModItem* ModItem::modelChild(int nRow) const
 {
 	int iCurModel=-1;
 	int curIndex=0;
@@ -277,7 +277,7 @@ ModClass* ModClass::modelChild(int nRow) const
 		return NULL;
 }
 
-int ModClass::indexInParent()
+int ModItem::indexInParent()
 {
     if(parent()==NULL)
         return -1;
@@ -301,9 +301,9 @@ int ModClass::indexInParent()
 }
 
 
-QString ModClass::filePath()
+QString ModItem::filePath()
 {
-    ModClass* parent = _parent;
+    ModItem* parent = _parent;
     QString filePath = _filePath;
     while(filePath.isEmpty()&&(parent!=NULL))
     {
@@ -311,19 +311,19 @@ QString ModClass::filePath()
         parent = parent->parent();
     }
     if(filePath.isEmpty())
-        filePath = _moomc->getFileOfClass(getModClassName());
+        filePath = _moomc->getFileOfClass(getModItemName());
 
     return filePath;
 }
 
-QString ModClass::name(Modelica::NameFormat type)
+QString ModItem::name(Modelica::NameFormat type)
 {
 	if(type == Modelica::SHORT)
             return _name.section(".",-1,-1);
 	else
 	{
 		QString fullName = _name;
-//                ModClass *curParent = parent();
+//                ModItem *curParent = parent();
 
 //		while((curParent!=NULL)&&(curParent->name(Modelica::SHORT)!=""))
 //		{
@@ -345,20 +345,20 @@ QString ModClass::name(Modelica::NameFormat type)
 	}
 }
 
-QString ModClass::getModClassName()
+QString ModItem::getModItemName()
 {
 	return name(Modelica::FULL);
 }
 
-void ModClass::emitModified()
+void ModItem::emitModified()
 {
 	emit modified();
 }
 
-int ModClass::depth()
+int ModItem::depth()
 {
 	QString fullName=_name;
-        ModClass *curParent = parent();
+        ModItem *curParent = parent();
 
 	if(curParent==NULL)
 		return  0;
@@ -367,7 +367,7 @@ int ModClass::depth()
 }
 
 
-void ModClass::clear()
+void ModItem::clear()
 {
 	clearDescendants();
 	emit modified();
@@ -380,7 +380,7 @@ void ModClass::clear()
 	emit cleared();
 }
 
-void ModClass::clearDescendants()
+void ModItem::clearDescendants()
 {
 	while(_children.size()>0)
 	{
@@ -391,7 +391,7 @@ void ModClass::clearDescendants()
 	emit modified();
 }
 
-bool ModClass::addChild(ModClass *child)
+bool ModItem::addChild(ModItem *child)
 {
 	bool ok=false;
 	if(child)
@@ -409,7 +409,7 @@ bool ModClass::addChild(ModClass *child)
 }
 
 
-void ModClass::setParent(ModClass *parent)
+void ModItem::setParent(ModItem *parent)
 {
 	if(_parent != parent)
 	{
@@ -420,7 +420,7 @@ void ModClass::setParent(ModClass *parent)
 
 
 
-QString ModClass::getStrToolTip()
+QString ModItem::getStrToolTip()
 {
 	QString toolTip;
         toolTip += ("Generic Modelica Class : " + _name + "\n");
@@ -428,13 +428,13 @@ QString ModClass::getStrToolTip()
 	return toolTip;
 }
 
-void ModClass::openMoFolder()
+void ModItem::openMoFolder()
 {
 	QFileInfo fileInfo(filePath());
 	LowTools::openFolder(fileInfo.absolutePath());
 }
 
-void ModClass::reloadInOMC()
+void ModItem::reloadInOMC()
 {
 	bool ok;
 	QString error;

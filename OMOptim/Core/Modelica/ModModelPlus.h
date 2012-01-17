@@ -83,7 +83,7 @@ public :
 
 protected :
     Variables *_variables; /// List of model variables
-    ModModel *_modModel; /// Pointer to ModModel (in ModClassTree)
+    ModModel *_modModel; /// Pointer to ModModel (in ModItemsTree)
     ModelicaConnections *_connections; /// List of connections between components in Modelica model
     MOVector<ModelicaModifier> *_modifiers; /// @deprecated Never been used. Maybe in the future...
     QStringList _neededFiles; /// List of files needed in the simulation folder.
@@ -150,13 +150,13 @@ public:
     //  Variables
     //************************
     Variables* variables();
-    Variables* variables(ModClass*);
+    Variables* variables(ModItem*);
 
     //************************
     //  Connections
     //************************
     ModelicaConnections* connections();
-    //void outsideConnections(QList<ModClass*> &ports, QList<ModClass*> &outsideComps);
+    //void outsideConnections(QList<ModItem*> &ports, QList<ModItem*> &outsideComps);
     //void outsideConnections(QStringList &ports, QStringList &outsideComps);
     //void outsideConnections(QStringList &uniqueports, QList<QStringList> &outsideComps);
 
@@ -207,8 +207,8 @@ protected :
     //**************************************
     // Connections
     //**************************************
-    bool readConnections(ModClass*,bool includeChildren);
-    void addConnection(ModClass*, ModClass*);
+    bool readConnections(ModItem*,bool includeChildren);
+    void addConnection(ModItem*, ModItem*);
     void addConnection(QString _aName,QString _bName);
 
 signals:

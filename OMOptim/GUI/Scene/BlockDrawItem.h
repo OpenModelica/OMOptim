@@ -41,7 +41,7 @@
 #define BLOCKDRAWITEM_H
 
 #include "diagramitem.h"
-#include "ModClass.h"
+#include "ModItem.h"
 #include "arrow.h"
 #include "Modelica.h"
 
@@ -66,7 +66,7 @@ public:
 		REPLACED
 	};
 
-	ModClass* component;
+	ModItem* component;
 	int type;
 
 	QHBoxLayout  *blockLayout;
@@ -76,7 +76,7 @@ public:
 	/*DiagramItem *rectangle;
 	QGraphicsTextItem *text;*/
 
-	BlockDrawItem(ModClass*, int);
+	BlockDrawItem(ModItem*, int);
 	~BlockDrawItem(void);
 	/*void setPos(QPointF &_pos);
 	void setPos(QPoint &_pos);*/

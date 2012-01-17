@@ -57,7 +57,7 @@
 #include "OneSimulation.h"
 #include "Optimization.h"
 #include "MOVector.h"
-#include "ModClass.h"
+#include "ModItem.h"
 #include "CSV.h"
 #include "MOThreads.h"
 #include "Info.h"

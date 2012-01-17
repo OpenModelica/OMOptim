@@ -52,7 +52,7 @@ ModLoader::ModLoader(MOomc *moomc)
 
 
 
-void ModLoader::loadMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad)
+void ModLoader::loadMoFile(ModItem* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad)
 {
 	// Read it in moomc
 	QFile file(filePath);
@@ -79,7 +79,7 @@ void ModLoader::loadMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,M
 	//	refresh(rootClass,mapModelPlus);
 }
 
-void ModLoader::loadMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad)
+void ModLoader::loadMoFiles(ModItem* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad)
 {
 	for(int i=0;i<filePaths.size();i++)
                 loadMoFile(rootClass,filePaths.at(i),mapModelPlus,forceLoad);

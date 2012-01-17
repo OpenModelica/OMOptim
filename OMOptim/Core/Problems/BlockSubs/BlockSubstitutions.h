@@ -42,7 +42,7 @@
 
 
 #include "Problem.h"
-#include "ModClassTree.h"
+#include "ModItemsTree.h"
 #include "ModModelPlus.h"
 #include <QtCore/QStringList>
 #include <QtXml/QDomDocument>
@@ -67,7 +67,7 @@ public:
 	bool isReplacedComponent(QString);
 	QList<int> getReplacedComponentIndexes(QString _name);
 	QStringList getReplacingComponentNames(QString);
-	QStringList getReplacingComponentNames(ModClass*);
+	QStringList getReplacingComponentNames(ModItem*);
 
 	void add(BlockSubstitution*);
 

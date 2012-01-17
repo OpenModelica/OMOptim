@@ -61,8 +61,8 @@
 #include "Optimization.h"
 #include "OneSimResult.h"
 #include "OptimResult.h"
-#include "ModClassTree.h"
-#include "ModClass.h"
+#include "ModItemsTree.h"
+#include "ModItem.h"
 #include "MyTreeView.h"
 #include "Project.h"
 
@@ -80,12 +80,12 @@ public:
 
 	static QSortFilterProxyModel * ModelToViewWithFilter(QAbstractItemModel *, QAbstractItemView *,QLineEdit*);
 	static void ModelToView(QAbstractItemModel *, QAbstractItemView *);
-    static ModClassTree* ModClassToTreeView(ModLoader*,MOomc*,const ModClass &,QTreeView*,bool showComponent);
+    static ModItemsTree* ModItemToTreeView(ModLoader*,MOomc*,const ModItem &,QTreeView*,bool showComponent);
 
-	//ModClass popup menus
-    static QMenu* newModClassPopupMenu(Project*,const QPoint &,ModClass*);
+	//ModItem popup menus
+    static QMenu* newModItemPopupMenu(Project*,const QPoint &,ModItem*);
     static void addModModelActions(QMenu*,Project*,const QPoint &,ModModel*);
-    static void addCommonActions(QMenu*,Project*,const QPoint &,ModClass*);
+    static void addCommonActions(QMenu*,Project*,const QPoint &,ModItem*);
 
 
         static QMenu* createResultPopupMenu(Project*,QWidget*,const QPoint &,Result*,int numResult);

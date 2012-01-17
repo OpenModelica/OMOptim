@@ -11,7 +11,7 @@
 #if !defined(_BLOCKSUBSTITUTION_H)
 #define _BLOCKSUBSTITUTION_H
 
-#include "ModClassTree.h"
+#include "ModItemsTree.h"
 #include <QtCore/QStringList>
 #include <QtXml/QDomDocument>
 #include "ModelicaConnections.h"

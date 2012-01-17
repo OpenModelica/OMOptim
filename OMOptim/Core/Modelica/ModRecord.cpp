@@ -40,12 +40,12 @@
   */
 #include "ModRecord.h"
 
-ModRecord::ModRecord(MOomc* moomc):ModClass(moomc)
+ModRecord::ModRecord(MOomc* moomc):ModItem(moomc)
 {
 }
 
-ModRecord::ModRecord(MOomc* moomc,ModClass* parent,QString name,QString filePath)
-:ModClass(moomc,parent,name,filePath)
+ModRecord::ModRecord(MOomc* moomc,ModItem* parent,QString name,QString filePath)
+:ModItem(moomc,parent,name,filePath)
 {
 }
 
@@ -54,7 +54,7 @@ ModRecord::~ModRecord()
 	clearDescendants();
 }
 
-ModClass* ModRecord::clone() const
+ModItem* ModRecord::clone() const
 {
     ModRecord* newModRecord = new ModRecord(_moomc,_parent,_name,_filePath);
     newModRecord->_childrenReaden = _childrenReaden;

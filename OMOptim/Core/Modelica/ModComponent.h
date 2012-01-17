@@ -40,15 +40,15 @@
 #ifndef _ModComponent_H
 #define _ModComponent_H
 
-#include "ModClass.h"
+#include "ModItem.h"
 
-class ModComponent : public ModClass
+class ModComponent : public ModItem
 {
 public:
 	ModComponent(MOomc*);
-	ModComponent(MOomc*,ModClass* parent,QString name,QString className,QString filePath="");
+	ModComponent(MOomc*,ModItem* parent,QString name,QString className,QString filePath="");
 	~ModComponent(void);
-        virtual ModClass* clone() const;
+        virtual ModItem* clone() const;
 
 	virtual QString getClassName(){return "ModComponent";};
 	
@@ -57,11 +57,11 @@ public:
 	enum Field
 	{
 		NAME,
-		MODCLASSNAME,
+                CLASSNAME,
 		FILEPATH
 	};
 
-	QString getModClassName();
+	QString getModItemName();
 
 	virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
 	virtual bool setFieldValue(int iField, QVariant value);

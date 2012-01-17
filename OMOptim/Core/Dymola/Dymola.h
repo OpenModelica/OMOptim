@@ -56,7 +56,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QTextStream>
-#include "ModClass.h"
+#include "ModItem.h"
 #include "MOVector.h"
 #include "vqtconvert.h"
 #include "MOParameter.h"

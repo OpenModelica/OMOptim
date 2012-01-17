@@ -81,7 +81,7 @@ public:
      * \brief Ctor.
      */
     EAStdOptimizationEval(Project* project,Optimization* problem,QList<ModModelPlus*> subModels,QString tempDir
-                          ,ModClassTree* modClassTree)
+                          ,ModItemsTree* modClassTree)
 	{
         _project = project;
         _problem = problem;
@@ -263,7 +263,7 @@ public:
 protected:
     Optimization* _problem;
     Project* _project;
-    ModClassTree* _modClassTree;
+    ModItemsTree* _modClassTree;
     QList<ModModelPlus*> _subModels;
     std::vector<OneSimResult*> *_resultPoints;
     QString _tempDir;

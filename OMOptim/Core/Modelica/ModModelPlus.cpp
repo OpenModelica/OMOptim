@@ -201,7 +201,7 @@ Variables * ModModelPlus::variables()
 * Returns a vector containg the variables concerning a child element
 * @Param _element : child element
 */
-Variables* ModModelPlus::variables(ModClass* element)
+Variables* ModModelPlus::variables(ModItem* element)
 {
     Variables* elVars = new Variables(this);
     QString elName = element->name();
@@ -262,7 +262,7 @@ bool ModModelPlus::compile(ModPlusCtrl* ctrl)
     return ctrl->compile(moDependencies());
 }
 
-void ModModelPlus::addConnection(ModClass* a, ModClass* b)
+void ModModelPlus::addConnection(ModItem* a, ModItem* b)
 {
     ModelicaConnection* newConnection = new ModelicaConnection(a->name(Modelica::FULL),b->name(Modelica::FULL));
     _connections->addItem(newConnection);
@@ -293,9 +293,9 @@ bool ModModelPlus::readVariables(ModPlusCtrl* ctrl)
      return _variablesRead;
  }
 
-bool ModModelPlus::readConnections(ModClass* element,bool includeChildren)
+bool ModModelPlus::readConnections(ModItem* element,bool includeChildren)
 {
-    QString className = ((ModComponent*)element)->getModClassName();
+    QString className = ((ModComponent*)element)->getModItemName();
     QString name = element->name(Modelica::FULL);
 
     QStringList aNames, bNames;
@@ -369,7 +369,7 @@ QString ModModelPlus::modModelName()
     return _modModel->name(Modelica::FULL);
 }
 
-//vector<ModModelPlusicaModifier*>* MOomc::getComponentModifiers(QString componentName,ModClass* component)
+//vector<ModModelPlusicaModifier*>* MOomc::getComponentModifiers(QString componentName,ModItem* component)
 //{
 //
 //
@@ -405,7 +405,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
     shortOrg = shortOrg.remove(modelName+".");
     QString shortSub = blockSub->_subComponent;
     shortSub = shortSub.remove(modelName+".");
-    ModClass* orgClass = _project->modClassTree()->findInDescendants(blockSub->_orgComponent,_modModel);
+    ModItem* orgClass = _project->modClassTree()->findInDescendants(blockSub->_orgComponent,_modModel);
     if(!orgClass)
     {
         QString msg;

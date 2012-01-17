@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -184,126 +184,119 @@ Save::~Save(void)
 //    }
 //}
 
-void Save::saveResult(Result* result)
-{
-//    switch (result->problemType())
+//void Save::saveStdResult(Result* result)
+//{
+//    // Root element
+//    QDomDocument doc("OMCase");
+//    QDomElement caseRoot = doc.createElement("OMCase");
+//    doc.appendChild(caseRoot);
+
+//    //***********************
+//    // Problem definition
+//    //***********************
+//    // Root element
+//    QDomElement problemRoot = doc.createElement("OMProblem");
+//    QDomElement problemEl;
+
+//    if(result->problem())
 //    {
-//    case Problem::OPTIMIZATIONTYPE:
-//        saveOptimResult((OptimResult*) result);
-//        break;
-//    default :
-//        saveStdResult(result);
-//        break;
-
+//        problemEl = result->problem()->toXmlData(doc);
+//        problemRoot.appendChild(problemEl);
+//        caseRoot.appendChild(problemRoot);
 //    }
-}
-void Save::saveStdResult(Result* result)
+//    //*********************
+//    // Result definition
+//    //*********************
+//    QDomElement resultRoot = doc.createElement("OMResult");
+//    QDomElement resultEl = result->toXmlData(doc);
+//    resultRoot.appendChild(resultEl);
+//    caseRoot.appendChild(resultRoot);
+
+//    // Writing to file
+//    if(!result->saveFileName().isEmpty())
+//    {
+//        QFile file(result->entireSavePath());
+//        QFileInfo fileInfo(result->entireSavePath());
+//        QDir dir = fileInfo.absoluteDir();
+//        dir.mkpath(dir.absolutePath());
+//        if(file.exists())
+//        {
+//            file.remove();
+//        }
+//        file.open(QIODevice::WriteOnly);
+//        QTextStream ts( &file );
+//        ts << doc.toString();
+//        file.close();
+//    }
+
+//}
+
+
+
+//void Save::saveOptimResult(OptimResult* result)
+//{
+//    // Root element
+//    QDomDocument doc("OMCase");
+//    QDomElement caseRoot = doc.createElement("OMCase");
+//    doc.appendChild(caseRoot);
+
+//    //***********************
+//    // Problem definition
+//    //***********************
+//    QDomElement problemRoot = doc.createElement("OMProblem");
+//    QDomElement problemEl;
+//    if(result->problem())
+//    {
+//        problemEl= result->problem()->toXmlData(doc);
+//        caseRoot.appendChild(problemRoot);
+//        problemRoot.appendChild(problemEl);
+//    }
+
+//    //*********************
+//    // Result definition
+//    //*********************
+//    QDomElement resultRoot = doc.createElement("OMResult");
+//    QDomElement resultEl = result->toXmlData(doc);
+//    resultRoot.appendChild(resultEl);
+//    caseRoot.appendChild(resultRoot);
+
+//    // Writing to file
+//    QFile file(result->entireSavePath());
+//    QFileInfo fileInfo(result->entireSavePath());
+//    QDir dir = fileInfo.absoluteDir();
+//    dir.mkpath(dir.absolutePath());
+
+//    if(file.exists())
+//    {
+//        file.remove();
+//    }
+//    file.open(QIODevice::WriteOnly);
+//    QTextStream ts( &file );
+//    ts << doc.toString();
+//    file.close();
+
+//    //*********************************
+//    // Writing points in Front File
+//    //*********************************
+
+//    QString optVarsfrontFileName = result->_optVarsFrontFileName;
+//    QString allVarsfrontFileName = result->_allVarsFrontFileName;
+
+//    result->exportFrontCSV(dir.absoluteFilePath(optVarsfrontFileName), false);
+//    result->exportFrontCSV(dir.absoluteFilePath(allVarsfrontFileName), true);
+//}
+
+
+
+/**
+  * Save project : creates project.min file
+  * @param saveAllCases : if true, save all cases (can be time consuming)
+  * @param caseToSave : considered only if saveAllCases is false. Only caseToSave is then saved.
+  *
+  */
+void Save::saveProject(Project* project,bool saveAllCases)
 {
-    // Root element
-    QDomDocument doc("OMCase");
-    QDomElement caseRoot = doc.createElement("OMCase");
-    doc.appendChild(caseRoot);
 
-    //***********************
-    // Problem definition
-    //***********************
-    // Root element
-    QDomElement problemRoot = doc.createElement("OMProblem");
-    QDomElement problemEl;
-
-    if(result->problem())
-    {
-        problemEl = result->problem()->toXmlData(doc);
-        problemRoot.appendChild(problemEl);
-        caseRoot.appendChild(problemRoot);
-    }
-    //*********************
-    // Result definition
-    //*********************
-    QDomElement resultRoot = doc.createElement("OMResult");
-    QDomElement resultEl = result->toXmlData(doc);
-    resultRoot.appendChild(resultEl);
-    caseRoot.appendChild(resultRoot);
-
-    // Writing to file
-    if(!result->saveFileName().isEmpty())
-    {
-        QFile file(result->entireSavePath());
-        QFileInfo fileInfo(result->entireSavePath());
-	QDir dir = fileInfo.absoluteDir();
-	dir.mkpath(dir.absolutePath());
-	if(file.exists())
-	{
-            file.remove();
-	}
-	file.open(QIODevice::WriteOnly);
-	QTextStream ts( &file );
-	ts << doc.toString();
-	file.close();
-    }
-
-}
-
-
-
-void Save::saveOptimResult(OptimResult* result)
-{
-    // Root element
-    QDomDocument doc("OMCase");
-    QDomElement caseRoot = doc.createElement("OMCase");
-    doc.appendChild(caseRoot);
-
-    //***********************
-    // Problem definition
-    //***********************
-    QDomElement problemRoot = doc.createElement("OMProblem");
-    QDomElement problemEl;
-    if(result->problem())
-    {
-        problemEl= result->problem()->toXmlData(doc);
-        caseRoot.appendChild(problemRoot);
-        problemRoot.appendChild(problemEl);
-    }
-
-    //*********************
-    // Result definition
-    //*********************
-    QDomElement resultRoot = doc.createElement("OMResult");
-    QDomElement resultEl = result->toXmlData(doc);
-    resultRoot.appendChild(resultEl);
-    caseRoot.appendChild(resultRoot);
-
-    // Writing to file
-    QFile file(result->entireSavePath());
-    QFileInfo fileInfo(result->entireSavePath());
-    QDir dir = fileInfo.absoluteDir();
-    dir.mkpath(dir.absolutePath());
-
-    if(file.exists())
-    {
-        file.remove();
-    }
-    file.open(QIODevice::WriteOnly);
-    QTextStream ts( &file );
-    ts << doc.toString();
-    file.close();
-
-    //*********************************
-    // Writing points in Front File
-    //*********************************
-
-    QString optVarsfrontFileName = result->_optVarsFrontFileName;
-    QString allVarsfrontFileName = result->_allVarsFrontFileName;
-
-    result->exportFrontCSV(dir.absoluteFilePath(optVarsfrontFileName), false);
-    result->exportFrontCSV(dir.absoluteFilePath(allVarsfrontFileName), true);
-}
-
-
-
-
-void Save::saveProject(Project* project)
-{
     // MO file
     QDomDocument doc("MOProjectXML");
     QDomElement root = doc.createElement( "MOProject" );
@@ -407,24 +400,25 @@ void Save::saveProject(Project* project)
     ts << doc.toString();
     file.close();
 
-    // Saving solved OMCases
-    Result* curResult;
-    for (int nr=0;nr<project->results()->size();nr++)
-    {
-        curResult = project->results()->at(nr);
-        ProblemInterface* interface = project->problemsInterfaces().interfaceOf(curResult->problem());
-        if(interface)
-            interface->saveResult(curResult);
-    }
 
-    // Saving OMCases
-    Problem* curProblem;
-    for (int nr=0;nr<project->problems()->size();nr++)
+    if(saveAllCases)
     {
-        curProblem = project->problems()->at(nr);
-        ProblemInterface* interface = project->problemsInterfaces().interfaceOf(curProblem);
-        if(interface)
-            interface->saveProblem(curProblem);
+        // Saving results
+        Result* curResult;
+        for (int nr=0;nr<project->results()->size();nr++)
+        {
+            curResult = project->results()->at(nr);
+            saveResult(project,curResult);
+
+        }
+
+        // Saving problems
+        Problem* curProblem;
+        for (int nr=0;nr<project->problems()->size();nr++)
+        {
+            curProblem = project->problems()->at(nr);
+            saveProblem(project,curProblem);
+        }
     }
 
     // Saving ModModelPlus
@@ -435,6 +429,19 @@ void Save::saveProject(Project* project)
     }
 }
 
+void Save::saveProblem(Project* project,Problem* problem)
+{
+    ProblemInterface* interface = project->problemsInterfaces().interfaceOf(problem);
+    if(interface)
+        interface->saveProblem(problem);
+}
+
+void Save::saveResult(Project* project,Result* result)
+{
+    ProblemInterface* interface = project->problemsInterfaces().interfaceOf(result->problem());
+    if(interface)
+        interface->saveResult(result);
+}
 
 void Save::saveModModelPlus(ModModelPlus* modModelPlus)
 {

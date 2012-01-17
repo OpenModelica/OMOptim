@@ -44,8 +44,8 @@
 #include <QtGui/QWidget>
 
 
-#include "ModClass.h"
-#include "ModClassTree.h"
+#include "ModItem.h"
+#include "ModItemsTree.h"
 
 
 namespace Ui {
@@ -58,7 +58,7 @@ class WidgetSelectModModel : public QDialog {
 
 
 public:
-        explicit WidgetSelectModModel(ModClassTree* modClassTree,QWidget *parent);
+        explicit WidgetSelectModModel(ModItemsTree* modClassTree,QWidget *parent);
     virtual ~WidgetSelectModModel();
 
 	
@@ -67,13 +67,13 @@ public:
     Ui::WidgetSelectModModelClass *ui;
 	
 	ModModel* selectedModel;
-	void setSelectedModModel(ModClass* _modClass);
+	void setSelectedModModel(ModItem* _modClass);
 
 public slots :
-	void onSelectedModClass(QModelIndex);
+	void onSelectedModItem(QModelIndex);
 
 private :
-        ModClassTree *_modClassTree;
+        ModItemsTree *_modClassTree;
 
 };
 

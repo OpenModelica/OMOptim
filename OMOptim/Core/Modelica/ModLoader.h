@@ -41,7 +41,7 @@
 #define _ModLoader_H
 
 #include "Modelica.h"
-#include "ModClass.h"
+#include "ModItem.h"
 #include "ModPackage.h"
 #include "ModModel.h"
 #include "ModRecord.h"
@@ -62,8 +62,8 @@ public:
         ModLoader(MOomc *moomc);
 
 	// Load functions
-        void loadMoFile(ModClass* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus,bool forceLoad = true);
-        void loadMoFiles(ModClass* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad = true);
+        void loadMoFile(ModItem* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus,bool forceLoad = true);
+        void loadMoFiles(ModItem* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad = true);
 
         int getDepthMax();
 

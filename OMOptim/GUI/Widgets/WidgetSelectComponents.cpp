@@ -57,7 +57,7 @@ WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* pr
     //Tree components
     _ui->treeLibrary->setModel(project->modClassTree());
 
-    ModClassTree* modelTree = GuiTools::ModClassToTreeView(_project->modLoader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
+    ModItemsTree* modelTree = GuiTools::ModItemToTreeView(_project->modLoader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
                                                            _ui->treeComponents,true);
 
     // Diagram of blocks
@@ -82,7 +82,7 @@ WidgetSelectComponents::~WidgetSelectComponents()
 void WidgetSelectComponents::addReplacedComponent()
 {
     QModelIndex index = _ui->treeComponents->currentIndex();
-    ModClass* curComponent = static_cast<ModClass*>(index.internalPointer());
+    ModItem* curComponent = static_cast<ModItem*>(index.internalPointer());
 
 
     QString replacedCompName = curComponent->name(Modelica::FULL);
@@ -117,7 +117,7 @@ void WidgetSelectComponents::addReplacingComponent()
     {
         // replacing component
         QModelIndex index = _ui->treeLibrary->currentIndex();
-        ModClass* curReplacingComponent = static_cast<ModClass*>(index.internalPointer());
+        ModItem* curReplacingComponent = static_cast<ModItem*>(index.internalPointer());
         QString replacingCompName = curReplacingComponent->name(Modelica::FULL);
 
         // look for an existing but empty block

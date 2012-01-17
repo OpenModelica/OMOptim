@@ -97,14 +97,14 @@ SPEA2::SPEA2():EABase()
 	setDefaultParameters();
 }
 
-SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree)
+SPEA2::SPEA2(Project* project,Problem* problem,ModItemsTree* modClassTree)
 :EABase(project,problem,modClassTree)
 {
 	setDefaultParameters();
 };
 
 
-SPEA2::SPEA2(Project* project,Problem* problem,ModClassTree* modClassTree,MOParameters* parameters)
+SPEA2::SPEA2(Project* project,Problem* problem,ModItemsTree* modClassTree,MOParameters* parameters)
 :EABase(project,problem,modClassTree)
 {
        delete _parameters;

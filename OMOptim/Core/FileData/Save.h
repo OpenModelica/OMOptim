@@ -68,11 +68,13 @@ public:
 	
         //static void saveProblem(Problem*);
 
-        static void saveResult(Result*);
-        static void saveStdResult(Result*);
-        static void saveOptimResult(OptimResult*);
+//        static void saveResult(Result*);
+//        static void saveStdResult(Result*);
+//        static void saveOptimResult(OptimResult*);
 	
-	static void saveProject(Project*);
+        static void saveProject(Project*,bool saveAllCases=true);
+        static void saveProblem(Project* ,Problem*);
+        static void saveResult(Project* ,Result*);
 	static void saveModModelPlus(ModModelPlus*);
 
 

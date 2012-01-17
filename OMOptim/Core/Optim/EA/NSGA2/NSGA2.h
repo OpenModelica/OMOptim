@@ -78,8 +78,8 @@ class NSGA2 : public EABase
 {
 public : 
 	NSGA2();
-        NSGA2(Project*,Problem*,ModClassTree*);
-        NSGA2(Project*,Problem*,ModClassTree*,MOParameters*);
+        NSGA2(Project*,Problem*,ModItemsTree*);
+        NSGA2(Project*,Problem*,ModItemsTree*,MOParameters*);
 	NSGA2(const NSGA2 &);
         EABase* clone() const;
 

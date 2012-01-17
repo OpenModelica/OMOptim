@@ -43,7 +43,7 @@
 #include <QtCore/QObject>
 #include "ProblemConfig.h"
 #include "OptimAlgo.h"
-#include "ModClassTree.h"
+#include "ModItemsTree.h"
 #include "ModPlusCtrl.h"
 #include <time.h> //needed in paradiseo (not included otherwhere!!)
 
@@ -61,7 +61,7 @@ class EABase : public OptimAlgo
 
 public:
 	EABase(void);
-        EABase(Project* project,Problem* problem,ModClassTree*);
+        EABase(Project* project,Problem* problem,ModItemsTree*);
 	EABase(const EABase &);
 	
         virtual ~EABase(void);
@@ -76,7 +76,7 @@ public:
 
 protected:
 
-        ModClassTree* _modClassTree;
+        ModItemsTree* _modClassTree;
 
 	// for Optimization problems
 	QList<ModModelPlus*> _subModels;

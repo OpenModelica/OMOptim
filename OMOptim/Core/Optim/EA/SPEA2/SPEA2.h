@@ -76,8 +76,8 @@ class SPEA2 : public EABase
 {
 public : 
 	SPEA2();
-        SPEA2(Project*,Problem*,ModClassTree*);
-        SPEA2(Project*,Problem*,ModClassTree*,MOParameters*);
+        SPEA2(Project*,Problem*,ModItemsTree*);
+        SPEA2(Project*,Problem*,ModItemsTree*,MOParameters*);
 	SPEA2(const SPEA2 &);
 
         EABase* clone()const;

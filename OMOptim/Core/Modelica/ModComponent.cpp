@@ -40,12 +40,12 @@
   */
 #include "ModComponent.h"
 
-ModComponent::ModComponent(MOomc* moomc):ModClass(moomc)
+ModComponent::ModComponent(MOomc* moomc):ModItem(moomc)
 {
 }
 
-ModComponent::ModComponent(MOomc* moomc,ModClass* parent,QString name,QString modClassName,QString filePath)
-:ModClass(moomc,parent,name,filePath)
+ModComponent::ModComponent(MOomc* moomc,ModItem* parent,QString name,QString modClassName,QString filePath)
+:ModItem(moomc,parent,name,filePath)
 {
 	_modClassName = modClassName;
 }
@@ -55,7 +55,7 @@ ModComponent::~ModComponent()
 	clearDescendants();
 }
 
-ModClass* ModComponent::clone() const
+ModItem* ModComponent::clone() const
 {
     ModComponent* newModComp = new ModComponent(_moomc,_parent,_name,_modClassName,_filePath);
     newModComp->_childrenReaden = _childrenReaden;
@@ -68,7 +68,7 @@ ModClass* ModComponent::clone() const
 }
 
 
-QString ModComponent::getModClassName()
+QString ModComponent::getModItemName()
 {
 	return _modClassName;
 }
@@ -80,7 +80,7 @@ QVariant ModComponent::getFieldValue(int iField, int role) const
 	{
 	case NAME:
 		return _name;
-	case MODCLASSNAME:
+        case CLASSNAME:
 		return _modClassName;
 	case FILEPATH:
 		return _filePath;
@@ -97,7 +97,7 @@ bool ModComponent::setFieldValue(int iField, QVariant value)
 		case NAME:
 			_name = value.toString();
 			break;
-		case MODCLASSNAME:
+                case CLASSNAME:
 			_modClassName = value.toString();
 		case FILEPATH:
 			_filePath = value.toString();
@@ -117,7 +117,7 @@ QString ModComponent::sFieldName(int iField, int role)
 	{
 	case NAME:
 		return "Name";
-	case MODCLASSNAME:
+        case CLASSNAME:
 		return "Class";
 	case FILEPATH:
 		return "FilePath";

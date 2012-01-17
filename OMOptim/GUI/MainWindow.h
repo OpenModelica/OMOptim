@@ -87,7 +87,7 @@ public slots :
 	void onFinishedOMCThread(QString);
 	void onTerminatingOMCThread(QString);
         void enableOMCaseTab(QModelIndex);
-	void onSelectedModClass(QModelIndex);
+	void onSelectedModItem(QModelIndex);
         void updateProblemsMenu();
 
 
@@ -123,7 +123,7 @@ public slots :
 	void onNewProblemProgress(float);
 	void onNewProblemProgress(float,int,int);
 
-        void showModClass(ModClass*);
+        void showModItem(ModItem*);
 
 
         void removeResult();
@@ -141,7 +141,7 @@ public slots :
 
 	// Pop-up menus
         void rightClickedOnCase(const QPoint & iPoint);
-	void showModClassTreePopup(const QPoint & iPoint);
+	void showModItemsTreePopup(const QPoint & iPoint);
 
 	//Recent files
 	void openRecentFile();

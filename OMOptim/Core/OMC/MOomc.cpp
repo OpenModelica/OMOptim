@@ -186,6 +186,21 @@ QStringList MOomc::getRecords(QString parentClass)
     return models;
 }
 
+QStringList MOomc::getClasses(QString parentClass)
+{
+
+    QStringList allClasses = getClassNames(parentClass);
+    QStringList models;
+
+    for(int i=0;i<allClasses.size();i++)
+    {
+        // check if it is a class
+        if(isClass(parentClass+"."+allClasses.at(i)))
+            models.push_back(allClasses.at(i));
+    }
+    return models;
+}
+
 QStringList MOomc::getModels(QString parentClass)
 {
 
@@ -529,6 +544,13 @@ bool MOomc::isModel(QString className)
 bool MOomc::isRecord(QString className)
 {
     QString commandText = "isRecord(" + className +")";
+    QString commandRes= evalCommand(commandText);
+    return (commandRes=="true");
+}
+
+bool MOomc::isClass(QString className)
+{
+    QString commandText = "isClass(" + className +")";
     QString commandRes= evalCommand(commandText);
     return (commandRes=="true");
 }

@@ -51,11 +51,11 @@ Project::Project()
     _problems = new Problems("Problems");
     _results = new Results("Results");
     //    _curLaunchedProblem = NULL;
-    setCurModClass(NULL);
+    setCurModItem(NULL);
 
     _moomc = new MOomc("OMOptim",true);
     _modLoader = new ModLoader(_moomc);
-    _modClassTree = new ModClassTree(_modLoader,_moomc);
+    _modClassTree = new ModItemsTree(_modLoader,_moomc);
 
     // add interfaces for OneSimulation and Optimization
     addProblemInterface(new OneSimulationInterface());
@@ -120,7 +120,7 @@ void Project::clear()
     _isdefined=false;
     _filePath.clear();
     _name.clear();
-    setCurModClass(NULL);
+    setCurModItem(NULL);
 
     _moFiles.clear();
     _mmoFiles.clear();
@@ -158,9 +158,9 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
         _moFiles.push_back(moFilePath);
 
     // load moFile ...
-    _modLoader->loadMoFile(rootModClass(),moFilePath,_mapModelPlus,forceLoad);
+    _modLoader->loadMoFile(rootModItem(),moFilePath,_mapModelPlus,forceLoad);
 
-    // and read it add class in ModClassTree
+    // and read it add class in ModItemsTree
     refreshAllMod();
 }
 
@@ -182,7 +182,7 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
     }
 
     // load _moFiles and read them
-    _modLoader->loadMoFiles(rootModClass(),moFilePaths,_mapModelPlus,forceLoad);
+    _modLoader->loadMoFiles(rootModItem(),moFilePaths,_mapModelPlus,forceLoad);
 
     refreshAllMod();
 }
@@ -331,8 +331,8 @@ bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
 */
 ModModel* Project::curModModel()
 {
-    if(_curModClass && (_curModClass->getClassRestr()==Modelica::MODEL))
-        return (ModModel*)_curModClass;
+    if(_curModItem && (_curModItem->getClassRestr()==Modelica::MODEL))
+        return (ModModel*)_curModItem;
     else
         return NULL;
 }
@@ -343,7 +343,7 @@ ModModel* Project::curModModel()
 */
 ModModel* Project::findModModel(QString modelName)
 {
-    ModClass* modModel = _modClassTree->findInDescendants(modelName);
+    ModItem* modModel = _modClassTree->findInDescendants(modelName);
 
     if(!modModel || modModel->getClassRestr()!=Modelica::MODEL)
         return NULL;
@@ -375,15 +375,15 @@ ModModelPlus* Project::curModModelPlus()
         return NULL;
 }
 
-void Project::setCurModClass(ModClass* modClass)
+void Project::setCurModItem(ModItem* modClass)
 {
-    if(_curModClass != modClass)
+    if(_curModItem != modClass)
     {
-        _curModClass = modClass;
-        emit curModClassChanged(_curModClass);
+        _curModItem = modClass;
+        emit curModItemChanged(_curModItem);
 
-        if(_curModClass && _curModClass->getClassRestr()==Modelica::MODEL)
-            emit curModModelChanged((ModModel*)_curModClass);
+        if(_curModItem && _curModItem->getClassRestr()==Modelica::MODEL)
+            emit curModModelChanged((ModModel*)_curModItem);
     }
 }
 
@@ -462,9 +462,25 @@ void Project::setFilePath(QString filePath)
     fileInfo.dir().mkdir(modelsDir);
 }
 
-void Project::save()
+void Project::save(bool saveAllOMCases)
 {
-    Save::saveProject(this);
+    Save::saveProject(this,saveAllOMCases);
+}
+
+void Project::save(Result* result)
+{
+    // save project but not all omcases
+    Save::saveProject(this,false);
+    // save result
+    Save::saveResult(this,result);
+}
+
+void Project::save(Problem* problem)
+{
+    // save project but not all omcases
+    Save::saveProject(this,false);
+    // save problem
+    Save::saveProblem(this,problem);
 }
 
 bool Project::load(QString loadPath)
@@ -673,8 +689,7 @@ void Project::onProblemFinished(Problem* problem,Result* result)
             result->store(QString(resultsFolder()+QDir::separator()+result->name()),tempPath());
 
             addResult(result);
-
-            save();
+            save(result);
         }
     }
     _problemLaunchMutex.unlock();
@@ -710,7 +725,7 @@ void Project::removeResult(Result* result)
         LowTools::removeDir(folder);
         _results->removeRow(num);
 
-        save();
+        save(false);
     }
 }
 
@@ -728,7 +743,7 @@ void Project::removeProblem(Problem* problem)
         LowTools::removeDir(folder);
         _problems->removeRow(num);
 
-        save();
+        save(false);
     }
 }
 
@@ -746,7 +761,7 @@ bool Project::renameProblem(Problem* problem,QString newName)
 
     // change name
     problem->rename(newName,true);
-    save();
+    save(problem);
     return true;
 }	
 
@@ -763,7 +778,7 @@ bool Project::renameResult(Result* result,QString newName)
 
     // change name
     result->rename(newName,true);
-    save();
+    save(result);
     return true;
 }
 
@@ -798,11 +813,11 @@ QMap<QString,QString> Project::pluginsLoaded()
     return _pluginsLoaded;
 }
 
-void Project::onModClassSelectionChanged(QList<ModClass*> &classes)
+void Project::onModItemSelectionChanged(QList<ModItem*> &classes)
 {
     if(classes.size()==1)
     {
-        emit curModClassChanged(classes.at(0));
+        emit curModItemChanged(classes.at(0));
 
         if(classes.at(0)->getClassRestr()==Modelica::MODEL)
             emit curModModelChanged((ModModel*)classes.at(0));
@@ -811,7 +826,7 @@ void Project::onModClassSelectionChanged(QList<ModClass*> &classes)
     }
     else
     {
-        curModClassChanged(NULL);
+        curModItemChanged(NULL);
         curModModelChanged(NULL);
     }
 }

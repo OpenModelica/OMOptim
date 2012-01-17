@@ -296,7 +296,7 @@ color:white;
       <number>2</number>
      </property>
      <item>
-      <widget class="QTreeView" name="treeModClass">
+      <widget class="QTreeView" name="treeModItem">
        <property name="iconSize">
         <size>
          <width>20</width>

@@ -40,7 +40,7 @@
 
 #include "BlockSubsScene.h"
 
-BlockSubsScene::BlockSubsScene(BlockSubstitutions *_blockSubs, ModModel* _model,ModClassTree* _modClassTree, bool _isEditable)
+BlockSubsScene::BlockSubsScene(BlockSubstitutions *_blockSubs, ModModel* _model,ModItemsTree* _modClassTree, bool _isEditable)
 {
 	blockSubs = _blockSubs;
 	model = _model;
@@ -113,7 +113,7 @@ void BlockSubsScene::refresh()
 		QStringList orgs = blockSubs->getReplacedComponentsNames();
 		for(int i=0;i<orgs.size();i++)
 		{
-                        ModClass* _orgEl = modClassTree->findInDescendants(orgs.at(i));
+                        ModItem* _orgEl = modClassTree->findInDescendants(orgs.at(i));
 			if(_orgEl)
 			{
 
@@ -135,7 +135,7 @@ void BlockSubsScene::refresh()
 
 				for(int j=0;j<nbSubs;j++)
 				{
-                                        ModClass* _subEl = modClassTree->findInDescendants(subs.at(j));
+                                        ModItem* _subEl = modClassTree->findInDescendants(subs.at(j));
 					if(_subEl)
 					{
 						_curSubBlock = addSubBlock(i,_subEl, _curSubPos);	
@@ -210,7 +210,7 @@ void BlockSubsScene::refresh()
 //		QStringList orgs = blockSubs->getReplacedComponentsNames();
 //		for(int i=0;i<orgs.size();i++)
 //		{
-//			ModClass* _orgEl = modelRoot->findComporModelInDescendants(orgs.at(i));
+//			ModItem* _orgEl = modelRoot->findComporModelInDescendants(orgs.at(i));
 //			if(_orgEl)
 //			{
 //				QStringList subs = blockSubs->getReplacingComponentNames(orgs.at(i));
@@ -235,7 +235,7 @@ void BlockSubsScene::refresh()
 //					int iLibrary = libraries->findItem(subs.at(j).section(".",0,0));
 //					if(iLibrary>-1)
 //					{
-//						ModClass* _subEl = libraries->at(iLibrary)->findComporModelInDescendants(subs.at(j));
+//						ModItem* _subEl = libraries->at(iLibrary)->findComporModelInDescendants(subs.at(j));
 //						if(_subEl)
 //						{
 //							BlockDrawItem* _curSubBlock = addSubBlock(_curOrgBlock,_subEl, QPoint());
@@ -332,7 +332,7 @@ void BlockSubsScene::zoomFit()
 	emit zoomRect(_rect);
 }
 
-QGraphicsProxyWidget* BlockSubsScene::addOrgBlock(ModClass *_orgComponent,QPoint _pos)
+QGraphicsProxyWidget* BlockSubsScene::addOrgBlock(ModItem *_orgComponent,QPoint _pos)
 {
 	BlockDrawItem* _newBlock = new BlockDrawItem(_orgComponent,BlockDrawItem::REPLACED);
 
@@ -358,7 +358,7 @@ QGraphicsProxyWidget* BlockSubsScene::addOrgBlock(ModClass *_orgComponent,QPoint
 }
 
 
-QGraphicsProxyWidget* BlockSubsScene::addSubBlock(int iOrg, ModClass *_subComponent, QPoint _pos)
+QGraphicsProxyWidget* BlockSubsScene::addSubBlock(int iOrg, ModItem *_subComponent, QPoint _pos)
 {
 
 	// draw it

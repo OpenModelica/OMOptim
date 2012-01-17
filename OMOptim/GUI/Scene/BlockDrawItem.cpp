@@ -41,7 +41,7 @@
 
 #include "BlockDrawItem.h"
 
-BlockDrawItem::BlockDrawItem(ModClass* _comp,int _type) : QWidget()
+BlockDrawItem::BlockDrawItem(ModItem* _comp,int _type) : QWidget()
 {
 	type = _type;
 	component = _comp;
@@ -61,7 +61,7 @@ BlockDrawItem::BlockDrawItem(ModClass* _comp,int _type) : QWidget()
 	//setMinimumSize(rectangle->boundingRect().size());
 	//
 	//// add text
-	//text = new QGraphicsTextItem(_comp->name(ModClass::SHORT),this);
+	//text = new QGraphicsTextItem(_comp->name(ModItem::SHORT),this);
 	//text->setPos(pos());
 	//text->setZValue(zValue()+1);
 

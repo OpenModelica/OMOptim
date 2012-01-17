@@ -93,11 +93,11 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
 }
 
 
-ModClassTree* GuiTools::ModClassToTreeView(ModLoader* modLoader ,MOomc* moomc,const ModClass & modClass,QTreeView* treeView,bool showComponent)
+ModItemsTree* GuiTools::ModItemToTreeView(ModLoader* modLoader ,MOomc* moomc,const ModItem & modClass,QTreeView* treeView,bool showComponent)
 {
-    ModClassTree* newTree = new ModClassTree(modLoader,moomc/*,treeView*/);
+    ModItemsTree* newTree = new ModItemsTree(modLoader,moomc/*,treeView*/);
     newTree->setShowComponent(showComponent);
-    ModClass* root = modClass.clone();
+    ModItem* root = modClass.clone();
     root->clearDescendants(); // reset root : useful if showcomponents changed.
     newTree->addChild(newTree->rootElement(),root);
 
@@ -215,10 +215,10 @@ QMenu* GuiTools::createProblemPopupMenu(Project* project, QWidget* mainWindow, c
 }
 
 
-QMenu* GuiTools::newModClassPopupMenu(Project* project, const QPoint & iPoint,ModClass* selectedClass)
+QMenu* GuiTools::newModItemPopupMenu(Project* project, const QPoint & iPoint,ModItem* selectedClass)
 {
     QMenu *menu = new QMenu();
-    project->setCurModClass(selectedClass);
+    project->setCurModItem(selectedClass);
 
     switch(selectedClass->getClassRestr())
     {
@@ -233,11 +233,11 @@ QMenu* GuiTools::newModClassPopupMenu(Project* project, const QPoint & iPoint,Mo
     return menu;
 }
 
-void GuiTools::addCommonActions(QMenu* menu,Project* project, const QPoint & iPoint,ModClass* selectedModClass)
+void GuiTools::addCommonActions(QMenu* menu,Project* project, const QPoint & iPoint,ModItem* selectedModItem)
 {
     //Open folder
     QAction *openFolderAct = new QAction("Open folder",menu);
-    connect(openFolderAct,SIGNAL(triggered()),selectedModClass,SLOT(openMoFolder()));
+    connect(openFolderAct,SIGNAL(triggered()),selectedModItem,SLOT(openMoFolder()));
     QIcon icon;
     icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/Folder")), QIcon::Normal, QIcon::Off);
     openFolderAct->setIcon(icon);
@@ -245,7 +245,7 @@ void GuiTools::addCommonActions(QMenu* menu,Project* project, const QPoint & iPo
 
     // Reload mo file
     QAction *reload = new QAction("Reload .mo file",menu);
-    connect(reload,SIGNAL(triggered()),selectedModClass,SLOT(reloadInOMC()));
+    connect(reload,SIGNAL(triggered()),selectedModItem,SLOT(reloadInOMC()));
     menu->addAction(reload);
 }
 void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & iPoint,ModModel* selectedModel)

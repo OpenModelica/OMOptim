@@ -45,17 +45,17 @@
 #include "ModelicaConnection.h"
 #include "MOVector.h"
 #include "Modelica.h"
-#include "ModClassTree.h"
+#include "ModItemsTree.h"
 
 class ModelicaConnections : public MOVector<ModelicaConnection>
 {
 
 public:
-        ModelicaConnections(ModClassTree*);
+        ModelicaConnections(ModItemsTree*);
 	~ModelicaConnections(void);
 
 private :
-        ModClassTree* _modClassTree;
+        ModItemsTree* _modClassTree;
 
 public :
 
@@ -78,14 +78,14 @@ public :
 
 	//useful functions
 public :
-	ModelicaConnections* filter(ModClass*,bool includeChildren,bool acceptInternal);
-	//void getOutside(ModClass* _element,bool includeChildren,QList<ModClass*> &_ports,QList<ModClass*> &_outsideComps);
-	void getOutside(ModClass* _element,bool includeChildren,QStringList &ports, QStringList &outsideComps);
-	void getOutside(ModClass* _element,bool includeChildren,QStringList &uniquePorts, QList<QStringList> &outsideComps);
-//	QList<ModClass*> getOutsideConnectedComps(ModClass*,bool includeChildren);
-//	QStringList getOutsideConnectedCompsNames(ModClass*,bool includeChildren,Modelica::NameFormat format);
-//	QList<ModClass*> getOutsideConnectingPorts(ModClass*,bool includeChildren);
-//	QStringList getOutsideConnectingPortsNames(ModClass*,bool includeChildren,Modelica::NameFormat format);
+	ModelicaConnections* filter(ModItem*,bool includeChildren,bool acceptInternal);
+	//void getOutside(ModItem* _element,bool includeChildren,QList<ModItem*> &_ports,QList<ModItem*> &_outsideComps);
+	void getOutside(ModItem* _element,bool includeChildren,QStringList &ports, QStringList &outsideComps);
+	void getOutside(ModItem* _element,bool includeChildren,QStringList &uniquePorts, QList<QStringList> &outsideComps);
+//	QList<ModItem*> getOutsideConnectedComps(ModItem*,bool includeChildren);
+//	QStringList getOutsideConnectedCompsNames(ModItem*,bool includeChildren,Modelica::NameFormat format);
+//	QList<ModItem*> getOutsideConnectingPorts(ModItem*,bool includeChildren);
+//	QStringList getOutsideConnectingPortsNames(ModItem*,bool includeChildren,Modelica::NameFormat format);
 
 private :
         bool portIsInElement(QString portName,QString elementName);

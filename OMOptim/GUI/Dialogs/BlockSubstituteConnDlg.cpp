@@ -76,7 +76,7 @@ void BlockSubstituteConnDlg::validate()
     //QModelIndex index = ui->treeBlocks->currentIndex();
     //if(isOk && index.isValid())
     //{
-    //	ModClass *selectedComponent = static_cast<ModClass*>(index.internalPointer());
+    //	ModItem *selectedComponent = static_cast<ModItem*>(index.internalPointer());
     //	QString subClassName = selectedComponent->name(Modelica::FULL);
 
     //	newBSub = new BlockSubstitution(project,project->getModel(),orgComponent,subClassName);

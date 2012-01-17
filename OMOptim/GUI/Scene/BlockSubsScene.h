@@ -44,7 +44,7 @@
 #include "diagramscene.h"
 #include "BlockSubstitutions.h"
 #include "BlockDrawItem.h"
-#include "ModClass.h"
+#include "ModItem.h"
 #include "ModModel.h"
 #include "ModLoader.h"
 #include "BlockSubstituteConnDlg.h"
@@ -60,7 +60,7 @@ class BlockSubsScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    BlockSubsScene(BlockSubstitutions *, ModModel* ,ModClassTree*, bool _isEditable);
+    BlockSubsScene(BlockSubstitutions *, ModModel* ,ModItemsTree*, bool _isEditable);
     ~BlockSubsScene(void);
 
 
@@ -94,7 +94,7 @@ public :
 private:
 
     ModModel* model;
-    ModClassTree* modClassTree;
+    ModItemsTree* modClassTree;
 
 
     bool isEditable;
@@ -103,8 +103,8 @@ private:
     BlockSubstitutions *blockSubs;
 
 
-    QGraphicsProxyWidget* addOrgBlock(ModClass* _orgComponent,QPoint _pos);
-    QGraphicsProxyWidget* addSubBlock(int iOrg, ModClass* _subComponent,QPoint _pos);
+    QGraphicsProxyWidget* addOrgBlock(ModItem* _orgComponent,QPoint _pos);
+    QGraphicsProxyWidget* addSubBlock(int iOrg, ModItem* _subComponent,QPoint _pos);
 
 
 

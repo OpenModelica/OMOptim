@@ -46,7 +46,7 @@
 #include <QtCore/QTextStream>
 #include <QtGui/QSortFilterProxyModel>
 #include <limits>
-#include "ModClass.h"
+#include "ModItem.h"
 #include "MOItem.h"
 
 
@@ -54,7 +54,7 @@ class ModelicaModifier : public MOItem
 {
 public:
 	ModelicaModifier(void);
-	ModelicaModifier(QString _componentName,QString _modifierName,QString _value,QString _description,ModClass* _component);
+	ModelicaModifier(QString _componentName,QString _modifierName,QString _value,QString _description,ModItem* _component);
 	~ModelicaModifier(void);
 	QString getClassName(){return "ModelicaModifier";};
 
@@ -68,7 +68,7 @@ public :
 	void setName(QString);
 	void setDesc(QString);
 	void setValue(QString);
-	void setComponent(ModClass*);
+	void setComponent(ModItem*);
 
 	//MOItem functions
 	QVariant getFieldValue(int, int role = Qt::UserRole) const;
@@ -102,7 +102,7 @@ protected :
 	QString _componentName;
 
 	//Component concerned
-	ModClass* _component;
+	ModItem* _component;
 };
 
 #endif

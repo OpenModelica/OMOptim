@@ -57,7 +57,7 @@ ModPlusCtrl::~ModPlusCtrl(void)
 }
 
 
-MOParameters* ModPlusCtrl::parameters()
+MOParameters* ModPlusCtrl::parameters() const
 {
 	return _parameters;
 }
