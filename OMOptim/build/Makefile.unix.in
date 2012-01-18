@@ -22,3 +22,8 @@ Makefile.unix: Makefile.unix.in
 	(cd $(top_dir); ./config.status)
 $(NAME).config: $(NAME).config.in
 	(cd $(top_dir); ./config.status)
+
+clean:
+	test ! -f Makefile || $(MAKE) -f Makefile clean
+	rm -f *.o
+
