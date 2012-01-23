@@ -96,7 +96,7 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
         ok = false;
     }
 
-    _modModelPlus = project->modModelPlus(modModel);
+    _modModelPlus = project->modModelPlus(modelName);
     if(!_modModelPlus)
         ok = false;
     else

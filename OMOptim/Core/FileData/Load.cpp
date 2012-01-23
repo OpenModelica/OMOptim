@@ -629,7 +629,7 @@ bool Load::loadModModelPlus(Project* project,QString mmoFilePath)
         return false;
     else
     {
-        ModModelPlus* newModelPlus = new ModModelPlus(project,modModel);
+        ModModelPlus* newModelPlus = new ModModelPlus(project,modelName);
 
         // .mo dependencies
         QDomElement domMoDeps = root.firstChildElement("moDependencies");
@@ -646,8 +646,6 @@ bool Load::loadModModelPlus(Project* project,QString mmoFilePath)
         // Variables
         QDomElement domVariables = root.firstChildElement("Variables");
         newModelPlus->variables()->setItems(domVariables);
-
-
 
         project->addModModelPlus(newModelPlus);
         return true;

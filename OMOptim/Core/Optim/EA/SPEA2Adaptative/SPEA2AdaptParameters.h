@@ -69,7 +69,6 @@ public :
         parameters->addItem(new MOParameter(USESTARTFILE,"UseStartFile","Use start file (restart from previous result)",false,MOParameter::BOOL));
         parameters->addItem(new MOParameter(STARTFILEPATH,"StartFilePath","Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
         parameters->addItem(new MOParameter(REINITSTDDEV,"ReinitStdDev","Reinitialize StdDeviation (for pursuing optimization only)",0,MOParameter::BOOL));
-
     };
 };
 

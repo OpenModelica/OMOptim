@@ -131,7 +131,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
             ok = false;
 
         }
-        _modModelPlus = project->modModelPlus(modModel);
+        _modModelPlus = project->modModelPlus(modelName);
     }
 
     if(!_modModelPlus)
@@ -542,7 +542,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
         ModModel* newModModel = new ModModel(_project->moomc(),_project->rootModItem(),_modModelPlus->modModelName(),newMoPath);
 
         // create new modModelPlus
-        ModModelPlus* newModModelPlus = new ModModelPlus(_project,newModModel);
+        ModModelPlus* newModModelPlus = new ModModelPlus(_project,newModModel->name());
         newModModelPlus->setMmoFilePath(newMmoFilePath);
 
         // apply blocksubs

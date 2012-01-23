@@ -78,7 +78,7 @@
 
 
 
-/*
+/**
  * \brief Main class managing problems, results, models,
  * paths information, save/load main functions, threads.
  */
@@ -96,6 +96,7 @@ public :
     QMutex _connectionMutex;
     QMutex _problemLaunchMutex;
     QMap<Problem*,MOThreads::ProblemThread *> _launchedThreads;
+    QFileSystemWatcher _mofilesWatcher;
 
 private:
     //Misc
@@ -116,7 +117,8 @@ private:
 
     ModLoader* _modLoader;
     ModItemsTree* _modClassTree;
-    QMap<ModModel*,ModModelPlus*> _mapModelPlus;
+    QMap<QString,ModModelPlus*> _mapModelPlus; //<modmodelName,modmodelplus>
+
 
     // Problems interfaces
     ProblemInterfaces _problemsInterfaces;
@@ -141,19 +143,19 @@ public:
     void loadMoFiles(QStringList filePaths, bool storePath=true, bool forceLoad = true);
     bool loadModelicaLibrary(bool storePath=true, bool forceLoad = true);
     void loadModModelPlus(QString mmoFilePath);
-    ModModelPlus* modModelPlus(ModModel* model);
-    ModModelPlus* newModModelPlus(ModModel* model);
+    ModModelPlus* modModelPlus(QString modModelPlus);
+    ModModelPlus* newModModelPlus(QString modelName);
     ModModel* curModModel();
     ModModelPlus* curModModelPlus();
     void setCurModItem(ModItem*);
     ModModel* findModModel(QString name);
     QList<ModModelPlus*> allModModelPlus();
     void addModModelPlus(ModModelPlus*);
-    //    bool compileModModel(ModModel*);
-    //    bool compileModModelPlus(ModModelPlus*);
+
+
     void storeMmoFilePath(QString mmoFilePath);
     void refreshAllMod();
-    void reloadModModel(ModModel*);
+    void reloadModModel(QString modModelName);
 
     //****************************
     //Problem managment
@@ -196,7 +198,7 @@ public:
     ModLoader* modLoader(){return _modLoader;};
     ModItemsTree* modClassTree(){return _modClassTree;};
     ModItem* rootModItem(){return _modClassTree->rootElement();};
-    QMap<ModModel*,ModModelPlus*> mapModelPlus(){return _mapModelPlus;};
+    QMap<QString,ModModelPlus*> mapModelPlus(){return _mapModelPlus;};
 
 
 

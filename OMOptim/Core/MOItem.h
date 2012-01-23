@@ -90,7 +90,7 @@ public:
 	virtual QString getClassName()=0;
 	
 	//Name
-	void setName(QString);
+        virtual void setName(QString);
         QString name() const;
 
 	//All fields

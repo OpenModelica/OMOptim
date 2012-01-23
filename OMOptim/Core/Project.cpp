@@ -123,6 +123,7 @@ void Project::clear()
     setCurModItem(NULL);
 
     _moFiles.clear();
+    _mofilesWatcher.removePaths(_mofilesWatcher.files());
     _mmoFiles.clear();
 
 
@@ -153,12 +154,18 @@ void Project::setIsDefined(bool isdefined)
 */
 void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
 {
+    // unwatch mo file (avoid recursive call)
+    _mofilesWatcher.removePath(moFilePath);
+
     // add to mofileloadedlist
     if(storePath && !_moFiles.contains(moFilePath))
         _moFiles.push_back(moFilePath);
 
     // load moFile ...
-    _modLoader->loadMoFile(rootModItem(),moFilePath,_mapModelPlus,forceLoad);
+    _modLoader->loadMoFile(rootModItem(),moFilePath,forceLoad);
+
+    // watch mo file
+    _mofilesWatcher.addPath(moFilePath);
 
     // and read it add class in ModItemsTree
     refreshAllMod();
@@ -182,7 +189,10 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
     }
 
     // load _moFiles and read them
-    _modLoader->loadMoFiles(rootModItem(),moFilePaths,_mapModelPlus,forceLoad);
+    _modLoader->loadMoFiles(rootModItem(),moFilePaths,forceLoad);
+
+    // watch mo files
+    _mofilesWatcher.addPaths(moFilePaths);
 
     refreshAllMod();
 }
@@ -231,13 +241,15 @@ void Project::storeMmoFilePath(QString mmoFilePath)
 }
 
 /**
-*	Reload the mo file of model and refresh entire tree
+*	Reload the mo file of model
 */
-void Project::reloadModModel(ModModel* modModel)
+void Project::reloadModModel(QString modModelName)
 {
-    modModel->reloadInOMC();
-    refreshAllMod();
+    ModModel* model = dynamic_cast<ModModel*>(modClassTree()->findItem(modModelName));
+    if(model)
+        model->reloadInOMC();
 }
+
 
 /**
 * \brief
@@ -248,36 +260,36 @@ void Project::refreshAllMod()
 
     QMap<QString,ModModelPlus*> strMapModelPlus;
 
-    // Copy map information (using string instead of ModModel*)
-    ModModel* curModModel;
-    for(int i=0;i<_mapModelPlus.keys().size();i++)
-    {
-        curModModel = _mapModelPlus.keys().at(i);
-        strMapModelPlus.insert(curModModel->name(Modelica::FULL),_mapModelPlus.value(curModModel));
-    }
+//    // Copy map information (using string instead of ModModel*)
+//    ModModel* curModModel;
+//    for(int i=0;i<_mapModelPlus.keys().size();i++)
+//    {
+//        curModModel = _mapModelPlus.keys().at(i);
+//        strMapModelPlus.insert(curModModel->name(Modelica::FULL),_mapModelPlus.value(curModModel));
+//    }
 
     _modClassTree->clear();
     _modClassTree->readFromOmc(_modClassTree->rootElement(),2);
 
-    // refreshing map
-    _mapModelPlus.clear();
-    QList<ModModelPlus*> listModPlus = strMapModelPlus.values();
-    ModModelPlus* curModModelPlus;
-    for(int iP=0;iP<listModPlus.size();iP++)
-    {
-        curModModelPlus = listModPlus.at(iP);
-        curModModel = dynamic_cast<ModModel*>(_modClassTree->findInDescendants(strMapModelPlus.key(curModModelPlus)));
-        if(curModModel)
-        {
-            _mapModelPlus.insert(curModModel,curModModelPlus);
-            curModModelPlus->setModModel(curModModel);
-        }
-        else
-        {
-            LowTools::removeDir(curModModelPlus->mmoFolder());
-            delete curModModelPlus;
-        }
-    }
+//    // refreshing map
+//    _mapModelPlus.clear();
+//    QList<ModModelPlus*> listModPlus = strMapModelPlus.values();
+//    ModModelPlus* curModModelPlus;
+//    for(int iP=0;iP<listModPlus.size();iP++)
+//    {
+//        curModModelPlus = listModPlus.at(iP);
+//        curModModel = dynamic_cast<ModModel*>(_modClassTree->findInDescendants(strMapModelPlus.key(curModModelPlus)));
+//        if(curModModel)
+//        {
+//            _mapModelPlus.insert(curModModel,curModModelPlus);
+//            curModModelPlus->setModModel(curModModel);
+//        }
+//        else
+//        {
+//            LowTools::removeDir(curModModelPlus->mmoFolder());
+//            delete curModModelPlus;
+//        }
+//    }
 }
 
 /**
@@ -362,15 +374,14 @@ QList<ModModelPlus*> Project::allModModelPlus()
 
 void Project::addModModelPlus(ModModelPlus* modModelPlus)
 {
-    ModModel* modModel = modModelPlus->modModel();
-    _mapModelPlus.insert(modModel,modModelPlus);
+    _mapModelPlus.insert(modModelPlus->modModelName(),modModelPlus);
 }
 
 ModModelPlus* Project::curModModelPlus()
 {
     ModModel* curMM = curModModel();
     if(curMM)
-        return modModelPlus(curMM);
+        return modModelPlus(curMM->name());
     else
         return NULL;
 }
@@ -387,27 +398,28 @@ void Project::setCurModItem(ModItem* modClass)
     }
 }
 
-ModModelPlus* Project::modModelPlus(ModModel* model)
+ModModelPlus* Project::modModelPlus(QString modModelName)
 {
-    ModModelPlus* corrModModelPlus = NULL;
-    if(!model)
-        return corrModModelPlus;
-
-    corrModModelPlus = _mapModelPlus.value(model,NULL);
+    ModModelPlus* corrModModelPlus = _mapModelPlus.value(modModelName,NULL);
 
     if(corrModModelPlus)
         return corrModModelPlus;
     else
-        return newModModelPlus(model);
+    {
+        corrModModelPlus = newModModelPlus(modModelName);
+        addModModelPlus(corrModModelPlus);
+        return corrModModelPlus;
+    }
 }
 
-ModModelPlus* Project::newModModelPlus(ModModel* model)
+
+ModModelPlus* Project::newModModelPlus(QString modelName)
 {
     // Create ModModelFile
-    ModModelPlus* newModModelPlus = new ModModelPlus(this,model);
+    ModModelPlus* newModModelPlus = new ModModelPlus(this,modelName);
 
     // Add to map
-    _mapModelPlus.insert(model,newModModelPlus);
+    _mapModelPlus.insert(modelName,newModModelPlus);
 
     // Store it
     // create folder
@@ -419,7 +431,6 @@ ModModelPlus* Project::newModModelPlus(ModModel* model)
     }
 
     // modModelPlus dir
-    QString modelName = model->name();
     QDir modPlusdir(allModPlusdir.absolutePath()+QDir::separator()+modelName);
     if(!modPlusdir.exists())
     {
@@ -754,11 +765,6 @@ bool Project::renameProblem(Problem* problem,QString newName)
     if(_problems->findItem(newName)>-1)
         return false;
 
-    // test if index is valid
-    int i = _problems->items.indexOf(problem);
-    if(i<0)
-        return false;
-
     // change name
     problem->rename(newName,true);
     save(problem);
@@ -769,11 +775,6 @@ bool Project::renameResult(Result* result,QString newName)
 {
     // test if name already exists
     if(_results->findItem(newName)>-1)
-        return false;
-
-    // test if index is valid
-    int i = _problems->items.indexOf(result);
-    if(i<0)
         return false;
 
     // change name

@@ -15,6 +15,7 @@
 #include <QtGui/QTabBar>
 #include <QtGui/QDockWidget>
 #include <QSettings>
+#include <QFileSystemWatcher>
 #include "MOThreads.h"
 #include "newprojectform.h"
 #include "ListInfo.h"
@@ -446,6 +447,7 @@ void MainWindow::actualizeGuiFromProject()
 
     // first disconnect existing signal-slots
     _project->disconnect(this);
+    _project->_mofilesWatcher.disconnect(this);
 
     connect(_project, SIGNAL(projectAboutToBeReset()),this, SLOT(onProjectAboutToBeReset()));
     connect(_project, SIGNAL(projectChanged()),this, SLOT( actualizeGuiFromProject()));
@@ -485,6 +487,7 @@ void MainWindow::actualizeGuiFromProject()
     connect(_project,SIGNAL(connectionsUpdated()),this,SLOT(onConnectionsUpdated()));
     connect(_project,SIGNAL(componentsUpdated()),this,SLOT(onComponentsUpdated()));
     connect(_project,SIGNAL(modifiersUpdated()),this,SLOT(onModifiersUpdated()));
+    connect(&_project->_mofilesWatcher,SIGNAL(fileChanged(const QString&)),this,SLOT(onMoFileChanged(const QString&)));
 
     //*********************************
     // Signals for MOomc
@@ -913,6 +916,16 @@ void MainWindow::showModItem(ModItem* modClass)
     _ui->treeModItem->expand(_project->modClassTree()->indexOf(modClass));
 }
 
+void MainWindow::onMoFileChanged(const QString &moFile)
+{
+    QMessageBox msgbox(QMessageBox::Question,"Reload .mo file","Model file has been modified. Do you want to realod it ? \n"+moFile,
+            QMessageBox::No|QMessageBox::Yes,this);
+    if(msgbox.exec()==QMessageBox::Yes)
+    {
+        _project->loadMoFile(moFile,true,true);
+    }
+}
+
 void MainWindow::loadMoFile()
 {
     //get last .mo folder
@@ -1004,7 +1017,8 @@ void MainWindow::onPushedNewProblem()
                 if(widgetSelect->exec()==QDialog::Accepted)
                 {
                     ModModel* curModel = widgetSelect->selectedModel;
-                    modModelPlusList.push_back(_project->modModelPlus(curModel));
+                    if(curModel)
+                        modModelPlusList.push_back(_project->modModelPlus(curModel->name()));
                 }
                 else
                     pursue = false;

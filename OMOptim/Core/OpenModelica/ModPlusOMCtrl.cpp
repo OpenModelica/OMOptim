@@ -147,23 +147,21 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
 
     initVariables->clear();
 
-    QFileInfo initFileInfoXml = QFileInfo(initFileXml);
-    QFileInfo initFileInfoTxt = QFileInfo(initFileTxt);
-
-    if(!initFileInfoXml.exists()&& !initFileInfoTxt.exists() && authorizeRecreate)
+    if(!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt)&& authorizeRecreate)
     {
         createInitFile();
     }
 
-    if(!initFileInfoXml.exists()&& !initFileInfoTxt.exists())
+
+    if(!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt))
     {
         return false;
     }
     else
     {
-        if(initFileInfoXml.exists())
+        if(QFile::exists(initFileXml))
             OpenModelica::getInputVariablesFromXmlFile(_moomc,initFileXml,_modModelPlus->modModelName(),initVariables);
-        else if(initFileInfoTxt.exists())
+        else if(QFile::exists(initFileTxt))
             OpenModelica::getInputVariablesFromTxtFile(_moomc,initFileTxt,initVariables,_modModelPlus->modModelName());
 
         return true;
@@ -219,12 +217,19 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
 
     // load moDependencies
     _moomc->loadFiles(moDependencies);
-    // eventually compile model
-    if(!isCompiled())
-        compile();
 
     // clear outputVars
     outputVars->clear();
+
+    bool compileOk = isCompiled();
+    // eventually compile model
+    if(!compileOk)
+        compileOk = compile();
+
+    if(!compileOk)
+        return false; // compilation failed, useless to pursue
+
+
 
     // Create tempDir
     QDir modelTempDir(tempFolder);

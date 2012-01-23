@@ -112,7 +112,6 @@ public slots :
         #endif
 
         void onPushedNewProblem();
-
 	void onAddedProblem(Problem*);
         void onAddedResult(Result*);
 	void onComponentsUpdated();
@@ -124,6 +123,7 @@ public slots :
 	void onNewProblemProgress(float,int,int);
 
         void showModItem(ModItem*);
+        void onMoFileChanged(const QString &);
 
 
         void removeResult();

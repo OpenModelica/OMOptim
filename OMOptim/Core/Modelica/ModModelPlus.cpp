@@ -60,11 +60,11 @@
 #include "ModPlusDymolaCtrl.h"
 #include "MOParametersDlg.h"
 
-ModModelPlus::ModModelPlus( Project* project,ModModel* modModel)
+ModModelPlus::ModModelPlus( Project* project,QString modModelName)
 {
     _project = project;
     _moomc = _project->moomc();
-    _modModel = modModel;
+    _modModelName = modModelName;
     _variables = new Variables(this);
     _connections = new ModelicaConnections(_project->modClassTree());
     _modifiers = new MOVector<ModelicaModifier>(true);
@@ -73,7 +73,7 @@ ModModelPlus::ModModelPlus( Project* project,ModModel* modModel)
     _modifiersRead = false;
     _connectionsRead = false;
 
-    _name = modModel->name(Modelica::FULL);
+    _name = modModelName;
 
 
     connect(_variables,SIGNAL(modified()),this,SIGNAL(variablesUpdated()));
@@ -117,7 +117,7 @@ void ModModelPlus::save()
 
 void ModModelPlus::reloadModel()
 {
-    _project->reloadModModel(_modModel);
+    _project->reloadModModel(_modModelName);
 }
 void ModModelPlus::setMmoFilePath(QString filePath)
 {
@@ -151,9 +151,9 @@ QStringList ModModelPlus::neededFoldersNames()
     return _neededFolders;
 }
 
-void ModModelPlus::setModModel(ModModel* modModel)
+void ModModelPlus::setModModelName(QString modModelName)
 {
-    _modModel = modModel;
+    _modModelName = modModelName;
 }
 
 void ModModelPlus::addMoDependency(const QString & dep)
@@ -227,7 +227,7 @@ QString ModModelPlus::infos()
 
 ModModel* ModModelPlus::modModel()
 {
-    return _modModel;
+    return dynamic_cast<ModModel*>(_project->modClassTree()->findItem(_modModelName));
 }
 
 void ModModelPlus::setInfos(QString infos)
@@ -295,6 +295,9 @@ bool ModModelPlus::readVariables(ModPlusCtrl* ctrl)
 
 bool ModModelPlus::readConnections(ModItem* element,bool includeChildren)
 {
+    if(!element)
+        return false;
+
     QString className = ((ModComponent*)element)->getModItemName();
     QString name = element->name(Modelica::FULL);
 
@@ -336,7 +339,7 @@ bool ModModelPlus::readConnections()
     _connections->clear();
 
     sendInfo (new Info(ListInfo::BEGINREADINGCONNECTIONS));
-    _connectionsRead = readConnections(_modModel,true);
+    _connectionsRead = readConnections(modModel(),true);
     sendInfo (new Info(ListInfo::READCONNECTIONSSUCCESS));
 
     return _connectionsRead;
@@ -366,7 +369,7 @@ void ModModelPlus::openDependenciesDlg()
 
 QString ModModelPlus::modModelName()
 {
-    return _modModel->name(Modelica::FULL);
+    return _modModelName;
 }
 
 //vector<ModModelPlusicaModifier*>* MOomc::getComponentModifiers(QString componentName,ModItem* component)
@@ -405,7 +408,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
     shortOrg = shortOrg.remove(modelName+".");
     QString shortSub = blockSub->_subComponent;
     shortSub = shortSub.remove(modelName+".");
-    ModItem* orgClass = _project->modClassTree()->findInDescendants(blockSub->_orgComponent,_modModel);
+    ModItem* orgClass = _project->modClassTree()->findInDescendants(blockSub->_orgComponent,modModel());
     if(!orgClass)
     {
         QString msg;

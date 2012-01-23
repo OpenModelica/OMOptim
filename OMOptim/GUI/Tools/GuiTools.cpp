@@ -247,11 +247,16 @@ void GuiTools::addCommonActions(QMenu* menu,Project* project, const QPoint & iPo
     QAction *reload = new QAction("Reload .mo file",menu);
     connect(reload,SIGNAL(triggered()),selectedModItem,SLOT(reloadInOMC()));
     menu->addAction(reload);
+
+    // Edit mo file
+    QAction *edit = new QAction("Open .mo file",menu);
+    connect(edit,SIGNAL(triggered()),selectedModItem,SLOT(openInEditor()));
+    menu->addAction(edit);
 }
 void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & iPoint,ModModel* selectedModel)
 {
 
-    ModModelPlus* selectedModModelPlus = project->modModelPlus(selectedModel);
+    ModModelPlus* selectedModModelPlus = project->modModelPlus(selectedModel->name());
 
 //    //Compile
 //    QAction *compileModel = new QAction("Recompile model",menu);
@@ -270,13 +275,13 @@ void GuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & i
 //    menu->addAction(readConnections);
 
     //Add problem
-    QMenu *addProblemMenu = menu->addMenu("Create problem");
-    QAction *addOptimization = addProblemMenu->addAction("Optimization");
-    connect(addOptimization,SIGNAL(triggered()),project,SLOT(addNewOptimization()));
-    QAction *addOneSim = addProblemMenu->addAction("Simulation");
-    connect(addOneSim,SIGNAL(triggered()),project,SLOT(addNewOneSimulation()));
-    QAction *addEIProblem = addProblemMenu->addAction("EI");
-    connect(addEIProblem,SIGNAL(triggered()),project,SLOT(addNewEIProblem()));
+//    QMenu *addProblemMenu = menu->addMenu("Create problem");
+//    QAction *addOptimization = addProblemMenu->addAction("Optimization");
+//    connect(addOptimization,SIGNAL(triggered()),project,SLOT(addNewOptimization()));
+//    QAction *addOneSim = addProblemMenu->addAction("Simulation");
+//    connect(addOneSim,SIGNAL(triggered()),project,SLOT(addNewOneSimulation()));
+//    QAction *addEIProblem = addProblemMenu->addAction("EI");
+//    connect(addEIProblem,SIGNAL(triggered()),project,SLOT(addNewEIProblem()));
 
 
 //    //Set parameters

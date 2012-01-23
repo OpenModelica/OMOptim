@@ -62,8 +62,8 @@ public:
         ModLoader(MOomc *moomc);
 
 	// Load functions
-        void loadMoFile(ModItem* rootClass,QString filePath,QMap<ModModel*,ModModelPlus*> & mapModelPlus,bool forceLoad = true);
-        void loadMoFiles(ModItem* rootClass,QStringList filePaths,QMap<ModModel*,ModModelPlus*> & mapModelPlus, bool forceLoad = true);
+        void loadMoFile(ModItem* rootClass,QString filePath,bool forceLoad = true);
+        void loadMoFiles(ModItem* rootClass,QStringList filePaths, bool forceLoad = true);
 
         int getDepthMax();
 

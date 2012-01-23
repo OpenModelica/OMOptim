@@ -245,16 +245,18 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
     // Info
     InfoSender::instance()->send(Info("Simulating model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
 
-    // eventually compile model
-    if(!this->isCompiled())
-    {
-        bool compileOk = compile();
-        if(!compileOk)
-            return false;
-    }
-
     // clear outputVars
     outputVars->clear();
+
+    bool compileOk = isCompiled();
+    // eventually compile model
+    if(!compileOk)
+        compileOk = compile();
+
+    if(!compileOk)
+        return false; // compilation failed, useless to pursue
+
+
 
     // Create tempDir
     QDir modelTempDir(tempFolder);

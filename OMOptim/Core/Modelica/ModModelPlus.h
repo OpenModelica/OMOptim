@@ -83,8 +83,8 @@ public :
 
 protected :
     Variables *_variables; /// List of model variables
-    ModModel *_modModel; /// Pointer to ModModel (in ModItemsTree)
     ModelicaConnections *_connections; /// List of connections between components in Modelica model
+    QString _modModelName; /// ModModelName
     MOVector<ModelicaModifier> *_modifiers; /// @deprecated Never been used. Maybe in the future...
     QStringList _neededFiles; /// List of files needed in the simulation folder.
     QStringList _neededFolders; /// List of folders needed in the simulation folder.
@@ -103,7 +103,7 @@ protected :
 
 public:
 
-    ModModelPlus(Project*,ModModel*);
+    ModModelPlus(Project*,QString modModelName);
     ~ModModelPlus(void);
     virtual QString getClassName(){return "ModModelPlus";};
 
@@ -117,7 +117,7 @@ public:
     QString getFieldName(int,int role){return "-";};
     unsigned getNbFields(){return 0;};
 
-    void setModModel(ModModel*);
+    void setModModelName(QString);
     void addMoDependency(const QString &);
     void addMoDependencies(const QStringList &);
     void setMoDependencies(const QStringList &);

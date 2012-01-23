@@ -87,7 +87,7 @@ unsigned Problem::getNbFields()
 void Problem::store(QString destFolder, QString tempDir)
 {
     OMCase::store(destFolder,tempDir);
-	}
+}
 
 
 
