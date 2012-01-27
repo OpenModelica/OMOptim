@@ -54,16 +54,36 @@ TabResOneSim::TabResOneSim(OneSimResult *result, QWidget *parent) :
     OneSimulation* problem = dynamic_cast<OneSimulation*>(_result->problem());
 
     // table widgets
-    _inputTableVars = new WidgetTableVar(_result->inputVariables(),this);
-    _finalTableVars = new WidgetTableVar(_result->finalVariables(),this);
+  //  _inputTableVars = new WidgetTableVar(_result->inputVariables(),this);
+    _finalTableVars = new WidgetTableOptVar(_result->finalVariables(),this);
 
-    addDockWidget("Input Variables",_inputTableVars );
+ //   addDockWidget("Input Variables",_inputTableVars );
     addDockWidget("Final Variables",_finalTableVars,_inputTableVars);
+    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(100);
+    _finalTableVars->setSizePolicy(sizePolicy);
+    mapDockWidgets.key(_finalTableVars)->setSizePolicy(sizePolicy);
 
     _widgetCtrl = new WidgetCtrlParameters(_project,problem->modModelPlus(),problem->ctrls(),true,this);
     addDockWidget("Simulator",_widgetCtrl,_inputTableVars);
 
     _finalTableVars->raise();
+
+
+
+    // scan
+    if(_result->finalVariables()->nbScans()>1)
+    {
+        _widgetSelPointScan = new WidgetSelPointScan(_result->finalVariables(),this);
+        addFixedWidget("Scans",_widgetSelPointScan,Qt::BottomDockWidgetArea,Qt::Vertical,false);
+        _widgetSelPointScan->resize(_widgetSelPointScan->minimumSize());
+        QSize test = _widgetSelPointScan->minimumSize();
+        test = _widgetSelPointScan->size();
+        test = mapDockWidgets.key(_widgetSelPointScan)->size();
+        test = mapDockWidgets.key(_widgetSelPointScan)->minimumSize();
+        mapDockWidgets.key(_widgetSelPointScan)->resize(mapDockWidgets.key(_widgetSelPointScan)->minimumSize());
+    }
 }
 
 TabResOneSim::~TabResOneSim()

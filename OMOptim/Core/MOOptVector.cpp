@@ -95,15 +95,23 @@ int MOOptVector::nbScans()
 
 void MOOptVector::setCurPoint(int curPoint)
 {
-    if(_usePoints)
+    if(_usePoints && (curPoint!=_curPoint))
+    {
         _curPoint = curPoint;
+        emit curScanChanged();
+        reset();
+    }
 }
 
 
 void MOOptVector::setCurScan(int curScan)
 {
-    if(_useScan)
+    if(_useScan && (curScan!=_curScan))
+    {
         _curScan = curScan;
+        emit curScanChanged();
+        reset();
+    }
 }
 
 
@@ -199,27 +207,27 @@ double MOOptVector::value(const QString &name,bool &ok,int iScan,int iPoint)
 
 void MOOptVector::append(const MOOptVector &vector,bool makeACopy)
 {
-//    int iCurItem;
+    //    int iCurItem;
     for(int i=0;i<vector.items.size();i++)
     {
 
-//        iCurItem = findItem(vector.items.at(i)->name());
-//        if(iCurItem==-1)
-//        {
-            if(makeACopy)
-                addItem(new VariableResult(*vector.items.at(i)));
-            else
-                addItem(vector.items.at(i));
-//        }
-//        else
-//        {
-//            InfoSender::instance()->debug("replace item in vector (name : "+vector.items.at(i)->name()+")");
-//            delete items.at(iCurItem);
-//            if(makeACopy)
-//                items.replace(iCurItem,new VariableResult(*vector.items.at(i)));
-//            else
-//                items.replace(iCurItem,vector.items.at(i));
-//        }
+        //        iCurItem = findItem(vector.items.at(i)->name());
+        //        if(iCurItem==-1)
+        //        {
+        if(makeACopy)
+            addItem(new VariableResult(*vector.items.at(i)));
+        else
+            addItem(vector.items.at(i));
+        //        }
+        //        else
+        //        {
+        //            InfoSender::instance()->debug("replace item in vector (name : "+vector.items.at(i)->name()+")");
+        //            delete items.at(iCurItem);
+        //            if(makeACopy)
+        //                items.replace(iCurItem,new VariableResult(*vector.items.at(i)));
+        //            else
+        //                items.replace(iCurItem,vector.items.at(i));
+        //        }
     }
 }
 
@@ -283,3 +291,25 @@ void MOOptVector::addItem(VariableResult* item)
     endInsertRows();
 }
 
+QString MOOptVector::toCSV(int iPoint)
+{
+    QString csv;
+    VariableResult* var;
+    for(int iV=0;iV<size();iV++)
+    {
+        var = items.at(iV);
+        csv+=var->name()+"\t";
+    }
+    csv+="\n";
+    for(int iS=0;iS<nbScans();iS++)
+    {
+        for(int iV=0;iV<size();iV++)
+        {
+            var = items.at(iV);
+            csv+=QString::number(var->finalValue(iS,iPoint))+"\t";
+        }
+        csv+="\n";
+    }
+    return csv;
+
+}

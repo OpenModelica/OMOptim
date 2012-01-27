@@ -29,11 +29,11 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file GuiTools.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+  @file GuiTools.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
   @version
 */
 
@@ -70,38 +70,38 @@
 
 class GuiTools: public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	GuiTools(void);
-	~GuiTools(void);
+    GuiTools(void);
+    ~GuiTools(void);
 
 
 
-	static QSortFilterProxyModel * ModelToViewWithFilter(QAbstractItemModel *, QAbstractItemView *,QLineEdit*);
-	static void ModelToView(QAbstractItemModel *, QAbstractItemView *);
+    static QSortFilterProxyModel * ModelToViewWithFilter(QAbstractItemModel *, QAbstractItemView *,QLineEdit*);
+    static void ModelToView(QAbstractItemModel *, QAbstractItemView *);
     static ModItemsTree* ModItemToTreeView(ModLoader*,MOomc*,const ModItem &,QTreeView*,bool showComponent);
 
-	//ModItem popup menus
+    //ModItem popup menus
     static QMenu* newModItemPopupMenu(Project*,const QPoint &,ModItem*);
     static void addModModelActions(QMenu*,Project*,const QPoint &,ModModel*);
     static void addCommonActions(QMenu*,Project*,const QPoint &,ModItem*);
 
 
-        static QMenu* createResultPopupMenu(Project*,QWidget*,const QPoint &,Result*,int numResult);
+    static QMenu* createResultPopupMenu(Project*,QWidget*,const QPoint &,Result*,int numResult);
     static QMenu* createProblemPopupMenu(Project*,QWidget*,const QPoint &,Problem*,int numProblem);
 
 
-	static void minimizeTableSize(QTableView*);
-	static void minimizeTableSize(QTableWidget*);
+    static void minimizeTableSize(QTableView*);
+    static void minimizeTableSize(QTableWidget*);
 
-	static void resizeTable(QTableView*);
+    static void resizeTable(QTableView*);
 
-        static void resizeTreeViewColumns(MyTreeView*);
-        static void resizeTableViewColumns(QTableView*);
+    static void resizeTreeViewColumns(MyTreeView*);
+    static void resizeTableViewColumns(QTableView*);
 
 
-        static QString launchBarStyleSheet();
+    static QString launchBarStyleSheet();
 };
 
 

@@ -62,7 +62,7 @@
 
 #include "Tabs/MO2ColTab.h"
 #include "Widgets/WidgetTableVar.h"
-
+#include "Widgets/WidgetSelPointScan.h"
 
 
 class TabResOneSim : public MO2ColTab {
@@ -77,10 +77,11 @@ public:
         OneSimResult *_result;
 
 private :
-            WidgetTableVar* _inputTableVars;
+    WidgetTableVar* _inputTableVars;
     WidgetTableVar* _overTableVars;
-    WidgetTableVar* _finalTableVars;
+    WidgetTableOptVar* _finalTableVars;
     WidgetCtrlParameters *_widgetCtrl;
+    WidgetSelPointScan* _widgetSelPointScan;
 
 
 };

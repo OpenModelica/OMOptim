@@ -103,8 +103,8 @@ private:
     BlockSubstitutions *blockSubs;
 
 
-    QGraphicsProxyWidget* addOrgBlock(ModItem* _orgComponent,QPoint _pos);
-    QGraphicsProxyWidget* addSubBlock(int iOrg, ModItem* _subComponent,QPoint _pos);
+    QGraphicsProxyWidget* addOrgBlock(QString orgName,QPoint _pos);
+    QGraphicsProxyWidget* addSubBlock(int iOrg, QString subName,QPoint _pos);
 
 
 

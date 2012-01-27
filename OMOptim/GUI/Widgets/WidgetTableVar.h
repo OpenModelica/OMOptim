@@ -57,15 +57,37 @@ class WidgetTableVar : public QWidget
 
 public:
     WidgetTableVar(MOVector<Variable> *,QWidget *parent,bool addFilter=true);
-    WidgetTableVar(MOOptVector *,QWidget *parent,bool addFilter=true);
 
   
 public:
 
-	QGridLayout* allLayout;
-	MOVector<Variable> *variables;
-	MOTableView *tableVariables;
+        QGridLayout* _allLayout;
+        MOVector<Variable> *_variables;
+        MOTableView *_tableVariables;
 
+public slots :
+        void refresh();
 };
+
+
+class WidgetTableOptVar : public QWidget
+{
+    Q_OBJECT
+
+public:
+    WidgetTableOptVar(MOOptVector *,QWidget *parent,bool addFilter=true);
+
+
+public:
+
+        QGridLayout* _allLayout;
+        MOOptVector *_variables;
+        MOTableView *_tableVariables;
+
+public slots :
+        void refresh();
+        void exportCSV();
+};
+
 
 #endif

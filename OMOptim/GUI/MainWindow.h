@@ -107,9 +107,6 @@ public slots :
 	void loadMoFile();
 	void loadModelicaLibrary();
 
-        #ifdef USEEI
-        void loadCERESInfo();
-        #endif
 
         void onPushedNewProblem();
 	void onAddedProblem(Problem*);

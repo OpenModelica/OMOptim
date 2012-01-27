@@ -122,7 +122,7 @@ void BlockSubsScene::refresh()
 				// adding org
 				//*************
 				_curOrgPos.setY(startOrgY);
-				_curOrgBlock = addOrgBlock(_orgEl, _curOrgPos);
+                                _curOrgBlock = addOrgBlock(_orgEl->name(), _curOrgPos);
 				maxOrgBlockWidth = std::max<double>((double)maxOrgBlockWidth,_curOrgBlock->geometry().width());
 
 				//*************
@@ -138,7 +138,7 @@ void BlockSubsScene::refresh()
                                         ModItem* _subEl = modClassTree->findInDescendants(subs.at(j));
 					if(_subEl)
 					{
-						_curSubBlock = addSubBlock(i,_subEl, _curSubPos);	
+                                                _curSubBlock = addSubBlock(i,_subEl->name(), _curSubPos);
 						maxSubBlockWidth = std::max<double>((double)maxSubBlockWidth,_curSubBlock->geometry().width());
 						_curSubPos.setY(_curSubPos.y() + _curSubBlock->geometry().height() + subMargin);
 					}
@@ -332,9 +332,9 @@ void BlockSubsScene::zoomFit()
 	emit zoomRect(_rect);
 }
 
-QGraphicsProxyWidget* BlockSubsScene::addOrgBlock(ModItem *_orgComponent,QPoint _pos)
+QGraphicsProxyWidget* BlockSubsScene::addOrgBlock(QString orgName,QPoint _pos)
 {
-	BlockDrawItem* _newBlock = new BlockDrawItem(_orgComponent,BlockDrawItem::REPLACED);
+        BlockDrawItem* _newBlock = new BlockDrawItem(orgName,BlockDrawItem::REPLACED);
 
 
 	// add rectangle
@@ -358,11 +358,11 @@ QGraphicsProxyWidget* BlockSubsScene::addOrgBlock(ModItem *_orgComponent,QPoint 
 }
 
 
-QGraphicsProxyWidget* BlockSubsScene::addSubBlock(int iOrg, ModItem *_subComponent, QPoint _pos)
+QGraphicsProxyWidget* BlockSubsScene::addSubBlock(int iOrg, QString subName, QPoint _pos)
 {
 
 	// draw it
-	BlockDrawItem* _newBlock = new BlockDrawItem(_subComponent,BlockDrawItem::REPLACING);
+        BlockDrawItem* _newBlock = new BlockDrawItem(subName,BlockDrawItem::REPLACING);
 	QGraphicsProxyWidget* _newProxBlock = addWidget(_newBlock);
 	_newProxBlock->setPos(_pos);
 
@@ -462,7 +462,7 @@ int BlockSubsScene::findOrgBlock(QString _org)
 
 	while((i<orgBlocks.size()) && !found)
 	{
-		if(orgBlocks.at(i)->component->name(Modelica::FULL)==_org)
+                if(orgBlocks.at(i)->componentName==_org)
 			return i;
 		else
 			i++;
@@ -482,7 +482,7 @@ bool BlockSubsScene::findSubBlock(QString _org,QString _sub,int & iOrg, int & iS
 		bool found = false;
 		while((iSub < subBlocks.at(iOrg).size()) && !found)
 		{
-			if(subBlocks.at(iOrg).at(iSub)->component->name(Modelica::FULL)==_sub)
+                        if(subBlocks.at(iOrg).at(iSub)->componentName==_sub)
 				return true;
 			else
 				iSub++;
@@ -507,8 +507,8 @@ void BlockSubsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent
 		if(found && !_isOrg)
 		{
 
-			QString replacedName = orgBlocks.at(_iOrg)->component->name(Modelica::FULL);
-			QString replacingName = subBlocks.at(_iOrg).at(_iSub)->component->name(Modelica::FULL);
+                        QString replacedName = orgBlocks.at(_iOrg)->componentName;
+                        QString replacingName = subBlocks.at(_iOrg).at(_iSub)->componentName;
 
 			BlockSubstitution* curBlockSub = blockSubs->find(replacedName,replacingName);
 
@@ -549,9 +549,9 @@ void BlockSubsScene::contextMenuEvent( QGraphicsSceneContextMenuEvent * contextM
 			QMenu *menu = new QMenu();
 
 			QStringList data;
-			data << orgBlocks.at(_iOrg)->component->name(Modelica::FULL);
+                        data << orgBlocks.at(_iOrg)->componentName;
 			if(!_isOrg)
-				data << subBlocks.at(_iOrg).at(_iSub)->component->name(Modelica::FULL);
+                                data << subBlocks.at(_iOrg).at(_iSub)->componentName;
 
 			if(!_isOrg)
 			{			
@@ -641,7 +641,7 @@ void BlockSubsScene::selectOrg(int i,bool doDeselectAll)
 	{
 		orgBlocks.at(i)->activate();
 
-		selectedOrg.push_back(orgBlocks.at(i)->component->name(Modelica::FULL));
+                selectedOrg.push_back(orgBlocks.at(i)->componentName);
 		selectedOrgProx.push_back(proxOrgBlocks.at(i));
 	}
 }
@@ -681,7 +681,7 @@ void BlockSubsScene::selectSub(int iOrg,int iSub, bool doDeselectAll)
 
 		subBlocks.at(iOrg).at(iSub)->activate();
 
-		selectedSub.push_back(subBlocks.at(iOrg).at(iSub)->component->name(Modelica::FULL));
+                selectedSub.push_back(subBlocks.at(iOrg).at(iSub)->componentName);
 		selectedSubProx.push_back(proxSubBlocks.at(iOrg).at(iSub));
 	}
 }
@@ -769,13 +769,13 @@ void BlockSubsScene::keyReleaseEvent ( QKeyEvent * keyEvent )
 
 			if(found)
 			{
-				QString orgName = orgBlocks.at(iOrg)->component->name(Modelica::FULL);
+                                QString orgName = orgBlocks.at(iOrg)->componentName;
 
 				if(isOrg)
 					blockSubs->removeBlocks(orgName);
 				else
 				{
-					QString subName = subBlocks.at(iOrg).at(iSub)->component->name(Modelica::FULL);
+                                        QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
 					blockSubs->removeBlock(orgName,subName);
 				}
 			}
@@ -790,13 +790,13 @@ void BlockSubsScene::keyReleaseEvent ( QKeyEvent * keyEvent )
 
 			if(found)
 			{
-				QString orgName = orgBlocks.at(iOrg)->component->name(Modelica::FULL);
+                                QString orgName = orgBlocks.at(iOrg)->componentName;
 
 				if(isOrg)
 					blockSubs->removeBlocks(orgName);
 				else
 				{
-					QString subName = subBlocks.at(iOrg).at(iSub)->component->name(Modelica::FULL);
+                                        QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
 					blockSubs->removeBlock(orgName,subName);
 				}
 			}

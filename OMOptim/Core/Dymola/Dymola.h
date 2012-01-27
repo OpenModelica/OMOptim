@@ -90,12 +90,14 @@ public:
 
 	static void setVariablesToDsin(QString fileName,QString modelName, MOVector<Variable> *,MOParameters *parameters);
         static void writeParameters(QString &allDsinText,MOParameters *parameters);
-	static QString sciNumRx();
+
 
 	// Parameters
         enum DymolaParameters{STOPTIME,TOLERANCE,NINTERVAL,SOLVER,MAXSIMTIME,FINALFILE};
         enum DymolaSolvers{DASSL=8,EULER=11};
-
+private :
+        static QString sciNumRx();
+        static VariableType convertVariableType(int dymDataType);
 };
 
 #endif

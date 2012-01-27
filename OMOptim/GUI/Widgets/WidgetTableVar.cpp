@@ -42,46 +42,99 @@
 
 
 
-WidgetTableVar::WidgetTableVar(MOVector<Variable> *_variables,QWidget *parent,bool addFilter)
+WidgetTableVar::WidgetTableVar(MOVector<Variable> *variables,QWidget *parent,bool addFilter)
     :QWidget(parent)
 {
 
+    _variables = variables;
+
     this->setLocale(QLocale::C);
     // Layouts
-    allLayout = new QGridLayout();
-    this->setLayout(allLayout);
+    _allLayout = new QGridLayout();
+    this->setLayout(_allLayout);
 
     // variables table
-    tableVariables = new MOTableView(this);
+    _tableVariables = new MOTableView(this);
 
-    allLayout->addWidget(tableVariables,1,0);
+    _allLayout->addWidget(_tableVariables,1,0);
     if(addFilter)
     {
         QLineEdit *newLine = new QLineEdit(this);
-        allLayout->addWidget(newLine,0,0);
-        GuiTools::ModelToViewWithFilter(_variables,tableVariables,newLine);
-        GuiTools::minimizeTableSize(tableVariables);
+        _allLayout->addWidget(newLine,0,0);
+        GuiTools::ModelToViewWithFilter(_variables,_tableVariables,newLine);
+        GuiTools::minimizeTableSize(_tableVariables);
     }
 }
 
-WidgetTableVar::WidgetTableVar(MOOptVector *_variables,QWidget *parent, bool addFilter)
+void WidgetTableVar::refresh()
+{
+    _tableVariables->setModel(NULL);
+    _tableVariables->setModel(_variables);
+}
+
+
+WidgetTableOptVar::WidgetTableOptVar(MOOptVector *variables,QWidget *parent, bool addFilter)
     :QWidget(parent)
 {
-
+    _variables = variables;
     this->setLocale(QLocale::C);
 
     // Layouts
-    allLayout = new QGridLayout();
-    this->setLayout(allLayout);
+    _allLayout = new QGridLayout();
+    this->setLayout(_allLayout);
 
     // variables table
-    tableVariables = new MOTableView(this);
-    allLayout->addWidget(tableVariables,1,0);
+    _tableVariables = new MOTableView(this);
+
+
     if(addFilter)
     {
         QLineEdit *newLine = new QLineEdit(this);
-        allLayout->addWidget(newLine,0,0);
-        GuiTools::ModelToViewWithFilter(_variables,tableVariables,newLine);
-        GuiTools::minimizeTableSize(tableVariables);
+        _allLayout->addWidget(newLine,0,0);
+        GuiTools::ModelToViewWithFilter(_variables,_tableVariables,newLine);
+        GuiTools::minimizeTableSize(_tableVariables);
+    }
+
+    QPushButton* pushExport = new QPushButton("Export...",this);
+    connect(pushExport,SIGNAL(clicked()),this,SLOT(exportCSV()));
+    _allLayout->addWidget(pushExport,0,1);
+
+    _allLayout->addWidget(_tableVariables,1,0,1,2);
+
+
+
+
+    connect(_variables,SIGNAL(curScanChanged()),this,SLOT(refresh()));
+}
+
+
+void WidgetTableOptVar::exportCSV()
+{
+    // get file name
+    QString csvPath = QFileDialog::getSaveFileName(
+                this,
+                "MO - Export variables",
+                QString::null,
+                "CSV file (*.csv)" );
+
+    if(!csvPath.isNull())
+    {
+        QString csvText = _variables->toCSV(_variables->curPoint());
+
+        QFile frontFile(csvPath);
+        if(frontFile.exists())
+            frontFile.remove();
+
+        frontFile.open(QIODevice::WriteOnly);
+        QTextStream tsfront( &frontFile );
+        tsfront << csvText;
+        frontFile.close();
     }
 }
+
+void WidgetTableOptVar::refresh()
+{
+//    _tableVariables->setModel(NULL);
+//    _tableVariables->setModel(_variables);
+}
+

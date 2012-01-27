@@ -129,7 +129,7 @@ double Variable::value() const
 //		_filledFields.push_back(Variable::CATEGORY);
 //	category = category_;
 //}
-void Variable::setDataType(int dataType)
+void Variable::setDataType(VariableType dataType)
 {
 	if(!_filledFields.contains(Variable::DATATYPE))
 		_filledFields.push_back(Variable::DATATYPE);
@@ -242,7 +242,7 @@ bool Variable::setFieldValue(int ifield,QVariant value)
 			category=value_.toInt();
 			break;*/
 		case DATATYPE :
-			_dataType=value.toInt();
+                        _dataType=(VariableType)value.toInt();
 			break;
 	}
 	if(!_filledFields.contains(ifield))
@@ -736,7 +736,7 @@ bool OptVariable::setFieldValue(int ifield,QVariant value)
 			category=value_.toInt();
 			break;*/
 		case DATATYPE :
-			_dataType=value.toInt();
+                        _dataType=(VariableType)value.toInt();
 			break;
 		case OPTMIN :
 			_optMin = value.toDouble(&isDouble);
@@ -959,7 +959,7 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
 			category=value_.toInt();
 			break;*/
 		case DATATYPE :
-			_dataType=value.toInt();
+                        _dataType=(VariableType)value.toInt();
 			break;
 		case SCANMIN :
 			_scanMin=value.toDouble();

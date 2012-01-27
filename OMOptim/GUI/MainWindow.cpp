@@ -955,13 +955,6 @@ void MainWindow::loadModelicaLibrary()
     _project->loadModelicaLibrary();
 }
 
-#ifdef USEEI
-void MainWindow::loadCERESInfo()
-{
-    _project->loadMoFile(CERESInfo::getFilePath());
-    _project->refreshAllMod();
-}
-#endif
 
 
 void MainWindow::updateProblemsMenu()

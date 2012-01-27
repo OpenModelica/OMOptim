@@ -68,6 +68,7 @@ public slots :
 	void onChangedUsePoints();
 	void onChangedNbScans();
 	void onChangedNbPoints();
+        void onSlideScanValueChanged(int);
 	void update();
    
 };

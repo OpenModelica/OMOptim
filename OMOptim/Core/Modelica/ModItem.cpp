@@ -434,16 +434,6 @@ void ModItem::openMoFolder()
 	LowTools::openFolder(fileInfo.absolutePath());
 }
 
-void ModItem::reloadInOMC()
-{
-	bool ok;
-	QString error;
-        // clear children
-        clearDescendants();
-        // reload in omc
-	_moomc->loadModel(filePath(),true,ok,error);
-}
-
 void ModItem::openInEditor()
 {
     QUrl fileUrl(QString("file:///").append(filePath()));

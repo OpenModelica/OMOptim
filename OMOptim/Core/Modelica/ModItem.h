@@ -150,7 +150,6 @@ public:
 
 	public slots:
 		void openMoFolder();
-		void reloadInOMC();
                 void openInEditor();
 
 

@@ -245,7 +245,8 @@ void GuiTools::addCommonActions(QMenu* menu,Project* project, const QPoint & iPo
 
     // Reload mo file
     QAction *reload = new QAction("Reload .mo file",menu);
-    connect(reload,SIGNAL(triggered()),selectedModItem,SLOT(reloadInOMC()));
+    reload->setData(selectedModItem->filePath());
+    connect(reload,SIGNAL(triggered()),project,SLOT(onReloadMOFileAsked()));
     menu->addAction(reload);
 
     // Edit mo file

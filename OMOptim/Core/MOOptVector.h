@@ -75,6 +75,7 @@ public:
         double value(const QString &name,bool &ok,int iScan=0,int iPoint=0);
 	void append(const MOOptVector &,bool makeACopy);
 	void clearAtiPoint(int iPoint);
+        QString toCSV(int iPoint=0);
 
 protected :
 	bool _useScan;
@@ -94,6 +95,7 @@ signals:
 	void nbScansChanged();
 	void nbPointsChanged();
         void modified();
+        void curScanChanged();
 };
 
 #endif

@@ -247,7 +247,10 @@ void Project::reloadModModel(QString modModelName)
 {
     ModModel* model = dynamic_cast<ModModel*>(modClassTree()->findItem(modModelName));
     if(model)
-        model->reloadInOMC();
+    {
+        QString moFile = model->filePath();
+        this->loadMoFile(moFile,true,true);
+    }
 }
 
 
@@ -257,39 +260,8 @@ void Project::reloadModModel(QString modModelName)
 */
 void Project::refreshAllMod()
 {
-
-    QMap<QString,ModModelPlus*> strMapModelPlus;
-
-//    // Copy map information (using string instead of ModModel*)
-//    ModModel* curModModel;
-//    for(int i=0;i<_mapModelPlus.keys().size();i++)
-//    {
-//        curModModel = _mapModelPlus.keys().at(i);
-//        strMapModelPlus.insert(curModModel->name(Modelica::FULL),_mapModelPlus.value(curModModel));
-//    }
-
     _modClassTree->clear();
     _modClassTree->readFromOmc(_modClassTree->rootElement(),2);
-
-//    // refreshing map
-//    _mapModelPlus.clear();
-//    QList<ModModelPlus*> listModPlus = strMapModelPlus.values();
-//    ModModelPlus* curModModelPlus;
-//    for(int iP=0;iP<listModPlus.size();iP++)
-//    {
-//        curModModelPlus = listModPlus.at(iP);
-//        curModModel = dynamic_cast<ModModel*>(_modClassTree->findInDescendants(strMapModelPlus.key(curModModelPlus)));
-//        if(curModModel)
-//        {
-//            _mapModelPlus.insert(curModModel,curModModelPlus);
-//            curModModelPlus->setModModel(curModModel);
-//        }
-//        else
-//        {
-//            LowTools::removeDir(curModModelPlus->mmoFolder());
-//            delete curModModelPlus;
-//        }
-//    }
 }
 
 /**
@@ -562,6 +534,7 @@ void Project::addNewProblem(ProblemInterface* interface, QList<ModModelPlus*> mo
     HighTools::checkUniqueProblemName(this,newProblem,_problems);
 
     _problems->addCase(newProblem);
+    save(newProblem);
     emit addedProblem(newProblem);
 }
 
@@ -829,5 +802,15 @@ void Project::onModItemSelectionChanged(QList<ModItem*> &classes)
     {
         curModItemChanged(NULL);
         curModModelChanged(NULL);
+    }
+}
+
+void Project::onReloadMOFileAsked()
+{
+    QAction* button = dynamic_cast<QAction*>(sender());
+    if(button)
+    {
+        QString moFile = button->data().toString();
+        this->loadMoFile(moFile,true,true);
     }
 }

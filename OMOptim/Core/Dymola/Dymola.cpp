@@ -69,7 +69,7 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
     QString scriptText;
 
     for(int i=0;i<moDeps.size();i++)
-         scriptText.append("openModel(\""+moDeps.at(i)+"\")\n");
+        scriptText.append("openModel(\""+moDeps.at(i)+"\")\n");
 
     for(int i=0;i<moPaths.size();i++)
         scriptText.append("openModel(\""+moPaths.at(i)+"\")\n");
@@ -359,7 +359,8 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
         else
         {
             variables->items[nv]->setValue(linefields[1].toDouble());
-            variables->items[nv]->setDataType(linefields[5].toInt()%4); // use %4 to avoid Dymola variable definition bug
+            int dymDataType = linefields[5].toInt();
+            variables->items[nv]->setDataType(convertVariableType(dymDataType));
             nv++;
         }
         line = text->readLine();
@@ -702,3 +703,22 @@ QString Dymola::sciNumRx()
     return rx;
 }
 
+VariableType Dymola::convertVariableType(int dymDataType)
+{
+    dymDataType = dymDataType % 4; // use %4 to avoid Dymola variable definition 'bug'
+    //# column 6: Data type of variable.
+    //#           = 0: real.
+    //#           = 1: boolean.
+    //#           = 2: integer.
+    switch(dymDataType)
+    {
+    case 0 :
+        return OMREAL;
+    case 1 :
+        return OMBOOLEAN;
+    case 2 :
+        return OMINTEGER;
+    default :
+        return OMREAL;
+    }
+}

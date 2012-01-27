@@ -66,7 +66,7 @@ public:
 		REPLACED
 	};
 
-	ModItem* component;
+        QString componentName;
 	int type;
 
 	QHBoxLayout  *blockLayout;
@@ -76,7 +76,7 @@ public:
 	/*DiagramItem *rectangle;
 	QGraphicsTextItem *text;*/
 
-	BlockDrawItem(ModItem*, int);
+        BlockDrawItem(QString, int);
 	~BlockDrawItem(void);
 	/*void setPos(QPointF &_pos);
 	void setPos(QPoint &_pos);*/

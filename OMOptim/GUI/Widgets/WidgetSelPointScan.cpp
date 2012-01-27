@@ -51,13 +51,15 @@ WidgetSelPointScan::WidgetSelPointScan(MOOptVector* _variables,QWidget *parent)
 : QWidget(parent),
  ui(new Ui::WidgetSelPointScanClass)
 {
-	ui->setupUi(this);
+        ui->setupUi(this);
+        this->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Maximum);
 
 	variables = _variables;
 	
 	connect(variables,SIGNAL(useScanChanged()),this,SLOT(onChangedUseScan()));
 	connect(variables,SIGNAL(usePointsChanged()),this,SLOT(onChangedUsePoints()));
-	
+
+        connect(ui->sliderScans,SIGNAL(valueChanged(int)),this,SLOT(onSlideScanValueChanged(int)));
 	
 	update();
 
@@ -73,6 +75,12 @@ void WidgetSelPointScan::onChangedUseScan()
 	bool show = variables->getUseScan();
 	ui->widgetScans->setVisible(show);
 }
+
+void WidgetSelPointScan::onSlideScanValueChanged(int newScan)
+{
+    variables->setCurScan(newScan);
+}
+
 void WidgetSelPointScan::onChangedUsePoints()
 {
 	bool show = variables->getUsePoints();
@@ -87,12 +95,16 @@ void WidgetSelPointScan::onChangedNbPoints()
 void WidgetSelPointScan::update()
 {
 	ui->sliderScans->setMinimum(0);
-	ui->sliderScans->setMaximum(variables->nbScans());
+        ui->sliderScans->setMaximum(variables->nbScans()-1);
 	ui->sliderScans->setValue(variables->curScan());
 
 	onChangedUseScan();
 
 	ui->sliderPoints->setMinimum(0);
-	ui->sliderPoints->setMaximum(variables->nbPoints());
+        ui->sliderPoints->setMaximum(variables->nbPoints()-1);
 	ui->sliderPoints->setValue(variables->curPoint());
+
+        onChangedUsePoints();
+
+        this->resize(this->width(),this->minimumHeight());
 }

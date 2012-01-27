@@ -240,6 +240,7 @@ public slots :
     // others
     bool renameResult(Result*, QString);
     void onModItemSelectionChanged(QList<ModItem*> &classes);
+    void onReloadMOFileAsked();
 
     //****************************
     // Signals

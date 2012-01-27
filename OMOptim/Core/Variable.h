@@ -78,7 +78,7 @@ public :
 		MAX,
 		TYPE,
 		CATEGORY,*/
-		DATATYPE
+                DATATYPE
 	};
 
 	/*enum Category
@@ -128,7 +128,7 @@ public :
 	//void setMin(double);
 	//void setMax(double);	
 	//void setCategory(int);
-	void setDataType(int);
+        void setDataType(VariableType);
 	QString description();
 	virtual QString name(Modelica::NameFormat = Modelica::FULL) const;
 	virtual QString getStrToolTip();
@@ -140,7 +140,7 @@ protected :
 
 	//int type;
 	//int category;
-	int _dataType;
+        VariableType _dataType;
 	double _value;
 	//double min;
 	//double max;

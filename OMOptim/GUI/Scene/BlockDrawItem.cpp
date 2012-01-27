@@ -41,14 +41,14 @@
 
 #include "BlockDrawItem.h"
 
-BlockDrawItem::BlockDrawItem(ModItem* _comp,int _type) : QWidget()
+BlockDrawItem::BlockDrawItem(QString _comp,int _type) : QWidget()
 {
 	type = _type;
-	component = _comp;
+        componentName = _comp;
 
 	build();
 
-	label->setText(_comp->name(Modelica::SHORT));
+        label->setText(componentName);
 
 
 	////rectangle
