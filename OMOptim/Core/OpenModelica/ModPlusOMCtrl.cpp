@@ -121,8 +121,6 @@ bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QStri
 
 bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QString initFile)
 {
-
-
     QString initFileTxt;
     QString initFileXml;
 
@@ -130,7 +128,6 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
     if(initFile.isEmpty())
     {
         authorizeRecreate=true;
-
         initFileTxt = _modModelPlus->mmoFolder()+QDir::separator()+_initFileTxt;
         initFileXml = _modModelPlus->mmoFolder()+QDir::separator()+_initFileXml;
     }
@@ -143,15 +140,12 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
             initFileTxt = initFile;
     }
 
-    InfoSender::instance()->send(Info("Reading initial variables in "+initFile,ListInfo::NORMAL2));
-
     initVariables->clear();
 
     if(!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt)&& authorizeRecreate)
     {
         createInitFile();
     }
-
 
     if(!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt))
     {
@@ -160,10 +154,15 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
     else
     {
         if(QFile::exists(initFileXml))
+        {
             OpenModelica::getInputVariablesFromXmlFile(_moomc,initFileXml,_modModelPlus->modModelName(),initVariables);
+            InfoSender::instance()->send(Info("Reading initial variables in "+initFileXml,ListInfo::NORMAL2));
+        }
         else if(QFile::exists(initFileTxt))
+        {
             OpenModelica::getInputVariablesFromTxtFile(_moomc,initFileTxt,initVariables,_modModelPlus->modModelName());
-
+            InfoSender::instance()->send(Info("Reading initial variables in "+initFileTxt,ListInfo::NORMAL2));
+        }
         return true;
     }
 

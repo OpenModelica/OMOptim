@@ -273,7 +273,7 @@ color:white;
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>Models</string>
+    <string> Models</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -322,7 +322,7 @@ color:white;
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockProblems">
+  <widget class="QDockWidget" name="dockOMCases">
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
@@ -347,12 +347,12 @@ color:white;
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>Problems</string>
+    <string> Problems</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents_3">
+   <widget class="QWidget" name="dockOMCasesWidget">
     <property name="styleSheet">
      <string notr="true"/>
     </property>
@@ -363,13 +363,6 @@ color:white;
      <property name="margin">
       <number>0</number>
      </property>
-     <item>
-      <widget class="QTreeView" name="treeOMCases">
-       <property name="headerHidden">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
   </widget>

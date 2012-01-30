@@ -182,6 +182,7 @@ private :
 	Project *_project;
 
         OMCasesCombiner *_casesTree;
+        OMCasesTreeView *_casesTreeView;
 
 	//Gui
     Ui::MainWindowClass *_ui;

@@ -167,9 +167,6 @@ QMenu* GuiTools::createResultPopupMenu(Project* project, QWidget* mainWindow, co
     connect(renameAct,SIGNAL(triggered()),mainWindow,SLOT(renameResult()));
     menu->addAction(renameAct);
 
-
-
-
     //Remove problem
     QAction *removeAct = new QAction("Remove result",menu);
     removeAct->setData(numResult);

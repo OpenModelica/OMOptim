@@ -43,6 +43,11 @@
 
 #include <QtGui/QTreeView>
 
+class Project;
+class OMCasesCombiner;
+class Problem;
+class OMCase;
+class Result;
 
 class MyTreeView :  public QTreeView
 {
@@ -62,5 +67,29 @@ public slots :
 
 };
 
+
+class OMCasesTreeView : public QTreeView
+{
+    Q_OBJECT
+
+public:
+    OMCasesTreeView(Project* project, OMCasesCombiner* model, QWidget* mainWindow);
+    ~OMCasesTreeView(void);
+
+
+
+public slots :
+   void onRightClicked(const QPoint &);
+   void onRemoveAsked();
+   void onRenameAsked();
+
+private :
+   QMenu* createOMCasePopupMenu(OMCase*);
+   QMenu* createOMCasesPopupMenu();
+
+   Project* _project;
+   OMCasesCombiner* _model;
+   QWidget* _mainWindow;
+};
 
 #endif

@@ -66,9 +66,18 @@ public :
         parameters->addItem(new MOParameter(OFFSPRINGRATE,"OffspringRate","OffSpring size/PopulationSize",3,MOParameter::INT,1,1000));
         parameters->addItem(new MOParameter(MAXGENERATIONS,"MaxGen","Max Generations",100,MOParameter::INT,0,100000));
         parameters->addItem(new MOParameter(SAVEFREQUENCY,"SaveFrequency","Population saving frequency (# generations, 0 = save only final state)",1,MOParameter::INT,0,10000000));
+
+        // pursue computation
         parameters->addItem(new MOParameter(USESTARTFILE,"UseStartFile","Use start file (restart from previous result)",false,MOParameter::BOOL));
         parameters->addItem(new MOParameter(STARTFILEPATH,"StartFilePath","Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
         parameters->addItem(new MOParameter(REINITSTDDEV,"ReinitStdDev","Reinitialize StdDeviation (for pursuing optimization only)",0,MOParameter::BOOL));
+
+        // make parameters enabled only when needed
+        QList<int> grIndexes;
+        grIndexes << USESTARTFILE << STARTFILEPATH << REINITSTDDEV;
+        parameters->regroup("Pursue computation",grIndexes);
+        grIndexes.removeAll(USESTARTFILE);
+        parameters->addEnablingIndex(grIndexes,USESTARTFILE,true);
     };
 };
 

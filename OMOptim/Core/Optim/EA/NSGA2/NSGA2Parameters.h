@@ -78,6 +78,13 @@ public :
         parameters->addItem(new MOParameter(SAVEFREQUENCY,"SaveFrequency","Population saving frequency (# generations, 0 = save only final state)",1,MOParameter::INT,0,10000000));
         parameters->addItem(new MOParameter(USESTARTFILE,"UseStartFile","Use start file (restart from previous result)",false,MOParameter::BOOL));
         parameters->addItem(new MOParameter(STARTFILEPATH,"StartFilePath","Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
+
+        // make parameters enabled only when needed
+        QList<int> grIndexes;
+        grIndexes << USESTARTFILE << STARTFILEPATH;
+        parameters->regroup("Pursue computation",grIndexes);
+        grIndexes.removeAll(USESTARTFILE);
+        parameters->addEnablingIndex(grIndexes,USESTARTFILE,true);
     };
 };
 

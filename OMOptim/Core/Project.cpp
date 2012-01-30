@@ -69,6 +69,7 @@ Project::~Project()
 {
     qDebug("deleting Project");
     terminateOmsThreads();
+    _moomc->stopServer();
 
     _problems->deleteLater();
     _results->deleteLater();
@@ -126,7 +127,7 @@ void Project::clear()
     _mofilesWatcher.removePaths(_mofilesWatcher.files());
     _mmoFiles.clear();
 
-
+    unloadPlugins();
 }
 
 void Project::setName(QString name)
@@ -265,22 +266,24 @@ void Project::refreshAllMod()
 }
 
 /**
-* \brief
 * Load a OMOptim plugin
-* \param moFilePath full file path of .dll
+* \param pluginPath full file path of .dll
 * \param storePath yes/no should path be stored in project file
 * (as to be reloaded when loading project)
 * \param forceLoad yes/no should mo file be reloaded in OMC when already loaded in OMC
 */
 bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
 {
-
     bool tryLoad;
 
     tryLoad = (forceLoad || !_pluginsLoaded.values().contains(pluginPath));
 
     if(!tryLoad)
         return false;
+
+    // unload if needed
+    if(forceLoad && _pluginsLoaded.values().contains(pluginPath))
+        unloadPlugin(pluginPath);
 
     // first try to load
     QPluginLoader loader(pluginPath);
@@ -308,6 +311,34 @@ bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
     if(loadOk && storePath)
         _pluginsLoaded.insert(pbInter->name(),pluginPath);
 }
+
+/**
+* Unload a OMOptim plugin
+* \param pluginPath full file path of plugin
+*/
+bool Project::unloadPlugin(QString pluginPath)
+{
+    InfoSender::instance()->sendNormal("Unloading plugin : "+pluginPath);
+
+    _pluginsLoaded.remove(_pluginsLoaded.key(pluginPath));
+
+    QPluginLoader loader(pluginPath);
+    return loader.unload();
+}
+
+/**
+* Unload all plugins
+*/
+bool Project::unloadPlugins()
+{
+    QStringList pluginsPaths(_pluginsLoaded.values());
+    bool ok = true;
+    for(int i=0;i<pluginsPaths.size();i++)
+        ok = unloadPlugin(pluginsPaths.at(i)) && ok;
+
+    return ok;
+}
+
 
 /**
 * \brief
@@ -728,6 +759,40 @@ void Project::removeProblem(Problem* problem)
         _problems->removeRow(num);
 
         save(false);
+    }
+}
+
+
+void Project::removeCases(QList<OMCase*> cases)
+{
+    Problem* problem;
+    Result* result;
+    for(int i=0;i<cases.size();i++)
+    {
+        problem = dynamic_cast<Problem*>(cases.at(i));
+        if(problem)
+            removeProblem(problem);
+        else
+        {
+            result = dynamic_cast<Result*>(cases.at(i));
+            if(result)
+                removeResult(result);
+        }
+    }
+}
+
+void Project::renameCase(OMCase* curCase,QString newName)
+{
+    Problem* problem;
+    Result* result;
+    problem = dynamic_cast<Problem*>(curCase);
+    if(problem)
+        renameProblem(problem,newName);
+    else
+    {
+        result = dynamic_cast<Result*>(curCase);
+        if(result)
+            renameResult(result,newName);
     }
 }
 

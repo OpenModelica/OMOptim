@@ -169,6 +169,8 @@ public:
     void launchProblem(Problem*);
     void removeResult(Result*);
     void removeProblem(Problem*);
+    void removeCases(QList<OMCase*>);
+    void renameCase(OMCase*, QString);
 
 
 
@@ -214,6 +216,8 @@ public:
     // Plugins
     //****************************
     bool loadPlugin(QString filePath, bool storePath=true,bool forceLoad=true);
+    bool unloadPlugin(QString pluginPath);
+    bool unloadPlugins();
 
     //****************************
     // Misc

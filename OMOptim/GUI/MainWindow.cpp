@@ -63,7 +63,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _ui->splitterH->insertWidget(1,_tabMain);
     _ui->splitterH->setStretchFactor(1,10);
     delete _ui->widgetToDelete;
-    _ui->treeOMCases->header()->setResizeMode(QHeaderView::Stretch);
+
     addDockWidget(Qt::BottomDockWidgetArea,_ui->dockLog,Qt::Vertical);
 
     // Actions
@@ -75,11 +75,10 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 
     // Trees
     _casesTree = new OMCasesCombiner(_project->problems(),_project->results());
-    _ui->treeOMCases->setModel(_casesTree);
-    //_ui->treeResults->setModel(_project->results());
-    //GuiTools::ModItemToTreeView(_project->modLoader(),_project->rootModItem(),_ui->treeModItem,_project->modClassTree());
+    _casesTreeView = new OMCasesTreeView(_project,_casesTree,this);
+    _ui->dockOMCases->setWidget(_casesTreeView);
+
     _ui->treeModItem->setModel(_project->modClassTree());
-    _ui->treeOMCases->setContextMenuPolicy(Qt::CustomContextMenu);
     _ui->treeModItem->setContextMenuPolicy(Qt::CustomContextMenu);
     _ui->treeModItem->setDragEnabled(true);
     _ui->treeModItem->setDragDropMode(QAbstractItemView::DragDrop);
@@ -120,11 +119,9 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     //*********************************
     // Signals for gui
     //*********************************
-    connect(_ui->treeOMCases, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableOMCaseTab(QModelIndex)));
+    connect(_casesTreeView, SIGNAL(doubleClicked(QModelIndex)),this, SLOT(enableOMCaseTab(QModelIndex)));
     connect(_ui->treeModItem, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
     connect(this, SIGNAL(sendInfo(Info)),this, SLOT( displayInfo(Info)));
-    connect (_ui->treeOMCases,SIGNAL(customContextMenuRequested(const QPoint &)),
-             this,SLOT(rightClickedOnCase(const QPoint &)));
     connect (_ui->treeModItem,SIGNAL(customContextMenuRequested(const QPoint &)),
              this,SLOT(showModItemsTreePopup(const QPoint &)));
     connect (_tabMain,SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -551,7 +548,7 @@ void MainWindow::onProjectAboutToBeReset()
         _tabMain->removeTab(1);
     }
 
-    _ui->treeOMCases->reset();
+    _casesTreeView->reset();
     _ui->treeModItem->reset();
 
     actualizeGuiFromProject();
@@ -684,6 +681,7 @@ void MainWindow::renameProblem()
     }
 
 }
+
 void MainWindow::renameProblem(Problem* problem)
 {
     bool ok;
@@ -729,23 +727,28 @@ void MainWindow::rightClickedOnCase(const QPoint & iPoint)
 {
     //Popup on cases tree
     QModelIndex  index ;
-    index = _ui->treeOMCases->indexAt(iPoint);
+    index = _casesTreeView->indexAt(iPoint);
+    QModelIndexList indexes = _casesTreeView->selectionModel()->selectedIndexes();
+
     if ( !index.isValid() == -1 )
     {
         // no item selected
     }
     else
     {
+        if(indexes.contains(index))
+        {
         QMenu* caseMenu = NULL;
         OMCase* selectedCase = _casesTree->item(index);
 
         if(_project->problems()->contains(selectedCase))
-            caseMenu = GuiTools::createProblemPopupMenu(_project,this,_ui->treeOMCases->mapToGlobal(iPoint),dynamic_cast<Problem*>(selectedCase),index.row());
+            caseMenu = GuiTools::createProblemPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Problem*>(selectedCase),index.row());
         if(_project->results()->contains(selectedCase))
-            caseMenu = GuiTools::createResultPopupMenu(_project,this,_ui->treeOMCases->mapToGlobal(iPoint),dynamic_cast<Result*>(selectedCase),index.row());
+            caseMenu = GuiTools::createResultPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Result*>(selectedCase),index.row());
 
         if(caseMenu)
-            caseMenu->exec(_ui->treeOMCases->mapToGlobal(iPoint));
+            caseMenu->exec(_casesTreeView->mapToGlobal(iPoint));
+        }
     }
 }
 
@@ -762,7 +765,7 @@ void MainWindow::showModItemsTreePopup(const QPoint & iPoint)
     else
     {
         ModItem* selectedModItem = static_cast<ModItem*>(index.internalPointer());
-        QMenu * modClassMenu= GuiTools::newModItemPopupMenu(_project,_ui->treeOMCases->mapToGlobal(iPoint),selectedModItem);
+        QMenu * modClassMenu= GuiTools::newModItemPopupMenu(_project,_ui->treeModItem->mapToGlobal(iPoint),selectedModItem);
         if(modClassMenu)
             modClassMenu->exec(_ui->treeModItem->mapToGlobal(iPoint));
     }

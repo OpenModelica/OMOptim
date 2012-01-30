@@ -85,6 +85,9 @@ signals:
     void loadProject();
     void loadPlugin();
 
+public slots :
+    void openFolder();
+
 };
 
 

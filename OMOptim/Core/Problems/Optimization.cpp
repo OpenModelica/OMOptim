@@ -198,6 +198,8 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         }
     }
 }
+
+
 /** Launch optimization procedure. checkBeforeComp() is not called in this function.
 *   Be sure it has been called previously.
 */
@@ -250,7 +252,7 @@ bool Optimization::checkBeforeComp(QString & error)
     }
 
     // check number of optimized variables and objectives
-    if(_optimizedVariables->size()==0)
+    if((_optimizedVariables->size()==0) && (_blockSubstitutions->size()==0))
     {
         ok = false;
         curError = "Should specify at least one optimized variable";
@@ -316,11 +318,12 @@ Result* Optimization::launch(ProblemConfig _config)
         dir.rmdir(_project->tempPath());
     dir.mkdir(_project->tempPath());
 
+#ifdef USEBLOCKSUB
     //create different dymosim executable for blocksubstitutions
     QList<ModModelPlus*> _subModels;
     QList<BlockSubstitutions*> _subBlocks;
-
     createSubExecs(_subModels,_subBlocks);
+#endif
 
     OptimResult* result = dynamic_cast<OptimResult*>(((EABase*)getCurAlgo())->launch(_project->tempPath()));
 
