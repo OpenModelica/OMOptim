@@ -116,7 +116,7 @@ private:
     Results* _results;
 
     ModLoader* _modLoader;
-    ModItemsTree* _modClassTree;
+    ModItemsTree* _modItemsTree;
     QMap<QString,ModModelPlus*> _mapModelPlus; //<modmodelName,modmodelplus>
 
 
@@ -198,8 +198,8 @@ public:
     Problems* problems(){return _problems;};
     Results* results(){return _results;};
     ModLoader* modLoader(){return _modLoader;};
-    ModItemsTree* modClassTree(){return _modClassTree;};
-    ModItem* rootModItem(){return _modClassTree->rootElement();};
+    ModItemsTree* modItemsTree(){return _modItemsTree;};
+    ModItem* rootModItem(){return _modItemsTree->rootElement();};
     QMap<QString,ModModelPlus*> mapModelPlus(){return _mapModelPlus;};
 
 

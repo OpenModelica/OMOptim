@@ -107,6 +107,7 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
     //look if it succeed
     bool success = modelExeFile.exists();
     return success;
+
 }
 
 void OpenModelica::getInputVariablesFromTxtFile(MOomc *_omc,QString filePath, MOVector<Variable> * variables,QString _modelName)

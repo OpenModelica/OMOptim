@@ -94,7 +94,7 @@ public :
 private:
 
     ModModel* model;
-    ModItemsTree* modClassTree;
+    ModItemsTree* modItemsTree;
 
 
     bool isEditable;

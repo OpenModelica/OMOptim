@@ -62,7 +62,7 @@ Result::Result(const Result &result)
 {
         // indication pointers
 	_project = result._project;
-        _modClassTree = result._modClassTree;
+        _modItemsTree = result._modItemsTree;
 
         // filled pointers
         _problem = result._problem->clone();

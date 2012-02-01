@@ -58,7 +58,7 @@ class WidgetSelectModModel : public QDialog {
 
 
 public:
-        explicit WidgetSelectModModel(ModItemsTree* modClassTree,QWidget *parent);
+        explicit WidgetSelectModModel(ModItemsTree* modItemsTree,QWidget *parent);
     virtual ~WidgetSelectModModel();
 
 	
@@ -73,7 +73,7 @@ public slots :
 	void onSelectedModItem(QModelIndex);
 
 private :
-        ModItemsTree *_modClassTree;
+        ModItemsTree *_modItemsTree;
 
 };
 

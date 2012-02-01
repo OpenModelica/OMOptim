@@ -43,14 +43,14 @@
 #include <QtGui/QErrorMessage>
 
 
-        WidgetSelectModModel::WidgetSelectModModel(ModItemsTree* modClassTree,QWidget *parent ):
+        WidgetSelectModModel::WidgetSelectModModel(ModItemsTree* modItemsTree,QWidget *parent ):
 QDialog(parent),
 ui(new Ui::WidgetSelectModModelClass)
 {
 	ui->setupUi(this);
-    _modClassTree = modClassTree;
+    _modItemsTree = modItemsTree;
 
-	ui->treeView->setModel(modClassTree);
+	ui->treeView->setModel(modItemsTree);
 	connect(ui->treeView, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
 	connect(ui->pushValidate,SIGNAL(clicked()),this,SLOT(accept()));
         connect(ui->pushCancel,SIGNAL(clicked()),this,SLOT(reject()));

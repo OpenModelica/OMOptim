@@ -40,11 +40,11 @@
 
 #include "BlockSubsScene.h"
 
-BlockSubsScene::BlockSubsScene(BlockSubstitutions *_blockSubs, ModModel* _model,ModItemsTree* _modClassTree, bool _isEditable)
+BlockSubsScene::BlockSubsScene(BlockSubstitutions *_blockSubs, ModModel* _model,ModItemsTree* _modItemsTree, bool _isEditable)
 {
 	blockSubs = _blockSubs;
 	model = _model;
-        modClassTree = _modClassTree;
+        modItemsTree = _modItemsTree;
 	isEditable = _isEditable;
 
 	// visual matters
@@ -113,7 +113,7 @@ void BlockSubsScene::refresh()
 		QStringList orgs = blockSubs->getReplacedComponentsNames();
 		for(int i=0;i<orgs.size();i++)
 		{
-                        ModItem* _orgEl = modClassTree->findInDescendants(orgs.at(i));
+                        ModItem* _orgEl = modItemsTree->findInDescendants(orgs.at(i));
 			if(_orgEl)
 			{
 
@@ -135,7 +135,7 @@ void BlockSubsScene::refresh()
 
 				for(int j=0;j<nbSubs;j++)
 				{
-                                        ModItem* _subEl = modClassTree->findInDescendants(subs.at(j));
+                                        ModItem* _subEl = modItemsTree->findInDescendants(subs.at(j));
 					if(_subEl)
 					{
                                                 _curSubBlock = addSubBlock(i,_subEl->name(), _curSubPos);

@@ -70,7 +70,7 @@ protected :
 
     // General information
     Project* _project;
-    ModItemsTree* _modClassTree;
+    ModItemsTree* _modItemsTree;
 
     // Files informations
     QString _saveFolder;
@@ -103,7 +103,7 @@ public:
     QString entireSavePath();
     QStringList filesToCopy(){return _filesToCopy;};
     Project* project(){return _project;};
-    ModItemsTree* modClassTree(){return _modClassTree;};
+    ModItemsTree* modItemsTree(){return _modItemsTree;};
 
 
     // Set functions

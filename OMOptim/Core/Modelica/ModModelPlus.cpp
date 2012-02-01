@@ -66,7 +66,7 @@ ModModelPlus::ModModelPlus( Project* project,QString modModelName)
     _moomc = _project->moomc();
     _modModelName = modModelName;
     _variables = new Variables(this);
-    _connections = new ModelicaConnections(_project->modClassTree());
+    _connections = new ModelicaConnections(_project->modItemsTree());
     _modifiers = new MOVector<ModelicaModifier>(true);
 
     _variablesRead = false;
@@ -227,7 +227,7 @@ QString ModModelPlus::infos()
 
 ModModel* ModModelPlus::modModel()
 {
-    return dynamic_cast<ModModel*>(_project->modClassTree()->findItem(_modModelName));
+    return dynamic_cast<ModModel*>(_project->modItemsTree()->findItem(_modModelName));
 }
 
 void ModModelPlus::setInfos(QString infos)
@@ -408,7 +408,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
     shortOrg = shortOrg.remove(modelName+".");
     QString shortSub = blockSub->_subComponent;
     shortSub = shortSub.remove(modelName+".");
-    ModItem* orgClass = _project->modClassTree()->findInDescendants(blockSub->_orgComponent,modModel());
+    ModItem* orgClass = _project->modItemsTree()->findInDescendants(blockSub->_orgComponent,modModel());
     if(!orgClass)
     {
         QString msg;
@@ -425,7 +425,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
     if(orgComp)
     {
         // first save annotation and modifiers
-        QString annotation ;//= _moomc->getAnnotation(blockSub->orgComponent,blockSub->_modModel->name());
+        QString annotation;// = _moomc->getAnnotation(blockSub->_orgComponent,blockSub->_model);
         QStringList modifiersNames = _moomc->getComponentModifierNames(blockSub->_orgComponent);
         QStringList modifiersValues;
         for(int i=0;i<modifiersNames.size();i++)

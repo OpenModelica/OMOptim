@@ -28,7 +28,7 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
   @file ModelicaConnections.cpp
   @brief Comments for file documentation.
@@ -41,10 +41,10 @@
 #include "ModelicaConnections.h"
 #include "ModItem.h"
 
-ModelicaConnections::ModelicaConnections(ModItemsTree* modClassTree)
+ModelicaConnections::ModelicaConnections(ModItemsTree* modItemsTree)
     :MOVector<ModelicaConnection>(true)
 {
-    _modClassTree = modClassTree;
+    _modItemsTree = modItemsTree;
 }
 
 ModelicaConnections::~ModelicaConnections(void)
@@ -142,7 +142,7 @@ ModelicaConnections::~ModelicaConnections(void)
 
 ModelicaConnections* ModelicaConnections::filter(ModItem* element,bool includeChildren,bool acceptInternal)
 {
-    ModelicaConnections* elConn = new ModelicaConnections(_modClassTree);
+    ModelicaConnections* elConn = new ModelicaConnections(_modItemsTree);
     QString elName = element->name();
     QString a,b;
     ModelicaConnection* curConn;
@@ -160,14 +160,14 @@ ModelicaConnections* ModelicaConnections::filter(ModItem* element,bool includeCh
         {
             if(includeChildren)
             {
-                //bool aIsInChildren = (_modClassTree->findInDescendants(a,element)!=NULL);
+                //bool aIsInChildren = (_modItemsTree->findInDescendants(a,element)!=NULL);
                 bool aIsInChildren = portIsInElement(a,elName);
 
                 if(acceptInternal && aIsInChildren)
                     elConn->addItem(curConn);
                 else
                 {
-                    //bool bIsInChildren = (_modClassTree->findInDescendants(b,element)!=NULL);
+                    //bool bIsInChildren = (_modItemsTree->findInDescendants(b,element)!=NULL);
                     bool bIsInChildren = portIsInElement(b,elName);
                     bool isConcerned = (aIsInChildren || bIsInChildren);
                     bool isInternal = (aIsInChildren && bIsInChildren);
@@ -281,8 +281,8 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
 //        bName = elConns->at(iConn)->getB();
 
 
-//        aModItem = _modClassTree->findInDescendants(aName,element);
-//        bModItem = _modClassTree->findInDescendants(bName,element);
+//        aModItem = _modItemsTree->findInDescendants(aName,element);
+//        bModItem = _modItemsTree->findInDescendants(bName,element);
 
 //        if(aModItem)
 //            connectedComps.push_back(bModItem);
@@ -317,8 +317,8 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
 //    {
 //        aName = elConns->at(iConn)->getA();
 //        bName = elConns->at(iConn)->getB();
-//        aModItem = _modClassTree->findInDescendants(aName,element);
-//        bModItem = _modClassTree->findInDescendants(bName,element);
+//        aModItem = _modItemsTree->findInDescendants(aName,element);
+//        bModItem = _modItemsTree->findInDescendants(bName,element);
 //        if(aModItem)
 //            connectedComps.push_back(aModItem);
 //        else

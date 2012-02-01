@@ -99,15 +99,15 @@ SPEA2Adapt::SPEA2Adapt():EABase()
 	setDefaultParameters();
 }
 
-SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModItemsTree* modClassTree)
-:EABase(project,problem,modClassTree)
+SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModItemsTree* modItemsTree)
+:EABase(project,problem,modItemsTree)
 {
 	setDefaultParameters();
 };
 
 
-SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModItemsTree* modClassTree,MOParameters* parameters)
-:EABase(project,problem,modClassTree)
+SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModItemsTree* modItemsTree,MOParameters* parameters)
+:EABase(project,problem,modItemsTree)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
@@ -182,7 +182,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 	************************************/
 	moeoEvalFunc < EOAdapt > *plainEval;
 		plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
-                        _modClassTree);
+                        _modItemsTree);
 
 	OMEAEvalFuncCounter<EOAdapt>* eval = new OMEAEvalFuncCounter<EOAdapt> (* plainEval,&OMEAProgress,nTotalEvals);
 

@@ -55,14 +55,14 @@ WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* pr
 
 
     //Tree components
-    _ui->treeLibrary->setModel(project->modClassTree());
+    _ui->treeLibrary->setModel(project->modItemsTree());
 
     ModItemsTree* modelTree = GuiTools::ModItemToTreeView(_project->modLoader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
                                                            _ui->treeComponents,true);
 
     // Diagram of blocks
     _blockScene = new BlockSubsScene(_problem->blockSubstitutions(),_problem->modModelPlus()->modModel(),
-                                     _project->modClassTree(),true);
+                                     _project->modItemsTree(),true);
     _ui->graphBlocks->setScene(_blockScene);
     _ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
     connect(_blockScene, SIGNAL(zoomRect(QRectF)),

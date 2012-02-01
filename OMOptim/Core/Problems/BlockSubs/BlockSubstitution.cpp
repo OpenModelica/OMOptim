@@ -144,7 +144,7 @@ bool BlockSubstitution::init(Project * project, ModModelPlus *model, ModelicaCon
     _subComponent = subComponent;
 
 
-    ModItem* orgElement = project->modClassTree()->findInDescendants(_orgComponent);
+    ModItem* orgElement = project->modItemsTree()->findInDescendants(_orgComponent);
     if(orgElement==NULL)
 	{
         InfoSender::instance()->debug(_orgComponent + " not found.");
@@ -158,10 +158,10 @@ bool BlockSubstitution::init(Project * project, ModModelPlus *model, ModelicaCon
         ModItem* subElement;
         QString libraryName = _subComponent.section(".",0,0);
 
-        subElement =  project->modClassTree()->findInDescendants(_subComponent);
+        subElement =  project->modItemsTree()->findInDescendants(_subComponent);
         if(subElement)
 			{
-            _subPorts = _project->modClassTree()->getPorts(subElement,Modelica::FULL);
+            _subPorts = _project->modItemsTree()->getPorts(subElement,Modelica::FULL);
             for(int i=0;i<_subPorts.size();i++)
 				{
                 _subConnectedComps.push_back(QStringList());
@@ -179,11 +179,11 @@ void BlockSubstitution::setSubComponent(QString subComponent,bool doAutoConnect)
 
 	// reading subcomponent ports
     ModItem* subElement;
-    subElement = _project->modClassTree()->findInDescendants(_subComponent);
+    subElement = _project->modItemsTree()->findInDescendants(_subComponent);
 
     if(subElement)
 	{
-        _subPorts = _project->modClassTree()->getPorts(subElement,Modelica::FULL);
+        _subPorts = _project->modItemsTree()->getPorts(subElement,Modelica::FULL);
         for(int i=0;i<_subPorts.size();i++)
 		{
             _subConnectedComps.push_back(QStringList());

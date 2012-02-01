@@ -76,7 +76,7 @@ public:
 
 protected:
 
-        ModItemsTree* _modClassTree;
+        ModItemsTree* _modItemsTree;
 
 	// for Optimization problems
 	QList<ModModelPlus*> _subModels;

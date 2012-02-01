@@ -763,6 +763,9 @@ bool MOomc::addConnections(QStringList orgs, QList<QStringList> dests)
 
 bool MOomc::addComponent(QString name,QString className, QString modelName,QString annotation)
 {
+    if(annotation.isEmpty() || (annotation.left(1)!="\"") || (annotation.right(1)!="\""))
+        annotation = "\""+annotation+"\"";
+
     QString commandText = "addComponent("+name.section(".",-1,-1)+","+className+","+modelName+",annotate="+annotation+")";
     QString commandRes= evalCommand(commandText);
     return (commandRes=="true");
@@ -1146,7 +1149,10 @@ bool MOomc::startServer()
         QString omcPath;
 #ifdef WIN32
         if (!omhome)
+        {
             InfoSender::instance()->send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
+            return false;
+        }
         omcPath = QString( omhome ) + "bin/omc.exe";
 #else /* unix */
         omcPath = (omhome ? QString(omhome)+"bin/omc" : QString(CONFIG_DEFAULT_OPENMODELICAHOME) + "/bin/omc");

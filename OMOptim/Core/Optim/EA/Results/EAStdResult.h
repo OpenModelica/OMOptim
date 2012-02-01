@@ -53,7 +53,7 @@
 #include "MOParameter.h"
 #include "Problem.h"
 #include "Optimization.h"
-
+#include "EAStdOptimizationEval.h"
 
 
         template<class EOT> class EAStdResult
@@ -67,6 +67,9 @@ template<class EOT>
 OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* problem,QList<BlockSubstitutions*> subBlocks,
                                                 moeoUnboundedArchive<EOT> & arch)
 {
+    if(arch.size()==0)
+        return NULL;
+
     OptimResult *result = new OptimResult(project,problem->modModelPlus(),*problem,problem->getCurAlgo()->clone());
     result->setName(problem->name()+" result");
     result->_subBlocks = subBlocks;
@@ -212,8 +215,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
             if(fillRecompValues)
                 result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(resObjVector.at(iObj),0);
         }
-    }
-
+    } 
 
     result->setSuccess(true);
     return result;

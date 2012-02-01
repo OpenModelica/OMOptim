@@ -95,8 +95,8 @@ void WidgetProjectInfos::actualizeGuiFromProject()
 
         QString msg;
         msg = "<b>Project name</b> : " + project->name() +" <br> ";
-        msg += "<b>Project file</b> : " + project->filePath() +" <br> ";
-        msg += "<b>Project folder</b> : " + project->folder() + " <br> ";
+        msg += "<b>Project file</b> : <A href=\"file:///"+ project->filePath() +"\">"+project->filePath()+"</A>" +" <br> ";
+        msg += "<b>Project folder</b> :  <A href=\"file:///"+ project->folder() +"\">"+project->folder()+"</A>" + " <br> ";
         msg += "<b>ModelFiles</b> <br> ";
 
         QStringList listMO;
@@ -104,7 +104,7 @@ void WidgetProjectInfos::actualizeGuiFromProject()
         {
             listMO.push_back(project->moFiles().at(i));
         }
-        msg += listMO.join("<br>");
+        msg += listMO.join("<br>")+"<br>";
 
         msg += "<b>Plugins</b> <br> ";
         QStringList listPlugins;
@@ -116,6 +116,8 @@ void WidgetProjectInfos::actualizeGuiFromProject()
         msg += listPlugins.join("<br>");
 
         ui->textProject->setText(msg);
+        ui->textProject->setOpenExternalLinks(true);
+        ui->textProject->setOpenLinks(false);
         ui->widgetInfos->show();
         ui->widgetBeginning->hide();
     }

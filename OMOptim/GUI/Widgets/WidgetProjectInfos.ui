@@ -18,12 +18,9 @@
     <widget class="QWidget" name="widgetInfos" native="true">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QTextEdit" name="textProject">
+       <widget class="QTextBrowser" name="textProject">
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
         </property>
        </widget>
       </item>

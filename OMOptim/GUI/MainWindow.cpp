@@ -78,7 +78,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _casesTreeView = new OMCasesTreeView(_project,_casesTree,this);
     _ui->dockOMCases->setWidget(_casesTreeView);
 
-    _ui->treeModItem->setModel(_project->modClassTree());
+    _ui->treeModItem->setModel(_project->modItemsTree());
     _ui->treeModItem->setContextMenuPolicy(Qt::CustomContextMenu);
     _ui->treeModItem->setDragEnabled(true);
     _ui->treeModItem->setDragDropMode(QAbstractItemView::DragDrop);
@@ -916,7 +916,7 @@ void MainWindow::onNewProblemProgress(float fraction,int curEval,int totalEval)
 
 void MainWindow::showModItem(ModItem* modClass)
 {
-    _ui->treeModItem->expand(_project->modClassTree()->indexOf(modClass));
+    _ui->treeModItem->expand(_project->modItemsTree()->indexOf(modClass));
 }
 
 void MainWindow::onMoFileChanged(const QString &moFile)
@@ -1009,7 +1009,7 @@ void MainWindow::onPushedNewProblem()
             case ProblemInterface::NOMODMODELPLUS :
                 break;
             case ProblemInterface::ONEMODMODELPLUS :
-                widgetSelect = new WidgetSelectModModel(_project->modClassTree(),this);
+                widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),this);
                 if(widgetSelect->exec()==QDialog::Accepted)
                 {
                     ModModel* curModel = widgetSelect->selectedModel;

@@ -33,23 +33,23 @@
 
 #include "OMCHelper.h"
 
-QString OMCHelper::applicationName = "OMEdit";
-QString OMCHelper::applicationVersion = "Version: 1.6.0";
+QString OMCHelper::applicationName = "OMOptim";
+QString OMCHelper::applicationVersion = "Version: 0.9";
 QString OMCHelper::applicationIntroText = "OpenModelica Connection Editor";
 // these two variables are set once we are connected to OMC......in OMCProxy::startServer().
 QString OMCHelper::OpenModelicaHome = QString();
 QString OMCHelper::OpenModelicaLibrary = QString();
-QString OMCHelper::omcServerName = "OMEdit";
+QString OMCHelper::omcServerName = "OMOptim";
 QString OMCHelper::omFileTypes = "*.mo";
 QString OMCHelper::omFileOpenText = "Modelica Files (*.mo)";
 #ifdef WIN32
-QString OMCHelper::tmpPath = QString(getenv("OPENMODELICAHOME")).append(QString("/tmp/OMEdit"));
+QString OMCHelper::tmpPath = QString(getenv("OPENMODELICAHOME")).append(QString("/tmp/OMOptim"));
 #else
 // Linux users don't have write access to /usr/tmp/OMEdit
 // Don't randomize the path as then it becomes annoying to remove all dirs
 QString OMCHelper::tmpPath = QString("/tmp/OMEdit");
 #endif
-QString OMCHelper::settingsFileName = QString("OMEdit-Settings.xml");
+QString OMCHelper::settingsFileName = QString("OMOptim-Settings.xml");
 QString OMCHelper::documentationBaseUrl = QString("/Modelica/Images/");
 QString OMCHelper::readOnly = QString("Read-Only");
 QString OMCHelper::writeAble = QString("Writeable");

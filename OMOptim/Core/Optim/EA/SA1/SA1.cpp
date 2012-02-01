@@ -148,15 +148,15 @@ SA1::SA1():EABase()
 	setDefaultParameters();
 }
 
-SA1::SA1(Project* _project,Problem* _problem,ModItemsTree* _modClassTree)
-:EABase(_project,_problem,_modClassTree)
+SA1::SA1(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree)
+:EABase(_project,_problem,_modItemsTree)
 {
 	setDefaultParameters();
 };
 
 
-SA1::SA1(Project* _project,Problem* _problem,ModItemsTree* _modClassTree,MOParameters* parameters)
-:EABase(_project,_problem,_modClassTree)
+SA1::SA1(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree,MOParameters* parameters)
+:EABase(_project,_problem,_modItemsTree)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
@@ -274,7 +274,7 @@ Result* SA1::launch(QString tempDir)
              *
              * ========================================================= */
                 moeoEvalFunc < EOStd > *plainEval;
-                plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modClassTree);
+                plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modItemsTree);
 
                 OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
                 state.storeFunctor(eval);

@@ -55,7 +55,7 @@ Project::Project()
 
     _moomc = new MOomc("OMOptim",true);
     _modLoader = new ModLoader(_moomc);
-    _modClassTree = new ModItemsTree(_modLoader,_moomc);
+    _modItemsTree = new ModItemsTree(_modLoader,_moomc);
 
     // add interfaces for OneSimulation and Optimization
     addProblemInterface(new OneSimulationInterface());
@@ -75,8 +75,8 @@ Project::~Project()
     _results->deleteLater();
 
 
-    if(_modClassTree)
-        _modClassTree->deleteLater();
+    if(_modItemsTree)
+        _modItemsTree->deleteLater();
 
     _moomc->deleteLater();
     _modLoader->deleteLater();
@@ -107,7 +107,7 @@ void Project::clear()
     emit projectAboutToBeReset();
 
 
-    _modClassTree->clear();
+    _modItemsTree->clear();
     _mapModelPlus.clear();
 
     // OMC
@@ -156,6 +156,7 @@ void Project::setIsDefined(bool isdefined)
 void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
 {
     // unwatch mo file (avoid recursive call)
+    bool wasThere = _mofilesWatcher.files().contains(moFilePath);
     _mofilesWatcher.removePath(moFilePath);
 
     // add to mofileloadedlist
@@ -163,13 +164,11 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
         _moFiles.push_back(moFilePath);
 
     // load moFile ...
-    _modLoader->loadMoFile(rootModItem(),moFilePath,forceLoad);
+    _modLoader->loadMoFile(modItemsTree(),moFilePath,forceLoad);
 
     // watch mo file
-    _mofilesWatcher.addPath(moFilePath);
-
-    // and read it add class in ModItemsTree
-    refreshAllMod();
+    if(storePath || wasThere)
+        _mofilesWatcher.addPath(moFilePath);
 }
 
 /**
@@ -190,12 +189,10 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
     }
 
     // load _moFiles and read them
-    _modLoader->loadMoFiles(rootModItem(),moFilePaths,forceLoad);
+    _modLoader->loadMoFiles(modItemsTree(),moFilePaths,forceLoad);
 
     // watch mo files
     _mofilesWatcher.addPaths(moFilePaths);
-
-    refreshAllMod();
 }
 
 /**
@@ -246,7 +243,7 @@ void Project::storeMmoFilePath(QString mmoFilePath)
 */
 void Project::reloadModModel(QString modModelName)
 {
-    ModModel* model = dynamic_cast<ModModel*>(modClassTree()->findItem(modModelName));
+    ModModel* model = dynamic_cast<ModModel*>(modItemsTree()->findItem(modModelName));
     if(model)
     {
         QString moFile = model->filePath();
@@ -261,8 +258,8 @@ void Project::reloadModModel(QString modModelName)
 */
 void Project::refreshAllMod()
 {
-    _modClassTree->clear();
-    _modClassTree->readFromOmc(_modClassTree->rootElement(),2);
+    _modItemsTree->clear();
+    _modItemsTree->readFromOmc(_modItemsTree->rootElement(),2);
 }
 
 /**
@@ -352,13 +349,13 @@ ModModel* Project::curModModel()
         return NULL;
 }
 /**
-* \brief Find a ModModel within _modClassTree
-* Find a ModModel within _modClassTree.
+* \brief Find a ModModel within _modItemsTree
+* Find a ModModel within _modItemsTree.
 * \arg modelName name of the model looked for
 */
 ModModel* Project::findModModel(QString modelName)
 {
-    ModItem* modModel = _modClassTree->findInDescendants(modelName);
+    ModItem* modModel = _modItemsTree->findInDescendants(modelName);
 
     if(!modModel || modModel->getClassRestr()!=Modelica::MODEL)
         return NULL;
@@ -877,5 +874,6 @@ void Project::onReloadMOFileAsked()
     {
         QString moFile = button->data().toString();
         this->loadMoFile(moFile,true,true);
+        _modItemsTree->readFromOmc(_modItemsTree->rootElement(),2);
     }
 }

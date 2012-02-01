@@ -53,7 +53,7 @@ OMCase::OMCase(void)
 OMCase::OMCase(Project* project)
 {
     _project = project;
-    _modClassTree = _project->modClassTree();
+    _modItemsTree = _project->modItemsTree();
 }
 
 OMCase::OMCase(const OMCase &omCase)
@@ -62,7 +62,7 @@ OMCase::OMCase(const OMCase &omCase)
 
     _name = omCase._name;
     _project = omCase._project;
-    _modClassTree = omCase._modClassTree;
+    _modItemsTree = omCase._modItemsTree;
 
 
     _filesToCopy = omCase._filesToCopy;

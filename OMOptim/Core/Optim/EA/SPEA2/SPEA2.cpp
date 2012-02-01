@@ -97,15 +97,15 @@ SPEA2::SPEA2():EABase()
 	setDefaultParameters();
 }
 
-SPEA2::SPEA2(Project* project,Problem* problem,ModItemsTree* modClassTree)
-:EABase(project,problem,modClassTree)
+SPEA2::SPEA2(Project* project,Problem* problem,ModItemsTree* modItemsTree)
+:EABase(project,problem,modItemsTree)
 {
 	setDefaultParameters();
 };
 
 
-SPEA2::SPEA2(Project* project,Problem* problem,ModItemsTree* modClassTree,MOParameters* parameters)
-:EABase(project,problem,modClassTree)
+SPEA2::SPEA2(Project* project,Problem* problem,ModItemsTree* modItemsTree,MOParameters* parameters)
+:EABase(project,problem,modItemsTree)
 {
        delete _parameters;
        _parameters = new MOParameters(*parameters);
@@ -178,7 +178,7 @@ Result* SPEA2::launch(QString tempDir)
 	************************************/
 	moeoEvalFunc < EOStd > *plainEval;
 		plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,
-                        _modClassTree);
+                        _modItemsTree);
 
         OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
 	state.storeFunctor(eval);

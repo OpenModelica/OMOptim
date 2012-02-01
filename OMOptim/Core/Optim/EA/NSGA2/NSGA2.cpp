@@ -95,15 +95,15 @@ NSGA2::NSGA2():EABase()
 	setDefaultParameters();
 }
 
-NSGA2::NSGA2(Project* _project,Problem* _problem,ModItemsTree* _modClassTree)
-:EABase(_project,_problem,_modClassTree)
+NSGA2::NSGA2(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree)
+:EABase(_project,_problem,_modItemsTree)
 {
 	setDefaultParameters();
 };
 
 
-NSGA2::NSGA2(Project* _project,Problem* _problem,ModItemsTree* _modClassTree,MOParameters* parameters)
-:EABase(_project,_problem,_modClassTree)
+NSGA2::NSGA2(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree,MOParameters* parameters)
+:EABase(_project,_problem,_modItemsTree)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
@@ -173,7 +173,7 @@ Result* NSGA2::launch(QString tempDir)
 	/************************************
 	FITNESS EVALUATION
 	************************************/
-        moeoEvalFunc < EOStd > *plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modClassTree);
+        moeoEvalFunc < EOStd > *plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modItemsTree);
 
         OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
 	state.storeFunctor(eval);

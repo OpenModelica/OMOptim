@@ -56,7 +56,7 @@ Optimization::Optimization(Project* project,ModModelPlus* modModelPlus)
     _objectives = new OptObjectives(true,modModelPlus);
     _blockSubstitutions = new BlockSubstitutions();
 
-    _algos = OptimAlgoUtils::getNewAlgos(this,_modClassTree);
+    _algos = OptimAlgoUtils::getNewAlgos(this,_modItemsTree);
 
     _iCurAlgo=0;
 
@@ -112,7 +112,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
 {
     // initialization
     _modModelPlus = NULL;
-    _algos = OptimAlgoUtils::getNewAlgos(this,_modClassTree);
+    _algos = OptimAlgoUtils::getNewAlgos(this,_modItemsTree);
 
     // look for modmodelplus
     QDomElement domInfos;
@@ -507,6 +507,13 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
         maxIndex.push_back(subs.size()-1);
     }
 
+    // genuine mo file information
+    QString oldMoFilePath = _modModelPlus->modModel()->filePath();
+    QFile oldMoFile(oldMoFilePath);
+    QFileInfo oldMoFileInfo(oldMoFile);
+
+
+
     int iCase=0;
     bool oneChange;
     while(!index.isEmpty())
@@ -534,62 +541,69 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
         QString newMmoFilePath = newDir.absoluteFilePath(newName+".mmo");
 
         // clone mo file.
-        QString moFilePath = _modModelPlus->modModel()->filePath();
-        QFile moFile(moFilePath);
-        QFileInfo moFileInfo(moFile);
-        QString newMoPath = newDir.filePath(moFileInfo.fileName());
+        QString newMoPath = newDir.filePath(oldMoFileInfo.fileName());
+        bool removeExistingMo = newDir.remove(newMoPath);
+        oldMoFile.copy(newMoPath);
 
-        moFile.copy(newMoPath);
+        // load file (! will replace previously loaded)
+        _project->loadMoFile(newMoPath,false,true);
 
         // create new modModel
-        ModModel* newModModel = new ModModel(_project->moomc(),_project->rootModItem(),_modModelPlus->modModelName(),newMoPath);
+        ModModel* newModModel = dynamic_cast<ModModel*>(_project->modItemsTree()->findItem(_modModelPlus->modModelName()));
 
-        // create new modModelPlus
-        ModModelPlus* newModModelPlus = new ModModelPlus(_project,newModModel->name());
-        newModModelPlus->setMmoFilePath(newMmoFilePath);
-
-        // apply blocksubs
-        BlockSubstitutions *curSubBlocks = new BlockSubstitutions();
-
-        oneChange = false;
-        for(int i=0; i<index.size();i++)
+        if(newModModel)
         {
-            QString replacedComp = map.uniqueKeys().at(i);
-            QString replacingComp = map.values(map.uniqueKeys().at(i)).at(index.at(i));
+            // create new modModelPlus
+            ModModelPlus* newModModelPlus = new ModModelPlus(_project,newModModel->name());
+            newModModelPlus->setMmoFilePath(newMmoFilePath);
 
-            if(replacedComp != replacingComp)
+            // apply blocksubs
+            BlockSubstitutions *curSubBlocks = new BlockSubstitutions();
+
+            oneChange = false;
+            for(int i=0; i<index.size();i++)
             {
-                BlockSubstitution* blockSub = _blockSubstitutions->find(replacedComp,replacingComp);
-                if(blockSub)
+                QString replacedComp = map.uniqueKeys().at(i);
+                QString replacingComp = map.values(map.uniqueKeys().at(i)).at(index.at(i));
+
+                if(replacedComp != replacingComp)
                 {
-                    oneChange = oneChange || newModModelPlus->applyBlockSub(blockSub,true);
-                    curSubBlocks->push_back(blockSub);
+                    BlockSubstitution* blockSub = _blockSubstitutions->find(replacedComp,replacingComp);
+                    if(blockSub)
+                    {
+                        oneChange =  newModModelPlus->applyBlockSub(blockSub,true) || oneChange ;
+                        curSubBlocks->push_back(blockSub);
+                    }
                 }
+
             }
 
-        }
-
-        if(oneChange)
-        {
-            bool compiledOk = newModModelPlus->compile(ctrl());
-
-            if(compiledOk)
+            if(oneChange)
             {
-                // store subModel and subBlocks
-                subModels.push_back(newModModelPlus);
-                subBlocks.push_back(curSubBlocks);
-                _foldersToCopy << newFolder;
+                bool compiledOk = newModModelPlus->compile(ctrl());
 
-                InfoSender::instance()->send( Info(ListInfo::SUBMODELADDED,newName));
-            }
-            else
-            {
-                InfoSender::instance()->send( Info(ListInfo::SUBMODELNOTADDED,newName));
+                if(compiledOk)
+                {
+                    // store subModel and subBlocks
+                    subModels.push_back(newModModelPlus);
+                    subBlocks.push_back(curSubBlocks);
+                    _foldersToCopy << newFolder;
+
+                    InfoSender::instance()->send( Info(ListInfo::SUBMODELADDED,newName));
+                }
+                else
+                {
+                    InfoSender::instance()->send( Info(ListInfo::SUBMODELNOTADDED,newName));
+                }
             }
         }
         iCase++;
         index = LowTools::nextIndex(index,maxIndex);
     }
+
+    // reload genuine mo file
+    if(iCase>0)
+        _project->loadMoFile(oldMoFilePath,false,true);
 }
 
 ModModelPlus* Optimization::modModelPlus() const

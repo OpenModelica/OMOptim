@@ -49,6 +49,7 @@
 #include "MOSettings.h"
 
 class ModModelPlus;
+class ModItemsTree;
 
 /**
   * \brief ModLoader offers loading functions for openmodelica.
@@ -62,8 +63,8 @@ public:
         ModLoader(MOomc *moomc);
 
 	// Load functions
-        void loadMoFile(ModItem* rootClass,QString filePath,bool forceLoad = true);
-        void loadMoFiles(ModItem* rootClass,QStringList filePaths, bool forceLoad = true);
+        void loadMoFile(ModItemsTree* modItemsTree,QString filePath,bool forceLoad = true);
+        void loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bool forceLoad = true);
 
         int getDepthMax();
 

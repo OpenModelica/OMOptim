@@ -48,31 +48,31 @@
 
 namespace OptimAlgoUtils{
 
-        static OptimAlgo* getNewAlgo(Project* _project,Problem* _problem,ModItemsTree* _modClassTree,int iAlgo)
+        static OptimAlgo* getNewAlgo(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree,int iAlgo)
 	{
 		switch(iAlgo)
 		{
                 case OptimAlgosList::iNSGA2:
-                        return new NSGA2(_project,_problem,_modClassTree);
+                        return new NSGA2(_project,_problem,_modItemsTree);
                 case OptimAlgosList::iSPEA2:
-                        return new SPEA2(_project,_problem,_modClassTree);
+                        return new SPEA2(_project,_problem,_modItemsTree);
                 case OptimAlgosList::iSPEA2Adapt:
-                        return new SPEA2Adapt(_project,_problem,_modClassTree);
+                        return new SPEA2Adapt(_project,_problem,_modItemsTree);
                 case OptimAlgosList::iSA1:
-                        return new SA1(_project,_problem,_modClassTree);
+                        return new SA1(_project,_problem,_modItemsTree);
 		default:
 			//Problem
 			return NULL;
 		}
 	}
 
-        static QList<OptimAlgo*> getNewAlgos(Problem *problem,ModItemsTree* modClassTree)
+        static QList<OptimAlgo*> getNewAlgos(Problem *problem,ModItemsTree* modItemsTree)
 	{
                 QList<OptimAlgo*> algos;
                 for(int i=0;i<OptimAlgosList::nbMyAlgos;i++)
 		{
                         OptimAlgo* newAlgo;
-                        newAlgo = getNewAlgo(problem->project(),problem,modClassTree,i);
+                        newAlgo = getNewAlgo(problem->project(),problem,modItemsTree,i);
 				algos.push_back(newAlgo);
 		}
 		return algos;

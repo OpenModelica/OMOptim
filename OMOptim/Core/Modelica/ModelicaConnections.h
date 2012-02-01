@@ -55,7 +55,7 @@ public:
 	~ModelicaConnections(void);
 
 private :
-        ModItemsTree* _modClassTree;
+        ModItemsTree* _modItemsTree;
 
 public :
 
