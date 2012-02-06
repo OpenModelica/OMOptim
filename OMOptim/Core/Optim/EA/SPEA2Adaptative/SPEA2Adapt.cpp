@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file SPEA2Adapt.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file SPEA2Adapt.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 
   */
 /*
@@ -96,18 +96,18 @@
 
 SPEA2Adapt::SPEA2Adapt():EABase()
 {
-	setDefaultParameters();
+    setDefaultParameters();
 }
 
 SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModItemsTree* modItemsTree)
-:EABase(project,problem,modItemsTree)
+    :EABase(project,problem,modItemsTree)
 {
-	setDefaultParameters();
+    setDefaultParameters();
 };
 
 
 SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,ModItemsTree* modItemsTree,MOParameters* parameters)
-:EABase(project,problem,modItemsTree)
+    :EABase(project,problem,modItemsTree)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
@@ -119,13 +119,13 @@ SPEA2Adapt::SPEA2Adapt(const SPEA2Adapt & ea):EABase(ea)
 
 EABase* SPEA2Adapt::clone() const
 {
-	SPEA2Adapt* newEA = new SPEA2Adapt(*this);
-	return newEA ;
+    SPEA2Adapt* newEA = new SPEA2Adapt(*this);
+    return newEA ;
 }
 
 QString SPEA2Adapt::name()
 {
-	return("SPEA2Adapt");
+    return("SPEA2Adapt");
 }
 
 void SPEA2Adapt::setDefaultParameters()
@@ -142,190 +142,195 @@ bool SPEA2Adapt::acceptMultiObjectives()
 // main
 Result* SPEA2Adapt::launch(QString tempDir)
 {
-	// init random
-	rng.reseed(time(NULL));
+    // init random
+    rng.reseed(time(NULL));
 
-	int argc=0;
-	char *argv1 = "";
-	char **argv = &argv1;
+    int argc=0;
+    char *argv1 = "";
+    char **argv = &argv1;
 
-	eoParser parser(argc, argv);  // for user-parameter reading
-	eoState state;
+    eoParser parser(argc, argv);  // for user-parameter reading
+    eoState state;
 
-	/************************************
-	BOUNDS
-	************************************/
-	std::vector<eoRealInterval> doubleBounds;
-	std::vector<eoIntInterval> intBounds;
-	int nbDouble=0,nbInt=0,nbBool=0;
-	
-
-        EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
+    /************************************
+ BOUNDS
+ ************************************/
+    std::vector<eoRealInterval> doubleBounds;
+    std::vector<eoIntInterval> intBounds;
+    int nbDouble=0,nbInt=0,nbBool=0;
 
 
-	/************************************
-	PROGRESS AND CONTINUATOR
-	************************************/
-        unsigned initPopSize = _parameters->value(SPEA2AdaptParameters::POPULATIONSIZE,20).toInt();
-        unsigned offSpringRate = _parameters->value(SPEA2AdaptParameters::OFFSPRINGRATE,3).toInt();
-        unsigned nTotalGen = _parameters->value(SPEA2AdaptParameters::MAXGENERATIONS,100).toInt();
-	unsigned nTotalEvals = initPopSize + initPopSize*nTotalGen*offSpringRate;
-
-	OMEAProgress OMEAProgress;
-	connect(&OMEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
-	connect(&OMEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
-			
-	eoGenContinue < EOAdapt > genContinuator(nTotalGen);
-
-	/************************************
-	FITNESS EVALUATION
-	************************************/
-	moeoEvalFunc < EOAdapt > *plainEval;
-		plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
-                        _modItemsTree);
-
-	OMEAEvalFuncCounter<EOAdapt>* eval = new OMEAEvalFuncCounter<EOAdapt> (* plainEval,&OMEAProgress,nTotalEvals);
+    EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 
 
-	
+    /************************************
+ PROGRESS AND CONTINUATOR
+ ************************************/
+    unsigned initPopSize = _parameters->value(SPEA2AdaptParameters::POPULATIONSIZE,20).toInt();
+    unsigned offSpringRate = _parameters->value(SPEA2AdaptParameters::OFFSPRINGRATE,3).toInt();
+    unsigned nTotalGen = _parameters->value(SPEA2AdaptParameters::MAXGENERATIONS,100).toInt();
+    unsigned nTotalEvals = initPopSize + initPopSize*nTotalGen*offSpringRate;
 
-	//************************************
-	//INITIAL POPULATION
-	//************************************/
-	SPEA2AdaptInitBounded<EOAdapt> *init = new SPEA2AdaptInitBounded<EOAdapt>(doubleBounds,intBounds,nbBool,initPopSize);
-	//state.storeFunctor(init);
+    OMEAProgress OMEAProgress;
+    connect(&OMEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
+    connect(&OMEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
 
-	   
-	///************************************
-	//CROSSOVER AND MUTATION
-	//************************************/
-        SBCrossover<EOAdapt> *xover = new SBCrossover <EOAdapt>(_parameters);
-	//state.storeFunctor(xover);
+    eoGenContinue < EOAdapt > genContinuator(nTotalGen);
 
-        EAAdapt1Mutation<EOAdapt> *mutation = new EAAdapt1Mutation<EOAdapt>(doubleBounds,intBounds,_parameters);
-	//state.storeFunctor(mutation);
+    /************************************
+ FITNESS EVALUATION
+ ************************************/
+    moeoEvalFunc < EOAdapt > *plainEval;
+    plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
+                                                   _modItemsTree);
 
-	eoSequentialOp<EOAdapt> *op = new eoSequentialOp<EOAdapt>;
-	//state.storeFunctor(op);
-	op -> add(*xover, 1.0);	 // always do crossover (probabilities are taken into account inside)
-	op -> add(*mutation, 1.0); // and mutation 
-
-	/************************************
-	POPULATION
-	************************************/
-	//eoPop<EOAdapt>& pop = state.takeOwnership(eoPop<EOAdapt>());
-	eoPop<EOAdapt> pop;
-	bool loadFailed=false;
-        bool useStartFile = _parameters->value(SPEA2AdaptParameters::USESTARTFILE,false).toBool();
-        QString reloadFilePath = _parameters->value(SPEA2AdaptParameters::STARTFILEPATH).toString();
-
-        if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
-	{
-
-		// create another state for reading
-		eoState inState;		// a state for loading - WITHOUT the parser
-		// register the rng and the pop in the state, so they can be loaded,
-		// and the present run will be the exact continuation of the saved run
-		// eventually with different parameters
-		inState.registerObject(pop);
-		inState.registerObject(rng);
-		
-
-                std::string str = reloadFilePath.toLatin1().data();
-		try{
-			inState.load(str);
-		}
-		catch(std::exception &e)
-		{
-                    InfoSender::instance()->send(Info("Loading start file failed :"+QString(e.what()),ListInfo::WARNING2));
-			loadFailed = true;
-		}
-                bool reinitStdDev= _parameters->value(SPEA2AdaptParameters::REINITSTDDEV).toBool();
-                if(reinitStdDev)
-		{
-			EAAdaptReinitStdDev<EOAdapt>::reinitDblStdDev(pop,doubleBounds,initPopSize);
-		}
-	}
-
-	if(loadFailed)
-	{
-		pop.clear();
-		pop = state.takeOwnership(eoPop<EOAdapt>());
-	}
-
-	if(pop.size() < initPopSize)
-	{
-		pop.append(initPopSize,*init);
-	}
-
-	// for future stateSave, register the algorithm into the state
-	state.registerObject(parser);
-	state.registerObject(pop);
-	state.registerObject(rng);	
+    OMEAEvalFuncCounter<EOAdapt>* eval = new OMEAEvalFuncCounter<EOAdapt> (* plainEval,&OMEAProgress,nTotalEvals);
 
 
-	/************************************
-	ARCHIVE
-	************************************/
- 	moeoUnboundedArchive<EOAdapt> arch;
 
-	/************************************
-	STOPPING CRITERIA
-	************************************/
-	MyEAEvalContinue<EOAdapt> *evalCont = new MyEAEvalContinue<EOAdapt>(*eval,nTotalEvals,&_stop);
-	//state.storeFunctor(evalCont);
 
-	/************************************
-	OUTPUT
-	************************************/
-        eoCheckPoint<EOAdapt>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir);
+    //************************************
+    //INITIAL POPULATION
+    //************************************/
+    SPEA2AdaptInitBounded<EOAdapt> *init = new SPEA2AdaptInitBounded<EOAdapt>(doubleBounds,intBounds,nbBool,initPopSize);
+    //state.storeFunctor(init);
 
-	/************************************
-	MONITOR
-	************************************/
-	 // Create a counter parameter
+
+    ///************************************
+    //CROSSOVER AND MUTATION
+    //************************************/
+    SBCrossover<EOAdapt> *xover = new SBCrossover <EOAdapt>(_parameters);
+    //state.storeFunctor(xover);
+
+    EAAdapt1Mutation<EOAdapt> *mutation = new EAAdapt1Mutation<EOAdapt>(doubleBounds,intBounds,_parameters);
+    //state.storeFunctor(mutation);
+
+    eoSequentialOp<EOAdapt> *op = new eoSequentialOp<EOAdapt>;
+    //state.storeFunctor(op);
+    op -> add(*xover, 1.0);	 // always do crossover (probabilities are taken into account inside)
+    op -> add(*mutation, 1.0); // and mutation
+
+    /************************************
+ POPULATION
+ ************************************/
+    //eoPop<EOAdapt>& pop = state.takeOwnership(eoPop<EOAdapt>());
+    eoPop<EOAdapt> pop;
+    bool loadFailed=false;
+    bool useStartFile = _parameters->value(SPEA2AdaptParameters::USESTARTFILE,false).toBool();
+    QString reloadFilePath = _parameters->value(SPEA2AdaptParameters::STARTFILEPATH).toString();
+
+    if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
+    {
+
+        // create another state for reading
+        eoState inState;		// a state for loading - WITHOUT the parser
+        // register the rng and the pop in the state, so they can be loaded,
+        // and the present run will be the exact continuation of the saved run
+        // eventually with different parameters
+        inState.registerObject(pop);
+        inState.registerObject(rng);
+
+
+        std::string str = reloadFilePath.toLatin1().data();
+        try{
+            inState.load(str);
+        }
+        catch(std::exception &e)
+        {
+            InfoSender::instance()->send(Info("Loading start file failed :"+QString(e.what()),ListInfo::WARNING2));
+            loadFailed = true;
+        }
+        if(!loadFailed)
+        {
+            InfoSender::instance()->send(Info("Loading start file success : "+reloadFilePath,ListInfo::NORMAL2));
+        }
+        bool reinitStdDev= _parameters->value(SPEA2AdaptParameters::REINITSTDDEV).toBool();
+        if(reinitStdDev)
+        {
+            EAAdaptReinitStdDev<EOAdapt>::reinitDblStdDev(pop,doubleBounds,initPopSize);
+        }
+    }
+
+    if(loadFailed)
+    {
+        pop.clear();
+        pop = state.takeOwnership(eoPop<EOAdapt>());
+    }
+
+
+    if(pop.size() < initPopSize)
+    {
+        pop.append(initPopSize,*init);
+    }
+
+    // for future stateSave, register the algorithm into the state
+    state.registerObject(parser);
+    state.registerObject(pop);
+    state.registerObject(rng);
+
+
+    /************************************
+ ARCHIVE
+ ************************************/
+    moeoUnboundedArchive<EOAdapt> arch;
+
+    /************************************
+ STOPPING CRITERIA
+ ************************************/
+    MyEAEvalContinue<EOAdapt> *evalCont = new MyEAEvalContinue<EOAdapt>(*eval,nTotalEvals,&_stop);
+    //state.storeFunctor(evalCont);
+
+    /************************************
+ OUTPUT
+ ************************************/
+    eoCheckPoint<EOAdapt>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir);
+
+    /************************************
+ MONITOR
+ ************************************/
+    // Create a counter parameter
     eoValueParam<unsigned> generationCounter(0, "Gen.");
     // now some statistics on the population:
     // Best fitness in population
-   
+
     // the Fitness Distance Correlation
     // need first an object to compute the distances
- //   eoQuadDistance<EOAdapt> dist;
-	//// Hamming distance
- //   eoFDCStat<EOAdapt> fdcStat(dist);
- //   // Add them to the checkpoint to get them called at the appropriate time
- //   checkpoint.add(averageStat);
- //   checkpoint.add(fdcStat);
+    //   eoQuadDistance<EOAdapt> dist;
+    //// Hamming distance
+    //   eoFDCStat<EOAdapt> fdcStat(dist);
+    //   // Add them to the checkpoint to get them called at the appropriate time
+    //   checkpoint.add(averageStat);
+    //   checkpoint.add(fdcStat);
 
-	// The Stdout monitor will print parameters to the screen ...
+    // The Stdout monitor will print parameters to the screen ...
     MyEoGnuplot1DMonitor monitor("export_monitor.xg",false);
     // when called by the checkpoint (i.e. at every generation)
     checkpoint.add(monitor);
 
     // the monitor will output a series of parameters: add them
     monitor.add(generationCounter);
-   // monitor.add(eval);		// because now eval is an eoEvalFuncCounter!
+    // monitor.add(eval);		// because now eval is an eoEvalFuncCounter!
     //monitor.add(bestStat);
     //monitor.add(SecondStat);
     //monitor.add(fdcStat);
 
-	///************************************
-	//BUILD SPEAAdapt1
-	//************************************/
-        double rate = _parameters->value(SPEA2AdaptParameters::OFFSPRINGRATE,3).toDouble();
-	SPEA2Algo<EOAdapt> spea2(checkpoint,*eval,*xover,1,*mutation,1,arch,initPopSize,rate,true);
+    ///************************************
+    //BUILD SPEAAdapt1
+    //************************************/
+    double rate = _parameters->value(SPEA2AdaptParameters::OFFSPRINGRATE,3).toDouble();
+    SPEA2Algo<EOAdapt> spea2(checkpoint,*eval,*xover,1,*mutation,1,arch,initPopSize,rate,true);
 
-	///************************************
-	//RUN THE ALGO
-	//************************************/
-	spea2(pop);
+    ///************************************
+    //RUN THE ALGO
+    //************************************/
+    spea2(pop);
 
-	///************************************
-	//GETTING RESULT FROM FINAL ARCHIVE
-	//************************************/
-        Result* result = buildResult(arch);
+    ///************************************
+    //GETTING RESULT FROM FINAL ARCHIVE
+    //************************************/
+    Result* result = buildResult(arch);
 
 
-	return result;
+    return result;
 }
 

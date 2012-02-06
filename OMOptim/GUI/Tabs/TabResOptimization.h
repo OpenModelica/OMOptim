@@ -70,6 +70,7 @@
 #include "Widgets/WidgetToolBar.h"
 #include "Widgets/WidgetCalculateMooPoints.h"
 #include "Widgets/WidgetOptimActions.h"
+#include "Widgets/WidgetResultInfos.h"
 
 namespace Ui {
     class TabResOptimizationClass;
@@ -89,9 +90,14 @@ public:
 
         WidgetMooPointsList* _widgetMooPointsList;
         WidgetMooPlot* _widgetMooPlot;
+#ifdef USEBLOCKSUB
+        WidgetBlocks *_widgetBlocks;
+#endif
         WidgetTableRecVar* _widgetTableRecVar;
         WidgetOptimActions* _widgetOptimActions;
         WidgetCtrlParameters *_widgetCtrl;
+        WidgetOptParameters *_widgetOptParameters;
+        WidgetResultInfos *_widgetInfos;
 
 
 };

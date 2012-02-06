@@ -59,7 +59,7 @@
 #include <qwt_scale_draw.h>
 #include <qwt_math.h>
 #include <qwt_picker.h>
-
+#include "MyTextLog.h"
 
 namespace Ui {
     class WidgetProjectInfos_Class;
@@ -72,11 +72,11 @@ public:
     WidgetProjectInfos(Project *project, QList<QAction*> recentProjActions,QWidget *parent);
     virtual ~WidgetProjectInfos();
 
-    Project *project;
+    Project *_project;
 
     //UI
-    Ui::WidgetProjectInfos_Class *ui;
-
+    Ui::WidgetProjectInfos_Class *_ui;
+    MyTextLog * _myTextBrowser;
 
     void actualizeGuiFromProject();
 

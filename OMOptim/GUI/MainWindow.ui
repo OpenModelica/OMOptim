@@ -178,7 +178,7 @@
      <x>0</x>
      <y>0</y>
      <width>1146</width>
-     <height>18</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -219,6 +219,7 @@
     </property>
     <addaction name="actionLoadMoFile"/>
     <addaction name="actionLoadModelicaLibrary"/>
+    <addaction name="actionRefreshModTree"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -498,6 +499,11 @@ color:white;
   <action name="actionClearLog">
    <property name="text">
     <string>clear Log</string>
+   </property>
+  </action>
+  <action name="actionRefreshModTree">
+   <property name="text">
+    <string>Refresh models tree</string>
    </property>
   </action>
  </widget>

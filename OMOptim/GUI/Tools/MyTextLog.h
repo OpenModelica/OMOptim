@@ -48,7 +48,7 @@ class MyTextLog : public QTextBrowser
 {
     Q_OBJECT
 public:
-	MyTextLog(void);
+        MyTextLog(QWidget* parent);
 	~MyTextLog(void);
 
     public slots :

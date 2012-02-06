@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OptimResult.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+        @file OptimResult.cpp
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
   @version
 
   */
@@ -47,15 +47,15 @@ OptimResult::OptimResult():Result()
     _optObjectivesResults = new MOOptVector(true,false,true); //objectives are constant for one scan
     _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
 
-	// files to copy
+    // files to copy
     _filesToCopy << "iteration*.sav";
 
-	_optVarsFrontFileName = "optVarsFront.csv";
-	_allVarsFrontFileName = "allVarsFront.csv";
+    _optVarsFrontFileName = "optVarsFront.csv";
+    _allVarsFrontFileName = "allVarsFront.csv";
 
     _algo = NULL;
-	_curPoint = -1;
-	_curScan = -1;
+    _curPoint = -1;
+    _curScan = -1;
 }
 
 OptimResult::OptimResult(Project* project, ModModelPlus* modModelPlus, const Optimization & problem,
@@ -82,9 +82,10 @@ OptimResult::OptimResult(Project* project, ModModelPlus* modModelPlus, const Opt
 }
 
 OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok)
-:Result(project,(const Problem&)problem)
+    :Result(project,(const Problem&)problem)
 {
     _modModelPlus = problem.modModelPlus();
+    this->setSaveFolder(resultDir.absolutePath());
 
     _recomputedVariables = new MOOptVector(true,true,true,_modModelPlus);
     _optObjectivesResults = new MOOptVector(true,false,true,_modModelPlus); //objectives are constant for one scan
@@ -174,14 +175,14 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
 OptimResult::OptimResult(const OptimResult &res)
     :Result(res)
 {
-	_algo = res._algo->clone();
+    _algo = res._algo->clone();
 
-	_optVariablesResults = res._optVariablesResults->clone();
-	_optObjectivesResults = res._optObjectivesResults->clone();
-	_recomputedVariables = res._recomputedVariables->clone();
+    _optVariablesResults = res._optVariablesResults->clone();
+    _optObjectivesResults = res._optObjectivesResults->clone();
+    _recomputedVariables = res._recomputedVariables->clone();
 
-	_curScan = res._curScan;
-	_curPoint = res._curPoint;
+    _curScan = res._curScan;
+    _curPoint = res._curPoint;
 }
 
 OptimResult::~OptimResult(void)
@@ -278,7 +279,7 @@ void OptimResult::updateRecomputedPointsFromFolder()
     _recomputedPoints.clear();
 
     // Filling final values from frontFile (csv)
-    QDir dir(_problem->saveFolder());
+    QDir dir(this->saveFolder());
 
     // Looking for recomputed points
     QString pointFolder;
@@ -330,163 +331,163 @@ void OptimResult::updateRecomputedPointsFromFolder()
 
 QString OptimResult::buildOptVarsFrontCSV(QString separator)
 {
-	QString csv;
-	int iObj,iVar,nbPoints,iPoint;
+    QString csv;
+    int iObj,iVar,nbPoints,iPoint;
 
-	// avoid identical columns
-	QStringList objNames;
-	QStringList varNames;
-	vector<int> varKeeped; // contains var index that are not in commun with objectives
-	vector<int> objKeeped;
+    // avoid identical columns
+    QStringList objNames;
+    QStringList varNames;
+    vector<int> varKeeped; // contains var index that are not in commun with objectives
+    vector<int> objKeeped;
 
-	for(iObj=0;iObj<_optObjectivesResults->size();iObj++)
-	{
-		objNames << _optObjectivesResults->at(iObj)->name();
-		objKeeped.push_back(iObj);
-	}
-	for(iVar=0;iVar<_optVariablesResults->size();iVar++)
-	{
-		varNames << _optVariablesResults->at(iVar)->name();
-	}
+    for(iObj=0;iObj<_optObjectivesResults->size();iObj++)
+    {
+        objNames << _optObjectivesResults->at(iObj)->name();
+        objKeeped.push_back(iObj);
+    }
+    for(iVar=0;iVar<_optVariablesResults->size();iVar++)
+    {
+        varNames << _optVariablesResults->at(iVar)->name();
+    }
 
-	int iIdenticalObj;
-	for(iVar=0;iVar<varNames.size();iVar++)
-	{
-		iIdenticalObj = objNames.indexOf(varNames.at(iVar));
+    int iIdenticalObj;
+    for(iVar=0;iVar<varNames.size();iVar++)
+    {
+        iIdenticalObj = objNames.indexOf(varNames.at(iVar));
 
-		if(iIdenticalObj==-1)
-		{
-			varKeeped.push_back(iVar);
-		}
-	}
+        if(iIdenticalObj==-1)
+        {
+            varKeeped.push_back(iVar);
+        }
+    }
 
 
-	// writing names
-	for(iObj=0;iObj<_optObjectivesResults->size();iObj++)
-	{
-		csv += _optObjectivesResults->at(iObj)->name();
-		csv += separator;
-	}
+    // writing names
+    for(iObj=0;iObj<_optObjectivesResults->size();iObj++)
+    {
+        csv += _optObjectivesResults->at(iObj)->name();
+        csv += separator;
+    }
 
-	for(iVar=0;iVar<varKeeped.size();iVar++)
-	{
-		csv += _optVariablesResults->at(varKeeped.at(iVar))->name();
-		csv += separator;
-	}
+    for(iVar=0;iVar<varKeeped.size();iVar++)
+    {
+        csv += _optVariablesResults->at(varKeeped.at(iVar))->name();
+        csv += separator;
+    }
 
-	// adding subModel index if necessary
-	if(_subBlocks.size()>1)
-	{
-		csv += "subBlocksIndex";
-		csv += separator;
-	}
+    // adding subModel index if necessary
+    if(_subBlocks.size()>1)
+    {
+        csv += "subBlocksIndex";
+        csv += separator;
+    }
 
-	csv += "\n";
+    csv += "\n";
 
-	// writing values
-	nbPoints = _optObjectivesResults->nbPoints();
+    // writing values
+    nbPoints = _optObjectivesResults->nbPoints();
 
-	for(iPoint = 0; iPoint < nbPoints; iPoint++)
-	{
-		for(iObj=0;iObj<_optObjectivesResults->size();iObj++)
-		{
-			csv += QString::number(_optObjectivesResults->at(iObj)->finalValue(0,iPoint));
-			csv += separator;
-		}
-		for(iVar=0;iVar<varKeeped.size();iVar++)
-		{
-			csv += QString::number(_optVariablesResults->at(varKeeped.at(iVar))->finalValue(0,iPoint));
-			csv += separator;
-		}
-		// adding subModel index if necessary
-		if(_subBlocks.size()>1)
-		{
-			csv += QString::number(_iSubModels.at(iPoint));
-			csv += separator;
-		}
-		csv += "\n";
-	}
+    for(iPoint = 0; iPoint < nbPoints; iPoint++)
+    {
+        for(iObj=0;iObj<_optObjectivesResults->size();iObj++)
+        {
+            csv += QString::number(_optObjectivesResults->at(iObj)->finalValue(0,iPoint));
+            csv += separator;
+        }
+        for(iVar=0;iVar<varKeeped.size();iVar++)
+        {
+            csv += QString::number(_optVariablesResults->at(varKeeped.at(iVar))->finalValue(0,iPoint));
+            csv += separator;
+        }
+        // adding subModel index if necessary
+        if(_subBlocks.size()>1)
+        {
+            csv += QString::number(_iSubModels.at(iPoint));
+            csv += separator;
+        }
+        csv += "\n";
+    }
 
-	return csv;
+    return csv;
 }
 
 QString OptimResult::buildAllVarsFrontCSV(QString separator)
 {
-	int nbVars = _recomputedVariables->size();
-	QList<int> listVars;
-	for(int i=0;i<nbVars;i++)
-		listVars.push_back(i);
+    int nbVars = _recomputedVariables->size();
+    QList<int> listVars;
+    for(int i=0;i<nbVars;i++)
+        listVars.push_back(i);
 
-	if(nbVars==0)
-		return QString();
+    if(nbVars==0)
+        return QString();
 
-	int nbPoints = _recomputedVariables->at(0)->nbPoints();
-	QList<int> listPoints;
-	for(int i=0;i<nbPoints;i++)
-		listPoints.push_back(i);
+    int nbPoints = _recomputedVariables->at(0)->nbPoints();
+    QList<int> listPoints;
+    for(int i=0;i<nbPoints;i++)
+        listPoints.push_back(i);
 
-	return buildAllVarsFrontCSV(listVars,listPoints,separator);
+    return buildAllVarsFrontCSV(listVars,listPoints,separator);
 }
 
 QString OptimResult::buildAllVarsFrontCSV(QList<int> listPoints,QString separator)
 {
-	int nbVars = _recomputedVariables->size();
-	QList<int> listVars;
-	for(int i=0;i<nbVars;i++)
-		listVars.push_back(i);
+    int nbVars = _recomputedVariables->size();
+    QList<int> listVars;
+    for(int i=0;i<nbVars;i++)
+        listVars.push_back(i);
 
-	return buildAllVarsFrontCSV(listVars,listPoints,separator);
+    return buildAllVarsFrontCSV(listVars,listPoints,separator);
 }
 
 QString OptimResult::buildAllVarsFrontCSV(QList<int> listVars, QList<int> listPoints,QString separator)
 {
-	QString csv;
-	int iVar,nbPoints,iPoint;
+    QString csv;
+    int iVar,nbPoints,iPoint;
 
-	// avoid identical columns
-	QStringList varNames;
+    // avoid identical columns
+    QStringList varNames;
 
 
-	if(_recomputedVariables->size()>0)
-	{
-		// writing names
-		for(iVar=0;iVar<listVars.size();iVar++)
-		{
-			csv += _recomputedVariables->at(iVar)->name();
-			csv += separator;
-		}
+    if(_recomputedVariables->size()>0)
+    {
+        // writing names
+        for(iVar=0;iVar<listVars.size();iVar++)
+        {
+            csv += _recomputedVariables->at(iVar)->name();
+            csv += separator;
+        }
 
-		// adding subModel index if necessary
-		if(_subBlocks.size()>1)
-		{
-			csv += "subBlocksIndex";
-			csv += separator;
-		}
-		csv += "\n";
+        // adding subModel index if necessary
+        if(_subBlocks.size()>1)
+        {
+            csv += "subBlocksIndex";
+            csv += separator;
+        }
+        csv += "\n";
 
-		// writing values
-		nbPoints = listPoints.size();
+        // writing values
+        nbPoints = listPoints.size();
 
-		for(iPoint = 0; iPoint < nbPoints; iPoint++)
-		{
-			for(iVar=0;iVar<listVars.size();iVar++)
-			{
-				if(listVars.at(iVar)<_recomputedVariables->size())
-				{
-					csv += QString::number(_recomputedVariables->at(listVars.at(iVar))->finalValue(0,listPoints.at(iPoint)));
-					csv += separator;
-				}
-			}
-			// adding subModel index if necessary
-			if(_subBlocks.size()>1)
-			{
-				csv += QString::number(_iSubModels.at(listPoints.at(iPoint)));
-				csv += separator;
-			}
-			csv += "\n";
-		}
-	}
-	return csv;
+        for(iPoint = 0; iPoint < nbPoints; iPoint++)
+        {
+            for(iVar=0;iVar<listVars.size();iVar++)
+            {
+                if(listVars.at(iVar)<_recomputedVariables->size())
+                {
+                    csv += QString::number(_recomputedVariables->at(listVars.at(iVar))->finalValue(0,listPoints.at(iPoint)));
+                    csv += separator;
+                }
+            }
+            // adding subModel index if necessary
+            if(_subBlocks.size()>1)
+            {
+                csv += QString::number(_iSubModels.at(listPoints.at(iPoint)));
+                csv += separator;
+            }
+            csv += "\n";
+        }
+    }
+    return csv;
 }
 
 QDomElement OptimResult::toXmlData(QDomDocument & doc)
@@ -498,84 +499,84 @@ QDomElement OptimResult::toXmlData(QDomDocument & doc)
     cRoot.appendChild(cResult);
 
 
-	// Result definition
-	QDomElement cInfos = doc.createElement("Infos");
-	cInfos.setAttribute("name", name());
+    // Result definition
+    QDomElement cInfos = doc.createElement("Infos");
+    cInfos.setAttribute("name", name());
     //cInfos.setAttribute("type", problemType());
-        cInfos.setAttribute("date", _date.toString());
-        cInfos.setAttribute("duration", _duration.toString());
-	cResult.appendChild(cInfos);
+    cInfos.setAttribute("date", _date.toString());
+    cInfos.setAttribute("duration", _duration.toString());
+    cResult.appendChild(cInfos);
 
 
-	// SubModels blocks
-	QDomElement cAllBlocks = doc.createElement("AllBlockSubstitutions");
-	for(int i=0;i<_subBlocks.size();i++)
-	{
-		QDomElement cBlocks = _subBlocks.at(i)->toXmlData(doc);
-		cBlocks.setTagName("BlockSubstitutions"+QString::number(i));
-		cAllBlocks.appendChild(cBlocks);
-	}
-	cResult.appendChild(cAllBlocks);
+    // SubModels blocks
+    QDomElement cAllBlocks = doc.createElement("AllBlockSubstitutions");
+    for(int i=0;i<_subBlocks.size();i++)
+    {
+        QDomElement cBlocks = _subBlocks.at(i)->toXmlData(doc);
+        cBlocks.setTagName("BlockSubstitutions"+QString::number(i));
+        cAllBlocks.appendChild(cBlocks);
+    }
+    cResult.appendChild(cAllBlocks);
 
 
-	// Front File (containing values on pareto curve)
-	QDomElement cOptFrontFile = doc.createElement("OptVarsFrontFile");
-	cOptFrontFile.setAttribute("path", _optVarsFrontFileName);
-	cResult.appendChild(cOptFrontFile);
-	QDomElement cAllFrontFile = doc.createElement("AllVarsFrontFile");
-	cAllFrontFile.setAttribute("path", _allVarsFrontFileName);
-	cResult.appendChild(cAllFrontFile);
+    // Front File (containing values on pareto curve)
+    QDomElement cOptFrontFile = doc.createElement("OptVarsFrontFile");
+    cOptFrontFile.setAttribute("path", _optVarsFrontFileName);
+    cResult.appendChild(cOptFrontFile);
+    QDomElement cAllFrontFile = doc.createElement("AllVarsFrontFile");
+    cAllFrontFile.setAttribute("path", _allVarsFrontFileName);
+    cResult.appendChild(cAllFrontFile);
 
 
-	return cResult;
+    return cResult;
 
 }
 
 
 void OptimResult::setCurPoint(int curPoint)
 {
-	_curPoint = curPoint;
+    _curPoint = curPoint;
 
-	_recomputedVariables->setCurPoint(curPoint);
-	_optVariablesResults->setCurPoint(curPoint);
-	_optObjectivesResults->setCurPoint(curPoint);
+    _recomputedVariables->setCurPoint(curPoint);
+    _optVariablesResults->setCurPoint(curPoint);
+    _optObjectivesResults->setCurPoint(curPoint);
 
-	emit curPointChanged();
+    emit curPointChanged();
 }
 
 void OptimResult::setCurScan(int curScan)
 {
-	_curScan = curScan;
+    _curScan = curScan;
 
-	_recomputedVariables->setCurScan(curScan );
-	_optVariablesResults->setCurScan(curScan );
-	_optObjectivesResults->setCurScan(curScan );
+    _recomputedVariables->setCurScan(curScan );
+    _optVariablesResults->setCurScan(curScan );
+    _optObjectivesResults->setCurScan(curScan );
 
-	emit curPointChanged();
+    emit curPointChanged();
 }
 
 int OptimResult::curPoint()
 {
-	return _curPoint;
+    return _curPoint;
 }
 
 
 void OptimResult::exportFrontCSV(QString fileName, bool allVars)
 {
-	QString csv;
-	if(allVars)
-		csv = buildAllVarsFrontCSV();
-	else
-		csv = buildOptVarsFrontCSV();
+    QString csv;
+    if(allVars)
+        csv = buildAllVarsFrontCSV();
+    else
+        csv = buildOptVarsFrontCSV();
 
-	QFile frontFile(fileName);
-	if(frontFile.exists())
-		frontFile.remove();
+    QFile frontFile(fileName);
+    if(frontFile.exists())
+        frontFile.remove();
 
-	frontFile.open(QIODevice::WriteOnly);
-	QTextStream tsfront( &frontFile );
-	tsfront << csv;
-	frontFile.close();
+    frontFile.open(QIODevice::WriteOnly);
+    QTextStream tsfront( &frontFile );
+    tsfront << csv;
+    frontFile.close();
 }
 
 

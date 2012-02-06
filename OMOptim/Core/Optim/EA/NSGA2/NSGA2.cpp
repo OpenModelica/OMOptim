@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file NSGA2.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file NSGA2.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 
   */
 /*
@@ -92,18 +92,18 @@
 
 NSGA2::NSGA2():EABase()
 {
-	setDefaultParameters();
+    setDefaultParameters();
 }
 
 NSGA2::NSGA2(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree)
-:EABase(_project,_problem,_modItemsTree)
+    :EABase(_project,_problem,_modItemsTree)
 {
-	setDefaultParameters();
+    setDefaultParameters();
 };
 
 
 NSGA2::NSGA2(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree,MOParameters* parameters)
-:EABase(_project,_problem,_modItemsTree)
+    :EABase(_project,_problem,_modItemsTree)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
@@ -115,13 +115,13 @@ NSGA2::NSGA2(const NSGA2 & ea):EABase(ea)
 
 EABase* NSGA2::clone() const
 {
-	NSGA2* newEA = new NSGA2(*this);
-	return newEA ;
+    NSGA2* newEA = new NSGA2(*this);
+    return newEA ;
 }
 
 QString NSGA2::name()
 {
-	return("NSGA2");
+    return("NSGA2");
 }
 
 void NSGA2::setDefaultParameters()
@@ -139,161 +139,165 @@ bool NSGA2::acceptMultiObjectives()
 // main
 Result* NSGA2::launch(QString tempDir)
 {
-	// init random
-	rng.reseed(time(NULL));
+    // init random
+    rng.reseed(time(NULL));
 
-	int argc=0;
-	char *argv1 = "";
-	char **argv = &argv1;
+    int argc=0;
+    char *argv1 = "";
+    char **argv = &argv1;
 
-	eoParser parser(argc, argv);  // for user-parameter reading
-	eoState state;
-
-
-	
-
-	/************************************
-	BOUNDS
-	************************************/
-	std::vector<eoRealInterval> doubleBounds;
-	std::vector<eoIntInterval> intBounds;
-	int nbDouble=0,nbInt=0,nbBool=0;
-
-		EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
-
-
-	/************************************
-	PROGRESS
-	************************************/
-        OMEAProgress* omEAProgress = new OMEAProgress();
-        connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
-        connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
-        int totalEval = _parameters->value(NSGA2Parameters::MAXITERATIONS,50).toInt();
-
-	/************************************
-	FITNESS EVALUATION
-	************************************/
-        moeoEvalFunc < EOStd > *plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modItemsTree);
-
-        OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
-	state.storeFunctor(eval);
-
-
-	//************************************
-	//INITIAL POPULATION
-	//************************************/
-	EAStdInitBounded<EOStd> *init = new EAStdInitBounded<EOStd>(doubleBounds,intBounds,nbBool);
-	state.storeFunctor(init);
-
-
-	///************************************
-	//CROSSOVER AND MUTATION
-	//************************************/
-        SBCrossover<EOStd> *xover = new SBCrossover<EOStd>(_parameters);
-	state.storeFunctor(xover);
-
-        EAStdMutation<EOStd> *mutation = new EAStdMutation<EOStd>(doubleBounds,intBounds,_parameters);
-	state.storeFunctor(mutation);
-
-	eoSequentialOp<EOStd> *op = new eoSequentialOp<EOStd>;
-	state.storeFunctor(op);
-	op -> add(*xover, 1.0);	 // always do crossover (probabilities are taken into account inside)
-	op -> add(*mutation, 1.0); // and mutation 
+    eoParser parser(argc, argv);  // for user-parameter reading
+    eoState state;
 
 
 
 
-	/************************************
-	POPULATION
-	************************************/
-	eoPop<EOStd> pop;
-	bool loadFailed=false;
-        bool useStartFile = _parameters->value(NSGA2Parameters::USESTARTFILE,false).toBool();
-        QString reloadFilePath = _parameters->value(NSGA2Parameters::STARTFILEPATH).toString();
+    /************************************
+ BOUNDS
+ ************************************/
+    std::vector<eoRealInterval> doubleBounds;
+    std::vector<eoIntInterval> intBounds;
+    int nbDouble=0,nbInt=0,nbBool=0;
 
-        if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
-	{
-		// create another state for reading
-		eoState inState;		// a state for loading - WITHOUT the parser
-		// register the rng and the pop in the state, so they can be loaded,
-		// and the present run will be the exact continuation of the saved run
-		// eventually with different parameters
-		inState.registerObject(pop);
-		inState.registerObject(rng);
-		
-
-                std::string str = reloadFilePath.toLatin1().data();
-		try{
-			inState.load(str);
-		}
-		catch(std::exception &e)
-		{
-			InfoSender::instance()->debug("loading start file failed :"+QString(e.what()));
-			loadFailed = true;
-		}
-	}
+    EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 
 
-	if(loadFailed)
-	{
-		pop.clear();
-		pop = state.takeOwnership(eoPop<EOStd>());
-	}
+    /************************************
+ PROGRESS
+ ************************************/
+    OMEAProgress* omEAProgress = new OMEAProgress();
+    connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
+    connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
+    int totalEval = _parameters->value(NSGA2Parameters::MAXITERATIONS,50).toInt();
 
-        int populationSize = _parameters->value(NSGA2Parameters::POPULATIONSIZE,20).toInt();
-        if(pop.size() < populationSize)
-	{
-                pop.append(populationSize,*init);
-	}
+    /************************************
+ FITNESS EVALUATION
+ ************************************/
+    moeoEvalFunc < EOStd > *plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modItemsTree);
 
-	// for future stateSave, register the algorithm into the state
-	state.registerObject(parser);
-	state.registerObject(pop);
-	state.registerObject(rng);	
-
-
-	/************************************
-	ARCHIVE
-	************************************/
-	moeoUnboundedArchive<EOStd> arch;
+    OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
+    state.storeFunctor(eval);
 
 
-	/************************************
-	STOPPING CRITERIA
-	************************************/
-	MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_stop);
-	state.storeFunctor(evalCont);
+    //************************************
+    //INITIAL POPULATION
+    //************************************/
+    EAStdInitBounded<EOStd> *init = new EAStdInitBounded<EOStd>(doubleBounds,intBounds,nbBool);
+    state.storeFunctor(init);
 
 
-	/************************************
-	OUTPUT
-	************************************/
-        eoCheckPoint<EOStd>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir);
+    ///************************************
+    //CROSSOVER AND MUTATION
+    //************************************/
+    SBCrossover<EOStd> *xover = new SBCrossover<EOStd>(_parameters);
+    state.storeFunctor(xover);
 
+    EAStdMutation<EOStd> *mutation = new EAStdMutation<EOStd>(doubleBounds,intBounds,_parameters);
+    state.storeFunctor(mutation);
 
-	///************************************
-	//BUILD NSGA-II
-	//************************************/
-
-
-	NSGA2Algo<EOStd> nsgaII (checkpoint,*eval, *xover, *mutation);
-
-	///************************************
-	//RUN THE ALGO
-	//************************************/
-	nsgaII (pop);
+    eoSequentialOp<EOStd> *op = new eoSequentialOp<EOStd>;
+    state.storeFunctor(op);
+    op -> add(*xover, 1.0);	 // always do crossover (probabilities are taken into account inside)
+    op -> add(*mutation, 1.0); // and mutation
 
 
 
 
+    /************************************
+ POPULATION
+ ************************************/
+    eoPop<EOStd> pop;
+    bool loadFailed=false;
+    bool useStartFile = _parameters->value(NSGA2Parameters::USESTARTFILE,false).toBool();
+    QString reloadFilePath = _parameters->value(NSGA2Parameters::STARTFILEPATH).toString();
 
-	///************************************
-	//GETTING RESULT FROM FINAL ARCHIVE
-	//************************************/
-        Result* result = buildResult(arch);
+    if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
+    {
+        // create another state for reading
+        eoState inState;		// a state for loading - WITHOUT the parser
+        // register the rng and the pop in the state, so they can be loaded,
+        // and the present run will be the exact continuation of the saved run
+        // eventually with different parameters
+        inState.registerObject(pop);
+        inState.registerObject(rng);
 
-	return result;
-	
+
+        std::string str = reloadFilePath.toLatin1().data();
+        try{
+            inState.load(str);
+        }
+        catch(std::exception &e)
+        {
+            InfoSender::instance()->debug("loading start file failed :"+QString(e.what()));
+            loadFailed = true;
+        }
+        if(!loadFailed)
+        {
+            InfoSender::instance()->send(Info("Loading start file success : "+reloadFilePath,ListInfo::NORMAL2));
+        }
+    }
+
+
+    if(loadFailed)
+    {
+        pop.clear();
+        pop = state.takeOwnership(eoPop<EOStd>());
+    }
+
+    int populationSize = _parameters->value(NSGA2Parameters::POPULATIONSIZE,20).toInt();
+    if(pop.size() < populationSize)
+    {
+        pop.append(populationSize,*init);
+    }
+
+    // for future stateSave, register the algorithm into the state
+    state.registerObject(parser);
+    state.registerObject(pop);
+    state.registerObject(rng);
+
+
+    /************************************
+ ARCHIVE
+ ************************************/
+    moeoUnboundedArchive<EOStd> arch;
+
+
+    /************************************
+ STOPPING CRITERIA
+ ************************************/
+    MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_stop);
+    state.storeFunctor(evalCont);
+
+
+    /************************************
+ OUTPUT
+ ************************************/
+    eoCheckPoint<EOStd>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir);
+
+
+    ///************************************
+    //BUILD NSGA-II
+    //************************************/
+
+
+    NSGA2Algo<EOStd> nsgaII (checkpoint,*eval, *xover, *mutation);
+
+    ///************************************
+    //RUN THE ALGO
+    //************************************/
+    nsgaII (pop);
+
+
+
+
+
+    ///************************************
+    //GETTING RESULT FROM FINAL ARCHIVE
+    //************************************/
+    Result* result = buildResult(arch);
+
+    return result;
+
 }
 
 

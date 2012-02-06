@@ -40,7 +40,7 @@
 
 #include "MyTextLog.h"
 #include <QDesktopServices>
-MyTextLog::MyTextLog(void):QTextBrowser()
+MyTextLog::MyTextLog(QWidget* parent):QTextBrowser(parent)
 {
     setAcceptRichText(true);
     connect(this,SIGNAL(anchorClicked(QUrl)),this,SLOT(setSource(QUrl)));

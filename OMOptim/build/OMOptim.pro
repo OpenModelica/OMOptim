@@ -33,7 +33,7 @@ CONFIG(debug, debug|release){
 
 
 
-    DEFINES+= USEBLOCKSUB
+DEFINES+= USEBLOCKSUB
 
 
 
@@ -309,7 +309,8 @@ HEADERS += ../config.h \
     ../Core/Problems/ProblemInterface.h \
     ../Core/Problems/optimizationinterface.h \
     ../Core/Problems/onesimulationinterface.h \
-    ../GUI/Tools/qsciencespinbox.h
+    ../GUI/Tools/qsciencespinbox.h \
+    ../GUI/Widgets/WidgetResultInfos.h
 
 
 
@@ -345,7 +346,8 @@ FORMS += ../GUI/MainWindow.ui \
     ../GUI/Tabs/TabProject.ui \
     ../GUI/Tabs/TabOptimization.ui \
     ../GUI/Tabs/TabOMC.ui \
-    ../GUI/Tabs/TabGeneric.ui
+    ../GUI/Tabs/TabGeneric.ui \
+    ../GUI/Widgets/WidgetResultInfos.ui
  
 
 
@@ -490,12 +492,16 @@ SOURCES += ../main.cpp \
     ../Core/Problems/optimizationinterface.cpp \
     ../Core/Problems/onesimulationinterface.cpp \
     ../Core/Problems/ProblemInterface.cpp \
-    ../GUI/Tools/qsciencespinbox.cpp
+    ../GUI/Tools/qsciencespinbox.cpp \
+    ../GUI/Widgets/WidgetResultInfos.cpp
 
 RESOURCES += \
     ../GUI/Resources/OMOptim.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc
+
+
+
 
 
 

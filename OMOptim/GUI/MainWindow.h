@@ -106,6 +106,7 @@ public slots :
         void onProjectAboutToBeReset();
 	void loadMoFile();
 	void loadModelicaLibrary();
+        void refreshModelTree();
 
 
         void onPushedNewProblem();

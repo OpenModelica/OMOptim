@@ -90,7 +90,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 
 
     // text log
-    _textLog=new MyTextLog();
+    _textLog=new MyTextLog(this);
     _ui->layoutTextLog->addWidget(_textLog);
     _textLog->setOpenExternalLinks(true);
 
@@ -141,6 +141,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionClearRecent, SIGNAL(triggered()), this, SLOT(clearRecentFilesMenu()));
     connect( _ui->actionLoadMoFile,  SIGNAL(triggered()), this, SLOT(loadMoFile()));
     connect( _ui->actionLoadModelicaLibrary,  SIGNAL(triggered()), this, SLOT(loadModelicaLibrary()));
+    connect( _ui->actionRefreshModTree, SIGNAL(triggered()),this,SLOT(refreshModelTree()));
     connect( _ui->actionHelp, SIGNAL(triggered()),this, SLOT(openUserManual()));
     connect( _ui->actionStartOmc,SIGNAL(triggered()),_project->moomc(),SLOT(startServer()));
     connect( _ui->actionClearLog,SIGNAL(triggered()),this,SLOT(clearLog()));
@@ -958,6 +959,10 @@ void MainWindow::loadModelicaLibrary()
     _project->loadModelicaLibrary();
 }
 
+void MainWindow::refreshModelTree()
+{
+    _project->refreshAllMod();
+}
 
 
 void MainWindow::updateProblemsMenu()

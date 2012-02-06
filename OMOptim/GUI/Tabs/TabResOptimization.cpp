@@ -69,8 +69,9 @@ MO2ColTab(result->project()->name(),result,false,parent)
 
         addDockWidget("Plot",_widgetMooPlot,NULL,Qt::RightDockWidgetArea);
 #ifdef USEBLOCKSUB
+        _widgetBlocks = new WidgetBlocks(_project,_result,this);
         if(_problem->blockSubstitutions()->size()>0)
-            addDockWidget("Blocks",new WidgetBlocks(_project,_result,this),_widgetMooPlot,Qt::RightDockWidgetArea);
+            addDockWidget("Blocks",_widgetBlocks,_widgetMooPlot,Qt::RightDockWidgetArea);
 #endif
         addDockWidget("Variables",_widgetTableRecVar,_widgetMooPlot,Qt::RightDockWidgetArea);
 
@@ -84,6 +85,13 @@ MO2ColTab(result->project()->name(),result,false,parent)
         addDockWidget("Simulator",_widgetCtrl,_widgetTableRecVar);
 
 
+        _widgetOptParameters = new WidgetOptParameters(_project,_problem,true,this);
+        addDockWidget("Parameters",_widgetOptParameters,_widgetCtrl);
+
+        _widgetInfos = new WidgetResultInfos(_result,this);
+        addDockWidget("Infos",_widgetInfos,_widgetOptParameters);
+
+
         // connect signals for selection changed
         connect(_widgetMooPlot,SIGNAL(selectionChanged(QList<int> &)),
                 _widgetMooPointsList,SLOT(onExtSelectionChanged(QList<int>&)));
@@ -94,6 +102,10 @@ MO2ColTab(result->project()->name(),result,false,parent)
                 _widgetTableRecVar,SLOT(onExtSelectionChanged(QList<int>&)));
         connect(_widgetMooPointsList,SIGNAL(selectionChanged(QList<int>&)),
                 _widgetMooPlot,SLOT(onExtSelectionChanged(QList<int>&)));
+
+        // signal for recomputation
+        connect(_widgetMooPointsList,SIGNAL(pointsRecomputed()),
+                _widgetTableRecVar,SLOT(onPointsRecomputed()));
 
 
         // connect signals for shown points changed

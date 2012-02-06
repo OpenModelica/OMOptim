@@ -47,89 +47,77 @@ namespace Ui
 class WidgetProjectInfos_Class;
 }
 
-WidgetProjectInfos::WidgetProjectInfos(Project *project_,QList<QAction*> recentProjActions,QWidget *parent) :
-    QWidget(parent), ui(new Ui::WidgetProjectInfos_Class)
+WidgetProjectInfos::WidgetProjectInfos(Project *project,QList<QAction*> recentProjActions,QWidget *parent) :
+    QWidget(parent), _ui(new Ui::WidgetProjectInfos_Class)
 {
-    ui->setupUi(this);
+    _ui->setupUi(this);
 
-    QPalette p = ui->textProject->palette();
+    _myTextBrowser = new MyTextLog(this);
+    QPalette p = _myTextBrowser->palette();
     p.setColor(QPalette::Base,this->palette().color(QPalette::Background));
-    ui->textProject->setPalette(p);
+    _myTextBrowser->setPalette(p);
+
+    _ui->widgetInfos->layout()->addWidget(_myTextBrowser);
 
 
-    project = project_;
-    connect(ui->pushNewProject, SIGNAL(clicked()), this, SIGNAL(newProject()));
-    connect(ui->pushLoadProject, SIGNAL(clicked()), this, SIGNAL(loadProject()));
-    connect(ui->pushLoadPlugin,SIGNAL(clicked()),this,SIGNAL(loadPlugin()));
-    //  connect(ui->pushOpenFolder,SIGNAL(clicked()),this,SLOT(openFolder()));
 
-    //    ui->layoutRecents->setAlignment(Qt::AlignLeft);
-    //    for(int i=0;i<recentProjActions.size();i++)
-    //    {
 
-    //        QWidget* test = new QWidget(this);
-    //        test->addAction(recentProjActions.at(i));
-    //        ui->layoutRecents->addWidget(test);
-    //    }
-
-    //    QToolBar* toolBar = new QToolBar(this);
-    //    toolBar->setToolButtonStyle(Qt::ToolButtonTextOnly);
-    //    toolBar->setOrientation(Qt::Vertical);
-    //    toolBar->addActions(recentProjActions);
-    //    toolBar->setStyleSheet("QToolBar { border: 0px }");
-    //    ui->layoutRecents->addWidget(toolBar);
+    _project = project;
+    connect(_ui->pushNewProject, SIGNAL(clicked()), this, SIGNAL(newProject()));
+    connect(_ui->pushLoadProject, SIGNAL(clicked()), this, SIGNAL(loadProject()));
+    connect(_ui->pushLoadPlugin,SIGNAL(clicked()),this,SIGNAL(loadPlugin()));
 
 }
 
 WidgetProjectInfos::~WidgetProjectInfos()
 {
-    delete ui;
+    delete _ui;
 }
 
 void WidgetProjectInfos::actualizeGuiFromProject()
 {
 
     // File names
-    if(project->isDefined())
+    if(_project->isDefined())
     {
 
         QString msg;
-        msg = "<b>Project name</b> : " + project->name() +" <br> ";
-        msg += "<b>Project file</b> : <A href=\"file:///"+ project->filePath() +"\">"+project->filePath()+"</A>" +" <br> ";
-        msg += "<b>Project folder</b> :  <A href=\"file:///"+ project->folder() +"\">"+project->folder()+"</A>" + " <br> ";
+        msg = "<b>Project name</b> : " + _project->name() +" <br> ";
+        msg += "<b>Project file</b> : <A href=\"file:///"+ _project->filePath() +"\">"+_project->filePath()+"</A>" +" <br> ";
+        msg += "<b>Project folder</b> :  <A href=\"file:///"+ _project->folder() +"\">"+_project->folder()+"</A>" + " <br> ";
         msg += "<b>ModelFiles</b> <br> ";
 
         QStringList listMO;
-        for(int i=0;i<project->moFiles().size();i++)
+        for(int i=0;i<_project->moFiles().size();i++)
         {
-            listMO.push_back(project->moFiles().at(i));
+            listMO.push_back(_project->moFiles().at(i));
         }
         msg += listMO.join("<br>")+"<br>";
 
         msg += "<b>Plugins</b> <br> ";
         QStringList listPlugins;
-        QStringList pluginsNames(project->pluginsLoaded().keys());
+        QStringList pluginsNames(_project->pluginsLoaded().keys());
         for(int i=0;i<pluginsNames.size();i++)
         {
-            listPlugins.push_back(pluginsNames.at(i)+"\t"+project->pluginsLoaded().values().at(i));
+            listPlugins.push_back(pluginsNames.at(i)+"\t"+_project->pluginsLoaded().values().at(i));
         }
         msg += listPlugins.join("<br>");
 
-        ui->textProject->setText(msg);
-        ui->textProject->setOpenExternalLinks(true);
-        ui->textProject->setOpenLinks(false);
-        ui->widgetInfos->show();
-        ui->widgetBeginning->hide();
+        _myTextBrowser->setText(msg);
+        _myTextBrowser->setOpenExternalLinks(true);
+        _myTextBrowser->setOpenLinks(false);
+        _ui->widgetInfos->show();
+        _ui->widgetBeginning->hide();
     }
     else
     {
-        ui->widgetInfos->hide();
-        ui->widgetBeginning->show();
+        _ui->widgetInfos->hide();
+        _ui->widgetBeginning->show();
     }
 }
 
 void WidgetProjectInfos::openFolder()
 {
-    QFileInfo fileInfo(project->filePath());
+    QFileInfo fileInfo(_project->filePath());
     LowTools::openFolder(fileInfo.absolutePath());
 }

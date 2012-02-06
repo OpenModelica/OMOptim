@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetTableRecVar.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+  @file WidgetTableRecVar.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 */
 
 #ifndef WidgetTableRecVar_H
@@ -49,7 +49,7 @@
 #include "Tools/GuiTools.h"
 
 namespace Ui {
-    class WidgetTableRecVarClass;
+class WidgetTableRecVarClass;
 }
 
 
@@ -65,16 +65,17 @@ public:
     virtual ~WidgetTableRecVar();
 
 public slots:
-                void onExtSelectionChanged(QList<int>&);
-		void onCurScanChanged(int );
-		void onPointsRecomputed();
+    void onExtSelectionChanged(QList<int>&);
+    void onCurScanChanged(int );
+    void onPointsRecomputed();
+    void updateFromNbScan();
 
 public:
     Ui::WidgetTableRecVarClass *_ui;
-	OptimResult* _result;
+    OptimResult* _result;
 
 
-	MOTableView *_tableVariables;
+    MOTableView *_tableVariables;
 
 };
 

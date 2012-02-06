@@ -29,11 +29,11 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabResOneSim.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+  @file tabResOneSim.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
   @version
 */
 
@@ -70,11 +70,11 @@ class TabResOneSim : public MO2ColTab {
 
 public:
     TabResOneSim(OneSimResult *result,QWidget *parent = 0);
-        virtual ~TabResOneSim();
+    virtual ~TabResOneSim();
     TabType tabType(){return TABSOLVEDPROBLEM;};
 
-        Project *_project;
-        OneSimResult *_result;
+    Project *_project;
+    OneSimResult *_result;
 
 private :
     WidgetTableVar* _inputTableVars;

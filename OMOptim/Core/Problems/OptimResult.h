@@ -119,7 +119,7 @@ protected:
 
 	MOOptVector *_optVariablesResults;
 	MOOptVector *_optObjectivesResults;
-	MOOptVector *_recomputedVariables;
+        MOOptVector *_recomputedVariables;
 
         QList<int> _recomputedPoints;
 

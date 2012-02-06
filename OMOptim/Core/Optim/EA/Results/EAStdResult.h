@@ -1,5 +1,5 @@
 ﻿// $Id$
-        /**
+/**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EAStdResult.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+  @file EAStdResult.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version 0.9
 
   */
 #ifndef _EASTDRESULT_H
@@ -56,11 +56,11 @@
 #include "EAStdOptimizationEval.h"
 
 
-        template<class EOT> class EAStdResult
+template<class EOT> class EAStdResult
 {
 public :
-	inline static OptimResult* buildOptimResult(Project*,Optimization* ,QList<BlockSubstitutions*>,
-                                                    moeoUnboundedArchive<EOT> & arch);
+    inline static OptimResult* buildOptimResult(Project*,Optimization* ,QList<BlockSubstitutions*>,
+                                                moeoUnboundedArchive<EOT> & arch);
 };
 
 template<class EOT>
@@ -101,7 +101,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     result->recomputedVariables()->items.clear();
     result->recomputedVariables()->setUseScan(useScan);
     VariableResult *curRecompVar;
-    for (int i=0;i<	problem->modModelPlus()->variables()->items.size();i++)
+    for (int i=0;i< problem->modModelPlus()->variables()->items.size();i++)
     {
         curRecompVar = new VariableResult(*problem->modModelPlus()->variables()->items.at(i));
         result->recomputedVariables()->addItem(curRecompVar);
@@ -146,23 +146,20 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
                 {
                 case OMREAL:
                     result->optVariablesResults()->items[iVar]->appendFinalValue(
-                            curResultPoint->doubleVars.at(iDouble),0);
-                    if(fillRecompValues)
-                        result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(
+                                curResultPoint->doubleVars.at(iDouble),0);
+                    result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(
                                 curResultPoint->doubleVars.at(iDouble),0);
                     break;
                 case OMINTEGER:
                     result->optVariablesResults()->items[iVar]->appendFinalValue(
-                            (double)curResultPoint->intVars.at(iInt),0);
-                    if(fillRecompValues)
-                        result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(
+                                (double)curResultPoint->intVars.at(iInt),0);
+                    result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(
                                 (double)curResultPoint->intVars.at(iInt),0);
                     break;
                 case OMBOOLEAN:
                     result->optVariablesResults()->items[iVar]->appendFinalValue(
-                            (double)curResultPoint->boolVars.at(iBool),0);
-                    if(fillRecompValues)
-                        result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(
+                                (double)curResultPoint->boolVars.at(iBool),0);
+                    result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(
                                 (double)curResultPoint->boolVars.at(iBool),0);
                     break;
                 }
@@ -183,6 +180,8 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
             }
         }
     }
+
+
 
 
     // *******************************************************************
@@ -215,7 +214,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
             if(fillRecompValues)
                 result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(resObjVector.at(iObj),0);
         }
-    } 
+    }
 
     result->setSuccess(true);
     return result;

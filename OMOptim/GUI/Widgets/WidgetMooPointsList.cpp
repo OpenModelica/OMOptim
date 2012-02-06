@@ -76,7 +76,7 @@ WidgetMooPointsList::WidgetMooPointsList(OptimResult* result,QWidget *parent) :
 
     // reemiting signal (other widgets in tab should catch it)
     connect(_listPoints,SIGNAL(selectionChanged(QList<int>&)),
-            this,SIGNAL(selectionChanged(QList<int>&)));
+            this,SLOT(onIntSelectionChanged(QList<int>&)));
 
     //Shown points
     setOnlyPareto(_ui->pushPareto->isChecked());
@@ -97,6 +97,16 @@ WidgetMooPointsList::~WidgetMooPointsList()
 void WidgetMooPointsList::onExtSelectionChanged(QList<int> & list)
 {
     _listPoints->setSelectedIndexes(list);
+}
+
+void WidgetMooPointsList::onIntSelectionChanged(QList<int> & list)
+{
+    if(list.size()!=1)
+        _result->setCurPoint(-1);
+    else
+        _result->setCurPoint(list.at(0));
+
+    emit selectionChanged(list);
 }
 
 void WidgetMooPointsList::setShownPoints(QList<int> list)
@@ -177,6 +187,7 @@ void WidgetMooPointsList::recomputeSelectedPoints()
         bool forceRecompute = parameters.value(index).toBool();
         Optimization* problem = ((Optimization*)_result->problem());
         problem->recomputePoints(_result,pointsList,forceRecompute);
+        emit pointsRecomputed();
     }
 }
 

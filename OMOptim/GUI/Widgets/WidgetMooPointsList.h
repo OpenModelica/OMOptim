@@ -78,6 +78,7 @@ public :
 public slots :
     void setOnlyPareto(bool);
     void onExtSelectionChanged(QList<int>&);
+    void onIntSelectionChanged(QList<int>&);
     void recomputeSelectedPoints();
     void exportSelectedPoints();
 

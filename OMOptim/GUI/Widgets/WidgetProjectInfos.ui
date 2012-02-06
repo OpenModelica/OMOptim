@@ -16,15 +16,7 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QWidget" name="widgetInfos" native="true">
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QTextBrowser" name="textProject">
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <layout class="QGridLayout" name="gridLayout"/>
     </widget>
    </item>
    <item>

@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetTableRecVar.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+  @file WidgetTableRecVar.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
   @version
 */
 
@@ -50,34 +50,31 @@ WidgetTableRecVar::WidgetTableRecVar(OptimResult* result,QWidget *parent) :
 {
     _ui->setupUi(this);
 
-	_result = result;
-        Optimization* problem = dynamic_cast<Optimization*>(_result->problem());
+    _result = result;
+    Optimization* problem = dynamic_cast<Optimization*>(_result->problem());
 
-	// recomputed table
-	_tableVariables = new MOTableView(this);
-	_ui->layoutTableVar->addWidget(_tableVariables);
-	GuiTools::ModelToViewWithFilter(_result->recomputedVariables(),_tableVariables,_ui->lineVariableFilter);
-	GuiTools::minimizeTableSize(_tableVariables);
+    // recomputed table
+    _tableVariables = new MOTableView(this);
+    _ui->layoutTableVar->addWidget(_tableVariables);
+    GuiTools::ModelToViewWithFilter(_result->recomputedVariables(),_tableVariables,_ui->lineVariableFilter);
+    GuiTools::minimizeTableSize(_tableVariables);
 
 
-	//slide
-	connect(_ui->spinScan,SIGNAL(valueChanged(int)),_ui->sliderScan,SLOT(setValue(int)));
-	connect(_ui->sliderScan,SIGNAL(valueChanged(int)),_ui->spinScan,SLOT(setValue(int)));
-	connect(_ui->spinScan,SIGNAL(valueChanged(int)),this,SLOT(onCurScanChanged(int)));
+    //slide
+    connect(_ui->spinScan,SIGNAL(valueChanged(int)),_ui->sliderScan,SLOT(setValue(int)));
+    connect(_ui->sliderScan,SIGNAL(valueChanged(int)),_ui->spinScan,SLOT(setValue(int)));
+    connect(_ui->spinScan,SIGNAL(valueChanged(int)),this,SLOT(onCurScanChanged(int)));
 
-	_ui->sliderScan->setMinimum(0);
-    _ui->sliderScan->setMaximum(_result->recomputedVariables()->nbScans()-1);
-	_ui->spinScan->setMinimum(0);
-    _ui->spinScan->setMaximum(_result->recomputedVariables()->nbScans()-1);
+    updateFromNbScan();
 
-	bool show = _result->recomputedVariables()->getUseScan();
-	_ui->groupBox->setVisible(show);
+    bool show = _result->recomputedVariables()->getUseScan();
+    _ui->groupBox->setVisible(show);
 }
 
 
 WidgetTableRecVar::~WidgetTableRecVar()
 {
-	delete _tableVariables;
+    delete _tableVariables;
     delete _ui;
 }
 
@@ -85,27 +82,36 @@ WidgetTableRecVar::~WidgetTableRecVar()
 
 void WidgetTableRecVar::onExtSelectionChanged(QList<int>& list)
 {
-	if(list.size()==1)
-	{
-		_result->setCurPoint(list.at(0));
-	}
-	else
-	{
-		_result->setCurPoint(-1);
-	}
+    if(list.size()==1)
+    {
+        _result->setCurPoint(list.at(0));
+    }
+    else
+    {
+        _result->setCurPoint(-1);
+    }
 
-	_tableVariables->viewport()->update();
+    _tableVariables->viewport()->update();
 }
 
 void WidgetTableRecVar::onCurScanChanged(int _curScan )
 {
-	int newScan = _curScan;
-	_result->setCurScan(newScan);
+    int newScan = _curScan;
+    _result->setCurScan(newScan);
 
-	_tableVariables->viewport()->update();
+    _tableVariables->viewport()->update();
 }
 
 void WidgetTableRecVar::onPointsRecomputed()
 {
-	_tableVariables->viewport()->update();
+    _tableVariables->viewport()->update();
+    updateFromNbScan();
+}
+
+void WidgetTableRecVar::updateFromNbScan()
+{
+    _ui->sliderScan->setMinimum(0);
+    _ui->sliderScan->setMaximum(_result->recomputedVariables()->nbScans()-1);
+    _ui->spinScan->setMinimum(0);
+    _ui->spinScan->setMaximum(_result->recomputedVariables()->nbScans()-1);
 }

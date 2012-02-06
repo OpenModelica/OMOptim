@@ -68,6 +68,8 @@ WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,
     if(iCurAlgo>=0)
         _ui->comboAlgo->setCurrentIndex(iCurAlgo);
 
+    _ui->comboAlgo->setEnabled(!_isResult);
+
     // actualize gui
     //	onAlgosConfigChanged();
 
@@ -92,7 +94,7 @@ void WidgetOptParameters::openAlgoParameters()
 {
 	if(_problem->getCurAlgo())
 	{
-            MOParametersDlg dlg(_problem->getCurAlgo()->_parameters);
+            MOParametersDlg dlg(_problem->getCurAlgo()->_parameters,!_isResult);
             dlg.exec();
 	}
 }
