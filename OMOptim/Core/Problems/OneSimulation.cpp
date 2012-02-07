@@ -143,9 +143,9 @@ Problem* OneSimulation::clone() const
 
 OneSimulation::~OneSimulation(void)
 {
-    _overwritedVariables->deleteLater();
-    _scannedVariables->deleteLater();
-    _ctrls->deleteLater();
+    delete _overwritedVariables;
+    delete _scannedVariables;
+    delete _ctrls;
 }
 
 

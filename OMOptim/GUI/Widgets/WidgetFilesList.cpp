@@ -43,7 +43,7 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetFilesList::WidgetFilesList(QStringList & filesList,QWidget *parent,QString filter,QString infos):
+WidgetFilesList::WidgetFilesList(QStringList & filesList,QWidget *parent,QString filter,QString infos,bool editable):
     QWidget(parent),_filesList(filesList),
     _ui(new Ui::WidgetFilesListClass)
 {
@@ -54,6 +54,13 @@ WidgetFilesList::WidgetFilesList(QStringList & filesList,QWidget *parent,QString
         _ui->filesList->addItem(_filesList.at(i));
 
     setInfos(infos);
+
+    _editable = editable;
+    if(!editable)
+    {
+        _ui->pushAddFiles->hide();
+        _ui->pushRemoveFiles->hide();
+    }
 
     connect(_ui->pushAddFiles,SIGNAL(clicked()),this,SLOT(addFiles()));
     connect(_ui->pushRemoveFiles,SIGNAL(clicked()),this,SLOT(removeFiles()));

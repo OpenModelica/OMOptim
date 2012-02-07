@@ -85,8 +85,8 @@ OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const
 
 OneSimResult::~OneSimResult(void)
 {
-    _inputVariables->deleteLater();
-    _finalVariables->deleteLater();
+    delete _inputVariables;
+    delete _finalVariables;
 }
 
 QDomElement OneSimResult::toXmlData(QDomDocument & doc)

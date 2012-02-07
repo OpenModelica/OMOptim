@@ -225,6 +225,7 @@ public:
 
             eo.objectiveVector(objVec);
             delete oneSim;
+            delete result;
         }
     }
 

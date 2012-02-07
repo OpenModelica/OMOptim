@@ -140,7 +140,7 @@ MOVector<ItemClass>::MOVector(const MOVector & copied)
         addItem(copied.items.at(iv)->clone());
     }
 
-    _owner = copied._owner; // indeed, should be true every time !!!
+    _owner = true; // indeed, should be true every time !!!
 
 }
 

@@ -143,6 +143,16 @@ bool ProblemInterfaces::addProblemInterfaces(QList<ProblemInterface*> interfaces
     return allOk;
 }
 
+bool ProblemInterfaces::removeProblemInterface(QString interfaceName)
+{
+    int nbRemoved = this->remove(interfaceName);
+    if(nbRemoved>0)
+    {
+        return true;
+    }
+}
+
+
 ProblemInterface* ProblemInterfaces::interfaceOf(Problem* problem)
 {
     return QMap<QString,ProblemInterface*>::value(problem->getClassName(),NULL);

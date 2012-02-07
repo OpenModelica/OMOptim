@@ -42,12 +42,12 @@
 
 #include <QtGui/QScrollBar>
 
-DlgSelectFiles::DlgSelectFiles(QStringList &filesList,QString filter)
-    :_files(filesList)
+DlgSelectFiles::DlgSelectFiles(QStringList &filesList,QWidget* parent,QString filter,bool editable)
+    :_files(filesList),QDialog(parent)
 {
     _filesLocal = _files;
     _filter = filter;
-    _widgetSelectFiles = new WidgetFilesList(_filesLocal,this,_filter);
+    _widgetSelectFiles = new WidgetFilesList(_filesLocal,this,_filter,QString(),editable);
 
     QGridLayout* allLayout = new QGridLayout(this);
     QGridLayout* listLayout = new QGridLayout(this);

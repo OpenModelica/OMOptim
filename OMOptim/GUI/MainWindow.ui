@@ -506,6 +506,11 @@ color:white;
     <string>Refresh models tree</string>
    </property>
   </action>
+  <action name="actionUnloadPlugins">
+   <property name="text">
+    <string>Unload plugins ...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

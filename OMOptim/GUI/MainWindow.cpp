@@ -128,7 +128,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
              this,SLOT(showTabTitlePopup(const QPoint &)));
     connect(_tabProject,SIGNAL(newProject()),this,SLOT(newProject()));
     connect(_tabProject,SIGNAL(loadProject()),this,SLOT(loadProject()));
-    connect(_tabProject,SIGNAL(loadPlugin()),this,SLOT(loadPlugins()));
+
 
     // Menus
     connect( _ui->actionNewProject, SIGNAL( triggered() ),this, SLOT( newProject()));
@@ -175,6 +175,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     // Signals for plugins
     //*********************************
     connect(_ui->actionLoadPlugins,SIGNAL(triggered()),this,SLOT(loadPlugins()));
+
 
     //*********************************
     // Reload gui configuration
@@ -422,6 +423,7 @@ void MainWindow::loadPlugins()
         settings.setValue("MO/recentPluginsFolder",dir.absolutePath());
     }
 }
+
 
 
 void MainWindow::actualizeGuiFromProject()

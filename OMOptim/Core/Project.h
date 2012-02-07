@@ -162,6 +162,7 @@ public:
     //****************************
     ProblemInterfaces problemsInterfaces(){return _problemsInterfaces;}
     void addProblemInterface(ProblemInterface* problemInterface);
+    void removeProblemInterface(QString interfaceName);
     void addNewProblem(ProblemInterface* interface, QList<ModModelPlus*> modModelPlusList,QString problemType);
     void addResult(Result *);
     void addProblem(Problem *);
@@ -250,6 +251,7 @@ public slots :
     // Signals
     //****************************
 signals:
+    void infosChanged();
     void sendProgress(float);
     void sendProgress(float,int,int);
     void projectAboutToBeReset();

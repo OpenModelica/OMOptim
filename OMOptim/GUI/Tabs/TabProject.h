@@ -86,7 +86,7 @@ public:
 signals:
     void newProject();
     void loadProject();
-    void loadPlugin();
+
 };
 
 

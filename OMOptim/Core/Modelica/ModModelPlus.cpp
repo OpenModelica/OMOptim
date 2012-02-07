@@ -361,7 +361,7 @@ void ModModelPlus::openMoFile()
 
 void ModModelPlus::openDependenciesDlg()
 {
-    DlgSelectFiles dlgSelectFiles(_moDependencies,"*.mo");
+    DlgSelectFiles dlgSelectFiles(_moDependencies,NULL,"*.mo");
     dlgSelectFiles.exec();
 }
 

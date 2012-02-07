@@ -61,7 +61,7 @@ class DlgSelectFiles : public QDialog
     Q_OBJECT
 
 public:
-    DlgSelectFiles(QStringList & filesList,QString filter="*.*");
+    DlgSelectFiles(QStringList & filesList,QWidget* parent,QString filter="*.*",bool editable=true);
 
 private :
 
@@ -73,6 +73,7 @@ private :
     QStringList &_files;
     QString _filter;
     QStringList _filesLocal;
+    bool _editable;
 
 public slots:
     void pushedOk();

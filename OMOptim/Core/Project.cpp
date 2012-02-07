@@ -128,11 +128,14 @@ void Project::clear()
     _mmoFiles.clear();
 
     unloadPlugins();
+
+    emit infosChanged();
 }
 
 void Project::setName(QString name)
 {
     _name=name;
+    emit infosChanged();
 }
 
 /**
@@ -142,6 +145,7 @@ void Project::setName(QString name)
 void Project::setIsDefined(bool isdefined)
 {
     _isdefined=isdefined;
+    emit infosChanged();
 }
 
 
@@ -169,6 +173,8 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
     // watch mo file
     if(storePath || wasThere)
         _mofilesWatcher.addPath(moFilePath);
+
+    emit infosChanged();
 }
 
 /**
@@ -193,6 +199,8 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
 
     // watch mo files
     _mofilesWatcher.addPaths(moFilePaths);
+
+    emit infosChanged();
 }
 
 /**
@@ -210,6 +218,9 @@ bool Project::loadModelicaLibrary(bool storePath, bool forceLoad)
         _moFiles.push_back(libPath);
 
     refreshAllMod();
+
+    emit infosChanged();
+
     return true;
 }
 
@@ -306,7 +317,10 @@ bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
 
     // add to stored list
     if(loadOk && storePath)
-        _pluginsLoaded.insert(pbInter->name(),pluginPath);
+    {
+        _pluginsLoaded.insert(pbInter->name(),pluginPath);   
+        emit infosChanged();
+    }
 }
 
 /**
@@ -320,7 +334,10 @@ bool Project::unloadPlugin(QString pluginPath)
     _pluginsLoaded.remove(_pluginsLoaded.key(pluginPath));
 
     QPluginLoader loader(pluginPath);
-    return loader.unload();
+    if(loader.unload())
+    {
+        emit infosChanged();
+    }
 }
 
 /**
@@ -332,6 +349,9 @@ bool Project::unloadPlugins()
     bool ok = true;
     for(int i=0;i<pluginsPaths.size();i++)
         ok = unloadPlugin(pluginsPaths.at(i)) && ok;
+
+
+    emit infosChanged();
 
     return ok;
 }
@@ -471,6 +491,8 @@ void Project::setFilePath(QString filePath)
     QFileInfo fileInfo(_filePath);
     QString modelsDir = fileInfo.dir().absolutePath()+QDir::separator()+"Models";
     fileInfo.dir().mkdir(modelsDir);
+
+    emit infosChanged();
 }
 
 void Project::save(bool saveAllOMCases)
@@ -554,6 +576,12 @@ void Project::addProblemInterface(ProblemInterface* problemInterface)
 {
     _problemsInterfaces.addProblemInterface(problemInterface);
     emit interfacesModified();
+}
+
+void Project::removeProblemInterface(QString interfaceName)
+{
+    if(_problemsInterfaces.removeProblemInterface(interfaceName))
+        emit interfacesModified();
 }
 
 void Project::addNewProblem(ProblemInterface* interface, QList<ModModelPlus*> modModelPlusList,QString problemType)

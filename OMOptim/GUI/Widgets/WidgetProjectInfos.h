@@ -78,15 +78,15 @@ public:
     Ui::WidgetProjectInfos_Class *_ui;
     MyTextLog * _myTextBrowser;
 
-    void actualizeGuiFromProject();
+
 
 signals:
     void newProject();
     void loadProject();
-    void loadPlugin();
 
 public slots :
     void openFolder();
+    void actualizeGuiFromProject();
 
 };
 
