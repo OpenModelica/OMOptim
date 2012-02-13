@@ -63,11 +63,6 @@ MOParameter::MOParameter(const MOParameter & param):MOItem(param)
 MOParameter::MOParameter(int index,QString name,QString description, QVariant defaultValue, Type type, QVariant minValue, QVariant maxValue,int enablingIndex,QVariant enablingValue,QString group):
     _index(index),_description(description),_defaultValue(defaultValue),_type(type),_min(minValue),_max(maxValue),_group(group)
 {
-    if(_name.isEmpty())
-    {
-        InfoSender::instance()->debug("Creating a MOParameter with empty name !! Description : "+description);
-    }
-
     _name = name;
     _value = _defaultValue;
 

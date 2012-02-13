@@ -67,7 +67,7 @@ public:
         virtual ~EABase(void);
 
         virtual EABase* clone() const = 0;
-	virtual Result* launch(QString tempDir) = 0;
+        //virtual Result* launch(QString tempDir) = 0;
 	
 	
 	// subModels (for Optimization problems)

@@ -53,9 +53,9 @@
 OneSimulation::OneSimulation(Project* project,ModModelPlus* modModelPlus)
     :Problem(project)
 {
+    InfoSender::instance()->debug("New onesim");
     _modModelPlus = modModelPlus;
     _name="One Simulation";
-
 
     _overwritedVariables = new Variables(true,_modModelPlus);
     _scannedVariables = new ScannedVariables(true,_modModelPlus);
@@ -68,6 +68,7 @@ OneSimulation::OneSimulation(Project* project,ModModelPlus* modModelPlus)
 OneSimulation::OneSimulation(const OneSimulation &oneSim)
     :Problem(oneSim)
 {
+    InfoSender::instance()->debug("New onesim");
     _modModelPlus = oneSim._modModelPlus;
     _neededFiles = oneSim._neededFiles;
     _filesToCopy = oneSim._filesToCopy;
@@ -81,6 +82,7 @@ OneSimulation::OneSimulation(const OneSimulation &oneSim)
 OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     :Problem(project)
 {
+    InfoSender::instance()->debug("New onesim");
     // look for modmodelplus
     ok = (domProblem.tagName()==OneSimulation::className());
     ok = ok && !domProblem.isNull();
@@ -129,8 +131,6 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
         // Controler type
         QDomElement cControlers = domProblem.firstChildElement("Controlers");
         _ctrls = new ModPlusCtrls(project,_modModelPlus,cControlers);
-
-
     }
 }
 
@@ -143,6 +143,7 @@ Problem* OneSimulation::clone() const
 
 OneSimulation::~OneSimulation(void)
 {
+    InfoSender::instance()->debug("Delete onesim");
     delete _overwritedVariables;
     delete _scannedVariables;
     delete _ctrls;
@@ -178,8 +179,6 @@ Result* OneSimulation::launch(ProblemConfig config)
         clonedVar = new Variable(*(dynamic_cast<Variable*>(scannedVar)));
         updatedVariables.addItem(clonedVar);
     }
-
-
 
     MOVector<Variable> curVariables(true);
     bool allSimSuccess=true;

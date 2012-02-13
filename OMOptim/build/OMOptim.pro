@@ -310,7 +310,8 @@ HEADERS += ../config.h \
     ../Core/Problems/optimizationinterface.h \
     ../Core/Problems/onesimulationinterface.h \
     ../GUI/Tools/qsciencespinbox.h \
-    ../GUI/Widgets/WidgetResultInfos.h
+    ../GUI/Widgets/WidgetResultInfos.h \
+    ../../c_runtime/read_matlab4.h \
 
 
 
@@ -493,7 +494,8 @@ SOURCES += ../main.cpp \
     ../Core/Problems/onesimulationinterface.cpp \
     ../Core/Problems/ProblemInterface.cpp \
     ../GUI/Tools/qsciencespinbox.cpp \
-    ../GUI/Widgets/WidgetResultInfos.cpp
+    ../GUI/Widgets/WidgetResultInfos.cpp \
+     ../../c_runtime/read_matlab4.c
 
 RESOURCES += \
     ../GUI/Resources/OMOptim.qrc

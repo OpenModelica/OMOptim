@@ -243,6 +243,7 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
     QPushButton *newPush;
     MOParameter* parameter;
     MOParameterListed *paramList;
+    QList<MOParameter*> groupParameters;
 
     // create group box
     for(int iG=0;iG<groups.size();iG++)
@@ -251,9 +252,12 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
         QGroupBox *box = new QGroupBox(groups.at(iG),this);
         QGridLayout *boxLayout = new QGridLayout(box);
 
-        for(int iP=0;iP<map.values(groups.at(iG)).size();iP++)
+        groupParameters = map.values(groups.at(iG));
+        sortItems<MOParameter>::applyToInt(groupParameters,MOParameter::INDEX);
+
+        for(int iP=0;iP<groupParameters.size();iP++)
         {
-            parameter = map.values(groups.at(iG)).at(iP);
+            parameter = groupParameters.at(iP);
             // add setting
             QString dispName;
             if(parameter->name().contains("/"))
@@ -427,7 +431,7 @@ void MOParametersDlg::updateEnabled()
 
         if(curWidget)
         {
-            curWidget->setEnabled(_localParameters->shouldBeEnabled(i));
+            curWidget->setEnabled(_localParameters->shouldBeEnabled(curParam->index()));
         }
     }
 }

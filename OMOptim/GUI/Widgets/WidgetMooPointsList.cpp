@@ -42,7 +42,8 @@
 #include "ui_WidgetMooPointsList.h"
 #include <QtGui/QErrorMessage>
 #include "MOParametersDlg.h"
-
+#include "WidgetSelectVars.h"
+#include "DlgSelectVars.h"
 
 WidgetMooPointsList::WidgetMooPointsList(OptimResult* result,QWidget *parent) :
     QWidget(parent),
@@ -194,26 +195,32 @@ void WidgetMooPointsList::recomputeSelectedPoints()
 void WidgetMooPointsList::exportSelectedPoints()
 {
 
-    // get file name
-    QString csvPath = QFileDialog::getSaveFileName(
-                this,
-                "MO - Export optimum points",
-                QString::null,
-                "CSV file (*.csv)" );
+    // first select points
+    MOOptVector* selectedOptVars = DlgSelectVars::getSelectedOptVars(_result->recomputedVariables());
 
-    if(!csvPath.isNull())
+    if(selectedOptVars)
     {
-        QList<int> listPoints = this->_listPoints->getSelectedIndexes();
-        QString csvText = _result->buildAllVarsFrontCSV(listPoints);
+        // get file name
+        QString csvPath = QFileDialog::getSaveFileName(
+                    this,
+                    "MO - Export optimum points",
+                    QString::null,
+                    "CSV file (*.csv)" );
 
-        QFile frontFile(csvPath);
-        if(frontFile.exists())
-            frontFile.remove();
+        if(!csvPath.isNull())
+        {
+            QList<int> listPoints = this->_listPoints->getSelectedIndexes();
+            QString csvText = _result->buildVarsFrontCSV(selectedOptVars,listPoints);
 
-        frontFile.open(QIODevice::WriteOnly);
-        QTextStream tsfront( &frontFile );
-        tsfront << csvText;
-        frontFile.close();
+            QFile frontFile(csvPath);
+            if(frontFile.exists())
+                frontFile.remove();
+
+            frontFile.open(QIODevice::WriteOnly);
+            QTextStream tsfront( &frontFile );
+            tsfront << csvText;
+            frontFile.close();
+        }
     }
 }
 

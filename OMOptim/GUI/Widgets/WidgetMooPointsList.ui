@@ -115,9 +115,9 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
+         </layout>
+        </item>
        </layout>
-      </item>
-     </layout>
       </item>
      </layout>
     </widget>

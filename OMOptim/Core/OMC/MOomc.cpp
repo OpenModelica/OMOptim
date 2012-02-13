@@ -1032,7 +1032,7 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
         }
 
 
-        QString result = loadFile(filename);//loadFileWThread(filename);
+        QString result = loadFileWThread(filename);
 
 
 
@@ -1089,10 +1089,12 @@ QString MOomc::loadFile(const QString & filePath)
 QString MOomc::loadFileWThread(QString filePath)
 {
     MOThreads::OMCModelLoader* loader = new MOThreads::OMCModelLoader(filePath,this);
-
     loader->start(QThread::HighestPriority);
     while (loader->isRunning())
-        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+    {
+        InfoSender::instance()->sendNormal("refreshing");
+        qApp->processEvents();
+    }
 
     QString result = loader->_result;
     delete loader;

@@ -72,10 +72,6 @@ public:
     ModItem* rootElement()const {return _rootElement;}
 
 
-    // Read and fullfill functions
-    void readFromOmc(ModItem*,int depthMax = 1000,  QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
-    void readFromOmcV2(ModItem*,int depthMax = 1000, QString direction ="", int curDepth = 0); 	//Read data and children with OMC calls
-    void readFromOmcV3(ModItem*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
 
     bool addChild(ModItem* parent,ModItem* child);
 
@@ -124,6 +120,13 @@ public:
     Qt::DropActions supportedDropActions() const;
 
     void setShowComponent(bool);
+    void emitDataChanged();
+    void readFromOMCWThread(ModItem*,int depthMax = 1000,  QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
+public slots :
+    // Read and fullfill functions
+    void readFromOmc(ModItem*,int depthMax,  QString direction, int curDepth);	//Read data and children with OMC calls
+    void readFromOmcV2(ModItem*,int depthMax = 1000, QString direction ="", int curDepth = 0); 	//Read data and children with OMC calls
+    void readFromOmcV3(ModItem*,int depthMax = 1000, QString direction ="", int curDepth = 0);	//Read data and children with OMC calls
 
 
 private:
@@ -135,5 +138,24 @@ private:
     bool _showComponents;
 
 };
+
+class ModItemsLoader : public QThread
+{
+    Q_OBJECT
+public:
+    ModItemsLoader(ModItemsTree* modItemsTree,ModItem* parent,int depthMax = 1000,  QString direction ="", int curDepth = 0);
+
+    ModItemsTree* _modItemsTree;
+    ModItem *_parent;
+    int _depthMax;
+    QString _direction;
+    int _curDepth;
+
+protected:
+    void run();
+signals:
+    void readFromOmc(ModItem*,int depthMax ,  QString direction, int curDepth );	//Read data and children with OMC calls
+};
+
 
 #endif

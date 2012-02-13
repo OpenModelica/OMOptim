@@ -85,9 +85,9 @@ ModModelPlus::ModModelPlus( Project* project,QString modModelName)
 
 ModModelPlus::~ModModelPlus()
 {
-    _connections->deleteLater();
-    _modifiers->deleteLater();
-    _variables->deleteLater();
+    delete _connections;
+    delete _modifiers;
+    delete _variables;
 }
 
 /**

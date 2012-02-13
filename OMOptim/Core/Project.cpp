@@ -61,8 +61,7 @@ Project::Project()
     addProblemInterface(new OneSimulationInterface());
     addProblemInterface(new OptimizationInterface());
 
-    // create infosender
-  //  _infoSender = new InfoSender();
+    emit projectChanged();
 }
 
 Project::~Project()
@@ -71,20 +70,22 @@ Project::~Project()
     terminateOmsThreads();
     _moomc->stopServer();
 
-    _problems->deleteLater();
-    _results->deleteLater();
+    _problems->clear();
+    _results->clear();
 
 
     if(_modItemsTree)
-        _modItemsTree->deleteLater();
+        delete _modItemsTree;
 
-    _moomc->deleteLater();
-    _modLoader->deleteLater();
+    delete _moomc;
+    delete _modLoader;
 
     for(int i=0;i<_problemsInterfaces.uniqueInterfaces().size();i++)
-        _problemsInterfaces.uniqueInterfaces().at(i)->deleteLater();
+    {
+        delete _problemsInterfaces.uniqueInterfaces().at(i);
+    }
+    _problemsInterfaces.clear();
 
-    //delete _infoSender;
 }
 
 QString Project::getFieldName(int iField, int role)
@@ -115,8 +116,8 @@ void Project::clear()
     _moomc->clear();
 
 
-    _problems->reset();
-    _results->reset();
+    _problems->clear();
+    _results->clear();
 
     _isdefined=false;
     _filePath.clear();
@@ -129,13 +130,13 @@ void Project::clear()
 
     unloadPlugins();
 
-    emit infosChanged();
+    emit projectChanged();
 }
 
 void Project::setName(QString name)
 {
     _name=name;
-    emit infosChanged();
+    emit projectChanged();
 }
 
 /**
@@ -145,7 +146,18 @@ void Project::setName(QString name)
 void Project::setIsDefined(bool isdefined)
 {
     _isdefined=isdefined;
-    emit infosChanged();
+    emit projectChanged();
+}
+
+bool Project::isSaved()
+{
+    return _isSaved;
+}
+
+
+void Project::setSaved(bool isSaved)
+{
+    _isSaved = isSaved;
 }
 
 
@@ -174,7 +186,10 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
     if(storePath || wasThere)
         _mofilesWatcher.addPath(moFilePath);
 
-    emit infosChanged();
+    _modItemsTree->emitDataChanged();
+
+
+    emit projectChanged();
 }
 
 /**
@@ -200,7 +215,9 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
     // watch mo files
     _mofilesWatcher.addPaths(moFilePaths);
 
-    emit infosChanged();
+    _modItemsTree->emitDataChanged();
+
+    emit projectChanged();
 }
 
 /**
@@ -219,7 +236,7 @@ bool Project::loadModelicaLibrary(bool storePath, bool forceLoad)
 
     refreshAllMod();
 
-    emit infosChanged();
+    emit projectChanged();
 
     return true;
 }
@@ -233,6 +250,8 @@ void Project::loadModModelPlus(QString mmoFilePath)
 {
     Load::loadModModelPlus(this,mmoFilePath);
     storeMmoFilePath(mmoFilePath);
+
+    emit projectChanged();
 }
 
 /**
@@ -247,6 +266,8 @@ void Project::storeMmoFilePath(QString mmoFilePath)
     {
         _mmoFiles.push_back(path);
     }
+
+    emit projectChanged();
 }
 
 /**
@@ -260,6 +281,8 @@ void Project::reloadModModel(QString modModelName)
         QString moFile = model->filePath();
         this->loadMoFile(moFile,true,true);
     }
+
+    emit projectChanged();
 }
 
 
@@ -270,7 +293,8 @@ void Project::reloadModModel(QString modModelName)
 void Project::refreshAllMod()
 {
     _modItemsTree->clear();
-    _modItemsTree->readFromOmc(_modItemsTree->rootElement(),2);
+    _modItemsTree->readFromOMCWThread(_modItemsTree->rootElement(),2);
+    _modItemsTree->emitDataChanged();
 }
 
 /**
@@ -310,7 +334,7 @@ bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
     else
     {
         InfoSender::instance()->sendError("Loaded plugin failed : "+pluginPath
-                              +"\n("+loader.errorString()+")");
+                                          +"\n("+loader.errorString()+")");
     }
 
     bool loadOk = (pbInter!=NULL);
@@ -318,8 +342,8 @@ bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
     // add to stored list
     if(loadOk && storePath)
     {
-        _pluginsLoaded.insert(pbInter->name(),pluginPath);   
-        emit infosChanged();
+        _pluginsLoaded.insert(pbInter->name(),pluginPath);
+        emit projectChanged();
     }
 }
 
@@ -336,7 +360,7 @@ bool Project::unloadPlugin(QString pluginPath)
     QPluginLoader loader(pluginPath);
     if(loader.unload())
     {
-        emit infosChanged();
+        emit projectChanged();
     }
 }
 
@@ -350,8 +374,7 @@ bool Project::unloadPlugins()
     for(int i=0;i<pluginsPaths.size();i++)
         ok = unloadPlugin(pluginsPaths.at(i)) && ok;
 
-
-    emit infosChanged();
+    emit projectChanged();
 
     return ok;
 }
@@ -469,19 +492,10 @@ ModModelPlus* Project::newModModelPlus(QString modelName)
     // store path
     storeMmoFilePath(newMmoFilePath);
 
+    emit projectChanged();
+
     return newModModelPlus;
 }
-
-//bool Project::compileModModel(ModModel* model)
-//{
-//    ModModelPlus* concernedMMPlus = modModelPlus(model);
-//    return compileModModelPlus(concernedMMPlus);
-//}
-
-//bool Project::compileModModelPlus(ModModelPlus* modModelPlus)
-//{
-//    return modModelPlus->compile();
-//}
 
 void Project::setFilePath(QString filePath)
 {
@@ -492,28 +506,37 @@ void Project::setFilePath(QString filePath)
     QString modelsDir = fileInfo.dir().absolutePath()+QDir::separator()+"Models";
     fileInfo.dir().mkdir(modelsDir);
 
-    emit infosChanged();
+    emit projectChanged();
 }
 
 void Project::save(bool saveAllOMCases)
 {
     Save::saveProject(this,saveAllOMCases);
+
+    setSaved(true);
+    emit projectChanged();
 }
 
 void Project::save(Result* result)
 {
     // save project but not all omcases
     Save::saveProject(this,false);
+
     // save result
     Save::saveResult(this,result);
+
+    emit projectChanged();
 }
 
 void Project::save(Problem* problem)
 {
     // save project but not all omcases
     Save::saveProject(this,false);
+
     // save problem
     Save::saveProblem(this,problem);
+
+    emit projectChanged();
 }
 
 bool Project::load(QString loadPath)
@@ -536,6 +559,8 @@ bool Project::load(QString loadPath)
         clear();
         emit projectChanged();
     }
+    setSaved(true);
+    emit projectChanged();
     return loaded;
 }
 
@@ -576,12 +601,16 @@ void Project::addProblemInterface(ProblemInterface* problemInterface)
 {
     _problemsInterfaces.addProblemInterface(problemInterface);
     emit interfacesModified();
+    emit projectChanged();
 }
 
 void Project::removeProblemInterface(QString interfaceName)
 {
     if(_problemsInterfaces.removeProblemInterface(interfaceName))
+    {
         emit interfacesModified();
+        emit projectChanged();
+    }
 }
 
 void Project::addNewProblem(ProblemInterface* interface, QList<ModModelPlus*> modModelPlusList,QString problemType)
@@ -590,12 +619,11 @@ void Project::addNewProblem(ProblemInterface* interface, QList<ModModelPlus*> mo
     HighTools::checkUniqueProblemName(this,newProblem,_problems);
 
     _problems->addCase(newProblem);
+
     save(newProblem);
+
     emit addedProblem(newProblem);
 }
-
-
-
 
 void Project::addOMCase(QString filePath)
 {
@@ -618,12 +646,8 @@ void Project::addProblem(Problem *problem)
 {
     _problems->addCase(problem);
 
-    // Saving result into file
-    //	Save::saveProblem(problem);
-
     //update GUI
     emit sendInfo(Info(ListInfo::ADDEDPROBLEM,problem->name()));
-
     emit projectChanged();
     emit addedProblem(problem);
 }
@@ -631,9 +655,6 @@ void Project::addProblem(Problem *problem)
 void Project::addResult(Result *result)
 {
     _results->addCase(result);
-
-    // Saving result into file
-    //Save::saveResult(result_);
 
     emit sendInfo(Info(ListInfo::ADDEDPROBLEM,result->name()));
 
@@ -697,6 +718,13 @@ void Project::launchProblem(Problem* problem)
         launchThread->start();
     }
 }
+
+void Project::onProjectChanged()
+{
+    _isSaved = false;
+    emit projectChanged();
+}
+
 void Project::onProblemStopAsked(Problem* problem)
 {
     //    MOThreads::ProblemThread *thread = _launchedThreads.value(problem,NULL);
@@ -902,6 +930,6 @@ void Project::onReloadMOFileAsked()
     {
         QString moFile = button->data().toString();
         this->loadMoFile(moFile,true,true);
-        _modItemsTree->readFromOmc(_modItemsTree->rootElement(),2);
+        _modItemsTree->readFromOMCWThread(_modItemsTree->rootElement(),2);
     }
 }

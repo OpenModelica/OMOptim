@@ -99,10 +99,10 @@ Optimization::~Optimization()
     for(int i=0;i<_algos.size();i++)
         delete _algos.at(i);
 
-    _optimizedVariables->deleteLater();
-    _objectives->deleteLater();
-    _blockSubstitutions->deleteLater();
-    _ctrls->deleteLater();
+    delete _optimizedVariables;
+    delete _objectives;
+    delete _blockSubstitutions;
+    delete _ctrls;
 
 }
 
@@ -614,7 +614,7 @@ ModModelPlus* Optimization::modModelPlus() const
 void Optimization::setBlockSubstitutions(BlockSubstitutions* blockSubstitutions)
 {
     if(_blockSubstitutions)
-        _blockSubstitutions->deleteLater();
+        delete _blockSubstitutions;
 
     _blockSubstitutions = blockSubstitutions;
 }

@@ -113,7 +113,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     this->setStatusBar(_statusBar);
 
 
-
+    connectProject();
     actualizeGuiFromProject();
 
     //*********************************
@@ -318,6 +318,9 @@ void MainWindow::newProject()
 
         // save it (as it is first save, it will ask for path)
         saveProject();
+
+        // actualize gui
+        actualizeGuiFromProject();
     }
 }
 
@@ -380,6 +383,8 @@ void MainWindow::loadProject()
 
     //update GUI
     actualizeGuiFromProject();
+
+    refreshModelTreeView();
 }
 
 void MainWindow::loadProject(QString _fileName)
@@ -391,8 +396,11 @@ void MainWindow::loadProject(QString _fileName)
         QFileInfo info = QFileInfo(_fileName);
         setLastProjectFolder(info.absolutePath());
     }
+
     //update GUI
     actualizeGuiFromProject();
+
+    refreshModelTreeView();
 }
 
 
@@ -424,30 +432,13 @@ void MainWindow::loadPlugins()
     }
 }
 
-
-
-void MainWindow::actualizeGuiFromProject()
+void MainWindow::connectProject()
 {
-    _tabProject->actualizeGuiFromProject();
-
-    // Menus and buttons
-    _ui->actionSaveProject->setEnabled(_project->isDefined());
-    _ui->menuProblems->setEnabled(_project->isDefined());
-    _ui->actionDatabases->setEnabled(_project->isDefined());
-    _ui->actionOMCShell->setEnabled(_project->isDefined());
-    _ui->actionOMCClear->setEnabled(_project->isDefined());
-    _ui->actionLoadMoFile->setEnabled(_project->isDefined());
-    _ui->actionLoadModelicaLibrary->setEnabled(_project->isDefined());
-
-    this->setWindowTitle("OMOptim - "+_project->name());
-
-    //*********************************
-    // Signals for project, infos
-    //*********************************
 
     // first disconnect existing signal-slots
     _project->disconnect(this);
     _project->_mofilesWatcher.disconnect(this);
+
 
     connect(_project, SIGNAL(projectAboutToBeReset()),this, SLOT(onProjectAboutToBeReset()));
     connect(_project, SIGNAL(projectChanged()),this, SLOT( actualizeGuiFromProject()));
@@ -488,12 +479,35 @@ void MainWindow::actualizeGuiFromProject()
     connect(_project,SIGNAL(componentsUpdated()),this,SLOT(onComponentsUpdated()));
     connect(_project,SIGNAL(modifiersUpdated()),this,SLOT(onModifiersUpdated()));
     connect(&_project->_mofilesWatcher,SIGNAL(fileChanged(const QString&)),this,SLOT(onMoFileChanged(const QString&)));
+    connect(_project,SIGNAL(modItemsTreeRefreshed()),this,SLOT(refreshModelTreeView()));
 
     //*********************************
     // Signals for MOomc
     //*********************************
     connect(_project->moomc(),SIGNAL(startOMCThread(QString)),this,SLOT(onStartedOMCThread(QString)));
     connect(_project->moomc(),SIGNAL(finishOMCThread(QString)),this,SLOT(onFinishedOMCThread(QString)));
+
+
+}
+
+
+void MainWindow::actualizeGuiFromProject()
+{
+    _tabProject->actualizeGuiFromProject();
+
+    // Menus and buttons
+    _ui->actionSaveProject->setEnabled(_project->isDefined());
+    _ui->menuProblems->setEnabled(_project->isDefined());
+    _ui->actionDatabases->setEnabled(_project->isDefined());
+    _ui->actionOMCShell->setEnabled(_project->isDefined());
+    _ui->actionOMCClear->setEnabled(_project->isDefined());
+    _ui->actionLoadMoFile->setEnabled(_project->isDefined());
+    _ui->actionLoadModelicaLibrary->setEnabled(_project->isDefined());
+
+    QString windowTitle = "OMOptim - "+_project->name();
+    if(!_project->isSaved()&& _project->isDefined())
+        windowTitle.append("*");
+    this->setWindowTitle(windowTitle);
 }
 
 
@@ -541,7 +555,31 @@ void MainWindow::quit()
 {
     _project->terminateOmsThreads();
 
-    qApp->quit();
+    if(!_project->isSaved() && _project->isDefined())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("The project has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
+        switch (ret)
+        {
+        case QMessageBox::Save:
+            _project->save(true);
+            qApp->quit();
+            break;
+        case QMessageBox::Discard:
+            qApp->quit();
+            break;
+        case QMessageBox::Cancel:
+            // Cancel was clicked
+            break;
+        default:
+            // should never be reached
+            break;
+        }
+    }
 }
 void MainWindow::onProjectAboutToBeReset()
 {
@@ -562,9 +600,13 @@ void MainWindow::onAddedProblem(Problem* newProblem)
     // Creating problem tab
     ProblemInterface* interface = _project->problemsInterfaces().interfaceOf(newProblem);
 
+    QTime elapsed;
     if(interface)
     {
+        elapsed.restart();
         _tabMain->addProblemTab(newProblem,interface->createProblemTab(newProblem,this));
+        QString msg = "Creating tab "+ newProblem->name()+" took " +QString::number((double)elapsed.elapsed()/1000)+"sec";
+        InfoSender::instance()->debug(msg);
     }
 
     _tabMain->enableCaseTab(newProblem);
@@ -575,30 +617,16 @@ void MainWindow::onAddedResult(Result* newResult)
     // Creating problem tab
     ProblemInterface* interface = _project->problemsInterfaces().interfaceOf(newResult->problem());
 
+    QTime elapsed;
     if(interface)
     {
+        elapsed.restart();
         _tabMain->addResultTab(newResult,interface->createResultTab(newResult,this));
+        QString msg = "Creating tab "+ newResult->name()+" took " +QString::number((double)elapsed.elapsed()/1000)+"sec";
+        InfoSender::instance()->debug(msg);
     }
 
     _tabMain->enableCaseTab(newResult);
-}
-
-void MainWindow::onComponentsUpdated()
-{
-    // updating gui of components (in project tab)
-    //_tabProject->tabComponents->actualizeComponentTree();
-}
-
-void MainWindow::onModifiersUpdated()
-{
-    // updating gui of components (in project tab)
-    //_tabProject->tabComponents->actualizeModifiersTable();
-}
-
-void MainWindow::onConnectionsUpdated()
-{
-    // updating gui of components (in project tab)
-    //_tabProject->tabComponents->actualizeConnectionsTable();
 }
 
 void MainWindow::removeResult()
@@ -741,16 +769,16 @@ void MainWindow::rightClickedOnCase(const QPoint & iPoint)
     {
         if(indexes.contains(index))
         {
-        QMenu* caseMenu = NULL;
-        OMCase* selectedCase = _casesTree->item(index);
+            QMenu* caseMenu = NULL;
+            OMCase* selectedCase = _casesTree->item(index);
 
-        if(_project->problems()->contains(selectedCase))
-            caseMenu = GuiTools::createProblemPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Problem*>(selectedCase),index.row());
-        if(_project->results()->contains(selectedCase))
-            caseMenu = GuiTools::createResultPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Result*>(selectedCase),index.row());
+            if(_project->problems()->contains(selectedCase))
+                caseMenu = GuiTools::createProblemPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Problem*>(selectedCase),index.row());
+            if(_project->results()->contains(selectedCase))
+                caseMenu = GuiTools::createResultPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Result*>(selectedCase),index.row());
 
-        if(caseMenu)
-            caseMenu->exec(_casesTreeView->mapToGlobal(iPoint));
+            if(caseMenu)
+                caseMenu->exec(_casesTreeView->mapToGlobal(iPoint));
         }
     }
 }
@@ -925,10 +953,11 @@ void MainWindow::showModItem(ModItem* modClass)
 void MainWindow::onMoFileChanged(const QString &moFile)
 {
     QMessageBox msgbox(QMessageBox::Question,"Reload .mo file","Model file has been modified. Do you want to realod it ? \n"+moFile,
-            QMessageBox::No|QMessageBox::Yes,this);
+                       QMessageBox::No|QMessageBox::Yes,this);
     if(msgbox.exec()==QMessageBox::Yes)
     {
         _project->loadMoFile(moFile,true,true);
+        refreshModelTreeView();
     }
 }
 
@@ -947,6 +976,8 @@ void MainWindow::loadMoFile()
     for(int i=0;i<fileNames.size();i++)
         _project->loadMoFile(fileNames.at(i));
 
+    refreshModelTreeView();
+
     // save last .mo folder
     if(fileNames.size())
     {
@@ -959,13 +990,20 @@ void MainWindow::loadMoFile()
 void MainWindow::loadModelicaLibrary()
 {
     _project->loadModelicaLibrary();
+    refreshModelTreeView();
 }
 
 void MainWindow::refreshModelTree()
 {
     _project->refreshAllMod();
+    refreshModelTreeView();
 }
 
+void MainWindow::refreshModelTreeView()
+{
+     _ui->treeModItem->setModel(NULL);
+    _ui->treeModItem->setModel(_project->modItemsTree());
+}
 
 void MainWindow::updateProblemsMenu()
 {

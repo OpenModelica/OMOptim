@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -43,6 +43,7 @@
 
 OneSimResult::OneSimResult(void)
 {
+    InfoSender::instance()->debug("New onesimres");
     _inputVariables = new Variables(true);
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
 
@@ -53,6 +54,7 @@ OneSimResult::OneSimResult(void)
 OneSimResult::OneSimResult(Project* project, ModModelPlus* modelPlus, const OneSimulation &problem)
     :Result(project,(const Problem&)problem)
 {
+    InfoSender::instance()->debug("New onesimres");
     _modModelPlus = modelPlus;
 
     _inputVariables = new Variables(true,modelPlus);
@@ -63,9 +65,9 @@ OneSimResult::OneSimResult(Project* project, ModModelPlus* modelPlus, const OneS
 }
 
 OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok)
-:Result(project,(const Problem&)problem)
+    :Result(project,(const Problem&)problem)
 {
-
+    InfoSender::instance()->debug("New onesimres");
     _modModelPlus = problem.modModelPlus();
 
     ok = (domResult.tagName()==OneSimResult::className());
@@ -85,6 +87,7 @@ OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const
 
 OneSimResult::~OneSimResult(void)
 {
+    InfoSender::instance()->debug("Delete onesimres");
     delete _inputVariables;
     delete _finalVariables;
 }
@@ -98,7 +101,7 @@ QDomElement OneSimResult::toXmlData(QDomDocument & doc)
     // Problem definition
     QDomElement cInfos = doc.createElement("Infos");
     cInfos.setAttribute("name", _name);
- //   cInfos.setAttribute("type", problemType());
+    //   cInfos.setAttribute("type", problemType());
     cResult.appendChild(cInfos);
 
     // Final variables

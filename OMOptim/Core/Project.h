@@ -102,6 +102,7 @@ private:
     //Misc
     QString _filePath;
     bool _isdefined;
+    bool _isSaved; /// defines whether project has been modified since last save
     ModItem* _curModItem;
     MOomc *_moomc;
 
@@ -123,11 +124,7 @@ private:
     // Problems interfaces
     ProblemInterfaces _problemsInterfaces;
 
-    // Info sender
-  //  InfoSener* _infoSender;
-
-
-public:
+ public:
     Project();
     ~Project();
     QString getClassName(){return "Project";};
@@ -135,6 +132,9 @@ public:
     void clear();
     QString getFieldName(int iField,int role);
     unsigned getNbFields();
+
+    bool isSaved();
+    void setSaved(bool);
 
     //****************************
     //Model managment
@@ -239,8 +239,7 @@ public slots :
     bool renameProblem(Problem*, QString);
     void onProblemFinished(Problem*,Result*);
     void onProblemStopAsked(Problem*);
-
-
+    void onProjectChanged();
 
     // others
     bool renameResult(Result*, QString);
@@ -251,11 +250,12 @@ public slots :
     // Signals
     //****************************
 signals:
-    void infosChanged();
+
     void sendProgress(float);
     void sendProgress(float,int,int);
     void projectAboutToBeReset();
     void projectChanged();
+
 
     void addedProblem(Problem*);
     void addedResult(Result*);
@@ -276,6 +276,7 @@ signals:
 
     void curModItemChanged(ModItem*);
     void curModModelChanged(ModModel*);
+    void modItemsTreeRefreshed(); /// when want to refresh tree view
 
     void modsUpdated();
     void interfacesModified();

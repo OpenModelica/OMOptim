@@ -66,14 +66,17 @@ void ModLoader::loadMoFile(ModItemsTree* modItemsTree,QString filePath,bool forc
     QString error;
     bool loadOk;
 
-    // clear tree
-    modItemsTree->clear();
 
     // Load file
     _moomc->loadModel(filePath,forceLoad,loadOk,error);
 
+
+    // clear tree
+    modItemsTree->clear();
+
+
     // reread first elements of modItemsTree
-    modItemsTree->readFromOmc(modItemsTree->rootElement(),2);
+    modItemsTree->readFromOMCWThread(modItemsTree->rootElement(),2);
 
 }
 
@@ -83,9 +86,6 @@ void ModLoader::loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bo
 {
     QString error;
     bool loadOk;
-
-    // clear tree
-    modItemsTree->clear();
 
     for(int i=0;i<filePaths.size();i++)
     {
@@ -100,8 +100,12 @@ void ModLoader::loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bo
             _moomc->loadModel(filePaths.at(i),forceLoad,loadOk,error);
         }
     }
+
+    // clear tree
+    modItemsTree->clear();
+
     // reread first elements of modItemsTree
-    modItemsTree->readFromOmc(modItemsTree->rootElement(),2);
+    modItemsTree->readFromOMCWThread(modItemsTree->rootElement(),2);
 }
 
 int ModLoader::getDepthMax()

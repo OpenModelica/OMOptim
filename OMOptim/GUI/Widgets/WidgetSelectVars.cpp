@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetSelectVars.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+  @file WidgetSelectVars.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
   @version
 */
 
@@ -49,21 +49,48 @@ WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *allVariables,QWidget *par
 {
     ui->setupUi(this);
 
+    _useOpt = false;
     _allVariables = allVariables;
-
-    _selectedVariables = selectedVariables->clone();
+    if(selectedVariables)
+        _selectedVariables = selectedVariables->clone();
+    else
+        _selectedVariables = new MOVector<Variable>(false);
 
     variableProxyModel = GuiTools::ModelToViewWithFilter(_allVariables,ui->listVars,ui->lineVariableFilter);
 
     ui->listSelectedVars->setModel(_selectedVariables);
 
-	connect(ui->pushAddVar,SIGNAL(clicked()),this,SLOT(addVariables()));
-	connect(ui->pushRemoveVar,SIGNAL(clicked()),this,SLOT(removeVariables()));
+    connect(ui->pushAddVar,SIGNAL(clicked()),this,SLOT(addVariables()));
+    connect(ui->pushRemoveVar,SIGNAL(clicked()),this,SLOT(removeVariables()));
 
-	ui->listSelectedVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->listSelectedVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->listVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-	ui->listVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
+}
 
+WidgetSelectVars::WidgetSelectVars(MOOptVector *allVariables,QWidget *parent,MOOptVector* selectedVariables):
+    QWidget(parent),
+    ui(new Ui::WidgetSelectVarsClass)
+{
+    ui->setupUi(this);
+
+    _useOpt = true;
+    _allOptVariables= allVariables;
+    if(selectedVariables)
+        _selectedOptVariables = selectedVariables->clone();
+    else
+        _selectedOptVariables = new MOOptVector(false,true,true);
+
+
+    variableProxyModel = GuiTools::ModelToViewWithFilter(_allOptVariables,ui->listVars,ui->lineVariableFilter);
+
+    ui->listSelectedVars->setModel(_selectedOptVariables);
+
+    connect(ui->pushAddVar,SIGNAL(clicked()),this,SLOT(addVariables()));
+    connect(ui->pushRemoveVar,SIGNAL(clicked()),this,SLOT(removeVariables()));
+
+    ui->listSelectedVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->listVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 }
 
@@ -76,43 +103,73 @@ WidgetSelectVars::~WidgetSelectVars()
 
 void WidgetSelectVars::addVariables()
 {
-	QModelIndexList proxyIndexes = ui->listVars->selectionModel()->selectedIndexes();
-	QModelIndex curProxyIndex;
-	QModelIndex curSourceIndex;
-	Variable* varSelected;
-	Variable *newVar;
+    QModelIndexList proxyIndexes = ui->listVars->selectionModel()->selectedIndexes();
+    QModelIndex curProxyIndex;
+    QModelIndex curSourceIndex;
+    Variable* varSelected;
 
-	// Adding selected variables in overwritedVariables
-	bool alreadyIn;
 
-	foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
-	{
-		curSourceIndex = variableProxyModel->mapToSource(curProxyIndex);
-        varSelected=_allVariables->at(curSourceIndex.row());
+    // Adding selected variables in overwritedVariables
+    bool alreadyIn;
 
-        alreadyIn = _selectedVariables->alreadyIn(varSelected->name());
+    foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
+    {
+        curSourceIndex = variableProxyModel->mapToSource(curProxyIndex);
 
-		if (!alreadyIn)
-		{
-			newVar = new Variable(*varSelected);
-            _selectedVariables->addItem(newVar);;
-	}
+        if(_useOpt)
+        {
+            VariableResult *newVar;
+            varSelected=_allOptVariables->at(curSourceIndex.row());
+            alreadyIn = _selectedOptVariables->alreadyIn(varSelected->name());
+
+            if (!alreadyIn)
+            {
+                newVar = new VariableResult(*varSelected);
+                _selectedOptVariables->addItem(newVar);;
+            }
+        }
+        else
+        {
+            Variable *newVar;
+            varSelected=_allVariables->at(curSourceIndex.row());
+            alreadyIn = _selectedVariables->alreadyIn(varSelected->name());
+
+            if (!alreadyIn)
+            {
+                newVar = new Variable(*varSelected);
+                _selectedVariables->addItem(newVar);;
+            }
+        }
     }
 }
 
 void WidgetSelectVars::removeVariables()
 {
-	QModelIndexList indexList = ui->listSelectedVars->selectionModel()->selectedIndexes();
+    QModelIndexList indexList = ui->listSelectedVars->selectionModel()->selectedIndexes();
 
-	for(int i=0;i<indexList.size();i++)
-	{
-        int iVar = _selectedVariables->items.indexOf((Variable*)indexList.at(i).internalPointer());
-		if(iVar>-1)
-            _selectedVariables->removeRow(iVar);
-	}
+    for(int i=0;i<indexList.size();i++)
+    {
+        if(_useOpt)
+        {
+            int iVar = _selectedOptVariables->items.indexOf((VariableResult*)indexList.at(i).internalPointer());
+            if(iVar>-1)
+                _selectedOptVariables->removeRow(iVar);
+        }
+        else
+        {
+            int iVar = _selectedVariables->items.indexOf((Variable*)indexList.at(i).internalPointer());
+            if(iVar>-1)
+                _selectedVariables->removeRow(iVar);
+        }
+    }
 }
 
 MOVector<Variable>* WidgetSelectVars::getSelectedVars()
 {
     return _selectedVariables;
+}
+
+MOOptVector* WidgetSelectVars::getSelectedOptVars()
+{
+    return _selectedOptVariables;
 }

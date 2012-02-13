@@ -149,7 +149,7 @@ QVariant MOOptVector::data(const QModelIndex &index, int role) const
         else
         {
 
-            return items.at(index.row())->getFieldValue(index.column());
+            return items.at(index.row())->getFieldValue(index.column(),role);
         }
     }
     return QVariant();

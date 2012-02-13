@@ -67,7 +67,7 @@ public:
         OptimResult(Project*,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok);
 	OptimResult(const OptimResult &_res);
         virtual ~OptimResult(void);
-        static QString className(){return "OptimResult";};
+        static QString className(){return "OptimResult";}
         virtual QString getClassName(){return OptimResult::className();}
 
 	QDomElement toXmlData(QDomDocument &);
@@ -77,8 +77,10 @@ public:
 
 	QString buildOptVarsFrontCSV(QString separator="\t");
 	QString buildAllVarsFrontCSV(QString separator="\t");
-	QString buildAllVarsFrontCSV(QList<int> vars, QList<int> points,QString separator="\t");
-	QString buildAllVarsFrontCSV(QList<int> points,QString separator="\t");
+        QString buildAllVarsFrontCSV( QList<int> points,QString separator="\t");
+
+        QString buildVarsFrontCSV(MOOptVector* variables, QList<int> points,QString separator="\t");
+
 
 	void exportFrontCSV(QString FileName, bool allVars);
 

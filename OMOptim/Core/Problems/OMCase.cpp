@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -89,6 +89,15 @@ void OMCase::setName(QString name)
         setDefaultSaveFileName();
 }
 
+void OMCase::setIsSaved(bool isSaved)
+{
+    _isSaved = isSaved;
+}
+
+bool OMCase::isSaved()
+{
+    return _isSaved;
+}
 
 void OMCase::setProject(Project* project)
 {
@@ -122,13 +131,15 @@ QString OMCase::entireSavePath()
     return _saveFolder + QDir::separator() + _saveFileName;
 }
 
-
-
 void OMCase::openFolder()
 {
     LowTools::openFolder(_saveFolder);
 }
 
+void OMCase::modified()
+{
+    setIsSaved(false);
+}
 
 /**
 * Stores problem files in destFolder. Is called when a problem resolution is finished.
@@ -177,6 +188,8 @@ void OMCase::store(QString destFolder, QString tempDir)
     }
 
     setSaveFolder(destFolder);
+
+
 }
 
 

@@ -201,14 +201,26 @@ bool Load::loadProject(QString filePath,Project* _project)
     //**************************************
     // Reading problems
     //**************************************
+    QTime loadTime;
+    QString msg;
     for(int i=0;i<problemsPaths.size();i++)
+    {
+        loadTime.restart();
         _project->addOMCase(problemsPaths.at(i));
+        msg = "Loaded problem "+ problemsPaths.at(i)+" took " +QString::number((double)loadTime.elapsed()/1000)+"sec";
+        InfoSender::instance()->debug(msg);
+    }
 
     //**************************************
     // Reading results
     //**************************************
     for(int i=0;i<resultsPaths.size();i++)
+    {
+        loadTime.restart();
         _project->addOMCase(resultsPaths.at(i));
+        msg = "Loaded result "+ resultsPaths.at(i)+" took " +QString::number((double)loadTime.elapsed()/1000)+"sec";
+        InfoSender::instance()->debug(msg);
+    }
 
     _project->setIsDefined(true);
 

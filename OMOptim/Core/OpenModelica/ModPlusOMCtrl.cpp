@@ -44,9 +44,11 @@ http://www-cep.ensmp.fr/english/
 ModPlusOMCtrl::ModPlusOMCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc)
     :ModPlusCtrl(project,modModelPlus,moomc)
 {
+
     _initFileTxt = _modModelPlus->modModelName()+"_init.txt";
     _initFileXml = _modModelPlus->modModelName()+"_init.xml";
-    _resFile = _modModelPlus->modModelName()+"_res.csv";
+
+
 #ifdef WIN32
     _exeFile = _modModelPlus->modModelName()+".exe";
 #else
@@ -58,7 +60,7 @@ ModPlusOMCtrl::ModPlusOMCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* 
     _parameters = new MOParameters();
     setDefaultParameters();
 
-   connect(_parameters,SIGNAL(modified()),this,SIGNAL(modified()));
+    connect(_parameters,SIGNAL(modified()),this,SIGNAL(modified()));
 }
 
 ModPlusOMCtrl::~ModPlusOMCtrl(void)
@@ -71,10 +73,10 @@ ModPlusCtrl* ModPlusOMCtrl::clone()
 
     cloned->_initFileTxt = _initFileTxt;
     cloned->_initFileXml = _initFileXml;
-    cloned->_resFile = _resFile;
     cloned->_exeFile = _exeFile;
     cloned->_copyAllMoOfFolder = _copyAllMoOfFolder;
     cloned->_parameters = _parameters->clone();
+
 
     return cloned;
 }
@@ -89,6 +91,18 @@ QString ModPlusOMCtrl::name()
     return "Open Modelica";
 }
 
+bool ModPlusOMCtrl::useMat()
+{
+    return _parameters->value(ModPlusOMCtrl::OUTPUT,true).toBool();
+}
+
+QString ModPlusOMCtrl::resFile()
+{
+    if(useMat())
+        return _modModelPlus->modModelName()+"_res.mat";
+    else
+        return _modModelPlus->modModelName()+"_res.csv";
+}
 
 // Parameters
 void ModPlusOMCtrl::setDefaultParameters()
@@ -106,16 +120,26 @@ void ModPlusOMCtrl::setDefaultParameters()
     _parameters->addItem(new MOParameter(STARTTIME,"startTime","Start time",0,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
 
     _parameters->addItem(new MOParameter((int)MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
+
+    QMap<int,QString> mapOutput;
+    mapOutput.insert(ModPlusOMCtrl::MAT,"mat");
+    mapOutput.insert(ModPlusOMCtrl::CSV,"csv");
+
+    _parameters->addItem( new MOParameterListed((int)OUTPUT,"outputFormat","Output",ModPlusOMCtrl::MAT,mapOutput));
+
 }
 
-bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString resFile)
+bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString resFileLocal)
 {
-    InfoSender::instance()->send(Info("Reading final variables in "+resFile,ListInfo::NORMAL2));
+    InfoSender::instance()->send(Info("Reading final variables in "+resFileLocal,ListInfo::NORMAL2));
 
-    if(resFile.isEmpty())
-        resFile = _resFile;
+    if(resFileLocal.isEmpty())
+        resFileLocal = resFile();
 
-    return OpenModelica::getFinalVariablesFromFile(resFile,finalVariables,_modModelPlus->modModelName());
+    if(useMat())
+        return OpenModelica::getFinalVariablesFromMatFile(resFileLocal,finalVariables,_modModelPlus->modModelName());
+    else
+        return OpenModelica::getFinalVariablesFromFile(resFileLocal,finalVariables,_modModelPlus->modModelName());
 }
 
 
@@ -262,7 +286,7 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
         fileToCopyInfo.setFile(allFilesToCopy.at(i));
         tempDir.remove(fileToCopyInfo.fileName());
         copyOk = QFile::copy(allFilesToCopy.at(i),tempDir.filePath(fileToCopyInfo.fileName()));
-         //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
+        //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
         InfoSender::instance()->debug("Copying in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
         if(!copyOk)
             InfoSender::instance()->sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
@@ -271,13 +295,13 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
 
     // remove previous log files
     QStringList filesToRemove;
-    filesToRemove << _resFile;
+    filesToRemove << resFile();
     for(int i=0;i<filesToRemove.size();i++)
         tempDir.remove(filesToRemove.at(i));
 
     QString tempInitFileXml = tempDir.absoluteFilePath(_initFileXml);
     QString tempInitFileTxt = tempDir.absoluteFilePath(_initFileTxt);
-    QString tempResFile = tempDir.absoluteFilePath(_resFile);
+    QString tempResFile = tempDir.absoluteFilePath(resFile());
     QString tempExeFile = tempDir.absoluteFilePath(_exeFile);
 
 

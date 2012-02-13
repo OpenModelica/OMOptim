@@ -129,7 +129,6 @@ MO2ColTab(result->project()->name(),result,false,parent)
 
 TabResOptimization::~TabResOptimization()
 {
-
 }
 
 

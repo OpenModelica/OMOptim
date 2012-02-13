@@ -90,7 +90,7 @@ public slots :
 	void onSelectedModItem(QModelIndex);
         void updateProblemsMenu();
 
-
+        void connectProject();
 	void actualizeGuiFromProject();
 
 	void newProject();
@@ -107,14 +107,12 @@ public slots :
 	void loadMoFile();
 	void loadModelicaLibrary();
         void refreshModelTree();
+        void refreshModelTreeView();
 
 
         void onPushedNewProblem();
 	void onAddedProblem(Problem*);
         void onAddedResult(Result*);
-	void onComponentsUpdated();
-	void onConnectionsUpdated();
-	void onModifiersUpdated();
 	void onProblemBegun(Problem*);
         void onProblemFinished(Problem*,Result*);
 	void onNewProblemProgress(float);

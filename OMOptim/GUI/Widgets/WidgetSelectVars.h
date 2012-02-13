@@ -29,11 +29,11 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetSelectVars.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+  @file WidgetSelectVars.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
   @version
 */
 
@@ -62,6 +62,7 @@ class WidgetSelectVars : public QWidget {
 
 public:
     explicit WidgetSelectVars(MOVector<Variable> *allVariables,QWidget *parent,MOVector<Variable> *selectedVariables);
+    explicit WidgetSelectVars(MOOptVector *allVariables,QWidget *parent,MOOptVector *selectedVariables);
     virtual ~WidgetSelectVars();
 
 
@@ -69,16 +70,22 @@ public:
 public:
     Ui::WidgetSelectVarsClass *ui;
 
-	QSortFilterProxyModel *variableProxyModel;
+    QSortFilterProxyModel *variableProxyModel;
 
     MOVector<Variable> *_allVariables;
     MOVector<Variable> *_selectedVariables;
 
-	MOVector<Variable>* getSelectedVars();
+    MOOptVector *_allOptVariables;
+    MOOptVector *_selectedOptVariables;
+
+    MOVector<Variable>* getSelectedVars();
+    MOOptVector* getSelectedOptVars();
+
+    bool _useOpt;
 
 public slots:
-		void addVariables();
-		void removeVariables();
+    void addVariables();
+    void removeVariables();
 };
 
 #endif 

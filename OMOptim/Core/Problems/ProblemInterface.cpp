@@ -37,6 +37,8 @@ bool ProblemInterface::saveProblem(Problem* problem)
         ts << doc.toString();
         file.close();
     }
+
+    problem->setIsSaved(true);
 }
 
 bool ProblemInterface::saveResult(Result* result)
@@ -85,6 +87,8 @@ bool ProblemInterface::saveResult(Result* result)
         ts << doc.toString();
         file.close();
     }
+
+    result->setIsSaved(true);
 }
 
 void ProblemInterface::initParameters()

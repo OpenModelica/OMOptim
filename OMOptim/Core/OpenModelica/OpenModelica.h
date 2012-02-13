@@ -82,8 +82,13 @@ public:
         static void getInputVariablesFromTxtFile(MOomc *_omc,QTextStream *, MOVector<Variable> *,QString _modelName);
         static bool getInputVariablesFromXmlFile(MOomc *_omc,QString,QString modModelName, MOVector<Variable> *);
         static bool getInputVariablesFromXmlFile(MOomc *_omc,const QDomDocument &,QString modModelName, MOVector<Variable> *);
-	static bool getFinalVariablesFromFile(QString, MOVector<Variable> *,QString _modelName);
+
+        static bool getFinalVariablesFromFile(QString, MOVector<Variable> *,QString _modelName);
 	static bool getFinalVariablesFromFile(QTextStream *, MOVector<Variable> *,QString _modelName);
+
+        static bool getFinalVariablesFromMatFile(QString, MOVector<Variable> *,QString _modelName);
+
+
         static void setInputVariablesTxt(QString, MOVector<Variable> *,QString modModelName,MOParameters *parameters=NULL);
         static bool setInputXml(QString, MOVector<Variable> *, QString modelName,MOParameters *parameters=NULL);
         static void start(QString exeFile,int maxnsec);

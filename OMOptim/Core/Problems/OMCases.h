@@ -59,7 +59,7 @@ public:
         QVector<OMCase*> items;
 
 	
-	void reset();
+        void clear();
 
 	QVariant data(const QModelIndex &index, int role) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;

@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -50,37 +50,36 @@ WidgetMooPlot::WidgetMooPlot(OptimResult* result,QWidget *parent) :
 {
     _ui->setupUi(this);
 
-        _result = result;
+    _result = result;
 
-        //***********
-        //PLOT
-        //***********
-        _plot1 = new MOOptPlot();
-        _plot1->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-        _ui->layoutInsidePlot->addWidget(_plot1);
-        _ui->layoutInsidePlot->setContentsMargins(10,10,10,10);
+    //***********
+    //PLOT
+    //***********
+    _plot1 = new MOOptPlot();
+    _plot1->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    _ui->layoutInsidePlot->addWidget(_plot1);
+    _ui->layoutInsidePlot->setContentsMargins(10,10,10,10);
 
-        // connect signals for selection changed
-        connect(_plot1,SIGNAL(selectionChanged(QList<int>&)),
-                this,SIGNAL(selectionChanged(QList<int>&)));
+    // connect signals for selection changed
+    connect(_plot1,SIGNAL(selectionChanged(QList<int>&)),
+            this,SIGNAL(selectionChanged(QList<int>&)));
 
 
-        // Connecting signals and slot
-        connect(_ui->comboAbscissa,SIGNAL(activated(int)),
-        this,SLOT(varSelectionChanged()));
-        connect(_ui->comboOrdinate,SIGNAL(activated(int)),
-        this,SLOT(varSelectionChanged()));
+    // Connecting signals and slot
+    connect(_ui->comboAbscissa,SIGNAL(activated(int)),
+            this,SLOT(varSelectionChanged()));
+    connect(_ui->comboOrdinate,SIGNAL(activated(int)),
+            this,SLOT(varSelectionChanged()));
 
-        // update combos and plot
-        updateCombos();
-        varSelectionChanged();
+    // update combos and plot
+    updateCombos();
+    varSelectionChanged();
 }
 
 WidgetMooPlot::~WidgetMooPlot()
 {
     delete _ui;
 }
-
 
 void WidgetMooPlot::onExtSelectionChanged(QList<int>& list)
 {
@@ -94,162 +93,162 @@ void WidgetMooPlot::onExtShownPointsChanged(QList<int>& list)
 
 void WidgetMooPlot::varSelectionChanged()
 {
-        // getting variables names
-        QString xVarName = _ui->comboAbscissa->itemData(_ui->comboAbscissa->currentIndex()).toString();
-        QString yVarName = _ui->comboOrdinate->itemData(_ui->comboOrdinate->currentIndex()).toString();
+    // getting variables names
+    QString xVarName = _ui->comboAbscissa->itemData(_ui->comboAbscissa->currentIndex()).toString();
+    QString yVarName = _ui->comboOrdinate->itemData(_ui->comboOrdinate->currentIndex()).toString();
 
 
-        // updating short names
-        QString shortXVarName = xVarName;
-        shortXVarName.remove(_result->modModelPlus()->name()+".");
+    // updating short names
+    QString shortXVarName = xVarName;
+    shortXVarName.remove(_result->modModelPlus()->name()+".");
 
-        QString shortYVarName = yVarName;
-        shortYVarName.remove(_result->modModelPlus()->name()+".");
-
-
-
-        QFont font;
-        font.setPointSize(8);
-        font.setBold(true);
-        font.setStyleStrategy(QFont::PreferAntialias);
-
-        QwtText xtitle;
-        xtitle.setFont(font);
-        xtitle.setText(shortXVarName);
-
-        QwtText ytitle;
-        ytitle.setFont(font);
-        ytitle.setText(shortYVarName);
-
-        _plot1->setAxisTitle(QwtPlot::yLeft,ytitle);
-        _plot1->setAxisTitle(QwtPlot::xBottom,xtitle);
-
-        VariableResult *XObjResult;
-        VariableResult *YObjResult;
-        VariableResult *XVarResult;
-        VariableResult *YVarResult;
-        int XType,YType; //0 = Obj, 1 = Var
+    QString shortYVarName = yVarName;
+    shortYVarName.remove(_result->modModelPlus()->name()+".");
 
 
 
-        bool xfound = false;
-        bool yfound = false;
+    QFont font;
+    font.setPointSize(8);
+    font.setBold(true);
+    font.setStyleStrategy(QFont::PreferAntialias);
+
+    QwtText xtitle;
+    xtitle.setFont(font);
+    xtitle.setText(shortXVarName);
+
+    QwtText ytitle;
+    ytitle.setFont(font);
+    ytitle.setText(shortYVarName);
+
+    _plot1->setAxisTitle(QwtPlot::yLeft,ytitle);
+    _plot1->setAxisTitle(QwtPlot::xBottom,xtitle);
+
+    VariableResult *XObjResult;
+    VariableResult *YObjResult;
+    VariableResult *XVarResult;
+    VariableResult *YVarResult;
+    int XType,YType; //0 = Obj, 1 = Var
 
 
-        // looking in optObjectives
-        int XVarIndex = _result->optObjectivesResults()->findItem(xVarName);
-        if (XVarIndex > -1)
+
+    bool xfound = false;
+    bool yfound = false;
+
+
+    // looking in optObjectives
+    int XVarIndex = _result->optObjectivesResults()->findItem(xVarName);
+    if (XVarIndex > -1)
+    {
+        XObjResult = _result->optObjectivesResults()->at(XVarIndex);
+        XType = 0;
+        xfound = true;
+    }
+    else
+    {
+        //looking in optVariables
+        XVarIndex = _result->optVariablesResults()->findItem(xVarName);
+        if(XVarIndex>-1)
         {
-                XObjResult = _result->optObjectivesResults()->at(XVarIndex);
-                XType = 0;
-                xfound = true;
+            XVarResult = dynamic_cast<VariableResult*>(_result->optVariablesResults()->at(XVarIndex));
+            XType = 1;
+            xfound=true;
         }
-        else
-        {
-                //looking in optVariables
-                XVarIndex = _result->optVariablesResults()->findItem(xVarName);
-                if(XVarIndex>-1)
-                {
-                        XVarResult = dynamic_cast<VariableResult*>(_result->optVariablesResults()->at(XVarIndex));
-                        XType = 1;
-                        xfound=true;
-                }
-        }
+    }
 
-        int YVarIndex = _result->optObjectivesResults()->findItem(yVarName);
-        if (YVarIndex > -1)
-        {
-                YObjResult = _result->optObjectivesResults()->at(YVarIndex);
-                YType = 0;
-                yfound = true;
-        }
-        else
-        {
-                //looking in optVariables
-                YVarIndex = _result->optVariablesResults()->findItem(yVarName);
+    int YVarIndex = _result->optObjectivesResults()->findItem(yVarName);
+    if (YVarIndex > -1)
+    {
+        YObjResult = _result->optObjectivesResults()->at(YVarIndex);
+        YType = 0;
+        yfound = true;
+    }
+    else
+    {
+        //looking in optVariables
+        YVarIndex = _result->optVariablesResults()->findItem(yVarName);
         if(YVarIndex>-1)
-                {
-                YVarResult = _result->optVariablesResults()->at(YVarIndex);
-                YType = 1;
-                yfound = true;
-                }
-        }
-
-
-        // plot new variables
-        if(xfound && yfound)
         {
-                switch(XType)
-                {
-                case 0 :
-                        switch(YType)
-                        {
-                        case 0 :
-                                _plot1->setXYVar(XObjResult,YObjResult);
-                                break;
-
-                        case 1 :
-                                _plot1->setXYVar(XObjResult,YVarResult);
-                                break;
-                        }
-                        break;
-                case 1 :
-                        switch(YType)
-                        {
-                        case 0 :
-                                _plot1->setXYVar(XVarResult,YObjResult);
-                                break;
-
-                        case 1 :
-                                _plot1->setXYVar(XVarResult,YVarResult);
-                                break;
-                        }
-                        break;
-                }
+            YVarResult = _result->optVariablesResults()->at(YVarIndex);
+            YType = 1;
+            yfound = true;
         }
+    }
+
+
+    // plot new variables
+    if(xfound && yfound)
+    {
+        switch(XType)
+        {
+        case 0 :
+            switch(YType)
+            {
+            case 0 :
+                _plot1->setXYVar(XObjResult,YObjResult);
+                break;
+
+            case 1 :
+                _plot1->setXYVar(XObjResult,YVarResult);
+                break;
+            }
+            break;
+        case 1 :
+            switch(YType)
+            {
+            case 0 :
+                _plot1->setXYVar(XVarResult,YObjResult);
+                break;
+
+            case 1 :
+                _plot1->setXYVar(XVarResult,YVarResult);
+                break;
+            }
+            break;
+        }
+    }
 }
 
 void WidgetMooPlot::updateCombos()
 {
-        // Clear
-        _ui->comboAbscissa->clear();
-        _ui->comboOrdinate->clear();
+    // Clear
+    _ui->comboAbscissa->clear();
+    _ui->comboOrdinate->clear();
 
-        // Adding OptVariables and OptObjectives in Combo
-        int nbObj = _result->optObjectivesResults()->size();
-        int nbOpt = _result->optVariablesResults()->size();
-        QStringList shortNames;
-        QStringList fullNames;
-        QString curName;
-        for (int i=0;i<nbObj;i++)
+    // Adding OptVariables and OptObjectives in Combo
+    int nbObj = _result->optObjectivesResults()->size();
+    int nbOpt = _result->optVariablesResults()->size();
+    QStringList shortNames;
+    QStringList fullNames;
+    QString curName;
+    for (int i=0;i<nbObj;i++)
+    {
+        curName = _result->optObjectivesResults()->at(i)->name();
+        fullNames.push_back(curName);
+        curName.remove(_result->modModelPlus()->name()+".");
+        shortNames.push_back(curName);
+    }
+    for (int i=0;i<nbOpt;i++)
+    {
+        if (!fullNames.contains(_result->optVariablesResults()->at(i)->name()))
         {
-            curName = _result->optObjectivesResults()->at(i)->name();
+            curName = _result->optVariablesResults()->at(i)->name();
             fullNames.push_back(curName);
             curName.remove(_result->modModelPlus()->name()+".");
             shortNames.push_back(curName);
         }
-        for (int i=0;i<nbOpt;i++)
-        {
-                if (!fullNames.contains(_result->optVariablesResults()->at(i)->name()))
-                {
-                    curName = _result->optVariablesResults()->at(i)->name();
-                    fullNames.push_back(curName);
-                    curName.remove(_result->modModelPlus()->name()+".");
-                    shortNames.push_back(curName);
-                }
-        }
-        for(int i=0;i<fullNames.size();i++)
-        {
-            _ui->comboAbscissa->addItem(shortNames.at(i),fullNames.at(i));
-            _ui->comboOrdinate->addItem(shortNames.at(i),fullNames.at(i));
-        }
+    }
+    for(int i=0;i<fullNames.size();i++)
+    {
+        _ui->comboAbscissa->addItem(shortNames.at(i),fullNames.at(i));
+        _ui->comboOrdinate->addItem(shortNames.at(i),fullNames.at(i));
+    }
 
-        if(fullNames.size()>1)
-                _ui->comboOrdinate->setCurrentIndex(1);
+    if(fullNames.size()>1)
+        _ui->comboOrdinate->setCurrentIndex(1);
 }
 
 void WidgetMooPlot::setShownPoints(QList<int> _list)
 {
-        _plot1->setShownPoints(_list);
-        }
+    _plot1->setShownPoints(_list);
+}
 

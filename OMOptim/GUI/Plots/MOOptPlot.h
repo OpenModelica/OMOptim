@@ -181,8 +181,8 @@ MOOptPlot::MOOptPlot()
 	picker1->setTrackerMode(QwtPicker::AlwaysOff);
 	picker1->setSelectionFlags(QwtPicker::PointSelection | QwtPicker::RectSelection );
 	connect(picker1, SIGNAL(selected(const QwtDoublePoint &)),this, SLOT(onClicked(const QwtDoublePoint &)));
-	connect(picker1, SIGNAL(selected(const QwtDoubleRect &rect)),this, SLOT(onPickerSelected(const QwtDoubleRect &rect)));
-	connect(picker1, SIGNAL(appended (const QPoint &pos)),this, SLOT(onPickerAppended(const QPoint &pos)));
+//	connect(picker1, SIGNAL(selected(const QwtDoubleRect &rect)),this, SLOT(onPickerSelected(const QwtDoubleRect &rect)));
+//	connect(picker1, SIGNAL(appended (const QPoint &pos)),this, SLOT(onPickerAppended(const QPoint &pos)));
 	
 
 	/*this->setCanvasBackground(QColor(Qt::white));

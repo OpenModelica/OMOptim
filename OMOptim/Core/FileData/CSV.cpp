@@ -130,11 +130,12 @@ QString CSV::oneVariableResultToValueLines(VariableResult * variable)
                 }
                 text += "\n";
         }
+        text.remove(-2,2);
         return text;
 }
 void CSV::linesToOneVariableResultValues(VariableResult * variable,QString text)
 {
-        QStringList lines = text.split("\n");
+        QStringList lines = text.split("\n",QString::SkipEmptyParts);
         QStringList pointsValues;
         int iScan=0;
         bool computed;

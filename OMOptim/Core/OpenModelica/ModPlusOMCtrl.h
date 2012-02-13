@@ -48,8 +48,9 @@ class ModPlusOMCtrl :public ModPlusCtrl
 {
     public:
 
-    enum Parameters{STOPTIME,MAXSIMTIME,SOLVER,TOLERANCE,STEPSIZE,STARTTIME};
+    enum Parameters{STOPTIME,MAXSIMTIME,SOLVER,TOLERANCE,STEPSIZE,STARTTIME,OUTPUT};
     enum Solvers{DASSL,EULER};
+    enum Output{CSV,MAT};
 
 
         ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* oms);
@@ -58,6 +59,8 @@ class ModPlusOMCtrl :public ModPlusCtrl
 
         ModPlusCtrl::Type type() const;
         QString name();
+        bool useMat();
+        QString resFile();
 
         // Variables functions
         bool readOutputVariables(MOVector<Variable> *,QString resFile="");
@@ -77,8 +80,8 @@ class ModPlusOMCtrl :public ModPlusCtrl
 private :
         QString _initFileXml;
         QString _initFileTxt;
-        QString _resFile;
         QString _exeFile;
+
 
 };
 

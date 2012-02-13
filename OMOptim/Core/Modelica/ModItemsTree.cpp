@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -86,6 +86,35 @@ bool ModItemsTree::addChild(ModItem* parent,ModItem* child)
     return ok;
 }
 
+void ModItemsTree::readFromOMCWThread(ModItem* parent,int depthMax,  QString direction, int curDepth)
+{
+
+    // load the models icon
+    ModItemsLoader *modItemsLoader = new ModItemsLoader(this,parent,depthMax,direction,curDepth);
+    modItemsLoader->start(QThread::HighestPriority);
+    while (modItemsLoader->isRunning())
+    {
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+    }
+
+}
+
+void ModItemsTree::emitDataChanged()
+{
+
+        if(_rootElement->childCount()>0)
+        {
+            QModelIndex first = indexOf(_rootElement->child(0));
+            QModelIndex last = indexOf(_rootElement->child(_rootElement->childCount()-1));
+            emit dataChanged(first,last);
+        }
+
+         emit dataChanged(indexOf(_rootElement),indexOf(_rootElement));
+
+}
+
+
+
 
 /**
 * This function fills parent with its children. To achieve this, it calls MOOmc functions.
@@ -126,7 +155,7 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
                     newElement = new ModPackage(_moomc,parent,prefix+packageNames.at(i));
                     if(addChild(parent,newElement))
                         if((childrenDirection=="") || (childrenDirection==packageNames.at(i)))
-                            readFromOmc(newElement,depthMax,direction,curDepth+1);
+                            readFromOMCWThread(newElement,depthMax,direction,curDepth+1);
                 }
             }
 
@@ -139,7 +168,7 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
                     newElement = new ModModel(_moomc,parent,prefix+modelNames.at(i));
                     if(addChild(parent,newElement))
                         if((childrenDirection=="") || (childrenDirection==modelNames.at(i)))
-                            readFromOmc(newElement,depthMax,direction,curDepth+1);
+                            readFromOMCWThread(newElement,depthMax,direction,curDepth+1);
                 }
             }
 
@@ -152,7 +181,7 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
                     newElement = new ModRecord(_moomc,parent,prefix+recordNames.at(i));
                     if(addChild(parent,newElement))
                         if((childrenDirection=="") || (childrenDirection==recordNames.at(i)))
-                            readFromOmc(newElement,depthMax,direction,curDepth+1);
+                            readFromOMCWThread(newElement,depthMax,direction,curDepth+1);
                 }
             }
 
@@ -165,7 +194,7 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
                     newElement = new ModItem(_moomc,parent,prefix+classNames.at(i));
                     if(addChild(parent,newElement))
                         if((childrenDirection=="") || (childrenDirection==classNames.at(i)))
-                            readFromOmc(newElement,depthMax,direction,curDepth+1);
+                            readFromOMCWThread(newElement,depthMax,direction,curDepth+1);
                 }
             }
 
@@ -180,13 +209,11 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
                     newElement = new ModComponent(_moomc,parent,prefix+compNames.at(i),compClasses.at(i));
                     if(addChild(parent,newElement))
                         if((childrenDirection=="") || (childrenDirection==compClasses.at(i)))
-                            readFromOmc(newElement,depthMax,direction,curDepth+1);
+                            readFromOMCWThread(newElement,depthMax,direction,curDepth+1);
                 }
             }
             parent->setChildrenReaden(true);
             parent->emitModified();
-
-
         }
         parent->_readMutex.unlock();
     }
@@ -409,9 +436,9 @@ QList<ModItem*> ModItemsTree::findInDescendantsByClass(QString className,ModItem
 
     // then check children are readen
     if(!parent->childrenReaden())
-{
+    {
         // if not, check in its direction
-        readFromOmc(parent,curDepth+1,QString(),curDepth);
+        readFromOMCWThread(parent,curDepth+1,QString(),curDepth);
     }
 
     // looking if one child corresponds
@@ -594,7 +621,7 @@ QMimeData* ModItemsTree::mimeData(const QModelIndexList &indexes) const
         //        {
         //            stream<< _modEl->name(Modelica::FULL);
         //        }
-        }
+    }
 
     //    mimeData->setData("application/vnd.text.list", encodedData);
     return mimeData;
@@ -661,6 +688,8 @@ QModelIndex ModItemsTree::parent(const QModelIndex &index) const
         return QModelIndex();
 
     ModItem *childElement = static_cast<ModItem*>(index.internalPointer());
+    if (childElement == _rootElement)
+        return QModelIndex();
 
     ModItem *parentElement  = NULL;
     parentElement = childElement->parent();
@@ -751,7 +780,7 @@ bool ModItemsTree::hasChildren ( const QModelIndex & parent ) const
             {
                 hasChildren = false;
                 triedToFind = false;
-    }
+            }
             else
             {
                 // look if has component children
@@ -923,8 +952,8 @@ QIcon ModItemsTree::getModelicaNodeIcon(ModItem* ModItem) const
     case Modelica::TYPE:
         return QIcon(":/icons/type-icon.png");
     default :
-    return QIcon();
-}
+        return QIcon();
+    }
 }
 
 bool ModItemsTree::canFetchMore ( const QModelIndex & parent ) const
@@ -961,7 +990,7 @@ void ModItemsTree::fetchMore ( const QModelIndex & parent )
     if(item)
     {
         if(!item->childrenReaden())
-            readFromOmc(item,_modLoader->getDepthMax());
+            readFromOMCWThread(item,_modLoader->getDepthMax());
     }
 }
 
@@ -977,4 +1006,23 @@ void ModItemsTree::setShowComponent(bool showComponents)
 Qt::DropActions ModItemsTree::supportedDropActions() const
 {
     return Qt::CopyAction | Qt::MoveAction;
+}
+
+
+ModItemsLoader::ModItemsLoader(ModItemsTree* modItemsTree,ModItem* parent,int depthMax,  QString direction , int curDepth )
+{
+    _modItemsTree = modItemsTree;
+    _parent = parent;
+    _depthMax = depthMax;
+    _direction = direction;
+    _curDepth = curDepth;
+
+    connect(this, SIGNAL(readFromOmc(ModItem*,int,QString,int)),
+            modItemsTree,SLOT(readFromOmc(ModItem*,int,QString,int)));
+}
+
+
+void ModItemsLoader::run()
+{
+    emit readFromOmc(_parent,_depthMax,_direction,_curDepth);
 }

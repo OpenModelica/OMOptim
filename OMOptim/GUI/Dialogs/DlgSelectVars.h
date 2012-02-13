@@ -61,13 +61,21 @@ class DlgSelectVars : public QDialog
 	Q_OBJECT
 
 public:
-	DlgSelectVars(MOVector<Variable>*,MOVector<Variable>* _alreadySelected = NULL);
+        DlgSelectVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected = NULL);
+        DlgSelectVars(MOOptVector *,MOOptVector *alreadySelected = NULL);
 
 	
-	MOVector<Variable>* getSelectedVars();
+        static MOVector<Variable>* getSelectedVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected=NULL);
+        static MOOptVector* getSelectedOptVars(MOOptVector *,MOOptVector *_alreadySelected = NULL);
+
+
 private :
-	MOVector<Variable> *variables;
-	MOVector<Variable>* selectedVars;
+        bool _useOpt;
+        MOVector<Variable> *_variables;
+        MOVector<Variable>* _selectedVars;
+
+        MOOptVector *_optVariables;
+        MOOptVector* _selectedOptVars;
 
 	
 	QPushButton *pushOk;

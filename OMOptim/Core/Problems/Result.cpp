@@ -82,7 +82,7 @@ Result::Result(const Result &result)
 Result::~Result(void)
 {
     if(_problem)
-        _problem->deleteLater();
+        delete _problem;
 }
 
 void Result::setDefaultSaveFileName()
@@ -110,7 +110,7 @@ Problem* Result::problem()
 void Result::setProblem(const Problem & problem)
 {
     if(_problem)
-        _problem->deleteLater();
+        delete _problem;
 
     _problem = problem.clone();
 }

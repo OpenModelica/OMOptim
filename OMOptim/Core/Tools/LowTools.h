@@ -93,6 +93,8 @@ public:
 
 	static double gaussRandom(double average,double dev);
 
+
+
 };
 
 template < class T>
@@ -111,8 +113,36 @@ public :
                 j=list.indexOf(list.at(i),i+1);
             }
         }
-    };
+    }
 };
 
+
+template < class T>
+class sortItems
+{
+public :
+    static void applyToInt(QList<T*> &list, int iField)
+    {
+        //filling index
+        QMap<int,T*> map;
+        int index;
+        for(int i=0;i<list.size();i++)
+        {
+            index = list.at(i)->getFieldValue(iField).toInt();
+            map.insert(index,list.at(i));
+        }
+        QList<int> indexes = map.keys();
+
+
+
+        //sorting
+        qSort(indexes.begin(),indexes.end());
+
+        //filling list
+        list.clear();
+        for(int i=0;i<indexes.size();i++)
+            list.push_back(map.value(indexes.at(i)));
+    }
+};
 
 #endif

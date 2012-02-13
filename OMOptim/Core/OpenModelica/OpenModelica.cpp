@@ -46,6 +46,8 @@ http://www-cep.ensmp.fr/english/
 #include "ModPlusOMCtrl.h"
 
 
+// for .mat reading
+#include "../../c_runtime/read_matlab4.h"
 
 
 OpenModelica::OpenModelica()
@@ -86,7 +88,7 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
 
     QString scriptText;
     scriptText.append("cd(\""+storeFolder+"\");\n");
-    scriptText.append("simulate("+modelToConsider+",outputFormat=\"csv\");\n");
+    scriptText.append("buildModel("+modelToConsider+");\n");
 
     QTextStream ts( &file );
     ts << scriptText;
@@ -252,6 +254,7 @@ Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modModelN
 }
 
 
+
 bool OpenModelica::getFinalVariablesFromFile(QString fileName_, MOVector<Variable> *variables,QString _modelName)
 {
     variables->clear();
@@ -270,7 +273,52 @@ bool OpenModelica::getFinalVariablesFromFile(QString fileName_, MOVector<Variabl
     else
         return true;
 }
+bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Variable> * variables,QString _modelName)
+{
 
+    ModelicaMatReader reader;
+    ModelicaMatVariable_t *var;
+    const char* msg = new char[20];
+    double value;
+    bool varOk;
+    int status ;
+    Variable* newVar;
+
+    //Read in mat file
+    if(0 != (msg = omc_new_matlab4_reader(fileName.toStdString().c_str(), &reader)))
+    {
+        InfoSender::instance()->sendError("Unable to read .mat file");
+        return false;
+    }
+
+    //Read in timevector
+    double stopTime =  omc_matlab4_stopTime(&reader);
+
+    if (reader.nvar < 1)
+    {
+        InfoSender::instance()->sendError("Unable to read .mat file : no variable inside");
+        return false;
+    }
+
+    // read in all values
+    for (int i = 0; i < reader.nall; i++)
+    {
+        newVar = new Variable();
+        newVar->setName(_modelName+"."+QString(reader.allInfo[i].name));
+
+        // read the variable final value
+        var = omc_matlab4_find_var(&reader, reader.allInfo[i].name);
+        status = omc_matlab4_val(&value,&reader,var,stopTime);
+        varOk = (status==0);
+        newVar->setValue(value);
+        if(varOk)
+            variables->addItem(newVar);
+        else
+            delete newVar;
+    }
+
+    return true;
+}
 bool OpenModelica::getFinalVariablesFromFile(QTextStream *text, MOVector<Variable> * variables,QString _modelName)
 {
     variables->clear();
@@ -512,27 +560,30 @@ void OpenModelica::setInputParametersXml(QDomDocument &doc,MOParameters *paramet
 
 
     MOParameter * curParam;
+    MOParameterListed* curParamListed;
     for(int i=0;i<parameters->size();i++)
     {
         curParam = parameters->at(i);
 
         if(!curParam->name().contains(" ")) // remove old parameters, temporary
         {
-            // if solver, use string value
-            if(curParam->index()==ModPlusOMCtrl::SOLVER)
+            switch(curParam->index())
             {
-                MOParameterListed* paramSolver = dynamic_cast<MOParameterListed*>(curParam);
-                xExp.setAttribute(paramSolver->name(),paramSolver->strValue());
-            }
-            else
-            {
+            // if solver or outputformat, use string value
+            case ModPlusOMCtrl::SOLVER :
+                curParamListed = dynamic_cast<MOParameterListed*>(curParam);
+                xExp.setAttribute(curParamListed->name(),curParamListed->strValue());
+                break;
+            case ModPlusOMCtrl::OUTPUT :
+                curParamListed = dynamic_cast<MOParameterListed*>(curParam);
+                xExp.setAttribute(curParamListed->name(),curParamListed->strValue());
+                break;
+            default :
                 xExp.setAttribute(curParam->name(),curParam->value().toString());
+                break;
             }
         }
     }
-
-    // force output to be csv
-    xExp.setAttribute("outputFormat","csv");
 
     // update xfmi with new vars
     xfmi.replaceChild(xExp,oldxExp);
