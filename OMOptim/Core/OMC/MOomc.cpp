@@ -76,7 +76,7 @@
 #include "MOThreads.h"
 #include "LowTools.h"
 #include "SleeperThread.h"
-#include "../../Compiler/runtime/config.h" // for branch, should add file manually !!
+//#include "../../Compiler/runtime/config.h" // for branch, should add file manually !!
 
         class Project;
 
@@ -642,6 +642,13 @@ bool MOomc::translateModel(QString model)
     QString commandRes= evalCommand(commandText);
     return (commandRes=="true");
 }
+
+void MOomc::buildModel(QString model)
+{
+    QString commandText = "buildModel("+model+")";
+    QString commandRes= evalCommand(commandText);
+}
+
 
 bool MOomc::deleteComponent(QString compName)
 {
@@ -1363,6 +1370,14 @@ QString MOomc::changeDirectory(QString directory)
         evalCommand("cd(\"" + directory + "\")");
     }
     return getResult();
+}
+
+QString MOomc::getWorkingDirectory()
+{
+     evalCommand("cd()");
+     QString path = getResult();
+     path = path.remove("\"");
+     return path;
 }
 
 QString MOomc::getFileOfClass(QString _className)

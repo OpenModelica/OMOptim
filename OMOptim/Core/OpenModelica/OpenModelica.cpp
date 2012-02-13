@@ -68,7 +68,6 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
     QString loadError;
 
     // load modependencies
-
     _omc->loadFiles(moDeps);
 
     // if not already loaded, reload
@@ -77,37 +76,46 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
         _omc->loadModel(moPath,true,loadOk,loadError);
     }
 
+
+
     // Create OM script
-    QString filePath = storeFolder+QDir::separator()+"MOFirstRun.mos";
-    QFile file(filePath);
-    if(file.exists())
-    {
-        file.remove();
-    }
-    file.open(QIODevice::WriteOnly);
+    //    QString filePath = storeFolder+QDir::separator()+"MOFirstRun.mos";
+    //    QFile file(filePath);
+    //    if(file.exists())
+    //    {
+    //        file.remove();
+    //    }
+    //    file.open(QIODevice::WriteOnly);
 
-    QString scriptText;
-    scriptText.append("cd(\""+storeFolder+"\");\n");
-    scriptText.append("buildModel("+modelToConsider+");\n");
+    //    QString scriptText;
+    //    //scriptText.append("cd(\""+storeFolder+"\");\n");
+    //    scriptText.append("buildModel("+modelToConsider+");\n");
 
-    QTextStream ts( &file );
-    ts << scriptText;
-    file.close();
+    //    QTextStream ts( &file );
+    //    ts << scriptText;
+    //    file.close();
 
-    // delete previous model .exe
+    //    // delete previous model .exe
+
+
+    //    // Run script
+    //    _omc->runScript(filePath);
+
+    _omc->buildModel(modelToConsider);
+
 #ifdef WIN32
-    QFile modelExeFile(storeFolder+QDir::separator()+modelToConsider+".exe");
+    QString modelExeName = modelToConsider+".exe";
 #else
-    QFile modelExeFile(storeFolder+QDir::separator()+modelToConsider);
+    QString modelExeName = modelToConsider;
 #endif
-    if(modelExeFile.exists())
-        modelExeFile.remove();
 
-    // Run script
-    _omc->runScript(filePath);
+    // copy folder contents
+    QString workingDirPath = _omc->getWorkingDirectory();
+
+    LowTools::copyDir(workingDirPath,storeFolder);
 
     //look if it succeed
-    bool success = modelExeFile.exists();
+    bool success = QDir(storeFolder).exists(modelExeName);
     return success;
 
 }
