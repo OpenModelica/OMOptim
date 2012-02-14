@@ -76,7 +76,7 @@
 #include "MOThreads.h"
 #include "LowTools.h"
 #include "SleeperThread.h"
-//#include "../../Compiler/runtime/config.h" // for branch, should add file manually !!
+#include "../../Compiler/runtime/config.h" // for branch, should add file manually !!
 
         class Project;
 
