@@ -93,7 +93,7 @@ namespace MOThreads
         public slots :
             void onLoadedFile(QString filePath,QString result);
 
-        protected:
+        public :
             void run();
         signals:
             void loadFile(QString filePath);

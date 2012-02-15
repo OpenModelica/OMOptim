@@ -1096,7 +1096,8 @@ QString MOomc::loadFile(const QString & filePath)
 QString MOomc::loadFileWThread(QString filePath)
 {
     MOThreads::OMCModelLoader* loader = new MOThreads::OMCModelLoader(filePath,this);
-    loader->start(QThread::HighestPriority);
+    //loader->start(QThread::HighestPriority);
+    loader->run(); // avoid thread separation. Does not work properly yet...
     while (loader->isRunning())
     {
         InfoSender::instance()->sendNormal("refreshing");
