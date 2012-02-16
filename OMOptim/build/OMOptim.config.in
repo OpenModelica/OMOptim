@@ -1,3 +1,7 @@
+QMAKE_CC  = @CC@
+QMAKE_CXX = @CXX@
+QMAKE_LINK = @CXX@
+
 LIBS += @CORBALIBS@ -lqwt@with_qwt_suffix@ -L../../OMPlot/bin/ -lOMPlot -lmoeo -leo -leoutils
 INCLUDEPATH += @with_qwt@ @CORBA_QMAKE_INCLUDES@ ../../OMPlot/OMPlotGUI @with_paradiseo@/include/paradiseo/ @with_paradiseo@/include/paradiseo/utils/
 
