@@ -306,6 +306,8 @@ void Project::refreshAllMod()
 */
 bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
 {
+    InfoSender::instance()->sendNormal("Loading plugin : "+pluginPath);
+
     bool tryLoad;
 
     tryLoad = (forceLoad || !_pluginsLoaded.values().contains(pluginPath));

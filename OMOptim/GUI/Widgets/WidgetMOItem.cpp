@@ -45,7 +45,7 @@
 #include <QtGui/QListWidget>
 #include "qsciencespinbox.h"
 
-WidgetMOItem::WidgetMOItem(MOItem *_item,QWidget *parent,bool _forceEditable):
+WidgetMOItem::WidgetMOItem(MOItem *_item,QWidget *parent,bool editable):
     QWidget(parent),
     ui(new Ui::WidgetMOItemClass)
 {
@@ -53,7 +53,7 @@ WidgetMOItem::WidgetMOItem(MOItem *_item,QWidget *parent,bool _forceEditable):
     ui->setupUi(this);
 
     item = _item;
-    forceEditable = _forceEditable;
+    _editable = editable;
     itemWidget = NULL;
 
     ui->groupItem->setLayout(new QGridLayout(this));
@@ -93,7 +93,7 @@ void WidgetMOItem::initializeGui()
 
         for(int iF=0;iF<item->getNbFields();iF++)
         {
-            curWidget = createEditWidget(item, iF, forceEditable);
+            curWidget = createEditWidget(item, iF, _editable);
             if(curWidget)
             {
                 curWidget->setParent(this);

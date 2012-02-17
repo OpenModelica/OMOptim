@@ -64,7 +64,7 @@ class WidgetMOItem : public QWidget {
 
 
 public:
-    WidgetMOItem(MOItem *_item,QWidget *parent,bool _forceEditable=false);
+    WidgetMOItem(MOItem *_item,QWidget *parent,bool editable=false);
     virtual ~WidgetMOItem();
 
     Ui::WidgetMOItemClass *ui;
@@ -75,14 +75,14 @@ public:
 protected :
 	
 	MOItem* item;
-	bool forceEditable;
+    bool _editable;
 	void clearGui();
 	void initializeGui();
 	QWidget* itemWidget;
 	
 	QMap<int,QWidget*> fieldEditWidget;
 
-	virtual QWidget* createEditWidget(MOItem* item, int iField, bool forceEditable)=0;
+    virtual QWidget* createEditWidget(MOItem* item, int iField, bool editable)=0;
 	
 	void updateWidgetValue(QWidget*, QVariant);
 	
