@@ -107,6 +107,7 @@ void WidgetSelectVars::addVariables()
     QModelIndex curProxyIndex;
     QModelIndex curSourceIndex;
     Variable* varSelected;
+    VariableResult* optVarSelected;
 
 
     // Adding selected variables in overwritedVariables
@@ -119,12 +120,12 @@ void WidgetSelectVars::addVariables()
         if(_useOpt)
         {
             VariableResult *newVar;
-            varSelected=_allOptVariables->at(curSourceIndex.row());
-            alreadyIn = _selectedOptVariables->alreadyIn(varSelected->name());
+            optVarSelected=_allOptVariables->at(curSourceIndex.row());
+            alreadyIn = _selectedOptVariables->alreadyIn(optVarSelected->name());
 
             if (!alreadyIn)
             {
-                newVar = new VariableResult(*varSelected);
+                newVar = new VariableResult(*optVarSelected);
                 _selectedOptVariables->addItem(newVar);;
             }
         }

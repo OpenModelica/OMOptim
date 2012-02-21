@@ -81,6 +81,7 @@ WidgetOneSimVars::WidgetOneSimVars(Project *project,OneSimulation *problem, QWid
 
     _ui->tableScannedVariables->resizeColumnsToContents();
 
+
     //delegates
     DoubleSpinBoxDelegate* valueDelegate = new DoubleSpinBoxDelegate(this,30);
     DoubleSpinBoxDelegate* scanValueDelegate = new DoubleSpinBoxDelegate(this,30);

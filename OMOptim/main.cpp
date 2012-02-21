@@ -63,6 +63,9 @@ CORBA::ORB_var orb;
 int main(int argc, char *argv[])
 {
 
+
+
+
     // Register Info as a metaType
     // Needed for Info communication between threads
     int a = qRegisterMetaType<Info>();
@@ -97,12 +100,25 @@ int main(int argc, char *argv[])
     InfoSender::instance()->setLogStream(&logStream);
     //#endif
 
+
     // Starting
     MainWindow w(project);
     // w.setWindowTitle("CERES");
     app->connect( app, SIGNAL( lastWindowClosed() ), &w, SLOT( quit() ) );
 
     w.show();
+
+//     load plugins
+    QDir pluginsDir = QDir(QApplication::applicationDirPath()+QDir::separator()+"Plugins");
+    if(pluginsDir.exists())
+    {
+        QStringList pluginsNames = pluginsDir.entryList();
+        pluginsNames.removeAll(".");
+        pluginsNames.removeAll("..");
+        for(int i=0;i<pluginsNames.size();i++)
+            project->loadPlugin(pluginsDir.filePath(pluginsNames.at(i)),false,true);
+    }
+
 
     //load file
     if(argc>1)

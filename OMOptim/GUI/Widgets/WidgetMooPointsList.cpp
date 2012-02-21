@@ -88,6 +88,8 @@ WidgetMooPointsList::WidgetMooPointsList(OptimResult* result,QWidget *parent) :
 
     connect(_ui->pushExport,SIGNAL(clicked()),
             this,SLOT(exportSelectedPoints()));
+
+    _selectedExportVariables = NULL;
 }
 
 WidgetMooPointsList::~WidgetMooPointsList()
@@ -194,9 +196,21 @@ void WidgetMooPointsList::recomputeSelectedPoints()
 
 void WidgetMooPointsList::exportSelectedPoints()
 {
+    QList<int> listPoints = this->_listPoints->getSelectedIndexes();
+
+    if(listPoints.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Please select at least one point to export");
+        msgBox.exec();
+        return;
+    }
 
     // first select points
-    MOOptVector* selectedOptVars = DlgSelectVars::getSelectedOptVars(_result->recomputedVariables());
+    MOOptVector* selectedOptVars = DlgSelectVars::getSelectedOptVars(_result->recomputedVariables(),_selectedExportVariables);
+    if(_selectedExportVariables)
+        delete _selectedExportVariables;
+    _selectedExportVariables = selectedOptVars;
 
     if(selectedOptVars)
     {
@@ -209,7 +223,7 @@ void WidgetMooPointsList::exportSelectedPoints()
 
         if(!csvPath.isNull())
         {
-            QList<int> listPoints = this->_listPoints->getSelectedIndexes();
+
             QString csvText = _result->buildVarsFrontCSV(selectedOptVars,listPoints);
 
             QFile frontFile(csvPath);

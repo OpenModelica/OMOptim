@@ -92,6 +92,8 @@ public:
     Ui::WidgetMooPointsListClass *_ui;
     OptimResult* _result;
     WidgetList *_listPoints;
+
+    MOOptVector* _selectedExportVariables;
 };
 
 #endif

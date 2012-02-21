@@ -100,7 +100,7 @@ class ModPlusCtrl :public QObject
 
         MOParameters* parameters() const;
 
-        bool operator==(const ModPlusCtrl &) const;
+        //bool operator==(const ModPlusCtrl &) const;
 
         friend bool operator==(const ModPlusCtrl & a,const ModPlusCtrl & b)
         {
