@@ -192,7 +192,7 @@ public slots:
 
 
     virtual bool readConnections();
-    virtual bool readVariables(ModPlusCtrl*);
+    virtual bool readVariables(ModPlusCtrl*, bool forceRecompile=false);
     bool variablesRead() const;
     void reloadModel();
 

@@ -64,7 +64,7 @@ class ModPlusOMCtrl :public ModPlusCtrl
 
         // Variables functions
         bool readOutputVariables(MOVector<Variable> *,QString resFile="");
-        bool readInitialVariables(MOVector<Variable> *,QString initFile="");
+        bool readInitialVariables(MOVector<Variable> *,bool forceRecompile,QString initFile="");
 
         // Parameters
         void setDefaultParameters();

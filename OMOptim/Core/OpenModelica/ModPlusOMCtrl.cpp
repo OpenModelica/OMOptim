@@ -143,7 +143,7 @@ bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QStri
 }
 
 
-bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QString initFile)
+bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool forceRecompile, QString initFile)
 {
     QString initFileTxt;
     QString initFileXml;
@@ -166,7 +166,7 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,QStri
 
     initVariables->clear();
 
-    if(!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt)&& authorizeRecreate)
+    if((!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt)&& authorizeRecreate)||forceRecompile)
     {
         createInitFile();
     }

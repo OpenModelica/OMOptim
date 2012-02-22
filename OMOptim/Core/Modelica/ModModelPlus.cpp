@@ -282,9 +282,9 @@ ModelicaConnections* ModModelPlus::connections()
     return _connections;
 }
 
-bool ModModelPlus::readVariables(ModPlusCtrl* ctrl)
+bool ModModelPlus::readVariables(ModPlusCtrl* ctrl, bool forceRecompile)
 {
-    _variablesRead = ctrl->readInitialVariables(_variables);
+    _variablesRead = ctrl->readInitialVariables(_variables,forceRecompile);
     return _variablesRead;
 }
 

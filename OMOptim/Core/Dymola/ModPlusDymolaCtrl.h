@@ -38,7 +38,7 @@ public:
         bool readOutputVariables(MOVector<Variable> *,QString folder="");
         bool readOutputVariablesDSRES(MOVector<Variable> *,QString _dsresFile);
         bool readOutputVariablesDSFINAL(MOVector<Variable> *,QString _dsfinalFile);
-        bool readInitialVariables(MOVector<Variable> *,QString _dsinFile="");
+        bool readInitialVariables(MOVector<Variable> *,bool forceRecompile,QString _dsinFile="");
 
         // Parameters
         void setDefaultParameters();

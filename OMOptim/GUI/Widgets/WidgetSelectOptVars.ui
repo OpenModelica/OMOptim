@@ -46,7 +46,7 @@
           <string>Refresh</string>
          </property>
          <property name="text">
-          <string/>
+          <string>Read variables</string>
          </property>
          <property name="icon">
           <iconset resource="../Resources/OMOptim.qrc">

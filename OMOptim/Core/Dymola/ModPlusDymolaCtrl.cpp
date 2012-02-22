@@ -159,7 +159,7 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariab
         return false;
 }
 
-bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,QString dsinFile)
+bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool forceRecompile,QString dsinFile)
 {
 
 
@@ -178,7 +178,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,Q
 
     initVariables->clear();
 
-    if(!QFile::exists(dsinFile) && authorizeRecreate)
+    if((!QFile::exists(dsinFile) && authorizeRecreate)||forceRecompile)
     {
         createDsin();
     }

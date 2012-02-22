@@ -78,8 +78,8 @@ class ModPlusCtrl :public QObject
         virtual ModPlusCtrl* clone()=0;
 
         // Variables functions
-        virtual bool readOutputVariables(MOVector<Variable> *,QString folder="") = 0;
-        virtual bool readInitialVariables(MOVector<Variable> *,QString folder="") = 0;
+        virtual bool readOutputVariables(MOVector<Variable> *,QString outputfile="") = 0;
+        virtual bool readInitialVariables(MOVector<Variable> *,bool forceRecompile = false,QString initfile="") = 0;
 
         // Compile function
         virtual bool isCompiled() = 0;

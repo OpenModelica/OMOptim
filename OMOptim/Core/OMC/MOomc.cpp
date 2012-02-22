@@ -78,7 +78,7 @@
 #include "SleeperThread.h"
 #include "../../Compiler/runtime/config.h" // for branch, should add file manually !!
 
-        class Project;
+class Project;
 
 using namespace std;
 

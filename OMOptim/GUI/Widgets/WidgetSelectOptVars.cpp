@@ -341,6 +341,28 @@ void WidgetSelectOptVars::actualizeGui()
 
 void WidgetSelectOptVars::readVariables()
 {
-    _problem->modModelPlus()->readVariables(_problem->ctrl());
+    // is compiled
+    bool isCompiled = _problem->modModelPlus()->isCompiled(_problem->ctrl());
+    bool shouldForceRecompile = false;
+    if(isCompiled)
+   {
+        // already compiled, ask user if we should only read init file or recompile model
+        QMessageBox msgBox;
+        msgBox.setText("Model is already compiled.");
+        msgBox.setInformativeText("Would you like to compile it again ?");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        int ret = msgBox.exec();
+        switch (ret)
+        {
+        case QMessageBox::Yes:
+            shouldForceRecompile = true;
+            break;
+        case QMessageBox::No:
+            shouldForceRecompile = false;
+            break;
+        }
+    }
+     _problem->modModelPlus()->readVariables(_problem->ctrl(),shouldForceRecompile);
     _ui->tableVariables->resizeColumnsToContents();
 }
