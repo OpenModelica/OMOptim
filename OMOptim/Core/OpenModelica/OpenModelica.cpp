@@ -47,7 +47,7 @@ http://www-cep.ensmp.fr/english/
 
 
 // for .mat reading
-#include "../../c_runtime/read_matlab4.h"
+#include "../../SimulationRuntime/c/util/read_matlab4.h"
 
 
 OpenModelica::OpenModelica()
