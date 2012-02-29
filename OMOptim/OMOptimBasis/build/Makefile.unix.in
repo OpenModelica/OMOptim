@@ -1,7 +1,7 @@
 .PHONY: install build $(NAME) always
 
-top_dir=../../
-NAME=OMOptim
+top_dir=../../../
+NAME=OMOptimBasis
 DEST=.
 EXE=@EXE@
 QMAKE=@QMAKE@
