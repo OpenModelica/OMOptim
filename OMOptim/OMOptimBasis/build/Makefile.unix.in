@@ -7,7 +7,6 @@ EXE=@EXE@
 QMAKE=@QMAKE@
 
 install: build
-	if [ "$(EXE)" = ".app" ]; then cp -rp $(DEST)/$(NAME).app $(top_dir)/build/Applications/ ; else cp -p $(DEST)/$(NAME) $(top_dir)/build/bin/$(NAME); fi
 
 always:
 
