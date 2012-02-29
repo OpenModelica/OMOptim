@@ -3,7 +3,6 @@ TARGET = OMOptimBasis
 
 QT +=  core gui xml
 
-
 CONFIG += qt warn_off
 
 # WINDOWS
@@ -20,7 +19,6 @@ CONFIG(debug, debug|release){
     DEFINES+=DEBUG
 }
 
-
 INCLUDEPATH += . \
               .. \
               ../GUI \
@@ -31,7 +29,7 @@ INCLUDEPATH += . \
               ../Tools \
               ../Infos \
               ../FileData \
-              ../Problems \
+              ../Problems
 
 DEPENDPATH += . \
               .. \
@@ -43,7 +41,7 @@ DEPENDPATH += . \
               ../Tools \
               ../Infos \
               ../FileData \
-              ../Problems \
+              ../Problems
 
 HEADERS += \
     ../Variable.h \
@@ -186,30 +184,3 @@ FORMS += \
     ../GUI/Widgets/WidgetProjectBaseInfos.ui \
     ../GUI/Widgets/WidgetSelectVars.ui \
     ../GUI/Dialogs/NewProjectBaseForm.ui
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

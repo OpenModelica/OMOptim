@@ -17,24 +17,19 @@ CONFIG(debug, debug|release){
     LIBS += -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
     -lqwtd5
 
-DESTDIR = debug/
+DESTDIR = ../../bin
 UI_DIR = debug/generatedfiles/ui
 MOC_DIR = debug/generatedfiles/moc
 RCC_DIR = debug/generatedfiles/rcc
-
-
 
 }else {
     LIBS += -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
 			-lqwt5
 
-			DESTDIR = release/
-			UI_DIR = release/generatedfiles/ui
-			MOC_DIR = release/generatedfiles/moc
-			RCC_DIR = release/generatedfiles/rcc
+DESTDIR = ../../bin
+UI_DIR = release/generatedfiles/ui
+MOC_DIR = release/generatedfiles/moc
+RCC_DIR = release/generatedfiles/rcc
 }
-
-
-
 
 INCLUDEPATH += $$(OMDEV)/lib/qwt-5.2.1-mingw/include

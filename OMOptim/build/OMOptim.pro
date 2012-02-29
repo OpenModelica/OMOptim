@@ -3,8 +3,6 @@ TARGET = OMOptim
 
 QT +=  core gui svg xml
 
-
-
 # Define the preprocessor macro to get the application version in our application.
 #DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
@@ -31,11 +29,7 @@ CONFIG(debug, debug|release){
     DEFINES+=DEBUG
 }
 
-
-
 #DEFINES+= USEBLOCKSUB
-
-
 
 INCLUDEPATH += . \
               .. \
@@ -85,8 +79,7 @@ INCLUDEPATH += . \
                 ../OMOptimBasis/Infos \
                ../OMOptimBasis/Units \
                 ../OMOptimBasis/Tools \
-                ../OMOptimBasis/Problems \
-
+                ../OMOptimBasis/Problems
 
 DEPENDPATH += . \
               .. \
@@ -136,7 +129,7 @@ DEPENDPATH += . \
                 ../OMOptimBasis/Infos \
                ../OMOptimBasis/Units \
                 ../OMOptimBasis/Tools \
-                ../OMOptimBasis/Problems \
+                ../OMOptimBasis/Problems
 # Input
 HEADERS += ../config.h \
            ../Core/MOClasses.h \
@@ -303,11 +296,6 @@ HEADERS += ../config.h \
     ../Core/OMC/OMCThreads.h \
     ../GUI/Tools/OMOptimGuiTools.h
 
-
-
-
-
-
 FORMS += ../GUI/MainWindow.ui \
          ../GUI/Dialogs/AboutOMOptim.ui \
          ../GUI/Dialogs/BlockSubstituteConnDlg.ui \
@@ -337,9 +325,6 @@ FORMS += ../GUI/MainWindow.ui \
     ../GUI/Tabs/TabOMC.ui \
     ../GUI/Tabs/TabGeneric.ui \
     ../GUI/Widgets/WidgetResultInfos.ui
- 
-
-
 
 SOURCES += ../main.cpp \
            ../Core/OptObjective.cpp \
@@ -449,28 +434,3 @@ RESOURCES += \
     ../GUI/Resources/OMOptim.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

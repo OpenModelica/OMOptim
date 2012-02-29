@@ -25,15 +25,13 @@ CONFIG(debug, debug|release){
     -lmoeo \
     -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
     -lqwtd5 \
-    -L../OMOptimBasis/build/debug \
+    -L../bin \
     -lOMOptimBasis
 
-DESTDIR = debug/
+DESTDIR = ../../bin
 UI_DIR = debug/generatedfiles/ui
 MOC_DIR = debug/generatedfiles/moc
 RCC_DIR = debug/generatedfiles/rcc
-
-
 
 }else {
     LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
@@ -47,18 +45,15 @@ RCC_DIR = debug/generatedfiles/rcc
     -lmoeo \
     -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
     -lqwt5 \
-    -L../OMOptimBasis/build/release \
+    -L../bin \
     -lOMOptimBasis
 
-        DESTDIR = ../bin/
-        UI_DIR = release/generatedfiles/ui
-        MOC_DIR = release/generatedfiles/moc
-        RCC_DIR = release/generatedfiles/rcc
+DESTDIR = ../bin/
+UI_DIR = release/generatedfiles/ui
+MOC_DIR = release/generatedfiles/moc
+RCC_DIR = release/generatedfiles/rcc
 
 }
-
-
-
 
 INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.4-mingw/include \
                $$(OMDEV)/lib/qwt-5.2.1-mingw/include \
