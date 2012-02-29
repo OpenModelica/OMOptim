@@ -106,7 +106,7 @@ void ModelicaModifier::setComponent(ModItem *component)
 	if(!_filledFields.contains(ModelicaModifier::COMPONENT_NAME))
 		_filledFields.push_back(ModelicaModifier::COMPONENT_NAME);
 	_component = component;
-        _componentName = component->name(Modelica::WITHOUTROOT);
+        _componentName = component->name(ModItem::WITHOUTROOT);
 }
 
 

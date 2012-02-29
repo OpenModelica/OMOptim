@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OptimResult.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+    @file OptimResult.h
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
+    @version
 
   */
 #if !defined(_OPTIMRESULT_H)
@@ -50,7 +50,7 @@
 #include "BlockSubs/BlockSubstitutions.h"
 #include "CSV.h"
 #include "ProblemConfig.h"
-
+#include "OptimAlgo.h"
 
 class Save;
 class Optimization;
@@ -59,77 +59,78 @@ class Optimization;
 
 class OptimResult : public Result
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
 
-	OptimResult();
-        OptimResult(Project*, ModModelPlus*,const Optimization &,OptimAlgo* algo);
-        OptimResult(Project*,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok);
-	OptimResult(const OptimResult &_res);
-        virtual ~OptimResult(void);
-        static QString className(){return "OptimResult";}
-        virtual QString getClassName(){return OptimResult::className();}
+    OptimResult();
+    OptimResult(Project*, ModModelPlus*,const Optimization &,OptimAlgo* algo);
+    OptimResult(Project*,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok);
+    OptimResult(const OptimResult &_res);
+    virtual ~OptimResult(void);
+    static QString className(){return "OptimResult";}
+    virtual QString getClassName(){return OptimResult::className();}
 
-	QDomElement toXmlData(QDomDocument &);
+    QDomElement toXmlData(QDomDocument &);
 
-        void updateRecomputedPointsFromFolder();
-        void loadOptimValuesFromFrontFile(QString fileName);
+    void updateRecomputedPointsFromFolder();
+    void loadOptimValuesFromFrontFile(QString fileName);
 
-	QString buildOptVarsFrontCSV(QString separator="\t");
-	QString buildAllVarsFrontCSV(QString separator="\t");
-        QString buildAllVarsFrontCSV( QList<int> points,QString separator="\t");
+    QString buildOptVarsFrontCSV(QString separator="\t");
+    QString buildAllVarsFrontCSV(QString separator="\t");
+    QString buildAllVarsFrontCSV( QList<int> points,QString separator="\t");
 
-        QString buildVarsFrontCSV(MOOptVector* variables, QList<int> points,QString separator="\t");
-
-
-	void exportFrontCSV(QString FileName, bool allVars);
-
-	void setCurScan(int);
-	int curScan();
+    QString buildVarsFrontCSV(MOOptVector* variables, QList<int> points,QString separator="\t");
 
 
-	void setCurPoint(int);
-	int curPoint();
+    void exportFrontCSV(QString FileName, bool allVars);
+
+    void setCurScan(int);
+    int curScan();
+
+
+    void setCurPoint(int);
+    int curPoint();
 
 signals:
-	void curPointChanged();
-        void curScanChanged(int );
+    void curPointChanged();
+    void curScanChanged(int );
 
-	
+
 public :
-        MOOptVector *optVariablesResults(){return _optVariablesResults;}
-        MOOptVector *optObjectivesResults(){return _optObjectivesResults;}
-        MOOptVector *recomputedVariables(){return _recomputedVariables;}
-	
-        QList<int> recomputedPoints(){return _recomputedPoints;};
+    MOOptVector *optVariablesResults(){return _optVariablesResults;}
+    MOOptVector *optObjectivesResults(){return _optObjectivesResults;}
+    MOOptVector *recomputedVariables(){return _recomputedVariables;}
 
-	// index for each point of subBlocks included (in subBlocks)
-	QList<int> _iSubModels;
-	// different model configurations (using different BlockSubs)
-	QList<BlockSubstitutions*> _subBlocks;
+    QList<int> recomputedPoints(){return _recomputedPoints;};
 
-	//save informations
-	QString _optVarsFrontFileName;
-	QString _allVarsFrontFileName;
+    // index for each point of subBlocks included (in subBlocks)
+    QList<int> _iSubModels;
+    // different model configurations (using different BlockSubs)
+    QList<BlockSubstitutions*> _subBlocks;
 
-        ModModel* modModel()const{return _modModelPlus->modModel();}
-        ModModelPlus* modModelPlus()const{return _modModelPlus;}
+    //save informations
+    QString _optVarsFrontFileName;
+    QString _allVarsFrontFileName;
+
+    ModModel* modModel()const{return _modModelPlus->modModel();}
+    ModModelPlus* modModelPlus()const{return _modModelPlus;}
 
 protected:
-	int _curPoint;
-	int _curScan;
+    Project* _omProject;
+    int _curPoint;
+    int _curScan;
 
-	MOOptVector *_optVariablesResults;
-	MOOptVector *_optObjectivesResults;
-        MOOptVector *_recomputedVariables;
+    MOOptVector *_optVariablesResults;
+    MOOptVector *_optObjectivesResults;
+    MOOptVector *_recomputedVariables;
 
-        QList<int> _recomputedPoints;
+    QList<int> _recomputedPoints;
 
-        OptimAlgo *_algo;
+    OptimAlgo *_algo;
 
 
-        //Model
-        ModModelPlus* _modModelPlus;
+    //Model
+    ModModelPlus* _modModelPlus;
 };
 
 

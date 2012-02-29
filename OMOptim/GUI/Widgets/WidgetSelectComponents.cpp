@@ -41,6 +41,7 @@
 #include "Widgets/WidgetSelectComponents.h"
 #include "ui_WidgetSelectComponents.h"
 #include <QtGui/QErrorMessage>
+#include "OMOptimGuiTools.h"
 
 
 WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* problem,bool isResult,QWidget *parent):
@@ -57,7 +58,7 @@ WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* pr
     //Tree components
     _ui->treeLibrary->setModel(project->modItemsTree());
 
-    ModItemsTree* modelTree = GuiTools::ModItemToTreeView(_project->modLoader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
+    ModItemsTree* modelTree = OMOptimGuiTools::ModItemToTreeView(_project->modLoader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
                                                            _ui->treeComponents,true);
 
     // Diagram of blocks
@@ -85,7 +86,7 @@ void WidgetSelectComponents::addReplacedComponent()
     ModItem* curComponent = static_cast<ModItem*>(index.internalPointer());
 
 
-    QString replacedCompName = curComponent->name(Modelica::FULL);
+    QString replacedCompName = curComponent->name(ModItem::FULL);
 
     QStringList alreadyReplaced = _problem->blockSubstitutions()->getReplacedComponentsNames();
 
@@ -118,7 +119,7 @@ void WidgetSelectComponents::addReplacingComponent()
         // replacing component
         QModelIndex index = _ui->treeLibrary->currentIndex();
         ModItem* curReplacingComponent = static_cast<ModItem*>(index.internalPointer());
-        QString replacingCompName = curReplacingComponent->name(Modelica::FULL);
+        QString replacingCompName = curReplacingComponent->name(ModItem::FULL);
 
         // look for an existing but empty block
         bool ok;

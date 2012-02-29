@@ -2,37 +2,36 @@
 
 #include "ModModelPlus.h"
 
-OptObjectives::OptObjectives(bool owner, ModModelPlus* modModelPlus)
+OptObjectives::OptObjectives(bool owner, QString modelName)
     :MOVector<OptObjective>(owner)
 {
-    _modModelPlus = modModelPlus;
+    _modelName = modelName;
     _displayShort = true;
 }
 
 QVariant OptObjectives::data(const QModelIndex &index, int role) const
 {
     if(index.isValid()
-            && _modModelPlus
             && (index.column()== OptObjective::NAME)
             && (role==Qt::DisplayRole)
             && _displayShort)
     {
         QString shortName = items.at(index.row())->name();
-        shortName = shortName.remove(QRegExp("^"+_modModelPlus->modModelName()+"."));
+        shortName = shortName.remove(QRegExp("^"+_modelName+"."));
         return QVariant(shortName);
     }
     else
         return MOVector<OptObjective>::data(index,role);
 }
 
-void OptObjectives::setModModelPlus(ModModelPlus* modModelPlus)
+void OptObjectives::setModelName(QString modelName)
 {
-    _modModelPlus = modModelPlus;
+    _modelName = modelName;
 }
 
 OptObjectives* OptObjectives::clone() const
 {
-    OptObjectives* newVector = new OptObjectives(_modModelPlus);
+    OptObjectives* newVector = new OptObjectives(true,_modelName);
 
     int i;
     OptObjective* newItem;

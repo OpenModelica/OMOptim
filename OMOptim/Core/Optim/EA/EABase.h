@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EABase.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+    @file EABase.h
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
+    @version
 
   */
 #if !defined(_EABASE_H)
@@ -57,37 +57,37 @@ class ModModelPlus;
 
 class EABase : public OptimAlgo
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	EABase(void);
-        EABase(Project* project,Problem* problem,ModItemsTree*);
-	EABase(const EABase &);
-	
-        virtual ~EABase(void);
+    EABase(void);
+    EABase(Project *project,Problem* problem);
+    EABase(const EABase &);
 
-        virtual EABase* clone() const = 0;
-        //virtual Result* launch(QString tempDir) = 0;
-	
-	
-	// subModels (for Optimization problems)
-	bool _useSubModels;
-	void setSubModels(QList<ModModelPlus*>,QList<BlockSubstitutions*>);
+    virtual ~EABase(void);
+
+    virtual EABase* clone() const = 0;
+    //virtual Result* launch(QString tempDir) = 0;
+
+
+    // subModels (for Optimization problems)
+    bool _useSubModels;
+    void setSubModels(QList<ModModelPlus*>,QList<BlockSubstitutions*>);
 
 protected:
 
-        ModItemsTree* _modItemsTree;
+    ModItemsTree* _modItemsTree;
 
-	// for Optimization problems
-	QList<ModModelPlus*> _subModels;
-	QList<BlockSubstitutions*> _subBlocks;
-	
-	// solve mixing pointdep-pointindep in bounds
-	QVector<QVector<int> > _index;
-	bool _stop;
-	
-	public slots:
-                void onQuickEndAsked();
+    // for Optimization problems
+    QList<ModModelPlus*> _subModels;
+    QList<BlockSubstitutions*> _subBlocks;
+
+    // solve mixing pointdep-pointindep in bounds
+    QVector<QVector<int> > _index;
+    bool _stop;
+
+public slots:
+    void onQuickEndAsked();
 
 };
 

@@ -51,18 +51,19 @@
 #include "Project.h"
 
 OneSimulation::OneSimulation(Project* project,ModModelPlus* modModelPlus)
-    :Problem(project)
+    :Problem((ProjectBase*)project)
 {
+
     InfoSender::instance()->debug("New onesim");
     _modModelPlus = modModelPlus;
     _name="One Simulation";
+    _omProject = project;
 
-    _overwritedVariables = new Variables(true,_modModelPlus);
-    _scannedVariables = new ScannedVariables(true,_modModelPlus);
+    _overwritedVariables = new Variables(true,_modModelPlus->modModelName());
+    _scannedVariables = new ScannedVariables(true,_modModelPlus->modModelName());
 
     // ctrls
     _ctrls = new ModPlusCtrls(project,modModelPlus);
-
 }
 
 OneSimulation::OneSimulation(const OneSimulation &oneSim)
@@ -80,8 +81,9 @@ OneSimulation::OneSimulation(const OneSimulation &oneSim)
 }
 
 OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
-    :Problem(project)
+    :Problem((ProjectBase*)project)
 {
+    _omProject = project;
     InfoSender::instance()->debug("New onesim");
     // look for modmodelplus
     ok = (domProblem.tagName()==OneSimulation::className());
@@ -91,7 +93,7 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     QString modelName = domInfos.attribute("model");
 
     // Find model
-    ModModel* modModel = _project->findModModel(modelName);
+    ModModel* modModel = ((Project*)_project)->findModModel(modelName);
     if(modModel == NULL)
     {
         InfoSender::instance()->sendWarning("Unable to find model "+modelName);
@@ -104,8 +106,8 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     else
     {
         // finishing initialization
-        _overwritedVariables = new Variables(_modModelPlus);
-        _scannedVariables = new ScannedVariables(_modModelPlus);
+        _overwritedVariables = new Variables(true,_modModelPlus->modModelName());
+        _scannedVariables = new ScannedVariables(true,_modModelPlus->modModelName());
 
         // Infos
         this->setName(domInfos.attribute("name", "" ));
@@ -163,7 +165,7 @@ Result* OneSimulation::launch(ProblemConfig config)
     //inputVariables.replaceIn(overwritedVariables);
     MOVector<Variable> updatedVariables(*_overwritedVariables);
 
-    OneSimResult* result = new OneSimResult(_project,_modModelPlus,*this);
+    OneSimResult* result = new OneSimResult(_omProject,_modModelPlus,*this);
     result->setName(this->name()+" result");
 
 

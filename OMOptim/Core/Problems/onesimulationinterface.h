@@ -8,19 +8,19 @@
 
 class OneSimulationInterface : public ProblemInterface
 {
-    virtual Problem* createNewProblem(Project*,const QList<ModModelPlus*> &,QString problemType);
+public :
 
-
+    virtual Problem* createNewProblem(ProjectBase*,const QStringList ,QString problemType);
 
     QWidget* createProblemTab(Problem *,QWidget* parent);
     QWidget* createResultTab(Result *,QWidget* parent);
 
 
-    virtual ModModelPlusNeeds modModelPlusNeeds(){return ONEMODMODELPLUS;}
+    virtual ModelNeeds modelNeeds(){return ONEMODEL;}
     virtual QStringList problemTypes(){return QStringList(OneSimulation::className());}
     QString name(){return OneSimulation::className();}
-    virtual Problem* loadProblem(QFileInfo saveFile,const QDomElement & domOMCase,Project*);
-    virtual Result* loadResult(QFileInfo saveFile,const QDomElement & domOMCase,Project*);
+    virtual Problem* loadProblem(QFileInfo saveFile,const QDomElement & domOMCase,ProjectBase *);
+    virtual Result* loadResult(QFileInfo saveFile,const QDomElement & domOMCase,ProjectBase*);
 };
 
 #endif

@@ -20,13 +20,13 @@
 #include "newprojectform.h"
 #include "ListInfo.h"
 #include <iostream>
-#include "MOGuiTools.h"
 #include "MOVector.h"
 #include "Variable.h"
 #include "TabOMC.h"
-#include "MOTab.h"
+#include "Tabs/MOTab.h"
 #include <QDebug>
-
+#include "OMOptimGuiTools.h"
+#include "GuiTools.h"
 
 
 namespace Ui
@@ -796,7 +796,7 @@ void MainWindow::showModItemsTreePopup(const QPoint & iPoint)
     else
     {
         ModItem* selectedModItem = static_cast<ModItem*>(index.internalPointer());
-        QMenu * modClassMenu= GuiTools::newModItemPopupMenu(_project,_ui->treeModItem->mapToGlobal(iPoint),selectedModItem);
+        QMenu * modClassMenu= OMOptimGuiTools::newModItemPopupMenu(_project,_ui->treeModItem->mapToGlobal(iPoint),selectedModItem);
         if(modClassMenu)
             modClassMenu->exec(_ui->treeModItem->mapToGlobal(iPoint));
     }
@@ -1046,31 +1046,31 @@ void MainWindow::onPushedNewProblem()
         bool pursue = true;
 
         WidgetSelectModModel* widgetSelect;
-        QList<ModModelPlus*> modModelPlusList;
+        QStringList modelsList;
         if(interface)
         {
-            switch(interface->modModelPlusNeeds())
+            switch(interface->modelNeeds())
             {
-            case ProblemInterface::NOMODMODELPLUS :
+            case ProblemInterface::NOMODEL:
                 break;
-            case ProblemInterface::ONEMODMODELPLUS :
+            case ProblemInterface::ONEMODEL:
                 widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),this);
                 if(widgetSelect->exec()==QDialog::Accepted)
                 {
                     ModModel* curModel = widgetSelect->selectedModel;
                     if(curModel)
-                        modModelPlusList.push_back(_project->modModelPlus(curModel->name()));
+                        modelsList.push_back(curModel->name());
                 }
                 else
                     pursue = false;
                 delete widgetSelect;
                 break;
-            case  ProblemInterface::SEVERALMODMODELPLUS :
+            case  ProblemInterface::SEVERALMODELS :
                 /// @todo Manage several modmodelplus specification
                 break;
             }
             if(pursue)
-                _project->addNewProblem(interface,modModelPlusList,problemType);
+                _project->addNewProblem(interface,modelsList,problemType);
         }
 
     }
@@ -1080,10 +1080,10 @@ void MainWindow::onSelectedModItem(QModelIndex index)
 {
     if(index.isValid())
     {
-        ModItem* _modClass = static_cast<ModItem*>(index.internalPointer());
+        ModItem* modClass = static_cast<ModItem*>(index.internalPointer());
 
-        if(_modClass)
-            _project->setCurModItem(_modClass);
+        if(modClass)
+            _project->setCurModItem(modClass);
     }
     else
         _project->setCurModItem(NULL);

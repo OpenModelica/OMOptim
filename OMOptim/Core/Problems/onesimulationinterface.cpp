@@ -3,17 +3,23 @@
 #include "TabOneSim.h"
 #include "TabResOneSim.h"
 
-Problem* OneSimulationInterface::createNewProblem(Project* project,const QList<ModModelPlus*> & modModelPlusList,QString problemType)
+Problem* OneSimulationInterface::createNewProblem(ProjectBase* projectBase,const QStringList modelsList,QString problemType)
 {
     Q_ASSERT(problemType==OneSimulation::className());
 
-    if(modModelPlusList.size()!=1)
+    if(modelsList.size()!=1)
     {
         InfoSender::instance()->send(Info("Model for one simulation problem not defined",ListInfo::ERROR2));
         return NULL;
     }
     else
-        return new OneSimulation(project,modModelPlusList.at(0));
+    {
+        Project* project = dynamic_cast<Project*>(projectBase);
+        if(!project)
+            return NULL;
+        else
+            return new OneSimulation(project,project->modModelPlus(modelsList.at(0)));
+    }
 }
 
 
@@ -30,9 +36,13 @@ QWidget* OneSimulationInterface::createResultTab(Result* result,QWidget* parent)
 }
 
 
-Problem* OneSimulationInterface::loadProblem(QFileInfo saveFile,const QDomElement & domOMCase, Project * project)
+Problem* OneSimulationInterface::loadProblem(QFileInfo saveFile,const QDomElement & domOMCase, ProjectBase * projectBase)
 {
     if(domOMCase.isNull() || domOMCase.tagName()!="OMCase" )
+        return NULL;
+
+    Project* project = dynamic_cast<Project*>(projectBase);
+    if(!project)
         return NULL;
 
    QDomElement domOMProblem = domOMCase.firstChildElement("OMProblem");
@@ -60,10 +70,16 @@ Problem* OneSimulationInterface::loadProblem(QFileInfo saveFile,const QDomElemen
 
 
 
-Result* OneSimulationInterface::loadResult(QFileInfo saveFile,const QDomElement & domOMCase, Project * project)
+Result* OneSimulationInterface::loadResult(QFileInfo saveFile,const QDomElement & domOMCase, ProjectBase * projectBase)
 {
     if(domOMCase.isNull() || domOMCase.tagName()!="OMCase" )
         return NULL;
+
+
+    Project* project = dynamic_cast<Project*>(projectBase);
+    if(!project)
+        return NULL;
+
 
     // read problem
     bool ok;

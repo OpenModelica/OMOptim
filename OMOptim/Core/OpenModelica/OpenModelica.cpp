@@ -47,7 +47,7 @@ http://www-cep.ensmp.fr/english/
 
 
 // for .mat reading
-#include "../../SimulationRuntime/c/util/read_matlab4.h"
+#include "../../c_runtime/read_matlab4.h"
 
 
 OpenModelica::OpenModelica()
@@ -381,7 +381,7 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
         for(int iV=0;iV<variables->size();iV++)
         {
             curVar = variables->at(iV);
-            varName = curVar->name(Modelica::FULL);
+            varName = curVar->name(Variable::FULL);
             varName = varName.remove(modModelName+".");
             rxLine.setPattern(sciNumRx()+"\\s*(//[\\w*|\\s*]*//|//)\\s*"+varName);
             index = rxLine.indexIn(allText);
@@ -525,7 +525,7 @@ void OpenModelica::setInputVariablesXml(QDomDocument & doc, QString modelName, M
     for(int i=0;i<variables->size();i++)
     {
         // getting local var name (name in init file does not contain model name)
-        localVarName = variables->at(i)->name(Modelica::FULL);
+        localVarName = variables->at(i)->name(Variable::FULL);
         localVarName = localVarName.remove(modelName+".");
 
         index = mapScalarVars.value(localVarName,-1);

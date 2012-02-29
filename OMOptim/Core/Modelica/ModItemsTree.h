@@ -91,7 +91,7 @@ public:
     //Ports
     //*****************************
     QList<ModItem*> getPorts(ModItem* parent);
-    QStringList getPorts(ModItem* parent,Modelica::NameFormat format);
+    QStringList getPorts(ModItem* parent,ModItem::NameFormat format);
 
     // remove functions
     void clear();

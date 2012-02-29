@@ -41,7 +41,7 @@
 #include "Widgets/WidgetSelectOptVars.h"
 #include "ui_WidgetSelectOptVars.h"
 #include <QtGui/QErrorMessage>
-
+#include "Optimization.h"
 
 WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,QWidget *parent):
     QWidget(parent),

@@ -59,10 +59,6 @@ namespace Modelica
 
 
 
-	enum NameFormat{
-		SHORT,
-                WITHOUTROOT, // Full without root model name
-		FULL
-	};
+
 };
 #endif

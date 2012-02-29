@@ -47,7 +47,7 @@ TabOneSim::TabOneSim(OneSimulation *problem, QWidget *parent) :
 MO2ColTab(problem->project()->name(),problem,false,parent)
 {
 	
-    _project = problem->project();
+    _project = dynamic_cast<Project*>(problem->project());
     _problem = problem;
 
 	// Variables
@@ -57,7 +57,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
     _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
     addDockWidget("Files",_widgetFilesList,_widgetOneSimVars);
 
-    _widgetCtrl = new WidgetCtrlParameters(_project,_problem->modModelPlus(),_problem->ctrls(),false,this);
+    _widgetCtrl = new WidgetCtrlParameters(_problem->modModelPlus(),_problem->ctrls(),false,this);
     addDockWidget("Simulator",_widgetCtrl,_widgetOneSimVars);
 		
     mapDockWidgets.key(_widgetOneSimVars)->raise();

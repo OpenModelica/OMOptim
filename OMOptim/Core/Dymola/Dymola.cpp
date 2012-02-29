@@ -637,7 +637,7 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
             InfoSender::instance()->debug("Setting variable "+ varName+" in "+fileName);
 
             curVar = variables->at(iV);
-            varName = curVar->name(Modelica::FULL);
+            varName = curVar->name(Variable::FULL);
             varName = varName.remove(modelName+".");
             rxLine.setPattern(sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s*#\\s*("+varName+")\\s*");
 

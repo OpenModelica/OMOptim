@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MyAlgoUtils.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+    @file MyAlgoUtils.h
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
+    @version
 
   */
 #if !defined(_OPTIMALGOUTILS_H)
@@ -48,35 +48,41 @@
 
 namespace OptimAlgoUtils{
 
-        static OptimAlgo* getNewAlgo(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree,int iAlgo)
-	{
-		switch(iAlgo)
-		{
-                case OptimAlgosList::iNSGA2:
-                        return new NSGA2(_project,_problem,_modItemsTree);
-                case OptimAlgosList::iSPEA2:
-                        return new SPEA2(_project,_problem,_modItemsTree);
-                case OptimAlgosList::iSPEA2Adapt:
-                        return new SPEA2Adapt(_project,_problem,_modItemsTree);
-                case OptimAlgosList::iSA1:
-                        return new SA1(_project,_problem,_modItemsTree);
-		default:
-			//Problem
-			return NULL;
-		}
-	}
+static OptimAlgo* getNewAlgo(Project* _project,Problem* _problem,int iAlgo)
+{
+    switch(iAlgo)
+    {
+    case OptimAlgosList::iNSGA2:
+        return new NSGA2(_project,_problem);
+    case OptimAlgosList::iSPEA2:
+        return new SPEA2(_project,_problem);
+    case OptimAlgosList::iSPEA2Adapt:
+        return new SPEA2Adapt(_project,_problem);
+    case OptimAlgosList::iSA1:
+        return new SA1(_project,_problem);
+    default:
+        //Problem
+        return NULL;
+    }
+}
 
-        static QList<OptimAlgo*> getNewAlgos(Problem *problem,ModItemsTree* modItemsTree)
-	{
-                QList<OptimAlgo*> algos;
-                for(int i=0;i<OptimAlgosList::nbMyAlgos;i++)
-		{
-                        OptimAlgo* newAlgo;
-                        newAlgo = getNewAlgo(problem->project(),problem,modItemsTree,i);
-				algos.push_back(newAlgo);
-		}
-		return algos;
-	}
+static QList<OptimAlgo*> getNewAlgos(Problem *problem)
+{
+    Project* project = dynamic_cast<Project*>(problem->project());
+
+    QList<OptimAlgo*> algos;
+    if(project)
+    {
+        for(int i=0;i<OptimAlgosList::nbMyAlgos;i++)
+        {
+
+            OptimAlgo* newAlgo;
+            newAlgo = getNewAlgo(project,problem,i);
+            algos.push_back(newAlgo);
+        }
+    }
+    return algos;
+}
 }
 
 #endif

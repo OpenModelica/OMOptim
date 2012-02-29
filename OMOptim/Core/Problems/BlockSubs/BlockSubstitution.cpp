@@ -161,7 +161,7 @@ bool BlockSubstitution::init(Project * project, ModModelPlus *model, ModelicaCon
         subElement =  project->modItemsTree()->findInDescendants(_subComponent);
         if(subElement)
 			{
-            _subPorts = _project->modItemsTree()->getPorts(subElement,Modelica::FULL);
+            _subPorts = _project->modItemsTree()->getPorts(subElement,ModItem::FULL);
             for(int i=0;i<_subPorts.size();i++)
 				{
                 _subConnectedComps.push_back(QStringList());
@@ -183,7 +183,7 @@ void BlockSubstitution::setSubComponent(QString subComponent,bool doAutoConnect)
 
     if(subElement)
 	{
-        _subPorts = _project->modItemsTree()->getPorts(subElement,Modelica::FULL);
+        _subPorts = _project->modItemsTree()->getPorts(subElement,ModItem::FULL);
         for(int i=0;i<_subPorts.size();i++)
 		{
             _subConnectedComps.push_back(QStringList());

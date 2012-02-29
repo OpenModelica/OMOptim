@@ -24,7 +24,9 @@ CONFIG(debug, debug|release){
     -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/lib \
     -lmoeo \
     -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
-    -lqwtd5
+    -lqwtd5 \
+    -L../OMOptimBasis/build/debug \
+    -lOMOptimBasis
 
 DESTDIR = debug/
 UI_DIR = debug/generatedfiles/ui
@@ -44,7 +46,9 @@ RCC_DIR = debug/generatedfiles/rcc
     -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/lib \
     -lmoeo \
     -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
-    -lqwt5
+    -lqwt5 \
+    -L../OMOptimBasis/build/release \
+    -lOMOptimBasis
 
         DESTDIR = ../bin/
         UI_DIR = release/generatedfiles/ui

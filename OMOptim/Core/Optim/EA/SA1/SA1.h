@@ -63,8 +63,8 @@ class SA1 : public EABase
 {
 public :
         SA1();
-        SA1(Project*,Problem*,ModItemsTree*);
-        SA1(Project*,Problem*,ModItemsTree*,MOParameters*);
+        SA1(Project*,Problem*);
+        SA1(Project*,Problem*,MOParameters*);
         SA1(const SA1 &);
         SA1* clone() const;
 

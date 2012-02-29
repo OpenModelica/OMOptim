@@ -61,7 +61,7 @@
 #include <QPaintEvent>
 
 #include "Variable.h"
-#include "MyQwtPlotPicker.h"
+#include "Plots/MyQwtPlotPicker.h"
 
 class MOOptPlot :  public QwtPlot
 {

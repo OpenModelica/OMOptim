@@ -72,26 +72,12 @@ public:
 	static QString space();
 
 	// var to text
-        static QString variablesToLines(MOVector<Variable> *);
-        static QString oneVariableResultToValueLines(VariableResult *);
-	static QString variableResultToValueLines(MOOptVector *, int iPoint);
-	static QString scannedVariablesToLines(MOVector<ScannedVariable> *);
 	static QString optObjectivesToLines(MOVector<OptObjective> *);
 
 	//text to var
-        static void linesToVariableResult(MOOptVector *, int iPoint, QString lines, bool addIfNotFound);
-	static void LinesToScannedVariables(MOVector<ScannedVariable>*, QString);
 	static void LinesToOptObjectives(MOVector<OptObjective>*, QString);
 	static void LinesToOptObjectives(MOVector<OptObjectiveResult>*, QString);
-	static void LinesToVariables(MOVector<Variable>*, QString);
-        static void linesToOneVariableResultValues(VariableResult *,QString);
-
-        //Files to var
-        static void FileToVariables(MOVector<Variable>*, QString);
-        static void FileToVariableResult(MOOptVector *variables, int iPoint,QString fileName, bool addIfNotFound=true);
 	
-
-
 
 };
 

@@ -5,17 +5,23 @@
 #include "OptimResult.h"
 
 
-Problem* OptimizationInterface::createNewProblem(Project* project,const QList<ModModelPlus*> & modModelPlusList,QString problemType)
+Problem* OptimizationInterface::createNewProblem(ProjectBase* projectBase,const QStringList modelsList,QString problemType)
 {
     Q_ASSERT(problemType==Optimization::className());
 
-    if(modModelPlusList.size()!=1)
+    if(modelsList.size()!=1)
     {
         InfoSender::instance()->send(Info("Model for optimization problem not defined",ListInfo::ERROR2));
         return NULL;
     }
     else
-        return new Optimization(project,modModelPlusList.at(0));
+    {
+        Project* project = dynamic_cast<Project*>(projectBase);
+        if(!project)
+            return NULL;
+        else
+            return new Optimization(project,project->modModelPlus(modelsList.at(0)));
+    }
 }
 
 
@@ -47,12 +53,16 @@ QWidget* OptimizationInterface::createResultTab(Result * result,QWidget* parent)
 }
 
 
-Problem* OptimizationInterface::loadProblem(QFileInfo saveFile,const QDomElement & domOMCase, Project * project)
+Problem* OptimizationInterface::loadProblem(QFileInfo saveFile,const QDomElement & domOMCase, ProjectBase * projectBase)
 {
     if(domOMCase.isNull() || domOMCase.tagName()!="OMCase" )
         return NULL;
 
-   QDomElement domOMProblem = domOMCase.firstChildElement("OMProblem");
+    Project* project = dynamic_cast<Project*>(projectBase);
+    if(!project)
+        return NULL;
+
+    QDomElement domOMProblem = domOMCase.firstChildElement("OMProblem");
 
 
     Problem* problem = NULL;
@@ -77,9 +87,13 @@ Problem* OptimizationInterface::loadProblem(QFileInfo saveFile,const QDomElement
 
 
 
-Result* OptimizationInterface::loadResult(QFileInfo saveFile,const QDomElement & domOMCase, Project * project)
+Result* OptimizationInterface::loadResult(QFileInfo saveFile,const QDomElement & domOMCase, ProjectBase * projectBase)
 {
     if(domOMCase.isNull() || domOMCase.tagName()!="OMCase" )
+        return NULL;
+
+    Project* project = dynamic_cast<Project*>(projectBase);
+    if(!project)
         return NULL;
 
     // read problem

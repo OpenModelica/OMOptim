@@ -41,22 +41,23 @@
 #include "Optimization.h"
 #include "EA"
 #include "OptimAlgoUtils.h"
-#include "CSV.h"
+#include "CSVBase.h"
 #include "LowTools.h"
 
 
 Optimization::Optimization(Project* project,ModModelPlus* modModelPlus)
-    :Problem(project)
+    :Problem((ProjectBase*)project)
 {
+    _omProject = project;
     _modModelPlus = modModelPlus;
 
     _name="Optimization";
-    _optimizedVariables = new OptVariables(true,modModelPlus);
-    _scannedVariables = new ScannedVariables(true,modModelPlus);
-    _objectives = new OptObjectives(true,modModelPlus);
+    _optimizedVariables = new OptVariables(true,modModelPlus->modModelName());
+    _scannedVariables = new ScannedVariables(true,modModelPlus->modModelName());
+    _objectives = new OptObjectives(true,modModelPlus->modModelName());
     _blockSubstitutions = new BlockSubstitutions();
 
-    _algos = OptimAlgoUtils::getNewAlgos(this,_modItemsTree);
+    _algos = OptimAlgoUtils::getNewAlgos(this);
 
     _iCurAlgo=0;
 
@@ -108,11 +109,12 @@ Optimization::~Optimization()
 
 
 Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
-    :Problem(project)
+    :Problem((ProjectBase*)project)
 {
     // initialization
+    _omProject = project;
     _modModelPlus = NULL;
-    _algos = OptimAlgoUtils::getNewAlgos(this,_modItemsTree);
+    _algos = OptimAlgoUtils::getNewAlgos(this);
 
     // look for modmodelplus
     QDomElement domInfos;
@@ -124,7 +126,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         QString modelName = domInfos.attribute("model");
 
         // Find modModelPlus
-        ModModel* modModel = _project->findModModel(modelName);
+        ModModel* modModel = _omProject->findModModel(modelName);
         if(modModel == NULL)
         {
             InfoSender::instance()->sendWarning("Unable to find model "+modelName);
@@ -148,9 +150,9 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     {
 
         // finishing initialization
-        _optimizedVariables = new OptVariables(_modModelPlus);
-        _scannedVariables = new ScannedVariables(_modModelPlus);
-        _objectives = new OptObjectives(_modModelPlus);
+        _optimizedVariables = new OptVariables(true,_modModelPlus->modModelName());
+        _scannedVariables = new ScannedVariables(true,_modModelPlus->modModelName());
+        _objectives = new OptObjectives(true,_modModelPlus->modModelName());
         _blockSubstitutions = new BlockSubstitutions();
 
         _iCurAlgo=0;
@@ -384,7 +386,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
             //Creating a new OneSimulation problem based on same model
             //and specifying overwrited variables from optimized variable values
             //*************************************************************
-            OneSimulation *oneSim = new OneSimulation(_project,result->modModelPlus());
+            OneSimulation *oneSim = new OneSimulation(_omProject,result->modModelPlus());
             Variable* overVar;
             for(int iOverVar=0;iOverVar < result->optVariablesResults()->size();iOverVar++)
             {
@@ -460,7 +462,7 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
                 QFile file(pointSaveFolder+QDir::separator()+"resultVar.csv");
                 file.open(QIODevice::WriteOnly);
                 QTextStream ts( &file );
-                ts << CSV::variableResultToValueLines(result->recomputedVariables(),iPoint);
+                ts << CSVBase::variableResultToValueLines(result->recomputedVariables(),iPoint);
                 file.close();
 
                 delete oneSimRes;
@@ -546,15 +548,15 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
         oldMoFile.copy(newMoPath);
 
         // load file (! will replace previously loaded)
-        _project->loadMoFile(newMoPath,false,true);
+        _omProject->loadMoFile(newMoPath,false,true);
 
         // create new modModel
-        ModModel* newModModel = dynamic_cast<ModModel*>(_project->modItemsTree()->findItem(_modModelPlus->modModelName()));
+        ModModel* newModModel = dynamic_cast<ModModel*>(_omProject->modItemsTree()->findItem(_modModelPlus->modModelName()));
 
         if(newModModel)
         {
             // create new modModelPlus
-            ModModelPlus* newModModelPlus = new ModModelPlus(_project,newModModel->name());
+            ModModelPlus* newModModelPlus = new ModModelPlus(_omProject,newModModel->name());
             newModModelPlus->setMmoFilePath(newMmoFilePath);
 
             // apply blocksubs
@@ -603,7 +605,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 
     // reload genuine mo file
     if(iCase>0)
-        _project->loadMoFile(oldMoFilePath,false,true);
+        _omProject->loadMoFile(oldMoFilePath,false,true);
 }
 
 ModModelPlus* Optimization::modModelPlus() const

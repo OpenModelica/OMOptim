@@ -40,6 +40,7 @@
   */
 #include "OneSimResult.h"
 #include "OneSimulation.h"
+#include "ModModelPlus.h"
 
 OneSimResult::OneSimResult(void)
 {
@@ -52,12 +53,13 @@ OneSimResult::OneSimResult(void)
 }
 
 OneSimResult::OneSimResult(Project* project, ModModelPlus* modelPlus, const OneSimulation &problem)
-    :Result(project,(const Problem&)problem)
+    :Result((ProjectBase*)project,(const Problem&)problem)
 {
-    InfoSender::instance()->debug("New onesimres");
+
+    _omProject = project;
     _modModelPlus = modelPlus;
 
-    _inputVariables = new Variables(true,modelPlus);
+    _inputVariables = new Variables(true,_modModelPlus->modModelName());
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
 
     // files to copy
@@ -65,10 +67,11 @@ OneSimResult::OneSimResult(Project* project, ModModelPlus* modelPlus, const OneS
 }
 
 OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok)
-    :Result(project,(const Problem&)problem)
+    :Result((ProjectBase*)project,(const Problem&)problem)
 {
-    InfoSender::instance()->debug("New onesimres");
+
     _modModelPlus = problem.modModelPlus();
+    _omProject = project;
 
     ok = (domResult.tagName()==OneSimResult::className());
 
@@ -77,7 +80,7 @@ OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const
     this->setName(domResInfos.attribute("name", "" ));
 
     // input variables
-    _inputVariables = new Variables(true,_modModelPlus);
+    _inputVariables = new Variables(true,_modModelPlus->modModelName());
 
     //FinalVariables
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points

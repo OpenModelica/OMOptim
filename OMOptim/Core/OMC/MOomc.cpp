@@ -69,7 +69,7 @@
 
 
 #include "MOomc.h"
-#include "MOThreads.h"
+#include "OMCThreads.h"
 
 //IAEX Headers
 #include "omcinteractiveenvironment.h"

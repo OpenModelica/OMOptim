@@ -60,7 +60,7 @@
 #include <qwt_scale_draw.h>
 #include <qwt_math.h>
 #include <qwt_picker.h>
-#include "MOTab.h"
+#include "Tabs/MOTab.h"
 
 namespace Ui {
     class TabOMC_Class;

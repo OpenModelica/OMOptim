@@ -59,8 +59,8 @@ class WidgetCtrlParameters : public QWidget {
 
 
 public:
-    explicit WidgetCtrlParameters(Project* project,ModModelPlus* modelPlus,ModPlusCtrls * ctrls,bool isResult,QWidget *parent = NULL);
-    explicit WidgetCtrlParameters(Project* project,QMap<ModModelPlus*,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent = NULL);
+    explicit WidgetCtrlParameters(ModModelPlus* modelPlus,ModPlusCtrls * ctrls,bool isResult,QWidget *parent = NULL);
+    explicit WidgetCtrlParameters(QMap<ModModelPlus*,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent = NULL);
     void update(QMap<ModModelPlus*,ModPlusCtrls *> ctrls);
     virtual ~WidgetCtrlParameters();
 
@@ -75,7 +75,6 @@ public slots :
 
 
  private :
-         Project* _project;
          QList<QObject*> _widgetsCreated;
          QMap<ModModelPlus*,ModPlusCtrls *> _ctrls;
          QMap<ModModelPlus*,QComboBox*> _comboBoxs;

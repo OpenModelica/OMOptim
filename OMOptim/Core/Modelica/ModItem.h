@@ -95,6 +95,13 @@ public:
 		NAME,
 		FILEPATH
 	};
+
+    enum NameFormat
+    {
+        SHORT,
+        WITHOUTROOT,
+        FULL
+    };
 	
 	static const int nbFields = 2;
 	virtual unsigned getNbFields(){return nbFields;};
@@ -113,7 +120,7 @@ public:
         void setParent(ModItem *);
 
 	// Local information
-	QString name(Modelica::NameFormat = Modelica::FULL);
+    QString name(ModItem::NameFormat = ModItem::FULL);
 	QString filePath();
 	
 	// Tree functions

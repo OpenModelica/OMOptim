@@ -42,12 +42,11 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetCtrlParameters::WidgetCtrlParameters(Project* project,ModModelPlus* model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent)
+WidgetCtrlParameters::WidgetCtrlParameters(ModModelPlus* model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent)
     : QWidget(parent)
 {
 
     _layout = new QGridLayout(this);
-    _project = project;
     _isResult = isResult;
 
     QMap<ModModelPlus*,ModPlusCtrls *> tmpCtrls;
@@ -56,11 +55,10 @@ WidgetCtrlParameters::WidgetCtrlParameters(Project* project,ModModelPlus* model,
     update(tmpCtrls);
 }
 
-WidgetCtrlParameters::WidgetCtrlParameters(Project* project,QMap<ModModelPlus*,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent)
+WidgetCtrlParameters::WidgetCtrlParameters(QMap<ModModelPlus*,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent)
     : QWidget(parent)
 {
     _layout = new QGridLayout(this);
-    _project = project;
     _isResult = isResult;
     update(ctrls);
 }

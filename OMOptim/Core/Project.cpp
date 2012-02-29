@@ -133,32 +133,7 @@ void Project::clear()
     emit projectChanged();
 }
 
-void Project::setName(QString name)
-{
-    _name=name;
-    emit projectChanged();
-}
 
-/**
-* \brief
-* Set if project is defined (used for enabling gui)
-*/
-void Project::setIsDefined(bool isdefined)
-{
-    _isdefined=isdefined;
-    emit projectChanged();
-}
-
-bool Project::isSaved()
-{
-    return _isSaved;
-}
-
-
-void Project::setSaved(bool isSaved)
-{
-    _isSaved = isSaved;
-}
 
 
 /**
@@ -248,7 +223,7 @@ bool Project::loadModelicaLibrary(bool storePath, bool forceLoad)
 */
 void Project::loadModModelPlus(QString mmoFilePath)
 {
-    Load::loadModModelPlus(this,mmoFilePath);
+    LoadOMOptim::loadModModelPlus(this,mmoFilePath);
     storeMmoFilePath(mmoFilePath);
 
     emit projectChanged();
@@ -296,91 +271,6 @@ void Project::refreshAllMod()
     _modItemsTree->readFromOMCWThread(_modItemsTree->rootElement(),2);
     _modItemsTree->emitDataChanged();
 }
-
-/**
-* Load a OMOptim plugin
-* \param pluginPath full file path of .dll
-* \param storePath yes/no should path be stored in project file
-* (as to be reloaded when loading project)
-* \param forceLoad yes/no should mo file be reloaded in OMC when already loaded in OMC
-*/
-bool Project::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
-{
-    InfoSender::instance()->sendNormal("Loading plugin : "+pluginPath);
-
-    bool tryLoad;
-
-    tryLoad = (forceLoad || !_pluginsLoaded.values().contains(pluginPath));
-
-    if(!tryLoad)
-        return false;
-
-    // unload if needed
-    if(forceLoad && _pluginsLoaded.values().contains(pluginPath))
-        unloadPlugin(pluginPath);
-
-    // first try to load
-    QPluginLoader loader(pluginPath);
-    QObject *plugin = loader.instance();
-    ProblemInterface* pbInter = qobject_cast<ProblemInterface*>(plugin);
-
-    if(pbInter)
-    {
-        InfoSender::instance()->sendNormal("Loaded plugin successfully : "+pbInter->name());
-        this->addProblemInterface(pbInter);
-
-        // added corresponding settings
-        MOParameters* pluginParams = pbInter->parameters();
-        MOSettings::addParameters(pluginParams,pbInter->name());
-    }
-    else
-    {
-        InfoSender::instance()->sendError("Loaded plugin failed : "+pluginPath
-                                          +"\n("+loader.errorString()+")");
-    }
-
-    bool loadOk = (pbInter!=NULL);
-
-    // add to stored list
-    if(loadOk && storePath)
-    {
-        _pluginsLoaded.insert(pbInter->name(),pluginPath);
-        emit projectChanged();
-    }
-}
-
-/**
-* Unload a OMOptim plugin
-* \param pluginPath full file path of plugin
-*/
-bool Project::unloadPlugin(QString pluginPath)
-{
-    InfoSender::instance()->sendNormal("Unloading plugin : "+pluginPath);
-
-    _pluginsLoaded.remove(_pluginsLoaded.key(pluginPath));
-
-    QPluginLoader loader(pluginPath);
-    if(loader.unload())
-    {
-        emit projectChanged();
-    }
-}
-
-/**
-* Unload all plugins
-*/
-bool Project::unloadPlugins()
-{
-    QStringList pluginsPaths(_pluginsLoaded.values());
-    bool ok = true;
-    for(int i=0;i<pluginsPaths.size();i++)
-        ok = unloadPlugin(pluginsPaths.at(i)) && ok;
-
-    emit projectChanged();
-
-    return ok;
-}
-
 
 /**
 * \brief
@@ -489,7 +379,7 @@ ModModelPlus* Project::newModModelPlus(QString modelName)
     newModModelPlus->setMmoFilePath(newMmoFilePath);
 
     // save it
-    Save::saveModModelPlus(newModModelPlus);
+    SaveOMOptim::saveModModelPlus(newModModelPlus);
 
     // store path
     storeMmoFilePath(newMmoFilePath);
@@ -499,17 +389,7 @@ ModModelPlus* Project::newModModelPlus(QString modelName)
     return newModModelPlus;
 }
 
-void Project::setFilePath(QString filePath)
-{
-    _filePath=filePath;
 
-    //create models folder
-    QFileInfo fileInfo(_filePath);
-    QString modelsDir = fileInfo.dir().absolutePath()+QDir::separator()+"Models";
-    fileInfo.dir().mkdir(modelsDir);
-
-    emit projectChanged();
-}
 
 void Project::save(bool saveAllOMCases)
 {
@@ -567,103 +447,12 @@ bool Project::load(QString loadPath)
 }
 
 
-QString Project::filePath()
-{
-    return _filePath;
-}
-
-QString Project::folder()
-{
-    QFileInfo fileInfo(_filePath);
-    return fileInfo.absolutePath();
-}
-
-QString Project::tempPath()
-{
-    return folder()+QDir::separator()+"temp";
-}
 
 QString Project::modModelPlusFolder()
 {
     return folder()+QDir::separator()+"Models";
 }
 
-QString Project::problemsFolder()
-{
-
-    return folder()+QDir::separator()+"Problems";
-}
-
-QString Project::resultsFolder()
-{
-    return folder()+QDir::separator()+"Results";
-}
-
-void Project::addProblemInterface(ProblemInterface* problemInterface)
-{
-    _problemsInterfaces.addProblemInterface(problemInterface);
-    emit interfacesModified();
-    emit projectChanged();
-}
-
-void Project::removeProblemInterface(QString interfaceName)
-{
-    if(_problemsInterfaces.removeProblemInterface(interfaceName))
-    {
-        emit interfacesModified();
-        emit projectChanged();
-    }
-}
-
-void Project::addNewProblem(ProblemInterface* interface, QList<ModModelPlus*> modModelPlusList,QString problemType)
-{
-    Problem* newProblem = interface->createNewProblem(this,modModelPlusList,problemType);
-    HighTools::checkUniqueProblemName(this,newProblem,_problems);
-
-    _problems->addCase(newProblem);
-
-    save(newProblem);
-
-    emit addedProblem(newProblem);
-}
-
-void Project::addOMCase(QString filePath)
-{
-    OMCase* newCase = Load::newOMCase(filePath,this);
-
-    Problem* problem = dynamic_cast<Problem*>(newCase);
-    if(problem)
-        addProblem(problem);
-    else
-    {
-        Result* result = dynamic_cast<Result*>(newCase);
-        if(result)
-            addResult(result);
-    }
-}
-
-
-
-void Project::addProblem(Problem *problem)
-{
-    _problems->addCase(problem);
-
-    //update GUI
-    emit sendInfo(Info(ListInfo::ADDEDPROBLEM,problem->name()));
-    emit projectChanged();
-    emit addedProblem(problem);
-}
-
-void Project::addResult(Result *result)
-{
-    _results->addCase(result);
-
-    emit sendInfo(Info(ListInfo::ADDEDPROBLEM,result->name()));
-
-    //update GUI
-    emit projectChanged();
-    emit addedResult(result);
-}
 
 bool Project::checkConfiguration()
 {
@@ -674,208 +463,6 @@ bool Project::checkConfiguration()
 
     return ok;
 }
-
-
-void Project::createTempDir()
-{
-    QDir tempDir(tempPath());
-    if(tempDir.exists())
-        LowTools::removeDir(tempPath());
-    tempDir.mkdir(tempPath());
-
-}
-
-
-void Project::launchProblem(Problem* problem)
-{
-    if(!_problemLaunchMutex.tryLock())
-    {
-        QString msg = "Another problem is already running. Could not launch a new one.";
-        InfoSender::instance()->send(Info(msg));
-    }
-    else
-    {
-        //Copy launched problem from selected one
-        Problem* launchedProblem;
-        launchedProblem = problem->clone();
-
-        // Create temporary directory where calculations are performed
-        createTempDir();
-
-        //Create problem thread
-        ProblemConfig config;
-        MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
-
-        // connect signals
-        connect(launchThread,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
-        connect(launchThread,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
-        connect(launchThread,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
-        connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
-        connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SIGNAL(problemFinished(Problem*,Result*)));
-
-        // store thread-problem
-        _launchedThreads.insert(launchedProblem,launchThread);
-
-        // start problem
-        launchThread->start();
-    }
-}
-
-void Project::onProjectChanged()
-{
-    _isSaved = false;
-    emit projectChanged();
-}
-
-void Project::onProblemStopAsked(Problem* problem)
-{
-    //    MOThreads::ProblemThread *thread = _launchedThreads.value(problem,NULL);
-
-    //    if(thread)
-    //        thread->onStopAsked();
-    problem->stop();
-}
-
-void Project::onProblemFinished(Problem* problem,Result* result)
-{
-    if(result)
-    {
-        //Results
-        if(!result->isSuccess())
-        {
-            QString msg = "Problem "+ problem->getClassName()+ " has failed";
-            InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
-        }
-        else
-        {
-            QString msg = "Problem "+ problem->getClassName()+ " succeeded";
-            InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
-
-            if(result->name().isEmpty())
-                result->setName(result->problem()->name()+" result");
-
-            HighTools::checkUniqueResultName(this,result,_results);
-
-            result->store(QString(resultsFolder()+QDir::separator()+result->name()),tempPath());
-
-            addResult(result);
-            save(result);
-        }
-    }
-    _problemLaunchMutex.unlock();
-    _launchedThreads.remove(problem);
-}
-
-Problem* Project::restoreProblemFromResult(int numResult)
-{
-    return restoreProblemFromResult(_results->at(numResult));
-}
-
-Problem* Project::restoreProblemFromResult(Result* result)
-{
-    Problem* restoredPb = result->problem()->clone();
-    restoredPb->setName(restoredPb->name().replace(" result",""));
-    HighTools::checkUniqueProblemName(this,restoredPb,_problems);
-
-    addProblem(restoredPb);
-    return restoredPb;
-}
-
-
-void Project::removeResult(Result* result)
-{
-    int num = results()->items.indexOf(result);
-    if(num>-1)
-    {
-        // result to be removed
-        emit beforeRemoveResult(result);
-
-        // remove folder and data
-        QString folder = QDir(result->saveFolder()).absolutePath();
-        LowTools::removeDir(folder);
-        _results->removeRow(num);
-
-        save(false);
-    }
-}
-
-
-void Project::removeProblem(Problem* problem)
-{
-    int num = problems()->items.indexOf(problem);
-    if(num>-1)
-    {
-        // result to be removed
-        emit beforeRemoveProblem(problem);
-
-        // remove folder and data
-        QString folder = QFileInfo(problem->saveFolder()).absolutePath();
-        LowTools::removeDir(folder);
-        _problems->removeRow(num);
-
-        save(false);
-    }
-}
-
-
-void Project::removeCases(QList<OMCase*> cases)
-{
-    Problem* problem;
-    Result* result;
-    for(int i=0;i<cases.size();i++)
-    {
-        problem = dynamic_cast<Problem*>(cases.at(i));
-        if(problem)
-            removeProblem(problem);
-        else
-        {
-            result = dynamic_cast<Result*>(cases.at(i));
-            if(result)
-                removeResult(result);
-        }
-    }
-}
-
-void Project::renameCase(OMCase* curCase,QString newName)
-{
-    Problem* problem;
-    Result* result;
-    problem = dynamic_cast<Problem*>(curCase);
-    if(problem)
-        renameProblem(problem,newName);
-    else
-    {
-        result = dynamic_cast<Result*>(curCase);
-        if(result)
-            renameResult(result,newName);
-    }
-}
-
-
-bool Project::renameProblem(Problem* problem,QString newName)
-{
-    // test if name already exists
-    if(_problems->findItem(newName)>-1)
-        return false;
-
-    // change name
-    problem->rename(newName,true);
-    save(problem);
-    return true;
-}	
-
-bool Project::renameResult(Result* result,QString newName)
-{
-    // test if name already exists
-    if(_results->findItem(newName)>-1)
-        return false;
-
-    // change name
-    result->rename(newName,true);
-    save(result);
-    return true;
-}
-
 
 void Project::terminateOmsThreads()
 {
@@ -902,10 +489,6 @@ QStringList Project::mmoFiles()
     return _mmoFiles;
 }
 
-QMap<QString,QString> Project::pluginsLoaded()
-{
-    return _pluginsLoaded;
-}
 
 void Project::onModItemSelectionChanged(QList<ModItem*> &classes)
 {

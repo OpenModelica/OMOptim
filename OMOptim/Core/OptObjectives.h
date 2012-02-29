@@ -14,14 +14,14 @@ class ModModelPlus;
 class OptObjectives : public MOVector<OptObjective>
 {
 public:
-    OptObjectives(bool owner,ModModelPlus* modModelPlus=NULL);
+    OptObjectives(bool owner,QString modelName = QString());
 
     QVariant data(const QModelIndex &index, int role) const;
-    void setModModelPlus(ModModelPlus*);
+    void setModelName(QString);
     OptObjectives* clone() const;
 
 private :
-    ModModelPlus* _modModelPlus;
+    QString _modelName;
     bool _displayShort;
 };
 

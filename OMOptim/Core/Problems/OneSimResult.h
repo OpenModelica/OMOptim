@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OneSimResult.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+    @file OneSimResult.h
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
+    @version
 
   */
 #if !defined(_ONESIMRESULTS_H)
@@ -52,46 +52,47 @@
 #include <QtCore/QTextStream>
 #include <QtXml/QDomDocument>
 #include "CSV.h"
-//#include "XML.h"
+#include "ModPlusCtrl.h"
 
 
 class OneSimulation;
 
 class OneSimResult : public Result
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	OneSimResult(void);
-        OneSimResult(Project* project, ModModelPlus* modModelPlus, const OneSimulation & problem);
-        OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok);
-        virtual ~OneSimResult(void);
+    OneSimResult(void);
+    OneSimResult(Project* project, ModModelPlus* modModelPlus, const OneSimulation & problem);
+    OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok);
+    virtual ~OneSimResult(void);
 
-        static QString className(){return "OneSimResult";};
-        virtual QString getClassName(){return OneSimResult::className();};
+    static QString className(){return "OneSimResult";};
+    virtual QString getClassName(){return OneSimResult::className();};
 
-	MOVector<Variable> *inputVariables(){return _inputVariables;};
-	MOOptVector *finalVariables(){return _finalVariables;};
-        ModPlusCtrl* modPlusCtrl();
+    MOVector<Variable> *inputVariables(){return _inputVariables;};
+    MOOptVector *finalVariables(){return _finalVariables;};
+    ModPlusCtrl* modPlusCtrl();
 
-	//******************
-	// Methods
-	//******************
-	QDomElement toXmlData(QDomDocument &);
+    //******************
+    // Methods
+    //******************
+    QDomElement toXmlData(QDomDocument &);
 
 protected :
-	//******************
-	// Attributes
-	//******************
-        Variables *_inputVariables;
-	MOOptVector *_finalVariables;
+    //******************
+    // Attributes
+    //******************
+     Project* _omProject; /// same adress than _project but casted to Project* instead of ProjectBase*
+    Variables *_inputVariables;
+    MOOptVector *_finalVariables;
 
-         //Model
-        ModModelPlus* _modModelPlus;
+    //Model
+    ModModelPlus* _modModelPlus;
 
 
 signals:
-	void valuesChanged();
+    void valuesChanged();
 };
 
 

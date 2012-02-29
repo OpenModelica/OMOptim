@@ -69,20 +69,19 @@
 #include "Optimization.h"
 #include "LowTools.h"
 #include "HighTools.h"
-#include "Save.h"
-#include "Load.h"
+#include "SaveOMOptim.h"
+#include "LoadOMOptim.h"
 #include "MOThreads.h"
-#include "EA/EABase.h"
 #include "ModItemsTree.h"
 #include "ProblemInterface.h"
-
+#include "ProjectBase.h"
 
 
 /**
  * \brief Main class managing problems, results, models,
  * paths information, save/load main functions, threads.
  */
-class Project: public MOItem
+class Project: public ProjectBase
 {
     Q_OBJECT
 
@@ -92,17 +91,9 @@ class Project: public MOItem
 public : 
 
     //Threads management
-    QMutex _componentMutex;
-    QMutex _connectionMutex;
-    QMutex _problemLaunchMutex;
-    QMap<Problem*,MOThreads::ProblemThread *> _launchedThreads;
     QFileSystemWatcher _mofilesWatcher;
 
 private:
-    //Misc
-    QString _filePath;
-    bool _isdefined;
-    bool _isSaved; /// defines whether project has been modified since last save
     ModItem* _curModItem;
     MOomc *_moomc;
 
@@ -110,19 +101,12 @@ private:
     QStringList _moFiles;
     QStringList _mmoFiles;
 
-    // Plugins
-    QMap<QString,QString> _pluginsLoaded; //loaded plugins <name,filePath>
-
-    Problems* _problems;
-    Results* _results;
 
     ModLoader* _modLoader;
     ModItemsTree* _modItemsTree;
     QMap<QString,ModModelPlus*> _mapModelPlus; //<modmodelName,modmodelplus>
 
 
-    // Problems interfaces
-    ProblemInterfaces _problemsInterfaces;
 
  public:
     Project();
@@ -133,8 +117,6 @@ private:
     QString getFieldName(int iField,int role);
     unsigned getNbFields();
 
-    bool isSaved();
-    void setSaved(bool);
 
     //****************************
     //Model managment
@@ -157,47 +139,17 @@ private:
     void refreshAllMod();
     void reloadModModel(QString modModelName);
 
-    //****************************
-    //Problem managment
-    //****************************
-    ProblemInterfaces problemsInterfaces(){return _problemsInterfaces;}
-    void addProblemInterface(ProblemInterface* problemInterface);
-    void removeProblemInterface(QString interfaceName);
-    void addNewProblem(ProblemInterface* interface, QList<ModModelPlus*> modModelPlusList,QString problemType);
-    void addResult(Result *);
-    void addProblem(Problem *);
-    void addOMCase(QString filePath);
-    void launchProblem(Problem*);
-    void removeResult(Result*);
-    void removeProblem(Problem*);
-    void removeCases(QList<OMCase*>);
-    void renameCase(OMCase*, QString);
 
 
 
     //****************************
     // Get/Set functions
     //****************************
-    bool isDefined(){return _isdefined;};
     QString modModelPlusFolder();
-    QString problemsFolder();
-    QString resultsFolder();
-    QString filePath();
-    QString folder();
-    QString tempPath();
-    void setName(QString);
-    void setFilePath(QString);
-    void setSoftware(int);
-    void setIsDefined(bool);
-    Problem* curLaunchedProblem();
     QStringList moFiles();
     QStringList mmoFiles();
-    QMap<QString,QString> pluginsLoaded();
-   // InfoSender* infoSender();
 
     MOomc* moomc(){return _moomc;};
-    Problems* problems(){return _problems;};
-    Results* results(){return _results;};
     ModLoader* modLoader(){return _modLoader;};
     ModItemsTree* modItemsTree(){return _modItemsTree;};
     ModItem* rootModItem(){return _modItemsTree->rootElement();};
@@ -214,17 +166,9 @@ private:
     bool load(QString);
 
     //****************************
-    // Plugins
-    //****************************
-    bool loadPlugin(QString filePath, bool storePath=true,bool forceLoad=true);
-    bool unloadPlugin(QString pluginPath);
-    bool unloadPlugins();
-
-    //****************************
     // Misc
     //****************************
     void terminateOmsThreads();
-    void createTempDir();
     bool checkConfiguration();
 
     //****************************
@@ -232,17 +176,6 @@ private:
     //****************************
 public slots :
 
-
-    // problems
-    Problem* restoreProblemFromResult(int numSolved);
-    Problem* restoreProblemFromResult(Result* result);
-    bool renameProblem(Problem*, QString);
-    void onProblemFinished(Problem*,Result*);
-    void onProblemStopAsked(Problem*);
-    void onProjectChanged();
-
-    // others
-    bool renameResult(Result*, QString);
     void onModItemSelectionChanged(QList<ModItem*> &classes);
     void onReloadMOFileAsked();
 
@@ -251,35 +184,17 @@ public slots :
     //****************************
 signals:
 
-    void sendProgress(float);
-    void sendProgress(float,int,int);
-    void projectAboutToBeReset();
-    void projectChanged();
-
-
-    void addedProblem(Problem*);
-    void addedResult(Result*);
-
-    void databasesUpdated();
 
     void modifiersUpdated();
     void componentsUpdated();
     void connectionsUpdated();
-    void beforeRemoveResult(Result*);
-    void beforeRemoveProblem(Problem*);
-
-
-    void problemBegun(Problem*);
-    void newProblemProgress(float);
-    void newProblemProgress(float,int,int);
-    void problemFinished(Problem*,Result*);
 
     void curModItemChanged(ModItem*);
     void curModModelChanged(ModModel*);
     void modItemsTreeRefreshed(); /// when want to refresh tree view
 
     void modsUpdated();
-    void interfacesModified();
+
 
 };
 

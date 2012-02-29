@@ -37,43 +37,6 @@ CONFIG(debug, debug|release){
 
 
 
-DEPENDPATH += . \
-              .. \
-              ../Core \
-              ../GUI \
-              ../Vld \
-              ../Core/Dymola \
-              ../Core/FileData \
-              ../Core/Infos \
-              ../Core/Modelica \
-              ../Core/OMC \
-              ../Core/OpenModelica \
-              ../Core/Problems \
-              ../Core/Tools \
-              ../Core/Units \
-              ../GUI/Dialogs \
-              ../GUI/Plots \
-              ../GUI/Resources \
-              ../GUI/Scene \
-              ../GUI/Tabs \
-              ../GUI/Tools \
-              ../GUI/Widgets \
-              ../Core/Optim/EA \
-              ../Core/Optim/MILP \
-              ../Core/Problems/BlockSubs \
-              ../Core/Optim/EA/Checkpoints \
-              ../Core/Optim/EA/Chromosome \
-              ../Core/Optim/EA/Crossover \
-              ../Core/Optim/EA/Evaluations \
-              ../Core/Optim/EA/Init \
-              ../Core/Optim/EA/Monitor \
-              ../Core/Optim/EA/Mutations \
-              ../Core/Optim/EA/NSGA2 \
-              ../Core/Optim/EA/Results \
-              ../Core/Optim/EA/SPEA2 \
-              ../Core/Optim/EA/SPEA2Adaptative \
-              ../Core/Optim/EA/SA1
-
 INCLUDEPATH += . \
               .. \
               ../../ \
@@ -112,22 +75,76 @@ INCLUDEPATH += . \
               ../Core/Optim/EA/Results \
               ../Core/Optim/EA/SPEA2 \
               ../Core/Optim/EA/SPEA2Adaptative \
-              ../Core/Optim/EA/SA1
+              ../Core/Optim/EA/SA1 \
+              ../OMOptimBasis/ \
+                ../OMOptimBasis/FileData \
+                ../OMOptimBasis/GUI \
+                ../OMOptimBasis/GUI/Tools \
+                ../OMOptimBasis/GUI/Dialogs \
+                ../OMOptimBasis/GUI/Widgets \
+                ../OMOptimBasis/Infos \
+               ../OMOptimBasis/Units \
+                ../OMOptimBasis/Tools \
+                ../OMOptimBasis/Problems \
 
 
+DEPENDPATH += . \
+              .. \
+              ../../ \
+              ../Core \
+              ../GUI \
+              ../Vld \
+              ../Core/Dymola \
+              ../Core/FileData \
+              ../Core/Infos \
+              ../Core/Modelica \
+              ../Core/OMC \
+              ../Core/OpenModelica \
+              ../Core/Problems \
+              ../Core/Tools \
+              ../Core/Units \
+              ../GUI/Dialogs \
+              ../GUI/Plots \
+              ../GUI/Resources \
+              ../GUI/Scene \
+              ../GUI/Tabs \
+              ../GUI/Tools \
+              ../GUI/Views \
+              ../GUI/Widgets \
+              ../Core/Optim \
+              ../Core/Optim/EA \
+              ../Core/Optim/MILP \
+              ../Core/Problems/BlockSubs \
+              ../Core/Optim/EA/Checkpoints \
+              ../Core/Optim/EA/Chromosome \
+              ../Core/Optim/EA/Crossover \
+              ../Core/Optim/EA/Evaluations \
+              ../Core/Optim/EA/Init \
+              ../Core/Optim/EA/Monitor \
+              ../Core/Optim/EA/Mutations \
+              ../Core/Optim/EA/NSGA2 \
+              ../Core/Optim/EA/Results \
+              ../Core/Optim/EA/SPEA2 \
+              ../Core/Optim/EA/SPEA2Adaptative \
+              ../Core/Optim/EA/SA1 \
+              ../OMOptimBasis/ \
+                ../OMOptimBasis/FileData \
+                ../OMOptimBasis/GUI \
+                ../OMOptimBasis/GUI/Tools \
+                ../OMOptimBasis/GUI/Dialogs \
+                ../OMOptimBasis/GUI/Widgets \
+                ../OMOptimBasis/Infos \
+               ../OMOptimBasis/Units \
+                ../OMOptimBasis/Tools \
+                ../OMOptimBasis/Problems \
 # Input
 HEADERS += ../config.h \
            ../Core/MOClasses.h \
-           ../Core/MOItem.h \
            ../Core/MOOptVector.h \
            ../Core/MOSettings.h \
-           ../Core/MOTableView.h \
-           ../Core/MOThreads.h \
-           ../Core/MOVector.h \
            ../Core/OptObjective.h \
            ../Core/ParetoDominance.h \
            ../Core/Project.h \
-           ../Core/Variable.h \
            ../Core/VariablesManip.h \
            ../GUI/MainWindow.h \
            ../Vld/vld.h \
@@ -135,8 +152,8 @@ HEADERS += ../config.h \
            ../Core/Dymola/Dymola.h \
            ../Core/Dymola/ModPlusDymolaCtrl.h \
            ../Core/FileData/CSV.h \
-           ../Core/FileData/Load.h \
-           ../Core/FileData/Save.h \
+           ../Core/FileData/LoadOMOptim.h \
+           ../Core/FileData/SaveOMOptim.h \
            ../Core/Infos/Info.h \
            ../Core/Infos/InfoSender.h \
            ../Core/Infos/ListInfo.h \
@@ -149,7 +166,6 @@ HEADERS += ../config.h \
            ../Core/Modelica/ModelicaModifier.h \
            ../Core/Modelica/ModExecution.h \
            ../Core/Modelica/ModModel.h \
-           ../Core/Modelica/MOParameter.h \
            ../Core/Modelica/ModModelPlus.h \
            ../Core/Modelica/ModPackage.h \
            ../Core/Modelica/ModPlusCtrl.h \
@@ -167,26 +183,15 @@ HEADERS += ../config.h \
            ../Core/Problems/OneSimulation.h \
            ../Core/Problems/Optimization.h \
            ../Core/Problems/OptimResult.h \
-           ../Core/Problems/Problem.h \
            ../Core/Problems/ProblemConfig.h \
-           ../Core/Problems/OMCases.h \
-           ../Core/Problems/Result.h \
-           ../Core/Tools/HighTools.h \
-           ../Core/Tools/LowTools.h \
            ../Core/Tools/reportingHook.h \
            ../Core/Tools/SleeperThread.h \
            ../Core/Tools/vqtconvert.h \
-           ../Core/Tools/XMLTools.h \
-           ../Core/Units/MEDimValue.h \
-           ../Core/Units/MEQflow.h \
-           ../Core/Units/MERefValue.h \
-           ../Core/Units/METemperature.h \
            ../GUI/Dialogs/AboutOMOptim.h \
            ../GUI/Dialogs/BlockSubstituteConnDlg.h \
            ../GUI/Dialogs/DlgSelectVars.h \
            ../GUI/Dialogs/DlgSettings.h \
            ../GUI/Dialogs/HelpDlg.h \
-           ../GUI/Dialogs/MOParametersDlg.h \
            ../GUI/Dialogs/newprojectform.h \
            ../GUI/Plots/MOOptPlot.h \
            ../GUI/Plots/MOPlot.h \
@@ -202,16 +207,9 @@ HEADERS += ../config.h \
            ../GUI/Tabs/MOTab.h \
            ../GUI/Tabs/MOTabBase.h \
            ../GUI/Tabs/TabGeneric.h \
-           ../GUI/Tools/GuiTools.h \
-           ../GUI/Tools/MOGuiTools.h \
-           ../GUI/Tools/MOSplitter.h \
-           ../GUI/Tools/MOStyleSheet.h \
-           ../GUI/Tools/MyDelegates.h \
-           ../GUI/Tools/MyTextLog.h \
            ../GUI/Widgets/WidgetBlocks.h \
            ../GUI/Widgets/WidgetList.h \
            ../GUI/Widgets/WidgetCalculateMooPoints.h \
-           ../GUI/Widgets/WidgetMOItem.h \
            ../GUI/Widgets/WidgetMooPlot.h \
            ../GUI/Widgets/WidgetOneSimVars.h \
            ../GUI/Widgets/WidgetOptParameters.h \
@@ -264,18 +262,14 @@ HEADERS += ../config.h \
     ../Core/VariableType.h \
     ../GUI/Widgets/WidgetMooPointsList.h \
     ../Core/MOKeepVector.h \
-    ../GUI/Tools/MyTreeView.h \
     ../GUI/Widgets/WidgetProjectInfos.h \
-    ../GUI/Widgets/WidgetFilesList.h \
     ../GUI/Widgets/WidgetOptimActions.h \
-    ../Core/Problems/OMCase.h \
     ../version.h \
     ../Core/Optim/EA/NSGA2/NSGA2Parameters.h \
     ../Core/Optim/EA/SPEA2/SPEA2Parameters.h \
     ../Core/Optim/EA/SPEA2Adaptative/SPEA2AdaptParameters.h \
     ../Core/Problems/Problems.h \
     ../Core/Problems/Results.h \
-    ../Core/Tools/OMProcess.h \
     ../Core/Units/MEMassFlow.h \
     ../GUI/Tabs/TabOMC.h \
     ../GUI/Tabs/TabOneSim.h \
@@ -298,20 +292,16 @@ HEADERS += ../config.h \
     ../Core/Optim/EA/SA1/SA1moLocalSearch.h \
     ../Core/Optim/EA/SA1/SA1moNeighborhoodExplorer.h \
     ../Core/Optim/EA/SA1/SA1Archive.h \
-    ../Core/Variables.h \
     ../Core/OptObjectives.h \
-    ../Core/Units/MEHTCoeff.h \
-    ../Core/Units/MESpecHeatCapacity.h \
-    ../Core/Units/Units.h \
     ../GUI/Dialogs/DlgSelectFiles.h \
     ../Core/Modelica/ModPlusCtrls.h \
     ../GUI/Widgets/WidgetCtrlParameters.h \
-    ../Core/Problems/ProblemInterface.h \
     ../Core/Problems/optimizationinterface.h \
     ../Core/Problems/onesimulationinterface.h \
-    ../GUI/Tools/qsciencespinbox.h \
     ../GUI/Widgets/WidgetResultInfos.h \
-    ../../SimulationRuntime/c/util/read_matlab4.h \
+    ../../c_runtime/read_matlab4.h \
+    ../Core/OMC/OMCThreads.h \
+    ../GUI/Tools/OMOptimGuiTools.h
 
 
 
@@ -326,7 +316,6 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Dialogs/OtherDlg.ui \
          ../GUI/Widgets/WidgetBlocks.ui \
          ../GUI/Widgets/WidgetCalculateMooPoints.ui \
-         ../GUI/Widgets/WidgetMOItem.ui \
          ../GUI/Widgets/WidgetMooPlot.ui \
          ../GUI/Widgets/WidgetOneSimVars.ui \
          ../GUI/Widgets/WidgetOptParameters.ui \
@@ -339,13 +328,12 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Widgets/WidgetSelPointScan.ui \
          ../GUI/Widgets/WidgetTableRecVar.ui \
          ../GUI/Widgets/WidgetToolBar.ui \
-    ../GUI/Widgets/WidgetMooPointsList.ui \
-    ../GUI/Widgets/WidgetProjectInfos.ui \
-    ../GUI/Widgets/WidgetFilesList.ui \
-    ../GUI/Widgets/WidgetOptimActions.ui \
-    ../GUI/Tabs/TabResOptimization.ui \
-    ../GUI/Tabs/TabProject.ui \
-    ../GUI/Tabs/TabOptimization.ui \
+         ../GUI/Widgets/WidgetMooPointsList.ui \
+         ../GUI/Widgets/WidgetProjectInfos.ui \
+         ../GUI/Widgets/WidgetOptimActions.ui \
+         ../GUI/Tabs/TabResOptimization.ui \
+         ../GUI/Tabs/TabProject.ui \
+         ../GUI/Tabs/TabOptimization.ui \
     ../GUI/Tabs/TabOMC.ui \
     ../GUI/Tabs/TabGeneric.ui \
     ../GUI/Widgets/WidgetResultInfos.ui
@@ -354,24 +342,15 @@ FORMS += ../GUI/MainWindow.ui \
 
 
 SOURCES += ../main.cpp \
-           ../Core/MOItem.cpp \
-           ../Core/MOOptVector.cpp \
-           ../Core/MOSettings.cpp \
-           ../Core/MOTableView.cpp \
-           ../Core/MOThreads.cpp \
            ../Core/OptObjective.cpp \
            ../Core/ParetoDominance.cpp \
            ../Core/Project.cpp \
-           ../Core/Variable.cpp \
-           ../Core/VariablesManip.cpp \
            ../GUI/MainWindow.cpp \
            ../Core/Dymola/Dymola.cpp \
            ../Core/Dymola/ModPlusDymolaCtrl.cpp \
            ../Core/FileData/CSV.cpp \
-           ../Core/FileData/Load.cpp \
-           ../Core/FileData/Save.cpp \
-           ../Core/Infos/Info.cpp \
-           ../Core/Infos/InfoSender.cpp \
+           ../Core/FileData/LoadOMOptim.cpp \
+           ../Core/FileData/SaveOMOptim.cpp \
            ../Core/Modelica/ModItem.cpp \
            ../Core/Modelica/ModItemsTree.cpp \
            ../Core/Modelica/ModComponent.cpp \
@@ -380,7 +359,6 @@ SOURCES += ../main.cpp \
            ../Core/Modelica/ModelicaModifier.cpp \
            ../Core/Modelica/ModExecution.cpp \
            ../Core/Modelica/ModModel.cpp \
-           ../Core/Modelica/MOParameter.cpp \
            ../Core/Modelica/ModModelPlus.cpp \
            ../Core/Modelica/ModPackage.cpp \
            ../Core/Modelica/ModPlusCtrl.cpp \
@@ -396,25 +374,13 @@ SOURCES += ../main.cpp \
            ../Core/Problems/OneSimulation.cpp \
            ../Core/Problems/Optimization.cpp \
            ../Core/Problems/OptimResult.cpp \
-           ../Core/Problems/Problem.cpp \
-           ../Core/Problems/ProblemConfig.cpp \
-           ../Core/Problems/OMCases.cpp \
-           ../Core/Problems/Result.cpp \
-           ../Core/Tools/HighTools.cpp \
-           ../Core/Tools/LowTools.cpp \
            ../Core/Tools/reportingHook.cpp \
            ../Core/Tools/vqtconvert.cpp \
-           ../Core/Tools/XMLTools.cpp \
-           ../Core/Units/MEDimValue.cpp \
-           ../Core/Units/MEQflow.cpp \
-           ../Core/Units/MERefValue.cpp \
-           ../Core/Units/METemperature.cpp \
            ../GUI/Dialogs/AboutOMOptim.cpp \
            ../GUI/Dialogs/BlockSubstituteConnDlg.cpp \
            ../GUI/Dialogs/DlgSelectVars.cpp \
            ../GUI/Dialogs/DlgSettings.cpp \
            ../GUI/Dialogs/HelpDlg.cpp \
-           ../GUI/Dialogs/MOParametersDlg.cpp \
            ../GUI/Dialogs/newprojectform.cpp \
            ../GUI/Plots/MOPlot.cpp \
            ../GUI/Plots/MyQwtPlotPicker.cpp \
@@ -435,16 +401,9 @@ SOURCES += ../main.cpp \
            ../GUI/Tabs/TabProject.cpp \
            ../GUI/Tabs/TabResOneSim.cpp \
            ../GUI/Tabs/TabResOptimization.cpp \
-           ../GUI/Tools/GuiTools.cpp \
-           ../GUI/Tools/MOGuiTools.cpp \
-           ../GUI/Tools/MOSplitter.cpp \
-           ../GUI/Tools/MOStyleSheet.cpp \
-           ../GUI/Tools/MyDelegates.cpp \
-           ../GUI/Tools/MyTextLog.cpp \
            ../GUI/Widgets/WidgetBlocks.cpp \
            ../GUI/Widgets/WidgetCalculateMooPoints.cpp \
            ../GUI/Widgets/WidgetList.cpp \
-           ../GUI/Widgets/WidgetMOItem.cpp \
            ../GUI/Widgets/WidgetMooPlot.cpp \
            ../GUI/Widgets/WidgetOneSimVars.cpp \
            ../GUI/Widgets/WidgetOptParameters.cpp \
@@ -470,32 +429,21 @@ SOURCES += ../main.cpp \
            ../Core/Optim/EA/SPEA2Adaptative/SPEA2Adapt.cpp \
             ../Core/OMC/OMCHelper.cpp \
             ../Core/OMC/StringHandler.cpp \
-            ../Core/FileData/XML.cpp \
             ../GUI/Widgets/WidgetMooPointsList.cpp \
             ../GUI/Widgets/WidgetProjectInfos.cpp \
-            ../GUI/Widgets/WidgetFilesList.cpp \
             ../GUI/Widgets/WidgetOptimActions.cpp \
-            ../Core/Problems/OMCase.cpp \
-        ../Core/Problems/Problems.cpp \
-        ../Core/Problems/Results.cpp \
-    ../Core/Tools/OMProcess.cpp \
-    ../Core/Units/MEMassFlow.cpp \
-    ../Core/Units/MESurface.cpp \
-    ../Core/Optim/EA/SA1/SA1.cpp \
-    ../Core/Variables.cpp \
-    ../Core/OptObjectives.cpp \
-    ../Core/Units/MEHTCoeff.cpp \
-    ../Core/Units/MESpecHeatCapacity.cpp \
-    ../GUI/Tools/MyTreeView.cpp \
+            ../Core/Optim/EA/SA1/SA1.cpp \
+        ../Core/OptObjectives.cpp \
     ../GUI/Dialogs/DlgSelectFiles.cpp \
     ../Core/Modelica/ModPlusCtrls.cpp \
     ../GUI/Widgets/WidgetCtrlParameters.cpp \
     ../Core/Problems/optimizationinterface.cpp \
     ../Core/Problems/onesimulationinterface.cpp \
-    ../Core/Problems/ProblemInterface.cpp \
-    ../GUI/Tools/qsciencespinbox.cpp \
     ../GUI/Widgets/WidgetResultInfos.cpp \
-     ../../SimulationRuntime/c/util/read_matlab4.c
+     ../../c_runtime/read_matlab4.c \
+    ../Core/OMC/OMCThreads.cpp \
+    ../Core/VariablesManip.cpp \
+    ../GUI/Tools/OMOptimGuiTools.cpp
 
 RESOURCES += \
     ../GUI/Resources/OMOptim.qrc

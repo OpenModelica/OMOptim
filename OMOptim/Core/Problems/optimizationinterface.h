@@ -8,7 +8,7 @@
 
 class OptimizationInterface : public ProblemInterface
 {
-    Problem* createNewProblem(Project*,const QList<ModModelPlus*> &,QString problemType) ;
+    Problem* createNewProblem(ProjectBase*,const QStringList ,QString problemType) ;
 
 
     bool saveResult(Result*);
@@ -16,14 +16,14 @@ class OptimizationInterface : public ProblemInterface
     QWidget* createProblemTab(Problem *,QWidget* parent);
     QWidget* createResultTab(Result *,QWidget* parent);
 
-    ModModelPlusNeeds modModelPlusNeeds(){return ONEMODMODELPLUS;}
+    ModelNeeds modelNeeds(){return ONEMODEL;}
     QStringList problemTypes(){return QStringList(Optimization::className());}
     QString name(){return Optimization::className();}
 
     virtual bool hasQuickEndOption(){return true;}
 
-    virtual Problem* loadProblem(QFileInfo saveFile,const QDomElement & domOMCase,Project*);
-    virtual Result* loadResult(QFileInfo saveFile,const QDomElement & domOMCase,Project*);
+    virtual Problem* loadProblem(QFileInfo saveFile,const QDomElement & domOMCase,ProjectBase*);
+    virtual Result* loadResult(QFileInfo saveFile,const QDomElement & domOMCase,ProjectBase*);
 
 };
 

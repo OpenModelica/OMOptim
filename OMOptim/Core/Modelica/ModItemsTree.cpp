@@ -102,14 +102,14 @@ void ModItemsTree::readFromOMCWThread(ModItem* parent,int depthMax,  QString dir
 void ModItemsTree::emitDataChanged()
 {
 
-        if(_rootElement->childCount()>0)
-        {
-            QModelIndex first = indexOf(_rootElement->child(0));
-            QModelIndex last = indexOf(_rootElement->child(_rootElement->childCount()-1));
-            emit dataChanged(first,last);
-        }
+    if(_rootElement->childCount()>0)
+    {
+        QModelIndex first = indexOf(_rootElement->child(0));
+        QModelIndex last = indexOf(_rootElement->child(_rootElement->childCount()-1));
+        emit dataChanged(first,last);
+    }
 
-         emit dataChanged(indexOf(_rootElement),indexOf(_rootElement));
+    emit dataChanged(indexOf(_rootElement),indexOf(_rootElement));
 
 }
 
@@ -140,7 +140,7 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
             bool readRecords = (parent->getClassRestr()==Modelica::PACKAGE) || (parent->getClassRestr()==Modelica::GENERIC)|| (parent->getClassRestr()==Modelica::COMPONENT);
             bool readClasses = readModels;
 
-            QString fullParentName = parent->name(Modelica::FULL);
+            QString fullParentName = parent->name(ModItem::FULL);
             QString parentClassName = parent->getModItemName();
             QString prefix;
             if(!fullParentName.isEmpty())
@@ -233,7 +233,7 @@ void ModItemsTree::readFromOmcV2(ModItem* parent,int depthMax,QString direction,
             QString childrenDirection = direction.section(".",curDepth+1,curDepth+1);
             QString fullParentClass = parent->getModItemName();
 
-            QString fullParentName = parent->name(Modelica::FULL);
+            QString fullParentName = parent->name(ModItem::FULL);
             QString prefix;
             if(!fullParentName.isEmpty())
                 prefix = fullParentName+".";
@@ -300,7 +300,7 @@ void ModItemsTree::readFromOmcV3(ModItem* parent,int depthMax,QString direction,
         {
             QString childrenDirection = direction.section(".",curDepth+1,curDepth+1);
             QString fullParentClass = parent->getModItemName();
-            QString fullParentName = parent->name(Modelica::FULL);
+            QString fullParentName = parent->name(ModItem::FULL);
 
 
             QString prefix;
@@ -380,7 +380,7 @@ ModItem* ModItemsTree::findInDescendants(QString fullName,ModItem* parent)
 
 
     ModItem* curChild;
-    QString curFullName = parent->name(Modelica::FULL);
+    QString curFullName = parent->name(ModItem::FULL);
 
     int curDepth = parent->depth();
     int lookingDepth = fullName.split(".").size()-1;
@@ -412,7 +412,7 @@ ModItem* ModItemsTree::findInDescendants(QString fullName,ModItem* parent)
     for(int iChild=0;iChild<parent->childCount();iChild++)
     {
         curChild = parent->child(iChild);
-        if(curChild->name(Modelica::SHORT)==childShortName)
+        if(curChild->name(ModItem::SHORT)==childShortName)
             return findInDescendants(fullName,curChild);
     }
     return NULL;
@@ -556,7 +556,7 @@ QVariant ModItemsTree::data(const QModelIndex &index, int role) const
 
             // if display, only display short name (since hierarchy is visible)
             if((role == Qt::DisplayRole) && (index.column()==ModItem::NAME))
-                return item->name(Modelica::SHORT);
+                return item->name(ModItem::SHORT);
 
 
             return item->getFieldValue(index.column(),role);
@@ -616,10 +616,10 @@ QMimeData* ModItemsTree::mimeData(const QModelIndexList &indexes) const
     if(indexes.size()==1)
     {
         ModItem* _modEl = (ModItem*)indexes.at(0).internalPointer();
-        mimeData->setText("MODELICA::"+_modEl->name(Modelica::FULL));
+        mimeData->setText("MODELICA::"+_modEl->name(ModItem::FULL));
         //        if(_modEl)
         //        {
-        //            stream<< _modEl->name(Modelica::FULL);
+        //            stream<< _modEl->name(ModItem::FULL);
         //        }
     }
 
@@ -879,21 +879,21 @@ void ModItemsTree::childrenInfos(ModItem* parent,QStringList &packagesClasses,QS
 
     // packages
     for(int i=0;i<nbPackageChild;i++)
-        packagesClasses.push_back(parent->packageChild(i)->name(Modelica::SHORT));
+        packagesClasses.push_back(parent->packageChild(i)->name(ModItem::SHORT));
 
     // models
     for(int i=0;i<nbModelChild;i++)
-        modelsClasses.push_back(parent->modelChild(i)->name(Modelica::SHORT));
+        modelsClasses.push_back(parent->modelChild(i)->name(ModItem::SHORT));
 
     // records
     for(int i=0;i<nbRecordChild;i++)
-        recordsClasses.push_back(parent->modelChild(i)->name(Modelica::SHORT));
+        recordsClasses.push_back(parent->modelChild(i)->name(ModItem::SHORT));
 
     // components
     for(int i=0;i<nbCompChild;i++)
     {
         compsClasses.push_back(parent->compChild(i)->getFieldValue(ModComponent::CLASSNAME).toString());
-        compsNames.push_back(parent->compChild(i)->name(Modelica::SHORT));
+        compsNames.push_back(parent->compChild(i)->name(ModItem::SHORT));
     }
 }
 
@@ -919,7 +919,7 @@ QList<ModItem*> ModItemsTree::getPorts(ModItem* parent)
     return ports;
 }
 
-QStringList ModItemsTree::getPorts(ModItem* parent,Modelica::NameFormat format)
+QStringList ModItemsTree::getPorts(ModItem* parent,ModItem::NameFormat format)
 {
     QList<ModItem*> _ports = getPorts(parent);
 
@@ -1003,6 +1003,7 @@ void ModItemsTree::setShowComponent(bool showComponents)
         endResetModel();
     }
 }
+
 Qt::DropActions ModItemsTree::supportedDropActions() const
 {
     return Qt::CopyAction | Qt::MoveAction;

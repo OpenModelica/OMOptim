@@ -225,10 +225,10 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
     for(int i=0;i<elConn->size();i++)
     {
         aName = elConn->at(i)->getA();
-        bool aIsInside = portIsInElement(aName,element->name(Modelica::FULL));
+        bool aIsInside = portIsInElement(aName,element->name(ModItem::FULL));
 
         bName = elConn->at(i)->getB();
-        bool bIsInside = portIsInElement(bName,element->name(Modelica::FULL));
+        bool bIsInside = portIsInElement(bName,element->name(ModItem::FULL));
 
         if(aIsInside && ! bIsInside)
         {

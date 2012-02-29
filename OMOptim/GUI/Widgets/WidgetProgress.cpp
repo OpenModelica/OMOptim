@@ -28,7 +28,7 @@
  * See the full OSMC Public License conditions for more details.
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
   @file WidgetProgress.cpp
   @brief Comments for file documentation.

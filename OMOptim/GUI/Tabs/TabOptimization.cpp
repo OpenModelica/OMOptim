@@ -53,7 +53,7 @@
 TabOptimization::TabOptimization(Optimization *problem, QWidget *parent) :
 MO2ColTab(problem->project()->name(),problem,false,parent)
 {
-        _project = problem->project();
+        _project = dynamic_cast<Project*>(problem->project());
         _problem = problem;
 	
         _widgetSelectOptVars = new WidgetSelectOptVars(_problem,true,this);
@@ -71,7 +71,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
         _widgetFilesList->setInfos("Select here files needed for simulation to perform. Those would be copied in temporary directory along with simulation executable.");
         addDockWidget("Files",_widgetFilesList,_widgetSelectOptVars);
 
-        _widgetCtrl = new WidgetCtrlParameters(_project,_problem->modModelPlus(),_problem->ctrls(),false,this);
+        _widgetCtrl = new WidgetCtrlParameters(_problem->modModelPlus(),_problem->ctrls(),false,this);
         addDockWidget("Simulator",_widgetCtrl,_widgetSelectOptVars);
 
         _widgetOptimActions = new WidgetOptimActions(_project,_problem,false,NULL,this);

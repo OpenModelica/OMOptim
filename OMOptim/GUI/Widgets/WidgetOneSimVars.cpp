@@ -48,7 +48,7 @@ namespace Ui
 class WidgetOneSimVarsClass;
 }
 
-WidgetOneSimVars::WidgetOneSimVars(Project *project,OneSimulation *problem, QWidget *parent)
+WidgetOneSimVars::WidgetOneSimVars(ProjectBase *project,OneSimulation *problem, QWidget *parent)
     : QWidget(parent),
       _ui(new Ui::WidgetOneSimVarsClass)
 {

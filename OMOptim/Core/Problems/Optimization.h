@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Optimization.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+    @file Optimization.h
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
+    @version
 
   */
 #if !defined(_OPTIMIZATION_H)
@@ -58,83 +58,83 @@ class EABase;
 
 class Optimization : public Problem
 {
-	Q_OBJECT
+    Q_OBJECT
 
 
 
 protected :
 
+    Project* _omProject;
+    //Model
+    ModModelPlus* _modModelPlus;
+    ScannedVariables *_scannedVariables;
+    OptVariables *_optimizedVariables;
+    OptObjectives *_objectives;
+    BlockSubstitutions *_blockSubstitutions;
 
-        //Model
-	ModModelPlus* _modModelPlus;
-        ScannedVariables *_scannedVariables;
-        OptVariables *_optimizedVariables;
-        OptObjectives *_objectives;
-	BlockSubstitutions *_blockSubstitutions;
+    // Simulation controlers
+    ModPlusCtrls* _ctrls;
 
-        // Simulation controlers
-        ModPlusCtrls* _ctrls;
+    bool _useScan;
 
-	bool _useScan;
-
-        // Algorithm information
-        QList<OptimAlgo*> _algos;
-        int _iCurAlgo;
+    // Algorithm information
+    QList<OptimAlgo*> _algos;
+    int _iCurAlgo;
 
 public:
-	//Optimization(void);
-        Optimization(Project*,ModModelPlus* modModelPlus);
-	Optimization(const Optimization &);
-        Optimization(QDomElement domProblem,Project* project,bool &ok);
-        virtual Problem* clone() const;
-        virtual ~Optimization(void);
+    //Optimization(void);
+    Optimization(Project*,ModModelPlus* modModelPlus);
+    Optimization(const Optimization &);
+    Optimization(QDomElement domProblem,Project* project,bool &ok);
+    virtual Problem* clone() const;
+    virtual ~Optimization(void);
 
-        static QString className(){return "Optimization";};
-        virtual QString getClassName(){return Optimization::className();};
-        virtual bool hasQuickEndOption(){return true;}
+    static QString className(){return "Optimization";};
+    virtual QString getClassName(){return Optimization::className();};
+    virtual bool hasQuickEndOption(){return true;}
 
-	//Get functions
-        ModModelPlus* modModelPlus() const;
-        ScannedVariables* scannedVariables()const{return _scannedVariables;};
-        OptVariables *optimizedVariables()const{return _optimizedVariables;};
-        OptObjectives *objectives()const{return _objectives;};
-        BlockSubstitutions *blockSubstitutions()const{return _blockSubstitutions;};
-
-	
-        //overwrited functions (also virtual since other problems might inherit Optimization)
-        virtual bool checkBeforeComp(QString & error);
-        virtual Result* launch(ProblemConfig _config);
-        virtual void store(QString destFolder, QString tempDir);
-        virtual QDomElement toXmlData(QDomDocument & doc);
-	
-	//specific functions
-	void createSubExecs(QList<ModModelPlus*> & _subMod, QList<BlockSubstitutions*> & _subBlocks);
-
-        //algo functions
-        int getiCurAlgo();
-        OptimAlgo* getCurAlgo() const;
-        QStringList getAlgoNames();
-        void setiCurAlgo(int);
-
-        // controlers
-        ModPlusCtrl* ctrl() const;
-        ModPlusCtrls* ctrls() const;
-        ModPlusCtrl::Type  ctrlType() const;
-        void setCtrlType(ModPlusCtrl::Type);
+    //Get functions
+    ModModelPlus* modModelPlus() const;
+    ScannedVariables* scannedVariables()const{return _scannedVariables;};
+    OptVariables *optimizedVariables()const{return _optimizedVariables;};
+    OptObjectives *objectives()const{return _objectives;};
+    BlockSubstitutions *blockSubstitutions()const{return _blockSubstitutions;};
 
 
-	//block substitution
-	void setBlockSubstitutions(BlockSubstitutions*);
+    //overwrited functions (also virtual since other problems might inherit Optimization)
+    virtual bool checkBeforeComp(QString & error);
+    virtual Result* launch(ProblemConfig _config);
+    virtual void store(QString destFolder, QString tempDir);
+    virtual QDomElement toXmlData(QDomDocument & doc);
 
-	int nbScans();
+    //specific functions
+    void createSubExecs(QList<ModModelPlus*> & _subMod, QList<BlockSubstitutions*> & _subBlocks);
 
-        // recompute points
-        virtual void recomputePoints(OptimResult*, std::vector<int>,bool forceRecompute = false);
-	
+    //algo functions
+    int getiCurAlgo();
+    OptimAlgo* getCurAlgo() const;
+    QStringList getAlgoNames();
+    void setiCurAlgo(int);
+
+    // controlers
+    ModPlusCtrl* ctrl() const;
+    ModPlusCtrls* ctrls() const;
+    ModPlusCtrl::Type  ctrlType() const;
+    void setCtrlType(ModPlusCtrl::Type);
+
+
+    //block substitution
+    void setBlockSubstitutions(BlockSubstitutions*);
+
+    int nbScans();
+
+    // recompute points
+    virtual void recomputePoints(OptimResult*, std::vector<int>,bool forceRecompute = false);
+
 public slots :
-        void onQuickEndAsked();
+    void onQuickEndAsked();
 
-	
+
 };
 
 

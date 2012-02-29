@@ -60,14 +60,14 @@ class WidgetOptimActions : public QWidget
 
     Q_OBJECT
 public:
-    WidgetOptimActions(Project* project,Optimization* problem,bool isResult,Result* result,QWidget *parent);
+    WidgetOptimActions(ProjectBase* project,Optimization* problem,bool isResult,Result* result,QWidget *parent);
     virtual ~WidgetOptimActions();
 
 
     Ui::WidgetOptimActionsClass *_ui;
     Optimization* _problem;
     Result* _result;
-    Project* _project;
+    ProjectBase* _project;
     bool _isResult;
 
     void actualizeGui();

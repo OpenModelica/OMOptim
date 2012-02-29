@@ -31,10 +31,10 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
         @file WidgetOptimActions.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
   @version
 */
 
@@ -48,11 +48,11 @@ namespace Ui
 class WidgetOptimActionsClass;
 }
 
-WidgetOptimActions::WidgetOptimActions(Project* project,Optimization *problem,bool isResult,Result* result,QWidget *parent)
+WidgetOptimActions::WidgetOptimActions(ProjectBase* project,Optimization *problem,bool isResult,Result* result,QWidget *parent)
     : QWidget(parent), _ui(new Ui::WidgetOptimActionsClass)
 {
     _ui->setupUi(this);
-   _ui->frame->setStyleSheet(GuiTools::launchBarStyleSheet());
+    _ui->frame->setStyleSheet(GuiTools::launchBarStyleSheet());
     _ui->pushModel->setText("Model : "+problem->modModelPlus()->modModelName());
 
     _problem = problem;
@@ -73,38 +73,38 @@ WidgetOptimActions::~WidgetOptimActions()
 
 void WidgetOptimActions::launch()
 {
-                _project->launchProblem(_problem);
+    _project->launchProblem(_problem);
 }
 
 
 void WidgetOptimActions::actualizeGui()
 {
 
-        // list of widgets to hide when problem is solved
-        QWidgetList unsolvedWidgets;
-        unsolvedWidgets << _ui->pushLaunch;
+    // list of widgets to hide when problem is solved
+    QWidgetList unsolvedWidgets;
+    unsolvedWidgets << _ui->pushLaunch;
 
-        // list of widgets to hide when problem is unsolved
-        QWidgetList solvedWidgets;
-        solvedWidgets << _ui->pushRestore  ;
+    // list of widgets to hide when problem is unsolved
+    QWidgetList solvedWidgets;
+    solvedWidgets << _ui->pushRestore  ;
 
-        // if problem is solved
-        if(_isResult)
-        {
-                for(int i=0; i < unsolvedWidgets.size(); i++)
-                        unsolvedWidgets.at(i)->hide();
+    // if problem is solved
+    if(_isResult)
+    {
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->hide();
 
-                for(int i=0; i < solvedWidgets.size(); i++)
-                        solvedWidgets.at(i)->show();
-        }
-        else
-        {
-                for(int i=0; i < unsolvedWidgets.size(); i++)
-                        unsolvedWidgets.at(i)->show();
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->show();
+    }
+    else
+    {
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->show();
 
-                for(int i=0; i < solvedWidgets.size(); i++)
-                        solvedWidgets.at(i)->hide();
-        }
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->hide();
+    }
 }
 
 void WidgetOptimActions::restoreProblem()

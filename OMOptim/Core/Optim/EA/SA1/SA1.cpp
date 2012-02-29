@@ -148,15 +148,15 @@ SA1::SA1():EABase()
 	setDefaultParameters();
 }
 
-SA1::SA1(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree)
-:EABase(_project,_problem,_modItemsTree)
+SA1::SA1(Project* _project,Problem* _problem)
+:EABase(_project,_problem)
 {
 	setDefaultParameters();
 };
 
 
-SA1::SA1(Project* _project,Problem* _problem,ModItemsTree* _modItemsTree,MOParameters* parameters)
-:EABase(_project,_problem,_modItemsTree)
+SA1::SA1(Project* _project,Problem* _problem,MOParameters* parameters)
+:EABase(_project,_problem)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);

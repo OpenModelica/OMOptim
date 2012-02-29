@@ -61,7 +61,7 @@
 #include <qwt_picker.h>
 
 #include "Widgets/WidgetProjectInfos.h"
-#include "MOTab.h"
+#include "Tabs/MOTab.h"
 
 namespace Ui {
     class TabProject_Class;

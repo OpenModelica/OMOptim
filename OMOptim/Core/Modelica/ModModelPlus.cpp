@@ -59,6 +59,7 @@
 #include "ModPlusOMCtrl.h"
 #include "ModPlusDymolaCtrl.h"
 #include "MOParametersDlg.h"
+#include "Project.h"
 
 ModModelPlus::ModModelPlus( Project* project,QString modModelName)
 {
@@ -111,7 +112,7 @@ void ModModelPlus::clear()
 
 void ModModelPlus::save()
 {
-    Save::saveModModelPlus(this);
+    SaveOMOptim::saveModModelPlus(this);
     emit saved();
 }
 
@@ -264,7 +265,7 @@ bool ModModelPlus::compile(ModPlusCtrl* ctrl)
 
 void ModModelPlus::addConnection(ModItem* a, ModItem* b)
 {
-    ModelicaConnection* newConnection = new ModelicaConnection(a->name(Modelica::FULL),b->name(Modelica::FULL));
+    ModelicaConnection* newConnection = new ModelicaConnection(a->name(ModItem::FULL),b->name(ModItem::FULL));
     _connections->addItem(newConnection);
 }
 
@@ -299,7 +300,7 @@ bool ModModelPlus::readConnections(ModItem* element,bool includeChildren)
         return false;
 
     QString className = ((ModComponent*)element)->getModItemName();
-    QString name = element->name(Modelica::FULL);
+    QString name = element->name(ModItem::FULL);
 
     QStringList aNames, bNames;
     QString aName,bName;
