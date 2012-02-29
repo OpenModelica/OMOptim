@@ -299,7 +299,7 @@ HEADERS += ../config.h \
     ../Core/Problems/optimizationinterface.h \
     ../Core/Problems/onesimulationinterface.h \
     ../GUI/Widgets/WidgetResultInfos.h \
-    ../../c_runtime/read_matlab4.h \
+    ../../SimulationRuntime/c/util/read_matlab4.h \
     ../Core/OMC/OMCThreads.h \
     ../GUI/Tools/OMOptimGuiTools.h
 
@@ -440,7 +440,7 @@ SOURCES += ../main.cpp \
     ../Core/Problems/optimizationinterface.cpp \
     ../Core/Problems/onesimulationinterface.cpp \
     ../GUI/Widgets/WidgetResultInfos.cpp \
-     ../../c_runtime/read_matlab4.c \
+     ../../SimulationRuntime/c/util/read_matlab4.c \
     ../Core/OMC/OMCThreads.cpp \
     ../Core/VariablesManip.cpp \
     ../GUI/Tools/OMOptimGuiTools.cpp
