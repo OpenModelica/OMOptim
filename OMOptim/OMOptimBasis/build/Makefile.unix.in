@@ -1,0 +1,29 @@
+.PHONY: install build $(NAME) always
+
+top_dir=../../
+NAME=OMOptim
+DEST=.
+EXE=@EXE@
+QMAKE=@QMAKE@
+
+install: build
+	if [ "$(EXE)" = ".app" ]; then cp -rp $(DEST)/$(NAME).app $(top_dir)/build/Applications/ ; else cp -p $(DEST)/$(NAME) $(top_dir)/build/bin/$(NAME); fi
+
+always:
+
+$(NAME): Makefile $(NAME).config
+	$(MAKE) -f Makefile
+
+build: $(NAME)
+
+Makefile: $(NAME).pro $(NAME).config
+	$(QMAKE) $<
+Makefile.unix: Makefile.unix.in
+	(cd $(top_dir); ./config.status)
+$(NAME).config: $(NAME).config.in
+	(cd $(top_dir); ./config.status)
+
+clean:
+	test ! -f Makefile || $(MAKE) -f Makefile clean
+	rm -f *.o
+
