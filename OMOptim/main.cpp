@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
 
     // Application
     QApplication *app = new QApplication(argc,argv);
+    app->setApplicationName("OMOptim");
 
 
     // Setting the Application version

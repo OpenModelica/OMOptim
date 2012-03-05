@@ -5,7 +5,7 @@ QT +=  core gui xml
 
 CONFIG += qt warn_off
 
-# WINDOWS
+
 win32 {
 # WINDOWS
 
@@ -13,10 +13,10 @@ include(../build/OMOptimBasis.windowsconfig.in)
 }else {
     include(../build/OMOptimBasis.config)
 }
-#---------End WINDOWS
 
 CONFIG(debug, debug|release){
     DEFINES+=DEBUG
+    TARGET = $$join(TARGET,,,d)
 }
 
 INCLUDEPATH += . \

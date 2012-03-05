@@ -26,9 +26,12 @@ CONFIG(debug, debug|release){
     -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
     -lqwtd5 \
     -L../bin \
-    -lOMOptimBasis
+    -lOMOptimBasisd
 
-DESTDIR = ../../bin
+INCLUDEPATH  += ../OMOptimBasis/build/debug/generatedfiles/ui
+INCLUDEPATH  += ../build/debug/generatedfiles/ui
+
+DESTDIR = ../bin
 UI_DIR = debug/generatedfiles/ui
 MOC_DIR = debug/generatedfiles/moc
 RCC_DIR = debug/generatedfiles/rcc
@@ -47,6 +50,9 @@ RCC_DIR = debug/generatedfiles/rcc
     -lqwt5 \
     -L../bin \
     -lOMOptimBasis
+
+INCLUDEPATH  += ../OMOptimBasis/build/release/generatedfiles/ui
+INCLUDEPATH  += ../build/release/generatedfiles/ui
 
 DESTDIR = ../bin/
 UI_DIR = release/generatedfiles/ui

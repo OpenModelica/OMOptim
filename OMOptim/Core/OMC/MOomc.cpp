@@ -962,7 +962,6 @@ QStringList MOomc::getDependenciesPaths(QString fileName,bool commentImportPaths
 
     int index0=0;
     int index=lines.indexOf(regExp,index0);
-    bool isPathImport;
 
     while(index>-1)
     {
@@ -1484,13 +1483,7 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
 
 
     QString type;
-    int iClassName;
-    //QString className;
-    int iRestr;
-    // QString restr;
-    int iCompClass;
     QString compClass;
-    int iCompName;
     QString compName;
 
     for(int iEl=0; iEl<elementsInfos.size();iEl++)
