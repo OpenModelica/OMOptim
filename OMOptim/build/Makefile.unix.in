@@ -2,6 +2,7 @@
 
 top_dir=../../
 NAME=OMOptim
+LIBNAME=OMOptimLib
 DEST=.
 EXE=@EXE@
 QMAKE=@QMAKE@
@@ -11,12 +12,17 @@ install: build
 
 always:
 
-$(NAME): Makefile $(NAME).config
+$(NAME): Makefile $(NAME).config $(LIBNAME)
 	$(MAKE) -f Makefile
 
-build: $(NAME)
+$(LIBNAME): MakefileLib
+	$(MAKE) -f MakefileLib
+
+build: $(LIBNAME) $(NAME)
 
 Makefile: $(NAME).pro $(NAME).config
+	$(QMAKE) $<
+MakefileLib: $(LIBNAME).pro 
 	$(QMAKE) $<
 Makefile.unix: Makefile.unix.in
 	(cd $(top_dir); ./config.status)
