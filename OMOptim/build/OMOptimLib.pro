@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = OMOptim
-CONFIG += shared
+CONFIG += qt warn_off
 
 QT +=  core gui svg xml
 
