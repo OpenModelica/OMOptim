@@ -1,15 +1,12 @@
 TEMPLATE = lib
 TARGET = OMOptimBasis
+CONFIG += staticlib
+CONFIG += qt warn_off
 
 QT +=  core gui xml
 
-CONFIG += qt warn_off
-
-
 win32 {
-# WINDOWS
-
-include(../build/OMOptimBasis.windowsconfig.in)
+    include(../build/OMOptimBasis.windowsconfig.in)
 }else {
     include(../build/OMOptimBasis.config)
 }

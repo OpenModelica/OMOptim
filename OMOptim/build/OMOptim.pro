@@ -3,40 +3,30 @@ TARGET = OMOptim
 
 QT +=  core gui svg xml
 
-# Define the preprocessor macro to get the application version in our application.
-#DEFINES += APP_VERSION=\\\"$$VERSION\\\"
-
 CONFIG += qt warn_off
-
-
-win32 {
-# WINDOWS
-# Version numbering (independent from OpenModelica)
-VERSION_HEADER = "../version.h"
-versiontarget.target = $$VERSION_HEADER
-versiontarget.commands = UpdateRevision.bat
-versiontarget.depends += FORCE
-PRE_TARGETDEPS += $$VERSION_HEADER
-QMAKE_EXTRA_TARGETS += versiontarget
-
-include(../build/OMOptim.windowsconfig.in)
-}else {
-    include(../build/OMOptim.config)
-}
-
-
 
 CONFIG(debug, debug|release){
     DEFINES+=DEBUG
     # ADD LINK TO OMOPTIM LIB
-    LIBS += -lOMOptimd
+    LIBS += -L. -lOMOptimd
     TARGET = $$join(TARGET,,,d)
 }else{
-    LIBS += -lOMOptim
+    LIBS += -L. -lOMOptim
 }
 
+win32 {
+    # Version numbering (independent from OpenModelica)
+    VERSION_HEADER = "../version.h"
+    versiontarget.target = $$VERSION_HEADER
+    versiontarget.commands = UpdateRevision.bat
+    versiontarget.depends += FORCE
+    PRE_TARGETDEPS += $$VERSION_HEADER
+    QMAKE_EXTRA_TARGETS += versiontarget
 
-#DEFINES+= USEBLOCKSUB
+    include(../build/OMOptim.windowsconfig.in)
+}else {
+    include(../build/OMOptim.config)
+}
 
 INCLUDEPATH += . \
               .. \

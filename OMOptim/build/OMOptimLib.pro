@@ -1,22 +1,21 @@
 TEMPLATE = lib
 TARGET = OMOptim
+CONFIG += staticlib
 CONFIG += qt warn_off
 
 QT +=  core gui svg xml
 
 MAKEFILE = MakefileLib /// needed to avoid conflic with OMOptim.pro
 
-win32 {
-# WINDOWS
-
-include(../build/OMOptim.windowsconfig.in)
-}else {
-    include(../build/OMOptim.config)
-}
-
 CONFIG(debug, debug|release){
     DEFINES+=DEBUG
     TARGET = $$join(TARGET,,,d)
+}
+
+win32 {
+    include(../build/OMOptim.windowsconfig.in)
+}else {
+    include(../build/OMOptim.config)
 }
 
 INCLUDEPATH += . \
@@ -118,7 +117,6 @@ DEPENDPATH += . \
                ../OMOptimBasis/Units \
                 ../OMOptimBasis/Tools \
                 ../OMOptimBasis/Problems
-
 
 HEADERS += ../config.h \
            ../Core/OptObjective.h \
@@ -376,18 +374,3 @@ SOURCES += ../Core/OptObjective.cpp \
     ../Core/VariablesManip.cpp \
     ../GUI/Tools/OMOptimGuiTools.cpp \
      ../../SimulationRuntime/c/util/read_matlab4.c
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
