@@ -1,4 +1,12 @@
 
+## defines qwthome when OMDEV not defined : use PluginEIDev
+isEmpty($$(OMDEV)){
+    QWTHOME = "$$(PLUGINEIDEV)/qwt-5.2.1-mingw"
+}else{
+    QWTHOME = "$$(OMDEV)/lib/qwt-5.2.1-mingw"
+}
+
+
 QMAKE_LFLAGS += -enable-auto-import
 
 DEFINES += __x86__ \
@@ -14,7 +22,7 @@ DEFINES += __x86__ \
     QWT_DLL
 
 CONFIG(debug, debug|release){
-    LIBS += -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
+    LIBS += -L$$(QWTHOME)/lib \
     -lqwtd5
 
 DESTDIR = ../../bin
@@ -23,7 +31,7 @@ MOC_DIR = debug/generatedfiles/moc
 RCC_DIR = debug/generatedfiles/rcc
 
 }else {
-    LIBS += -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
+    LIBS += -L$$QWTHOME/lib \
 			-lqwt5
 
 DESTDIR = ../../bin
@@ -32,4 +40,4 @@ MOC_DIR = release/generatedfiles/moc
 RCC_DIR = release/generatedfiles/rcc
 }
 
-INCLUDEPATH += $$(OMDEV)/lib/qwt-5.2.1-mingw/include
+INCLUDEPATH += $$QWTHOME/include
