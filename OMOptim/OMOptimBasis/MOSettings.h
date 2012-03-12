@@ -67,7 +67,7 @@ public :
     static QVariant value(QString name,QVariant defaultValue = QVariant());
     static MOSettings* instance();
 
-private :
+public :
     MOSettings(void);
     ~MOSettings(void);
 

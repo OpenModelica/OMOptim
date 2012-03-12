@@ -48,32 +48,18 @@
 #include <QtCore/QVector>
 
 #include "MOParameter.h"
+#include "MOSettings.h"
 
 
 /** MOSettings is a classed used to store settings like recentFiles, gui positions...
   It's only using static functions and QSettings class.
   */
-class OMOptimSettings : public MOSettings
+class OMOptimSettings
 {
 
 public :
-    static void initialize(bool preferDefault);
-    static void updateFromSavedValues();
-    static void save();
-    static void setFromDefaultValues();
-    static void addParameters(MOParameters*,QString tabName = "");
+    static void initialize();
 
-    static QVariant value(int index,QVariant defaultValue = QVariant());
-    static QVariant value(QString name,QVariant defaultValue = QVariant());
-    static MOSettings* instance();
-
-private :
-    MOSettings(void);
-    ~MOSettings(void);
-
-
-    // this is a singleton
-    static MOSettings* _instance;
 };
 
 

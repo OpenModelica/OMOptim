@@ -41,87 +41,7 @@
 #include "OMOptimSettings.h"
 #include "Dymola.h"
 
-
-OMOptimSettings* OMOptimSettings::_instance = NULL;
-
-
-OMOptimSettings::OMOptimSettings(void)
-{
-}
-
-OMOptimSettings::~OMOptimSettings(void)
-{
-}
-
-OMOptimSettings* OMOptimSettings::instance()
-{
-    // instance pointer is stored in qapp properties : allows to share with plugins
-    // Otherwise, plugins create a new instance
-    // A correct way would be to build an OMOptim shared lib, that exe and plugin would share
-    if(!_instance)
-    {
-        if(qApp->property("OMOptimSettings").isValid())
-        {
-            _instance = dynamic_cast<OMOptimSettings*>(qApp->property("OMOptimSettings").value<QObject*>());
-        }
-        else
-        {
-            _instance = new OMOptimSettings();
-            qApp->setProperty("OMOptimSettings",qVariantFromValue(qobject_cast<QObject*>(_instance)));
-        }
-    }
-    return _instance;
-}
-
-
-void OMOptimSettings::initialize(bool preferDefault)
-{
-    setFromDefaultValues();
-    if(!preferDefault)
-        updateFromSavedValues();
-    save();
-}
-
-void OMOptimSettings::updateFromSavedValues()
-{
-    QSettings globalSettings("MO", "Settings");
-    QString settingName;
-    QString group;
-    QVariant value;
-    for(int i=0;i<instance()->items.size();i++)
-    {
-        group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
-
-        settingName = instance()->at(i)->name();
-        if(!group.isEmpty())
-            settingName = group+"/"+settingName;
-
-        value = globalSettings.value(settingName,QVariant());
-        if(!value.isNull())
-            instance()->at(i)->setFieldValue(MOParameter::VALUE,value);
-    }
-}
-
-void OMOptimSettings::save()
-{
-    QSettings globalSettings("MO", "Settings");
-    QString settingName;
-    QString group;
-    QVariant value;
-    for(int i=0;i<instance()->items.size();i++)
-    {
-        group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
-
-        settingName = instance()->at(i)->name();
-        if(!group.isEmpty())
-            settingName = group+"/"+settingName;
-
-        value = instance()->at(i)->value();
-        globalSettings.setValue(settingName,value);
-    }
-}
-
-void OMOptimSettings::setFromDefaultValues()
+void OMOptimSettings::initialize()
 {
     QStringList names;
     QStringList descs;
@@ -170,6 +90,7 @@ void OMOptimSettings::setFromDefaultValues()
 
 
     // processing
+    MOParameters* params = new MOParameters();
     MOParameter *param;
 
     for(int i=0; i<names.size();i++)
@@ -177,26 +98,11 @@ void OMOptimSettings::setFromDefaultValues()
             // update
             param = new MOParameter(i,names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
             param->setFieldValue(MOParameter::GROUP,groups.at(i));
-            instance()->addItem(param);
+            params->addItem(param);
     }
+
+    MOSettings::instance()->addParameters(params,QApplication::applicationName());
 }
 
-void OMOptimSettings::addParameters(MOParameters* addedParams, QString tabName)
-{
-    for(int i=0;i<addedParams->size();i++)
-        instance()->addItem(addedParams->at(i));
-
-    updateFromSavedValues();
-}
-
-QVariant OMOptimSettings::value(int index,QVariant defaultValue)
-{
-    return ((MOParameters*)(instance()))->value(index,defaultValue);
-}
-
-QVariant OMOptimSettings::value(QString name,QVariant defaultValue)
-{
-    return ((MOParameters*)(instance()))->value(name,defaultValue);
-}
 
 

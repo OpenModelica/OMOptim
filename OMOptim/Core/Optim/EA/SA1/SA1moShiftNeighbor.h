@@ -8,6 +8,7 @@
 #include <es/eoReal.h>
 #include <utils/eoRNG.h>
 #include <utils/eoRealBounds.h>
+#include "LowTools.h"
 
 /**
  * Indexed Shift Neighbor

@@ -41,7 +41,7 @@
 #include <QtGui/QApplication>
 #include <QtCore/QSettings>
 #include "MainWindow.h"
-#include "MOSettings.h"
+#include "OMOptimSettings.h"
 #include "MOStyleSheet.h"
 #include "version.h"
 
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     app->setApplicationVersion(version);
 
     // Settings
-    MOSettings::initialize(false);
+    OMOptimSettings::initialize();
 
     // Style
     MOStyleSheet::initialize(qApp);

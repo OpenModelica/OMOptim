@@ -50,7 +50,7 @@
 #include "BlockSubs/BlockSubstitutions.h"
 #include "CSV.h"
 #include "ProblemConfig.h"
-#include "OptimAlgo.h"
+#include "EA/OptimAlgo.h"
 
 class Save;
 class Optimization;

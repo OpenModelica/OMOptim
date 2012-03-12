@@ -75,6 +75,8 @@
 #include "ModItemsTree.h"
 #include "ProblemInterface.h"
 #include "ProjectBase.h"
+#include <QObject>
+
 
 
 /**
@@ -109,7 +111,7 @@ private:
 
 
  public:
-    Project();
+    explicit Project();
     ~Project();
     QString getClassName(){return "Project";};
 
