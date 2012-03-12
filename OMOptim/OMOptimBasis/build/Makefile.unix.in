@@ -7,7 +7,7 @@ EXE=@EXE@
 QMAKE=@QMAKE@
 
 install: build
-	cp libOMOptimBasis.* $(top_dir)/build/lib/
+	cp libOMOptimBasis.a $(top_dir)/build/lib/
 
 always:
 
@@ -25,5 +25,5 @@ $(NAME).config: $(NAME).config.in
 
 clean:
 	test ! -f Makefile || $(MAKE) -f Makefile clean
-	rm -f *.o
+	rm -f *.o *.so* *.a
 

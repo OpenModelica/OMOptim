@@ -3,7 +3,7 @@ TARGET = OMOptim
 
 QT +=  core gui svg xml
 
-CONFIG += qt warn_off
+CONFIG += warn_off
 
 CONFIG(debug, debug|release){
     DEFINES+=DEBUG

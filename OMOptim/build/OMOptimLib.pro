@@ -1,7 +1,6 @@
 TEMPLATE = lib
 TARGET = OMOptim
-CONFIG += staticlib
-CONFIG += qt warn_off
+CONFIG += staticlib warn_off
 
 QT +=  core gui svg xml
 
