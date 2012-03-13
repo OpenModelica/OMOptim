@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Modelica.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file Modelica.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _MODELICA_H
@@ -43,19 +43,19 @@
 
 namespace Modelica
 {
-	enum ClassRestr{
-		PACKAGE,
-		GENERIC,
-		MODEL,
-		COMPONENT,
+    enum ClassRestr{
+        PACKAGE,
+        GENERIC,
+        MODEL,
+        COMPONENT,
                 RECORD,
                 BLOCK,
                 FUNCTION,
                 TYPE,
                 CLASS,
                 CONNECTOR,
-		OTHER
-	};
+        OTHER
+    };
 
 
 

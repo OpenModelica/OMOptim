@@ -207,7 +207,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 
     eoSequentialOp<EOAdapt> *op = new eoSequentialOp<EOAdapt>;
     //state.storeFunctor(op);
-    op -> add(*xover, 1.0);	 // always do crossover (probabilities are taken into account inside)
+    op -> add(*xover, 1.0);     // always do crossover (probabilities are taken into account inside)
     op -> add(*mutation, 1.0); // and mutation
 
     /************************************
@@ -223,7 +223,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
     {
 
         // create another state for reading
-        eoState inState;		// a state for loading - WITHOUT the parser
+        eoState inState;        // a state for loading - WITHOUT the parser
         // register the rng and the pop in the state, so they can be loaded,
         // and the present run will be the exact continuation of the saved run
         // eventually with different parameters
@@ -309,7 +309,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
 
     // the monitor will output a series of parameters: add them
     monitor.add(generationCounter);
-    // monitor.add(eval);		// because now eval is an eoEvalFuncCounter!
+    // monitor.add(eval);        // because now eval is an eoEvalFuncCounter!
     //monitor.add(bestStat);
     //monitor.add(SecondStat);
     //monitor.add(fdcStat);

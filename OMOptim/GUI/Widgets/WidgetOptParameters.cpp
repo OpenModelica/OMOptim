@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetOptParameters.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetOptParameters.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "Widgets/WidgetOptParameters.h"
@@ -71,10 +71,10 @@ WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,
     _ui->comboAlgo->setEnabled(!_isResult);
 
     // actualize gui
-    //	onAlgosConfigChanged();
+    //    onAlgosConfigChanged();
 
 
-	
+    
 }
 
 WidgetOptParameters::~WidgetOptParameters()
@@ -85,18 +85,18 @@ WidgetOptParameters::~WidgetOptParameters()
 
 void WidgetOptParameters::changedAlgorithm()
 {
-	int iAlgo = _ui->comboAlgo->currentIndex();
-	_problem->setiCurAlgo(iAlgo);
+    int iAlgo = _ui->comboAlgo->currentIndex();
+    _problem->setiCurAlgo(iAlgo);
 }
 
-	
+    
 void WidgetOptParameters::openAlgoParameters()
 {
-	if(_problem->getCurAlgo())
-	{
+    if(_problem->getCurAlgo())
+    {
             MOParametersDlg dlg(_problem->getCurAlgo()->_parameters,!_isResult);
             dlg.exec();
-	}
+    }
 }
 
 
@@ -105,30 +105,30 @@ void WidgetOptParameters::openAlgoParameters()
 //{
 //        int iSolved = _project->results()->findItem(_problem->name());
 
-//	if(iSolved>-1)
+//    if(iSolved>-1)
 //                _project->restoreProblemFromResult(iSolved);
 //}
 
 //void WidgetOptParameters::pursueMoo()
 //{
 
-//	QString filename = QFileDialog::getOpenFileName(
-//		this,
-//		"MO - Choose start file",
-//		_problem->saveFolder(),
-//		"Iterations files (iteration.*);;All files (*.*)" );
+//    QString filename = QFileDialog::getOpenFileName(
+//        this,
+//        "MO - Choose start file",
+//        _problem->saveFolder(),
+//        "Iterations files (iteration.*);;All files (*.*)" );
 
-//	if(!filename.isEmpty())
-//	{
-		
+//    if(!filename.isEmpty())
+//    {
+        
 //                int iSolved = _project->results()->findItem(_problem->name());
-//		if(iSolved>-1)
-//		{
+//        if(iSolved>-1)
+//        {
 //                        Optimization* newPb = (Optimization*)_project->restoreProblemFromResult(iSolved);
-//			((EAConfig*)newPb->getCurAlgoConfig())->setReloadFilePath(filename);
-//			((EAConfig*)newPb->getCurAlgoConfig())->setUseStartFile(true);
-//		}
-//	}
+//            ((EAConfig*)newPb->getCurAlgoConfig())->setReloadFilePath(filename);
+//            ((EAConfig*)newPb->getCurAlgoConfig())->setUseStartFile(true);
+//        }
+//    }
 //}
 
 
@@ -136,40 +136,40 @@ void WidgetOptParameters::openAlgoParameters()
 
 void WidgetOptParameters::actualizeGui()
 {
-	
-	// list of widgets to hide when problem is solved
-	QWidgetList unsolvedWidgets;
+    
+    // list of widgets to hide when problem is solved
+    QWidgetList unsolvedWidgets;
        // unsolvedWidgets <<  _ui->pushSelectStartFile;
 
-	// list of widgets to hide when problem is unsolved
-	QWidgetList solvedWidgets;
+    // list of widgets to hide when problem is unsolved
+    QWidgetList solvedWidgets;
 
 
-	// if problem is solved
+    // if problem is solved
         if(_isResult)
-	{
-		for(int i=0; i < unsolvedWidgets.size(); i++)
-			unsolvedWidgets.at(i)->hide();
-	
-		for(int i=0; i < solvedWidgets.size(); i++)
-			solvedWidgets.at(i)->show();
-	
-		// combo algo
-		_ui->comboAlgo->setCurrentIndex(_problem->getiCurAlgo());
-		_ui->comboAlgo->setEnabled(false);
+    {
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->hide();
+    
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->show();
+    
+        // combo algo
+        _ui->comboAlgo->setCurrentIndex(_problem->getiCurAlgo());
+        _ui->comboAlgo->setEnabled(false);
 
-	}
-	else
-	{
-		for(int i=0; i < unsolvedWidgets.size(); i++)
-			unsolvedWidgets.at(i)->show();
-	
-		for(int i=0; i < solvedWidgets.size(); i++)
-			solvedWidgets.at(i)->hide();
-	
-		// combo algo
-		_ui->comboAlgo->setCurrentIndex(_problem->getiCurAlgo());
-		_ui->comboAlgo->setEnabled(true);
+    }
+    else
+    {
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->show();
+    
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->hide();
+    
+        // combo algo
+        _ui->comboAlgo->setCurrentIndex(_problem->getiCurAlgo());
+        _ui->comboAlgo->setEnabled(true);
 
-	}
+    }
 }

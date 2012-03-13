@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModExecution.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModExecution.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _MODEXECUTION_H
@@ -44,13 +44,13 @@
 #include "ModModel.h"
 class ModExecution : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	ModExecution(void);
-	~ModExecution(void);
+    ModExecution(void);
+    ~ModExecution(void);
 
-	static void copyModelFilesToTempDir(ModModel* model,QString _tempFolder);
+    static void copyModelFilesToTempDir(ModModel* model,QString _tempFolder);
 };
 
 #endif

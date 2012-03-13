@@ -29,12 +29,12 @@
  *
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file SA1.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file SA1.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 /*
@@ -145,13 +145,13 @@ typedef SA1moRndWithReplNeighborhood<shiftNeighbor> SA1rndShiftNeighborhood; //r
 
 SA1::SA1():EABase()
 {
-	setDefaultParameters();
+    setDefaultParameters();
 }
 
 SA1::SA1(Project* _project,Problem* _problem)
 :EABase(_project,_problem)
 {
-	setDefaultParameters();
+    setDefaultParameters();
 };
 
 
@@ -168,13 +168,13 @@ SA1::SA1(const SA1 & ea):EABase(ea)
 
 SA1* SA1::clone() const
 {
-	SA1* newEA = new SA1(*this);
-	return newEA ;
+    SA1* newEA = new SA1(*this);
+    return newEA ;
 }
 
 QString SA1::name()
 {
-	return("SA1");
+    return("SA1");
 }
 
 void SA1::setDefaultParameters()
@@ -190,15 +190,15 @@ bool SA1::acceptMultiObjectives()
 // main
 Result* SA1::launch(QString tempDir)
 {
-	// init random
-	rng.reseed(time(NULL));
+    // init random
+    rng.reseed(time(NULL));
 
-	int argc=0;
-	char *argv1 = "";
-	char **argv = &argv1;
+    int argc=0;
+    char *argv1 = "";
+    char **argv = &argv1;
 
         //eoParser parser(argc, argv);  // for user-parameter reading
-	eoState state;
+    eoState state;
 
 
 

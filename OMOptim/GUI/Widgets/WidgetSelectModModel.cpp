@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetSelectModModel.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetSelectModModel.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "Widgets/WidgetSelectModModel.h"
@@ -47,42 +47,42 @@
 QDialog(parent),
 ui(new Ui::WidgetSelectModModelClass)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
     _modItemsTree = modItemsTree;
 
-	ui->treeView->setModel(modItemsTree);
-	connect(ui->treeView, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
-	connect(ui->pushValidate,SIGNAL(clicked()),this,SLOT(accept()));
+    ui->treeView->setModel(modItemsTree);
+    connect(ui->treeView, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
+    connect(ui->pushValidate,SIGNAL(clicked()),this,SLOT(accept()));
         connect(ui->pushCancel,SIGNAL(clicked()),this,SLOT(reject()));
-	setSelectedModModel(NULL);
+    setSelectedModModel(NULL);
 }
 
 void WidgetSelectModModel::onSelectedModItem(QModelIndex index)
 {
-	if(index.isValid())
-	{
+    if(index.isValid())
+    {
         ModItem* modClass = static_cast<ModItem*>(index.internalPointer());
         setSelectedModModel(modClass);
-	}
-	else
-		setSelectedModModel(NULL);
+    }
+    else
+        setSelectedModModel(NULL);
 }
 
 WidgetSelectModModel::~WidgetSelectModModel()
 {
-	delete ui;
+    delete ui;
 }
 
 void WidgetSelectModModel::setSelectedModModel(ModItem* modClass)
 {
     selectedModel = dynamic_cast<ModModel*>(modClass);
-		
-		if(selectedModel)
+        
+        if(selectedModel)
     {
-			ui->pushValidate->setEnabled(true);
+            ui->pushValidate->setEnabled(true);
         ui->pushValidate->setFocus();
     }
-		else
-			ui->pushValidate->setEnabled(false);
+        else
+            ui->pushValidate->setEnabled(false);
 }
 

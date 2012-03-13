@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModModel.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModModel.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _ModModel_H
@@ -51,15 +51,15 @@
 class ModModel : public ModItem
 {
 public:
-	ModModel(MOomc*);
+    ModModel(MOomc*);
         ModModel(MOomc*,ModItem* parent,QString name,QString filePath="");
-	~ModModel(void);
+    ~ModModel(void);
         virtual ModItem* clone() const;
 
         virtual QString getClassName(){return "ModModel";}
         virtual Modelica::ClassRestr getClassRestr(){return Modelica::MODEL;}
 
-	
+    
 };
 
 #endif

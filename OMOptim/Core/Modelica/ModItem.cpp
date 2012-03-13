@@ -325,11 +325,11 @@ QString ModItem::name(ModItem::NameFormat type)
         QString fullName = _name;
         //                ModItem *curParent = parent();
 
-        //		while((curParent!=NULL)&&(curParent->name(Modelica::SHORT)!=""))
-        //		{
-        //			fullName.insert(0,curParent->name(Modelica::SHORT)+".");
+        //        while((curParent!=NULL)&&(curParent->name(Modelica::SHORT)!=""))
+        //        {
+        //            fullName.insert(0,curParent->name(Modelica::SHORT)+".");
         //                        curParent = curParent->parent();
-        //		}
+        //        }
 
         QString middleName;
         switch(type)

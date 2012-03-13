@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetBlocks.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetBlocks.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef WIDGETBLOCKS_H
@@ -67,15 +67,15 @@ public:
     virtual ~WidgetBlocks();
 
 public slots:
-		void onResultCurPointChanged();
+        void onResultCurPointChanged();
 
 public:
     Ui::WidgetBlocksClass *_ui;
 
-	OptimResult* _result;
-	Project* _project;
+    OptimResult* _result;
+    Project* _project;
 
-	BlockSubsScene *_blockScene;
+    BlockSubsScene *_blockScene;
 };
 
 #endif 

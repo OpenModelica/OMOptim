@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOTab.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOTab.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef MOTAB_H
@@ -68,10 +68,10 @@ class MOTabCplx : public QMainWindow,public MOTabBase
 public:
         MOTabCplx(QString _projectName,MOItem* _mainItem,QWidget* parent);
         virtual  ~MOTabCplx(void);
-	void readGUIState();
+    void readGUIState();
 
 protected :
-	void saveGUIState();
+    void saveGUIState();
 
 };
 

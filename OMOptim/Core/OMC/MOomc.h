@@ -162,7 +162,7 @@ public :
     //Communication functions
     QString evalCommand(QString comm);
     //void setCommand(QString comm);
-    //	void evalCommand();
+    //    void evalCommand();
     void exit();
 
     void stopServer();
@@ -187,9 +187,9 @@ signals:
 
 
 private:
-    //	void exceptionInEval(std::exception &e);
+    //    void exceptionInEval(std::exception &e);
 
-    //	QString command;
+    //    QString command;
     int nbCalls;
 
     //OmcCommunicator* mCommunicator;

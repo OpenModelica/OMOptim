@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ProblemConfig.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ProblemConfig.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "ProblemConfig.h"
@@ -45,13 +45,13 @@ ProblemConfig::ProblemConfig()
 }
 ProblemConfig::ProblemConfig(bool _refill)
 {
-	refillTempDir = _refill;
+    refillTempDir = _refill;
 }
 
 //ProblemConfig::ProblemConfig(QString _tempDir)
 //{
-//	tempDir = _tempDir;
-//	refillTempDir = true;
+//    tempDir = _tempDir;
+//    refillTempDir = true;
 //}
 
 ProblemConfig::~ProblemConfig(void)

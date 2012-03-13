@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
     @file ProblemThread.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 
@@ -51,18 +51,18 @@
 namespace MOThreads
 {
 
-	class ProblemThread : public QThread
-	{
-		Q_OBJECT
-	public:
-		ProblemThread(Problem*,ProblemConfig);
-		void run();
-		void publicExec();
+    class ProblemThread : public QThread
+    {
+        Q_OBJECT
+    public:
+        ProblemThread(Problem*,ProblemConfig);
+        void run();
+        void publicExec();
                 Result* result();
 
                 QDateTime _launchDate;
 
-	private:
+    private:
                 Problem* _problem;
                 ProblemConfig _config;
                 Result* _result;
@@ -77,7 +77,7 @@ namespace MOThreads
                 void newProgress(float);
                 void newProgress(float,int,int);
 
-	};
+    };
 
 } //namespace
 

@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MEDimValue.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MEDimValue.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "MEDimValue.h"
@@ -47,7 +47,7 @@ MEDimValue::MEDimValue()
 
 MEDimValue::MEDimValue(double value,int unit)
 {
-	setValue(value,unit);
+    setValue(value,unit);
 }
 
 MEDimValue::~MEDimValue(void)
@@ -56,7 +56,7 @@ MEDimValue::~MEDimValue(void)
 
 double MEDimValue::value(int iUnit) const
 {
-	return convert(_value,_unit,iUnit);
+    return convert(_value,_unit,iUnit);
 }
 
 double MEDimValue::value() const
@@ -83,16 +83,16 @@ QString MEDimValue::strValue() const
 
 void MEDimValue::setValue(double value,int iUnit)
 {
-	_value = value; 
-	if(iUnit>-1)
-		_unit = iUnit;
+    _value = value; 
+    if(iUnit>-1)
+        _unit = iUnit;
 
     validate();
 }
 
 void MEDimValue::setUnit(int iUnit)
 {
-	_unit = iUnit;
+    _unit = iUnit;
 }
 
 bool MEDimValue::setUnit(QString unit)
@@ -107,36 +107,36 @@ bool MEDimValue::setUnit(QString unit)
 }
 bool MEDimValue::setValue(double value,QString unit)
 {
-	int iUnit = units().indexOf(unit);
-	if(iUnit==-1)
-		return false;
-	else
-		setValue(value,iUnit);
+    int iUnit = units().indexOf(unit);
+    if(iUnit==-1)
+        return false;
+    else
+        setValue(value,iUnit);
 
     validate();
 
-	return true;
+    return true;
 }
 
 
 
 QStringList MEDimValue::units()  const
 {
-	QStringList result;
-	for(int i=0;i<nbUnits();i++)
-		result.push_back(unit(i));
+    QStringList result;
+    for(int i=0;i<nbUnits();i++)
+        result.push_back(unit(i));
 
-	return result;
+    return result;
 }
 
 QString MEDimValue::unit() const
 {
-	return unit(_unit);
+    return unit(_unit);
 }
 
 int MEDimValue::iUnit() const
 {
-	return _unit;
+    return _unit;
 }
 
 MEDimValue & MEDimValue::operator=(const MEDimValue &b)

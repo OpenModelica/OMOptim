@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file NewProjectBaseForm.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file NewProjectBaseForm.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef NewProjectBaseForm_H
@@ -60,7 +60,7 @@ public:
     explicit NewProjectBaseForm(QWidget *parent = 0);
     virtual ~NewProjectBaseForm();
 
-	QString projectName;
+    QString projectName;
 
 protected:
     virtual void changeEvent(QEvent *e);
@@ -70,7 +70,7 @@ public:
 
 public slots :
 
-		void validate();
+        void validate();
 };
 
 #endif // NewProjectBaseForm_H

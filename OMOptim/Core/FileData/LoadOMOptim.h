@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Load.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file Load.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef LOADOMOPTIM_H
@@ -68,17 +68,17 @@ class OptimResult;
 
 class LoadOMOptim : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
 
 
 
-	static bool loadProject(QString,Project*);
-	static bool loadModModelPlus(Project*, QString mmoFilePath);
+    static bool loadProject(QString,Project*);
+    static bool loadModModelPlus(Project*, QString mmoFilePath);
 
 signals:
-	void sendInfo(Info*);
-	
+    void sendInfo(Info*);
+    
 };
 
 #endif

@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Load.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file Load.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef LOAD_H
@@ -60,19 +60,19 @@ class OptimResult;
 
 class Load : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	Load(void);
-	~Load(void);
-	
+    Load(void);
+    ~Load(void);
+    
 
     static OMCase* newOMCase(QString filePath,ProjectBase*);
     static bool loadProject(QString,ProjectBase*);
 
 
 signals:
-	void sendInfo(Info*);
-	
+    void sendInfo(Info*);
+    
 };
 
 #endif

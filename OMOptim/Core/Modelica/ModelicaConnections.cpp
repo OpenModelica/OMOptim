@@ -54,19 +54,19 @@ ModelicaConnections::~ModelicaConnections(void)
 
 //void ModelicaConnections::clear()
 //{
-//	for(int i=0;i<items.size();i++)
-//	{
-//		delete items.at(i);
-//	}
+//    for(int i=0;i<items.size();i++)
+//    {
+//        delete items.at(i);
+//    }
 //}
 //
 //void ModelicaConnections::addConnection(ModelicaConnection* newConnection)
 //{
-//	int index=items.size();
-//	insertRow(index);//,createIndex(0,0));
-//	beginInsertRows(QModelIndex(),index,index);
-//	items.push_back(newConnection);
-//	endInsertRows();
+//    int index=items.size();
+//    insertRow(index);//,createIndex(0,0));
+//    beginInsertRows(QModelIndex(),index,index);
+//    items.push_back(newConnection);
+//    endInsertRows();
 //}
 //
 //
@@ -84,17 +84,17 @@ ModelicaConnections::~ModelicaConnections(void)
 //     if (role != Qt::DisplayRole)
 //         return QVariant();
 //
-//	 ModelicaConnection *connect = items.at(index.row());
+//     ModelicaConnection *connect = items.at(index.row());
 //
-//	 if(index.column()==0)
-//	 {
-//		 return connect->getA()->name(Modelica::DYMOLA);
-//	 }
-//	 if(index.column()==1)
-//	 {
-//		 return connect->getB()->name(Modelica::DYMOLA);
-//	 }
-//	 return QVariant();
+//     if(index.column()==0)
+//     {
+//         return connect->getA()->name(Modelica::DYMOLA);
+//     }
+//     if(index.column()==1)
+//     {
+//         return connect->getB()->name(Modelica::DYMOLA);
+//     }
+//     return QVariant();
 // }
 //
 // Qt::ItemFlags ModelicaConnections::flags(const QModelIndex &index) const
@@ -108,17 +108,17 @@ ModelicaConnections::~ModelicaConnections(void)
 // QVariant ModelicaConnections::headerData(int section, Qt::Orientation orientation,int role) const
 // {
 //     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-//	 {
-//		 switch(section)
-//		 {
-//		 case 0:
-//			 return "A Name";
-//		 case 1:
-//			 return "B Name";
-//		 default :
-//			 return "Unknown field";
-//		 }
-//	 }
+//     {
+//         switch(section)
+//         {
+//         case 0:
+//             return "A Name";
+//         case 1:
+//             return "B Name";
+//         default :
+//             return "Unknown field";
+//         }
+//     }
 //
 //     return QVariant();
 // }
@@ -136,7 +136,7 @@ ModelicaConnections::~ModelicaConnections(void)
 //
 // int ModelicaConnections::rowCount(const QModelIndex &parent) const
 // {  
-//		 return items.size();
+//         return items.size();
 // }
 //
 
@@ -186,30 +186,30 @@ ModelicaConnections* ModelicaConnections::filter(ModItem* element,bool includeCh
 
 //void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QList<ModItem*> &_ports,QList<ModItem*> &_outsideComps)
 //{
-//	ModelicaConnections* elConn = filter(element,includeChildren,false);
+//    ModelicaConnections* elConn = filter(element,includeChildren,false);
 //
-//	ModItem* aModItem,*bModItem;
-//	QString aName,bName;
-//	for(int i=0;i<elConn->size();i++)
-//	{
-//		aName = elConn->at(i)->getA();
-//		aModItem = modLoader->findInDescendants(element,aName);
-//		
-//		bName = elConn->at(i)->getB();
-//		bModItem = modLoader->findInDescendants(element,bName);
-//		
+//    ModItem* aModItem,*bModItem;
+//    QString aName,bName;
+//    for(int i=0;i<elConn->size();i++)
+//    {
+//        aName = elConn->at(i)->getA();
+//        aModItem = modLoader->findInDescendants(element,aName);
+//        
+//        bName = elConn->at(i)->getB();
+//        bModItem = modLoader->findInDescendants(element,bName);
+//        
 //
-//		if(aModItem)
-//		{
-//			_ports.push_back(aModItem);
-//			_outsideComps.push_back(bModItem);
-//		}
-//		else
-//		{
-//			_ports.push_back(bModItem);
-//			_outsideComps.push_back(aModItem);
-//		}
-//	}
+//        if(aModItem)
+//        {
+//            _ports.push_back(aModItem);
+//            _outsideComps.push_back(bModItem);
+//        }
+//        else
+//        {
+//            _ports.push_back(bModItem);
+//            _outsideComps.push_back(aModItem);
+//        }
+//    }
 //}
 
 void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStringList &ports, QStringList &outsideComps)

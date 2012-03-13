@@ -246,7 +246,7 @@ void Project::storeMmoFilePath(QString mmoFilePath)
 }
 
 /**
-*	Reload the mo file of model
+*    Reload the mo file of model
 */
 void Project::reloadModModel(QString modModelName)
 {
@@ -263,7 +263,7 @@ void Project::reloadModModel(QString modModelName)
 
 /**
 * \brief
-*	Refresh modelica tree in GUI. Do not reload in OpenModelica ! Just reread hierarchy.
+*    Refresh modelica tree in GUI. Do not reload in OpenModelica ! Just reread hierarchy.
 */
 void Project::refreshAllMod()
 {

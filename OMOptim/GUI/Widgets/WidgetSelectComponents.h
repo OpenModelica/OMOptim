@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetSelectComponents.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetSelectComponents.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef WidgetSelectComponents_H
@@ -68,20 +68,20 @@ public:
 
 public:
     Ui::WidgetSelectComponentsClass *_ui;
-	
+    
 public slots :
-	void addReplacedComponent();
-	void addReplacingComponent();
-	bool openConnections(BlockSubstitution*);
-	void doZoomRect(QRectF);
-	void actualizeGui();
+    void addReplacedComponent();
+    void addReplacingComponent();
+    bool openConnections(BlockSubstitution*);
+    void doZoomRect(QRectF);
+    void actualizeGui();
 
 private :
-	Project* _project;
-	Optimization *_problem;
+    Project* _project;
+    Optimization *_problem;
         bool _isResult;
 
-	BlockSubsScene *_blockScene;
+    BlockSubsScene *_blockScene;
 
 };
 

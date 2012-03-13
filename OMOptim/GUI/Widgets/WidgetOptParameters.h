@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetOptParameters.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetOptParameters.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef WidgetOptParameters_H
@@ -69,7 +69,7 @@ public:
         explicit WidgetOptParameters(Project* project,Optimization* problem,bool isResult,QWidget *parent = NULL);
     virtual ~WidgetOptParameters();
 
-	
+    
 
 public:
     Ui::WidgetOptParametersClass *_ui;
@@ -77,17 +77,17 @@ public:
 
 public slots :
 
-	void changedAlgorithm();
+    void changedAlgorithm();
 
         //void onAlgosConfigChanged();
-	void openAlgoParameters();
+    void openAlgoParameters();
         //void restoreProblem();
         //void pursueMoo();
-	void actualizeGui();
+    void actualizeGui();
 
 private :
-	Project* _project;
-	Optimization* _problem;
+    Project* _project;
+    Optimization* _problem;
         bool _isResult;// defines wether form could be editable or not
 
 };

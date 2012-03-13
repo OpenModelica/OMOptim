@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file BlockDrawItem.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file BlockDrawItem.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef BLOCKDRAWITEM_H
@@ -56,34 +56,34 @@
 class BlockDrawItem : public QWidget
 {
 
-	
+    
 
 public:
 
-	enum BlockType
-	{
-		REPLACING,
-		REPLACED
-	};
+    enum BlockType
+    {
+        REPLACING,
+        REPLACED
+    };
 
         QString componentName;
-	int type;
+    int type;
 
-	QHBoxLayout  *blockLayout;
+    QHBoxLayout  *blockLayout;
         QLabel *label;
-	QGraphicsLineItem *line;
+    QGraphicsLineItem *line;
 
-	/*DiagramItem *rectangle;
-	QGraphicsTextItem *text;*/
+    /*DiagramItem *rectangle;
+    QGraphicsTextItem *text;*/
 
         BlockDrawItem(QString, int);
-	~BlockDrawItem(void);
-	/*void setPos(QPointF &_pos);
-	void setPos(QPoint &_pos);*/
+    ~BlockDrawItem(void);
+    /*void setPos(QPointF &_pos);
+    void setPos(QPoint &_pos);*/
 
-	void build();
-	void activate();
-	void desactivate();
+    void build();
+    void activate();
+    void desactivate();
 };
 
 #endif

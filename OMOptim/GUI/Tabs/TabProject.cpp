@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabProject.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file tabProject.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "TabProject.h"
@@ -45,16 +45,16 @@
 
 namespace Ui
 {
-	class TabProject_Class;
+    class TabProject_Class;
 }
 
 TabProject::TabProject(Project *project_, QList<QAction*> recentProjActions,QWidget *parent) :
 MOTabSimple(project_->name(),project_),ui(new Ui::TabProject_Class)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
-	project = project_;
-	// View widgets
+    project = project_;
+    // View widgets
         widgetInfos = new WidgetProjectInfos(project,recentProjActions,this);
         ui->myLayout->addWidget(widgetInfos);
 
@@ -67,7 +67,7 @@ MOTabSimple(project_->name(),project_),ui(new Ui::TabProject_Class)
 
 TabProject::~TabProject()
 {
-	delete ui;
+    delete ui;
 }
 
 

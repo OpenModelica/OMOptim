@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file NSGA2Algo.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file NSGA2Algo.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 
@@ -51,7 +51,7 @@
 //public:
 
 
-//	NSGA2Algo(eoContinue < MOEOT > & _continuator, eoEvalFunc < MOEOT > & _eval, eoQuadOp < MOEOT > & _crossover,eoMonOp < MOEOT > & _mutation) :
+//    NSGA2Algo(eoContinue < MOEOT > & _continuator, eoEvalFunc < MOEOT > & _eval, eoQuadOp < MOEOT > & _crossover,eoMonOp < MOEOT > & _mutation) :
 //            defaultGenContinuator(0), continuator(_continuator), eval(_eval), defaultPopEval(_eval), popEval(defaultPopEval), select (2), selectMany(select,0.0), selectTransform(defaultSelect, defaultTransform), defaultSGAGenOp(_crossover, 1, _mutation, 1), genBreed (select, defaultSGAGenOp), breed (genBreed), replace (fitnessAssignment, diversityAssignment)
 //    {}
 
@@ -59,7 +59,7 @@
 //virtual void operator () (eoPop < MOEOT > &_pop)
 //    {
 //        eoPop < MOEOT > offspring, empty_pop;
-//        popEval (empty_pop, _pop);	// a first eval of _pop
+//        popEval (empty_pop, _pop);    // a first eval of _pop
 //        // evaluate fitness and diversity
 //        fitnessAssignment(_pop);
 //        diversityAssignment(_pop);

@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Save.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file Save.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef SAVEOMOPTIM_H
@@ -62,10 +62,10 @@ class Optimization;
 class SaveOMOptim
 {
 public:
-	SaveOMOptim(void);
-	~SaveOMOptim(void);
+    SaveOMOptim(void);
+    ~SaveOMOptim(void);
 
-	
+    
     static void saveProject(Project*,bool saveAllCases=true);
     static void saveModModelPlus(ModModelPlus*);
 

@@ -16,7 +16,7 @@
 template < class MOEOT >
 class EAUpdaterDispObjGUI : public eoUpdater, public QObject
   {
-	 
+     
   public:
 
     /**
@@ -26,7 +26,7 @@ class EAUpdaterDispObjGUI : public eoUpdater, public QObject
     EAUpdaterDispObjGUI (moeoArchive<MOEOT> & _arch) :
         arch(_arch), counter(0)
     {
-	}
+    }
 
 
     /**
@@ -34,16 +34,16 @@ class EAUpdaterDispObjGUI : public eoUpdater, public QObject
      */
     void operator()()
     {
-		QString msg = "Current gen. objective vector :";
-		for (unsigned int i = 0; i < arch.size (); i++)
-		{
-			for(int j=0;j<arch.at(i).objectiveVector().size();j++)
-			{
-				msg+=QString::number(arch.at(i).objectiveVector().at(j))+="\t";
-			}
-			msg +="\n";
-		}
-		InfoSender::instance()->send(Info(msg));
+        QString msg = "Current gen. objective vector :";
+        for (unsigned int i = 0; i < arch.size (); i++)
+        {
+            for(int j=0;j<arch.at(i).objectiveVector().size();j++)
+            {
+                msg+=QString::number(arch.at(i).objectiveVector().at(j))+="\t";
+            }
+            msg +="\n";
+        }
+        InfoSender::instance()->send(Info(msg));
     }
 
   private:

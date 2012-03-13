@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModPackage.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModPackage.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "ModPackage.h"
@@ -51,7 +51,7 @@ ModPackage::ModPackage(MOomc* _oms,ModItem* _parent,QString _name,QString _fileP
 
 ModPackage::~ModPackage()
 {
-	clearDescendants();
+    clearDescendants();
 }
 
 ModItem* ModPackage::clone() const

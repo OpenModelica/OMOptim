@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOPlot.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOPlot.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "MOPlot.h"
@@ -44,7 +44,7 @@
 
 bool MOPlot::zoomIsOn()
 {
-	return (zoomer1->isEnabled());
+    return (zoomer1->isEnabled());
 }
 
 void MOPlot::enableZoom(bool checked)
@@ -53,32 +53,32 @@ void MOPlot::enableZoom(bool checked)
 }
 void MOPlot::setEnabledZoom(bool on)
 {
-	
-	zoomer1->setEnabled(on);
-	if (on)
-		canvas()->setCursor(QCursor(Qt::CrossCursor));
-	else
-		canvas()->setCursor(Qt::ArrowCursor);
+    
+    zoomer1->setEnabled(on);
+    if (on)
+        canvas()->setCursor(QCursor(Qt::CrossCursor));
+    else
+        canvas()->setCursor(Qt::ArrowCursor);
 }
 
 void MOPlot::zoomOut()
 {
-	zoomer1->zoom(-1);
+    zoomer1->zoom(-1);
 }
 
 void MOPlot::zoomed(const QwtDoubleRect &)
 {
-	//emit modifiedGraph();
+    //emit modifiedGraph();
 }
 
 void MOPlot::contextMenuEvent(QContextMenuEvent *event)
 {
-	setAxisAutoScale(QwtPlot::xBottom);
-	setAxisAutoScale(QwtPlot::yLeft);
+    setAxisAutoScale(QwtPlot::xBottom);
+    setAxisAutoScale(QwtPlot::yLeft);
 
-	replot();
-	zoomer1->setZoomBase();
-	
-	
+    replot();
+    zoomer1->setZoomBase();
+    
+    
 }
 

@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabProject.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file tabProject.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
  */
 
@@ -75,13 +75,13 @@ public:
     ~TabProject();
     TabType tabType(){return TABPROJECT;};
 
-	Project *project;
+    Project *project;
 
 
-	//UI
-	Ui::TabProject_Class *ui;
+    //UI
+    Ui::TabProject_Class *ui;
         WidgetProjectInfos *widgetInfos;
-	void actualizeGuiFromProject();
+    void actualizeGuiFromProject();
 
 signals:
     void newProject();

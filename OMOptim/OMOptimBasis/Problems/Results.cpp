@@ -29,12 +29,12 @@
  *
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Results.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file Results.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "Results.h"
@@ -43,12 +43,12 @@ Results::Results(QString _name)
     :OMCases(_name)
 {
 
-	}
+    }
 
 Result* Results::at(int i)
 {
     return dynamic_cast<Result*>(items.at(i));
-	}
+    }
 
 Results::~Results(void)
  {

@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModModel.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModModel.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "ModModel.h"
@@ -51,7 +51,7 @@ ModModel::ModModel(MOomc* moomc,ModItem* parent,QString name,QString filePath)
 
 ModModel::~ModModel()
 {
-	clearDescendants();
+    clearDescendants();
 }
 
 ModItem* ModModel::clone() const

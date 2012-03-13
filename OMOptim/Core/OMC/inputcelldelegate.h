@@ -51,17 +51,17 @@ namespace IAEX
     * implemented, and also a Standard ML environment is implemented.
     *
     */
-	class InputCellDelegate : public QObject
+    class InputCellDelegate : public QObject
    {
-	   Q_OBJECT
+       Q_OBJECT
 
 
    public:
       virtual QString result() = 0;
       virtual void evalExpression(QString& expr) = 0;
-	  virtual void closeConnection() = 0;				// Added 2006-02-02 AF
-  	  virtual void reconnect() = 0;						// Added 2006-02-09 AF
-	  virtual bool startDelegate() = 0;					// Added 2006-02-09 AF
+      virtual void closeConnection() = 0;                // Added 2006-02-02 AF
+        virtual void reconnect() = 0;                        // Added 2006-02-09 AF
+      virtual bool startDelegate() = 0;                    // Added 2006-02-09 AF
    };
 
 }

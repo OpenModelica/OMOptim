@@ -67,8 +67,8 @@ class Dymola
    * \brief Class containing handling functions for Dymola.
    *
    *  All functions defined in this class are static. There are used to :
-   *	-read input or output files
-   *	-launch Dymosim application
+   *    -read input or output files
+   *    -launch Dymosim application
    */
 
 public:

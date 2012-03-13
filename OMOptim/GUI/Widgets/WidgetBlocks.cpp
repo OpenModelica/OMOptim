@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetBlocks.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetBlocks.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "Widgets/WidgetBlocks.h"
@@ -49,19 +49,19 @@ WidgetBlocks::WidgetBlocks(Project* project,OptimResult* result,QWidget *parent)
     _ui(new Ui::WidgetBlocksClass)
 {
     _ui->setupUi(this);
-	
+    
 
-	_result = result;
-	_project = project;
-	connect(_result,SIGNAL(curPointChanged()),this,SLOT(onResultCurPointChanged()));
+    _result = result;
+    _project = project;
+    connect(_result,SIGNAL(curPointChanged()),this,SLOT(onResultCurPointChanged()));
 
-	_blockScene = new BlockSubsScene(((Optimization*)_result->problem())->blockSubstitutions(),_result->modModel(),
+    _blockScene = new BlockSubsScene(((Optimization*)_result->problem())->blockSubstitutions(),_result->modModel(),
                 _project->modItemsTree(),true);
-	_ui->graphBlocks->setScene(_blockScene);
-	_ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
-	connect(_blockScene, SIGNAL(zoomRect(QRectF)),
-    		this, SLOT(doZoomRect(QRectF)));
-	_blockScene->zoomFit();
+    _ui->graphBlocks->setScene(_blockScene);
+    _ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
+    connect(_blockScene, SIGNAL(zoomRect(QRectF)),
+            this, SLOT(doZoomRect(QRectF)));
+    _blockScene->zoomFit();
 
 }
 
@@ -73,35 +73,35 @@ WidgetBlocks::~WidgetBlocks()
 
 void WidgetBlocks::onResultCurPointChanged()
 {
-	int curPoint = _result->curPoint();
+    int curPoint = _result->curPoint();
 
-	if (curPoint==-1)
-	{
-		_blockScene->deselectAll();
-	}
-	else
-	{
-		if(curPoint<_result->_iSubModels.size())
-		{
-			int iSubModel = _result->_iSubModels.at(curPoint);
-			if(iSubModel< _result->_subBlocks.size())
-			{
-				QStringList subBlocks;
-				QStringList orgBlocks;
+    if (curPoint==-1)
+    {
+        _blockScene->deselectAll();
+    }
+    else
+    {
+        if(curPoint<_result->_iSubModels.size())
+        {
+            int iSubModel = _result->_iSubModels.at(curPoint);
+            if(iSubModel< _result->_subBlocks.size())
+            {
+                QStringList subBlocks;
+                QStringList orgBlocks;
 
-				BlockSubstitutions* selectedBlocks  = _result->_subBlocks.at(iSubModel);
+                BlockSubstitutions* selectedBlocks  = _result->_subBlocks.at(iSubModel);
 
-				for(int i=0;i<selectedBlocks->size();i++)
-				{
+                for(int i=0;i<selectedBlocks->size();i++)
+                {
                                         orgBlocks << selectedBlocks->at(i)->_orgComponent;
                                         subBlocks << selectedBlocks->at(i)->_subComponent;
-				}
-				_blockScene->selectSubs(orgBlocks,subBlocks,true);	
-			}
-			else
-			{
-				_blockScene->deselectAll();
-			}
-		}
-	}
+                }
+                _blockScene->selectSubs(orgBlocks,subBlocks,true);    
+            }
+            else
+            {
+                _blockScene->deselectAll();
+            }
+        }
+    }
 }

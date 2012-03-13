@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModExecution.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModExecution.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "ModExecution.h"
@@ -52,16 +52,16 @@ void ModExecution::copyModelFilesToTempDir(ModModel* model,QString _tempFolder)
 {
 
 
-	
-	
-	
-	/*for(int i=0;i<neededFiles.size();i++)
-	{
-		QString oldFilePath = getMmoFolder()+QDir::separator()+neededFiles.at(i);
-		QString newFilePath = _tempFolder + QDir::separator()+neededFiles.at(i);
-		QFile::remove(newFilePath);
-		QFile::copy(oldFilePath,newFilePath);
-		emit sendInfo( Info(ListInfo::COPYINGFILETOTEMP,neededFiles.at(i)));
-	}*/
+    
+    
+    
+    /*for(int i=0;i<neededFiles.size();i++)
+    {
+        QString oldFilePath = getMmoFolder()+QDir::separator()+neededFiles.at(i);
+        QString newFilePath = _tempFolder + QDir::separator()+neededFiles.at(i);
+        QFile::remove(newFilePath);
+        QFile::copy(oldFilePath,newFilePath);
+        emit sendInfo( Info(ListInfo::COPYINGFILETOTEMP,neededFiles.at(i)));
+    }*/
 
 }

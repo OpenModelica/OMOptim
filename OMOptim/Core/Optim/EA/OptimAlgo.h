@@ -45,7 +45,7 @@
 
 class Problem;
 class Result;
-class Project;	
+class Project;    
 
 class OptimAlgo : public QObject
 {

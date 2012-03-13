@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file diagramitem.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file diagramitem.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
 /****************************************************************************
  **
@@ -120,34 +120,34 @@
 
  void DiagramItem::setWidth(double _newWidth)
  {
-	 double _oldWidth =  myPolygon.boundingRect().width();
-	 myPolygon = polygon();
+     double _oldWidth =  myPolygon.boundingRect().width();
+     myPolygon = polygon();
 
-	 QPolygonF _newPolygon;
-	 for(int i=0;i<myPolygon.size();i++)
-	 {
-		 QPointF _newPoint = myPolygon.at(i);
-		 _newPoint.setX(myPolygon.at(i).x()*_newWidth/_oldWidth);
-		_newPolygon << _newPoint;
-	 }
+     QPolygonF _newPolygon;
+     for(int i=0;i<myPolygon.size();i++)
+     {
+         QPointF _newPoint = myPolygon.at(i);
+         _newPoint.setX(myPolygon.at(i).x()*_newWidth/_oldWidth);
+        _newPolygon << _newPoint;
+     }
 
-	 setPolygon(_newPolygon);
+     setPolygon(_newPolygon);
  }
 
  void DiagramItem::setHeight(double _newHeight)
  {
-	 double _oldHeight =  myPolygon.boundingRect().height();
-	 myPolygon = polygon();
+     double _oldHeight =  myPolygon.boundingRect().height();
+     myPolygon = polygon();
 
-	 QPolygonF _newPolygon;
-	 for(int i=0;i<myPolygon.size();i++)
-	 {
-		 QPointF _newPoint = myPolygon.at(i);
-		 _newPoint.setY(myPolygon.at(i).y()*_newHeight/_oldHeight);
-		_newPolygon << _newPoint;
-	 }
+     QPolygonF _newPolygon;
+     for(int i=0;i<myPolygon.size();i++)
+     {
+         QPointF _newPoint = myPolygon.at(i);
+         _newPoint.setY(myPolygon.at(i).y()*_newHeight/_oldHeight);
+        _newPolygon << _newPoint;
+     }
 
-	 setPolygon(_newPolygon);
+     setPolygon(_newPolygon);
  }
 
 
@@ -190,8 +190,8 @@
  {
      scene()->clearSelection();
      setSelected(true);
-	 if(myContextMenu)
-		myContextMenu->exec(event->screenPos());
+     if(myContextMenu)
+        myContextMenu->exec(event->screenPos());
  }
 
  QVariant DiagramItem::itemChange(GraphicsItemChange change,

@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file NewProjectBaseForm.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file NewProjectBaseForm.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "NewProjectBaseForm.h"
@@ -48,9 +48,9 @@ NewProjectBaseForm::NewProjectBaseForm(QWidget *parent) :
     m_ui(new Ui::NewProjectBaseFormClass)
 {
     m_ui->setupUi(this);
-	
-	connect(m_ui->pushCancel, SIGNAL(clicked()), this, SLOT(reject()));
-	connect(m_ui->pushOk, SIGNAL(clicked()), this, SLOT(validate()));
+    
+    connect(m_ui->pushCancel, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(m_ui->pushOk, SIGNAL(clicked()), this, SLOT(validate()));
 }
 
 NewProjectBaseForm::~NewProjectBaseForm()
@@ -61,17 +61,17 @@ NewProjectBaseForm::~NewProjectBaseForm()
 
 void NewProjectBaseForm::validate()
 {
-	if(!m_ui->lineProjectName->text().isEmpty())
-	{
-		projectName=m_ui->lineProjectName->text();
+    if(!m_ui->lineProjectName->text().isEmpty())
+    {
+        projectName=m_ui->lineProjectName->text();
 
-		accept();
-	}
-	else
-	{
-		 QErrorMessage *errorMessageDialog = new QErrorMessage(this);
-		 errorMessageDialog->showMessage("Incorrect name");
-	}
+        accept();
+    }
+    else
+    {
+         QErrorMessage *errorMessageDialog = new QErrorMessage(this);
+         errorMessageDialog->showMessage("Incorrect name");
+    }
 
 }
 

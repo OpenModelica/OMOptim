@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MERefValue.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MERefValue.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if defined(_MEREFVALUE_H)
@@ -45,7 +45,7 @@
 template<class DimValue>
 MERefValue<DimValue>::MERefValue(QVariant value,int unit)
 {
-	setValue(value,unit);
+    setValue(value,unit);
         //dimValue = new DimValue();
 }
 
@@ -58,26 +58,26 @@ MERefValue<DimValue>::~MERefValue(void)
 template<class DimValue>
 QVariant MERefValue<DimValue>::value() const
 {
-	return _value;
+    return _value;
 }
 
 template<class DimValue>
 void MERefValue<DimValue>::setValue(QVariant value,int iUnit)
 {
-	_value = value; 
-	if(iUnit>-1)
-		_unit = iUnit;
+    _value = value; 
+    if(iUnit>-1)
+        _unit = iUnit;
 }
 
 template<class DimValue>
 bool MERefValue<DimValue>::setValue(QVariant value,QString unit)
 {
-	int iUnit = units().indexOf(unit);
-	if(iUnit==-1)
-		return false;
-	else
-		setValue(value,iUnit);
-	return true;
+    int iUnit = units().indexOf(unit);
+    if(iUnit==-1)
+        return false;
+    else
+        setValue(value,iUnit);
+    return true;
 }
 template<class DimValue>
 void MERefValue<DimValue>::setValue(const MERefValue & value)
@@ -96,19 +96,19 @@ void MERefValue<DimValue>::setValue(const DimValue & value)
 template<class DimValue>
 bool MERefValue<DimValue>::setUnit(QString unit)
 {
-	int iUnit = units().indexOf(unit);
-	if(iUnit==-1)
-		return false;
-	else
-		setUnit(iUnit);
-	return true;
-	
+    int iUnit = units().indexOf(unit);
+    if(iUnit==-1)
+        return false;
+    else
+        setUnit(iUnit);
+    return true;
+    
 }
 
 template<class DimValue>
 void MERefValue<DimValue>::setUnit(int iUnit)
 {
-	_unit = iUnit;
+    _unit = iUnit;
 }
 
 template<class DimValue>
@@ -121,19 +121,19 @@ QStringList MERefValue<DimValue>::units() const
 template<class DimValue>
 QString MERefValue<DimValue>::unit() const
 {
-	return units().at(_unit);
+    return units().at(_unit);
 }
 
 template<class DimValue>
 int MERefValue<DimValue>::iUnit() const
 {
-	return _unit;
+    return _unit;
 }
 
 template<class DimValue>
 QString MERefValue<DimValue>::unit(int iUnit) const
 {
-	return units().at(iUnit);
+    return units().at(iUnit);
 }
 
 template<class DimValue>
@@ -151,18 +151,18 @@ unsigned MERefValue<DimValue>::nbUnits() const
 template<class DimValue>
 double MERefValue<DimValue>::numValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName) const
 {
-	bool isNum;
+    bool isNum;
     QString refName;
     DimValue dimValue;
-	double result = _value.toDouble(&isNum);
-	if(isNum)
-	{
+    double result = _value.toDouble(&isNum);
+    if(isNum)
+    {
                 dimValue.setValue(result,_unit);
-		ok=true;
+        ok=true;
                 return dimValue.value(iUnit);
-	}
-	else
-	{
+    }
+    else
+    {
         if(variables==NULL)
         {
             ok = false;
@@ -184,19 +184,19 @@ double MERefValue<DimValue>::numValue(MOOptVector *variables,int iUnit,bool &ok,
             iVar = variables->findItem(_value.toString());
         }
 
-		if(iVar==-1)
-		{
-			ok = false;
-			return -1;
-		}
-		else
-		{
-			ok =  true;
-			result = variables->at(iVar)->finalValue(variables->curScan(),variables->curPoint());
+        if(iVar==-1)
+        {
+            ok = false;
+            return -1;
+        }
+        else
+        {
+            ok =  true;
+            result = variables->at(iVar)->finalValue(variables->curScan(),variables->curPoint());
                         result = dimValue.convert(result,this->iUnit(),iUnit);
-			return result;
-		}
-	}
+            return result;
+        }
+    }
 }
 
 /** Returns numerical value of instance. If value contains a reference to a variable, it will be looked for in variables.

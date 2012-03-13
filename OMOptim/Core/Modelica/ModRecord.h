@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModRecord.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModRecord.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _ModRecord_H
@@ -45,16 +45,16 @@
 class ModRecord : public ModItem
 {
 public:
-	ModRecord(MOomc*);
-	ModRecord(MOomc*,ModItem* _parent,QString _name,QString filePath="");
-	~ModRecord(void);
+    ModRecord(MOomc*);
+    ModRecord(MOomc*,ModItem* _parent,QString _name,QString filePath="");
+    ~ModRecord(void);
         virtual ModItem* clone() const;
-	virtual QString getClassName(){return "ModRecord";};
+    virtual QString getClassName(){return "ModRecord";};
 
 
-	virtual Modelica::ClassRestr getClassRestr(){return Modelica::RECORD;};
-	
-	
+    virtual Modelica::ClassRestr getClassRestr(){return Modelica::RECORD;};
+    
+    
 protected :
 
 };

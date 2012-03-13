@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MEQflow.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MEQflow.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_MEQFLOW_H)
@@ -48,19 +48,19 @@ class MEQflow : public MEDimValue
 public:
         MEQflow();
         MEQflow(double value,int unit);
-	~MEQflow();
+    ~MEQflow();
 
-	enum Units
-	{
-		W,
-		KW,
-		MW
-	};
+    enum Units
+    {
+        W,
+        KW,
+        MW
+    };
 
-	QString unit(int iUnit)  const;
+    QString unit(int iUnit)  const;
         QString unit()  const; //should'nt be (should be inherited) but error in compiler otherwise
-	unsigned nbUnits() const;
-	double convert(double value,int orgUnit,int dstUnit) const;
+    unsigned nbUnits() const;
+    double convert(double value,int orgUnit,int dstUnit) const;
 
         MEQflow operator-(const MEQflow& b) const;
         MEQflow operator+(const MEQflow& b) const;

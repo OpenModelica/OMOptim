@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOTableView.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOTableView.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "MOTableView.h"
@@ -43,14 +43,14 @@
 
 MOTableView::MOTableView(QWidget* parent):QTableView(parent)
 {
-	
-	//_view->installEventFilter(this);
-	installEventFilter(this);
+    
+    //_view->installEventFilter(this);
+    installEventFilter(this);
         horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-	verticalHeader()->hide();
-	
-	//edit triggers
-	setEditTriggers(QAbstractItemView::AllEditTriggers);
+    verticalHeader()->hide();
+    
+    //edit triggers
+    setEditTriggers(QAbstractItemView::AllEditTriggers);
 }
 
 MOTableView::~MOTableView()
@@ -86,28 +86,28 @@ void MOTableView::adjustViewSize()
 //                }
 
 //        }
-		
+        
 }
 
 void MOTableView::setModel(QAbstractItemModel *_model)
 {
-	QTableView::setModel(_model);
+    QTableView::setModel(_model);
 
-	connect(_model, SIGNAL(layoutChanged()), this, SLOT(adjustViewSize()));
+    connect(_model, SIGNAL(layoutChanged()), this, SLOT(adjustViewSize()));
 
-	adjustViewSize();
+    adjustViewSize();
 }
 
 
 bool MOTableView::eventFilter( QObject *obj, QEvent *ev )
 {
-	if( obj == this )
-	{
-		if( ev->type() == QEvent::Resize )
-		{
-			adjustViewSize();
-			return false;
-		}
-	}
-	return false;
+    if( obj == this )
+    {
+        if( ev->type() == QEvent::Resize )
+        {
+            adjustViewSize();
+            return false;
+        }
+    }
+    return false;
 }

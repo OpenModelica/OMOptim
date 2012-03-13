@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OpenModelica.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file OpenModelica.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _OpenModelica_H
@@ -64,18 +64,18 @@
 
 class OpenModelica
 {
-	/*! \class OpenModelica
+    /*! \class OpenModelica
    * \brief Class containing handling functions for OpenModelica.
    *
    *  All functions defined in this class are static. There are used to :
-   *	-read/write input or output files
-   *	-compile model
-   *	
+   *    -read/write input or output files
+   *    -compile model
+   *    
    */
 
 public:
-	OpenModelica();
-	~OpenModelica(void);
+    OpenModelica();
+    ~OpenModelica(void);
 
         static bool compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,const QStringList & moDeps);
         static void getInputVariablesFromTxtFile(MOomc *_omc,QString filePath, MOVector<Variable> *,QString _modelName);
@@ -84,7 +84,7 @@ public:
         static bool getInputVariablesFromXmlFile(MOomc *_omc,const QDomDocument &,QString modModelName, MOVector<Variable> *);
 
         static bool getFinalVariablesFromFile(QString, MOVector<Variable> *,QString _modelName);
-	static bool getFinalVariablesFromFile(QTextStream *, MOVector<Variable> *,QString _modelName);
+    static bool getFinalVariablesFromFile(QTextStream *, MOVector<Variable> *,QString _modelName);
 
         static bool getFinalVariablesFromMatFile(QString, MOVector<Variable> *,QString _modelName);
 
@@ -92,7 +92,7 @@ public:
         static void setInputVariablesTxt(QString, MOVector<Variable> *,QString modModelName,MOParameters *parameters=NULL);
         static bool setInputXml(QString, MOVector<Variable> *, QString modelName,MOParameters *parameters=NULL);
         static void start(QString exeFile,int maxnsec);
-	static QString sciNumRx();
+    static QString sciNumRx();
         static QString home();
 
 
@@ -102,7 +102,7 @@ private :
         static void setInputVariablesXml(QDomDocument &, QString modModelName,MOVector<Variable> *);
         static void setInputParametersXml(QDomDocument &, MOParameters *);
 
-	// Parameters
+    // Parameters
 
 
 };

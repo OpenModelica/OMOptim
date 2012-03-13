@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MyDelegates.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MyDelegates.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #if !defined(_MYDELEGATES_H)
@@ -56,88 +56,88 @@
 
 class GenericDelegate : public QStyledItemDelegate
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	GenericDelegate(QList<int>,QStringList,QObject *parent = 0);
+    GenericDelegate(QList<int>,QStringList,QObject *parent = 0);
 
-	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-		const QModelIndex &index) const;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
 
-	void setEditorData(QWidget *editor, const QModelIndex &index) const;
-	void setModelData(QWidget *editor, QAbstractItemModel *model,
-		const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model,
+        const QModelIndex &index) const;
 
 
-	private slots:
-		void emitCommitData();
+    private slots:
+        void emitCommitData();
 
 private:
-	QList<int> values;
-	QStringList titles;
+    QList<int> values;
+    QStringList titles;
 };
 
 class VarCompleterDelegate : public QStyledItemDelegate
 {
 public:
-	VarCompleterDelegate(QStringList _list,QObject* parent = 0) : QStyledItemDelegate(parent),list(_list) { }
-	QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
-	{
-		/* QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
-		QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(editor);
-		if (lineEdit)
-		{
-		QCompleter* completer = new QCompleter(list,lineEdit);
-		completer->setCaseSensitivity(Qt::CaseInsensitive);
-		lineEdit->setCompleter(completer);
-		}
-		return editor;*/
+    VarCompleterDelegate(QStringList _list,QObject* parent = 0) : QStyledItemDelegate(parent),list(_list) { }
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+    {
+        /* QWidget* editor = QStyledItemDelegate::createEditor(parent, option, index);
+        QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(editor);
+        if (lineEdit)
+        {
+        QCompleter* completer = new QCompleter(list,lineEdit);
+        completer->setCaseSensitivity(Qt::CaseInsensitive);
+        lineEdit->setCompleter(completer);
+        }
+        return editor;*/
 
-		QComboBox *comboBox = new QComboBox(parent);
-		comboBox->setEditable(true);
-		comboBox->setInsertPolicy(QComboBox::NoInsert);
-		comboBox->addItems(list);
+        QComboBox *comboBox = new QComboBox(parent);
+        comboBox->setEditable(true);
+        comboBox->setInsertPolicy(QComboBox::NoInsert);
+        comboBox->addItems(list);
 
-		connect(comboBox, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
-		connect(comboBox->lineEdit(), SIGNAL(editingFinished()), this, SLOT(emitCommitData()));
+        connect(comboBox, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
+        connect(comboBox->lineEdit(), SIGNAL(editingFinished()), this, SLOT(emitCommitData()));
 
-		QString currentText = index.model()->data(index, Qt::DisplayRole).toString();
-		int selectedItem = comboBox->findText(currentText);
-		if(selectedItem == -1)
-			comboBox->setEditText(index.model()->data(index, Qt::DisplayRole).toString());
-		else
-			comboBox->setCurrentIndex(selectedItem);
+        QString currentText = index.model()->data(index, Qt::DisplayRole).toString();
+        int selectedItem = comboBox->findText(currentText);
+        if(selectedItem == -1)
+            comboBox->setEditText(index.model()->data(index, Qt::DisplayRole).toString());
+        else
+            comboBox->setCurrentIndex(selectedItem);
 
-		return comboBox;
-	}
+        return comboBox;
+    }
 
-	void setEditorData(QWidget *editor, const QModelIndex &index) const
-	{
-		QComboBox *comboBox = qobject_cast<QComboBox*>(editor);
+    void setEditorData(QWidget *editor, const QModelIndex &index) const
+    {
+        QComboBox *comboBox = qobject_cast<QComboBox*>(editor);
 
-		comboBox->clear();
-		comboBox->addItems(list);
+        comboBox->clear();
+        comboBox->addItems(list);
 
-		QString currentText = index.model()->data(index, Qt::DisplayRole).toString();
-		int selectedItem = comboBox->findText(currentText);
-		if(selectedItem == -1)
-			comboBox->setEditText(index.model()->data(index, Qt::DisplayRole).toString());
-		else
-			comboBox->setCurrentIndex(selectedItem);
-	}
+        QString currentText = index.model()->data(index, Qt::DisplayRole).toString();
+        int selectedItem = comboBox->findText(currentText);
+        if(selectedItem == -1)
+            comboBox->setEditText(index.model()->data(index, Qt::DisplayRole).toString());
+        else
+            comboBox->setCurrentIndex(selectedItem);
+    }
 
-	void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
-	{
-		QComboBox* comboBox = qobject_cast<QComboBox*>(editor);
-		model->setData(index, comboBox->currentText(), Qt::EditRole);
-	}
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+    {
+        QComboBox* comboBox = qobject_cast<QComboBox*>(editor);
+        model->setData(index, comboBox->currentText(), Qt::EditRole);
+    }
 
-	void emitCommitData()
-	{
-		emit commitData(qobject_cast<QWidget *>(sender()));
-	}
+    void emitCommitData()
+    {
+        emit commitData(qobject_cast<QWidget *>(sender()));
+    }
 private:
-	QStringList list;
+    QStringList list;
 };
 
 

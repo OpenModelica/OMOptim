@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabOneSim.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file tabOneSim.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "TabOneSim.h"
@@ -46,24 +46,24 @@
 TabOneSim::TabOneSim(OneSimulation *problem, QWidget *parent) :
 MO2ColTab(problem->project()->name(),problem,false,parent)
 {
-	
+    
     _project = dynamic_cast<Project*>(problem->project());
     _problem = problem;
 
-	// Variables
+    // Variables
     _widgetOneSimVars = new WidgetOneSimVars(_project,_problem,this);
     addDockWidget("Variables",_widgetOneSimVars);
-		
+        
     _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
     addDockWidget("Files",_widgetFilesList,_widgetOneSimVars);
 
     _widgetCtrl = new WidgetCtrlParameters(_problem->modModelPlus(),_problem->ctrls(),false,this);
     addDockWidget("Simulator",_widgetCtrl,_widgetOneSimVars);
-		
+        
     mapDockWidgets.key(_widgetOneSimVars)->raise();
 }
 
 TabOneSim::~TabOneSim()
 {
-	
+    
 }

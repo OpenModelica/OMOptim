@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MyEoGnuplot.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+     @file MyEoGnuplot.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 0.9 
 
   */
 #ifdef HAVE_CONFIG_H
@@ -73,47 +73,47 @@ MyEoGnuplot::~MyEoGnuplot()
 void MyEoGnuplot::gnuplotCommand(const QString & _command)
 {
 
-	if(pipeOpen)
-	{
-		fprintf(gnuplotPipe, _command.toAscii().data());  
-		fflush(gnuplotPipe);
-	}
+    if(pipeOpen)
+    {
+        fprintf(gnuplotPipe, _command.toAscii().data());  
+        fflush(gnuplotPipe);
+    }
 }
 
 void MyEoGnuplot::initGnuPlot()
 {
         bool useGnuplot = MOSettings::value("useGnuplot").toBool();
-	
-	if(!useGnuplot)
-	{
-		pipeOpen=false;
-	}
-	else
-	{	
+    
+    if(!useGnuplot)
+    {
+        pipeOpen=false;
+    }
+    else
+    {    
                 QString pgnuplotFilePath = MOSettings::value("pgnuplotEXE").toString();
-		//QString command("\""+pgnuplotFilePath+"\" -persist ");
-		QString command("\""+pgnuplotFilePath+"\"");
-		command.replace("/","\\");
+        //QString command("\""+pgnuplotFilePath+"\" -persist ");
+        QString command("\""+pgnuplotFilePath+"\"");
+        command.replace("/","\\");
 
-		InfoSender::instance()->debug("Loading gnuplot : "+pgnuplotFilePath);
-		FILE *gnuplotPipe = popen(command.toAscii().data(),"w");
+        InfoSender::instance()->debug("Loading gnuplot : "+pgnuplotFilePath);
+        FILE *gnuplotPipe = popen(command.toAscii().data(),"w");
 
 #ifdef WIN32
-		pipeOpen = (bool)((*gnuplotPipe)._ptr);
+        pipeOpen = (bool)((*gnuplotPipe)._ptr);
 #else
     pipeOpen = gnuplotPipe != NULL;
 #endif
-		//pipeOpen = (gnuplotPipe!=NULL);
-		if(!pipeOpen)
-		{
-			InfoSender::instance()->debug("Failed loading gnuplot");	
-		}
-		else
-		{
-			InfoSender::instance()->debug("Succesfully loaded gnuplot");
-			gnuplotCommand("set terminal wxt");
-		}
-	}
+        //pipeOpen = (gnuplotPipe!=NULL);
+        if(!pipeOpen)
+        {
+            InfoSender::instance()->debug("Failed loading gnuplot");    
+        }
+        else
+        {
+            InfoSender::instance()->debug("Succesfully loaded gnuplot");
+            gnuplotCommand("set terminal wxt");
+        }
+    }
 }
 
 

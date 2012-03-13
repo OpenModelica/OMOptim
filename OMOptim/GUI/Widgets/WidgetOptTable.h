@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetOptTable.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetOptTable.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef WIDGETOPTTABLE_H
@@ -62,16 +62,16 @@ public:
     explicit WidgetOptTable(OptimResult* ,QWidget *parent);
     virtual ~WidgetOptTable();
 
-	void fillOptTable();
+    void fillOptTable();
 
 public:
     Ui::WidgetOptTableClass *ui;
 
-	OptimResult* result;
+    OptimResult* result;
 
-	public slots:
-		void onResultCurPointChanged();
-		
+    public slots:
+        void onResultCurPointChanged();
+        
 
 };
 

@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
         @file ModLoader.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _ModLoader_H
@@ -56,13 +56,13 @@ class ModItemsTree;
   */
 class ModLoader : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
         ModLoader(MOomc *moomc);
 
-	// Load functions
+    // Load functions
         void loadMoFile(ModItemsTree* modItemsTree,QString filePath,bool forceLoad = true);
         void loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bool forceLoad = true);
 

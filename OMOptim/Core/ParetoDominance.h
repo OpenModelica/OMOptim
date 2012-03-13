@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ParetoDominance.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ParetoDominance.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_PARETODOMINANCE_H)
@@ -46,11 +46,11 @@
 class ParetoDominance
 {
 public:
-	ParetoDominance();
-	~ParetoDominance(void);
+    ParetoDominance();
+    ~ParetoDominance(void);
 
-	static QList<int> getParetoSet(MOVector<OptObjective>* _objs,MOOptVector* _objResults);
-	static bool dominates(MOVector<OptObjective>* _objs,MOOptVector* _vector, int iPoint1, int iPoint2);
+    static QList<int> getParetoSet(MOVector<OptObjective>* _objs,MOOptVector* _objResults);
+    static bool dominates(MOVector<OptObjective>* _objs,MOOptVector* _vector, int iPoint1, int iPoint2);
 
 
 };

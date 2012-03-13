@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOStyleSheet.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOStyleSheet.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "MOStyleSheet.h"
@@ -52,9 +52,9 @@ MOStyleSheet::~MOStyleSheet(void)
 void MOStyleSheet::initialize(QApplication* _qApp)
 {
 
-	QString toolBoxSS = "QToolBox::tab {\n      background: #B8B8B8;\n\n         border-radius: 3px;\n        color: #212A5E;\n	font: bold;\n}";
+    QString toolBoxSS = "QToolBox::tab {\n      background: #B8B8B8;\n\n         border-radius: 3px;\n        color: #212A5E;\n    font: bold;\n}";
 
 
-	_qApp->setStyleSheet(toolBoxSS);
+    _qApp->setStyleSheet(toolBoxSS);
 
 }

@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file VariablesManip.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file VariablesManip.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "VariablesManip.h"
@@ -83,108 +83,108 @@ void VariablesManip::updateScanValues(MOVector<Variable> *vars, MOVector<Scanned
 
 int VariablesManip::nbScans(MOVector<ScannedVariable> *scannedVars)
 {
-	int nbScans = 1;
-	for(int i=0;i<scannedVars->size();i++)
-		nbScans = nbScans*scannedVars->at(i)->nbScans();
-	
-	return nbScans;
+    int nbScans = 1;
+    for(int i=0;i<scannedVars->size();i++)
+        nbScans = nbScans*scannedVars->at(i)->nbScans();
+    
+    return nbScans;
 }
 
 double VariablesManip::calculateObjValue(OptObjective* optObj,MOVector<VariableResult> * oneSimFinalVars,bool & ok,int iPoint)
 {
     int iVarObj = oneSimFinalVars->findItem(optObj->name());
-	ok = false;
-	double result;
-	if(iVarObj==-1)
-	{
+    ok = false;
+    double result;
+    if(iVarObj==-1)
+    {
             InfoSender::instance()->send(Info("Could not find variable "+optObj->name()+". Setting value to 0",ListInfo::WARNING2));
             ok = false;
             return 0;
-	}
-	else
-	{
-		switch(optObj->scanFunction())
-		{
-			case OptObjective::SUM :
-				result = VariablesManip::calculateScanSum(oneSimFinalVars->at(iVarObj),ok,iPoint);
-				break;
-			case OptObjective::AVERAGE :
-				result = VariablesManip::calculateScanAverage(oneSimFinalVars->at(iVarObj),ok,iPoint);
-				break;
-			case OptObjective::DEVIATION :
-				result = VariablesManip::calculateScanStandardDev(oneSimFinalVars->at(iVarObj),ok,iPoint);
-				break;
+    }
+    else
+    {
+        switch(optObj->scanFunction())
+        {
+            case OptObjective::SUM :
+                result = VariablesManip::calculateScanSum(oneSimFinalVars->at(iVarObj),ok,iPoint);
+                break;
+            case OptObjective::AVERAGE :
+                result = VariablesManip::calculateScanAverage(oneSimFinalVars->at(iVarObj),ok,iPoint);
+                break;
+            case OptObjective::DEVIATION :
+                result = VariablesManip::calculateScanStandardDev(oneSimFinalVars->at(iVarObj),ok,iPoint);
+                break;
         case OptObjective::MINIMUM :
             result = VariablesManip::extractMinimum(oneSimFinalVars->at(iVarObj),ok,iPoint);
             break;
         case OptObjective::MAXIMUM :
             result = VariablesManip::extractMaximum(oneSimFinalVars->at(iVarObj),ok,iPoint);
             break;
-			default : 
-				result = oneSimFinalVars->at(iVarObj)->finalValue(0,iPoint);
-				ok=true;
-				break;
-		}
-	}
+            default : 
+                result = oneSimFinalVars->at(iVarObj)->finalValue(0,iPoint);
+                ok=true;
+                break;
+        }
+    }
 
         if(ok && (result>=optObj->min())
                 &&(result<=optObj->max()))
-		return result;
-	else
-	{
-		ok = false;
-		return 0;
-	}
+        return result;
+    else
+    {
+        ok = false;
+        return 0;
+    }
 }
 
 double VariablesManip::calculateScanSum(VariableResult *var,bool &ok, int iPoint)
 {
-	int nbScans = var->nbScans();
-	if(nbScans==0)
-	{
-		ok=false;
-		return 0;
-	}
-	
-	double sum = 0;
-	for(int iScan=0;iScan<nbScans;iScan++)
-	{
-		sum += var->finalValue(iScan,iPoint);
-	}
-	ok=true;
-	return sum;
+    int nbScans = var->nbScans();
+    if(nbScans==0)
+    {
+        ok=false;
+        return 0;
+    }
+    
+    double sum = 0;
+    for(int iScan=0;iScan<nbScans;iScan++)
+    {
+        sum += var->finalValue(iScan,iPoint);
+    }
+    ok=true;
+    return sum;
 }
 double VariablesManip::calculateScanAverage(VariableResult* var,bool &ok, int iPoint)
 {
-	int nbScans = var->nbScans();
-	if(nbScans==0)
-	{
-		ok=false;
-		return 0;
-	}
+    int nbScans = var->nbScans();
+    if(nbScans==0)
+    {
+        ok=false;
+        return 0;
+    }
 
-	double sum = calculateScanSum(var,ok,iPoint);
-	return sum/nbScans;
+    double sum = calculateScanSum(var,ok,iPoint);
+    return sum/nbScans;
 }
 
 double VariablesManip::calculateScanStandardDev(VariableResult* var,bool &ok, int iPoint)
 {
-	double avg = calculateScanAverage(var,ok,iPoint);
-	int nbScans = var->nbScans();
-	if(nbScans==0)
-	{
-		ok=false;
-		return 0;
-	}
+    double avg = calculateScanAverage(var,ok,iPoint);
+    int nbScans = var->nbScans();
+    if(nbScans==0)
+    {
+        ok=false;
+        return 0;
+    }
 
-	double variance = 0;
-	for(int iScan=0;iScan<nbScans;iScan++)
-	{
-		variance += pow(var->finalValue(iScan,iPoint)-avg,2);
-	}
-	variance = variance / nbScans;
-	double stdDev = sqrt(variance);
-	return stdDev;
+    double variance = 0;
+    for(int iScan=0;iScan<nbScans;iScan++)
+    {
+        variance += pow(var->finalValue(iScan,iPoint)-avg,2);
+    }
+    variance = variance / nbScans;
+    double stdDev = sqrt(variance);
+    return stdDev;
 }
 
 double VariablesManip::extractMinimum(VariableResult* var,bool &ok, int iPoint)

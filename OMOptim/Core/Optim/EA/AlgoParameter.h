@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file AlgoParameter.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file AlgoParameter.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_ALGOPARAMETER_H)
@@ -51,47 +51,47 @@ class AlgoParameter : public MOItem
 {
 public:
 
-	enum Field
-	{
-		//Modelica fields
-		NAME,
-		VALUE,
-		DEFAULTVALUE,
-		TYPE,
-		MIN,
-		MAX,
-		DESCRIPTION
-	};
+    enum Field
+    {
+        //Modelica fields
+        NAME,
+        VALUE,
+        DEFAULTVALUE,
+        TYPE,
+        MIN,
+        MAX,
+        DESCRIPTION
+    };
 
-	
+    
 
-	AlgoParameter();
-	AlgoParameter(const AlgoParameter &);
-	AlgoParameter(QString _name,QString _desc,QVariant _defaultValue, QString _type, QVariant _minValue=0, QVariant _maxValue=1);
-	AlgoParameter(QString);
-	AlgoParameter(QDomElement & domEl);
-	~AlgoParameter(void);
+    AlgoParameter();
+    AlgoParameter(const AlgoParameter &);
+    AlgoParameter(QString _name,QString _desc,QVariant _defaultValue, QString _type, QVariant _minValue=0, QVariant _maxValue=1);
+    AlgoParameter(QString);
+    AlgoParameter(QDomElement & domEl);
+    ~AlgoParameter(void);
 
-	virtual QString getClassName(){return "AlgoParameter";};
+    virtual QString getClassName(){return "AlgoParameter";};
 
-	static const int nbFields = 7;
-	virtual unsigned getNbFields(){return nbFields;};
+    static const int nbFields = 7;
+    virtual unsigned getNbFields(){return nbFields;};
 
 
-	bool setFieldValue(int ,QVariant );
-	QVariant getFieldValue(int ifield, int role = Qt::UserRole) const;
-	static QString sFieldName(int ifield, int role);
-	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return AlgoParameter::sFieldName(i,role);};
+    bool setFieldValue(int ,QVariant );
+    QVariant getFieldValue(int ifield, int role = Qt::UserRole) const;
+    static QString sFieldName(int ifield, int role);
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return AlgoParameter::sFieldName(i,role);};
 
-	AlgoParameter* clone() const;
+    AlgoParameter* clone() const;
 
 private :
-	QString _description;
-	QVariant _value;
-	QVariant _defaultValue;
-	QString _type;
-	QVariant _min;
-	QVariant _max;
+    QString _description;
+    QVariant _value;
+    QVariant _defaultValue;
+    QString _type;
+    QVariant _min;
+    QVariant _max;
 
 
 };

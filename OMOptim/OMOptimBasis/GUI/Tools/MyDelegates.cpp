@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MyDelegates.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MyDelegates.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "MyDelegates.h"
@@ -45,48 +45,48 @@
 GenericDelegate::GenericDelegate(QList<int> _values ,QStringList _titles,QObject *parent)
 : QStyledItemDelegate(parent)
 {
-	values = _values;
-	titles = _titles;
+    values = _values;
+    titles = _titles;
 } 
 
 QWidget *GenericDelegate::createEditor(QWidget *parent,
-										 const QStyleOptionViewItem &/* option */,
-										 const QModelIndex &/* index */) const
+                                         const QStyleOptionViewItem &/* option */,
+                                         const QModelIndex &/* index */) const
 {
-	QComboBox *editor = new QComboBox(parent);
-	//editor->setAutoCompletion(true);
-	
-	editor->addItems(titles);
+    QComboBox *editor = new QComboBox(parent);
+    //editor->setAutoCompletion(true);
+    
+    editor->addItems(titles);
 
-	connect(editor, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
+    connect(editor, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
 
-	return editor;
+    return editor;
 }
 
 void GenericDelegate::setEditorData(QWidget *editor,
-									  const QModelIndex &index) const
+                                      const QModelIndex &index) const
 {
-	QString curTitle = index.model()->data(index, Qt::DisplayRole).toString();
+    QString curTitle = index.model()->data(index, Qt::DisplayRole).toString();
 
-	QComboBox *comboBox = static_cast<QComboBox*>(editor);
-	comboBox->setCurrentIndex(comboBox->findText(curTitle));
+    QComboBox *comboBox = static_cast<QComboBox*>(editor);
+    comboBox->setCurrentIndex(comboBox->findText(curTitle));
 }
 
 void GenericDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
-									 const QModelIndex &index) const
+                                     const QModelIndex &index) const
 {
-	QComboBox *comboBox = static_cast<QComboBox*>(editor);
+    QComboBox *comboBox = static_cast<QComboBox*>(editor);
 
-	QString selectedText = comboBox->currentText();
-	int iValue = titles.indexOf(selectedText);
+    QString selectedText = comboBox->currentText();
+    int iValue = titles.indexOf(selectedText);
 
-	if(iValue>-1)
-	{
-		int curValue = values.at(iValue);
-		model->setData(index,QVariant(curValue));
-	}
+    if(iValue>-1)
+    {
+        int curValue = values.at(iValue);
+        model->setData(index,QVariant(curValue));
+    }
 
-	return;
+    return;
 }
 
 void GenericDelegate::emitCommitData()
@@ -105,49 +105,49 @@ void GenericDelegate::emitCommitData()
 //} 
 //
 //QWidget *FuzzyStatusDelegate::createEditor(QWidget *parent,
-//										 const QStyleOptionViewItem &/* option */,
-//										 const QModelIndex &/* index */) const
+//                                         const QStyleOptionViewItem &/* option */,
+//                                         const QModelIndex &/* index */) const
 //{
-//	QComboBox *editor = new QComboBox(parent);
-//	//editor->setAutoCompletion(true);
-//	QStringList items;
+//    QComboBox *editor = new QComboBox(parent);
+//    //editor->setAutoCompletion(true);
+//    QStringList items;
 //
-//	items << "Point dependent" << "Point independent";
-//	editor->addItems(items);
+//    items << "Point dependent" << "Point independent";
+//    editor->addItems(items);
 //
-//	connect(editor, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
+//    connect(editor, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
 //
-//	return editor;
+//    return editor;
 //}
 //
 //void FuzzyStatusDelegate::setEditorData(QWidget *editor,
-//									  const QModelIndex &index) const
+//                                      const QModelIndex &index) const
 //{
-//	QString status = index.model()->data(index, Qt::DisplayRole).toString();
+//    QString status = index.model()->data(index, Qt::DisplayRole).toString();
 //
-//	QComboBox *comboBox = static_cast<QComboBox*>(editor);
-//	comboBox->setCurrentIndex(comboBox->findText(status));
+//    QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//    comboBox->setCurrentIndex(comboBox->findText(status));
 //}
 //
 //void FuzzyStatusDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
-//									 const QModelIndex &index) const
+//                                     const QModelIndex &index) const
 //{
-//	QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//    QComboBox *comboBox = static_cast<QComboBox*>(editor);
 //
-//	QString selectedText = comboBox->currentText();
+//    QString selectedText = comboBox->currentText();
 //
-//	if (selectedText=="Point dependent")
-//	{
-//		model->setData(index, FuzzyVariable::POINTDEP);
-//		return;
-//	}
+//    if (selectedText=="Point dependent")
+//    {
+//        model->setData(index, FuzzyVariable::POINTDEP);
+//        return;
+//    }
 //
-//	if (selectedText=="Point independent")
-//	{
-//		model->setData(index, FuzzyVariable::POINTINDEP);
-//		return;
-//	}
-//	return;
+//    if (selectedText=="Point independent")
+//    {
+//        model->setData(index, FuzzyVariable::POINTINDEP);
+//        return;
+//    }
+//    return;
 //}
 //
 //void FuzzyStatusDelegate::emitCommitData()
@@ -165,38 +165,38 @@ void GenericDelegate::emitCommitData()
 //} 
 //
 //QWidget *FuzzyPrecStatusDelegate::createEditor(QWidget *parent,
-//										 const QStyleOptionViewItem &/* option */,
-//										 const QModelIndex &/* index */) const
+//                                         const QStyleOptionViewItem &/* option */,
+//                                         const QModelIndex &/* index */) const
 //{
-//	QComboBox *editor = new QComboBox(parent);
-//	//editor->setAutoCompletion(true);
+//    QComboBox *editor = new QComboBox(parent);
+//    //editor->setAutoCompletion(true);
 //
 //
-//	editor->addItem("Fixed",FuzzyVariable::FIXED);
-//	editor->addItem("Relative prec.",FuzzyVariable::PRECREL);
-//	editor->addItem("Absolute prec.",FuzzyVariable::PRECABS);
-//	
-//	connect(editor, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
+//    editor->addItem("Fixed",FuzzyVariable::FIXED);
+//    editor->addItem("Relative prec.",FuzzyVariable::PRECREL);
+//    editor->addItem("Absolute prec.",FuzzyVariable::PRECABS);
+//    
+//    connect(editor, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
 //
-//	return editor;
+//    return editor;
 //}
 //
 //void FuzzyPrecStatusDelegate::setEditorData(QWidget *editor,
-//									  const QModelIndex &index) const
+//                                      const QModelIndex &index) const
 //{
-//	int precStatus = index.model()->data(index,Qt::UserRole).toInt();
-//	QComboBox *comboBox = static_cast<QComboBox*>(editor);
-//	comboBox->setCurrentIndex(comboBox->findData(precStatus));
-//	
+//    int precStatus = index.model()->data(index,Qt::UserRole).toInt();
+//    QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//    comboBox->setCurrentIndex(comboBox->findData(precStatus));
+//    
 //}
 //
 //void FuzzyPrecStatusDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
-//									 const QModelIndex &index) const
+//                                     const QModelIndex &index) const
 //{
-//	QComboBox *comboBox = static_cast<QComboBox*>(editor);
-//	model->setData(index,comboBox->itemData(comboBox->currentIndex()));
+//    QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//    model->setData(index,comboBox->itemData(comboBox->currentIndex()));
 //
-//	return;
+//    return;
 //}
 //
 //void FuzzyPrecStatusDelegate::commitAndCloseEditor()

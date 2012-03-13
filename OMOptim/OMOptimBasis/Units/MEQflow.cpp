@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MEQflow.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MEQflow.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "MEQflow.h"
@@ -57,17 +57,17 @@ MEQflow::~MEQflow(void)
 
 QString MEQflow::unit(int iUnit) const
 {
-	switch(iUnit)
-	{
-	case W :
-		return "W";
-	case KW :
-		return "KW";
-	case MW :
-		return "MW";
-	default :
-		return "-";
-	}
+    switch(iUnit)
+    {
+    case W :
+        return "W";
+    case KW :
+        return "KW";
+    case MW :
+        return "MW";
+    default :
+        return "-";
+    }
 }
 
 QString MEQflow::unit() const
@@ -77,38 +77,38 @@ QString MEQflow::unit() const
 
 unsigned MEQflow::nbUnits() const
 {
-	return 3;
+    return 3;
 }
 
 double MEQflow::convert(double value,int orgUnit,int dstUnit) const
 {
-	double result=value;
-	// convert to W
-	switch(orgUnit)
-	{
-	case KW :
-		result=result*1000;
-		break;
-	case MW :
-		result=result*1E6;
-		break;
-	default :
-		break;
-	}
+    double result=value;
+    // convert to W
+    switch(orgUnit)
+    {
+    case KW :
+        result=result*1000;
+        break;
+    case MW :
+        result=result*1E6;
+        break;
+    default :
+        break;
+    }
 
-	// convert to dstUnit
-	switch(dstUnit)
-	{
-	case KW :
-		result=result/1000;
-		break;
-	case MW :
-		result=result/1E6;
-		break;
-	default :
-		break;
-	}
-	return result;
+    // convert to dstUnit
+    switch(dstUnit)
+    {
+    case KW :
+        result=result/1000;
+        break;
+    case MW :
+        result=result/1E6;
+        break;
+    default :
+        break;
+    }
+    return result;
 }
 
 MEQflow MEQflow::operator-(const MEQflow& b) const

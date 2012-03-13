@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
         @file OMEAEvalFuncCounter.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef OMEAEVALFUNCCOUNTER_H
@@ -51,28 +51,28 @@ class OMEAEvalFuncCounter: public eoEvalFuncCounter<EOT>
 
 public :
         OMEAEvalFuncCounter(eoEvalFunc<EOT>& _func,OMEAProgress* _omEAProgress,int _totalEval, std::string _name = "Eval. ")
-		:eoEvalFuncCounter<EOT>(_func),myFunc(_func)
-	{
+        :eoEvalFuncCounter<EOT>(_func),myFunc(_func)
+    {
                 omEAProgress = _omEAProgress;
-		totalEval = _totalEval;
+        totalEval = _totalEval;
                 omEAProgress->setTotalEval(totalEval);
-	}
+    }
 
-	virtual void operator()(EOT& _eo)
-	{
-		if (_eo.invalid())
-		{
+    virtual void operator()(EOT& _eo)
+    {
+        if (_eo.invalid())
+        {
                         this->value()++;
-			myFunc(_eo);
+            myFunc(_eo);
 
                         omEAProgress->setCurEval(this->value());
-		}
-	}
+        }
+    }
 
 private :
-	eoEvalFunc<EOT>& myFunc;
+    eoEvalFunc<EOT>& myFunc;
         OMEAProgress* omEAProgress;
-	int totalEval;
+    int totalEval;
 };
 
 #endif

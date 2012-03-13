@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EOStd.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+     @file EOStd.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 0.9 
 
   */
 #ifndef _EOStd_H
@@ -58,103 +58,103 @@ class EOStd : public moeoVector < EOStdObjectiveVector,double>
 {
 
 public:
-	/**
-	* class name
-	*/
-	std::string className(){return "EOStd";};
+    /**
+    * class name
+    */
+    std::string className(){return "EOStd";};
 
-	EOStd()
-	{
-	}
+    EOStd()
+    {
+    }
 
-	void printOn(std::ostream& _os) const
-	{
+    void printOn(std::ostream& _os) const
+    {
 
-		// first write size informations
-		_os << objectiveVector().size() << ' ';
-		_os << objectiveVector() << ' ';
-
-
-		// write the fitness
-	//	moeoVector<EOStdObjectiveVector,double>::printOn(_os);
-	//	_os << ' ';
-
-		// START Code of default output 
-		_os << doubleVars.size() << ' ' ;
-		for (unsigned i=0; i<doubleVars.size(); i++)
-			_os << doubleVars[i] << ' ' ;
-
-		_os << intVars.size() << ' ' ;
-		for (unsigned i=0; i<intVars.size(); i++)
-			_os << intVars[i] << ' ' ;
-
-		_os << boolVars.size() << ' ' ;
-		for (unsigned i=0; i<boolVars.size(); i++)
-			_os << boolVars[i] << ' ' ;
-		// END   Code of default output
-	}
-
-	void readFrom(std::istream& _is)
-	{
-		// START Code of input
-		unsigned doubleSize,intSize,boolSize,nbObj;
-		double tmpDouble;
-		int tmpInt;
-		bool tmpBool;
+        // first write size informations
+        _os << objectiveVector().size() << ' ';
+        _os << objectiveVector() << ' ';
 
 
+        // write the fitness
+    //    moeoVector<EOStdObjectiveVector,double>::printOn(_os);
+    //    _os << ' ';
 
-		//read nbobjectives first
-		_is >> nbObj;
+        // START Code of default output 
+        _os << doubleVars.size() << ' ' ;
+        for (unsigned i=0; i<doubleVars.size(); i++)
+            _os << doubleVars[i] << ' ' ;
 
-		// read and store  obj values
-		EOStdObjectiveVector newObjVector;
-		
-		for (unsigned i=0; i<nbObj; i++)
-		{
-			_is >> tmpDouble;
-			newObjVector.at(i)=tmpDouble;
-		}			
-		objectiveVector(newObjVector);
+        _os << intVars.size() << ' ' ;
+        for (unsigned i=0; i<intVars.size(); i++)
+            _os << intVars[i] << ' ' ;
 
-		
-		// of course you should read the fitness first!
-		//moeoVector<EOStdObjectiveVector,double>::readFrom(_is);
+        _os << boolVars.size() << ' ' ;
+        for (unsigned i=0; i<boolVars.size(); i++)
+            _os << boolVars[i] << ' ' ;
+        // END   Code of default output
+    }
 
-	
-
-		_is >> doubleSize;
-		doubleVars.resize(doubleSize);
-		for (unsigned i=0; i<doubleSize; i++)
-		{
-			_is >> tmpDouble;
-			doubleVars[i]=tmpDouble;
-		}			
-
-		_is >> intSize;
-		intVars.resize(intSize);
-		for (unsigned i=0; i<intSize; i++)
-		{
-			_is >> tmpInt;
-			intVars[i]=tmpInt;
-		}
-
-		_is >> boolSize;
-		boolVars.resize(boolSize);
-		for (unsigned i=0; i<boolSize; i++)
-		{
-			_is >> tmpBool;
-			boolVars[i]=tmpBool;
-		}
-
-		// END   Code of input
-	}
+    void readFrom(std::istream& _is)
+    {
+        // START Code of input
+        unsigned doubleSize,intSize,boolSize,nbObj;
+        double tmpDouble;
+        int tmpInt;
+        bool tmpBool;
 
 
 
-	std::vector<double> doubleVars;
-	std::vector<int> intVars;
-	std::vector<bool> boolVars;
+        //read nbobjectives first
+        _is >> nbObj;
+
+        // read and store  obj values
+        EOStdObjectiveVector newObjVector;
+        
+        for (unsigned i=0; i<nbObj; i++)
+        {
+            _is >> tmpDouble;
+            newObjVector.at(i)=tmpDouble;
+        }            
+        objectiveVector(newObjVector);
+
+        
+        // of course you should read the fitness first!
+        //moeoVector<EOStdObjectiveVector,double>::readFrom(_is);
+
+    
+
+        _is >> doubleSize;
+        doubleVars.resize(doubleSize);
+        for (unsigned i=0; i<doubleSize; i++)
+        {
+            _is >> tmpDouble;
+            doubleVars[i]=tmpDouble;
+        }            
+
+        _is >> intSize;
+        intVars.resize(intSize);
+        for (unsigned i=0; i<intSize; i++)
+        {
+            _is >> tmpInt;
+            intVars[i]=tmpInt;
+        }
+
+        _is >> boolSize;
+        boolVars.resize(boolSize);
+        for (unsigned i=0; i<boolSize; i++)
+        {
+            _is >> tmpBool;
+            boolVars[i]=tmpBool;
+        }
+
+        // END   Code of input
+    }
+
+
+
+    std::vector<double> doubleVars;
+    std::vector<int> intVars;
+    std::vector<bool> boolVars;
 
 };
 

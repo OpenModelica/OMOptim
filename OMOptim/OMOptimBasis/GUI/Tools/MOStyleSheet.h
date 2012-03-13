@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOStyleSheet.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOStyleSheet.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef MOSTYLESHEET_H
@@ -45,11 +45,11 @@
 class MOStyleSheet
 {
 public:
-	MOStyleSheet(void);
-	~MOStyleSheet(void);
+    MOStyleSheet(void);
+    ~MOStyleSheet(void);
 
 
-	static void initialize(QApplication*);
+    static void initialize(QApplication*);
 };
 
 #endif

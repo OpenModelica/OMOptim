@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OptimAlgo.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file OptimAlgo.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "OptimAlgo.h"
@@ -55,14 +55,14 @@ OptimAlgo::~OptimAlgo(void)
 
 OptimAlgo::OptimAlgo(const OptimAlgo & algo)
 {
-	_project = algo._project;
-	_problem = algo._problem;
+    _project = algo._project;
+    _problem = algo._problem;
         _parameters = new MOParameters(*algo._parameters);
 }
 
 void OptimAlgo::setProblem(Problem* problem)
 {
-	_problem = problem;
+    _problem = problem;
 }
 
 

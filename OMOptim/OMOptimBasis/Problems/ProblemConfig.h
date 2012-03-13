@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ProblemConfig.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ProblemConfig.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef PROBLEMCONFIG_H
@@ -45,14 +45,14 @@
 class ProblemConfig
 {
 public:
-	ProblemConfig();
-//	ProblemConfig(QString _tempDir);
+    ProblemConfig();
+//    ProblemConfig(QString _tempDir);
         ProblemConfig(bool _refill);
-	~ProblemConfig(void);
+    ~ProblemConfig(void);
 
 
-//	QString tempDir;
-	bool refillTempDir;
+//    QString tempDir;
+    bool refillTempDir;
 };
 
 

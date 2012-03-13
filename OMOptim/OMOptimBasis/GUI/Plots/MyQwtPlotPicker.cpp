@@ -30,19 +30,19 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MyQwtPlotPicker.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MyQwtPlotPicker.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "MyQwtPlotPicker.h"
 
 MyQwtPlotPicker::MyQwtPlotPicker(QwtPlotCanvas * _canvas):QwtPlotPicker(_canvas)
 {
-	ctrlPressed = false;
+    ctrlPressed = false;
 }
 
 MyQwtPlotPicker::~MyQwtPlotPicker(void)
@@ -52,11 +52,11 @@ MyQwtPlotPicker::~MyQwtPlotPicker(void)
 
 void MyQwtPlotPicker::widgetKeyPressEvent (QKeyEvent * ke)
 {
-	if(ke->key()==Qt::CTRL)
-		ctrlPressed = true;
+    if(ke->key()==Qt::CTRL)
+        ctrlPressed = true;
 }
 void MyQwtPlotPicker::widgetKeyReleaseEvent (QKeyEvent * ke)
 {
-	if(ke->key()==Qt::CTRL)
-		ctrlPressed = false;
+    if(ke->key()==Qt::CTRL)
+        ctrlPressed = false;
 }

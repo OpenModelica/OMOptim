@@ -54,8 +54,8 @@ namespace IAEX
     if(!comm_.isConnected())
     {
       if(!comm_.establishConnection())
-      {		  
-		  throw std::runtime_error("OmcInteractiveEnvironment(): No connection to Omc established");
+      {          
+          throw std::runtime_error("OmcInteractiveEnvironment(): No connection to Omc established");
       }
     }
   }
@@ -76,11 +76,11 @@ namespace IAEX
     }
     catch( std::exception &e )
     {
-		QString msg = e.what();
-		std::cerr << "Caught " << e.what( ) << std::endl;
-		//throw e;
-		if(msg.compare("NOT RESPONDING",Qt::CaseInsensitive)==0)
-			result_ = "NOT RESPONDING";
+        QString msg = e.what();
+        std::cerr << "Caught " << e.what( ) << std::endl;
+        //throw e;
+        if(msg.compare("NOT RESPONDING",Qt::CaseInsensitive)==0)
+            result_ = "NOT RESPONDING";
     }
   }
 
@@ -122,9 +122,9 @@ namespace IAEX
       // 2006-02-28 AF, use environment varable to find omc.exe
       std::string OMCPath( getenv( "OPENMODELICAHOME" ) );
       if( OMCPath.empty() )
-	  {		  
+      {          
         throw std::runtime_error( "Could not find environment variable OPENMODELICAHOME" );
-	  }
+      }
 
       // location of omc in openmodelica folder
       QDir dir;
@@ -153,7 +153,7 @@ namespace IAEX
         OMCPath = "";
       else
       {
-		  std::string msg = "Unable to find OMC, searched in:\n" +
+          std::string msg = "Unable to find OMC, searched in:\n" +
           OMCPath + "/bin/\n" +
           OMCPath + "\n" +
           dir.absolutePath().toStdString();

@@ -30,10 +30,10 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
         @file MEMassFlow.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
         @version
 
   */
@@ -52,16 +52,16 @@ public:
         MEMassFlow(const MEMassFlow&);
         ~MEMassFlow();
 
-	enum Units
-	{
+    enum Units
+    {
                 KG_S,
                 T_H
-	};
+    };
 
-	QString unit(int iUnit)  const;
+    QString unit(int iUnit)  const;
         QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
-	unsigned nbUnits() const;
-	double convert(double value,int orgUnit,int dstUnit) const;
+    unsigned nbUnits() const;
+    double convert(double value,int orgUnit,int dstUnit) const;
 
         MEMassFlow& operator+=(const MEMassFlow&);
         MEMassFlow& operator-=(const MEMassFlow&);

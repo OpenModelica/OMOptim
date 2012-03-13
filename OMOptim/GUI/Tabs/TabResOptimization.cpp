@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabResOptimization.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file tabResOptimization.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "TabResOptimization.h"
@@ -45,7 +45,7 @@
 
 namespace Ui
 {
-	class TabResOptimizationClass;
+    class TabResOptimizationClass;
 }
 
 TabResOptimization::TabResOptimization(OptimResult *result, QWidget *parent) :
@@ -75,7 +75,7 @@ MO2ColTab(result->project()->name(),result,false,parent)
         addDockWidget("Variables",_widgetTableRecVar,_widgetMooPlot,Qt::RightDockWidgetArea);
 
         addFixedWidget("Points",_widgetMooPointsList,Qt::LeftDockWidgetArea,Qt::Horizontal,false);
-	
+    
 
         _widgetOptimActions = new WidgetOptimActions(_project,_problem,true,_result,this);
         addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);

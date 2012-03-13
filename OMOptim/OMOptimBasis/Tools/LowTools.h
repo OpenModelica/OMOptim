@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file LowTools.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file LowTools.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef LOWTOOLS_H
@@ -66,32 +66,32 @@
 class LowTools
 {
 public:
-	LowTools(void);
-	~LowTools(void);
+    LowTools(void);
+    ~LowTools(void);
 
-	static void openFolder(QString);
-	static bool openFile(QString);
+    static void openFolder(QString);
+    static bool openFile(QString);
 
-	static bool removeDir(QString);
-	static void copyDir(QString,QString);
+    static bool removeDir(QString);
+    static void copyDir(QString,QString);
 
         static QStringList getDuplicates(const QStringList & list);
-	static void removeDuplicates(QStringList & list);
-	static void removeDuplicates(QVector<double> & vector);
-	static void removeWhiteSpaceStrings(QStringList &list);
+    static void removeDuplicates(QStringList & list);
+    static void removeDuplicates(QVector<double> & vector);
+    static void removeWhiteSpaceStrings(QStringList &list);
 
 
 
-	static QString getValueFromElementInfo(QString elementInfoLine,QString fieldName);
+    static QString getValueFromElementInfo(QString elementInfoLine,QString fieldName);
 
-	static int round(double);
+    static int round(double);
         static double roundToMultiple(double value, double multiple);
-	static QList<int> nextIndex(QList<int> oldIndex, QList<int>  maxIndex);
+    static QList<int> nextIndex(QList<int> oldIndex, QList<int>  maxIndex);
 
-	static bool isNan(double d);
-	static double nan();
+    static bool isNan(double d);
+    static double nan();
 
-	static double gaussRandom(double average,double dev);
+    static double gaussRandom(double average,double dev);
 
 
 

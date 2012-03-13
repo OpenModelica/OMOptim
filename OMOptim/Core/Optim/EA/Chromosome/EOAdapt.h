@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EOAdapt.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+     @file EOAdapt.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 0.9 
 
   */
 #ifndef _EOADAPT1_H
@@ -59,126 +59,126 @@ class EOAdapt : public moeoVector < EOAdapt1ObjectiveVector,double>
 {
 
 public:
-	/**
-	* class name
-	*/
-	std::string className(){return "EOAdapt";};
+    /**
+    * class name
+    */
+    std::string className(){return "EOAdapt";};
 
-	EOAdapt()
-	{
-	}
+    EOAdapt()
+    {
+    }
 
-	void printOn(std::ostream& _os) const
-	{
+    void printOn(std::ostream& _os) const
+    {
 
-		// first write size informations
-		_os << objectiveVector().size() << ' ';
-		_os << objectiveVector() << ' ';
-
-
-		// write the fitness
-		//moeoVector<EOAdapt1ObjectiveVector,double>::printOn(_os);
-	//	_os << ' ';
-
-		// START Code of default output 
-		_os << doubleVars.size() << ' ' ;
-		for (unsigned i=0; i<doubleVars.size(); i++)
-			_os << doubleVars[i] << ' ' ;
-
-		_os << intVars.size() << ' ' ;
-		for (unsigned i=0; i<intVars.size(); i++)
-			_os << intVars[i] << ' ' ;
-
-		_os << boolVars.size() << ' ' ;
-		for (unsigned i=0; i<boolVars.size(); i++)
-			_os << boolVars[i] << ' ' ;
-		
-
-		_os << dblStdDev.size() << ' ' ;
-		for (unsigned i=0; i<dblStdDev.size(); i++)
-			_os << dblStdDev[i] << ' ' ;
-
-		_os << intProbMut;
-		
-	}
-
-	void readFrom(std::istream& _is)
-	{
-		// START Code of input
-		unsigned doubleSize,intSize,boolSize,nbObj, nbStdDev;
-		double tmpDouble;
-		int tmpInt;
-		bool tmpBool;
+        // first write size informations
+        _os << objectiveVector().size() << ' ';
+        _os << objectiveVector() << ' ';
 
 
+        // write the fitness
+        //moeoVector<EOAdapt1ObjectiveVector,double>::printOn(_os);
+    //    _os << ' ';
 
-		//read nbobjectives first
-		_is >> nbObj;
+        // START Code of default output 
+        _os << doubleVars.size() << ' ' ;
+        for (unsigned i=0; i<doubleVars.size(); i++)
+            _os << doubleVars[i] << ' ' ;
 
-		// read and store  obj values
-		//moeoVector<EOAdapt1ObjectiveVector,double>::readFrom(_is);
-		
-		EOAdapt1ObjectiveVector newObjVector;
-		
-		for (unsigned i=0; i<nbObj; i++)
-		{
-			_is >> tmpDouble;
-			newObjVector.at(i)=tmpDouble;
-		}			
-		objectiveVector(newObjVector);
+        _os << intVars.size() << ' ' ;
+        for (unsigned i=0; i<intVars.size(); i++)
+            _os << intVars[i] << ' ' ;
 
-			
+        _os << boolVars.size() << ' ' ;
+        for (unsigned i=0; i<boolVars.size(); i++)
+            _os << boolVars[i] << ' ' ;
+        
 
-		_is >> doubleSize;
-		doubleVars.resize(doubleSize);
-		for (unsigned i=0; i<doubleSize; i++)
-		{
-			_is >> tmpDouble;
-			doubleVars[i]=tmpDouble;
-		}			
+        _os << dblStdDev.size() << ' ' ;
+        for (unsigned i=0; i<dblStdDev.size(); i++)
+            _os << dblStdDev[i] << ' ' ;
 
-		_is >> intSize;
-		intVars.resize(intSize);
-		for (unsigned i=0; i<intSize; i++)
-		{
-			_is >> tmpInt;
-			intVars[i]=tmpInt;
-		}
+        _os << intProbMut;
+        
+    }
 
-		_is >> boolSize;
-		boolVars.resize(boolSize);
-		for (unsigned i=0; i<boolSize; i++)
-		{
-			_is >> tmpBool;
-			boolVars[i]=tmpBool;
-		}
-
-		_is >> nbStdDev;
-		dblStdDev.resize(nbStdDev);
-		for (unsigned i=0; i<nbStdDev; i++)
-		{
-			_is >> tmpDouble;
-			dblStdDev[i]=tmpDouble;
-		}
-
-		_is >> intProbMut;
-		
-
-	
-
-
-		// END   Code of input
-	}
+    void readFrom(std::istream& _is)
+    {
+        // START Code of input
+        unsigned doubleSize,intSize,boolSize,nbObj, nbStdDev;
+        double tmpDouble;
+        int tmpInt;
+        bool tmpBool;
 
 
 
-	std::vector<double> doubleVars;
-	std::vector<int> intVars;
-	std::vector<bool> boolVars;
-	
-	std::vector<double> dblStdDev; //sigma, see adaptive mutation articles
-	double intProbMut; //probability for int mutation (see Evolution Strategies for MIOpt...) Back & Schutz 
-	
+        //read nbobjectives first
+        _is >> nbObj;
+
+        // read and store  obj values
+        //moeoVector<EOAdapt1ObjectiveVector,double>::readFrom(_is);
+        
+        EOAdapt1ObjectiveVector newObjVector;
+        
+        for (unsigned i=0; i<nbObj; i++)
+        {
+            _is >> tmpDouble;
+            newObjVector.at(i)=tmpDouble;
+        }            
+        objectiveVector(newObjVector);
+
+            
+
+        _is >> doubleSize;
+        doubleVars.resize(doubleSize);
+        for (unsigned i=0; i<doubleSize; i++)
+        {
+            _is >> tmpDouble;
+            doubleVars[i]=tmpDouble;
+        }            
+
+        _is >> intSize;
+        intVars.resize(intSize);
+        for (unsigned i=0; i<intSize; i++)
+        {
+            _is >> tmpInt;
+            intVars[i]=tmpInt;
+        }
+
+        _is >> boolSize;
+        boolVars.resize(boolSize);
+        for (unsigned i=0; i<boolSize; i++)
+        {
+            _is >> tmpBool;
+            boolVars[i]=tmpBool;
+        }
+
+        _is >> nbStdDev;
+        dblStdDev.resize(nbStdDev);
+        for (unsigned i=0; i<nbStdDev; i++)
+        {
+            _is >> tmpDouble;
+            dblStdDev[i]=tmpDouble;
+        }
+
+        _is >> intProbMut;
+        
+
+    
+
+
+        // END   Code of input
+    }
+
+
+
+    std::vector<double> doubleVars;
+    std::vector<int> intVars;
+    std::vector<bool> boolVars;
+    
+    std::vector<double> dblStdDev; //sigma, see adaptive mutation articles
+    double intProbMut; //probability for int mutation (see Evolution Strategies for MIOpt...) Back & Schutz 
+    
 };
 
 #endif

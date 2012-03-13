@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabOMC.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file tabOMC.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef TABOMC_CLASS_H
@@ -71,33 +71,33 @@ class TabOMC : public MOTabSimple {
     Q_OBJECT
 
 public:
-	TabOMC(Project *project, QWidget *parent = 0);
+    TabOMC(Project *project, QWidget *parent = 0);
     ~TabOMC();
     TabType tabType(){return TABOTHER;};
 
-	
+    
 
         Project *project;
-	
+    
 
 
-	//UI
-	Ui::TabOMC_Class *ui;
-	
-	
+    //UI
+    Ui::TabOMC_Class *ui;
+    
+    
 
 public slots:
-	void returnPressed();
-	void insertNewline();
-	void prevCommand();
-	void nextCommand();
-	void goHome( bool shift );
-	//void codeCompletion( bool same );
-	void codeNextField();
+    void returnPressed();
+    void insertNewline();
+    void prevCommand();
+    void nextCommand();
+    void goHome( bool shift );
+    //void codeCompletion( bool same );
+    void codeNextField();
 
-	void cut();
-	void copy();
-	void paste();
+    void cut();
+    void copy();
+    void paste();
 
 
 
@@ -106,36 +106,36 @@ public slots:
 
 
 private:
-	void createMoshEdit();
-	//void createMoshError();
-	void createAction();
-	void createMenu();
-	void createToolbar();
+    void createMoshEdit();
+    //void createMoshError();
+    void createAction();
+    void createMenu();
+    void createToolbar();
         void exceptionInEval(std::exception &e);
-	void addCommandLine();
-	void selectCommandLine();
-	QStringList getFunctionNames(QString);
+    void addCommandLine();
+    void selectCommandLine();
+    QStringList getFunctionNames(QString);
 
 
-	QTextCursor cursor_;
-	QTextEdit* moshEdit_;
-	//QTextEdit* moshError_;
-	QVBoxLayout* layout_;
-	QString clipboard_;
-	QString omc_version_;
+    QTextCursor cursor_;
+    QTextEdit* moshEdit_;
+    //QTextEdit* moshError_;
+    QVBoxLayout* layout_;
+    QString clipboard_;
+    QString omc_version_;
 
 
-	//IAEX::CommandCompletion* commandcompletion_;
-	int fontSize_;
+    //IAEX::CommandCompletion* commandcompletion_;
+    int fontSize_;
 
-	int currentFunction_;
-	QString currentFunctionName_;
-	QStringList* functionList_;
+    int currentFunction_;
+    QString currentFunctionName_;
+    QStringList* functionList_;
 
-	int currentCommand_;
-	QStringList* commands_;
-	QTextCharFormat commandSignFormat_;
-	QTextCharFormat textFormat_;
+    int currentCommand_;
+    QStringList* commands_;
+    QTextCharFormat commandSignFormat_;
+    QTextCharFormat textFormat_;
 
 
 
@@ -144,30 +144,30 @@ private:
 //********************************
 class MyTextEdit : public QTextEdit
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	MyTextEdit( QWidget* parent = 0 );
-	virtual ~MyTextEdit();
-	void sendKey( QKeyEvent *event );
+    MyTextEdit( QWidget* parent = 0 );
+    virtual ~MyTextEdit();
+    void sendKey( QKeyEvent *event );
 
 signals:
-	void returnPressed();
-	void insertNewline();
-	void prevCommand();
-	void nextCommand();
-	void goHome( bool shift );
-	void codeCompletion( bool same );
-	void codeNextField();
+    void returnPressed();
+    void insertNewline();
+    void prevCommand();
+    void nextCommand();
+    void goHome( bool shift );
+    void codeCompletion( bool same );
+    void codeNextField();
 
 protected:
-	void keyPressEvent(QKeyEvent *event);
-	void insertFromMimeData(const QMimeData *source);	// Added 2006-01-30
+    void keyPressEvent(QKeyEvent *event);
+    void insertFromMimeData(const QMimeData *source);    // Added 2006-01-30
 
 private:
-	bool insideCommandSign();
-	bool startOfCommandSign();
-	bool sameTab_;
+    bool insideCommandSign();
+    bool startOfCommandSign();
+    bool sameTab_;
 };
 
 

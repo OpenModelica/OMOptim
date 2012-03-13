@@ -30,10 +30,10 @@
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
         @file MEHTCoeff.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
         @version
 
   */
@@ -52,15 +52,15 @@ public:
         MEHTCoeff(const MEHTCoeff&);
         ~MEHTCoeff();
 
-	enum Units
-	{
+    enum Units
+    {
             W_M2_K
-	};
+    };
 
-	QString unit(int iUnit)  const;
+    QString unit(int iUnit)  const;
         QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
-	unsigned nbUnits() const;
-	double convert(double value,int orgUnit,int dstUnit) const;
+    unsigned nbUnits() const;
+    double convert(double value,int orgUnit,int dstUnit) const;
 
         MEHTCoeff& operator+=(const MEHTCoeff&);
         MEHTCoeff& operator-=(const MEHTCoeff&);

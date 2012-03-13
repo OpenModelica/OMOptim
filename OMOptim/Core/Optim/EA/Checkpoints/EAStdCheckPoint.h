@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EAStdCheckPoint.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+     @file EAStdCheckPoint.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 0.9 
 
   */
 
@@ -79,7 +79,7 @@ bool testDirRes(std::string _dirName, bool _erase);
  */
 template < class MOEOT >
 eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _state, eoEvalFuncCounter < MOEOT > & _eval,
-											 eoContinue < MOEOT > & _continue, eoPop < MOEOT > & _pop, moeoArchive < MOEOT > & _archive,
+                                             eoContinue < MOEOT > & _continue, eoPop < MOEOT > & _pop, moeoArchive < MOEOT > & _archive,
                                                        Project* _project, MOParameters *_parameters,QString tempDir)
 {
   eoCheckPoint < MOEOT > & checkpoint = _state.storeFunctor(new eoCheckPoint < MOEOT > (_continue));
@@ -113,13 +113,13 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
   eoCountedStateSaver *stateSaver1;
   if(saveFreq==0)
   {
-	  //just save last state (saveFreq is replaced by maximum number of iterations in order to avoid intermediate saving)
-	  stateSaver1 = new eoCountedStateSaver(maxIter, _state, genSaveFilePath.toStdString(),true);
+      //just save last state (saveFreq is replaced by maximum number of iterations in order to avoid intermediate saving)
+      stateSaver1 = new eoCountedStateSaver(maxIter, _state, genSaveFilePath.toStdString(),true);
   }
   else
   {
-	  // save every "savefreq" generations
-	  stateSaver1 = new eoCountedStateSaver(saveFreq, _state, genSaveFilePath.toStdString(),true);
+      // save every "savefreq" generations
+      stateSaver1 = new eoCountedStateSaver(saveFreq, _state, genSaveFilePath.toStdString(),true);
   }
   _state.storeFunctor(stateSaver1);
   checkpoint.add(*stateSaver1);

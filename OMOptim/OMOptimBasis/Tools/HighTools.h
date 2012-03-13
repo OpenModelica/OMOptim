@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file HighTools.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file HighTools.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef HIGHTOOLS_H
@@ -59,8 +59,8 @@ class OMCases;
 class HighTools
 {
 public:
-	HighTools(void);
-	~HighTools(void);
+    HighTools(void);
+    ~HighTools(void);
 
     static void checkUniqueProblemName(ProjectBase*,Problem *,OMCases *);
     static void checkUniqueResultName(ProjectBase*, Result *,OMCases *);

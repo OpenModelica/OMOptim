@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file VariablesManip.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file VariablesManip.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef VARIABLESMANIP_H
@@ -51,17 +51,17 @@
 class VariablesManip
 {
 public:
-	VariablesManip(void);
-	~VariablesManip(void);
+    VariablesManip(void);
+    ~VariablesManip(void);
 
-	static void updateScanValues(MOVector<Variable> *vars, MOVector<ScannedVariable> *scannedVars,QList<int> iScan);
-	static int nbScans(MOVector<ScannedVariable> *scannedVars);
+    static void updateScanValues(MOVector<Variable> *vars, MOVector<ScannedVariable> *scannedVars,QList<int> iScan);
+    static int nbScans(MOVector<ScannedVariable> *scannedVars);
 
-	// Functions which help to calculate objectives
-	static double calculateObjValue(OptObjective* optObj,MOVector<VariableResult> * oneSimFinalVars,bool & ok,int iPoint=0);
-	static double calculateScanSum(VariableResult* var,bool &ok, int iPoint = 0);
-	static double calculateScanAverage(VariableResult* var,bool &ok, int iPoint = 0);
-	static double calculateScanStandardDev(VariableResult* var,bool &ok, int iPoint = 0);
+    // Functions which help to calculate objectives
+    static double calculateObjValue(OptObjective* optObj,MOVector<VariableResult> * oneSimFinalVars,bool & ok,int iPoint=0);
+    static double calculateScanSum(VariableResult* var,bool &ok, int iPoint = 0);
+    static double calculateScanAverage(VariableResult* var,bool &ok, int iPoint = 0);
+    static double calculateScanStandardDev(VariableResult* var,bool &ok, int iPoint = 0);
         static double extractMinimum(VariableResult* var,bool &ok, int iPoint = 0);
         static double extractMaximum(VariableResult* var,bool &ok, int iPoint = 0);
 

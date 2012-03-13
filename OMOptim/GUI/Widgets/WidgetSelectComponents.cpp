@@ -179,10 +179,10 @@ void WidgetSelectComponents::actualizeGui()
     {
         for(int i=0; i < unsolvedWidgets.size(); i++)
             unsolvedWidgets.at(i)->hide();
-	
+    
         for(int i=0; i < solvedWidgets.size(); i++)
             solvedWidgets.at(i)->show();
-	
+    
         for(int i=0; i< tables.size(); i++)
             tables.at(i)->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
@@ -191,10 +191,10 @@ void WidgetSelectComponents::actualizeGui()
     {
         for(int i=0; i < unsolvedWidgets.size(); i++)
             unsolvedWidgets.at(i)->show();
-	
+    
         for(int i=0; i < solvedWidgets.size(); i++)
             solvedWidgets.at(i)->hide();
-	
+    
         for(int i=0; i< tables.size(); i++)
             tables.at(i)->setEditTriggers(QAbstractItemView::DoubleClicked);
 

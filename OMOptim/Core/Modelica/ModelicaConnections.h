@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModelicaConnections.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModelicaConnections.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_MODELICACONNECTIONS_H)
@@ -52,40 +52,40 @@ class ModelicaConnections : public MOVector<ModelicaConnection>
 
 public:
         ModelicaConnections(ModItemsTree*);
-	~ModelicaConnections(void);
+    ~ModelicaConnections(void);
 
 private :
         ModItemsTree* _modItemsTree;
 
 public :
 
-	//void clear();
+    //void clear();
 
-	//void addConnection(ModelicaConnection*);
-
-
-	//// Abstract model overwrited functions
-	//QVariant data(const QModelIndex &index, int role) const;
-	//Qt::ItemFlags flags(const QModelIndex &index) const;
-	//QVariant headerData(int section, Qt::Orientation orientation,
-	//	int role = Qt::DisplayRole) const;
-	//QModelIndex index(int row, int column,
-	//	const QModelIndex &parent = QModelIndex()) const;
-	//QModelIndex parent(const QModelIndex &index) const;
-	//int rowCount(const QModelIndex &parent = QModelIndex()) const;
-	//int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    //void addConnection(ModelicaConnection*);
 
 
-	//useful functions
+    //// Abstract model overwrited functions
+    //QVariant data(const QModelIndex &index, int role) const;
+    //Qt::ItemFlags flags(const QModelIndex &index) const;
+    //QVariant headerData(int section, Qt::Orientation orientation,
+    //    int role = Qt::DisplayRole) const;
+    //QModelIndex index(int row, int column,
+    //    const QModelIndex &parent = QModelIndex()) const;
+    //QModelIndex parent(const QModelIndex &index) const;
+    //int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    //int columnCount(const QModelIndex &parent = QModelIndex()) const;
+
+
+    //useful functions
 public :
-	ModelicaConnections* filter(ModItem*,bool includeChildren,bool acceptInternal);
-	//void getOutside(ModItem* _element,bool includeChildren,QList<ModItem*> &_ports,QList<ModItem*> &_outsideComps);
-	void getOutside(ModItem* _element,bool includeChildren,QStringList &ports, QStringList &outsideComps);
-	void getOutside(ModItem* _element,bool includeChildren,QStringList &uniquePorts, QList<QStringList> &outsideComps);
-//	QList<ModItem*> getOutsideConnectedComps(ModItem*,bool includeChildren);
-//	QStringList getOutsideConnectedCompsNames(ModItem*,bool includeChildren,Modelica::NameFormat format);
-//	QList<ModItem*> getOutsideConnectingPorts(ModItem*,bool includeChildren);
-//	QStringList getOutsideConnectingPortsNames(ModItem*,bool includeChildren,Modelica::NameFormat format);
+    ModelicaConnections* filter(ModItem*,bool includeChildren,bool acceptInternal);
+    //void getOutside(ModItem* _element,bool includeChildren,QList<ModItem*> &_ports,QList<ModItem*> &_outsideComps);
+    void getOutside(ModItem* _element,bool includeChildren,QStringList &ports, QStringList &outsideComps);
+    void getOutside(ModItem* _element,bool includeChildren,QStringList &uniquePorts, QList<QStringList> &outsideComps);
+//    QList<ModItem*> getOutsideConnectedComps(ModItem*,bool includeChildren);
+//    QStringList getOutsideConnectedCompsNames(ModItem*,bool includeChildren,Modelica::NameFormat format);
+//    QList<ModItem*> getOutsideConnectingPorts(ModItem*,bool includeChildren);
+//    QStringList getOutsideConnectingPortsNames(ModItem*,bool includeChildren,Modelica::NameFormat format);
 
 private :
         bool portIsInElement(QString portName,QString elementName);

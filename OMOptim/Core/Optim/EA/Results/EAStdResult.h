@@ -116,8 +116,8 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     int iCorrRecompVar; //index of corresponding variable in result->recomputedVariable
 
     int iDouble=0;
-    int	iInt=0;
-    int	iBool=0;
+    int    iInt=0;
+    int    iBool=0;
 
 
     bool fillRecompValues = !useScan;

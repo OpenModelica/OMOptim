@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetCalculateMooPoints.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetCalculateMooPoints.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef  WIDGETCALCULATEMOOPOINTS_H
@@ -71,13 +71,13 @@ public:
         OptimResult* _result;
         WidgetMooPointsList* _widgetMooPointsList;
 
-	public slots:
+    public slots:
 
-	void recomputeSelectedPoints();
-	void exportSelectedPoints();
+    void recomputeSelectedPoints();
+    void exportSelectedPoints();
 
 signals :
-	void pointsRecomputed();
+    void pointsRecomputed();
 };
 
 #endif 

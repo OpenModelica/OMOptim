@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Info.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file Info.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "Info.h"
@@ -48,120 +48,120 @@ Info::Info()
 }
 Info::Info(const Info & _info)
 {
-	infoNum = _info.infoNum;
-	infoMsg = _info.infoMsg;
-	infoType = _info.infoType;
+    infoNum = _info.infoNum;
+    infoMsg = _info.infoMsg;
+    infoType = _info.infoType;
 }
 Info::Info(ListInfo::InfoNum infoNum_)
 {
-	try
-	{
-	infoNum=infoNum_;
+    try
+    {
+    infoNum=infoNum_;
 
-	//Looking for Info in static table
-	int i=0;
-	bool found = false;
-	while (i<NBINFOS && !found)
-	{
-		if(strInfos[i].num==infoNum_)
-		{
-			found=true;
-		}
-		else
-		{
-			i++;
-		}
-	}
+    //Looking for Info in static table
+    int i=0;
+    bool found = false;
+    while (i<NBINFOS && !found)
+    {
+        if(strInfos[i].num==infoNum_)
+        {
+            found=true;
+        }
+        else
+        {
+            i++;
+        }
+    }
 
-	if (!found)
-	{
-		infoMsg="Unknown info";
-		infoType=NORMAL2;
-	}
-	else
-	{
-		infoMsg=strInfos[i].msg;
-		infoType=strInfos[i].type;
-	}
-	}
-	catch(std::exception &e)
-	{
-	}
+    if (!found)
+    {
+        infoMsg="Unknown info";
+        infoType=NORMAL2;
+    }
+    else
+    {
+        infoMsg=strInfos[i].msg;
+        infoType=strInfos[i].type;
+    }
+    }
+    catch(std::exception &e)
+    {
+    }
 };
 
 Info::Info(ListInfo::InfoNum infoNum_, QString strSupp)
 {
-	try
-	{
-	infoNum=infoNum_;
+    try
+    {
+    infoNum=infoNum_;
 
-	//Looking for Info in static table
-	int i=0;
-	bool found = false;
-	while (i<NBINFOS && !found)
-	{
-		if(strInfos[i].num==infoNum_)
-		{
-			found=true;
-		}
-		else
-		{
-			i++;
-		}
-	}
+    //Looking for Info in static table
+    int i=0;
+    bool found = false;
+    while (i<NBINFOS && !found)
+    {
+        if(strInfos[i].num==infoNum_)
+        {
+            found=true;
+        }
+        else
+        {
+            i++;
+        }
+    }
 
-	if (!found)
-	{
-		infoMsg="Unknown info";
-		infoType=NORMAL2;
-	}
-	else
-	{
-		infoMsg.clear();
-		infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp.toLatin1().data());
-		infoType=strInfos[i].type;
-	}
-	}
-	catch(std::exception &e)
-	{
-	}
+    if (!found)
+    {
+        infoMsg="Unknown info";
+        infoType=NORMAL2;
+    }
+    else
+    {
+        infoMsg.clear();
+        infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp.toLatin1().data());
+        infoType=strInfos[i].type;
+    }
+    }
+    catch(std::exception &e)
+    {
+    }
 }
 
 Info::Info(ListInfo::InfoNum infoNum_, QString strSupp1, QString strSupp2)
 {
-	try{
-	infoNum=infoNum_;
+    try{
+    infoNum=infoNum_;
 
-	//Looking for Info in static table
-	int i=0;
-	bool found = false;
-	while (i<NBINFOS && !found)
-	{
-		if(strInfos[i].num==infoNum_)
-		{
-			found=true;
-		}
-		else
-		{
-			i++;
-		}
-	}
+    //Looking for Info in static table
+    int i=0;
+    bool found = false;
+    while (i<NBINFOS && !found)
+    {
+        if(strInfos[i].num==infoNum_)
+        {
+            found=true;
+        }
+        else
+        {
+            i++;
+        }
+    }
 
-	if (!found)
-	{
-		infoMsg="Unknown info";
-		infoType=NORMAL2;
-	}
-	else
-	{
-		infoMsg.clear();
-		infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp1.toLatin1().data(),strSupp2.toLatin1().data());
-		infoType=strInfos[i].type;
-	}
-	}
-	catch(std::exception &e)
-	{
-	}
+    if (!found)
+    {
+        infoMsg="Unknown info";
+        infoType=NORMAL2;
+    }
+    else
+    {
+        infoMsg.clear();
+        infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp1.toLatin1().data(),strSupp2.toLatin1().data());
+        infoType=strInfos[i].type;
+    }
+    }
+    catch(std::exception &e)
+    {
+    }
 }
 
 
@@ -169,6 +169,6 @@ Info::Info(ListInfo::InfoNum infoNum_, QString strSupp1, QString strSupp2)
 
 Info::Info(QString _msg, ListInfo::InfoType _msgType)
 {
-	infoMsg = _msg;
-	infoType = _msgType;
+    infoMsg = _msg;
+    infoType = _msgType;
 }

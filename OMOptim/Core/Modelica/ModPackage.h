@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModPackage.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModPackage.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _ModPackage_H
@@ -50,10 +50,10 @@
 
 class ModPackage : public ModItem
 {
-	public:
-		ModPackage(MOomc*);
+    public:
+        ModPackage(MOomc*);
                 ModPackage(MOomc*,ModItem* parent,QString name,QString filePath="");
-		~ModPackage(void);
+        ~ModPackage(void);
                 virtual ModItem* clone() const;
                 virtual QString getClassName(){return "ModPackage";}
                 virtual Modelica::ClassRestr getClassRestr(){return Modelica::PACKAGE;}

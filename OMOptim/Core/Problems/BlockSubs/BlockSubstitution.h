@@ -1,11 +1,11 @@
 // $Id$
  /**
- 	@file BlockSubstitution.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file BlockSubstitution.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_BLOCKSUBSTITUTION_H)
@@ -21,7 +21,7 @@ class ModModelPlus;
 class BlockSubstitution
 {
 public:
-	
+    
         BlockSubstitution(Project* project,ModModelPlus* model, QString orgComponent, QString subComponent,
                                                                          QStringList orgPorts,QList<QStringList> orgConnectedComps,
                                                                          QStringList subPorts,QList<QStringList> subConnectedComps);
@@ -29,8 +29,8 @@ public:
         BlockSubstitution(Project*,ModModelPlus*,ModelicaConnections*,QString orgComponent,QString subComponent,bool doAutoConnect, bool &ok);
         BlockSubstitution(Project*,ModModelPlus*,ModelicaConnections*,QDomElement domEl );
 
-	
-	~BlockSubstitution(void);
+    
+    ~BlockSubstitution(void);
 
         void setSubComponent(QString subComponent,bool doAutoConnect);
 
@@ -38,14 +38,14 @@ private :
         bool init(Project*,ModModelPlus*,ModelicaConnections*,QString _orgComponent,QString _subComponent);
 
 public :
-	void autoConnect();
+    void autoConnect();
 
 public :
 
-	BlockSubstitution* clone() const;
-	void copyFrom(BlockSubstitution*);
+    BlockSubstitution* clone() const;
+    void copyFrom(BlockSubstitution*);
 
-	QDomElement toXmlData(QDomDocument & doc);
+    QDomElement toXmlData(QDomDocument & doc);
 
         Project *_project;
         ModModelPlus* _model;
@@ -55,10 +55,10 @@ public :
 
         QStringList _orgPorts; // ports inside original component
         QList<QStringList> _orgConnectedComps; // components connected to original component ports
-	
+    
         QStringList _subPorts; // corresponding ports inside replacing component
         QList<QStringList> _subConnectedComps; // components connected to replacing component ports
-	
+    
 };
 
 

@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetSelPointScan.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetSelPointScan.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef WidgetSelPointScan_H
@@ -59,17 +59,17 @@ public:
     WidgetSelPointScan(MOOptVector* _variables,QWidget *parent=0);
     ~WidgetSelPointScan();
 
-	Ui::WidgetSelPointScanClass *ui;
-	MOOptVector *variables;
+    Ui::WidgetSelPointScanClass *ui;
+    MOOptVector *variables;
 
 
 public slots :
-	void onChangedUseScan();
-	void onChangedUsePoints();
-	void onChangedNbScans();
-	void onChangedNbPoints();
+    void onChangedUseScan();
+    void onChangedUsePoints();
+    void onChangedNbScans();
+    void onChangedNbPoints();
         void onSlideScanValueChanged(int);
-	void update();
+    void update();
    
 };
 

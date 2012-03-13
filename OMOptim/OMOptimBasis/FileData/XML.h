@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file XML.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file XML.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_XML_H)
@@ -55,12 +55,12 @@ class VariableResult;
 class XML
 {
 public:
-	XML(void);
-	~XML(void);
+    XML(void);
+    ~XML(void);
 
-	static void XMLToVariableResults(MOVector<VariableResult> &,QDomElement &element);
-	static QDomElement VariableResultsToXml(MOVector<VariableResult> &,QDomDocument & doc,QString listTitle,QString itemTitle);
-	static void XMLToVariables(MOVector<Variable> &,QDomElement &element);
+    static void XMLToVariableResults(MOVector<VariableResult> &,QDomElement &element);
+    static QDomElement VariableResultsToXml(MOVector<VariableResult> &,QDomDocument & doc,QString listTitle,QString itemTitle);
+    static void XMLToVariables(MOVector<Variable> &,QDomElement &element);
 };
 
 #endif

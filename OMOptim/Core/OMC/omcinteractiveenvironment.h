@@ -44,26 +44,26 @@
 //class MOomc;
 namespace IAEX
 {
-	class OmcInteractiveEnvironment : public InputCellDelegate
-	{
-		Q_OBJECT
+    class OmcInteractiveEnvironment : public InputCellDelegate
+    {
+        Q_OBJECT
 
-	public:
-		OmcInteractiveEnvironment();
-		virtual ~OmcInteractiveEnvironment();
+    public:
+        OmcInteractiveEnvironment();
+        virtual ~OmcInteractiveEnvironment();
 
-		virtual QString result();
-		virtual void evalExpression(QString& expr);
-		virtual void closeConnection();				// Added 2006-02-02 AF
-		virtual void reconnect();					// Added 2006-02-09 AF
-		virtual bool startDelegate();				// Added 2006-02-09 AF
-		static bool startOMC();						// Added 2006-02-09 AF
+        virtual QString result();
+        virtual void evalExpression(QString& expr);
+        virtual void closeConnection();                // Added 2006-02-02 AF
+        virtual void reconnect();                    // Added 2006-02-09 AF
+        virtual bool startDelegate();                // Added 2006-02-09 AF
+        static bool startOMC();                        // Added 2006-02-09 AF
 
-	private:
-		OmcCommunicator &comm_;
-		QString result_;
+    private:
+        OmcCommunicator &comm_;
+        QString result_;
 
 
-	};
+    };
 }
 #endif

@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MyEAEvalContinue.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MyEAEvalContinue.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 
@@ -54,25 +54,25 @@ class MyEAEvalContinue: public eoContinue<EOT>
 public:
   /// Ctor 
   MyEAEvalContinue( eoEvalFuncCounter<EOT> & _eval, unsigned long _totalEval,bool* _stop)
-	  : eval(_eval), repTotalEvaluations( _totalEval ) {
+      : eval(_eval), repTotalEvaluations( _totalEval ) {
     std::cout << "Ctor de eoEvalFuncCounter avec total = " << repTotalEvaluations << std::endl;
-	stop = _stop;
+    stop = _stop;
 };
   
   /** Returns false when a certain number of evaluations has been done
    */
   virtual bool operator() ( const eoPop<EOT>& _vEO ) {
-	  if (eval.value() >= repTotalEvaluations) 
-	  {
-		  std::cout << "STOP in MyEAEvalContinue: Reached maximum number of evaluations [" << repTotalEvaluations << "]\n";
-		  return false;
-	  }
-	  if ((*stop))
-	  {
-		  std::cout << "STOP asked by user. Reached" << repTotalEvaluations << "evaluations \n";
-		return false;
-	  }
-	  return true;
+      if (eval.value() >= repTotalEvaluations) 
+      {
+          std::cout << "STOP in MyEAEvalContinue: Reached maximum number of evaluations [" << repTotalEvaluations << "]\n";
+          return false;
+      }
+      if ((*stop))
+      {
+          std::cout << "STOP asked by user. Reached" << repTotalEvaluations << "evaluations \n";
+        return false;
+      }
+      return true;
   }
   
   /** Returns the number of generations to reach*/

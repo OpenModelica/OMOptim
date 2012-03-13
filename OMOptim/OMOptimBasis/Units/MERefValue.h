@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MERefValue.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MERefValue.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_MEREFVALUE_H)
@@ -58,22 +58,22 @@ template<class DimValue>
 class MERefValue
 {
 public:
-	MERefValue(QVariant value=QVariant(),int unit=0);
-	virtual ~MERefValue(void);
+    MERefValue(QVariant value=QVariant(),int unit=0);
+    virtual ~MERefValue(void);
 
-	
-	virtual unsigned nbUnits() const;
-	QVariant value() const;
-	virtual void setValue(QVariant,int iUnit=-1);
-	virtual bool setValue(QVariant,QString unit);
+    
+    virtual unsigned nbUnits() const;
+    QVariant value() const;
+    virtual void setValue(QVariant,int iUnit=-1);
+    virtual bool setValue(QVariant,QString unit);
         virtual void setValue(const MERefValue &);
         virtual void setValue(const DimValue &);
-	bool setUnit(QString iUnit);
-	void setUnit(int);
-	QStringList units() const;
-	QString unit() const;
-	int iUnit() const;
-	virtual QString unit(int iUnit) const;
+    bool setUnit(QString iUnit);
+    void setUnit(int);
+    QStringList units() const;
+    QString unit() const;
+    int iUnit() const;
+    virtual QString unit(int iUnit) const;
 
         double numValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName=QString()) const;
         DimValue numValue(MOOptVector *variables,bool &ok,QString modelName) const;
@@ -81,11 +81,11 @@ public:
 
         QString reference() const ;
         bool isNum() const;
-	
-	
+    
+    
 protected :
-	int _unit;
-	QVariant _value;
+    int _unit;
+    QVariant _value;
 };
 
 #include "MERefValue.cpp"

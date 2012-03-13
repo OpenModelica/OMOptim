@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Info.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file Info.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_INFO_H)
@@ -46,20 +46,20 @@
 
 class Info : public QObject
 {
-	 Q_OBJECT
+     Q_OBJECT
 
 public:
-	Info();
-	Info(const Info &);
-	Info(ListInfo::InfoNum errNum_);
-	Info(ListInfo::InfoNum errNum_, QString strSupp);
-	Info(ListInfo::InfoNum errNum_, QString strSupp1, QString strSupp2);
-	Info(QString msg,ListInfo::InfoType msgType = ListInfo::NORMAL2);
-	virtual ~Info() throw() {};
+    Info();
+    Info(const Info &);
+    Info(ListInfo::InfoNum errNum_);
+    Info(ListInfo::InfoNum errNum_, QString strSupp);
+    Info(ListInfo::InfoNum errNum_, QString strSupp1, QString strSupp2);
+    Info(QString msg,ListInfo::InfoType msgType = ListInfo::NORMAL2);
+    virtual ~Info() throw() {};
     
-	ListInfo::InfoNum infoNum;
-	QString infoMsg;
-	ListInfo::InfoType infoType;
+    ListInfo::InfoNum infoNum;
+    QString infoMsg;
+    ListInfo::InfoType infoType;
 };
 Q_DECLARE_METATYPE(Info)
 

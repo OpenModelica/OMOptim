@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModelicaConnection.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModelicaConnection.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_MODELICACONNECTION_H)
@@ -49,45 +49,45 @@ class ModelicaConnection : public MOItem
 {
 public:
 
-	enum Field
-	{
-		NAME,
-		A,
-		B
-	};
+    enum Field
+    {
+        NAME,
+        A,
+        B
+    };
 
-	
-	ModelicaConnection(void);
-	ModelicaConnection(QDomElement &);
-	ModelicaConnection(QString a,QString b);
-
-
-
-	virtual QString getClassName(){return "ModelicaConnection";};
-	static QString sFieldName(int field, int role);
-	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModelicaConnection::sFieldName(i,role);};
-	virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
-	virtual bool setFieldValue(int ifield, QVariant value_);
+    
+    ModelicaConnection(void);
+    ModelicaConnection(QDomElement &);
+    ModelicaConnection(QString a,QString b);
 
 
 
-	static const int nbFields = 3;
-	virtual unsigned getNbFields(){return nbFields;};
+    virtual QString getClassName(){return "ModelicaConnection";};
+    static QString sFieldName(int field, int role);
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModelicaConnection::sFieldName(i,role);};
+    virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
+    virtual bool setFieldValue(int ifield, QVariant value_);
 
 
 
-	~ModelicaConnection(void);
-
-	QString getA();
-	QString getB();
+    static const int nbFields = 3;
+    virtual unsigned getNbFields(){return nbFields;};
 
 
-	void setA(QString a);
-	void setB(QString b);
+
+    ~ModelicaConnection(void);
+
+    QString getA();
+    QString getB();
+
+
+    void setA(QString a);
+    void setB(QString b);
 
 private:
-	QString _a;
-	QString _b;
+    QString _a;
+    QString _b;
 
 };
 

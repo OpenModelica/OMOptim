@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file SBCrossover.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+     @file SBCrossover.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 0.9 
 
   */
 #ifndef SBCROSSOVER_H
@@ -64,80 +64,80 @@ public:
 
 
 virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
-	
+    
         // for double, int and bool, both eos are modified, new values are taken between two old values
-	// !! need to be studied and adapted to specific problems
-	bool oneHasChanged = false;
+    // !! need to be studied and adapted to specific problems
+    bool oneHasChanged = false;
 
-	int iVar;
-	double childValueA, childValueB;
-	double parValueA, parValueB;
-	double beta;
-	double eta=1;
-	double u;
-		
-	//********************************
-	// Crossover on double variables 
-	//********************************
-	for(int iVar=0;iVar<_eoA.doubleVars.size();iVar++)
-	{
-		u = rng.random(1);
-		if(u>0.5)
-			beta= pow(2*u,1/(eta+1));
-		else
-			beta = pow(1/(2*(1-u)),1/(eta+1));
+    int iVar;
+    double childValueA, childValueB;
+    double parValueA, parValueB;
+    double beta;
+    double eta=1;
+    double u;
+        
+    //********************************
+    // Crossover on double variables 
+    //********************************
+    for(int iVar=0;iVar<_eoA.doubleVars.size();iVar++)
+    {
+        u = rng.random(1);
+        if(u>0.5)
+            beta= pow(2*u,1/(eta+1));
+        else
+            beta = pow(1/(2*(1-u)),1/(eta+1));
 
-		parValueA = _eoA.doubleVars.at(iVar);
-		parValueB = _eoB.doubleVars.at(iVar);
+        parValueA = _eoA.doubleVars.at(iVar);
+        parValueB = _eoB.doubleVars.at(iVar);
 
-		childValueA = 0.5*((1+beta)*parValueA + (1-beta)*parValueB);
-		childValueB = 0.5*((1-beta)*parValueA + (1+beta)*parValueB);
+        childValueA = 0.5*((1+beta)*parValueA + (1-beta)*parValueB);
+        childValueB = 0.5*((1-beta)*parValueA + (1+beta)*parValueB);
 
-		_eoA.doubleVars.at(iVar) = childValueA;
-		_eoB.doubleVars.at(iVar) = childValueB;
+        _eoA.doubleVars.at(iVar) = childValueA;
+        _eoB.doubleVars.at(iVar) = childValueB;
 
-		oneHasChanged = true;
-	}
-	
-	//********************************
-	// Crossover on int variables 
-	//********************************
-	for(int iVar=0;iVar<_eoA.intVars.size();iVar++)
-	{
-		u = rng.random(1);
-		if(u>0.5)
-			beta= pow(2*u,1/(eta+1));
-		else
-			beta = pow(1/(2*(1-u)),1/(eta+1));
+        oneHasChanged = true;
+    }
+    
+    //********************************
+    // Crossover on int variables 
+    //********************************
+    for(int iVar=0;iVar<_eoA.intVars.size();iVar++)
+    {
+        u = rng.random(1);
+        if(u>0.5)
+            beta= pow(2*u,1/(eta+1));
+        else
+            beta = pow(1/(2*(1-u)),1/(eta+1));
 
-		parValueA = (double)_eoA.intVars.at(iVar);
-		parValueB = (double)_eoB.intVars.at(iVar);
+        parValueA = (double)_eoA.intVars.at(iVar);
+        parValueB = (double)_eoB.intVars.at(iVar);
 
-		childValueA = 0.5*((1+beta)*parValueA + (1-beta)*parValueB);
-		childValueB = 0.5*((1-beta)*parValueA + (1+beta)*parValueB);
-		
-		_eoA.intVars.at(iVar) = LowTools::round(childValueA);
-		_eoB.intVars.at(iVar) = LowTools::round(childValueB);
+        childValueA = 0.5*((1+beta)*parValueA + (1-beta)*parValueB);
+        childValueB = 0.5*((1-beta)*parValueA + (1+beta)*parValueB);
+        
+        _eoA.intVars.at(iVar) = LowTools::round(childValueA);
+        _eoB.intVars.at(iVar) = LowTools::round(childValueB);
 
-		oneHasChanged = true;
-	}
+        oneHasChanged = true;
+    }
 
-	//********************************
-	// Crossover on bool variables 
-	//********************************
-	for(int iVar=0;iVar<_eoA.boolVars.size();iVar++)
-	{
-		iVar = LowTools::round(rng.random(_eoA.boolVars.size()-1));
-		bool valB =_eoB.boolVars.at(iVar);
-		bool valA =_eoA.boolVars.at(iVar);
+    //********************************
+    // Crossover on bool variables 
+    //********************************
+    for(int iVar=0;iVar<_eoA.boolVars.size();iVar++)
+    {
+        iVar = LowTools::round(rng.random(_eoA.boolVars.size()-1));
+        bool valB =_eoB.boolVars.at(iVar);
+        bool valA =_eoA.boolVars.at(iVar);
 
-		_eoA.boolVars.at(iVar)=valB;
-		_eoB.boolVars.at(iVar)=valA;
+        _eoA.boolVars.at(iVar)=valB;
+        _eoB.boolVars.at(iVar)=valA;
 
-		oneHasChanged = true;
-	}
-	
-	return oneHasChanged;
+        oneHasChanged = true;
+    }
+    
+    return oneHasChanged;
 }
 private :
 

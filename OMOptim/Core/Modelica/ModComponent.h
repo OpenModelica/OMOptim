@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModComponent.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModComponent.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _ModComponent_H
@@ -45,37 +45,37 @@
 class ModComponent : public ModItem
 {
 public:
-	ModComponent(MOomc*);
-	ModComponent(MOomc*,ModItem* parent,QString name,QString className,QString filePath="");
-	~ModComponent(void);
+    ModComponent(MOomc*);
+    ModComponent(MOomc*,ModItem* parent,QString name,QString className,QString filePath="");
+    ~ModComponent(void);
         virtual ModItem* clone() const;
 
-	virtual QString getClassName(){return "ModComponent";};
-	
-	virtual Modelica::ClassRestr getClassRestr(){return Modelica::COMPONENT;};
+    virtual QString getClassName(){return "ModComponent";};
+    
+    virtual Modelica::ClassRestr getClassRestr(){return Modelica::COMPONENT;};
 
-	enum Field
-	{
-		NAME,
+    enum Field
+    {
+        NAME,
                 CLASSNAME,
-		FILEPATH
-	};
+        FILEPATH
+    };
 
-	QString getModItemName();
+    QString getModItemName();
 
-	virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
-	virtual bool setFieldValue(int iField, QVariant value);
-	static QString sFieldName(int field, int role);
-	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModComponent::sFieldName(i,role);};
+    virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
+    virtual bool setFieldValue(int iField, QVariant value);
+    static QString sFieldName(int field, int role);
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModComponent::sFieldName(i,role);};
 
-	static const int nbFields = 3;
-	virtual unsigned getNbFields(){return nbFields;};
-	virtual QString getStrToolTip();
+    static const int nbFields = 3;
+    virtual unsigned getNbFields(){return nbFields;};
+    virtual QString getStrToolTip();
 
 protected :
-	// Connections
-	QList<ModelicaConnection*> _connections;
-	QString _modClassName;
+    // Connections
+    QList<ModelicaConnection*> _connections;
+    QString _modClassName;
 
 
 };

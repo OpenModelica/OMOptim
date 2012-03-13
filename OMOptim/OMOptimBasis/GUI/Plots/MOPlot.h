@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOPlot.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOPlot.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef _MINPLOT_H
@@ -67,57 +67,57 @@
 
 class MOPlot : public QwtPlot
 {
-	Q_OBJECT 
+    Q_OBJECT 
 public:
-	inline MOPlot(void);
+    inline MOPlot(void);
     inline ~MOPlot(void);
         inline void addCurve(QwtPlotCurve *curve);
         inline void setCurves(QList<QwtPlotCurve*> & _curves);
-	inline int getNearestPointIndex(QwtPlotCurve *,const QwtDoublePoint &);
+    inline int getNearestPointIndex(QwtPlotCurve *,const QwtDoublePoint &);
 
-	inline void clear();
+    inline void clear();
 
-	
+    
 
 
 private:
-	
-	
-	
-	double selectedX;
-	double selectedY;
+    
+    
+    
+    double selectedX;
+    double selectedY;
 
-	QwtPlotPicker *picker1;
+    QwtPlotPicker *picker1;
 
-	QwtPlotZoomer *zoomer1;
+    QwtPlotZoomer *zoomer1;
 
         QList<QwtPlotCurve*> curves;
 
-	
+    
 
-	inline virtual void drawItems (QPainter *painter, const QRect &rect,
-			const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
-	
+    inline virtual void drawItems (QPainter *painter, const QRect &rect,
+            const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
+    
 
 
 
-	//inline void updateCurveStyle(QwtPlotCurve*,MOCCCurve &);
+    //inline void updateCurveStyle(QwtPlotCurve*,MOCCCurve &);
 
 
 
 public slots:
-	inline void onClicked(const QwtDoublePoint & pos);
+    inline void onClicked(const QwtDoublePoint & pos);
 
-	// Zoom
-	void zoomed (const QwtDoubleRect &);
-	void setEnabledZoom(bool on);
-	void zoomOut();
-	bool zoomIsOn();
+    // Zoom
+    void zoomed (const QwtDoubleRect &);
+    void setEnabledZoom(bool on);
+    void zoomOut();
+    bool zoomIsOn();
         void enableZoom(bool checked);
 
-	// Data picker
+    // Data picker
 
-	void contextMenuEvent(QContextMenuEvent *);
+    void contextMenuEvent(QContextMenuEvent *);
 
 signals :
         inline void clickedOnCurves(QwtPlotCurve *);
@@ -128,52 +128,52 @@ signals :
 
 MOPlot::MOPlot()
 {
-	
+    
 
-	// Picker on plot
-	picker1 = new QwtPlotPicker(canvas());
-	picker1->setTrackerMode(QwtPicker::AlwaysOff);
-	picker1->setSelectionFlags(QwtPicker::PointSelection);
-	connect(picker1, SIGNAL(selected(const QwtDoublePoint &)),this, SLOT(onClicked(const QwtDoublePoint &)));
+    // Picker on plot
+    picker1 = new QwtPlotPicker(canvas());
+    picker1->setTrackerMode(QwtPicker::AlwaysOff);
+    picker1->setSelectionFlags(QwtPicker::PointSelection);
+    connect(picker1, SIGNAL(selected(const QwtDoublePoint &)),this, SLOT(onClicked(const QwtDoublePoint &)));
 
-	// Style
-	this->canvas()->setFrameStyle(QFrame::NoFrame);
-	QFont _axisFont(QApplication::font().family(),8,QFont::Normal);
-	_axisFont.setStyleStrategy(QFont::PreferAntialias);
-	this->canvas()->setFont(_axisFont);
-	this->setAxisFont(QwtPlot::xBottom,_axisFont);
-	this->setAxisFont(QwtPlot::yLeft,_axisFont);
-	
+    // Style
+    this->canvas()->setFrameStyle(QFrame::NoFrame);
+    QFont _axisFont(QApplication::font().family(),8,QFont::Normal);
+    _axisFont.setStyleStrategy(QFont::PreferAntialias);
+    this->canvas()->setFont(_axisFont);
+    this->setAxisFont(QwtPlot::xBottom,_axisFont);
+    this->setAxisFont(QwtPlot::yLeft,_axisFont);
+    
 
-	QFont font;
-	font.setPointSize(8);
-	this->axisWidget(QwtPlot::xBottom)->setFont(font);
-	this->axisWidget(QwtPlot::yLeft)->setFont(font);
+    QFont font;
+    font.setPointSize(8);
+    this->axisWidget(QwtPlot::xBottom)->setFont(font);
+    this->axisWidget(QwtPlot::yLeft)->setFont(font);
 
 
-	this->setCanvasBackground(QColor(Qt::white));
-	this->setMargin(5);
-	this->setContentsMargins(5,5,5,5);
-	
+    this->setCanvasBackground(QColor(Qt::white));
+    this->setMargin(5);
+    this->setContentsMargins(5,5,5,5);
+    
 
-	
-		
-	// grid 
+    
+        
+    // grid 
     QwtPlotGrid *grid = new QwtPlotGrid;
     grid->enableXMin(false);
-	grid->enableYMin(false);
-	grid->setMajPen(QPen(Qt::lightGray, 0, Qt::SolidLine));
+    grid->enableYMin(false);
+    grid->setMajPen(QPen(Qt::lightGray, 0, Qt::SolidLine));
     grid->setMinPen(QPen(Qt::lightGray, 0 , Qt::SolidLine));
     grid->attach(this);
-	
-	//zoom
-	zoomer1 = new QwtPlotZoomer(QwtPlot::xBottom, QwtPlot::yLeft,
-			QwtPicker::DragSelection | QwtPicker::CornerToCorner, QwtPicker::AlwaysOff, canvas());
-	zoomer1->setRubberBandPen(QPen(Qt::black));
+    
+    //zoom
+    zoomer1 = new QwtPlotZoomer(QwtPlot::xBottom, QwtPlot::yLeft,
+            QwtPicker::DragSelection | QwtPicker::CornerToCorner, QwtPicker::AlwaysOff, canvas());
+    zoomer1->setRubberBandPen(QPen(Qt::black));
 
 
-	connect (zoomer1,SIGNAL(zoomed (const QwtDoubleRect &)),this,SLOT(zoomed (const QwtDoubleRect &)));
-	setEnabledZoom(false);
+    connect (zoomer1,SIGNAL(zoomed (const QwtDoubleRect &)),this,SLOT(zoomed (const QwtDoubleRect &)));
+    setEnabledZoom(false);
 
 }
 
@@ -191,17 +191,17 @@ void MOPlot::setCurves(QList<QwtPlotCurve*>& _curves)
     qDebug(msg.toLatin1().data());
 
 
-	clear();
-	
-	for(int i =0;i<_curves.size();i++)
-	{
-		addCurve(_curves.at(i));
-	}
+    clear();
+    
+    for(int i =0;i<_curves.size();i++)
+    {
+        addCurve(_curves.at(i));
+    }
 
-	setAxisAutoScale(QwtPlot::xBottom);
-	setAxisAutoScale(QwtPlot::yLeft);
+    setAxisAutoScale(QwtPlot::xBottom);
+    setAxisAutoScale(QwtPlot::yLeft);
 
-	replot();
+    replot();
 }
 
 void MOPlot::clear()
@@ -209,16 +209,16 @@ void MOPlot::clear()
     QString msg = "MOPlot::clear";
     qDebug(msg.toLatin1().data());
 
-	// first detach curves in order not to delete them
-	for(int i=0;i<curves.size();i++)
+    // first detach curves in order not to delete them
+    for(int i=0;i<curves.size();i++)
     {
-		curves.at(i)->detach();
+        curves.at(i)->detach();
     }
 
 
-	QwtPlot::clear();
-	
-	curves.clear();
+    QwtPlot::clear();
+    
+    curves.clear();
 }
 
 void MOPlot::addCurve(QwtPlotCurve *_curve)
@@ -226,10 +226,10 @@ void MOPlot::addCurve(QwtPlotCurve *_curve)
     QString msg = "MOPlot::addCurve";
     qDebug(msg.toLatin1().data());
 
-	if(!curves.contains(_curve))
-		curves.push_back(_curve);
-	
-	_curve->attach(this);
+    if(!curves.contains(_curve))
+        curves.push_back(_curve);
+    
+    _curve->attach(this);
 }
 
 //void MOPlot::updateCurveStyle(QwtPlotCurve* _plotCurve,MOCCCurve *_curve)
@@ -237,74 +237,74 @@ void MOPlot::addCurve(QwtPlotCurve *_curve)
 //QwtSymbol sym1;
 //QPen pen1;
 //
-//	switch(_curve.type)
-//	{
-//	case MOCCCurve::CCCOLD :
-//		sym1.setStyle(QwtSymbol::Ellipse);
-//		sym1.setSize(6);
-//		sym1.setPen(QPen(Qt::blue));
-//		sym1.setBrush(QBrush(Qt::blue));
-//		pen1.setColor(Qt::blue);
-//		pen1.setWidth(2);
-//		_plotCurve->setSymbol(sym1);
-//		_plotCurve->setPen(pen1);
-//		_plotCurve->setStyle(QwtPlotCurve::Lines);
-//		_plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
-//		_plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
-//		break;
-//	case MOCCCurve::CCHOT :
-//		sym1.setStyle(QwtSymbol::Ellipse);
-//		sym1.setSize(6);
-//		sym1.setPen(QPen(Qt::red));
-//		sym1.setBrush(QBrush(Qt::red));
-//		pen1.setColor(Qt::red);
-//		pen1.setWidth(2);
-//		_plotCurve->setSymbol(sym1);
-//		_plotCurve->setPen(pen1);
-//		_plotCurve->setStyle(QwtPlotCurve::Lines);
-//		_plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
-//		_plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
-//		break;
-//	case MOCCCurve::GCC :
-//		sym1.setStyle(QwtSymbol::Ellipse);
-//		sym1.setSize(6);
-//		sym1.setPen(QPen(Qt::red));
-//		sym1.setBrush(QBrush(Qt::red));
-//		pen1.setColor(Qt::red);
-//		pen1.setWidth(2);
-//		_plotCurve->setSymbol(sym1);
-//		_plotCurve->setPen(pen1);
-//		_plotCurve->setStyle(QwtPlotCurve::Lines);
-//		_plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
-//		_plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
-//		break;
-//	case MOCCCurve::ICC :
-//		sym1.setStyle(QwtSymbol::Ellipse);
-//		sym1.setSize(6);
-//		sym1.setPen(QPen(Qt::green));
-//		sym1.setBrush(QBrush(Qt::green));
-//		pen1.setColor(Qt::green);
-//		pen1.setWidth(2);
-//		_plotCurve->setSymbol(sym1);
-//		_plotCurve->setPen(pen1);
-//		_plotCurve->setStyle(QwtPlotCurve::Lines);
-//		_plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
-//		_plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
-//		break;
-//	case MOCCCurve::OTHER :
-//		sym1.setStyle(QwtSymbol::Ellipse);
-//		sym1.setSize(6);
-//		sym1.setPen(QPen(Qt::black));
-//		sym1.setBrush(QBrush(Qt::black));
-//		pen1.setColor(Qt::black);
-//		pen1.setWidth(2);
-//		_plotCurve->setSymbol(sym1);
-//		_plotCurve->setPen(pen1);
-//		_plotCurve->setStyle(QwtPlotCurve::Lines);
-//		_plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
-//		_plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
-//		break;
-//	}
+//    switch(_curve.type)
+//    {
+//    case MOCCCurve::CCCOLD :
+//        sym1.setStyle(QwtSymbol::Ellipse);
+//        sym1.setSize(6);
+//        sym1.setPen(QPen(Qt::blue));
+//        sym1.setBrush(QBrush(Qt::blue));
+//        pen1.setColor(Qt::blue);
+//        pen1.setWidth(2);
+//        _plotCurve->setSymbol(sym1);
+//        _plotCurve->setPen(pen1);
+//        _plotCurve->setStyle(QwtPlotCurve::Lines);
+//        _plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
+//        _plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
+//        break;
+//    case MOCCCurve::CCHOT :
+//        sym1.setStyle(QwtSymbol::Ellipse);
+//        sym1.setSize(6);
+//        sym1.setPen(QPen(Qt::red));
+//        sym1.setBrush(QBrush(Qt::red));
+//        pen1.setColor(Qt::red);
+//        pen1.setWidth(2);
+//        _plotCurve->setSymbol(sym1);
+//        _plotCurve->setPen(pen1);
+//        _plotCurve->setStyle(QwtPlotCurve::Lines);
+//        _plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
+//        _plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
+//        break;
+//    case MOCCCurve::GCC :
+//        sym1.setStyle(QwtSymbol::Ellipse);
+//        sym1.setSize(6);
+//        sym1.setPen(QPen(Qt::red));
+//        sym1.setBrush(QBrush(Qt::red));
+//        pen1.setColor(Qt::red);
+//        pen1.setWidth(2);
+//        _plotCurve->setSymbol(sym1);
+//        _plotCurve->setPen(pen1);
+//        _plotCurve->setStyle(QwtPlotCurve::Lines);
+//        _plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
+//        _plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
+//        break;
+//    case MOCCCurve::ICC :
+//        sym1.setStyle(QwtSymbol::Ellipse);
+//        sym1.setSize(6);
+//        sym1.setPen(QPen(Qt::green));
+//        sym1.setBrush(QBrush(Qt::green));
+//        pen1.setColor(Qt::green);
+//        pen1.setWidth(2);
+//        _plotCurve->setSymbol(sym1);
+//        _plotCurve->setPen(pen1);
+//        _plotCurve->setStyle(QwtPlotCurve::Lines);
+//        _plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
+//        _plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
+//        break;
+//    case MOCCCurve::OTHER :
+//        sym1.setStyle(QwtSymbol::Ellipse);
+//        sym1.setSize(6);
+//        sym1.setPen(QPen(Qt::black));
+//        sym1.setBrush(QBrush(Qt::black));
+//        pen1.setColor(Qt::black);
+//        pen1.setWidth(2);
+//        _plotCurve->setSymbol(sym1);
+//        _plotCurve->setPen(pen1);
+//        _plotCurve->setStyle(QwtPlotCurve::Lines);
+//        _plotCurve->setItemAttribute(QwtPlotItem::AutoScale,true);
+//        _plotCurve->setRenderHint(QwtPlotItem::RenderAntialiased,true);
+//        break;
+//    }
 //}
 
 
@@ -312,71 +312,71 @@ void MOPlot::addCurve(QwtPlotCurve *_curve)
 int MOPlot::getNearestPointIndex(QwtPlotCurve * curve,const QwtDoublePoint & point)
 {
 
-	double minDist=0;
-	double curDist=0;
+    double minDist=0;
+    double curDist=0;
 
-	int xPos = transform(QwtPlot::xBottom,point.x());
-	int yPos = transform(QwtPlot::yLeft,point.y());
+    int xPos = transform(QwtPlot::xBottom,point.x());
+    int yPos = transform(QwtPlot::yLeft,point.y());
 
-	int indexMin = -1;
+    int indexMin = -1;
 
-	/*for(int iPoint=0;iPoint<xData.size();iPoint++)
-	{
-		xPointPos = transform(QwtPlot::xBottom,xData.at(iPoint));
-		yPointPos = transform(QwtPlot::yLeft,yData.at(iPoint));
+    /*for(int iPoint=0;iPoint<xData.size();iPoint++)
+    {
+        xPointPos = transform(QwtPlot::xBottom,xData.at(iPoint));
+        yPointPos = transform(QwtPlot::yLeft,yData.at(iPoint));
 
-		curDist = sqrt(pow((double)(yPointPos-yPos),2)+pow((double)(xPointPos-xPos),2));
-		if((curDist<minDist)|| (iPoint==0))
-		{
-			indexMin = iPoint;
-			minDist = curDist;
-		}
-	}*/
-	return indexMin;
+        curDist = sqrt(pow((double)(yPointPos-yPos),2)+pow((double)(xPointPos-xPos),2));
+        if((curDist<minDist)|| (iPoint==0))
+        {
+            indexMin = iPoint;
+            minDist = curDist;
+        }
+    }*/
+    return indexMin;
 }
 
 void MOPlot::onClicked(const QwtDoublePoint & pos)
 {
-	
-	/*int selectedPoint = getNearestPointIndex(curveHot,pos);
+    
+    /*int selectedPoint = getNearestPointIndex(curveHot,pos);
 
-	MOVector<EIStream> *clickedStreams;
-	emit clickedOnCurves(clickedStreams);*/
+    MOVector<EIStream> *clickedStreams;
+    emit clickedOnCurves(clickedStreams);*/
 }
 
 void MOPlot::drawItems (QPainter *painter, const QRect &rect,
-						   const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
+                           const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
 {
 
     QString msg = "MOPlot::drawItems";
     qDebug(msg.toLatin1().data());
 
-	painter->save();
+    painter->save();
 
-	const QwtPlotItemList& itmList = itemList();
-	for ( QwtPlotItemIterator it = itmList.begin();
-		it != itmList.end(); ++it )
-	{
-		QwtPlotItem *item = *it;
-		if ( item && item->isVisible() )
-		{
-			if ( !(pfilter.options() & QwtPlotPrintFilter::PrintGrid)
-				&& item->rtti() == QwtPlotItem::Rtti_PlotGrid )
-			{
-				continue;
-			}
+    const QwtPlotItemList& itmList = itemList();
+    for ( QwtPlotItemIterator it = itmList.begin();
+        it != itmList.end(); ++it )
+    {
+        QwtPlotItem *item = *it;
+        if ( item && item->isVisible() )
+        {
+            if ( !(pfilter.options() & QwtPlotPrintFilter::PrintGrid)
+                && item->rtti() == QwtPlotItem::Rtti_PlotGrid )
+            {
+                continue;
+            }
 
 #if QT_VERSION >= 0x040000
-			painter->setRenderHint(QPainter::Antialiasing,true);
+            painter->setRenderHint(QPainter::Antialiasing,true);
 #endif
 
-			item->draw(painter, 
-				map[item->xAxis()], map[item->yAxis()],
-				rect);
-		}
-	}
+            item->draw(painter, 
+                map[item->xAxis()], map[item->yAxis()],
+                rect);
+        }
+    }
 
-	painter->restore();
+    painter->restore();
 }
 
 

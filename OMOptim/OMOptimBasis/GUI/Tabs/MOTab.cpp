@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOTab.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOTab.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "MOTab.h"
@@ -60,13 +60,13 @@ MOTabCplx::MOTabCplx(QString _projectName,MOItem* _mainItem,QWidget* _parent)
 
 MOTabCplx::~MOTabCplx(void)
 {
-	saveGUIState();
+    saveGUIState();
 }
 
 void MOTabCplx::saveGUIState()
 {
 
-	QSettings settings("MO", "GUI_");
+    QSettings settings("MO", "GUI_");
         settings.setValue(projectName+"/"+name+"/geometry", saveGeometry());
         settings.setValue(projectName+"/"+name+"/windowState", saveState());
 }

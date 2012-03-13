@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOTabBase.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOTabBase.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef MOTABBASE_H
@@ -54,26 +54,26 @@ class MOTabBase
 {
 public:
 
-	enum TabType
-	{
-		TABPROJECT,
-		TABPROBLEM,
-		TABSOLVEDPROBLEM,
-		TABOTHER
-	};
+    enum TabType
+    {
+        TABPROJECT,
+        TABPROBLEM,
+        TABSOLVEDPROBLEM,
+        TABOTHER
+    };
 
 
         MOTabBase(QString _projectName,MOItem* _mainItem);
-	virtual ~MOTabBase(void);
+    virtual ~MOTabBase(void);
         virtual TabType tabType()=0;
 
 
 
-	MOItem* getItem();
-	QString name;
+    MOItem* getItem();
+    QString name;
 
 protected :
-	MOItem* mainItem;
+    MOItem* mainItem;
         QString projectName; //used for GUI saving
 };
 

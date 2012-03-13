@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OptObjective.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file OptObjective.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef OPTOBJECTIVE_H
@@ -48,70 +48,70 @@
 class OptObjective : public Variable
 {
 public:
-	enum Field
-	{
-		NAME,
-		DESCRIPTION,
-		DIRECTION,
-		MIN,
-		MAX,
-		// Scan
-		SCANFUNCTION
-	};
+    enum Field
+    {
+        NAME,
+        DESCRIPTION,
+        DIRECTION,
+        MIN,
+        MAX,
+        // Scan
+        SCANFUNCTION
+    };
 
-	enum Direction
-	{
-		MAXIMIZE=0,
-		MINIMIZE=1
-	};
+    enum Direction
+    {
+        MAXIMIZE=0,
+        MINIMIZE=1
+    };
 
-	enum ScanFunction
-	{
-		NONE,
-		AVERAGE,
-		SUM,
+    enum ScanFunction
+    {
+        NONE,
+        AVERAGE,
+        SUM,
                 DEVIATION,
                 MINIMUM,
                 MAXIMUM
-	};
+    };
 
-	OptObjective();
-	OptObjective(const Variable &,Direction = MINIMIZE);
-	OptObjective(const OptObjective &);
-	OptObjective(QDomElement &);
-	~OptObjective(void);
-	virtual QString getClassName(){return "OptObjective";};
+    OptObjective();
+    OptObjective(const Variable &,Direction = MINIMIZE);
+    OptObjective(const OptObjective &);
+    OptObjective(QDomElement &);
+    ~OptObjective(void);
+    virtual QString getClassName(){return "OptObjective";};
 
 
         void initOptExtremum();
 
-	void setDirection(Direction);
-	void setScanFunction(ScanFunction);
-	void setDescription(QString);
+    void setDirection(Direction);
+    void setScanFunction(ScanFunction);
+    void setDescription(QString);
 
-	Direction direction();
-	ScanFunction scanFunction();
+    Direction direction();
+    ScanFunction scanFunction();
 
-	bool check(QString &error);
-	bool isMinimized();
-	static QString sFieldName(int field, int role);
-	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptObjective::sFieldName(i,role);};
+    bool check(QString &error);
+    bool isMinimized();
+    static QString sFieldName(int field, int role);
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptObjective::sFieldName(i,role);};
 
-	virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
-	virtual bool setFieldValue(int ifield, QVariant value_);
+    virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
+    virtual bool setFieldValue(int ifield, QVariant value_);
 
-	static const int nbFields = 6;
-	virtual unsigned getNbFields(){return nbFields;};
+    static const int nbFields = 6;
+    virtual unsigned getNbFields(){return nbFields;};
 
-	
+    
         double min(){return _min;};
         double max(){return _max;};
 
 protected:
-	ScanFunction _scanFunction;
-	Direction _direction;
-	double _min;
-	double _max;
+    ScanFunction _scanFunction;
+    Direction _direction;
+    double _min;
+    double _max;
 
 
 
@@ -122,40 +122,40 @@ protected:
 class OptObjectiveResult : public OptObjective
 {
 public:
-	OptObjectiveResult();
-	OptObjectiveResult(const OptObjective &);
-	OptObjectiveResult(QDomElement &);
-	virtual QString getClassName(){return "OptObjectiveResult";};
+    OptObjectiveResult();
+    OptObjectiveResult(const OptObjective &);
+    OptObjectiveResult(QDomElement &);
+    virtual QString getClassName(){return "OptObjectiveResult";};
 
-	
-	static QString sFieldName(int field, int role);
-	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptObjectiveResult::sFieldName(i,role);};
+    
+    static QString sFieldName(int field, int role);
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptObjectiveResult::sFieldName(i,role);};
 
-	QVariant getFieldValue(int, int role = Qt::UserRole) const;
-	bool setFieldValue(int ifield, QVariant value_);
-	
+    QVariant getFieldValue(int, int role = Qt::UserRole) const;
+    bool setFieldValue(int ifield, QVariant value_);
+    
 
-	
+    
 
 public:
-	//Added functions
-	std::vector<double> finalValues() const;
-	bool isComputedPoint(int i) const;
-	int nbPoints() const;
-	double finalValue(int) const;
+    //Added functions
+    std::vector<double> finalValues() const;
+    bool isComputedPoint(int i) const;
+    int nbPoints() const;
+    double finalValue(int) const;
 
-	void setFinalValues(const std::vector<double> &);
-	void setFinalValueAtPoint(double,int);
-	void appendFinalValue(double);
+    void setFinalValues(const std::vector<double> &);
+    void setFinalValueAtPoint(double,int);
+    void appendFinalValue(double);
 
-	void clearFinalValues();
-	OptObjectiveResult* clone() const;
+    void clearFinalValues();
+    OptObjectiveResult* clone() const;
 
-	OptObjective* equivOptObjective();
+    OptObjective* equivOptObjective();
 
 private :
-	std::vector<double> _finalValues;
-	std::vector<bool> _computedPoints;
+    std::vector<double> _finalValues;
+    std::vector<bool> _computedPoints;
 
 };
 

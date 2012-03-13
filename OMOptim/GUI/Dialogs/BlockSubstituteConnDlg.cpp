@@ -76,34 +76,34 @@ void BlockSubstituteConnDlg::validate()
     //QModelIndex index = ui->treeBlocks->currentIndex();
     //if(isOk && index.isValid())
     //{
-    //	ModItem *selectedComponent = static_cast<ModItem*>(index.internalPointer());
-    //	QString subClassName = selectedComponent->name(Modelica::FULL);
+    //    ModItem *selectedComponent = static_cast<ModItem*>(index.internalPointer());
+    //    QString subClassName = selectedComponent->name(Modelica::FULL);
 
-    //	newBSub = new BlockSubstitution(project,project->getModel(),orgComponent,subClassName);
-    //	newBSub->orgConnections = orgComponent->getOutsideConnectedComponentNames(true,false);
+    //    newBSub = new BlockSubstitution(project,project->getModel(),orgComponent,subClassName);
+    //    newBSub->orgConnections = orgComponent->getOutsideConnectedComponentNames(true,false);
 
-    //	QStringList scConnNames = selectedComponent->getOutsideConnectedComponentNames(true,false);
-    //	QStringList corrNames;
-    //	int i=0,curIndex;
-    //	while(isOk && i<connectionCombos.size())
-    //	{
+    //    QStringList scConnNames = selectedComponent->getOutsideConnectedComponentNames(true,false);
+    //    QStringList corrNames;
+    //    int i=0,curIndex;
+    //    while(isOk && i<connectionCombos.size())
+    //    {
 
-    //		curIndex = connectionCombos.at(i)->currentIndex();
-    //		if(curIndex>-1)
-    //			corrNames.push_back(scConnNames.at(curIndex));
-    //		else
-    //			isOk = false;
-    //		i++;
-    //	}
-    //	newBSub->subCorrConnections = corrNames;
+    //        curIndex = connectionCombos.at(i)->currentIndex();
+    //        if(curIndex>-1)
+    //            corrNames.push_back(scConnNames.at(curIndex));
+    //        else
+    //            isOk = false;
+    //        i++;
+    //    }
+    //    newBSub->subCorrConnections = corrNames;
     //}
 
     //if(isOk)
-    //	accept();
+    //    accept();
     //else
     //{
-    //	QErrorMessage *errorMessageDialog = new QErrorMessage(this);
-    //	errorMessageDialog->showMessage("Problems in block replacement definition");
+    //    QErrorMessage *errorMessageDialog = new QErrorMessage(this);
+    //    errorMessageDialog->showMessage("Problems in block replacement definition");
     //}
 }
 

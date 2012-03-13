@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetSelectOptVars.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetSelectOptVars.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef WidgetSelectOptVars_H
@@ -65,33 +65,33 @@ public:
         explicit WidgetSelectOptVars(Optimization *problem,bool isEditable,QWidget *parent);
     virtual ~WidgetSelectOptVars();
 
-	
+    
 
 public:
     Ui::WidgetSelectOptVarsClass *_ui;
-	
+    
 
 public slots :
-	void actualizeGui();
-	void addOptVariables();
-	void deleteOptVariables();
-	void addOptObjectives();
-	void deleteOptObjectives();
-	void addScannedVariables();
-	void deleteScannedVariables();
+    void actualizeGui();
+    void addOptVariables();
+    void deleteOptVariables();
+    void addOptObjectives();
+    void deleteOptObjectives();
+    void addScannedVariables();
+    void deleteScannedVariables();
         void readVariables();
 
 
 
 private:
 
-	Optimization* _problem;
+    Optimization* _problem;
         bool _isEditable;
 
-	QSortFilterProxyModel *_variableProxyModel;
-	QSortFilterProxyModel *_optVariableProxyModel;
-	QSortFilterProxyModel *_objectiveProxyModel;
-	QSortFilterProxyModel *_scannedProxyModel;
+    QSortFilterProxyModel *_variableProxyModel;
+    QSortFilterProxyModel *_optVariableProxyModel;
+    QSortFilterProxyModel *_objectiveProxyModel;
+    QSortFilterProxyModel *_scannedProxyModel;
 
 
 

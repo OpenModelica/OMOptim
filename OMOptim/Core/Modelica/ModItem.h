@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
         @file ModItem.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _ModItem_H
@@ -55,7 +55,7 @@
 
 class ModItem : public MOItem
 {
-	Q_OBJECT
+    Q_OBJECT
 
     /**
     * \brief ModItem is a class corresponding to a Modelica item (like a Model, a Component, a Block, a Record...)
@@ -64,21 +64,21 @@ class ModItem : public MOItem
     * This class provides basic structure and functions of Modelica items.
     */
 
-	//***********************
-	// Attributes
-	//***********************
+    //***********************
+    // Attributes
+    //***********************
 protected:
-	bool _childrenReaden;
-	MOomc* _moomc;
-	QString _filePath;
+    bool _childrenReaden;
+    MOomc* _moomc;
+    QString _filePath;
         ModItem *_parent;
         QList<ModItem*> _children;
-	
+    
 public :
-	QMutex _readMutex;
-	//***********************
-	// Functions
-	//***********************
+    QMutex _readMutex;
+    //***********************
+    // Functions
+    //***********************
 public:
         ModItem(MOomc*);
         ModItem(MOomc*,ModItem* _parent,QString _name,QString filePath="");
@@ -87,14 +87,14 @@ public:
         virtual ModItem* clone() const;
         //virtual ModItem* cloneStructure(QString newName); // clone all fields excepted connections and variables
         virtual ~ModItem(void);
-	virtual Modelica::ClassRestr getClassRestr(){return Modelica::GENERIC;};	
-	
-	// Data fields and management
-	enum Field
-	{
-		NAME,
-		FILEPATH
-	};
+    virtual Modelica::ClassRestr getClassRestr(){return Modelica::GENERIC;};    
+    
+    // Data fields and management
+    enum Field
+    {
+        NAME,
+        FILEPATH
+    };
 
     enum NameFormat
     {
@@ -102,44 +102,44 @@ public:
         WITHOUTROOT,
         FULL
     };
-	
-	static const int nbFields = 2;
-	virtual unsigned getNbFields(){return nbFields;};
-	
-	// General functions
-	virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
-	virtual bool setFieldValue(int iField, QVariant value);
-	static QString sFieldName(int field, int role);
+    
+    static const int nbFields = 2;
+    virtual unsigned getNbFields(){return nbFields;};
+    
+    // General functions
+    virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
+    virtual bool setFieldValue(int iField, QVariant value);
+    static QString sFieldName(int field, int role);
         virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModItem::sFieldName(i,role);};
 
         virtual QString getModItemName();
-	void emitModified();
+    void emitModified();
 
-	// Parent
+    // Parent
         ModItem* parent();
         void setParent(ModItem *);
 
-	// Local information
+    // Local information
     QString name(ModItem::NameFormat = ModItem::FULL);
-	QString filePath();
-	
-	// Tree functions
-	int depth();
-		
-	//*****************************
-	//Children
-	//*****************************
+    QString filePath();
+    
+    // Tree functions
+    int depth();
+        
+    //*****************************
+    //Children
+    //*****************************
         bool addChild(ModItem*);
-	void clearDescendants();
-	virtual void clear();
-	int compChildCount();
-	int modelChildCount();
-	int packageChildCount();
+    void clearDescendants();
+    virtual void clear();
+    int compChildCount();
+    int modelChildCount();
+    int packageChildCount();
         int recordChildCount();
         int childCount() const;
-	QStringList getChildrenNames();
-	bool childrenReaden();
-	void setChildrenReaden(bool);
+    QStringList getChildrenNames();
+    bool childrenReaden();
+    void setChildrenReaden(bool);
         int indexInParent();
 
         ModItem* child(int row) const;
@@ -148,23 +148,23 @@ public:
         ModItem* packageChild(int row) const;
         ModItem* recordChild(int row) const;
 
-	
+    
 
-	//******************************
-	// GUI
-	//******************************
-	virtual QString getStrToolTip();
+    //******************************
+    // GUI
+    //******************************
+    virtual QString getStrToolTip();
 
-	public slots:
-		void openMoFolder();
+    public slots:
+        void openMoFolder();
                 void openInEditor();
 
 
 signals:
-	//void connectionsUpdated();
+    //void connectionsUpdated();
         void addedChild(ModItem*);
-	void modified();
-	void cleared();
+    void modified();
+    void cleared();
 };
 
 #endif

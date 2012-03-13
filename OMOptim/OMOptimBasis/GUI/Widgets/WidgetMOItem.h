@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetMOItem.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetMOItem.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef WIDGETMOITEM_H
@@ -70,28 +70,28 @@ public:
     Ui::WidgetMOItemClass *ui;
 
 public:
-	void setItem(MOItem*);
+    void setItem(MOItem*);
 
 protected :
-	
-	MOItem* item;
+    
+    MOItem* item;
     bool _editable;
-	void clearGui();
-	void initializeGui();
-	QWidget* itemWidget;
-	
-	QMap<int,QWidget*> fieldEditWidget;
+    void clearGui();
+    void initializeGui();
+    QWidget* itemWidget;
+    
+    QMap<int,QWidget*> fieldEditWidget;
 
     virtual QWidget* createEditWidget(MOItem* item, int iField, bool editable)=0;
-	
-	void updateWidgetValue(QWidget*, QVariant);
-	
-	void changeValue(QWidget*,const QVariant &);
+    
+    void updateWidgetValue(QWidget*, QVariant);
+    
+    void changeValue(QWidget*,const QVariant &);
 
-	public slots:
-		void onValueChanged(const QString &);
-		void onCheckChanged(int state);
-		void actualizeValues();
+    public slots:
+        void onValueChanged(const QString &);
+        void onCheckChanged(int state);
+        void actualizeValues();
 
 signals :
         void valueChanged();

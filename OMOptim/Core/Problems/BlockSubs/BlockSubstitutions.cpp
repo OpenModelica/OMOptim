@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file BlockSubstitutions.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file BlockSubstitutions.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "BlockSubstitutions.h"
@@ -48,17 +48,17 @@ BlockSubstitutions::BlockSubstitutions(void)
 BlockSubstitutions::BlockSubstitutions(Project* project,ModModelPlus* model,const QDomElement & el)
 {
         QDomElement e2 = el.firstChildElement();
-	while( !e2.isNull() )
-	{
+    while( !e2.isNull() )
+    {
 
 
-		if(e2.tagName()=="BlockSubstitution")
-		{
+        if(e2.tagName()=="BlockSubstitution")
+        {
                         BlockSubstitution* newBlock = new BlockSubstitution(project,model,model->connections(),e2);
                         add(newBlock);
-		}
-		e2 = e2.nextSiblingElement();
-	}
+        }
+        e2 = e2.nextSiblingElement();
+    }
 }
 
 BlockSubstitutions::~BlockSubstitutions(void)
@@ -67,60 +67,60 @@ BlockSubstitutions::~BlockSubstitutions(void)
 
 BlockSubstitutions* BlockSubstitutions::clone() const
 {
-	BlockSubstitutions* newVector = new BlockSubstitutions();
+    BlockSubstitutions* newVector = new BlockSubstitutions();
 
-	int i;
-	for(i=0;i<size();i++)
-	{
-		newVector->push_back(this->at(i)->clone());
-	}
-	return newVector;
+    int i;
+    for(i=0;i<size();i++)
+    {
+        newVector->push_back(this->at(i)->clone());
+    }
+    return newVector;
 
 }
 
 QStringList BlockSubstitutions::getReplacedComponentsNames()
 {
-	QStringList list;
+    QStringList list;
 
-	for(int i=0;i<size();i++)
-	{
+    for(int i=0;i<size();i++)
+    {
                 list << this->at(i)->_orgComponent;
-	}
+    }
 
-	LowTools::removeDuplicates(list);
+    LowTools::removeDuplicates(list);
 
-	return list;
+    return list;
 }
 bool BlockSubstitutions::isReplacedComponent(QString _name)
 {
 
-	return (getReplacedComponentsNames().indexOf(_name)>-1);
+    return (getReplacedComponentsNames().indexOf(_name)>-1);
 }
 
 QList<int> BlockSubstitutions::getReplacedComponentIndexes(QString _name)
 {
-	QList<int> indexes;
+    QList<int> indexes;
 
-	for(int i=0;i<size();i++)
-	{
+    for(int i=0;i<size();i++)
+    {
                 if(at(i)->_orgComponent==_name)
-			indexes << i;
-	}
+            indexes << i;
+    }
 
-	return indexes;
+    return indexes;
 }
 
 QStringList BlockSubstitutions::getReplacingComponentNames(QString _replaced)
 {
-	QList<int> indexes = getReplacedComponentIndexes(_replaced);
-	QStringList replacingNames;
+    QList<int> indexes = getReplacedComponentIndexes(_replaced);
+    QStringList replacingNames;
 
-	for(int i=0; i< indexes.size(); i++)
-	{
+    for(int i=0; i< indexes.size(); i++)
+    {
                 if(!at(indexes.at(i))->_subComponent.isEmpty())
                         replacingNames << at(indexes.at(i))->_subComponent;
-	}
-	return replacingNames;
+    }
+    return replacingNames;
 }
 
 QStringList BlockSubstitutions::getReplacingComponentNames(ModItem* replacedComp)
@@ -132,70 +132,70 @@ BlockSubstitution* BlockSubstitutions::find(QString replacedName,QString replaci
 {
 
 
-	bool found=false;
-	int i=0;
-	while(!found && i<size())
-	{
+    bool found=false;
+    int i=0;
+    while(!found && i<size())
+    {
                 if((at(i)->_orgComponent == replacedName) && (at(i)->_subComponent == replacingName) )
-			return at(i);
-		i++;
-	}
-	return NULL;
+            return at(i);
+        i++;
+    }
+    return NULL;
 }
 
 void BlockSubstitutions::add(BlockSubstitution* added)
 {
         push_back(added);
-	emit changed();
+    emit changed();
 }
 
 int BlockSubstitutions::getSize()
 {
-	return size();
+    return size();
 }
 BlockSubstitution* BlockSubstitutions::getAt(int i)
 {
-	return at(i);
+    return at(i);
 }
 
 
 
 bool BlockSubstitutions::removeBlock(QString replacedName,QString replacingName)
 {
-	bool found=false;
-	int i=0;
-	while(i<size())
-	{
+    bool found=false;
+    int i=0;
+    while(i<size())
+    {
                 if((at(i)->_orgComponent == replacedName) && (at(i)->_subComponent == replacingName) )
-		{
-			found = true;
-			remove(i);
-		}
-		else
-			i++;
-	}
+        {
+            found = true;
+            remove(i);
+        }
+        else
+            i++;
+    }
 
-	emit changed();
-	return found;
+    emit changed();
+    return found;
 }
 
 bool BlockSubstitutions::removeBlocks(QString replacedName)
 {
 
-	bool found=false;
-	int i=0;
-	while(i<size())
-	{
+    bool found=false;
+    int i=0;
+    while(i<size())
+    {
                 if(at(i)->_orgComponent == replacedName)
-		{
-			found = true;
-			remove(i);
-		}
-		else
-			i++;
-	}
-	emit changed();
-	return found;
+        {
+            found = true;
+            remove(i);
+        }
+        else
+            i++;
+    }
+    emit changed();
+    return found;
 }
 
 
@@ -203,11 +203,11 @@ bool BlockSubstitutions::removeBlocks(QString replacedName)
 QDomElement BlockSubstitutions::toXmlData(QDomDocument & doc)
 {
         QDomElement cBlocks = doc.createElement("BlockSubstitutions");
-	for(int i=0;i<size();i++)
-	{
+    for(int i=0;i<size();i++)
+    {
                 QDomElement cBlock = at(i)->toXmlData(doc);
-		cBlocks.appendChild(cBlock);
-	}
+        cBlocks.appendChild(cBlock);
+    }
 
-	return cBlocks;
+    return cBlocks;
 }

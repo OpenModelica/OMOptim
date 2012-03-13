@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MO2ColTab.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MO2ColTab.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "Tabs/MO2ColTab.h"
@@ -44,14 +44,14 @@ MO2ColTab::MO2ColTab(QString _projectName,MOItem* _mainItem,bool _closable,QWidg
 :MOTabCplx(_projectName,_mainItem,parent)
 {
 
-	closable = _closable;
+    closable = _closable;
 
-	if(closable)
-	{
-		dispTB = new QToolBar();
-		dispTB->setOrientation(Qt::Vertical);
-		addToolBar(Qt::LeftToolBarArea,dispTB);
-	}
+    if(closable)
+    {
+        dispTB = new QToolBar();
+        dispTB->setOrientation(Qt::Vertical);
+        addToolBar(Qt::LeftToolBarArea,dispTB);
+    }
 
 
 }
@@ -64,51 +64,51 @@ MO2ColTab::~MO2ColTab(void)
 void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,Qt::DockWidgetArea dockWidgetArea)
 {
 
-	// Widget
-	QDockWidget* dockWidget = new QDockWidget(title,this);
-	dockWidget->setObjectName(title);
+    // Widget
+    QDockWidget* dockWidget = new QDockWidget(title,this);
+    dockWidget->setObjectName(title);
         dockWidget->setSizePolicy(widget->sizePolicy());
 
-	if(closable)
-		dockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-	else
-		dockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+    if(closable)
+        dockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+    else
+        dockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
         dockWidget->setLayout(new QGridLayout(this));
-	dockWidget->setWidget(widget);
-	dockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
+    dockWidget->setWidget(widget);
+    dockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
 
-	//dockWidget->setStyleSheet("border-width: 1px;\n     border-style: solid;\n     border-color: gray;");
+    //dockWidget->setStyleSheet("border-width: 1px;\n     border-style: solid;\n     border-color: gray;");
         QMainWindow::addDockWidget(dockWidgetArea,dockWidget);
-	
+    
 
-	// Tabify
+    // Tabify
         if(tabifiedOn && mapDockWidgets.key(tabifiedOn,NULL))
                 tabifyDockWidget(mapDockWidgets.key(tabifiedOn),dockWidget);
 
 
-	dockWidget->show();
-	
-	// QAction
-	if(closable)
-	{
-		QAction* action = dockWidget->toggleViewAction();
-		dispTB->addAction(action);
-	}
+    dockWidget->show();
+    
+    // QAction
+    if(closable)
+    {
+        QAction* action = dockWidget->toggleViewAction();
+        dispTB->addAction(action);
+    }
 
         mapDockWidgets.insert(dockWidget,widget);
-	bool ok = restoreDockWidget(dockWidget);
+    bool ok = restoreDockWidget(dockWidget);
 }
 void MO2ColTab::addFixedWidget(QString title,QWidget* widget,Qt::DockWidgetArea dockArea,Qt::Orientation orientation,bool showTitle)
 {
 
-	// Widget
-	QDockWidget* dockWidget = new QDockWidget(title,this);
-	dockWidget->setObjectName(title);
-	dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    // Widget
+    QDockWidget* dockWidget = new QDockWidget(title,this);
+    dockWidget->setObjectName(title);
+    dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
         dockWidget->setLayout(new QGridLayout(this));
-	dockWidget->setWidget(widget);
+    dockWidget->setWidget(widget);
         dockWidget->setSizePolicy(widget->sizePolicy());
-	
+    
 
         if(!showTitle)
         {
@@ -118,15 +118,15 @@ void MO2ColTab::addFixedWidget(QString title,QWidget* widget,Qt::DockWidgetArea 
         }
 
         QMainWindow::addDockWidget(dockArea,dockWidget,orientation);
-	widget->show();
-	dockWidget->show();
+    widget->show();
+    dockWidget->show();
         mapDockWidgets.insert(dockWidget,widget);
-	bool ok = restoreDockWidget(dockWidget);
+    bool ok = restoreDockWidget(dockWidget);
 }
 
 void MO2ColTab::setWidgetVisible(QWidget* _widget,bool _visible)
 {
         QDockWidget* dock = mapDockWidgets.key(_widget,NULL);
-	if(dock)
-		dock->setVisible(_visible);
+    if(dock)
+        dock->setVisible(_visible);
 }

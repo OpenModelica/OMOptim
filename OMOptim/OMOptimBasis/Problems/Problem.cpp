@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file Problem.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+     @file Problem.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
         @version
 
   */
@@ -66,19 +66,19 @@ Problem::~Problem(void)
 
 void Problem::setDefaultSaveFileName()
 {
-	if(_name.isEmpty())
-		_saveFileName= "problem.mpb";
-	else
-		_saveFileName = _name + ".mpb";
+    if(_name.isEmpty())
+        _saveFileName= "problem.mpb";
+    else
+        _saveFileName = _name + ".mpb";
 }
 
 QString Problem::getFieldName(int field,int role)
 {
-	return "name";
+    return "name";
 }
 unsigned Problem::getNbFields()
 {
-	return 1;
+    return 1;
 }
 
 

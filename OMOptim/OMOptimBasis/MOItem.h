@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOItem.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOItem.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_MOITEM_H)
@@ -63,67 +63,67 @@ class ProjectBase;
 */
 class MOItem : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
 
 
-	/**
-	* /enum Field : list of fields of data container.
-	* \warning NAME should be present in all data containers inheriting MOItem.
-	**/
-	enum Field
-	{
-		NAME
-	};
+    /**
+    * /enum Field : list of fields of data container.
+    * \warning NAME should be present in all data containers inheriting MOItem.
+    **/
+    enum Field
+    {
+        NAME
+    };
 
-	// Constructor and destructor
-	MOItem(void);
-	MOItem(const MOItem &);
-	MOItem(QDomElement & domEl);
+    // Constructor and destructor
+    MOItem(void);
+    MOItem(const MOItem &);
+    MOItem(QDomElement & domEl);
 
         virtual ~MOItem(void);
 
-	virtual void update(QDomElement & domEl);
-	// Constructor from saved string
+    virtual void update(QDomElement & domEl);
+    // Constructor from saved string
     MOItem(QString,ProjectBase*);
-	
-	virtual QString getClassName()=0;
-	
-	//Name
+    
+    virtual QString getClassName()=0;
+    
+    //Name
         virtual void setName(QString);
         QString name() const;
 
-	//All fields
-	virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
-	virtual bool setFieldValue(int, QVariant);
-	virtual bool setFieldValue(QString, QVariant);
+    //All fields
+    virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
+    virtual bool setFieldValue(int, QVariant);
+    virtual bool setFieldValue(QString, QVariant);
 
         virtual int getFieldIndex(QString _fieldName,int role= Qt::DisplayRole);
 
-	virtual QString getFieldName(int iField,int role = Qt::DisplayRole)=0;
-	static QString sFieldName(int field, int role);
+    virtual QString getFieldName(int iField,int role = Qt::DisplayRole)=0;
+    static QString sFieldName(int field, int role);
 
-	void setEditableFields(QList<int> _editableFields);
-	void setIsEditableField(int iField, bool isEditable);
-	bool isEditableField(int);
+    void setEditableFields(QList<int> _editableFields);
+    void setIsEditableField(int iField, bool isEditable);
+    bool isEditableField(int);
 
-	static const int nbFields = 1;
-	virtual unsigned getNbFields()=0;
-	virtual bool check(QString &error);
-	virtual QString toSavingString();
-	virtual QDomElement toXmlData(QDomDocument & doc);
-	virtual QString getStrToolTip();
-	void checkUniqueItemName( QStringList & list);
+    static const int nbFields = 1;
+    virtual unsigned getNbFields()=0;
+    virtual bool check(QString &error);
+    virtual QString toSavingString();
+    virtual QDomElement toXmlData(QDomDocument & doc);
+    virtual QString getStrToolTip();
+    void checkUniqueItemName( QStringList & list);
 
 signals:
-	void sendInfo(Info);
+    void sendInfo(Info);
         void deleted();
 
 protected :
-	QString _name;
-	QList<int> _filledFields;
-	QList<int> _editableFields;
-	
+    QString _name;
+    QList<int> _filledFields;
+    QList<int> _editableFields;
+    
 };
 
 

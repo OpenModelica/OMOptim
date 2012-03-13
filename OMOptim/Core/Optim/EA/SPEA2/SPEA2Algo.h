@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file SPEA2Algo.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+     @file SPEA2Algo.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 0.9 
 
   */
 #ifndef _SPEA2Algo_H
@@ -96,10 +96,10 @@ public:
             defaultGenContinuator(0), continuator(_continuator), eval(_eval), loopEval(_eval), popEval(loopEval), archive(_archive),defaultSelect(2),select(defaultSelect, defaultSelect, _archive, 0.0),
             defaultSGAGenOp(_crossover, _pCross, _mutation, _pMut), fitnessAssignment(_archive, _nocopy),
             genBreed(defaultSelect, defaultSGAGenOp,_rate,_interpret_as_rate),selectMany(defaultSelect,_popSize), selectTransform(selectMany, dummyTransform), breed(genBreed), diversityAssignment(dist,_archive, _k),
-			replace(fitnessAssignment,diversityAssignment)
+            replace(fitnessAssignment,diversityAssignment)
     {
-		popSize = _popSize;
-	}
+        popSize = _popSize;
+    }
 
 
 
@@ -111,19 +111,19 @@ public:
     {
         eoPop < MOEOT >empty_pop, offspring;
         popEval (empty_pop, _pop);// a first eval of _pop
-		fitnessAssignment(_pop); //a first fitness assignment of _pop
+        fitnessAssignment(_pop); //a first fitness assignment of _pop
         diversityAssignment(_pop);//a first diversity assignment of _pop
-		archive(_pop);//a first filling of archive
+        archive(_pop);//a first filling of archive
 
-		// resize if _pop size > pop asked size (e.g. when load a saved file)
-		if(_pop.size()>popSize)
-		{
-			// sorts the whole population according to the comparator
-			moeoFitnessThenDiversityComparator < MOEOT > comparator;
-			std::sort(_pop.begin(), _pop.end(), comparator);
-			// finally, resize this global population
-			_pop.resize(popSize);
-		}
+        // resize if _pop size > pop asked size (e.g. when load a saved file)
+        if(_pop.size()>popSize)
+        {
+            // sorts the whole population according to the comparator
+            moeoFitnessThenDiversityComparator < MOEOT > comparator;
+            std::sort(_pop.begin(), _pop.end(), comparator);
+            // finally, resize this global population
+            _pop.resize(popSize);
+        }
 
       
         while (continuator (_pop))
@@ -133,8 +133,8 @@ public:
             popEval (_pop, offspring); // eval of offspring
             // after replace, the new pop is in _pop. Worths are recalculated if necessary
             replace (_pop, offspring); // include fitness and diversity assignments
- 			
-			//fitnessAssignment(_pop); //fitness assignment of _pop
+             
+            //fitnessAssignment(_pop); //fitness assignment of _pop
             //diversityAssignment(_pop); //diversity assignment of _pop
             archive(_pop); //control of archive
 
@@ -144,8 +144,8 @@ public:
 
 protected:
 
-	/** dummy evaluation */
-	class eoDummyEval : public eoEvalFunc< MOEOT >
+    /** dummy evaluation */
+    class eoDummyEval : public eoEvalFunc< MOEOT >
     {
     public:
         void operator()(MOEOT &) {}
@@ -160,7 +160,7 @@ protected:
     }
     dummyTransform;
 
-	int popSize;
+    int popSize;
     /** a continuator based on the number of generations (used as default) */
     eoGenContinue < MOEOT > defaultGenContinuator;
     /** stopping criteria */
@@ -196,7 +196,7 @@ protected:
     /** diversity assignment used in NSGA-II */
     moeoNearestNeighborDiversityAssignment  < MOEOT > diversityAssignment;
     /** elitist replacement */
-	moeoElitistReplacement < MOEOT > replace;
+    moeoElitistReplacement < MOEOT > replace;
    /**distance*/
     moeoEuclideanDistance < MOEOT > dist;
 

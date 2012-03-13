@@ -377,23 +377,23 @@ QString ModModelPlus::modModelName()
 //{
 //
 //
-//	QStringList modNames = getComponentModifierNames(componentName);
+//    QStringList modNames = getComponentModifierNames(componentName);
 //
-//	vector<ModModelPlusicaModifier*> *_compModifiers = new vector<ModModelPlusicaModifier*>;
-//	_compModifiers->reserve(modNames.size());
+//    vector<ModModelPlusicaModifier*> *_compModifiers = new vector<ModModelPlusicaModifier*>;
+//    _compModifiers->reserve(modNames.size());
 //
-//	ModModelPlusicaModifier* curMod;
+//    ModModelPlusicaModifier* curMod;
 //
-//	for(int iM=0;iM<modNames.size();iM++)
-//	{
-//		curMod = new ModModelPlusicaModifier();
-//		curMod->setName(modNames.at(iM));
-//		curMod->setValue(getComponentModifierValue(componentName,modNames.at(iM)));
-//		curMod->setComponent(component);
-//		_compModifiers->push_back(curMod);
-//	}
+//    for(int iM=0;iM<modNames.size();iM++)
+//    {
+//        curMod = new ModModelPlusicaModifier();
+//        curMod->setName(modNames.at(iM));
+//        curMod->setValue(getComponentModifierValue(componentName,modNames.at(iM)));
+//        curMod->setComponent(component);
+//        _compModifiers->push_back(curMod);
+//    }
 //
-//	return _compModifiers;
+//    return _compModifiers;
 //
 //}
 

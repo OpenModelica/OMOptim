@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOTabBase.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOTabBase.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "MOTabBase.h"
@@ -43,11 +43,11 @@
         MOTabBase::MOTabBase(QString _projectName,MOItem* _mainItem)
 {
     projectName = _projectName;
-	mainItem = _mainItem;
-	
-	MOItem* item = dynamic_cast<MOItem*>(_mainItem);
-	if(item)
-		name="Tab_"+item->name();
+    mainItem = _mainItem;
+    
+    MOItem* item = dynamic_cast<MOItem*>(_mainItem);
+    if(item)
+        name="Tab_"+item->name();
 }
 
 MOTabBase::~MOTabBase(void)
@@ -58,5 +58,5 @@ MOTabBase::~MOTabBase(void)
 
 MOItem* MOTabBase::getItem()
 {
-	return mainItem;
+    return mainItem;
 }

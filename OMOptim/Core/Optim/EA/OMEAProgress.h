@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
         @file OMEAProgress.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef OMEAPROGRESS_H
@@ -45,30 +45,30 @@
 
 class OMEAProgress : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public :
         OMEAProgress(){
-		curProgress=0;
-		totalEval=1;
-	}
+        curProgress=0;
+        totalEval=1;
+    }
 
-	void setTotalEval(int _totalEval)
-	{
-		totalEval = _totalEval;
-	}
-	void setCurEval(int _curEval)
-	{
-		curProgress = ((float)_curEval)/((float)totalEval);
-		emit newProgress(curProgress,_curEval,totalEval);
-	}
+    void setTotalEval(int _totalEval)
+    {
+        totalEval = _totalEval;
+    }
+    void setCurEval(int _curEval)
+    {
+        curProgress = ((float)_curEval)/((float)totalEval);
+        emit newProgress(curProgress,_curEval,totalEval);
+    }
 
 private :
-	float curProgress;
-	int totalEval;
+    float curProgress;
+    int totalEval;
 
 signals:
-	void newProgress(float);
-	void newProgress(float,int,int);
+    void newProgress(float);
+    void newProgress(float,int,int);
 };
 
 #endif

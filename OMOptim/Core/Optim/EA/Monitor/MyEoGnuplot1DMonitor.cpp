@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MyEoGnuplot1DMonitor.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+     @file MyEoGnuplot1DMonitor.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 0.9 
 
   */
 #include <sstream>
@@ -57,9 +57,9 @@ eoMonitor& MyEoGnuplot1DMonitor::operator() (void)
     }
     else
     {
-		if(gnuplotPipe)
-		{
-			gnuplotCommand("replot\n");
+        if(gnuplotPipe)
+        {
+            gnuplotCommand("replot\n");
         }
     }
 
@@ -72,20 +72,20 @@ void MyEoGnuplot1DMonitor::FirstPlot()
 {
     if (this->vec.size() < 2)
     {
-		InfoSender::instance()->debug("GnuplotMonitor : Must have some stats to plot!");
+        InfoSender::instance()->debug("GnuplotMonitor : Must have some stats to plot!");
     }
     QString command;
 
     command += "plot";
     for (unsigned i=1; i<this->vec.size(); i++) {
         command += " '" + QString(getFileName().c_str()) +
-			"' using 1:" + QString::number(i+1) + " title '" + QString((this->vec[i])->longName().c_str()) + "' with lines" ;
+            "' using 1:" + QString::number(i+1) + " title '" + QString((this->vec[i])->longName().c_str()) + "' with lines" ;
         if (i<this->vec.size()-1)
             command += ", ";
     }
     command += '\n';
     
-	gnuplotCommand(command);
+    gnuplotCommand(command);
 }
 
 

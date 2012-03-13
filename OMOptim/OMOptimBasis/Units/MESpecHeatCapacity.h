@@ -30,10 +30,10 @@
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
         @file MESpecHeatCapacity.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
         @version
 
   */
@@ -47,23 +47,23 @@
 class MESpecHeatCapacity : public MEDimValue
 {
 public:
-	MESpecHeatCapacity();
+    MESpecHeatCapacity();
         MESpecHeatCapacity(double value,int unit);
         MESpecHeatCapacity(const MESpecHeatCapacity&);
         ~MESpecHeatCapacity();
 
         using MEDimValue::operator=;
 
-	enum Units
-	{
+    enum Units
+    {
             J_KG_K,
-	    KJ_KG_K
-	};
+        KJ_KG_K
+    };
 
-	QString unit(int iUnit)  const;
+    QString unit(int iUnit)  const;
         QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
-	unsigned nbUnits() const;
-	double convert(double value,int orgUnit,int dstUnit) const;
+    unsigned nbUnits() const;
+    double convert(double value,int orgUnit,int dstUnit) const;
 
         MESpecHeatCapacity& operator+=(const MESpecHeatCapacity&);
         MESpecHeatCapacity& operator-=(const MESpecHeatCapacity&);

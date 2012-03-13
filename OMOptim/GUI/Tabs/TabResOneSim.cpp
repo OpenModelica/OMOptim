@@ -93,48 +93,48 @@ TabResOneSim::~TabResOneSim()
 //
 //void TabResOneSim::updateView(int newCurView)
 //{
-//	if (newCurView != curView)
-//	{
-//		curView = newCurView;
-//		if (viewList[newCurView] == "Problem")
-//		{
+//    if (newCurView != curView)
+//    {
+//        curView = newCurView;
+//        if (viewList[newCurView] == "Problem")
+//        {
 //
-//			tabProblem->show();
-//			problemToolBar->show();
+//            tabProblem->show();
+//            problemToolBar->show();
 //
-//			tabComposites->hide();
-//			compositesToolBar->hide();
+//            tabComposites->hide();
+//            compositesToolBar->hide();
 //
-//			tabVariables->hide();
-//			variablesToolBar->hide();
+//            tabVariables->hide();
+//            variablesToolBar->hide();
 //
 //
-//		}
+//        }
 //
-//		if (viewList[newCurView] == "Variables")
-//		{
+//        if (viewList[newCurView] == "Variables")
+//        {
 //
-//			tabVariables->show();
-//			variablesToolBar->show();
+//            tabVariables->show();
+//            variablesToolBar->show();
 //
-//			tabProblem->hide();
-//			problemToolBar->hide();
+//            tabProblem->hide();
+//            problemToolBar->hide();
 //
-//			tabComposites->hide();
-//			compositesToolBar->hide();
-//		}
-//		if (viewList[newCurView] == "Composite curves")
-//		{
-//			tabVariables->hide();
-//			variablesToolBar->hide();
-//			
-//			tabComposites->show();		
-//			compositesToolBar->show();
+//            tabComposites->hide();
+//            compositesToolBar->hide();
+//        }
+//        if (viewList[newCurView] == "Composite curves")
+//        {
+//            tabVariables->hide();
+//            variablesToolBar->hide();
+//            
+//            tabComposites->show();        
+//            compositesToolBar->show();
 //
-//			tabProblem->hide();
-//			problemToolBar->hide();
-//		}
-//	}
+//            tabProblem->hide();
+//            problemToolBar->hide();
+//        }
+//    }
 //}
 //
 //void TabResOneSim::actualizeGui()

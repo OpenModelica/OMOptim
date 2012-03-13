@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
         @file OptimAlgosList.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(OPTIMALGOSLIST_H)
@@ -56,8 +56,8 @@ namespace OptimAlgosList{
 
         enum _list
 {
-	iSPEA2Adapt,
-	iNSGA2,
+    iSPEA2Adapt,
+    iNSGA2,
         iSPEA2,
         iSA1
 };

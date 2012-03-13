@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MESurface.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+     @file MESurface.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
         @version
 
   */
@@ -62,15 +62,15 @@ MESurface::~MESurface(void)
 
 QString MESurface::unit(int iUnit) const
 {
-	switch(iUnit)
-	{
+    switch(iUnit)
+    {
         case M2 :
                 return "m2";
         case CM2 :
                 return "cm2";
-	default :
-		return "-";
-	}
+    default :
+        return "-";
+    }
 }
 
 QString MESurface::unit() const
@@ -80,32 +80,32 @@ QString MESurface::unit() const
 
 unsigned MESurface::nbUnits() const
 {
-	return 2;
+    return 2;
 }
 
 double MESurface::convert(double value,int orgUnit,int dstUnit) const
 {
-	double result=value;
+    double result=value;
         // convert to m2
-	switch(orgUnit)
-	{
+    switch(orgUnit)
+    {
         case CM2 :
                 result=result/1E4;
-		break;
-	default :
-		break;
-	}
+        break;
+    default :
+        break;
+    }
 
-	// convert to dstUnit
-	switch(dstUnit)
-	{
+    // convert to dstUnit
+    switch(dstUnit)
+    {
         case CM2 :
                 result=result*1E4;
-		break;
-	default :
-		break;
-	}
-	return result;
+        break;
+    default :
+        break;
+    }
+    return result;
 }
 
 

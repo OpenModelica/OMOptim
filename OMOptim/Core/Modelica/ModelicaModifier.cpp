@@ -30,29 +30,29 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModelicaModifier.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModelicaModifier.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "ModelicaModifier.h"
 
 ModelicaModifier::ModelicaModifier(void)
 {
-	_description = "_";
-	_name = "_";
+    _description = "_";
+    _name = "_";
 }
 
 ModelicaModifier::ModelicaModifier(QString componentName,QString modifierName,QString value,QString description,ModItem* component)
 {
-	_componentName = componentName;
-	_name = modifierName;
-	_value = value;
-	_description = description;
-	_component = component;
+    _componentName = componentName;
+    _name = modifierName;
+    _value = value;
+    _description = description;
+    _component = component;
 
 }
 
@@ -62,50 +62,50 @@ ModelicaModifier::~ModelicaModifier(void)
 
 ModelicaModifier* ModelicaModifier::clone() const
 {
-	ModelicaModifier* newOne = new ModelicaModifier(_componentName,_name,_value,_description,_component);
-	newOne->_filledFields = _filledFields;
-	return newOne;
+    ModelicaModifier* newOne = new ModelicaModifier(_componentName,_name,_value,_description,_component);
+    newOne->_filledFields = _filledFields;
+    return newOne;
 }
 
 QString ModelicaModifier::name()
 {
-	return _name;
+    return _name;
 }
 QString ModelicaModifier::description()
 {
-	return _description;
+    return _description;
 }
 QVariant ModelicaModifier::value()
 {
-	return _value;
+    return _value;
 }
 
 void ModelicaModifier::setName(QString name)
 {
-	if(!_filledFields.contains(ModelicaModifier::NAME))
-		_filledFields.push_back(ModelicaModifier::NAME);
-	_name = name;
+    if(!_filledFields.contains(ModelicaModifier::NAME))
+        _filledFields.push_back(ModelicaModifier::NAME);
+    _name = name;
 }
 void ModelicaModifier::setDesc(QString desc)
 {
-	if(!_filledFields.contains(ModelicaModifier::DESCRIPTION))
-		_filledFields.push_back(ModelicaModifier::DESCRIPTION);
-	
-	_description = desc;
+    if(!_filledFields.contains(ModelicaModifier::DESCRIPTION))
+        _filledFields.push_back(ModelicaModifier::DESCRIPTION);
+    
+    _description = desc;
 }
 void ModelicaModifier::setValue(QString value)
 {
-	if(!_filledFields.contains(ModelicaModifier::VALUE))
-		_filledFields.push_back(ModelicaModifier::VALUE);
-	
-	_value = value;
+    if(!_filledFields.contains(ModelicaModifier::VALUE))
+        _filledFields.push_back(ModelicaModifier::VALUE);
+    
+    _value = value;
 }
 
 void ModelicaModifier::setComponent(ModItem *component)
 {
-	if(!_filledFields.contains(ModelicaModifier::COMPONENT_NAME))
-		_filledFields.push_back(ModelicaModifier::COMPONENT_NAME);
-	_component = component;
+    if(!_filledFields.contains(ModelicaModifier::COMPONENT_NAME))
+        _filledFields.push_back(ModelicaModifier::COMPONENT_NAME);
+    _component = component;
         _componentName = component->name(ModItem::WITHOUTROOT);
 }
 
@@ -113,67 +113,67 @@ void ModelicaModifier::setComponent(ModItem *component)
 QVariant ModelicaModifier::getFieldValue(int ifield, int role) const
 {
  if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-		return QString("-");
-	else
-	{
-		switch (ifield)
-		{
-		case NAME :
-			return _name;
-		case VALUE :
-			return _value;
-		case DESCRIPTION :
-			return _description;
-		case COMPONENT_NAME :
-			return _componentName;
-		default :
-			return "unknown field";
-		}
-	}
+        return QString("-");
+    else
+    {
+        switch (ifield)
+        {
+        case NAME :
+            return _name;
+        case VALUE :
+            return _value;
+        case DESCRIPTION :
+            return _description;
+        case COMPONENT_NAME :
+            return _componentName;
+        default :
+            return "unknown field";
+        }
+    }
 }
 
 QString ModelicaModifier::sFieldName(int ifield, int role)
 {
-	switch (ifield)
-	{
-		case NAME :
-			return "Name";
-		case VALUE :
-			return "Value";
-		case DESCRIPTION :
-			return "Description";
-		case COMPONENT_NAME :
-			return "Component";
-		default :
-			return "unknown field";
-	}
+    switch (ifield)
+    {
+        case NAME :
+            return "Name";
+        case VALUE :
+            return "Value";
+        case DESCRIPTION :
+            return "Description";
+        case COMPONENT_NAME :
+            return "Component";
+        default :
+            return "unknown field";
+    }
 }
 
 bool ModelicaModifier::setFieldValue(int ifield,QVariant value)
 {
-	try{
-	switch (ifield)
-	{
-		case NAME :
-			_name=value.toString();
-			break;
-		case VALUE :
-			_value=value.toString();
-			break;
-		case DESCRIPTION :
-			_description = value.toString();
-			break;
-		case COMPONENT_NAME :
-			_componentName = value.toString();
-			break;
-	}
-		if(!_filledFields.contains(ifield))
-		_filledFields.push_back(ifield);
-	return true;
-	}
-	catch(std::exception)
-	{
-		return false;
-	}
+    try{
+    switch (ifield)
+    {
+        case NAME :
+            _name=value.toString();
+            break;
+        case VALUE :
+            _value=value.toString();
+            break;
+        case DESCRIPTION :
+            _description = value.toString();
+            break;
+        case COMPONENT_NAME :
+            _componentName = value.toString();
+            break;
+    }
+        if(!_filledFields.contains(ifield))
+        _filledFields.push_back(ifield);
+    return true;
+    }
+    catch(std::exception)
+    {
+        return false;
+    }
 }
 

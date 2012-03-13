@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file OptObjective.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file OptObjective.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "OptObjective.h"
@@ -43,48 +43,48 @@
 
 OptObjective::OptObjective()
 {
-	_editableFields.clear();
-	_editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
-	_scanFunction = NONE;
+    _editableFields.clear();
+    _editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    _scanFunction = NONE;
     initOptExtremum();
 }
 OptObjective::OptObjective(const Variable &var, OptObjective::Direction direction):Variable(var)
 {
-	setFieldValue(OptObjective::DIRECTION,direction);
-	_scanFunction = NONE;
-	_editableFields.clear();
-	_editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    setFieldValue(OptObjective::DIRECTION,direction);
+    _scanFunction = NONE;
+    _editableFields.clear();
+    _editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
     initOptExtremum();
 }
 
 OptObjective::OptObjective(const OptObjective & obj):Variable(obj)
 {
-	_scanFunction = obj._scanFunction;
-	_direction = obj._direction;
-	_min = obj._min;
-	_max = obj._max;
+    _scanFunction = obj._scanFunction;
+    _direction = obj._direction;
+    _min = obj._min;
+    _max = obj._max;
 }
 
 OptObjective::OptObjective(QDomElement & domEl)
 {
-	_editableFields.clear();
-	_editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
-	_scanFunction = NONE;
+    _editableFields.clear();
+    _editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    _scanFunction = NONE;
 
     initOptExtremum();
 
-	QDomNamedNodeMap attributes = domEl.attributes();
-	QString fieldName;
-	QString fieldValue;
+    QDomNamedNodeMap attributes = domEl.attributes();
+    QString fieldName;
+    QString fieldValue;
 
-	for(int i=0;i<attributes.count();i++)
-	{
-		fieldName = attributes.item(i).toAttr().name();
-		fieldName.replace(XMLTools::space()," ");
-		fieldValue = attributes.item(i).toAttr().value();
-		fieldValue.replace(XMLTools::space()," ");
-		MOItem::setFieldValue(fieldName,QVariant(fieldValue));
-	}
+    for(int i=0;i<attributes.count();i++)
+    {
+        fieldName = attributes.item(i).toAttr().name();
+        fieldName.replace(XMLTools::space()," ");
+        fieldValue = attributes.item(i).toAttr().value();
+        fieldValue.replace(XMLTools::space()," ");
+        MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+    }
 }
 
 
@@ -100,182 +100,182 @@ void OptObjective::initOptExtremum()
 
 void OptObjective::setScanFunction(ScanFunction scanFunction)
 {
-	_scanFunction = scanFunction;
+    _scanFunction = scanFunction;
 
-	if(!_filledFields.contains(OptObjective::SCANFUNCTION))
-		_filledFields.append(OptObjective::SCANFUNCTION);
+    if(!_filledFields.contains(OptObjective::SCANFUNCTION))
+        _filledFields.append(OptObjective::SCANFUNCTION);
 }
 
 void OptObjective::setDirection(Direction dir)
 {
-	_direction = dir;
+    _direction = dir;
 
-	if(!_filledFields.contains(OptObjective::DIRECTION))
-		_filledFields.append(OptObjective::DIRECTION);
+    if(!_filledFields.contains(OptObjective::DIRECTION))
+        _filledFields.append(OptObjective::DIRECTION);
 }
 
 void OptObjective::setDescription(QString description)
 {
-	if(!_filledFields.contains(OptObjective::DESCRIPTION))
-		_filledFields.push_back(OptObjective::DESCRIPTION);
-	_description = description;
+    if(!_filledFields.contains(OptObjective::DESCRIPTION))
+        _filledFields.push_back(OptObjective::DESCRIPTION);
+    _description = description;
 }
 
 
 OptObjective::Direction OptObjective::direction()
 {
-	return _direction;
+    return _direction;
 }
 
 OptObjective::ScanFunction OptObjective::scanFunction()
 {
-	return _scanFunction;
+    return _scanFunction;
 }
 
 bool OptObjective::check(QString &error)
 {
-	bool ok=true;
-	error.clear();
-	if(_min>=_max)
-	{
-		error.sprintf("Objective min value >= max value (%f >= %f)",_min,_max);
-		ok=false;
-	}
+    bool ok=true;
+    error.clear();
+    if(_min>=_max)
+    {
+        error.sprintf("Objective min value >= max value (%f >= %f)",_min,_max);
+        ok=false;
+    }
 
-	//if(type==FIXED)
-	//{
-	//	error.sprintf("Objective value is considered as a model input. Its value probably won't be affected by variables modification");
-	//	ok = false;
-	//}
+    //if(type==FIXED)
+    //{
+    //    error.sprintf("Objective value is considered as a model input. Its value probably won't be affected by variables modification");
+    //    ok = false;
+    //}
 
-	return ok;
+    return ok;
 }
 
 bool OptObjective::isMinimized()
 {
-	return _direction == MINIMIZE;
+    return _direction == MINIMIZE;
 }
 QString OptObjective::sFieldName(int ifield, int role)
 {
-	
+    
 
-	switch (ifield)
-	{
-		case NAME :
-			return "Name";
-		case DESCRIPTION :
-			return "Description";
-		case DIRECTION :
-			return "Direction";
-		case MIN :
-			return "Minimum";
-		case MAX :
-			return "Maximum";
-		case SCANFUNCTION :
-			return "Scan Function";
-		default :
-			return "unknown field";
-	}
+    switch (ifield)
+    {
+        case NAME :
+            return "Name";
+        case DESCRIPTION :
+            return "Description";
+        case DIRECTION :
+            return "Direction";
+        case MIN :
+            return "Minimum";
+        case MAX :
+            return "Maximum";
+        case SCANFUNCTION :
+            return "Scan Function";
+        default :
+            return "unknown field";
+    }
 }
 
 QVariant OptObjective::getFieldValue(int ifield, int role) const
 {
  if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-		return QString("-");
-	else
-	{
-		switch (ifield)
-		{
-		case NAME :
-			return _name;
-		case DESCRIPTION :
-			return _description;
-		case DIRECTION :
-			if(role == Qt::DisplayRole)
-			{
-				if(_direction==OptObjective::MAXIMIZE)
-					return "Maximize";
-				else
-					return "Minimize";
-			}
-			else
-				return _direction;
-		case MIN : 
+        return QString("-");
+    else
+    {
+        switch (ifield)
+        {
+        case NAME :
+            return _name;
+        case DESCRIPTION :
+            return _description;
+        case DIRECTION :
+            if(role == Qt::DisplayRole)
+            {
+                if(_direction==OptObjective::MAXIMIZE)
+                    return "Maximize";
+                else
+                    return "Minimize";
+            }
+            else
+                return _direction;
+        case MIN : 
             if((role == Qt::DisplayRole)&&(_min==-std::numeric_limits<double>::max()))
                 return "-";
             else
-			return _min;
-		case MAX:
+            return _min;
+        case MAX:
             if((role == Qt::DisplayRole)&&(_max==std::numeric_limits<double>::max()))
                 return "-";
             else
-			return _max;
-		case SCANFUNCTION :
-			if(role == Qt::DisplayRole)
-			{
-				switch(_scanFunction)
-				{
-				case NONE : 
-					return "None";
-				case AVERAGE : 
-					return "Average";
-				case SUM :
-					return "Sum";
-				case DEVIATION : 
-					return "Standard deviation";
+            return _max;
+        case SCANFUNCTION :
+            if(role == Qt::DisplayRole)
+            {
+                switch(_scanFunction)
+                {
+                case NONE : 
+                    return "None";
+                case AVERAGE : 
+                    return "Average";
+                case SUM :
+                    return "Sum";
+                case DEVIATION : 
+                    return "Standard deviation";
                                 case MINIMUM :
                                         return "Minimum";
                                 case MAXIMUM :
                                         return "Maximum";
-				default :
-					return "-";
-				}
-			}
-			else
-				return _scanFunction;
-		default :
-			return "unknown field";
-		}
-	}
+                default :
+                    return "-";
+                }
+            }
+            else
+                return _scanFunction;
+        default :
+            return "unknown field";
+        }
+    }
 }
 
 bool OptObjective::setFieldValue(int ifield,QVariant value)
 {
-	bool isDouble;
-	try{
-	switch (ifield)
-	{
-		case NAME :
-			_name=value.toString();
-			break;
-		case DESCRIPTION :
-			_description=value.toString();
-			break;
-		case DIRECTION :
-			_direction= (Direction)value.toInt();
-			break;
-		case MIN :
-			_min = value.toDouble(&isDouble);
-			if(!isDouble)
-				_min = -std::numeric_limits<double>::max();
-			break;
-		case MAX :
-			_max = value.toDouble(&isDouble);
-			if(!isDouble)
-				_max = std::numeric_limits<double>::max();
-			break;
-		case SCANFUNCTION :
-			_scanFunction = (ScanFunction)value.toInt();
-			break;
-	}
-	if(!_filledFields.contains(ifield))
-		_filledFields.push_back(ifield);
-	return true;
-	}
-	catch(std::exception &e)
-	{
-		return false;
-	}
+    bool isDouble;
+    try{
+    switch (ifield)
+    {
+        case NAME :
+            _name=value.toString();
+            break;
+        case DESCRIPTION :
+            _description=value.toString();
+            break;
+        case DIRECTION :
+            _direction= (Direction)value.toInt();
+            break;
+        case MIN :
+            _min = value.toDouble(&isDouble);
+            if(!isDouble)
+                _min = -std::numeric_limits<double>::max();
+            break;
+        case MAX :
+            _max = value.toDouble(&isDouble);
+            if(!isDouble)
+                _max = std::numeric_limits<double>::max();
+            break;
+        case SCANFUNCTION :
+            _scanFunction = (ScanFunction)value.toInt();
+            break;
+    }
+    if(!_filledFields.contains(ifield))
+        _filledFields.push_back(ifield);
+    return true;
+    }
+    catch(std::exception &e)
+    {
+        return false;
+    }
 }
 
 
@@ -289,221 +289,221 @@ OptObjectiveResult::OptObjectiveResult(const OptObjective & optObj):OptObjective
 
 OptObjectiveResult::OptObjectiveResult(QDomElement & domEl):OptObjective()
 {
-	QDomNamedNodeMap attributes = domEl.attributes();
-	QString fieldName;
-	QString fieldValue;
+    QDomNamedNodeMap attributes = domEl.attributes();
+    QString fieldName;
+    QString fieldValue;
 
-	for(int i=0;i<attributes.count();i++)
-	{
-		fieldName = attributes.item(i).toAttr().name();
-		fieldName.replace(XMLTools::space()," ");
-		fieldValue = attributes.item(i).toAttr().value();
-		fieldValue.replace(XMLTools::space()," ");
-		MOItem::setFieldValue(fieldName,QVariant(fieldValue));
-	}
+    for(int i=0;i<attributes.count();i++)
+    {
+        fieldName = attributes.item(i).toAttr().name();
+        fieldName.replace(XMLTools::space()," ");
+        fieldValue = attributes.item(i).toAttr().value();
+        fieldValue.replace(XMLTools::space()," ");
+        MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+    }
 }
 
 QString OptObjectiveResult::sFieldName(int ifield, int role)
 {
-	switch (ifield)
-	{
-		case NAME :
-			return "Name";
-		case DESCRIPTION :
-			return "Description";
-		case DIRECTION :
-			return "Direction";
-		case MIN:
-			return "Minimum";
-		case MAX:
-			return "Maximum";
-		case SCANFUNCTION:
-			return "Scan Function";
-		default :
-			return "unknown field";
-	}
+    switch (ifield)
+    {
+        case NAME :
+            return "Name";
+        case DESCRIPTION :
+            return "Description";
+        case DIRECTION :
+            return "Direction";
+        case MIN:
+            return "Minimum";
+        case MAX:
+            return "Maximum";
+        case SCANFUNCTION:
+            return "Scan Function";
+        default :
+            return "unknown field";
+    }
 }
 
 QVariant OptObjectiveResult::getFieldValue(int ifield, int role) const
 {
  if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-		return QString("-");
-	else
-	{
-		switch (ifield)
-		{
-		case NAME :
-			return _name;
-		case DESCRIPTION :
-			return _description;
-		case DIRECTION :
-			if(role == Qt::DisplayRole)
-			{
-				if(_direction==OptObjective::MAXIMIZE)
-					return "Maximize";
-				else
-					return "Minimize";
-			}
-			else
-				return _direction;
-		case MIN :
+        return QString("-");
+    else
+    {
+        switch (ifield)
+        {
+        case NAME :
+            return _name;
+        case DESCRIPTION :
+            return _description;
+        case DIRECTION :
+            if(role == Qt::DisplayRole)
+            {
+                if(_direction==OptObjective::MAXIMIZE)
+                    return "Maximize";
+                else
+                    return "Minimize";
+            }
+            else
+                return _direction;
+        case MIN :
             if((role == Qt::DisplayRole)&&(_min==-std::numeric_limits<double>::max()))
                 return "-";
             else
-			return _min;
-		case MAX :
+            return _min;
+        case MAX :
             if((role == Qt::DisplayRole)&&(_max==std::numeric_limits<double>::max()))
                 return "-";
             else
-			return _max;
-		case SCANFUNCTION :
-			if(role == Qt::DisplayRole)
-			{
-				switch(_scanFunction)
-				{
-				case NONE : 
-					return "None";
-				case AVERAGE : 
-					return "Average";
-				case SUM :
-					return "Sum";
-				case DEVIATION : 
-					return "Deviation";
-				default :
-					return "-";
-				}
-			}
-			else
-				return _scanFunction;
-		default :
-			return "unknown field";
-		}
-	}
+            return _max;
+        case SCANFUNCTION :
+            if(role == Qt::DisplayRole)
+            {
+                switch(_scanFunction)
+                {
+                case NONE : 
+                    return "None";
+                case AVERAGE : 
+                    return "Average";
+                case SUM :
+                    return "Sum";
+                case DEVIATION : 
+                    return "Deviation";
+                default :
+                    return "-";
+                }
+            }
+            else
+                return _scanFunction;
+        default :
+            return "unknown field";
+        }
+    }
 }
 
 bool OptObjectiveResult::setFieldValue(int ifield,QVariant value)
 {
     bool isDouble;
-	switch (ifield)
-	{
-		case NAME :
-			_name=value.toString();
-			break;
-		case DESCRIPTION :
-			_description=value.toString();
-			break;
-		case DIRECTION :
-			_direction= (Direction)value.toInt();
-			break;
-		case MIN :
+    switch (ifield)
+    {
+        case NAME :
+            _name=value.toString();
+            break;
+        case DESCRIPTION :
+            _description=value.toString();
+            break;
+        case DIRECTION :
+            _direction= (Direction)value.toInt();
+            break;
+        case MIN :
         _min = value.toDouble(&isDouble);
         if(!isDouble)
             _min = -std::numeric_limits<double>::max();
-			break;
-		case MAX:
+            break;
+        case MAX:
         _max = value.toDouble(&isDouble);
         if(!isDouble)
             _max = std::numeric_limits<double>::max();
-			break;
-		case SCANFUNCTION :
-			_scanFunction= (ScanFunction)value.toInt();
-			break;
-	}
-		if(!_filledFields.contains(ifield))
-		_filledFields.push_back(ifield);
-	return true;
-	}
+            break;
+        case SCANFUNCTION :
+            _scanFunction= (ScanFunction)value.toInt();
+            break;
+    }
+        if(!_filledFields.contains(ifield))
+        _filledFields.push_back(ifield);
+    return true;
+    }
 
 std::vector<double> OptObjectiveResult::finalValues() const
 {
-	return _finalValues;
+    return _finalValues;
 }
 
 
 void OptObjectiveResult::setFinalValues(const std::vector<double> & finalValues)
 {
 
-	_finalValues.clear();
-	_computedPoints.clear();
-	_finalValues.reserve(finalValues.size());
+    _finalValues.clear();
+    _computedPoints.clear();
+    _finalValues.reserve(finalValues.size());
 
-	for(int i=0;i<finalValues.size();i++)
-	{
-		_finalValues.push_back(finalValues.at(i));
-		_computedPoints.push_back(true);
-	}
+    for(int i=0;i<finalValues.size();i++)
+    {
+        _finalValues.push_back(finalValues.at(i));
+        _computedPoints.push_back(true);
+    }
 }
 
 void OptObjectiveResult::setFinalValueAtPoint(double value,int index)
 {
-	if(index>=_finalValues.size())
-	{
-		_computedPoints.resize(index+1,false);
-		_finalValues.resize(index+1,-1);
-	}
+    if(index>=_finalValues.size())
+    {
+        _computedPoints.resize(index+1,false);
+        _finalValues.resize(index+1,-1);
+    }
 
-	_finalValues.at(index)=_value;
-	_computedPoints.at(index)=true;
+    _finalValues.at(index)=_value;
+    _computedPoints.at(index)=true;
 }
 
 void OptObjectiveResult::appendFinalValue(double value)
 {
-		_finalValues.push_back(value);
-		_computedPoints.push_back(true);
+        _finalValues.push_back(value);
+        _computedPoints.push_back(true);
 }
 
 bool OptObjectiveResult::isComputedPoint(int i) const
 {
-	if(i<_computedPoints.size())
-		return _computedPoints.at(i);
-	else
-		return false;
+    if(i<_computedPoints.size())
+        return _computedPoints.at(i);
+    else
+        return false;
 }
 
 double OptObjectiveResult::finalValue(int point) const
 {
-	return _finalValues.at(point);
+    return _finalValues.at(point);
 }
 
 int OptObjectiveResult::nbPoints() const
 {
-	return _finalValues.size();
+    return _finalValues.size();
 }
 
 void OptObjectiveResult::clearFinalValues()
 {
-	_finalValues.clear();
-	_computedPoints.clear();
+    _finalValues.clear();
+    _computedPoints.clear();
 }
 
 OptObjective* OptObjectiveResult::equivOptObjective()
 {
-	OptObjective* newVar = new OptObjective();
+    OptObjective* newVar = new OptObjective();
 
-	// copying fields
-	for(int i=0;i<OptObjective::nbFields;i++)
-	{
-		newVar->setFieldValue(i,getFieldValue(i));
-	}
-	
-	return newVar;
+    // copying fields
+    for(int i=0;i<OptObjective::nbFields;i++)
+    {
+        newVar->setFieldValue(i,getFieldValue(i));
+    }
+    
+    return newVar;
 }
 
 OptObjectiveResult* OptObjectiveResult::clone() const
 {
-	OptObjectiveResult* newObj = new OptObjectiveResult();
+    OptObjectiveResult* newObj = new OptObjectiveResult();
 
-	// copying fields
-	for(int i=0;i<nbFields;i++)
-	{
-		newObj->setFieldValue(i,getFieldValue(i));
-	}
-	newObj->_filledFields = _filledFields;
-	newObj->_editableFields = _editableFields;
-	
-	//copying final values
-	newObj->setFinalValues(_finalValues);
+    // copying fields
+    for(int i=0;i<nbFields;i++)
+    {
+        newObj->setFieldValue(i,getFieldValue(i));
+    }
+    newObj->_filledFields = _filledFields;
+    newObj->_editableFields = _editableFields;
+    
+    //copying final values
+    newObj->setFinalValues(_finalValues);
 
-	return newObj;
+    return newObj;
 }
 

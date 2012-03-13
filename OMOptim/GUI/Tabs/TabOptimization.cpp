@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabOptimization.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file tabOptimization.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "TabOptimization.h"
@@ -55,7 +55,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
 {
         _project = dynamic_cast<Project*>(problem->project());
         _problem = problem;
-	
+    
         _widgetSelectOptVars = new WidgetSelectOptVars(_problem,true,this);
         addDockWidget("Variables",_widgetSelectOptVars);
 
@@ -66,7 +66,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
 
         _widgetOptParameters = new WidgetOptParameters(_project,_problem,false,this);
         addDockWidget("Optimization",_widgetOptParameters,_widgetSelectOptVars);
-	
+    
         _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
         _widgetFilesList->setInfos("Select here files needed for simulation to perform. Those would be copied in temporary directory along with simulation executable.");
         addDockWidget("Files",_widgetFilesList,_widgetSelectOptVars);
@@ -77,7 +77,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
         _widgetOptimActions = new WidgetOptimActions(_project,_problem,false,NULL,this);
         addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
-	actualizeGui();
+    actualizeGui();
 
         //change view to show variables
         mapDockWidgets.key(_widgetSelectOptVars)->raise();

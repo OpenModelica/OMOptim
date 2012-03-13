@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file InfoSender.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file InfoSender.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "InfoSender.h"
@@ -83,12 +83,12 @@ InfoSender* InfoSender::instance()
 void InfoSender::send(Info info)
 {
         if(_logStream)
-	{
+    {
                 *_logStream << QTime::currentTime().toString().toAscii().data();
                 *_logStream << "\t";
                 *_logStream << info.infoMsg;
                 *_logStream << "\n";
-	}
+    }
         if(info.infoType==ListInfo::INFODEBUG)
             qDebug(info.infoMsg.toLatin1().data());
 

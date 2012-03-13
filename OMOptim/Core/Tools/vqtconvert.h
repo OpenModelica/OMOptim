@@ -23,29 +23,29 @@ class VQTConvert
 {
 public:
 #ifdef WIN32
-	//Convert a QString To LPCTSTR
-	LPCTSTR static QString_To_LPCTSTR(QString mQTData);
+    //Convert a QString To LPCTSTR
+    LPCTSTR static QString_To_LPCTSTR(QString mQTData);
 
-	//Convert a QString To LPCSTR
-	LPCSTR static QString_To_LPCSTR(QString mQTData);
+    //Convert a QString To LPCSTR
+    LPCSTR static QString_To_LPCSTR(QString mQTData);
 
-	//Convert a QString To LPTSTR
-	LPTSTR static QString_To_LPTSTR(QString mQTData);
+    //Convert a QString To LPTSTR
+    LPTSTR static QString_To_LPTSTR(QString mQTData);
 
-	//Convert a LPCTSTR To QString
-	QString static LPCTSTR_To_QString(LPCTSTR mWinData);
+    //Convert a LPCTSTR To QString
+    QString static LPCTSTR_To_QString(LPCTSTR mWinData);
 
-	//Convert a LPBYTE To QString
-	QString static LPBYTE_To_QString(LPBYTE mWinData);
+    //Convert a LPBYTE To QString
+    QString static LPBYTE_To_QString(LPBYTE mWinData);
 
-	//Convert a Char[] To QString
-	QString static Char_To_QString(char mWinData[]);
+    //Convert a Char[] To QString
+    QString static Char_To_QString(char mWinData[]);
 
-	//Convert a WCHAR* to a QString
-//	QString static WCHAR_to_QString(WCHAR* mBuffer);
+    //Convert a WCHAR* to a QString
+//    QString static WCHAR_to_QString(WCHAR* mBuffer);
 
-	//Convert a TCHAR To QString
-	QString static TChar_To_QString(TCHAR mWinData[]);
+    //Convert a TCHAR To QString
+    QString static TChar_To_QString(TCHAR mWinData[]);
 #endif
 };
 

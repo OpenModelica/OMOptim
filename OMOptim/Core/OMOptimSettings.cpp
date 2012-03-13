@@ -62,13 +62,13 @@ void OMOptimSettings::initialize()
 #endif
 
 
-    //	//*******************************
-    //	// Quit omc at end of program
-    //	//*******************************
-    //	names << QString("stopOMCwhenQuit");
-    //	descs << QString("Automatically end OMC when quitting");
+    //    //*******************************
+    //    // Quit omc at end of program
+    //    //*******************************
+    //    names << QString("stopOMCwhenQuit");
+    //    descs << QString("Automatically end OMC when quitting");
     //        defaultValues << true;
-    //	types.push_back(BOOL);
+    //    types.push_back(BOOL);
 
     //*******************************
     // Model depth read at beginning

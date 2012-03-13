@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetList.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetList.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef  WIDGETLIST_H
@@ -46,23 +46,23 @@
 #include "InfoSender.h"
 
 class WidgetList :
-	public QListWidget
+    public QListWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
         WidgetList(QWidget* _parent);
         virtual ~WidgetList(){};
 
-	bool setSelectedIndexes(QList<int>);
-	QList<int> getSelectedIndexes();
-	
-	public slots:
-		void onExtSelectionChanged(QList<int> &);
-		void onIntSelectionChanged();
+    bool setSelectedIndexes(QList<int>);
+    QList<int> getSelectedIndexes();
+    
+    public slots:
+        void onExtSelectionChanged(QList<int> &);
+        void onIntSelectionChanged();
 signals:
-		void selectionChanged(QList<int> &);
+        void selectionChanged(QList<int> &);
 private :
-	bool ignoreChange;
+    bool ignoreChange;
 
 
 };

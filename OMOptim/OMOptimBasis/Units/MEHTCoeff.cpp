@@ -29,11 +29,11 @@
  *
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MEHTCoeff.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+     @file MEHTCoeff.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
         @version
 
   */
@@ -81,25 +81,25 @@ unsigned MEHTCoeff::nbUnits() const
 
 double MEHTCoeff::convert(double value,int orgUnit,int dstUnit) const
 {
-	double result=value;
+    double result=value;
         // convert to m2
-	switch(orgUnit)
-	{
+    switch(orgUnit)
+    {
         case W_M2_K :
 
-		break;
-	default :
-		break;
-	}
+        break;
+    default :
+        break;
+    }
 
-	// convert to dstUnit
-	switch(dstUnit)
-	{
+    // convert to dstUnit
+    switch(dstUnit)
+    {
                 break;
-	default :
-		break;
-	}
-	return result;
+    default :
+        break;
+    }
+    return result;
 }
 
 

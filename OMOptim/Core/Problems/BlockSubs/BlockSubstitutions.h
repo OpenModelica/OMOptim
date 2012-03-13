@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file BlockSubstitutions.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file BlockSubstitutions.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_BLOCKSUBSTITUTIONS_H)
@@ -54,38 +54,38 @@ class Project;
 
 class BlockSubstitutions : public QObject,public QVector<BlockSubstitution*>
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	BlockSubstitutions(void);
+    BlockSubstitutions(void);
         BlockSubstitutions(Project* project,ModModelPlus* model,const QDomElement & el);
-	~BlockSubstitutions(void);
+    ~BlockSubstitutions(void);
 
-	BlockSubstitutions* clone() const;
+    BlockSubstitutions* clone() const;
 
-	QStringList getReplacedComponentsNames();
-	bool isReplacedComponent(QString);
-	QList<int> getReplacedComponentIndexes(QString _name);
-	QStringList getReplacingComponentNames(QString);
-	QStringList getReplacingComponentNames(ModItem*);
+    QStringList getReplacedComponentsNames();
+    bool isReplacedComponent(QString);
+    QList<int> getReplacedComponentIndexes(QString _name);
+    QStringList getReplacingComponentNames(QString);
+    QStringList getReplacingComponentNames(ModItem*);
 
-	void add(BlockSubstitution*);
+    void add(BlockSubstitution*);
 
-	BlockSubstitution* find(QString replacedName,QString replacingName);
+    BlockSubstitution* find(QString replacedName,QString replacingName);
 
-	int getSize();
-	BlockSubstitution* getAt(int i);
-
-
-	bool removeBlock(QString replacedName,QString replacingName);
-	bool removeBlocks(QString replacedName);
+    int getSize();
+    BlockSubstitution* getAt(int i);
 
 
-	QDomElement toXmlData(QDomDocument &);
+    bool removeBlock(QString replacedName,QString replacingName);
+    bool removeBlocks(QString replacedName);
+
+
+    QDomElement toXmlData(QDomDocument &);
 
 signals:
-	void changed();
-	
+    void changed();
+    
 
 };
 

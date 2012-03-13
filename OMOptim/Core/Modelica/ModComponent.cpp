@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModComponent.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModComponent.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "ModComponent.h"
@@ -47,12 +47,12 @@ ModComponent::ModComponent(MOomc* moomc):ModItem(moomc)
 ModComponent::ModComponent(MOomc* moomc,ModItem* parent,QString name,QString modClassName,QString filePath)
 :ModItem(moomc,parent,name,filePath)
 {
-	_modClassName = modClassName;
+    _modClassName = modClassName;
 }
 
 ModComponent::~ModComponent()
 {
-	clearDescendants();
+    clearDescendants();
 }
 
 ModItem* ModComponent::clone() const
@@ -70,68 +70,68 @@ ModItem* ModComponent::clone() const
 
 QString ModComponent::getModItemName()
 {
-	return _modClassName;
+    return _modClassName;
 }
 
 QVariant ModComponent::getFieldValue(int iField, int role) const
 {
 
-	switch(iField)
-	{
-	case NAME:
-		return _name;
+    switch(iField)
+    {
+    case NAME:
+        return _name;
         case CLASSNAME:
-		return _modClassName;
-	case FILEPATH:
-		return _filePath;
-	default :
-		return QVariant();
-	}
+        return _modClassName;
+    case FILEPATH:
+        return _filePath;
+    default :
+        return QVariant();
+    }
 }
 
 bool ModComponent::setFieldValue(int iField, QVariant value)
 {
-	try{
-		switch(iField)
-		{
-		case NAME:
-			_name = value.toString();
-			break;
+    try{
+        switch(iField)
+        {
+        case NAME:
+            _name = value.toString();
+            break;
                 case CLASSNAME:
-			_modClassName = value.toString();
-		case FILEPATH:
-			_filePath = value.toString();
-			break;
-		}
-		return true;
-	}
-	catch(std::exception)
-	{
-		return false;
-	}
+            _modClassName = value.toString();
+        case FILEPATH:
+            _filePath = value.toString();
+            break;
+        }
+        return true;
+    }
+    catch(std::exception)
+    {
+        return false;
+    }
 }
 
 QString ModComponent::sFieldName(int iField, int role)
 {
-	switch(iField)
-	{
-	case NAME:
-		return "Name";
+    switch(iField)
+    {
+    case NAME:
+        return "Name";
         case CLASSNAME:
-		return "Class";
-	case FILEPATH:
-		return "FilePath";
-	default:
-		return "-";
-	}
+        return "Class";
+    case FILEPATH:
+        return "FilePath";
+    default:
+        return "-";
+    }
 }
 
 QString ModComponent::getStrToolTip()
 {
-	QString toolTip;
-	toolTip += "Modelica Component \n";
-	toolTip += "Name : " + _name + "\n";
-	toolTip += "Class: " + _modClassName + "\n";
+    QString toolTip;
+    toolTip += "Modelica Component \n";
+    toolTip += "Name : " + _name + "\n";
+    toolTip += "Class: " + _modClassName + "\n";
 
-	return toolTip;
+    return toolTip;
 }

@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file DlgSettings.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file DlgSettings.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
 */
 
@@ -60,7 +60,7 @@
 
 class DlgSettings : public MOParametersDlg
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
         DlgSettings(bool editable = true);
@@ -69,7 +69,7 @@ public:
 
 
 public slots:
-	void pushedOk();
+    void pushedOk();
 
 
 };

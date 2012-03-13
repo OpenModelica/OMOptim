@@ -274,7 +274,7 @@ QVariant QScienceSpinBox::validateAndInterpret(
         {
                 case 0:
                         // Length 0 is always 'Intermediate', except for min=max
-                        if (max != min)	{
+                        if (max != min)    {
                                 state = QValidator::Intermediate;
                         } else {
                                 state = QValidator::Invalid;
@@ -317,7 +317,7 @@ QVariant QScienceSpinBox::validateAndInterpret(
                         // not two delimiters after one other (meaning something like ',,')
             if (dec + 1 < copy.size() && copy.at(dec + 1) == delimiter && pos == dec + 1) {
                 copy.remove(dec + 1, 1); // typing a delimiter when you are on the delimiter
-            }							 // should be treated as typing right arrow
+            }                             // should be treated as typing right arrow
                         // too many decimal points
                         if (copy.size() - dec > QDoubleSpinBox::decimals() + 1) {
                 QSBDEBUG() << __FILE__ << __LINE__<< "state is set to Invalid";

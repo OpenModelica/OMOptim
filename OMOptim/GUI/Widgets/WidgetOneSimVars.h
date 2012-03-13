@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetOneSimVars.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetOneSimVars.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef WidgetOneSimVars_H
@@ -58,23 +58,23 @@ public:
     WidgetOneSimVars(ProjectBase *project, OneSimulation *problem, QWidget *parent);
     virtual ~WidgetOneSimVars();
 
-	Ui::WidgetOneSimVarsClass *_ui;
+    Ui::WidgetOneSimVarsClass *_ui;
 
     ProjectBase *_project;
-	OneSimulation *_problem;
-	MOVector<Variable> *_variables;
+    OneSimulation *_problem;
+    MOVector<Variable> *_variables;
 
 
-	QSortFilterProxyModel *_variableProxyModel;
-	QSortFilterProxyModel *_overVariableProxyModel;
-	QSortFilterProxyModel *_scannedVariableProxyModel;
+    QSortFilterProxyModel *_variableProxyModel;
+    QSortFilterProxyModel *_overVariableProxyModel;
+    QSortFilterProxyModel *_scannedVariableProxyModel;
 
 public slots :
-	void addModVariables();
-	void deleteModVariables();
-	void addScannedVariables();
-	void deleteScannedVariables();
-	void simulate();
+    void addModVariables();
+    void deleteModVariables();
+    void addScannedVariables();
+    void deleteScannedVariables();
+    void simulate();
         void readVariables();
 };
 

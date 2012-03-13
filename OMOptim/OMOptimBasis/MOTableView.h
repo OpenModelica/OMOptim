@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOTableView.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOTableView.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_MOTABLE_H)
@@ -53,17 +53,17 @@
 
 class MOTableView : public QTableView
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
 
-	MOTableView(QWidget *parent);
-	~MOTableView();
+    MOTableView(QWidget *parent);
+    ~MOTableView();
 
-	virtual void setModel(QAbstractItemModel *model);
-	bool eventFilter( QObject *obj, QEvent *ev );
+    virtual void setModel(QAbstractItemModel *model);
+    bool eventFilter( QObject *obj, QEvent *ev );
 
-	public slots:
-		void adjustViewSize();
+    public slots:
+        void adjustViewSize();
 };
 
 

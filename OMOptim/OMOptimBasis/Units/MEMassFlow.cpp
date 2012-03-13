@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MEMassFlow.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+     @file MEMassFlow.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
         @version
 
   */
@@ -61,15 +61,15 @@ MEMassFlow::~MEMassFlow(void)
 
 QString MEMassFlow::unit(int iUnit) const
 {
-	switch(iUnit)
-	{
+    switch(iUnit)
+    {
         case KG_S :
                 return "kg/s";
         case T_H :
                 return "t/h";
-	default :
-		return "-";
-	}
+    default :
+        return "-";
+    }
 }
 
 QString MEMassFlow::unit() const
@@ -79,32 +79,32 @@ QString MEMassFlow::unit() const
 
 unsigned MEMassFlow::nbUnits() const
 {
-	return 2;
+    return 2;
 }
 
 double MEMassFlow::convert(double value,int orgUnit,int dstUnit) const
 {
-	double result=value;
+    double result=value;
         // convert to kg/s
-	switch(orgUnit)
-	{
+    switch(orgUnit)
+    {
         case T_H :
                 result=result/3.6;
-		break;
-	default :
-		break;
-	}
+        break;
+    default :
+        break;
+    }
 
-	// convert to dstUnit
-	switch(dstUnit)
-	{
+    // convert to dstUnit
+    switch(dstUnit)
+    {
         case T_H :
                 result=result*3.6;
-		break;
-	default :
-		break;
-	}
-	return result;
+        break;
+    default :
+        break;
+    }
+    return result;
 }
 
 

@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOOptVector.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOOptVector.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 
@@ -830,7 +830,7 @@ QString MOomc::evalCommand(QString command)
     return getResult();
 
     //if(!delegate_)
-    //	startServer();
+    //    startServer();
 
 
     //QString msg;
@@ -840,77 +840,77 @@ QString MOomc::evalCommand(QString command)
     //InfoSender::instance()->send(Info(result,ListInfo::OMCNORMAL2));
     //if(result.compare("NOT RESPONDING",Qt::CaseInsensitive)==0)
     //{
-    //	// restart server
-    //	delegate_->closeConnection();
-    //	delete delegate_;
-    //	delegate_ = NULL;
-    //	startServer();
-    //	delegate_->evalExpression( _command );
-    //	result = delegate_->result();
+    //    // restart server
+    //    delegate_->closeConnection();
+    //    delete delegate_;
+    //    delegate_ = NULL;
+    //    startServer();
+    //    delegate_->evalExpression( _command );
+    //    result = delegate_->result();
     //}
     //return result;
 }
 //void MOomc::evalCommand()
 //{
-//	nbCalls++;
+//    nbCalls++;
 //
-//	QString msg;
-//	QString error;
-//	QString warning;
+//    QString msg;
+//    QString error;
+//    QString warning;
 //
-//	// send command to OMC
-//	if( isStarted )
-//	{
+//    // send command to OMC
+//    if( isStarted )
+//    {
 //eval:
-//		// 2006-02-02 AF, Added try-catch
-//		try
-//		{
-//			delegate_->evalExpression(command );
-//		}
-//		catch( exception &e )
-//		{
-//			exceptionInEval(e);
-//			return;
-//		}
+//        // 2006-02-02 AF, Added try-catch
+//        try
+//        {
+//            delegate_->evalExpression(command );
+//        }
+//        catch( exception &e )
+//        {
+//            exceptionInEval(e);
+//            return;
+//        }
 //
-//		// get result
-//		msg = delegate_->result();
-//		InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
+//        // get result
+//        msg = delegate_->result();
+//        InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
 //
-//		//if(msg.contains("error",Qt::CaseInsensitive))
-//		if(true)
-//		{
-//			// get Error text
-//			try
-//			{
-//				QString getErrorString = "getErrorString()";
-//				delegate_->evalExpression(getErrorString);
-//			}
-//			catch( exception &e )
-//			{
-//				exceptionInEval(e);
-//				return;
-//			}
-//			msg = delegate_->result();
-//			if(msg!="\"\"")
-//				InfoSender::instance()->send(Info(msg,ListInfo::OMCERROR2));
-//		}
-//	}
-//	else
-//	{
-//		if( startServer() )
-//		{
-//			msg ="No OMC server started - restarted OMC\n" ;
-//			InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
-//			goto eval;
-//		}
-//		else
-//		{
-//			msg="No OMC server started - unable to restart OMC\n";
-//			InfoSender::instance()->send(  Info(msg,ListInfo::ERROR2));
-//		}
-//	}
-//	return;
+//        //if(msg.contains("error",Qt::CaseInsensitive))
+//        if(true)
+//        {
+//            // get Error text
+//            try
+//            {
+//                QString getErrorString = "getErrorString()";
+//                delegate_->evalExpression(getErrorString);
+//            }
+//            catch( exception &e )
+//            {
+//                exceptionInEval(e);
+//                return;
+//            }
+//            msg = delegate_->result();
+//            if(msg!="\"\"")
+//                InfoSender::instance()->send(Info(msg,ListInfo::OMCERROR2));
+//        }
+//    }
+//    else
+//    {
+//        if( startServer() )
+//        {
+//            msg ="No OMC server started - restarted OMC\n" ;
+//            InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
+//            goto eval;
+//        }
+//        else
+//        {
+//            msg="No OMC server started - unable to restart OMC\n";
+//            InfoSender::instance()->send(  Info(msg,ListInfo::ERROR2));
+//        }
+//    }
+//    return;
 //}
 
 //void MOomc::exceptionInEval(exception &e)
@@ -1263,68 +1263,68 @@ bool MOomc::startServer()
 
     //if(!isStarted)
     //{
-    //	InfoSender::instance()->send( Info("Starting OMC...",ListInfo::NORMAL2));
-    //	try
-    //	{
-    //		delegate_ = new IAEX::OmcInteractiveEnvironment();
-    //		isStarted = true;
+    //    InfoSender::instance()->send( Info("Starting OMC...",ListInfo::NORMAL2));
+    //    try
+    //    {
+    //        delegate_ = new IAEX::OmcInteractiveEnvironment();
+    //        isStarted = true;
 
-    //		// get version no
-    //		QString getVersionStr = "getVersion()";
-    //		delegate_->evalExpression( getVersionStr );
-    //		omc_version_ = delegate_->result();
-    //		omc_version_.remove( "\"" );
+    //        // get version no
+    //        QString getVersionStr = "getVersion()";
+    //        delegate_->evalExpression( getVersionStr );
+    //        omc_version_ = delegate_->result();
+    //        omc_version_.remove( "\"" );
 
-    //		msg = "OMC " + omc_version_ + " now started.";
-    //		InfoSender::instance()->send( Info(msg,ListInfo::NORMAL2));
+    //        msg = "OMC " + omc_version_ + " now started.";
+    //        InfoSender::instance()->send( Info(msg,ListInfo::NORMAL2));
 
-    //	}
-    //	catch( exception &e )
-    //	{
-    //		msg = e.what();
-    //		InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
+    //    }
+    //    catch( exception &e )
+    //    {
+    //        msg = e.what();
+    //        InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
 
-    //		if( !IAEX::OmcInteractiveEnvironment::startOMC() )
-    //		{
-    //			msg= "Unable to start OMC.";
-    //			InfoSender::instance()->send( Info(msg,ListInfo::ERROR2));
-    //			isStarted = false;
-    //		}
-    //		else
-    //		{
-    //			int i=0;
-    //			int nMax = 10;
-    //			while(!isStarted && (i<nMax))
-    //			{
-    //				// wait before trying to reconnect,
-    //				// give OMC time to start up
-    //				msg = "Unable to connect to OMC Server. Trying to reconnect (";
-    //				msg += QString::number(i+1) + "/" + QString::number(nMax) + ") ...";
-    //				InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
+    //        if( !IAEX::OmcInteractiveEnvironment::startOMC() )
+    //        {
+    //            msg= "Unable to start OMC.";
+    //            InfoSender::instance()->send( Info(msg,ListInfo::ERROR2));
+    //            isStarted = false;
+    //        }
+    //        else
+    //        {
+    //            int i=0;
+    //            int nMax = 10;
+    //            while(!isStarted && (i<nMax))
+    //            {
+    //                // wait before trying to reconnect,
+    //                // give OMC time to start up
+    //                msg = "Unable to connect to OMC Server. Trying to reconnect (";
+    //                msg += QString::number(i+1) + "/" + QString::number(nMax) + ") ...";
+    //                InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
 
-    //				SleeperThread::msleep( 1000 );
+    //                SleeperThread::msleep( 1000 );
 
-    //				try
-    //				{
-    //					delegate_ = new IAEX::OmcInteractiveEnvironment();
-    //					isStarted = true;
+    //                try
+    //                {
+    //                    delegate_ = new IAEX::OmcInteractiveEnvironment();
+    //                    isStarted = true;
     //
-    //					// get version no
-    //					delegate_->evalExpression( QString("getVersion()") );
-    //					omc_version_ = delegate_->result();
-    //					omc_version_.remove( "\"" );
-    //					msg = "OMC " + omc_version_ + " now started.";
-    //					InfoSender::instance()->send( Info(msg,ListInfo::NORMAL2));
-    //				}
-    //				catch( exception &e )
-    //				{
-    //					msg = e.what();
-    //					InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
-    //					i++;
-    //				}
-    //			}
-    //		}
-    //	}
+    //                    // get version no
+    //                    delegate_->evalExpression( QString("getVersion()") );
+    //                    omc_version_ = delegate_->result();
+    //                    omc_version_.remove( "\"" );
+    //                    msg = "OMC " + omc_version_ + " now started.";
+    //                    InfoSender::instance()->send( Info(msg,ListInfo::NORMAL2));
+    //                }
+    //                catch( exception &e )
+    //                {
+    //                    msg = e.what();
+    //                    InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
+    //                    i++;
+    //                }
+    //            }
+    //        }
+    //    }
     //}
 
     //return isStarted;
@@ -1355,7 +1355,7 @@ QString MOomc::getResult()
 
 //OmcCommunicator* MOomc::getCommunicator()
 //{
-//	//return mCommunicator;
+//    //return mCommunicator;
 //}
 
 QString MOomc::changeDirectory(QString directory)

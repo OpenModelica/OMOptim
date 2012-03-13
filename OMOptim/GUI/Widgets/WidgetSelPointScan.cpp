@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetSelPointScan.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetSelPointScan.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "Widgets/WidgetSelPointScan.h"
@@ -44,7 +44,7 @@
 
 namespace Ui
 {
-	class WidgetSelPointScanClass;
+    class WidgetSelPointScanClass;
 }
 
 WidgetSelPointScan::WidgetSelPointScan(MOOptVector* _variables,QWidget *parent)
@@ -54,16 +54,16 @@ WidgetSelPointScan::WidgetSelPointScan(MOOptVector* _variables,QWidget *parent)
         ui->setupUi(this);
         this->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Maximum);
 
-	variables = _variables;
-	
-	connect(variables,SIGNAL(useScanChanged()),this,SLOT(onChangedUseScan()));
-	connect(variables,SIGNAL(usePointsChanged()),this,SLOT(onChangedUsePoints()));
+    variables = _variables;
+    
+    connect(variables,SIGNAL(useScanChanged()),this,SLOT(onChangedUseScan()));
+    connect(variables,SIGNAL(usePointsChanged()),this,SLOT(onChangedUsePoints()));
 
         connect(ui->sliderScans,SIGNAL(valueChanged(int)),this,SLOT(onSlideScanValueChanged(int)));
-	
-	update();
+    
+    update();
 
-	
+    
 }
 
 WidgetSelPointScan::~WidgetSelPointScan()
@@ -72,8 +72,8 @@ WidgetSelPointScan::~WidgetSelPointScan()
 }
 void WidgetSelPointScan::onChangedUseScan()
 {
-	bool show = variables->getUseScan();
-	ui->widgetScans->setVisible(show);
+    bool show = variables->getUseScan();
+    ui->widgetScans->setVisible(show);
 }
 
 void WidgetSelPointScan::onSlideScanValueChanged(int newScan)
@@ -83,8 +83,8 @@ void WidgetSelPointScan::onSlideScanValueChanged(int newScan)
 
 void WidgetSelPointScan::onChangedUsePoints()
 {
-	bool show = variables->getUsePoints();
-	ui->widgetPoints->setVisible(show);
+    bool show = variables->getUsePoints();
+    ui->widgetPoints->setVisible(show);
 }
 void WidgetSelPointScan::onChangedNbScans()
 {
@@ -94,15 +94,15 @@ void WidgetSelPointScan::onChangedNbPoints()
 }
 void WidgetSelPointScan::update()
 {
-	ui->sliderScans->setMinimum(0);
+    ui->sliderScans->setMinimum(0);
         ui->sliderScans->setMaximum(variables->nbScans()-1);
-	ui->sliderScans->setValue(variables->curScan());
+    ui->sliderScans->setValue(variables->curScan());
 
-	onChangedUseScan();
+    onChangedUseScan();
 
-	ui->sliderPoints->setMinimum(0);
+    ui->sliderPoints->setMinimum(0);
         ui->sliderPoints->setMaximum(variables->nbPoints()-1);
-	ui->sliderPoints->setValue(variables->curPoint());
+    ui->sliderPoints->setValue(variables->curPoint());
 
         onChangedUsePoints();
 

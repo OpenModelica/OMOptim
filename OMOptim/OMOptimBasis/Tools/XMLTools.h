@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file XMLTools.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file XMLTools.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef _XMLTOOLS_H
@@ -46,9 +46,9 @@
 class XMLTools
 {
 public:
-	XMLTools(void);
-	~XMLTools(void);
-	static QString space();
+    XMLTools(void);
+    ~XMLTools(void);
+    static QString space();
 
 };
 

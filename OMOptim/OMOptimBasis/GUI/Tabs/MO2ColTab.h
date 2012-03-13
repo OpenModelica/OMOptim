@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MO2ColTab.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MO2ColTab.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef MO2ColTab_H
@@ -57,17 +57,17 @@ public:
         MO2ColTab(QString _projectName,MOItem* _mainItem,bool closable=false,QWidget *parent = 0);
         virtual ~MO2ColTab(void);
 
-	QVBoxLayout *buttonsLayout;
-	QGridLayout *widgetsLayout;
-	QToolBar *dispTB;
+    QVBoxLayout *buttonsLayout;
+    QGridLayout *widgetsLayout;
+    QToolBar *dispTB;
 
 protected :
         void addDockWidget(QString title,QWidget*,QWidget *tabifiedOn=NULL,Qt::DockWidgetArea dockWidgetArea=Qt::TopDockWidgetArea);
 void addFixedWidget(QString title,QWidget*,Qt::DockWidgetArea dockWidgetArea=Qt::TopDockWidgetArea,Qt::Orientation orientation=Qt::Vertical,bool showTitle=true);
-	void setWidgetVisible(QWidget*,bool _visible);
+    void setWidgetVisible(QWidget*,bool _visible);
 
 protected :
-	bool closable;
+    bool closable;
         QMap<QDockWidget*,QWidget*> mapDockWidgets;
 
 };

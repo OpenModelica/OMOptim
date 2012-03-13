@@ -200,7 +200,7 @@ Result* SPEA2::launch(QString tempDir)
 
     eoSequentialOp<EOStd> *op = new eoSequentialOp<EOStd>;
     state.storeFunctor(op);
-    op -> add(*xover, 1.0);	 // always do crossover (probabilities are taken into account inside)
+    op -> add(*xover, 1.0);     // always do crossover (probabilities are taken into account inside)
     op -> add(*mutation, 1.0); // and mutation
 
 
@@ -215,7 +215,7 @@ Result* SPEA2::launch(QString tempDir)
     if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
     {
         // create another state for reading
-        eoState inState;		// a state for loading - WITHOUT the parser
+        eoState inState;        // a state for loading - WITHOUT the parser
         // register the rng and the pop in the state, so they can be loaded,
         // and the present run will be the exact continuation of the saved run
         // eventually with different parameters

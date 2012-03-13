@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
         @file MOParameter.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_MOParameter_H)
@@ -54,21 +54,21 @@ class MOParameter : public MOItem
 {
 public:
 
-	enum Field
-	{
-		//Modelica fields
-		NAME,
-		VALUE,
-		DEFAULTVALUE,
-		TYPE,
-		MIN,
-		MAX,
-		DESCRIPTION,
+    enum Field
+    {
+        //Modelica fields
+        NAME,
+        VALUE,
+        DEFAULTVALUE,
+        TYPE,
+        MIN,
+        MAX,
+        DESCRIPTION,
                 INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
                 GROUP
-	};
+    };
 
-	
+    
         enum Type
         {
                 FOLDERPATH,
@@ -90,12 +90,12 @@ public:
         virtual QString getClassName(){return "MOParameter";};
 
         static const int nbFields = 9;
-	virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields(){return nbFields;};
 
 
         virtual bool setFieldValue(int iField,QVariant _value);
         virtual QVariant getFieldValue(int ifield, int role = Qt::UserRole) const;
-	static QString sFieldName(int ifield, int role);
+    static QString sFieldName(int ifield, int role);
         virtual QString getFieldName(int i, int role = Qt::DisplayRole){return MOParameter::sFieldName(i,role);};
 
         virtual MOParameter* clone() const;
@@ -109,12 +109,12 @@ public:
         QString description(){return _description;};
 
 protected :
-	QString _description;
-	QVariant _value;
-	QVariant _defaultValue;
+    QString _description;
+    QVariant _value;
+    QVariant _defaultValue;
         Type _type;
-	QVariant _min;
-	QVariant _max;
+    QVariant _min;
+    QVariant _max;
         int _index;
         QMap<int,QVariant> _enablingIndexes; /** map of enabling parameter (the one indexed by key) that enable this one.
             QVariant corresponds to the value the enabling parameter should take to enable this parameter*/

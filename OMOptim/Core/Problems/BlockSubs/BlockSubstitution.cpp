@@ -30,11 +30,11 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file BlockSubstitution.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+     @file BlockSubstitution.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
   @version
 
   */
@@ -62,77 +62,77 @@ BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, Model
 
     ok = init(project,model,connections,orgComponent,subComponent);
 
-	if(doAutoConnect)
-		autoConnect();
+    if(doAutoConnect)
+        autoConnect();
 }
 
 BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, ModelicaConnections* connections,QDomElement domEl)
 {
 
     if( domEl.tagName() != "BlockSubstitution" )
-	{
-		//sendInfo( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
-		return;
-	}
+    {
+        //sendInfo( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+        return;
+    }
 
-	// get component names
+    // get component names
     QString orgComponent;
     QString subComponent;
 
     QDomNode n1 = domEl.firstChild();
-	while( !n1.isNull() )
-	{
-		QDomElement e1 = n1.toElement();
-		if( !e1.isNull() )
-		{
-			if( e1.tagName() == "ReplacedComponent" )
-			{
+    while( !n1.isNull() )
+    {
+        QDomElement e1 = n1.toElement();
+        if( !e1.isNull() )
+        {
+            if( e1.tagName() == "ReplacedComponent" )
+            {
                 orgComponent = e1.attribute("name", "" );
-			}
+            }
 
-			if( e1.tagName() == "ReplacingComponent" )
-			{
+            if( e1.tagName() == "ReplacingComponent" )
+            {
                 subComponent = e1.attribute("class", "" );
-			}
-		}
-		n1 = n1.nextSibling();
-	}
+            }
+        }
+        n1 = n1.nextSibling();
+    }
 
-	//build first version
+    //build first version
     bool ok = init(project,model,connections,orgComponent,subComponent);
 
-	// getting replacing connections
+    // getting replacing connections
     n1 = domEl.firstChild();
-	while( !n1.isNull() )
-	{
-		QDomElement e1 = n1.toElement();
-		if( !e1.isNull() && e1.tagName() == "ReplacingComponent")
-		{
-			QDomNode n2 = n1.firstChild();
-			while( !n2.isNull() )
-			{
-				QDomElement e2 = n2.toElement();
-				if( e2.tagName() == "Connection" )
-				{
+    while( !n1.isNull() )
+    {
+        QDomElement e1 = n1.toElement();
+        if( !e1.isNull() && e1.tagName() == "ReplacingComponent")
+        {
+            QDomNode n2 = n1.firstChild();
+            while( !n2.isNull() )
+            {
+                QDomElement e2 = n2.toElement();
+                if( e2.tagName() == "Connection" )
+                {
                     QString  from = e2.attribute("from", "" );
                     QString  to = e2.attribute("to", "" );
 
                     QString subPort = subComponent+"." + from;
 
-					//looking from corresponding port
+                    //looking from corresponding port
                     int indexPort = _subPorts.indexOf(subPort);
-					if(indexPort>-1)
-					{
+                    if(indexPort>-1)
+                    {
                         QStringList curList = _subConnectedComps.at(indexPort);
                         curList.append(to);
                         _subConnectedComps.replace(indexPort,curList);
-					}
-				}
-				n2 = n2.nextSibling();
-			}
-		}
-		n1 = n1.nextSibling();
-	}
+                    }
+                }
+                n2 = n2.nextSibling();
+            }
+        }
+        n1 = n1.nextSibling();
+    }
 }
 
 
@@ -146,29 +146,29 @@ bool BlockSubstitution::init(Project * project, ModModelPlus *model, ModelicaCon
 
     ModItem* orgElement = project->modItemsTree()->findInDescendants(_orgComponent);
     if(orgElement==NULL)
-	{
+    {
         InfoSender::instance()->debug(_orgComponent + " not found.");
-		return false;
-	}
+        return false;
+    }
     connections->getOutside(orgElement,true,_orgPorts,_orgConnectedComps);
 
-	if(!subComponent.isEmpty())
-	{
-		// reading subcomponent ports
+    if(!subComponent.isEmpty())
+    {
+        // reading subcomponent ports
         ModItem* subElement;
         QString libraryName = _subComponent.section(".",0,0);
 
         subElement =  project->modItemsTree()->findInDescendants(_subComponent);
         if(subElement)
-			{
+            {
             _subPorts = _project->modItemsTree()->getPorts(subElement,ModItem::FULL);
             for(int i=0;i<_subPorts.size();i++)
-				{
+                {
                 _subConnectedComps.push_back(QStringList());
-				}
-			}
-	}
-	return true;
+                }
+            }
+    }
+    return true;
 }
 
 void BlockSubstitution::setSubComponent(QString subComponent,bool doAutoConnect)
@@ -177,18 +177,18 @@ void BlockSubstitution::setSubComponent(QString subComponent,bool doAutoConnect)
     _subPorts.clear();
     _subConnectedComps.clear();
 
-	// reading subcomponent ports
+    // reading subcomponent ports
     ModItem* subElement;
     subElement = _project->modItemsTree()->findInDescendants(_subComponent);
 
     if(subElement)
-	{
+    {
         _subPorts = _project->modItemsTree()->getPorts(subElement,ModItem::FULL);
         for(int i=0;i<_subPorts.size();i++)
-		{
+        {
             _subConnectedComps.push_back(QStringList());
-		}
-	}
+        }
+    }
 }
 
 BlockSubstitution::~BlockSubstitution(void)
@@ -197,11 +197,11 @@ BlockSubstitution::~BlockSubstitution(void)
 
 BlockSubstitution* BlockSubstitution::clone() const
 {
-	BlockSubstitution* newBSub = new BlockSubstitution(
+    BlockSubstitution* newBSub = new BlockSubstitution(
                 _project,_model,_orgComponent, _subComponent,
                 _orgPorts,_orgConnectedComps,
                 _subPorts,_subConnectedComps);
-	return newBSub;
+    return newBSub;
 }
 
 void BlockSubstitution::copyFrom(BlockSubstitution *org)
@@ -219,45 +219,45 @@ void BlockSubstitution::copyFrom(BlockSubstitution *org)
 void BlockSubstitution::autoConnect()
 {
     for(int iPort=0;iPort<_subPorts.size();iPort++)
-	{
+    {
         QString portName = _subPorts.at(iPort);
 
         int index = _orgPorts.indexOf(QRegExp(".*"+portName.section(".",-1,-1)));
 
-		if(index>-1)
+        if(index>-1)
             _subConnectedComps.replace(iPort,_orgConnectedComps.at(index));
-	}
+    }
 }
 
 QDomElement BlockSubstitution::toXmlData(QDomDocument & doc)
 {
 
-	// Root element
-	QDomElement cBlock = doc.createElement("BlockSubstitution");
+    // Root element
+    QDomElement cBlock = doc.createElement("BlockSubstitution");
 
 
-	// Replaced component
-	QDomElement cReplaced = doc.createElement("ReplacedComponent");
+    // Replaced component
+    QDomElement cReplaced = doc.createElement("ReplacedComponent");
     cReplaced.setAttribute("name", _orgComponent);
-	cBlock.appendChild(cReplaced);
+    cBlock.appendChild(cReplaced);
 
-	// Replacing component
-	QDomElement cReplacing = doc.createElement("ReplacingComponent");
+    // Replacing component
+    QDomElement cReplacing = doc.createElement("ReplacingComponent");
     cReplacing.setAttribute("class", _subComponent);
 
-	// Org connections
+    // Org connections
     for(int i=0; i < _subPorts.size(); i++)
-	{
+    {
         for(int j=0;j<_subConnectedComps.at(i).size();j++)
-		{
-			QDomElement cConnect = doc.createElement("Connection");
+        {
+            QDomElement cConnect = doc.createElement("Connection");
             cConnect.setAttribute("from", _subPorts.at(i).section(".",-1,-1));
             cConnect.setAttribute("to", _subConnectedComps.at(i).at(j));
-			cReplacing.appendChild(cConnect);
-		}
-	}
-	cBlock.appendChild(cReplacing);
+            cReplacing.appendChild(cConnect);
+        }
+    }
+    cBlock.appendChild(cReplacing);
 
 
-	return cBlock;
+    return cBlock;
 }

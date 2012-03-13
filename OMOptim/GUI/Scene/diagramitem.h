@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file diagramitem.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file diagramitem.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
 */
 /****************************************************************************
@@ -118,8 +118,8 @@
      int type() const
          { return Type;}
 
-	 void setWidth(double _newWidth);
-	 void setHeight(double _newHeight);
+     void setWidth(double _newWidth);
+     void setHeight(double _newHeight);
  protected:
      void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
      QVariant itemChange(GraphicsItemChange change, const QVariant &value);

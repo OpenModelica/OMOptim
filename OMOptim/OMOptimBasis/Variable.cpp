@@ -92,10 +92,10 @@ void Variable::setDescription(QString description)
 }
 //void Variable::setType(int type_)
 //{
-//		if(!_filledFields.contains(Variable::TYPE))
-//		_filledFields.push_back(Variable::TYPE);
+//        if(!_filledFields.contains(Variable::TYPE))
+//        _filledFields.push_back(Variable::TYPE);
 //
-//	type = type_;
+//    type = type_;
 //}
 
 void Variable::setValue(double value)
@@ -112,22 +112,22 @@ double Variable::value() const
 //
 //void Variable::setMin(double min_)
 //{
-//	if(!_filledFields.contains(Variable::MIN))
-//		_filledFields.push_back(Variable::MIN);
-//	min = min_;
+//    if(!_filledFields.contains(Variable::MIN))
+//        _filledFields.push_back(Variable::MIN);
+//    min = min_;
 //}
 //
 //void Variable::setMax(double max_)
 //{
-//	if(!_filledFields.contains(Variable::MAX))
-//		_filledFields.push_back(Variable::MAX);
-//	max = max_;
+//    if(!_filledFields.contains(Variable::MAX))
+//        _filledFields.push_back(Variable::MAX);
+//    max = max_;
 //}
 //void Variable::setCategory(int category_)
 //{
-//	if(!_filledFields.contains(Variable::CATEGORY))
-//		_filledFields.push_back(Variable::CATEGORY);
-//	category = category_;
+//    if(!_filledFields.contains(Variable::CATEGORY))
+//        _filledFields.push_back(Variable::CATEGORY);
+//    category = category_;
 //}
 void Variable::setDataType(VariableType dataType)
 {
@@ -608,8 +608,8 @@ bool OptVariable::check(QString &error)
 
     //if(type!=FIXED)
     //{
-    //	error.sprintf("Variable is not considered as a model input. Its value probably won't affect simulation");
-    //	ok = false;
+    //    error.sprintf("Variable is not considered as a model input. Its value probably won't affect simulation");
+    //    ok = false;
     //}
 
     return ok;
@@ -864,8 +864,8 @@ bool ScannedVariable::check(QString &error)
 
     //if(type!=FIXED)
     //{
-    //	error.sprintf("Variable is not considered as a model input. Its value probably won't affect simulation");
-    //	ok = false;
+    //    error.sprintf("Variable is not considered as a model input. Its value probably won't affect simulation");
+    //    ok = false;
     //}
     return ok;
 }
@@ -876,14 +876,14 @@ void ScannedVariable::initScanExtremum()
     _scanMax = std::numeric_limits<double>::max();
 
     //if(min < -std::numeric_limits<double>::max())
-    //	scanMin = -std::numeric_limits<double>::max();
+    //    scanMin = -std::numeric_limits<double>::max();
     //else
-    //	scanMin = min;
+    //    scanMin = min;
 
     //if(max > std::numeric_limits<double>::max())
-    //	scanMax = std::numeric_limits<double>::max();
+    //    scanMax = std::numeric_limits<double>::max();
     //else
-    //	scanMax = max;
+    //    scanMax = max;
 
     _scanStep = 1;
 }
@@ -913,7 +913,7 @@ QVariant ScannedVariable::getFieldValue(int ifield, int role) const
             return _value;
         case DESCRIPTION :
             return _description;
-            /*	case MIN :
+            /*    case MIN :
    return min;
   case MAX :
    return max;
@@ -997,7 +997,7 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
         case DESCRIPTION :
             _description = value.toString();
             break;
-            /*	case MIN :
+            /*    case MIN :
    min=value_.toDouble();
    break;
   case MAX :
@@ -1037,35 +1037,35 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
 //
 //OptVariableiableResult::OptVariableResult()
 //{
-//	_editableFields.clear();
+//    _editableFields.clear();
 //
 //}
 //
 //OptVariableResult::OptVariableResult(OptVariable *optVar_)
 //{
-//	for(int i=0;i<OptVariable::nbFields;i++)
-//	{
-//		setFieldValue(i,optVar_->getFieldValue(i));
-//	}
+//    for(int i=0;i<OptVariable::nbFields;i++)
+//    {
+//        setFieldValue(i,optVar_->getFieldValue(i));
+//    }
 //
-//	_filledFields = optVar_->_filledFields;
+//    _filledFields = optVar_->_filledFields;
 //
-//	_editableFields.clear();
+//    _editableFields.clear();
 //}
 //
 //OptVariableResult::OptVariableResult(OptVariableResult *optVarRes_)
 //{
-//	for(int i=0;i<OptVariableResult::nbFields;i++)
-//	{
-//		setFieldValue(i,optVarRes_->getFieldValue(i));
-//	}
+//    for(int i=0;i<OptVariableResult::nbFields;i++)
+//    {
+//        setFieldValue(i,optVarRes_->getFieldValue(i));
+//    }
 //
-//	_filledFields = optVarRes_->_filledFields;
+//    _filledFields = optVarRes_->_filledFields;
 //
-//	for(int i=0;i<optVarRes_->nbScans();i++)
-//		setFinalValues(i,optVarRes_->finalValues(i));
+//    for(int i=0;i<optVarRes_->nbScans();i++)
+//        setFinalValues(i,optVarRes_->finalValues(i));
 //
-//	_editableFields.clear();
+//    _editableFields.clear();
 //}
 //
 //
@@ -1076,128 +1076,128 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
 //
 //OptVariableResult* OptVariableResult::clone()
 //{
-//	OptVariableResult* newVar = new OptVariableResult();
+//    OptVariableResult* newVar = new OptVariableResult();
 //
-//	// copying fields
-//	for(int i=0;i<nbFields;i++)
-//	{
-//		newVar->setFieldValue(i,getFieldValue(i));
-//	}
-//	newVar->_filledFields = _filledFields;
+//    // copying fields
+//    for(int i=0;i<nbFields;i++)
+//    {
+//        newVar->setFieldValue(i,getFieldValue(i));
+//    }
+//    newVar->_filledFields = _filledFields;
 //
-//	//copying final values
-//	for(int i=0;i<nbScans();i++)
-//		newVar->setFinalValues(i,finalValues(i));
+//    //copying final values
+//    for(int i=0;i<nbScans();i++)
+//        newVar->setFinalValues(i,finalValues(i));
 //
-//	return newVar;
+//    return newVar;
 //}
 //
 //OptVariable* OptVariableResult::getEquivOptVariable()
 //{
-//	OptVariable* newVar = new OptVariable();
+//    OptVariable* newVar = new OptVariable();
 //
-//	// copying fields
-//	for(int i=0;i<OptVariable::nbFields;i++)
-//	{
-//		newVar->setFieldValue(i,getFieldValue(i));
-//	}
+//    // copying fields
+//    for(int i=0;i<OptVariable::nbFields;i++)
+//    {
+//        newVar->setFieldValue(i,getFieldValue(i));
+//    }
 //
-//	return newVar;
+//    return newVar;
 //}
 //
 //std::vector<double> OptVariableResult::finalValues(int iScan) const
 //{
-//	return finalValues.at(iScan);
+//    return finalValues.at(iScan);
 //}
 //
 //double OptVariableResult::finalValue(int iScan,int iPoint) const
 //{
-//	return finalValues.at(iScan).at(iPoint);
+//    return finalValues.at(iScan).at(iPoint);
 //}
 //
 //void OptVariableResult::setFinalValues(int iScan, const std::vector<double> & finalValues_)
 //{
-//	if(iScan<finalValues.size())
-//	{
-//		finalValues.at(iScan).clear();
-//		computedPoints.at(iScan).clear();
-//		finalValues.at(iScan).reserve(finalValues_.size());
-//		computedPoints.at(iScan).reserve(finalValues_.size());
+//    if(iScan<finalValues.size())
+//    {
+//        finalValues.at(iScan).clear();
+//        computedPoints.at(iScan).clear();
+//        finalValues.at(iScan).reserve(finalValues_.size());
+//        computedPoints.at(iScan).reserve(finalValues_.size());
 //
-//		finalValues.push_back(finalValues_);
+//        finalValues.push_back(finalValues_);
 //
-//		for(int i=0;i<finalValues_.size();i++)
-//		{
-//			computedPoints.at(iScan).push_back(true);
-//		}
-//	}
-//	else
-//	{
-//		QString msg;
-//		msg = "Error setting final values of variable \""+name()+"\" , iScan : "+QString::number(iScan) + "\n";
-//		InfoSender::instance()->debug(msg);
-//	}
+//        for(int i=0;i<finalValues_.size();i++)
+//        {
+//            computedPoints.at(iScan).push_back(true);
+//        }
+//    }
+//    else
+//    {
+//        QString msg;
+//        msg = "Error setting final values of variable \""+name()+"\" , iScan : "+QString::number(iScan) + "\n";
+//        InfoSender::instance()->debug(msg);
+//    }
 //}
 //
 //void OptVariableResult::setFinalValueAtPoint(double _value,int iScan,int iPoint)
 //{
-//	finalValues.at(iScan).at(iPoint) = _value;
-//	computedPoints.at(iScan).at(iPoint) = true;
+//    finalValues.at(iScan).at(iPoint) = _value;
+//    computedPoints.at(iScan).at(iPoint) = true;
 //}
 //
 //
 //void OptVariableResult::appendFinalValue(double _value,int iScan)
 //{
-//		finalValues.at(iScan).push_back(_value);
-//		computedPoints.at(iScan).push_back(true);
+//        finalValues.at(iScan).push_back(_value);
+//        computedPoints.at(iScan).push_back(true);
 //}
 //
 //void OptVariableResult::appendScanValues(std::vector<double> _values,std::vector<bool> _computedPoints)
 //{
-//		finalValues.push_back(_values);
-//		computedPoints.push_back(_computedPoints);
+//        finalValues.push_back(_values);
+//        computedPoints.push_back(_computedPoints);
 //}
 //
 //bool OptVariableResult::isComputedPoint(int iScan, int iPoint) const
 //{
-//	if((iScan<computedPoints.size())
-//		&& (iPoint<computedPoints.at(iScan).size()))
-//		return computedPoints.at(iScan).at(iPoint);
-//	else
-//		return false;
+//    if((iScan<computedPoints.size())
+//        && (iPoint<computedPoints.at(iScan).size()))
+//        return computedPoints.at(iScan).at(iPoint);
+//    else
+//        return false;
 //}
 //
 //int OptVariableResult::nbPoints() const
 //{
-//	int size=0;
-//	for(int i=0;i<finalValues.size();i++)
-//		size = std::max<double>(size,finalValues.at(i).size());
+//    int size=0;
+//    for(int i=0;i<finalValues.size();i++)
+//        size = std::max<double>(size,finalValues.at(i).size());
 //
-//	return size;
+//    return size;
 //}
 //
 //int OptVariableResult::nbScans() const
 //{
-//	return finalValues.size();
+//    return finalValues.size();
 //}
 //
 //
 //void OptVariableResult::clearFinalValues()
 //{
-//	for(int i=0;i<finalValues.size();i++)
-//		finalValues.at(i).clear();
-//	finalValues.clear();
+//    for(int i=0;i<finalValues.size();i++)
+//        finalValues.at(i).clear();
+//    finalValues.clear();
 //
-//	for(int i=0;i<computedPoints.size();i++)
-//		computedPoints.at(i).clear();
-//	computedPoints.clear();
+//    for(int i=0;i<computedPoints.size();i++)
+//        computedPoints.at(i).clear();
+//    computedPoints.clear();
 //}
 
 //
 //
 //FuzzyVariable::FuzzyVariable()
 //{
-//	_editableFields << FuzzyVariable::VALUE << FuzzyVariable::STATUS << FuzzyVariable::PRECSTATUS << FuzzyVariable::PRECVALUE;
+//    _editableFields << FuzzyVariable::VALUE << FuzzyVariable::STATUS << FuzzyVariable::PRECSTATUS << FuzzyVariable::PRECVALUE;
 //}
 //
 //FuzzyVariable::~FuzzyVariable()
@@ -1207,155 +1207,155 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
 //// Cloning function
 //FuzzyVariable::FuzzyVariable(const FuzzyVariable & _var):Variable(_var)
 //{
-//	status = POINTDEP;
-//	precStatus = PRECFIXED;
-//	precValue = 0;
+//    status = POINTDEP;
+//    precStatus = PRECFIXED;
+//    precValue = 0;
 //}
 //
 //FuzzyVariable::FuzzyVariable(const Variable & _var):Variable(_var)
 //{
-//	status = POINTDEP;
-//	precStatus = PRECFIXED;
-//	precValue = 0;
+//    status = POINTDEP;
+//    precStatus = PRECFIXED;
+//    precValue = 0;
 //
-//	_editableFields << FuzzyVariable::VALUE << FuzzyVariable::STATUS << FuzzyVariable::PRECSTATUS << FuzzyVariable::PRECVALUE;
+//    _editableFields << FuzzyVariable::VALUE << FuzzyVariable::STATUS << FuzzyVariable::PRECSTATUS << FuzzyVariable::PRECVALUE;
 //}
 //
 //FuzzyVariable::FuzzyVariable(QDomElement & domEl)
 //{
-//	QDomNamedNodeMap attributes = domEl.attributes();
-//	QString fieldName;
-//	QString fieldValue;
+//    QDomNamedNodeMap attributes = domEl.attributes();
+//    QString fieldName;
+//    QString fieldValue;
 //
-//	for(int i=0;i<attributes.count();i++)
-//	{
-//		fieldName = attributes.item(i).toAttr().name();
-//		fieldName.replace(XMLTools::space()," ");
-//		fieldValue = attributes.item(i).toAttr().value();
-//		fieldValue.replace(XMLTools::space()," ");
+//    for(int i=0;i<attributes.count();i++)
+//    {
+//        fieldName = attributes.item(i).toAttr().name();
+//        fieldName.replace(XMLTools::space()," ");
+//        fieldValue = attributes.item(i).toAttr().value();
+//        fieldValue.replace(XMLTools::space()," ");
 //
-//		MOItem::setFieldValue(fieldName,QVariant(fieldValue));
-//	}
+//        MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+//    }
 //
-//	_editableFields << FuzzyVariable::VALUE << FuzzyVariable::STATUS << FuzzyVariable::PRECSTATUS << FuzzyVariable::PRECVALUE;
+//    _editableFields << FuzzyVariable::VALUE << FuzzyVariable::STATUS << FuzzyVariable::PRECSTATUS << FuzzyVariable::PRECVALUE;
 //}
 //
 //
 //
 //QVariant FuzzyVariable::getFieldValue(int ifield, int role) const
 //{
-//	 if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-//		return QString("-");
-//	else
-//	{
-//		switch (ifield)
-//		{
-//		case NAME :
-//			return name;
-//		case VALUE :
-//			return value;
-//		case DESCRIPTION :
-//			return description;
-//		case MIN :
-//			return min;
-//		case MAX :
-//			return max;
-//		case TYPE :
-//			return type;
-//		case CATEGORY :
-//			return category;
-//		case DATATYPE :
-//			return dataType;
-//		case STATUS :
-//			return status;
-//		case PRECSTATUS :
-//			return precStatus;
-//		case PRECVALUE :
-//			return precValue;
-//		default :
-//			return "unknown field";
-//		}
-//	}
+//     if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
+//        return QString("-");
+//    else
+//    {
+//        switch (ifield)
+//        {
+//        case NAME :
+//            return name;
+//        case VALUE :
+//            return value;
+//        case DESCRIPTION :
+//            return description;
+//        case MIN :
+//            return min;
+//        case MAX :
+//            return max;
+//        case TYPE :
+//            return type;
+//        case CATEGORY :
+//            return category;
+//        case DATATYPE :
+//            return dataType;
+//        case STATUS :
+//            return status;
+//        case PRECSTATUS :
+//            return precStatus;
+//        case PRECVALUE :
+//            return precValue;
+//        default :
+//            return "unknown field";
+//        }
+//    }
 //}
 //
 //QString FuzzyVariable::sFieldName(int ifield, int role)
 //{
-//	switch (ifield)
-//	{
-//		case NAME :
-//			return "Name";
-//		case VALUE :
-//			return "Value";
-//		case DESCRIPTION :
-//			return "Description";
-//		case MIN :
-//			return "Min";
-//		case MAX :
-//			return "Max";
-//		case TYPE :
-//			return "Type";
-//		case CATEGORY :
-//			return "Category";
-//		case DATATYPE:
-//			return "Data type";
-//		case STATUS:
-//			return "Status";
-//		case PRECSTATUS:
-//			return "Prec. Stat.";
-//		case PRECVALUE:
-//			return "Prec. Val.";
-//		default :
-//			return "unknown field";
-//	}
+//    switch (ifield)
+//    {
+//        case NAME :
+//            return "Name";
+//        case VALUE :
+//            return "Value";
+//        case DESCRIPTION :
+//            return "Description";
+//        case MIN :
+//            return "Min";
+//        case MAX :
+//            return "Max";
+//        case TYPE :
+//            return "Type";
+//        case CATEGORY :
+//            return "Category";
+//        case DATATYPE:
+//            return "Data type";
+//        case STATUS:
+//            return "Status";
+//        case PRECSTATUS:
+//            return "Prec. Stat.";
+//        case PRECVALUE:
+//            return "Prec. Val.";
+//        default :
+//            return "unknown field";
+//    }
 //}
 //
 //
 //
 //bool FuzzyVariable::setFieldValue(int ifield,QVariant value_)
 //{
-//	try{
-//	switch (ifield)
-//	{
-//		case NAME :
-//			name=value_.toString();
-//			break;
-//		case VALUE :
-//			value=value_.toDouble();
-//			break;
-//		case DESCRIPTION :
-//			description = value_.toString();
-//			break;
-//		case MIN :
-//			min=value_.toDouble();
-//			break;
-//		case MAX :
-//			max=value_.toDouble();
-//			break;
-//		case TYPE :
-//			type=value_.toInt();
-//			break;
-//		case CATEGORY :
-//			category=value_.toInt();
-//			break;
-//		case DATATYPE :
-//			dataType=value_.toInt();
-//			break;
-//		case STATUS :
-//			status=value_.toInt();
-//			break;
-//		case PRECSTATUS :
-//			precStatus = value_.toInt();
-//			break;
-//		case PRECVALUE :
-//			precValue = value_.toDouble();
-//			break;
-//	}
-//	if(!_filledFields.contains(ifield))
-//		_filledFields.push_back(ifield);
-//	return true;
-//	}
-//	catch(std::exception &e)
-//	{
-//		return false;
-//	}
+//    try{
+//    switch (ifield)
+//    {
+//        case NAME :
+//            name=value_.toString();
+//            break;
+//        case VALUE :
+//            value=value_.toDouble();
+//            break;
+//        case DESCRIPTION :
+//            description = value_.toString();
+//            break;
+//        case MIN :
+//            min=value_.toDouble();
+//            break;
+//        case MAX :
+//            max=value_.toDouble();
+//            break;
+//        case TYPE :
+//            type=value_.toInt();
+//            break;
+//        case CATEGORY :
+//            category=value_.toInt();
+//            break;
+//        case DATATYPE :
+//            dataType=value_.toInt();
+//            break;
+//        case STATUS :
+//            status=value_.toInt();
+//            break;
+//        case PRECSTATUS :
+//            precStatus = value_.toInt();
+//            break;
+//        case PRECVALUE :
+//            precValue = value_.toDouble();
+//            break;
+//    }
+//    if(!_filledFields.contains(ifield))
+//        _filledFields.push_back(ifield);
+//    return true;
+//    }
+//    catch(std::exception &e)
+//    {
+//        return false;
+//    }
 //}

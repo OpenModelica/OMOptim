@@ -29,11 +29,11 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file METemperature.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
+     @file METemperature.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
         @version
 
   */
@@ -50,18 +50,18 @@ public:
     METemperature();
     METemperature(double value,int unit);
         METemperature(const METemperature&);
-	~METemperature();
+    ~METemperature();
 
-	enum Units
-	{
-		K,
-		C
-	};
+    enum Units
+    {
+        K,
+        C
+    };
 
-	QString unit(int iUnit)  const;
+    QString unit(int iUnit)  const;
         QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
-	unsigned nbUnits() const;
-	double convert(double value,int orgUnit,int dstUnit) const;
+    unsigned nbUnits() const;
+    double convert(double value,int orgUnit,int dstUnit) const;
 
     using MEDimValue::operator=;
 

@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file tabOMC.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file tabOMC.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "TabOMC.h"
@@ -81,7 +81,7 @@ TabOMC::TabOMC(Project *project_,QWidget *parent) :
         else
             commandfile = openmodelica + "/bin/commands.xml";
 
-	//	commandcompletion_ = IAEX::CommandCompletion::instance( commandfile );
+    //    commandcompletion_ = IAEX::CommandCompletion::instance( commandfile );
     }
     catch( std::exception &e )
     {
@@ -92,29 +92,29 @@ TabOMC::TabOMC(Project *project_,QWidget *parent) :
 
     // add function names for code completion
     /*currentFunction_ = -1;
-	currentFunctionName_ = "";
-	functionList_ = new QStringList();
-	functionList_->push_back( "cd()" );
-	functionList_->push_back( "cd(dir)" );
-	functionList_->push_back( "clear()" );
-	functionList_->push_back( "clearVariables()" );
-	functionList_->push_back( "help()" );
-	functionList_->push_back( "instantiateModel(modelname)" );
-	functionList_->push_back( "list()" );
-	functionList_->push_back( "list(modelname)" );
-	functionList_->push_back( "loadFile(strFile)" );
-	functionList_->push_back( "loadModel(name)" );
-	functionList_->push_back( "listVariables()" );
-	functionList_->push_back( "plot(vars)" );
-	functionList_->push_back( "readFile(str)" );
-	functionList_->push_back( "readSimulationResultSize(strFile)" );
-	functionList_->push_back( "readSimulationResult(strFile, variables, size)" );
-	functionList_->push_back( "runScript(strFile)" );
-	functionList_->push_back( "saveModel(strFile, modelname)" );
-	functionList_->push_back( "simulate(modelname, startTime=0, stopTime=1)" );
-	functionList_->push_back( "system(str)" );
-	functionList_->push_back( "timing(expr)" );
-	functionList_->push_back( "typeOf(variable)" );*/
+    currentFunctionName_ = "";
+    functionList_ = new QStringList();
+    functionList_->push_back( "cd()" );
+    functionList_->push_back( "cd(dir)" );
+    functionList_->push_back( "clear()" );
+    functionList_->push_back( "clearVariables()" );
+    functionList_->push_back( "help()" );
+    functionList_->push_back( "instantiateModel(modelname)" );
+    functionList_->push_back( "list()" );
+    functionList_->push_back( "list(modelname)" );
+    functionList_->push_back( "loadFile(strFile)" );
+    functionList_->push_back( "loadModel(name)" );
+    functionList_->push_back( "listVariables()" );
+    functionList_->push_back( "plot(vars)" );
+    functionList_->push_back( "readFile(str)" );
+    functionList_->push_back( "readSimulationResultSize(strFile)" );
+    functionList_->push_back( "readSimulationResult(strFile, variables, size)" );
+    functionList_->push_back( "runScript(strFile)" );
+    functionList_->push_back( "saveModel(strFile, modelname)" );
+    functionList_->push_back( "simulate(modelname, startTime=0, stopTime=1)" );
+    functionList_->push_back( "system(str)" );
+    functionList_->push_back( "timing(expr)" );
+    functionList_->push_back( "typeOf(variable)" );*/
 
     // command stuff
     commandSignFormat_.setFontFamily( "Arial" );
@@ -269,9 +269,9 @@ bool MyTextEdit::insideCommandSign()
         int cursorPos = textCursor().position();
         if( blockStartPos <= cursorPos && cursorPos < (blockStartPos+3) && signPos == 0)
         {
-            /*		cerr << "Inside Command Sign" << endl;
-			cerr << "BlockStart: " << blockStartPos <<
-				", Cursor: " << cursorPos << endl << endl;*/
+            /*        cerr << "Inside Command Sign" << endl;
+            cerr << "BlockStart: " << blockStartPos <<
+                ", Cursor: " << cursorPos << endl << endl;*/
 
 
             return true;
@@ -282,7 +282,7 @@ bool MyTextEdit::insideCommandSign()
     else
         //cerr << "Not a valid QTextBlock (insideCommandSign)" << endl;
 
-	return true;
+    return true;
 }
 
 bool MyTextEdit::startOfCommandSign()
@@ -301,7 +301,7 @@ bool MyTextEdit::startOfCommandSign()
     else
         //cerr << "Not a valid QTextBlock (startOfCommandSign)" << endl;
 
-	return true;
+    return true;
 }
 
 // ADDED 2006-01-30
@@ -433,10 +433,10 @@ void TabOMC::returnPressed()
         {
             cursor_.insertText( error.mid( 1, error.size() - 2 ) );
             /*
-			QTextCursor errorCursor = moshError_->textCursor();
-			errorCursor.insertText( "\n" + error.mid( 0, error.size() - 1 ) );
-			moshError_->verticalScrollBar()->triggerAction(QAbstractSlider::SliderToMaximum);
-			*/
+            QTextCursor errorCursor = moshError_->textCursor();
+            errorCursor.insertText( "\n" + error.mid( 0, error.size() - 1 ) );
+            moshError_->verticalScrollBar()->triggerAction(QAbstractSlider::SliderToMaximum);
+            */
         }
     }
     else
@@ -451,16 +451,16 @@ void TabOMC::returnPressed()
 
 
         /*
-		QTextCursor cursor = moshError_->textCursor();
+        QTextCursor cursor = moshError_->textCursor();
 
-		if( startServer() )
-		{
-			cursor.insertText("[ERROR] No OMC serer started - restarted OMC\n" );
-			goto eval;
-		}
-		else
-			cursor.insertText("[ERROR] No OMC serer started - unable to restart OMC\n" );
-		*/
+        if( startServer() )
+        {
+            cursor.insertText("[ERROR] No OMC serer started - restarted OMC\n" );
+            goto eval;
+        }
+        else
+            cursor.insertText("[ERROR] No OMC serer started - unable to restart OMC\n" );
+        */
     }
 
     // add new command line
@@ -611,28 +611,28 @@ void TabOMC::nextCommand()
 
 void TabOMC::cut()
 {
-    /*	if( moshEdit_->hasFocus() )
-	{*/
+    /*    if( moshEdit_->hasFocus() )
+    {*/
     QKeyEvent* key = new QKeyEvent( QEvent::KeyPress, Qt::Key_X, Qt::ControlModifier, "x" );
     ((MyTextEdit*)moshEdit_)->sendKey( key );
-    /*	}
-	else if( moshError_->hasFocus() )
-	{
-		moshError_->copy();
-	}*/
+    /*    }
+    else if( moshError_->hasFocus() )
+    {
+        moshError_->copy();
+    }*/
 }
 
 void TabOMC::copy()
 {
-    /*	if( moshEdit_->hasFocus() )
-	{*/
+    /*    if( moshEdit_->hasFocus() )
+    {*/
     QKeyEvent* key = new QKeyEvent( QEvent::KeyPress, Qt::Key_C, Qt::ControlModifier, "c" );
     ((MyTextEdit*)moshEdit_)->sendKey( key );
-    /*	}
-	else if( moshError_->hasFocus() )
-	{
-		moshError_->copy();
-	}*/
+    /*    }
+    else if( moshError_->hasFocus() )
+    {
+        moshError_->copy();
+    }*/
 }
 
 void TabOMC::paste()
@@ -662,51 +662,51 @@ void TabOMC::goHome( bool shift )
 
 //void TabOMC::codeCompletion( bool same )
 //{
-//	cursor_ = moshEdit_->textCursor();
-//	if( !same )
-//	{
-//		commandcompletion_->insertCommand( cursor_ );
-//		moshEdit_->setTextCursor( cursor_ );
-//	}
-//	else
-//	{
-//		commandcompletion_->nextCommand( cursor_ );
-//		moshEdit_->setTextCursor( cursor_ );
-//	}
+//    cursor_ = moshEdit_->textCursor();
+//    if( !same )
+//    {
+//        commandcompletion_->insertCommand( cursor_ );
+//        moshEdit_->setTextCursor( cursor_ );
+//    }
+//    else
+//    {
+//        commandcompletion_->nextCommand( cursor_ );
+//        moshEdit_->setTextCursor( cursor_ );
+//    }
 //
-//	/*
-//	cursor_ = moshEdit_->textCursor();
+//    /*
+//    cursor_ = moshEdit_->textCursor();
 //
-//	if( !same )
-//	{
-//		//find last word
-//		cursor_.movePosition( QTextCursor::PreviousWord, QTextCursor::KeepAnchor );
-//		currentFunctionName_ = cursor_.selectedText();
-//		currentFunction_ = 0;
-//	}
+//    if( !same )
+//    {
+//        //find last word
+//        cursor_.movePosition( QTextCursor::PreviousWord, QTextCursor::KeepAnchor );
+//        currentFunctionName_ = cursor_.selectedText();
+//        currentFunction_ = 0;
+//    }
 //
 //
-//	QStringList list = getFunctionNames( currentFunctionName_ );
-//	if( list.isEmpty() )
-//	{
-//		if( currentFunctionName_ == "> " )
-//			list = *functionList_;
-//	}
+//    QStringList list = getFunctionNames( currentFunctionName_ );
+//    if( list.isEmpty() )
+//    {
+//        if( currentFunctionName_ == "> " )
+//            list = *functionList_;
+//    }
 //
-//	if( !list.isEmpty() )
-//	{
-//		if( same )
-//		{
-//			if( currentFunction_ == list.size() - 1 )
-//				currentFunction_ = 0;
-//			else
-//				currentFunction_++;
-//		}
+//    if( !list.isEmpty() )
+//    {
+//        if( same )
+//        {
+//            if( currentFunction_ == list.size() - 1 )
+//                currentFunction_ = 0;
+//            else
+//                currentFunction_++;
+//        }
 //
-//		selectCommandLine();
-//		cursor_.insertText( list.at( currentFunction_ ));
-//		moshEdit_->setTextCursor( cursor_ );
-//	}
+//        selectCommandLine();
+//        cursor_.insertText( list.at( currentFunction_ ));
+//        moshEdit_->setTextCursor( cursor_ );
+//    }
 //*/
 //
 //}
@@ -714,7 +714,7 @@ void TabOMC::goHome( bool shift )
 void TabOMC::codeNextField()
 {
     cursor_ = moshEdit_->textCursor();
-    //	commandcompletion_->nextField( cursor_ );
+    //    commandcompletion_->nextField( cursor_ );
     moshEdit_->setTextCursor( cursor_ );
 }
 

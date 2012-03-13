@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModelicaModifier.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModelicaModifier.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_MODELICAMODIFIER_H)
@@ -53,56 +53,56 @@
 class ModelicaModifier : public MOItem
 {
 public:
-	ModelicaModifier(void);
-	ModelicaModifier(QString _componentName,QString _modifierName,QString _value,QString _description,ModItem* _component);
-	~ModelicaModifier(void);
-	QString getClassName(){return "ModelicaModifier";};
+    ModelicaModifier(void);
+    ModelicaModifier(QString _componentName,QString _modifierName,QString _value,QString _description,ModItem* _component);
+    ~ModelicaModifier(void);
+    QString getClassName(){return "ModelicaModifier";};
 
 public :
 
-	ModelicaModifier* clone() const;
-	QString name();
-	QString description();
-	QVariant value();
+    ModelicaModifier* clone() const;
+    QString name();
+    QString description();
+    QVariant value();
 
-	void setName(QString);
-	void setDesc(QString);
-	void setValue(QString);
-	void setComponent(ModItem*);
+    void setName(QString);
+    void setDesc(QString);
+    void setValue(QString);
+    void setComponent(ModItem*);
 
-	//MOItem functions
-	QVariant getFieldValue(int, int role = Qt::UserRole) const;
-	bool setFieldValue(int ifield, QVariant value_);
-	static QString sFieldName(int field, int role);
-	virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModelicaModifier::sFieldName(i,role);};
-
-
-	static const int nbFields = 4;
-	virtual unsigned getNbFields(){return nbFields;};
+    //MOItem functions
+    QVariant getFieldValue(int, int role = Qt::UserRole) const;
+    bool setFieldValue(int ifield, QVariant value_);
+    static QString sFieldName(int field, int role);
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModelicaModifier::sFieldName(i,role);};
 
 
-	enum Field
-	{
-		//Modelica fields
-		NAME,
-		DESCRIPTION,
-		VALUE,
-		COMPONENT_NAME,
-	};
+    static const int nbFields = 4;
+    virtual unsigned getNbFields(){return nbFields;};
+
+
+    enum Field
+    {
+        //Modelica fields
+        NAME,
+        DESCRIPTION,
+        VALUE,
+        COMPONENT_NAME,
+    };
 
 
 
 
 protected :
-	// fields
-	
-	QString _name;
-	QString _description;
-	QString _value;
-	QString _componentName;
+    // fields
+    
+    QString _name;
+    QString _description;
+    QString _value;
+    QString _componentName;
 
-	//Component concerned
-	ModItem* _component;
+    //Component concerned
+    ModItem* _component;
 };
 
 #endif

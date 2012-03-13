@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file BlockSubstituteConnDlg.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file BlockSubstituteConnDlg.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #ifndef BLOCKSUBSTITUTECONNDLG_H
@@ -66,41 +66,41 @@ public:
     ~BlockSubstituteConnDlg();
 
 
-	bool isEditable;
+    bool isEditable;
 
-	BlockSubstitution* orgBlockSub;
-	BlockSubstitution* tmpBlockSub;
+    BlockSubstitution* orgBlockSub;
+    BlockSubstitution* tmpBlockSub;
 
-	void initCombos();
-	void actualizeGui();
+    void initCombos();
+    void actualizeGui();
 
 public:
     Ui::BlockSubstituteConnDlgClass *ui;
 
-	public slots :
+    public slots :
 
-		void validate();
-		//void actualizeComboConnections();
-		void addPortCombo();
-	
+        void validate();
+        //void actualizeComboConnections();
+        void addPortCombo();
+    
 
 
 
 private :
-	
-	
-	QList<QLabel*> portLabels;
-	QList<QGridLayout*> portLayouts;
-	QList<QList<QComboBox* > > portCombos;
-	
-	QStringList basicItems;
-	QStringList basicItemsData;
+    
+    
+    QList<QLabel*> portLabels;
+    QList<QGridLayout*> portLayouts;
+    QList<QList<QComboBox* > > portCombos;
+    
+    QStringList basicItems;
+    QStringList basicItemsData;
 
-	QComboBox* addCombo(QStringList items, QStringList itemsData,QString _portName,int iPos=-1,QString dataSel="");
+    QComboBox* addCombo(QStringList items, QStringList itemsData,QString _portName,int iPos=-1,QString dataSel="");
 
-	void fillBasicItems();
-	void joinAuto();
-	
+    void fillBasicItems();
+    void joinAuto();
+    
 };
 
 #endif 

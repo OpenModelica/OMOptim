@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file ModelicaConnection.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file ModelicaConnection.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "ModelicaConnection.h"
@@ -47,25 +47,25 @@ ModelicaConnection::ModelicaConnection(void)
 
 ModelicaConnection::ModelicaConnection(QString a,QString b)
 {
-	_a = a;
-	_b = b;
+    _a = a;
+    _b = b;
 }
 
 ModelicaConnection::ModelicaConnection(QDomElement & domEl)
 {
-	QDomNamedNodeMap attributes = domEl.attributes();
-	QString fieldName;
-	QString fieldValue;
+    QDomNamedNodeMap attributes = domEl.attributes();
+    QString fieldName;
+    QString fieldValue;
 
-	for(int i=0;i<attributes.count();i++)
-	{
-		fieldName = attributes.item(i).toAttr().name();
-		fieldName.replace(XMLTools::space()," ");
-		fieldValue = attributes.item(i).toAttr().value();
-		fieldValue.replace(XMLTools::space()," ");
+    for(int i=0;i<attributes.count();i++)
+    {
+        fieldName = attributes.item(i).toAttr().name();
+        fieldName.replace(XMLTools::space()," ");
+        fieldValue = attributes.item(i).toAttr().value();
+        fieldValue.replace(XMLTools::space()," ");
 
-		MOItem::setFieldValue(fieldName,QVariant(fieldValue));
-	}
+        MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+    }
 }
 
 ModelicaConnection::~ModelicaConnection(void)
@@ -74,83 +74,83 @@ ModelicaConnection::~ModelicaConnection(void)
 
 QString ModelicaConnection::getA()
 {
-	return _a;
+    return _a;
 }
 
 QString ModelicaConnection::getB()
 {
-	return _b;
+    return _b;
 }
 
 void ModelicaConnection::setA(QString a)
 {
-	_a = a;
+    _a = a;
 }
 void ModelicaConnection::setB(QString b)
 {
-	_b = b;
+    _b = b;
 }
 
 
 QString ModelicaConnection::sFieldName(int ifield, int role)
 {
-	switch (ifield)
-	{
-		case NAME :
-			return "Name";
-		case A :
-			return "Org";
-		case B :
-			return "Dest";
-		default :
-			return "unknown field";
-	}
+    switch (ifield)
+    {
+        case NAME :
+            return "Name";
+        case A :
+            return "Org";
+        case B :
+            return "Dest";
+        default :
+            return "unknown field";
+    }
 }
 
 
 QVariant ModelicaConnection::getFieldValue(int ifield, int role) const
 {
  if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-		return QString("-");
-	else
-	{
-		switch (ifield)
-		{
-		case NAME :
-			return _name;
-		case A :
-			return _a;
-		case B :
-			return _b;
-		default :
-			return "unknown field";
-		}
-	}
+        return QString("-");
+    else
+    {
+        switch (ifield)
+        {
+        case NAME :
+            return _name;
+        case A :
+            return _a;
+        case B :
+            return _b;
+        default :
+            return "unknown field";
+        }
+    }
 }
 
 
 bool ModelicaConnection::setFieldValue(int ifield,QVariant value_)
 {
-	try{
-	switch (ifield)
-	{
-		case NAME :
-			_name=value_.toString();
-			break;
-		case A :
-			_a=value_.toDouble();
-			break;
-		case B :
-			_b = value_.toString();
-			break;
-	}
-	if(!_filledFields.contains(ifield))
-		_filledFields.push_back(ifield);
-	return true;
-	}
-	catch(std::exception)
-	{
-		return false;
-	}
+    try{
+    switch (ifield)
+    {
+        case NAME :
+            _name=value_.toString();
+            break;
+        case A :
+            _a=value_.toDouble();
+            break;
+        case B :
+            _b = value_.toString();
+            break;
+    }
+    if(!_filledFields.contains(ifield))
+        _filledFields.push_back(ifield);
+    return true;
+    }
+    catch(std::exception)
+    {
+        return false;
+    }
 }
 

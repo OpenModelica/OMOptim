@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file METemperature.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file METemperature.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "METemperature.h"
@@ -61,15 +61,15 @@ METemperature::~METemperature(void)
 
 QString METemperature::unit(int iUnit) const
 {
-	switch(iUnit)
-	{
-	case K :
-		return "K";
-	case C :
-		return "C";
-	default :
-		return "-";
-	}
+    switch(iUnit)
+    {
+    case K :
+        return "K";
+    case C :
+        return "C";
+    default :
+        return "-";
+    }
 }
 
 QString METemperature::unit() const
@@ -79,32 +79,32 @@ QString METemperature::unit() const
 
 unsigned METemperature::nbUnits() const
 {
-	return 2;
+    return 2;
 }
 
 double METemperature::convert(double value,int orgUnit,int dstUnit) const
 {
-	double result=value;
-	// convert to K
-	switch(orgUnit)
-	{
-	case C :
-		result=result+273.15;
-		break;
-	default :
-		break;
-	}
+    double result=value;
+    // convert to K
+    switch(orgUnit)
+    {
+    case C :
+        result=result+273.15;
+        break;
+    default :
+        break;
+    }
 
-	// convert to dstUnit
-	switch(dstUnit)
-	{
-	case C :
-		result=result-273.15;
-		break;
-	default :
-		break;
-	}
-	return result;
+    // convert to dstUnit
+    switch(dstUnit)
+    {
+    case C :
+        result=result-273.15;
+        break;
+    default :
+        break;
+    }
+    return result;
 }
 
 

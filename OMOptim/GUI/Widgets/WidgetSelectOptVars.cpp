@@ -94,8 +94,8 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     //tables' delegates
     QList<int> values;
     QStringList titles;
-    values << OptObjective::MINIMIZE	<< OptObjective::MAXIMIZE;
-    titles << "Minimize"				<< "Maximize";
+    values << OptObjective::MINIMIZE    << OptObjective::MAXIMIZE;
+    titles << "Minimize"                << "Maximize";
     GenericDelegate *directionDelegate = new GenericDelegate(values,titles,this);
     _ui->tableObjectives->setItemDelegateForColumn(OptObjective::DIRECTION,directionDelegate);
 

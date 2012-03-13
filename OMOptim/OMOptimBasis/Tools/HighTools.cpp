@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file HighTools.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file HighTools.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "HighTools.h"
@@ -56,77 +56,77 @@ HighTools::~HighTools(void)
 
 void HighTools::checkUniqueProblemName(ProjectBase* project_,Problem *problem_,OMCases *problems_)
 {
-	QString defaultTitle;
-	QString title;
-	bool titleIsUnique=false;
-	bool titleIsFound=false;
-	int i;
-	int suffix;
+    QString defaultTitle;
+    QString title;
+    bool titleIsUnique=false;
+    bool titleIsFound=false;
+    int i;
+    int suffix;
 
-	//set problem title
-	defaultTitle=problem_->name();
-	title=defaultTitle;
-	suffix=2;
-	while(!titleIsUnique)
-	{
-		i=0;
-		titleIsFound=false;
+    //set problem title
+    defaultTitle=problem_->name();
+    title=defaultTitle;
+    suffix=2;
+    while(!titleIsUnique)
+    {
+        i=0;
+        titleIsFound=false;
                 while(i<problems_->size() && !titleIsFound)
-		{
-			if (title==problems_->at(i)->name())
-			{
-				titleIsFound=true;
-				title=defaultTitle+" ("+QString::number(suffix)+")";
-				suffix=suffix+1;
-			}
-			i++;
-		}
-		if (!titleIsFound)
-		{
-			titleIsUnique=true;
-		}
-	}
-	problem_->setName(title);
+        {
+            if (title==problems_->at(i)->name())
+            {
+                titleIsFound=true;
+                title=defaultTitle+" ("+QString::number(suffix)+")";
+                suffix=suffix+1;
+            }
+            i++;
+        }
+        if (!titleIsFound)
+        {
+            titleIsUnique=true;
+        }
+    }
+    problem_->setName(title);
 
-	// save file path
-	problem_->setSaveFolder(project_->problemsFolder()+QDir::separator()+problem_->name());
-	problem_->setDefaultSaveFileName();
+    // save file path
+    problem_->setSaveFolder(project_->problemsFolder()+QDir::separator()+problem_->name());
+    problem_->setDefaultSaveFileName();
 }
 
 
 void HighTools::checkUniqueResultName(ProjectBase* project_,Result *result_,OMCases *results_)
 {
-	QString defaultTitle;
-	QString title;
-	bool titleIsUnique=false;
-	bool titleIsFound=false;
-	int i;
-	int suffix;
+    QString defaultTitle;
+    QString title;
+    bool titleIsUnique=false;
+    bool titleIsFound=false;
+    int i;
+    int suffix;
 
-	//set problem title
-	defaultTitle=result_->name();
-	title=defaultTitle;
-	suffix=2;
-	while(!titleIsUnique)
-	{
-		i=0;
-		titleIsFound=false;
+    //set problem title
+    defaultTitle=result_->name();
+    title=defaultTitle;
+    suffix=2;
+    while(!titleIsUnique)
+    {
+        i=0;
+        titleIsFound=false;
                 while(i<results_->size() && !titleIsFound)
-		{
-			if (title==results_->at(i)->name())
-			{
-				titleIsFound=true;
-				title=defaultTitle+" ("+QString::number(suffix)+")";
-				suffix=suffix+1;
-			}
-			i++;
-		}
-		if (!titleIsFound)
-		{
-			titleIsUnique=true;
-		}
-	}
-	result_->setName(title);
+        {
+            if (title==results_->at(i)->name())
+            {
+                titleIsFound=true;
+                title=defaultTitle+" ("+QString::number(suffix)+")";
+                suffix=suffix+1;
+            }
+            i++;
+        }
+        if (!titleIsFound)
+        {
+            titleIsUnique=true;
+        }
+    }
+    result_->setName(title);
 
         // save file path
         result_->setSaveFolder(project_->problemsFolder()+QDir::separator()+result_->name());

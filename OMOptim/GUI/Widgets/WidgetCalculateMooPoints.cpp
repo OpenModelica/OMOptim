@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file WidgetCalculateMooPoints.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file WidgetCalculateMooPoints.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "Widgets/WidgetCalculateMooPoints.h"
@@ -49,16 +49,16 @@ WidgetCalculateMooPoints::WidgetCalculateMooPoints(OptimResult* result,WidgetMoo
     _ui(new Ui::WidgetCalculateMooPointsClass)
 {
    _ui->setupUi(this);
-	
+    
 
         _result = result;
         _widgetMooPointsList = widgetMooPointsList;
 
         connect(_ui->pushCalcSelected,SIGNAL(clicked()),
-		this,SLOT(recomputeSelectedPoints()));
+        this,SLOT(recomputeSelectedPoints()));
 
         connect(_ui->pushExport,SIGNAL(clicked()),
-		this,SLOT(exportSelectedPoints()));
+        this,SLOT(exportSelectedPoints()));
 }
 
 WidgetCalculateMooPoints::~WidgetCalculateMooPoints()
@@ -67,7 +67,7 @@ WidgetCalculateMooPoints::~WidgetCalculateMooPoints()
 }
 void WidgetCalculateMooPoints::recomputeSelectedPoints()
 {
-	std::vector<int> pointsList;
+    std::vector<int> pointsList;
 
         pointsList = _widgetMooPointsList->_listPoints->getSelectedIndexes().toVector().toStdVector();
 
@@ -80,26 +80,26 @@ void WidgetCalculateMooPoints::recomputeSelectedPoints()
 void WidgetCalculateMooPoints::exportSelectedPoints()
 {
 
-	// get file name
-	QString csvPath = QFileDialog::getSaveFileName(
-		this,
-		"MO - Export optimum points",
-		QString::null,
-		"CSV file (*.csv)" );
+    // get file name
+    QString csvPath = QFileDialog::getSaveFileName(
+        this,
+        "MO - Export optimum points",
+        QString::null,
+        "CSV file (*.csv)" );
 
-	if(!csvPath.isNull())
-	{
+    if(!csvPath.isNull())
+    {
                 QList<int> listPoints = _widgetMooPointsList->_listPoints->getSelectedIndexes();
                 QString csvText = _result->buildAllVarsFrontCSV(listPoints);
 
-		QFile frontFile(csvPath);
-		if(frontFile.exists())
-			frontFile.remove();
+        QFile frontFile(csvPath);
+        if(frontFile.exists())
+            frontFile.remove();
 
-		frontFile.open(QIODevice::WriteOnly);
-		QTextStream tsfront( &frontFile );
-		tsfront << csvText;
-		frontFile.close();
-	}
+        frontFile.open(QIODevice::WriteOnly);
+        QTextStream tsfront( &frontFile );
+        tsfront << csvText;
+        frontFile.close();
+    }
 }
 

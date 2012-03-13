@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file DlgSelectVars.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file DlgSelectVars.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #if !defined(_DlgSelectVars_H)
@@ -58,13 +58,13 @@
 
 class DlgSelectVars : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
         DlgSelectVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected = NULL);
         DlgSelectVars(MOOptVector *,MOOptVector *alreadySelected = NULL);
 
-	
+    
         static MOVector<Variable>* getSelectedVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected=NULL);
         static MOOptVector* getSelectedOptVars(MOOptVector *,MOOptVector *_alreadySelected = NULL);
 
@@ -77,15 +77,15 @@ private :
         MOOptVector *_optVariables;
         MOOptVector* _selectedOptVars;
 
-	
-	QPushButton *pushOk;
-	QPushButton *pushCancel;
+    
+    QPushButton *pushOk;
+    QPushButton *pushCancel;
 
-	WidgetSelectVars* widgetSelectVars;
+    WidgetSelectVars* widgetSelectVars;
 
 public slots:
-	void pushedOk();
-	void pushedCancel();
+    void pushedOk();
+    void pushedCancel();
 
 
 

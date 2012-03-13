@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file CSV.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file CSV.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #ifndef CSV_H
@@ -66,18 +66,18 @@ class ModModelPlus;
 class CSV
 {
 public:
-	CSV(void);
-	~CSV(void);
+    CSV(void);
+    ~CSV(void);
 
-	static QString space();
+    static QString space();
 
-	// var to text
-	static QString optObjectivesToLines(MOVector<OptObjective> *);
+    // var to text
+    static QString optObjectivesToLines(MOVector<OptObjective> *);
 
-	//text to var
-	static void LinesToOptObjectives(MOVector<OptObjective>*, QString);
-	static void LinesToOptObjectives(MOVector<OptObjectiveResult>*, QString);
-	
+    //text to var
+    static void LinesToOptObjectives(MOVector<OptObjective>*, QString);
+    static void LinesToOptObjectives(MOVector<OptObjectiveResult>*, QString);
+    
 
 };
 

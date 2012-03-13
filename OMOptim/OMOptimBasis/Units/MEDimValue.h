@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MEDimValue.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MEDimValue.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #if !defined(_MEDIMVALUE_H)
@@ -51,22 +51,22 @@ class MEDimValue
 public:
         MEDimValue();
         MEDimValue(double value,int unit);
-	virtual ~MEDimValue(void);
+    virtual ~MEDimValue(void);
 
-	QStringList units()  const ;
+    QStringList units()  const ;
         virtual QString unit() const ;
-	int iUnit() const ;
-	virtual QString unit(int iUnit) const =0;
-	virtual unsigned nbUnits() const =0;
-	virtual void setValue(double,int iUnit=-1);
-	virtual bool setValue(double,QString unit);
-	virtual void setUnit(int iUnit);
+    int iUnit() const ;
+    virtual QString unit(int iUnit) const =0;
+    virtual unsigned nbUnits() const =0;
+    virtual void setValue(double,int iUnit=-1);
+    virtual bool setValue(double,QString unit);
+    virtual void setUnit(int iUnit);
         virtual bool setUnit(QString iUnit);
-	double value(int iUnit) const;
+    double value(int iUnit) const;
         double value() const;
         QString strValue(int iUnit) const;
         QString strValue() const;
-	
+    
         virtual QString toString() const {return QString::number(value(_unit))+" "+unit();}
 
         virtual MEDimValue & operator=(const MEDimValue &);
@@ -84,11 +84,11 @@ public:
         void validate();
 
 protected :
-	int _unit;
-	double _value;
+    int _unit;
+    double _value;
         bool _isValid;
 
-	virtual double convert(double value,int orgUnit,int dstUnit) const =0 ;
+    virtual double convert(double value,int orgUnit,int dstUnit) const =0 ;
 };
 
 

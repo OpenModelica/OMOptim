@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file MOItem.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file MOItem.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 
   */
 #include "MOItem.h"
@@ -48,26 +48,26 @@ MOItem::MOItem(void)
 
 MOItem::MOItem(const MOItem &item)
 {
-	_name = item._name;
-	_filledFields = item._filledFields;
-	_editableFields = item._editableFields;
+    _name = item._name;
+    _filledFields = item._filledFields;
+    _editableFields = item._editableFields;
 }
 
 MOItem::MOItem(QDomElement & domEl)
 {
-	QDomNamedNodeMap attributes = domEl.attributes();
-	QString fieldName;
-	QString fieldValue;
+    QDomNamedNodeMap attributes = domEl.attributes();
+    QString fieldName;
+    QString fieldValue;
 
-	for(int i=0;i<attributes.count();i++)
-	{
-		fieldName = attributes.item(i).toAttr().name();
-		fieldName.replace(XMLTools::space()," ");
-		fieldValue = attributes.item(i).toAttr().value();
-		fieldValue.replace(XMLTools::space()," ");
+    for(int i=0;i<attributes.count();i++)
+    {
+        fieldName = attributes.item(i).toAttr().name();
+        fieldName.replace(XMLTools::space()," ");
+        fieldValue = attributes.item(i).toAttr().value();
+        fieldValue.replace(XMLTools::space()," ");
 
-		setFieldValue(fieldName,QVariant(fieldValue));
-	}
+        setFieldValue(fieldName,QVariant(fieldValue));
+    }
 }
 
 MOItem::~MOItem(void)
@@ -77,152 +77,152 @@ MOItem::~MOItem(void)
 
 void MOItem::update(QDomElement & domEl)
 {
-	QDomNamedNodeMap attributes = domEl.attributes();
-	QString fieldName;
-	QString fieldValue;
+    QDomNamedNodeMap attributes = domEl.attributes();
+    QString fieldName;
+    QString fieldValue;
 
-	for(int i=0;i<attributes.count();i++)
-	{
-		fieldName = attributes.item(i).toAttr().name();
-		fieldName.replace(XMLTools::space()," ");
-		fieldValue = attributes.item(i).toAttr().value();
-		fieldValue.replace(XMLTools::space()," ");
+    for(int i=0;i<attributes.count();i++)
+    {
+        fieldName = attributes.item(i).toAttr().name();
+        fieldName.replace(XMLTools::space()," ");
+        fieldValue = attributes.item(i).toAttr().value();
+        fieldValue.replace(XMLTools::space()," ");
 
-		setFieldValue(fieldName,QVariant(fieldValue));
-	}
+        setFieldValue(fieldName,QVariant(fieldValue));
+    }
 }
 
 MOItem::MOItem(QString savedString,ProjectBase *project)
 {
-	connect(this,SIGNAL(sendInfo(Info)),(QObject*)project,SIGNAL(sent(Info*)));
+    connect(this,SIGNAL(sendInfo(Info)),(QObject*)project,SIGNAL(sent(Info*)));
 
-	QStringList fields = savedString.split(" ",QString::SkipEmptyParts);
-	if(fields.size()!=nbFields)
-	{
-		emit sendInfo( Info(ListInfo::PROBLEMREADINGLINE,savedString));
-	}
-	else
-	{
-		for(int iF=0;iF<fields.size();iF++)
-		{
-			setFieldValue(iF,QVariant(fields.at(iF)));
-		}
-	}
+    QStringList fields = savedString.split(" ",QString::SkipEmptyParts);
+    if(fields.size()!=nbFields)
+    {
+        emit sendInfo( Info(ListInfo::PROBLEMREADINGLINE,savedString));
+    }
+    else
+    {
+        for(int iF=0;iF<fields.size();iF++)
+        {
+            setFieldValue(iF,QVariant(fields.at(iF)));
+        }
+    }
 }
 
 //Name
 void MOItem::setName(QString name)
 {
-	_name = name;
+    _name = name;
 
-	if(!_filledFields.contains(MOItem::NAME))
-		_filledFields.push_back(MOItem::NAME);
+    if(!_filledFields.contains(MOItem::NAME))
+        _filledFields.push_back(MOItem::NAME);
 }
 
 QString MOItem::name() const
 {
-	return _name;
+    return _name;
 }
 
 //All fields
 QVariant MOItem::getFieldValue(int ifield, int role) const
 {
  if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-		return QString("-");
-	else
-	{
+        return QString("-");
+    else
+    {
                 switch (ifield)
-		{
-		case NAME :
+        {
+        case NAME :
                         return name();
-		default :
-			return "unknown field";
-		}
-	}
+        default :
+            return "unknown field";
+        }
+    }
 }
 
 bool MOItem::setFieldValue(int iField, QVariant value)
 {
-	if(!_filledFields.contains(iField))
-		_filledFields.push_back(iField);
+    if(!_filledFields.contains(iField))
+        _filledFields.push_back(iField);
 
-	switch (iField)
-	{
-	case NAME :
-		_name=value.toString();
-		return true;
-	default : 
-		return false;
-	}
+    switch (iField)
+    {
+    case NAME :
+        _name=value.toString();
+        return true;
+    default : 
+        return false;
+    }
 
 }
 
 bool MOItem::setFieldValue(QString field, QVariant value)
 {
         int i = getFieldIndex(field,Qt::UserRole);
-	if(i>-1)
-	{
-		setFieldValue(i,value);
-		return true;
-	}
-	else
-		return false;
+    if(i>-1)
+    {
+        setFieldValue(i,value);
+        return true;
+    }
+    else
+        return false;
 }
 
 QString MOItem::sFieldName(int iField, int role)
 {
-	switch (iField)
-	{
-	case NAME :
-		return "Name";
-	default :
-		return "unknown field";
-	}
+    switch (iField)
+    {
+    case NAME :
+        return "Name";
+    default :
+        return "unknown field";
+    }
 }
 
 int MOItem::getFieldIndex(QString fieldName,int role)
 {
-	int index=0;
-	while((index<this->getNbFields()) && (this->getFieldName(index,role)!=fieldName))
-		index++;
+    int index=0;
+    while((index<this->getNbFields()) && (this->getFieldName(index,role)!=fieldName))
+        index++;
 
-	if(index<getNbFields())
-		return index;
-	else
-		return -1;
+    if(index<getNbFields())
+        return index;
+    else
+        return -1;
 }
 
 void MOItem::setEditableFields(QList<int> _editableFields)
 {
-	_editableFields = _editableFields;
+    _editableFields = _editableFields;
 }
 void MOItem::setIsEditableField(int iField, bool isEditable)
 {
-	if(isEditable)
-	{
-		if(_editableFields.indexOf(iField<0))
-			_editableFields.push_back(iField);
-	}
-	else
-	{
-		int index = _editableFields.indexOf(iField);
-			if(index>-1)
-				_editableFields.removeAt(index);	
-	}
+    if(isEditable)
+    {
+        if(_editableFields.indexOf(iField<0))
+            _editableFields.push_back(iField);
+    }
+    else
+    {
+        int index = _editableFields.indexOf(iField);
+            if(index>-1)
+                _editableFields.removeAt(index);    
+    }
 }
 bool MOItem::isEditableField(int iField)
 {
-	return(_editableFields.indexOf(iField)>-1);
+    return(_editableFields.indexOf(iField)>-1);
 }
 
 QString MOItem::toSavingString()
 {
-	QString savingString;
-	for(int iF=0;iF<nbFields;iF++)
-	{
-		savingString += getFieldValue(iF).toString() + "\t";
-	}
-	return savingString;
+    QString savingString;
+    for(int iF=0;iF<nbFields;iF++)
+    {
+        savingString += getFieldValue(iF).toString() + "\t";
+    }
+    return savingString;
 }
 
 /**
@@ -232,8 +232,8 @@ QString MOItem::toSavingString()
 */
 bool MOItem::check(QString &error)
 {
-	error.clear();
-	return true;
+    error.clear();
+    return true;
 }
 
 /**
@@ -242,59 +242,59 @@ bool MOItem::check(QString &error)
 */
 QDomElement MOItem::toXmlData(QDomDocument & doc)
 {
-	QDomElement cItem = doc.createElement(this->getClassName());
-	QString fieldName;
-	QString fieldValue;
-	for(int iF=0;iF<getNbFields();iF++)
-	{
-		fieldName = getFieldName(iF,Qt::UserRole);
-		fieldName.replace(" ",XMLTools::space());
-		fieldValue = getFieldValue(iF).toString();
-		fieldValue.replace(" ",XMLTools::space());
-		cItem.setAttribute(fieldName,fieldValue);			
-	}
-	return cItem;
+    QDomElement cItem = doc.createElement(this->getClassName());
+    QString fieldName;
+    QString fieldValue;
+    for(int iF=0;iF<getNbFields();iF++)
+    {
+        fieldName = getFieldName(iF,Qt::UserRole);
+        fieldName.replace(" ",XMLTools::space());
+        fieldValue = getFieldValue(iF).toString();
+        fieldValue.replace(" ",XMLTools::space());
+        cItem.setAttribute(fieldName,fieldValue);            
+    }
+    return cItem;
 }
 
 QString MOItem::getStrToolTip()
 {
-	return _name;
+    return _name;
 }
 
 void MOItem::checkUniqueItemName( QStringList & list)
 {
-	QString defaultTitle;
-	QString title;
-	QString strSuffix;
-	bool titleIsUnique=false;
-	bool titleIsFound=false;
-	int i;
-	int iSuffix;
-	QString expr = "_%d";
+    QString defaultTitle;
+    QString title;
+    QString strSuffix;
+    bool titleIsUnique=false;
+    bool titleIsFound=false;
+    int i;
+    int iSuffix;
+    QString expr = "_%d";
 
-	//set problem title
-	defaultTitle=this->name();
-	title=defaultTitle;
-	iSuffix=2;
-	while(!titleIsUnique)
-	{
-		i=0;
-		titleIsFound=false;
-		while(i<list.size() && !titleIsFound)
-		{
-			if (title==list.at(i))
-			{
-				titleIsFound=true;
-				strSuffix.sprintf(expr.toLatin1().data(),iSuffix);
-				title=defaultTitle+strSuffix;
-				iSuffix++;
-			}
-			i++;
-		}
-		if (!titleIsFound)
-		{
-			titleIsUnique=true;
-		}
-	}
-	this->setName(title);
+    //set problem title
+    defaultTitle=this->name();
+    title=defaultTitle;
+    iSuffix=2;
+    while(!titleIsUnique)
+    {
+        i=0;
+        titleIsFound=false;
+        while(i<list.size() && !titleIsFound)
+        {
+            if (title==list.at(i))
+            {
+                titleIsFound=true;
+                strSuffix.sprintf(expr.toLatin1().data(),iSuffix);
+                title=defaultTitle+strSuffix;
+                iSuffix++;
+            }
+            i++;
+        }
+        if (!titleIsFound)
+        {
+            titleIsUnique=true;
+        }
+    }
+    this->setName(title);
 }

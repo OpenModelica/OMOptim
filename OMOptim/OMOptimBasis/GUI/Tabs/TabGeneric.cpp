@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file TabGeneric.cpp
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 
+     @file TabGeneric.cpp
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 
 */
 
 #include "TabGeneric.h"
@@ -51,17 +51,17 @@ void TabGeneric::setWidgets(QWidgetList widgets,QStringList titles)
 {
     _widgets = widgets;
     _widgetsTitles = titles;
-	
+    
 
 
     for(int i=0;i<_widgetsTitles.size();i++)
-	{
+    {
         _ui->mainLayout->addWidget(_widgets.at(i));
         _ui->comboDisp->addItem(_widgetsTitles.at(i),i);
-	}
+    }
 
     connect(_ui->comboDisp,SIGNAL(activated(int)),
-		this,SLOT(updateView(int)));
+        this,SLOT(updateView(int)));
 
 }
 
@@ -73,12 +73,12 @@ TabGeneric::~TabGeneric(void)
 void TabGeneric::updateView(int view)
 {
     int index = _ui->comboDisp->itemData(view).toInt();
-	
+    
     for(int i=0;i<_widgets.size();i++)
-	{
-		if(i==index)
+    {
+        if(i==index)
             _widgets.at(i)->show();
-		else
+        else
             _widgets.at(i)->hide();
-	}
+    }
 }

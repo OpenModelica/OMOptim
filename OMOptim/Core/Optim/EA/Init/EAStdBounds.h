@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file EAStdBounds.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+     @file EAStdBounds.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 0.9 
 
   */
 #ifndef _EASTDBOUNDS_H
@@ -51,17 +51,17 @@ class EAStdBounds
 {
 public :
 inline static void setBounds(Optimization*,
-					  QList<ModModelPlus*> _subModels,
-					  std::vector<eoRealInterval> &doubleBounds,
-						std::vector<eoIntInterval> &intBounds,
-						int &nbDouble,int &nbInt,int &nbBool);
+                      QList<ModModelPlus*> _subModels,
+                      std::vector<eoRealInterval> &doubleBounds,
+                        std::vector<eoIntInterval> &intBounds,
+                        int &nbDouble,int &nbInt,int &nbBool);
 
 
 //inline static void setBounds(VariableDet*,
-//					   QVector<QVector< int> > &index,
-//					  std::vector<eoRealInterval> &doubleBounds,
-//						std::vector<eoIntInterval> &intBounds,
-//						int &nbDouble,int &nbInt,int &nbBool);
+//                       QVector<QVector< int> > &index,
+//                      std::vector<eoRealInterval> &doubleBounds,
+//                        std::vector<eoIntInterval> &intBounds,
+//                        int &nbDouble,int &nbInt,int &nbBool);
 };
 
 
@@ -70,44 +70,44 @@ inline static void setBounds(Optimization*,
 
 void EAStdBounds::setBounds(Optimization *_problem, QList<ModModelPlus*> _subModels,std::vector<eoRealInterval> &doubleBounds, std::vector<eoIntInterval> &intBounds, int &nbDouble, int &nbInt, int &nbBool)
 {
-	int nbVar = _problem->optimizedVariables()->items.size();
-	OptVariable* curVar;
-	eoRealInterval* realInterval;
-	eoIntInterval* intInterval;
-	double min,max;
-	for(int i=0; i<nbVar; i++)
-	{
-		curVar = _problem->optimizedVariables()->items.at(i);
+    int nbVar = _problem->optimizedVariables()->items.size();
+    OptVariable* curVar;
+    eoRealInterval* realInterval;
+    eoIntInterval* intInterval;
+    double min,max;
+    for(int i=0; i<nbVar; i++)
+    {
+        curVar = _problem->optimizedVariables()->items.at(i);
                 min = curVar->optMin();
                 max = curVar->optMax();
 
-		switch(curVar->getFieldValue(OptVariable::DATATYPE).toInt())
-		{
+        switch(curVar->getFieldValue(OptVariable::DATATYPE).toInt())
+        {
                 case OMREAL:
-			realInterval = new eoRealInterval(min,max);
-			doubleBounds.push_back(*realInterval);
-			nbDouble++;
-			break;
+            realInterval = new eoRealInterval(min,max);
+            doubleBounds.push_back(*realInterval);
+            nbDouble++;
+            break;
                 case OMINTEGER:
-			intInterval = new eoIntInterval((int)min,(int)max);
-			intBounds.push_back(*intInterval);
-			nbInt++;
-			break;
+            intInterval = new eoIntInterval((int)min,(int)max);
+            intBounds.push_back(*intInterval);
+            nbInt++;
+            break;
 
                 case OMBOOLEAN:
-			//No need to specify bounds for boolean...
-			nbBool++;
-			break;
-		}
-	}
+            //No need to specify bounds for boolean...
+            nbBool++;
+            break;
+        }
+    }
 
-	//Adding int variable corresponding to subModelSelection
-	if(_subModels.size()>1)
-	{
-		intInterval = new eoIntInterval((int)0,_subModels.size()-1);
-		intBounds.push_back(*intInterval);
-		nbInt++;
-	}
+    //Adding int variable corresponding to subModelSelection
+    if(_subModels.size()>1)
+    {
+        intInterval = new eoIntInterval((int)0,_subModels.size()-1);
+        intBounds.push_back(*intInterval);
+        nbInt++;
+    }
 }
 
 

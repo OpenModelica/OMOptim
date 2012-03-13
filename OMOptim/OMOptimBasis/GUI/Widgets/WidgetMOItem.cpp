@@ -167,7 +167,7 @@ void WidgetMOItem::onCheckChanged(int state)
     switch(state)
     {
     case Qt::Unchecked:
-    case Qt::PartiallyChecked	:
+    case Qt::PartiallyChecked    :
         changeValue(editor,QVariant(false));
         break;
     case Qt::Checked :

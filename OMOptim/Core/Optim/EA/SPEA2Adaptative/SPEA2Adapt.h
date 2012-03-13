@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
- 	@file SPEA2Adapt.h
- 	@brief Comments for file documentation.
- 	@author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
- 	Company : CEP - ARMINES (France)
- 	http://www-cep.ensmp.fr/english/
- 	@version 0.9 
+     @file SPEA2Adapt.h
+     @brief Comments for file documentation.
+     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+     Company : CEP - ARMINES (France)
+     http://www-cep.ensmp.fr/english/
+     @version 0.9 
 
   */
 #if !defined(_SPEA2ADAPT_H)
@@ -74,17 +74,17 @@ SPEA2Adapt use SPEA2 algorithm but is auto-adaptive
 class SPEA2Adapt : public EABase
 {
 public : 
-	SPEA2Adapt();
+    SPEA2Adapt();
         SPEA2Adapt(Project*,Problem*);
         SPEA2Adapt(Project*,Problem*,MOParameters*);
-	SPEA2Adapt(const SPEA2Adapt &);
+    SPEA2Adapt(const SPEA2Adapt &);
         EABase* clone() const;
 
         bool acceptMultiObjectives();
 
-	Result* launch(QString tempDir);
-	QString name();
-	void setDefaultParameters();
+    Result* launch(QString tempDir);
+    QString name();
+    void setDefaultParameters();
 
 private :
         inline Result* buildResult(moeoUnboundedArchive<EOAdapt> & );
@@ -95,7 +95,7 @@ Result* SPEA2Adapt::buildResult(moeoUnboundedArchive<EOAdapt> & arch)
         Result* result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,
                                                                          _subBlocks,arch);
 
-	return result;
+    return result;
 }
 
 #endif
