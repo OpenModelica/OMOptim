@@ -41,6 +41,7 @@
 #include "OptimResult.h"
 #include "Optimization.h"
 #include "CSVBase.h"
+#include "Project.h"
 
 OptimResult::OptimResult():Result()
 {
@@ -59,16 +60,16 @@ OptimResult::OptimResult():Result()
     _curScan = -1;
 }
 
-OptimResult::OptimResult(Project* project, ModModelPlus* modModelPlus, const Optimization & problem,
+OptimResult::OptimResult(Project* project, const Optimization & problem,
                          OptimAlgo* algo)
     :Result((ProjectBase*)project,problem)
 {
     _omProject = project;
-    _modModelPlus = modModelPlus;
+    _models = problem.models();
 
-    _recomputedVariables = new MOOptVector(true,true,true,_modModelPlus->modModelName());
-    _optObjectivesResults = new MOOptVector(true,false,true,_modModelPlus->modModelName()); //objectives are constant for one scan
-    _optVariablesResults= new MOOptVector(true,false,true,_modModelPlus->modModelName()); //optimized parameters are constant for one scan
+    _recomputedVariables = new MOOptVector(true,true,true);
+    _optObjectivesResults = new MOOptVector(true,false,true); //objectives are constant for one scan
+    _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
 
     // files to copy
     _filesToCopy << "iteration*.sav";
@@ -87,12 +88,12 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     :Result((ProjectBase*)project,(const Problem&)problem)
 {
     _omProject = project;
-    _modModelPlus = problem.modModelPlus();
+    _models = problem.models();
     this->setSaveFolder(resultDir.absolutePath());
 
-    _recomputedVariables = new MOOptVector(true,true,true,_modModelPlus->modModelName());
-    _optObjectivesResults = new MOOptVector(true,false,true,_modModelPlus->modModelName()); //objectives are constant for one scan
-    _optVariablesResults= new MOOptVector(true,false,true,_modModelPlus->modModelName()); //optimized parameters are constant for one scan
+    _recomputedVariables = new MOOptVector(true,true,true);
+    _optObjectivesResults = new MOOptVector(true,false,true); //objectives are constant for one scan
+    _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
 
     if(domResult.isNull() || (domResult.tagName()!=OptimResult::className()))
     {
@@ -151,18 +152,24 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
             number.remove(QRegExp("[\\D]*"));
             domBlock.setTagName("BlockSubstitutions");
 
-            this->_subBlocks.push_back(new BlockSubstitutions(project,this->modModelPlus(),domBlock));
+            this->_subBlocks.push_back(new BlockSubstitutions(project,domBlock));
         }
         domBlock = domBlock.nextSiblingElement();
     }
 
     // Filling and Sizing recomputed variables (without values)
-    if(this->modModelPlus()->variables()->items.isEmpty())
-        this->modModelPlus()->readVariables(problem.ctrl());
-
-    for (int i=0;i<this->modModelPlus()->variables()->size();i++)
+    ModModelPlus* curModel;
+    for(int iM=0;iM<_models.size();iM++)
     {
-        this->recomputedVariables()->addItem(new VariableResult(*this->modModelPlus()->variables()->at(i)));
+        curModel = _omProject->modModelPlus(_models.at(iM));
+
+        if(curModel->variables()->items.isEmpty())
+            curModel->readVariables(problem.ctrl(_models.at(iM)));
+
+        for (int i=0;i<curModel->variables()->size();i++)
+        {
+            this->recomputedVariables()->addItem(new VariableResult(*curModel->variables()->at(i)));
+        }
     }
 
     // Filling final values from frontFile (csv)

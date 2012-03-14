@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -30,21 +30,20 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-     @file BlockSubsScene.cpp
-     @brief Comments for file documentation.
-     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-     Company : CEP - ARMINES (France)
-     http://www-cep.ensmp.fr/english/
-     @version 
+    @file BlockSubsScene.cpp
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
+    @version
 */
 
 #include "BlockSubsScene.h"
 
-BlockSubsScene::BlockSubsScene(BlockSubstitutions *_blockSubs, ModModel* _model,ModItemsTree* _modItemsTree, bool _isEditable)
+BlockSubsScene::BlockSubsScene(BlockSubstitutions *_blockSubs,ModItemsTree* _modItemsTree, bool _isEditable)
 {
     blockSubs = _blockSubs;
-    model = _model;
-        modItemsTree = _modItemsTree;
+    modItemsTree = _modItemsTree;
     isEditable = _isEditable;
 
     // visual matters
@@ -113,7 +112,7 @@ void BlockSubsScene::refresh()
         QStringList orgs = blockSubs->getReplacedComponentsNames();
         for(int i=0;i<orgs.size();i++)
         {
-                        ModItem* _orgEl = modItemsTree->findInDescendants(orgs.at(i));
+            ModItem* _orgEl = modItemsTree->findInDescendants(orgs.at(i));
             if(_orgEl)
             {
 
@@ -122,7 +121,7 @@ void BlockSubsScene::refresh()
                 // adding org
                 //*************
                 _curOrgPos.setY(startOrgY);
-                                _curOrgBlock = addOrgBlock(_orgEl->name(), _curOrgPos);
+                _curOrgBlock = addOrgBlock(_orgEl->name(), _curOrgPos);
                 maxOrgBlockWidth = std::max<double>((double)maxOrgBlockWidth,_curOrgBlock->geometry().width());
 
                 //*************
@@ -135,10 +134,10 @@ void BlockSubsScene::refresh()
 
                 for(int j=0;j<nbSubs;j++)
                 {
-                                        ModItem* _subEl = modItemsTree->findInDescendants(subs.at(j));
+                    ModItem* _subEl = modItemsTree->findInDescendants(subs.at(j));
                     if(_subEl)
                     {
-                                                _curSubBlock = addSubBlock(i,_subEl->name(), _curSubPos);
+                        _curSubBlock = addSubBlock(i,_subEl->name(), _curSubPos);
                         maxSubBlockWidth = std::max<double>((double)maxSubBlockWidth,_curSubBlock->geometry().width());
                         _curSubPos.setY(_curSubPos.y() + _curSubBlock->geometry().height() + subMargin);
                     }
@@ -334,7 +333,7 @@ void BlockSubsScene::zoomFit()
 
 QGraphicsProxyWidget* BlockSubsScene::addOrgBlock(QString orgName,QPoint _pos)
 {
-        BlockDrawItem* _newBlock = new BlockDrawItem(orgName,BlockDrawItem::REPLACED);
+    BlockDrawItem* _newBlock = new BlockDrawItem(orgName,BlockDrawItem::REPLACED);
 
 
     // add rectangle
@@ -362,7 +361,7 @@ QGraphicsProxyWidget* BlockSubsScene::addSubBlock(int iOrg, QString subName, QPo
 {
 
     // draw it
-        BlockDrawItem* _newBlock = new BlockDrawItem(subName,BlockDrawItem::REPLACING);
+    BlockDrawItem* _newBlock = new BlockDrawItem(subName,BlockDrawItem::REPLACING);
     QGraphicsProxyWidget* _newProxBlock = addWidget(_newBlock);
     _newProxBlock->setPos(_pos);
 
@@ -462,7 +461,7 @@ int BlockSubsScene::findOrgBlock(QString _org)
 
     while((i<orgBlocks.size()) && !found)
     {
-                if(orgBlocks.at(i)->componentName==_org)
+        if(orgBlocks.at(i)->componentName==_org)
             return i;
         else
             i++;
@@ -482,7 +481,7 @@ bool BlockSubsScene::findSubBlock(QString _org,QString _sub,int & iOrg, int & iS
         bool found = false;
         while((iSub < subBlocks.at(iOrg).size()) && !found)
         {
-                        if(subBlocks.at(iOrg).at(iSub)->componentName==_sub)
+            if(subBlocks.at(iOrg).at(iSub)->componentName==_sub)
                 return true;
             else
                 iSub++;
@@ -507,8 +506,8 @@ void BlockSubsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent
         if(found && !_isOrg)
         {
 
-                        QString replacedName = orgBlocks.at(_iOrg)->componentName;
-                        QString replacingName = subBlocks.at(_iOrg).at(_iSub)->componentName;
+            QString replacedName = orgBlocks.at(_iOrg)->componentName;
+            QString replacingName = subBlocks.at(_iOrg).at(_iSub)->componentName;
 
             BlockSubstitution* curBlockSub = blockSubs->find(replacedName,replacingName);
 
@@ -549,12 +548,12 @@ void BlockSubsScene::contextMenuEvent( QGraphicsSceneContextMenuEvent * contextM
             QMenu *menu = new QMenu();
 
             QStringList data;
-                        data << orgBlocks.at(_iOrg)->componentName;
+            data << orgBlocks.at(_iOrg)->componentName;
             if(!_isOrg)
-                                data << subBlocks.at(_iOrg).at(_iSub)->componentName;
+                data << subBlocks.at(_iOrg).at(_iSub)->componentName;
 
             if(!_isOrg)
-            {            
+            {
                 // edit connections
                 QAction *editConn = new QAction("Edit connections...",menu);
                 editConn->setData(data);
@@ -641,7 +640,7 @@ void BlockSubsScene::selectOrg(int i,bool doDeselectAll)
     {
         orgBlocks.at(i)->activate();
 
-                selectedOrg.push_back(orgBlocks.at(i)->componentName);
+        selectedOrg.push_back(orgBlocks.at(i)->componentName);
         selectedOrgProx.push_back(proxOrgBlocks.at(i));
     }
 }
@@ -681,7 +680,7 @@ void BlockSubsScene::selectSub(int iOrg,int iSub, bool doDeselectAll)
 
         subBlocks.at(iOrg).at(iSub)->activate();
 
-                selectedSub.push_back(subBlocks.at(iOrg).at(iSub)->componentName);
+        selectedSub.push_back(subBlocks.at(iOrg).at(iSub)->componentName);
         selectedSubProx.push_back(proxSubBlocks.at(iOrg).at(iSub));
     }
 }
@@ -769,13 +768,13 @@ void BlockSubsScene::keyReleaseEvent ( QKeyEvent * keyEvent )
 
             if(found)
             {
-                                QString orgName = orgBlocks.at(iOrg)->componentName;
+                QString orgName = orgBlocks.at(iOrg)->componentName;
 
                 if(isOrg)
                     blockSubs->removeBlocks(orgName);
                 else
                 {
-                                        QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
+                    QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
                     blockSubs->removeBlock(orgName,subName);
                 }
             }
@@ -790,13 +789,13 @@ void BlockSubsScene::keyReleaseEvent ( QKeyEvent * keyEvent )
 
             if(found)
             {
-                                QString orgName = orgBlocks.at(iOrg)->componentName;
+                QString orgName = orgBlocks.at(iOrg)->componentName;
 
                 if(isOrg)
                     blockSubs->removeBlocks(orgName);
                 else
                 {
-                                        QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
+                    QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
                     blockSubs->removeBlock(orgName,subName);
                 }
             }

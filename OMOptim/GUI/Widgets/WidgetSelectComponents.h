@@ -47,7 +47,7 @@
 #include "Optimization.h"
 #include "MOTableView.h"
 #include "Tools/GuiTools.h"
-#include "BlockSubsScene.h"
+#include "Scene/BlockSubsScene.h"
 #include "ModItemsTree.h"
 
 namespace Ui {

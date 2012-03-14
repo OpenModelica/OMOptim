@@ -41,7 +41,7 @@
 #include "BlockSubstitution.h"
 #include "Project.h"
 
-BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, QString orgComponent, QString subComponent,
+BlockSubstitution::BlockSubstitution(Project* project,QString model, QString orgComponent, QString subComponent,
                                      QStringList orgPorts,QList<QStringList> orgConnectedComps,
                                      QStringList subPorts,QList<QStringList> subConnectedComps)
 {
@@ -57,23 +57,30 @@ BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, QStri
 
 
 
-BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, ModelicaConnections* connections, QString orgComponent,QString subComponent,bool doAutoConnect, bool &ok)
+BlockSubstitution::BlockSubstitution(Project* project,QString model, QString orgComponent,QString subComponent,bool doAutoConnect, bool &ok)
 {
 
-    ok = init(project,model,connections,orgComponent,subComponent);
+    ok = init(project,model,orgComponent,subComponent);
 
     if(doAutoConnect)
         autoConnect();
 }
 
-BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, ModelicaConnections* connections,QDomElement domEl)
+BlockSubstitution::BlockSubstitution(Project* project,QDomElement domEl,bool & ok)
 {
 
     if( domEl.tagName() != "BlockSubstitution" )
     {
         //sendInfo( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+        ok = false;
         return;
     }
+
+    // get model
+    QDomElement domModel = domEl.firstChildElement("Model");
+    QString modelName = domModel.attribute("name");
+
+    _model = modelName;
 
     // get component names
     QString orgComponent;
@@ -99,7 +106,7 @@ BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, Model
     }
 
     //build first version
-    bool ok = init(project,model,connections,orgComponent,subComponent);
+    ok = init(project,_model,orgComponent,subComponent);
 
     // getting replacing connections
     n1 = domEl.firstChild();
@@ -136,13 +143,14 @@ BlockSubstitution::BlockSubstitution(Project* project,ModModelPlus* model, Model
 }
 
 
-bool BlockSubstitution::init(Project * project, ModModelPlus *model, ModelicaConnections* connections,QString orgComponent, QString subComponent)
+bool BlockSubstitution::init(Project * project, QString model,QString orgComponent, QString subComponent)
 {
     _project = project;
     _model = model;
     _orgComponent = orgComponent;
     _subComponent = subComponent;
 
+    ModelicaConnections* connections = project->modModelPlus(_model)->connections();
 
     ModItem* orgElement = project->modItemsTree()->findInDescendants(_orgComponent);
     if(orgElement==NULL)
@@ -235,6 +243,10 @@ QDomElement BlockSubstitution::toXmlData(QDomDocument & doc)
     // Root element
     QDomElement cBlock = doc.createElement("BlockSubstitution");
 
+    // Model
+    QDomElement cModel = doc.createElement("Model");
+    cModel.setAttribute("name",_model);
+    cBlock.appendChild(cModel);
 
     // Replaced component
     QDomElement cReplaced = doc.createElement("ReplacedComponent");

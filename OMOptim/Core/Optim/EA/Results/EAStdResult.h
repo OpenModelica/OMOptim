@@ -53,7 +53,7 @@
 #include "MOParameter.h"
 #include "Problem.h"
 #include "Optimization.h"
-#include "EAStdOptimizationEval.h"
+#include "Evaluations/EAStdOptimizationEval.h"
 
 
 template<class EOT> class EAStdResult
@@ -70,7 +70,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     if(arch.size()==0)
         return NULL;
 
-    OptimResult *result = new OptimResult(project,problem->modModelPlus(),*problem,problem->getCurAlgo()->clone());
+    OptimResult *result = new OptimResult(project,*problem,problem->getCurAlgo()->clone());
     result->setName(problem->name()+" result");
     result->_subBlocks = subBlocks;
 
@@ -101,10 +101,14 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     result->recomputedVariables()->items.clear();
     result->recomputedVariables()->setUseScan(useScan);
     VariableResult *curRecompVar;
-    for (int i=0;i< problem->modModelPlus()->variables()->items.size();i++)
+    for(int iM=0;iM<problem->models().size();iM++)
     {
-        curRecompVar = new VariableResult(*problem->modModelPlus()->variables()->items.at(i));
-        result->recomputedVariables()->addItem(curRecompVar);
+        ModModelPlus* modelPlus = project->modModelPlus(problem->models().at(iM));
+        for (int i=0;i< modelPlus->variables()->items.size();i++)
+        {
+            curRecompVar = new VariableResult(*modelPlus->variables()->items.at(i));
+            result->recomputedVariables()->addItem(curRecompVar);
+        }
     }
 
     // *******************************************************************

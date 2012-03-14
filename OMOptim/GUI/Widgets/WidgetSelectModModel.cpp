@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-     @file WidgetSelectModModel.cpp
-     @brief Comments for file documentation.
-     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-     Company : CEP - ARMINES (France)
-     http://www-cep.ensmp.fr/english/
-     @version 
+    @file WidgetSelectModModel.cpp
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
+    @version
 */
 
 #include "Widgets/WidgetSelectModModel.h"
@@ -43,29 +43,46 @@
 #include <QtGui/QErrorMessage>
 
 
-        WidgetSelectModModel::WidgetSelectModModel(ModItemsTree* modItemsTree,QWidget *parent ):
-QDialog(parent),
-ui(new Ui::WidgetSelectModModelClass)
+WidgetSelectModModel::WidgetSelectModModel(ModItemsTree* modItemsTree,ProblemInterface::ModelNeeds needs,QWidget *parent ):
+    QDialog(parent),
+    ui(new Ui::WidgetSelectModModelClass)
 {
     ui->setupUi(this);
     _modItemsTree = modItemsTree;
+    _needs = needs;
 
     ui->treeView->setModel(modItemsTree);
+    switch(_needs)
+    {
+    case ProblemInterface::ONEMODEL :
+        ui->treeView->setSelectionMode(QAbstractItemView::SingleSelection);
+        break;
+    case ProblemInterface::SEVERALMODELS :
+        ui->treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        break;
+    }
+
     connect(ui->treeView, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
     connect(ui->pushValidate,SIGNAL(clicked()),this,SLOT(accept()));
-        connect(ui->pushCancel,SIGNAL(clicked()),this,SLOT(reject()));
-    setSelectedModModel(NULL);
+    connect(ui->pushCancel,SIGNAL(clicked()),this,SLOT(reject()));
+    //setSelectedModModel(NULL);
 }
 
 void WidgetSelectModModel::onSelectedModItem(QModelIndex index)
 {
-    if(index.isValid())
+    QModelIndexList indexes = ui->treeView->selectionModel()->selectedIndexes();
+    QList<ModItem*> modClasses;
+    for(int i=0;i<indexes.size();i++)
     {
-        ModItem* modClass = static_cast<ModItem*>(index.internalPointer());
-        setSelectedModModel(modClass);
+        if(indexes.at(i).isValid())
+        {
+            ModItem* modClass = static_cast<ModItem*>(indexes.at(i).internalPointer());
+            modClasses.push_back(modClass);
+
+        }
     }
-    else
-        setSelectedModModel(NULL);
+    setSelectedModModel(modClasses);
+
 }
 
 WidgetSelectModModel::~WidgetSelectModModel()
@@ -73,16 +90,22 @@ WidgetSelectModModel::~WidgetSelectModModel()
     delete ui;
 }
 
-void WidgetSelectModModel::setSelectedModModel(ModItem* modClass)
+void WidgetSelectModModel::setSelectedModModel(QList<ModItem*> modClasses)
 {
-    selectedModel = dynamic_cast<ModModel*>(modClass);
-        
-        if(selectedModel)
+    _selectedModels.clear();
+    ui->pushValidate->setEnabled(false);
+    ModModel* curModel;
+    for(int i=0;i<modClasses.size();i++)
     {
+        curModel = dynamic_cast<ModModel*>(modClasses.at(i));
+
+        if(curModel)
+        {
+            _selectedModels.push_back(curModel);
             ui->pushValidate->setEnabled(true);
-        ui->pushValidate->setFocus();
+            ui->pushValidate->setFocus();
+        }
     }
-        else
-            ui->pushValidate->setEnabled(false);
 }
+
 

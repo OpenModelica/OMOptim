@@ -75,7 +75,7 @@ public:
 
     QStringList getItemNames();
 
-    void append(std::vector<ItemClass*>* toAppend);
+   // void append(std::vector<ItemClass*>* toAppend);
     void setItems(QDomElement & domList);
     virtual void append(const MOVector &,bool makeACopy);
     void update(const QDomElement & domList);
@@ -96,6 +96,7 @@ public:
     bool contains(ItemClass*);
     bool alreadyIn(QString);
     void replaceIn(MOVector<ItemClass> *);
+    void addItems(MOVector<ItemClass> *,bool replaceIfPresent);
 
     void cloneFromOtherVector(const MOVector*);
     MOVector<ItemClass>* clone() const;
@@ -114,7 +115,7 @@ public:
 protected :
     /**
         * is this vector the owner of the content.
-        * If yes, content will be deleted with vector
+        * If yes, content will be deleted with vector, or when an item replaces another one
         */
     bool _owner;
 };
@@ -220,22 +221,23 @@ QStringList MOVector<ItemClass>::getItemNames()
     return _names;
 }
 
-template<class ItemClass>
-void MOVector<ItemClass>::append(std::vector<ItemClass*>* toAppend )
-{
-    int iCurItem;
-    for(int i=0;i<toAppend->size();i++)
-    {
-        iCurItem = findItem(toAppend->at(i)->name());
-        if(iCurItem==-1)
-            addItem(toAppend->at(i));
-        else
-        {
-            delete items.at(iCurItem);
-            items.replace(iCurItem,toAppend->at(i));
-        }
-    }
-}
+//template<class ItemClass>
+//void MOVector<ItemClass>::append(std::vector<ItemClass*>* toAppend )
+//{
+//    int iCurItem;
+//    for(int i=0;i<toAppend->size();i++)
+//    {
+//        iCurItem = findItem(toAppend->at(i)->name());
+//        if(iCurItem==-1)
+//            addItem(toAppend->at(i));
+//        else
+//        {
+//            if(_owner)
+//                delete items.at(iCurItem);
+//            items.replace(iCurItem,toAppend->at(i));
+//        }
+//    }
+//}
 
 template<class ItemClass>
 void MOVector<ItemClass>::setItems(QDomElement & domList)
@@ -258,18 +260,18 @@ void MOVector<ItemClass>::setItems(QDomElement & domList)
 }
 
 template<class ItemClass>
-void MOVector<ItemClass>::append(const MOVector &_vector,bool makeACopy)
+void MOVector<ItemClass>::append(const MOVector &vector,bool makeACopy)
 {
 //    int iCurItem;
-    for(int i=0;i<_vector.items.size();i++)
+    for(int i=0;i<vector.items.size();i++)
     {
 //        iCurItem = findItem(_vector.items.at(i)->name());
 //        if(iCurItem==-1)
 //        {
             if(makeACopy)
-                addItem(new ItemClass(*_vector.items.at(i)));
+                addItem(new ItemClass(*vector.items.at(i)));
             else
-                addItem(_vector.items.at(i));
+                addItem(vector.items.at(i));
 //        }
 //        else
 //        {
@@ -280,6 +282,11 @@ void MOVector<ItemClass>::append(const MOVector &_vector,bool makeACopy)
 //            else
 //                items.replace(iCurItem,_vector.items.at(i));
 //        }
+    }
+
+    if(makeACopy && !_owner)
+    {
+        InfoSender::instance()->debug("In MOVector : memory leak !");
     }
 }
 
@@ -308,7 +315,7 @@ QVariant MOVector<ItemClass>::headerData(int section, Qt::Orientation orientatio
         }
     }
     return QAbstractItemModel::headerData(section, orientation, role);
-};
+}
 
 template<class ItemClass>
 QVariant MOVector<ItemClass>::data(const QModelIndex &index, int role) const
@@ -514,9 +521,10 @@ void MOVector<ItemClass>::replaceIn(MOVector<ItemClass> *overVector)
 
         if(iv!=-1)
         {
-            delete items.at(iv);
+            if(_owner)
+                delete items.at(iv);
             items.erase(items.begin()+iv,items.begin()+iv+1);
-            items.insert(items.begin()+iv,new ItemClass(*overVector->at(iov)));
+            items.insert(items.begin()+iv,overVector->at(iov));
         }
         else
         {
@@ -525,6 +533,40 @@ void MOVector<ItemClass>::replaceIn(MOVector<ItemClass> *overVector)
             InfoSender::instance()->debug(msg);
         }
     }
+}
+
+template<class ItemClass>
+void MOVector<ItemClass>::addItems(MOVector<ItemClass> * newItems,bool replaceIfPresent)
+{
+    int iv,iov;
+    QString curName;
+
+    for(iov=0;iov<newItems->size();iov++)
+    {
+        curName = newItems->at(iov)->name();
+        if(replaceIfPresent)
+        {
+            iv=findItem(curName);
+
+            if(iv!=-1)
+            {
+                if(_owner)
+                    delete items.at(iv);
+                items.erase(items.begin()+iv,items.begin()+iv+1);
+                items.insert(items.begin()+iv,newItems->at(iov));
+            }
+            else
+            {
+                 addItem(newItems->at(iov));
+            }
+        }
+        else
+        {
+            addItem(newItems->at(iov));
+        }
+    }
+
+
 }
 
 

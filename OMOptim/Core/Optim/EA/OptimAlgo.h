@@ -70,8 +70,8 @@ public:
     virtual bool acceptMultiObjectives() = 0;
 
     /**
-          * Set parameters that should be defined
-          */
+    * Set parameters that should be defined
+    */
     virtual void setDefaultParameters() = 0;
     virtual void onQuickEndAsked(){};
 

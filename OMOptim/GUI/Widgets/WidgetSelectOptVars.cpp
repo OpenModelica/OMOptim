@@ -42,6 +42,7 @@
 #include "ui_WidgetSelectOptVars.h"
 #include <QtGui/QErrorMessage>
 #include "Optimization.h"
+#include "Project.h"
 
 WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,QWidget *parent):
     QWidget(parent),
@@ -49,14 +50,20 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
 {
     _ui->setupUi(this);
     _problem = problem;
+    _project = dynamic_cast<Project*>(problem->project());
+
     _isEditable = isEditable;
 
+    // concatenate model variables
+    _allModelsVars = new Variables(false);
+    for(int i=0;i<_problem->models().size();i++)
+        _allModelsVars->append(*_project->modModelPlus(_problem->models().at(i))->variables(),false);
 
     // tables' model
     _optVariableProxyModel = GuiTools::ModelToViewWithFilter(_problem->optimizedVariables(),
                                                              _ui->tableOptimizedVariables,NULL);
 
-    _variableProxyModel = GuiTools::ModelToViewWithFilter(_problem->modModelPlus()->variables(),
+    _variableProxyModel = GuiTools::ModelToViewWithFilter(_allModelsVars,
                                                           _ui->tableVariables,_ui->lineVariableFilter);
 
     _scannedProxyModel = GuiTools::ModelToViewWithFilter(_problem->scannedVariables(),
@@ -166,6 +173,7 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
 WidgetSelectOptVars::~WidgetSelectOptVars()
 {
     delete _ui;
+    delete _allModelsVars;
 }
 
 
@@ -184,7 +192,7 @@ void WidgetSelectOptVars::addOptVariables()
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
         curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-        selVar=_problem->modModelPlus()->variables()->at(curSourceIndex.row());
+        selVar=_allModelsVars->at(curSourceIndex.row());
         alreadyIn = _problem->optimizedVariables()->alreadyIn(selVar->name());
         if (!alreadyIn)
         {
@@ -227,7 +235,7 @@ void WidgetSelectOptVars::addScannedVariables()
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
         curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-        selVar=_problem->modModelPlus()->variables()->at(curSourceIndex.row());
+        selVar=_allModelsVars->at(curSourceIndex.row());
         alreadyIn = _problem->scannedVariables()->alreadyIn(selVar->name());
         if (!alreadyIn)
         {
@@ -270,7 +278,7 @@ void WidgetSelectOptVars::addOptObjectives()
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
         curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-        selVar=_problem->modModelPlus()->variables()->items[curSourceIndex.row()];
+        selVar=_allModelsVars->items[curSourceIndex.row()];
 
         alreadyIn = _problem->objectives()->alreadyIn(selVar->name());
         if (!alreadyIn)
@@ -341,28 +349,36 @@ void WidgetSelectOptVars::actualizeGui()
 
 void WidgetSelectOptVars::readVariables()
 {
-    // is compiled
-    bool isCompiled = _problem->modModelPlus()->isCompiled(_problem->ctrl());
-    bool shouldForceRecompile = false;
-    if(isCompiled)
-   {
-        // already compiled, ask user if we should only read init file or recompile model
-        QMessageBox msgBox;
-        msgBox.setText("Model is already compiled.");
-        msgBox.setInformativeText("Would you like to compile it again ?");
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
-        switch (ret)
+    _allModelsVars->clear();
+
+    for(int i=0;i<_problem->models().size();i++)
+    {
+        ModModelPlus* curModelPlus = _project->modModelPlus(_problem->models().at(i));
+
+        // is compiled
+        bool isCompiled = curModelPlus->isCompiled(_problem->ctrl(_problem->models().at(i)));
+        bool shouldForceRecompile = false;
+        if(isCompiled)
         {
-        case QMessageBox::Yes:
-            shouldForceRecompile = true;
-            break;
-        case QMessageBox::No:
-            shouldForceRecompile = false;
-            break;
+            // already compiled, ask user if we should only read init file or recompile model
+            QMessageBox msgBox;
+            msgBox.setText("Model is already compiled.");
+            msgBox.setInformativeText("Would you like to compile it again ?");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+            switch (ret)
+            {
+            case QMessageBox::Yes:
+                shouldForceRecompile = true;
+                break;
+            case QMessageBox::No:
+                shouldForceRecompile = false;
+                break;
+            }
         }
-    }
-     _problem->modModelPlus()->readVariables(_problem->ctrl(),shouldForceRecompile);
+        curModelPlus->readVariables(_problem->ctrl(_problem->models().at(i)),shouldForceRecompile);
+        _allModelsVars->addItems(curModelPlus->variables(),true);
+     }
     _ui->tableVariables->resizeColumnsToContents();
 }

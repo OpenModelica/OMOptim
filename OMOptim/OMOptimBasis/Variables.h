@@ -13,10 +13,9 @@
 class Variables : public MOVector<Variable>
 {
 public:
-    Variables(bool owner,QString modelName = QString());
+    Variables(bool owner);
 
     QVariant data(const QModelIndex &index, int role) const;
-    void setModelName(QString);
     Variables* clone() const;
 
     QStringList mimeTypes() const;
@@ -24,9 +23,9 @@ public:
     Qt::DropActions supportedDropActions() const;
 
 
+
+
 private :
-    QString _modelName;
-    bool _displayShort;
 };
 
 /**
@@ -37,15 +36,11 @@ private :
 class OptVariables : public MOVector<OptVariable>
 {
 public:
-    OptVariables(bool owner,QString modelName = QString());
-
+    OptVariables(bool owner);
     QVariant data(const QModelIndex &index, int role) const;
-    void setModelName(QString);
     OptVariables* clone() const;
 
 private :
-    QString _modelName;
-    bool _displayShort;
 };
 
 
@@ -57,15 +52,11 @@ private :
 class ScannedVariables : public MOVector<ScannedVariable>
 {
 public:
-    ScannedVariables(bool owner,QString modelName = QString());
-
+    ScannedVariables(bool owner);
     QVariant data(const QModelIndex &index, int role) const;
-    void setModelName(QString);
     ScannedVariables* clone() const;
 
 private :
-    QString _modelName;
-    bool _displayShort;
 };
 
 

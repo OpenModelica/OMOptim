@@ -120,6 +120,7 @@ private:
     unsigned getNbFields();
 
 
+
     //****************************
     //Model managment
     //****************************

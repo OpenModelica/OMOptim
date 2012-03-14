@@ -50,7 +50,7 @@
 #include "Widgets/WidgetFilesList.h"
 #include "Widgets/WidgetOptimActions.h"
 #include "Widgets/WidgetCtrlParameters.h"
-
+#include "Widgets/WidgetModelsList.h"
 
 class TabOptimization : public MO2ColTab {
     Q_OBJECT
@@ -70,10 +70,11 @@ public:
         WidgetFilesList *_widgetFilesList;
         WidgetOptimActions *_widgetOptimActions;
         WidgetCtrlParameters *_widgetCtrl;
-
+        WidgetModelsList* _widgetModels;
 
     void actualizeGui();
- 
+public slots :
+    void onModelsChanged();
 };
 
 

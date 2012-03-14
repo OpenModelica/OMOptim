@@ -16,7 +16,7 @@ class OptimizationInterface : public ProblemInterface
     QWidget* createProblemTab(Problem *,QWidget* parent);
     QWidget* createResultTab(Result *,QWidget* parent);
 
-    ModelNeeds modelNeeds(){return ONEMODEL;}
+    ModelNeeds modelNeeds(){return SEVERALMODELS;}
     QStringList problemTypes(){return QStringList(Optimization::className());}
     QString name(){return Optimization::className();}
 

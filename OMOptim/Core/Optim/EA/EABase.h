@@ -72,14 +72,14 @@ public:
 
     // subModels (for Optimization problems)
     bool _useSubModels;
-    void setSubModels(QList<ModModelPlus*>,QList<BlockSubstitutions*>);
+    void setSubModels(QList<QList<ModModelPlus*> >,QList<BlockSubstitutions*>);
 
 protected:
 
     ModItemsTree* _modItemsTree;
 
     // for Optimization problems
-    QList<ModModelPlus*> _subModels;
+    QList<QList<ModModelPlus*> > _subModels;
     QList<BlockSubstitutions*> _subBlocks;
 
     // solve mixing pointdep-pointindep in bounds

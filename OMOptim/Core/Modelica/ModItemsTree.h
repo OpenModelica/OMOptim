@@ -151,7 +151,7 @@ public:
     QString _direction;
     int _curDepth;
 
-protected:
+
     void run();
 signals:
     void readFromOmc(ModItem*,int depthMax ,  QString direction, int curDepth );    //Read data and children with OMC calls

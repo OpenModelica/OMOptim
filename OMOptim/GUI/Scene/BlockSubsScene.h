@@ -42,12 +42,12 @@
 
 
 #include "diagramscene.h"
-#include "BlockSubstitutions.h"
+#include "BlockSubs/BlockSubstitutions.h"
 #include "BlockDrawItem.h"
 #include "ModItem.h"
 #include "ModModel.h"
 #include "ModLoader.h"
-#include "BlockSubstituteConnDlg.h"
+#include "Dialogs/BlockSubstituteConnDlg.h"
 
 #include <QtGui/QGraphicsSceneEvent>
 #include <QtGui/QGraphicsGridLayout>
@@ -60,7 +60,7 @@ class BlockSubsScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    BlockSubsScene(BlockSubstitutions *, ModModel* ,ModItemsTree*, bool _isEditable);
+    BlockSubsScene(BlockSubstitutions *, ModItemsTree*, bool _isEditable);
     ~BlockSubsScene(void);
 
 
@@ -93,7 +93,6 @@ public :
 
 private:
 
-    ModModel* model;
     ModItemsTree* modItemsTree;
 
 

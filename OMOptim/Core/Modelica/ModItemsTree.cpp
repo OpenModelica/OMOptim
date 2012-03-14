@@ -91,11 +91,12 @@ void ModItemsTree::readFromOMCWThread(ModItem* parent,int depthMax,  QString dir
 
     // load the models icon
     ModItemsLoader *modItemsLoader = new ModItemsLoader(this,parent,depthMax,direction,curDepth);
-    modItemsLoader->start(QThread::HighestPriority);
-    while (modItemsLoader->isRunning())
-    {
-        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
-    }
+    modItemsLoader->run();
+// still not working properly on all platforms
+//    while (modItemsLoader->isRunning())
+//    {
+//        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+//    }
 
 }
 
@@ -849,9 +850,9 @@ ModModel* ModItemsTree::modelOf(ModItem* item)
 }
 
 
-ModItem* ModItemsTree::findItem(QString _fullName)
+ModItem* ModItemsTree::findItem(QString fullName)
 {
-    return findInDescendants(_fullName,_rootElement);
+    return findInDescendants(fullName,_rootElement);
 }
 
 

@@ -2,37 +2,21 @@
 
 #include <QMimeData>
 
-Variables::Variables(bool owner,QString modelName)
+Variables::Variables(bool owner)
     :MOVector<Variable>(owner)
 {
-    _modelName = modelName;
-    _displayShort = true;
 }
 
 QVariant Variables::data(const QModelIndex &index, int role) const
 {
-    if(index.isValid()
-            && (index.column()== Variable::NAME)
-            && (role==Qt::DisplayRole)
-            && _displayShort)
-    {
-        QString shortName = items.at(index.row())->name();
-        shortName = shortName.remove(QRegExp("^"+_modelName+"."));
-        return QVariant(shortName);
-    }
-    else
         return MOVector<Variable>::data(index,role);
 }
 
-void Variables::setModelName(QString modelName)
-{
-    _modelName = modelName;
-}
 
 Variables* Variables::clone() const
 {
     // owner should always be true
-    Variables* newVector = new Variables(true,_modelName);
+    Variables* newVector = new Variables(true);
 
     int i;
     Variable* newItem;
@@ -75,38 +59,23 @@ QMimeData* Variables::mimeData(const QModelIndexList &indexes) const
 
 
 
-OptVariables::OptVariables(bool owner,QString modelName)
+OptVariables::OptVariables(bool owner)
     :MOVector<OptVariable>(owner)
 {
-    _modelName = modelName;
-    _displayShort = true;
+
 }
 
 QVariant OptVariables::data(const QModelIndex &index, int role) const
 {
-    if(index.isValid()
-            && (index.column()== OptVariable::NAME)
-            && (role==Qt::DisplayRole)
-            && _displayShort)
-    {
-        QString shortName = items.at(index.row())->name();
-        shortName = shortName.remove(QRegExp("^"+_modelName+"."));
-        return QVariant(shortName);
-    }
-    else
         return MOVector<OptVariable>::data(index,role);
 }
 
 
-void OptVariables::setModelName(QString modelName)
-{
-    _modelName = modelName;
-}
 
 OptVariables* OptVariables::clone() const
 {
      // owner should always be true
-    OptVariables* newVector = new OptVariables(true,_modelName);
+    OptVariables* newVector = new OptVariables(true);
 
     int i;
     OptVariable* newItem;
@@ -121,37 +90,20 @@ OptVariables* OptVariables::clone() const
 
 
 
-ScannedVariables::ScannedVariables(bool owner, QString modelName)
+ScannedVariables::ScannedVariables(bool owner)
     : MOVector<ScannedVariable>(owner)
 {
-    _modelName = modelName;
-    _displayShort = true;
 }
 
 QVariant ScannedVariables::data(const QModelIndex &index, int role) const
 {
-    if(index.isValid()
-            && (index.column()== ScannedVariable::NAME)
-            && (role==Qt::DisplayRole)
-            && _displayShort)
-    {
-        QString shortName = items.at(index.row())->name();
-        shortName = shortName.remove(QRegExp("^"+_modelName+"."));
-        return QVariant(shortName);
-    }
-    else
         return MOVector<ScannedVariable>::data(index,role);
-}
-
-void ScannedVariables::setModelName(QString modelName)
-{
-    _modelName = modelName;
 }
 
 ScannedVariables* ScannedVariables::clone() const
 {
      // owner should always be true
-    ScannedVariables* newVector = new ScannedVariables(true,_modelName);
+    ScannedVariables* newVector = new ScannedVariables(true);
 
     int i;
     ScannedVariable* newItem;

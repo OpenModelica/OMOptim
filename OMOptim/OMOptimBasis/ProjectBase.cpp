@@ -326,13 +326,16 @@ void ProjectBase::removeProblemInterface(QString interfaceName)
 void ProjectBase::addNewProblem(ProblemInterface* interface, QStringList modelsList,QString problemType)
 {
     Problem* newProblem = interface->createNewProblem(this,modelsList,problemType);
-    HighTools::checkUniqueProblemName(this,newProblem,_problems);
+    if(newProblem)
+    {
+        HighTools::checkUniqueProblemName(this,newProblem,_problems);
 
-    _problems->addCase(newProblem);
+        _problems->addCase(newProblem);
 
-    save(newProblem);
+        save(newProblem);
 
-    emit addedProblem(newProblem);
+        emit addedProblem(newProblem);
+    }
 }
 
 void ProjectBase::addOMCase(QString filePath)

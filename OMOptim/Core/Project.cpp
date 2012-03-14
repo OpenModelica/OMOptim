@@ -373,7 +373,7 @@ ModModelPlus* Project::newModModelPlus(QString modelName)
     }
 
     // mmo file
-    QString newMmoFilePath = modPlusdir.absolutePath() + QDir::separator() + _name + ".mmo";
+    QString newMmoFilePath = modPlusdir.absolutePath() + QDir::separator() + modelName + ".mmo";
 
     // set mmoFilePath in ModModelPlus
     newModModelPlus->setMmoFilePath(newMmoFilePath);
@@ -393,7 +393,7 @@ ModModelPlus* Project::newModModelPlus(QString modelName)
 
 void Project::save(bool saveAllOMCases)
 {
-    Save::saveProject(this,saveAllOMCases);
+    SaveOMOptim::saveProject(this,saveAllOMCases);
 
     setSaved(true);
     emit projectChanged();
@@ -402,7 +402,7 @@ void Project::save(bool saveAllOMCases)
 void Project::save(Result* result)
 {
     // save project but not all omcases
-    Save::saveProject(this,false);
+    SaveOMOptim::saveProject(this,false);
 
     // save result
     Save::saveResult(this,result);
@@ -413,7 +413,7 @@ void Project::save(Result* result)
 void Project::save(Problem* problem)
 {
     // save project but not all omcases
-    Save::saveProject(this,false);
+    SaveOMOptim::saveProject(this,false);
 
     // save problem
     Save::saveProblem(this,problem);
@@ -428,7 +428,7 @@ bool Project::load(QString loadPath)
     bool loaded = false;
 
     if(configOk)
-        loaded = Load::loadProject(loadPath,this);
+        loaded = LoadOMOptim::loadProject(loadPath,this);
 
     if (loaded)
     {

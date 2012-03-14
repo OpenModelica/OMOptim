@@ -9,7 +9,7 @@ Problem* OptimizationInterface::createNewProblem(ProjectBase* projectBase,const 
 {
     Q_ASSERT(problemType==Optimization::className());
 
-    if(modelsList.size()!=1)
+    if(modelsList.size()<1)
     {
         InfoSender::instance()->send(Info("Model for optimization problem not defined",ListInfo::ERROR2));
         return NULL;
@@ -20,7 +20,7 @@ Problem* OptimizationInterface::createNewProblem(ProjectBase* projectBase,const 
         if(!project)
             return NULL;
         else
-            return new Optimization(project,project->modModelPlus(modelsList.at(0)));
+            return new Optimization(project,modelsList);
     }
 }
 

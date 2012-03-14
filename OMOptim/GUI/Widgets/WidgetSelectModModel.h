@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-     @file WidgetSelectModModel.h
-     @brief Comments for file documentation.
-     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-     Company : CEP - ARMINES (France)
-     http://www-cep.ensmp.fr/english/
-     @version 
+    @file WidgetSelectModModel.h
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
+    @version
 */
 
 #ifndef WidgetSelectModModel_H
@@ -46,10 +46,11 @@
 
 #include "ModItem.h"
 #include "ModItemsTree.h"
+#include "ProblemInterface.h"
 
 
 namespace Ui {
-    class WidgetSelectModModelClass;
+class WidgetSelectModModelClass;
 }
 
 
@@ -58,22 +59,23 @@ class WidgetSelectModModel : public QDialog {
 
 
 public:
-        explicit WidgetSelectModModel(ModItemsTree* modItemsTree,QWidget *parent);
+    explicit WidgetSelectModModel(ModItemsTree* modItemsTree,ProblemInterface::ModelNeeds needs,QWidget *parent);
     virtual ~WidgetSelectModModel();
 
-    
+
 
 public:
     Ui::WidgetSelectModModelClass *ui;
-    
-    ModModel* selectedModel;
-    void setSelectedModModel(ModItem* _modClass);
+
+    QList<ModModel*> _selectedModels;
+    void setSelectedModModel(QList<ModItem *> modClasses);
 
 public slots :
     void onSelectedModItem(QModelIndex);
 
 private :
-        ModItemsTree *_modItemsTree;
+    ModItemsTree *_modItemsTree;
+    ProblemInterface::ModelNeeds _needs;
 
 };
 

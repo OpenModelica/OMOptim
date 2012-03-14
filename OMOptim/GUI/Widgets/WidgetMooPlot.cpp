@@ -100,10 +100,10 @@ void WidgetMooPlot::varSelectionChanged()
 
     // updating short names
     QString shortXVarName = xVarName;
-    shortXVarName.remove(_result->modModelPlus()->name()+".");
+  //  shortXVarName.remove(_result->modModelPlus()->name()+".");
 
     QString shortYVarName = yVarName;
-    shortYVarName.remove(_result->modModelPlus()->name()+".");
+   // shortYVarName.remove(_result->modModelPlus()->name()+".");
 
 
 
@@ -222,19 +222,15 @@ void WidgetMooPlot::updateCombos()
     QString curName;
     for (int i=0;i<nbObj;i++)
     {
-        curName = _result->optObjectivesResults()->at(i)->name();
-        fullNames.push_back(curName);
-        curName.remove(_result->modModelPlus()->name()+".");
-        shortNames.push_back(curName);
+        fullNames.push_back(_result->optObjectivesResults()->at(i)->name(Variable::FULL));
+        shortNames.push_back(_result->optObjectivesResults()->at(i)->name(Variable::SHORT));
     }
     for (int i=0;i<nbOpt;i++)
     {
         if (!fullNames.contains(_result->optVariablesResults()->at(i)->name()))
         {
-            curName = _result->optVariablesResults()->at(i)->name();
-            fullNames.push_back(curName);
-            curName.remove(_result->modModelPlus()->name()+".");
-            shortNames.push_back(curName);
+            fullNames.push_back(_result->optVariablesResults()->at(i)->name(Variable::FULL));
+            shortNames.push_back(_result->optVariablesResults()->at(i)->name(Variable::SHORT));
         }
     }
     for(int i=0;i<fullNames.size();i++)

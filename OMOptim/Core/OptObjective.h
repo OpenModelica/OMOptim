@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-     @file OptObjective.h
-     @brief Comments for file documentation.
-     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-     Company : CEP - ARMINES (France)
-     http://www-cep.ensmp.fr/english/
-     @version 
+    @file OptObjective.h
+    @brief Comments for file documentation.
+    @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+    Company : CEP - ARMINES (France)
+    http://www-cep.ensmp.fr/english/
+    @version
 
   */
 #ifndef OPTOBJECTIVE_H
@@ -51,6 +51,7 @@ public:
     enum Field
     {
         NAME,
+        MODEL,
         DESCRIPTION,
         DIRECTION,
         MIN,
@@ -70,9 +71,9 @@ public:
         NONE,
         AVERAGE,
         SUM,
-                DEVIATION,
-                MINIMUM,
-                MAXIMUM
+        DEVIATION,
+        MINIMUM,
+        MAXIMUM
     };
 
     OptObjective();
@@ -83,7 +84,7 @@ public:
     virtual QString getClassName(){return "OptObjective";};
 
 
-        void initOptExtremum();
+    void initOptExtremum();
 
     void setDirection(Direction);
     void setScanFunction(ScanFunction);
@@ -100,12 +101,12 @@ public:
     virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int ifield, QVariant value_);
 
-    static const int nbFields = 6;
+    static const int nbFields = 7;
     virtual unsigned getNbFields(){return nbFields;};
 
-    
-        double min(){return _min;};
-        double max(){return _max;};
+
+    double min(){return _min;};
+    double max(){return _max;};
 
 protected:
     ScanFunction _scanFunction;
@@ -127,15 +128,15 @@ public:
     OptObjectiveResult(QDomElement &);
     virtual QString getClassName(){return "OptObjectiveResult";};
 
-    
+
     static QString sFieldName(int field, int role);
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptObjectiveResult::sFieldName(i,role);};
 
     QVariant getFieldValue(int, int role = Qt::UserRole) const;
     bool setFieldValue(int ifield, QVariant value_);
-    
 
-    
+
+
 
 public:
     //Added functions

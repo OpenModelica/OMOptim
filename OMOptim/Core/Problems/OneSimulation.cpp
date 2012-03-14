@@ -59,8 +59,8 @@ OneSimulation::OneSimulation(Project* project,ModModelPlus* modModelPlus)
     _name="One Simulation";
     _omProject = project;
 
-    _overwritedVariables = new Variables(true,_modModelPlus->modModelName());
-    _scannedVariables = new ScannedVariables(true,_modModelPlus->modModelName());
+    _overwritedVariables = new Variables(true);
+    _scannedVariables = new ScannedVariables(true);
 
     // ctrls
     _ctrls = new ModPlusCtrls(project,modModelPlus);
@@ -106,8 +106,8 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     else
     {
         // finishing initialization
-        _overwritedVariables = new Variables(true,_modModelPlus->modModelName());
-        _scannedVariables = new ScannedVariables(true,_modModelPlus->modModelName());
+        _overwritedVariables = new Variables(true);
+        _scannedVariables = new ScannedVariables(true);
 
         // Infos
         this->setName(domInfos.attribute("name", "" ));
@@ -291,6 +291,10 @@ ModModelPlus* OneSimulation::modModelPlus() const
     return _modModelPlus;
 }
 
+QString OneSimulation::model() const
+{
+    return _modModelPlus->modModelName();
+}
 
 ModPlusCtrl* OneSimulation::ctrl()
 {

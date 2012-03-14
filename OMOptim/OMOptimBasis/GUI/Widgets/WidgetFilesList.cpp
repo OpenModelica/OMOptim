@@ -88,7 +88,7 @@ void WidgetFilesList::addFiles()
     addFiles(fileNames);
 }
 
-void WidgetFilesList::addFiles(QStringList list)
+void WidgetFilesList::addFiles  (QStringList list)
 {
     for(int i=0;i<list.size();i++)
     {

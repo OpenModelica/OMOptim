@@ -51,7 +51,7 @@
 #include "MOTableView.h"
 #include "Tools/GuiTools.h"
 #include "Project.h"
-#include "MOParametersDlg.h"
+#include "Dialogs/MOParametersDlg.h"
 
 namespace Ui {
     class WidgetOptParametersClass;

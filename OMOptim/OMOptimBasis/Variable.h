@@ -70,6 +70,7 @@ public :
     {
         //Modelica fields
         NAME,
+        MODEL,
         VALUE,
         DESCRIPTION,
         /*MIN,
@@ -100,7 +101,6 @@ public :
     enum NameFormat
     {
         SHORT,
-        WITHOUTROOT, // Full without root model name
         FULL
     };
 
@@ -115,14 +115,18 @@ public:
     virtual QString getClassName(){return "Variable";};
 
 public :
+
+    void setModel(QString);
+    QString model() const;
+
+
     //Overwrited functions
-    //Variable* clone() const;
     virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int ifield, QVariant value_);
     static QString sFieldName(int field, int role);
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return Variable::sFieldName(i,role);};
 
-    static const int nbFields = 4;
+    static const int nbFields = 5;
     virtual unsigned getNbFields(){return nbFields;};
 
     //Specific functions
@@ -139,9 +143,11 @@ public :
     virtual QString getStrToolTip();
 
 
+
 protected :
     // added fields
     QString _description;
+    QString _model;
 
     //int type;
     //int category;
@@ -171,7 +177,7 @@ public:
     VariableResult* clone() const;
     virtual QString getClassName(){return "VariableResult";};
 
-    static const int nbFields = 4;
+    static const int nbFields = 5;
 
 private:
     std::vector<std::vector<double> > _finalValues;
@@ -211,6 +217,7 @@ public :
     enum Field
     {
         NAME,
+        MODEL,
         VALUE,
         DESCRIPTION,
         /*MIN,
@@ -239,7 +246,7 @@ public :
     virtual bool setFieldValue(int ifield, QVariant value_);
     static QString sFieldName(int field, int role);
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptVariable::sFieldName(i,role);};
-    static const int nbFields = 6;
+    static const int nbFields = 7;
     virtual unsigned getNbFields(){return nbFields;};
 
     void initOptExtremum();
@@ -261,6 +268,7 @@ public :
     enum Field
     {
         NAME,
+        MODEL,
         VALUE,
         DESCRIPTION,
         /*MIN,
@@ -292,7 +300,7 @@ public :
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ScannedVariable::sFieldName(i,role);};
 
 
-    static const int nbFields = 7;
+    static const int nbFields = 8;
     virtual unsigned getNbFields(){return nbFields;};
 
 

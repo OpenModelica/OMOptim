@@ -89,6 +89,8 @@ public:
     Variables *overwritedVariables() const {return _overwritedVariables;}
     MOVector<ScannedVariable> *scannedVariables() const {return _scannedVariables;}
     ModModelPlus* modModelPlus() const;
+    QString model() const;
+
 public slots :
     void setCtrlType();
 

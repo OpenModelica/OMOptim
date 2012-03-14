@@ -45,7 +45,7 @@
 #include "OMEAProgress.h"
 #include "VariablesManip.h"
 #include "float.h"
-
+#include "Optimization.h"
 
 /** \class EAStdOptimizationEval is a function for evaluating fitness of an individual.
           * For each individual, it :
@@ -53,6 +53,7 @@
           *    -set corresponding inputs
           *    -read results and set corresponding values to objectives
           */
+
 
 template<class EOT> class EAStdOptimizationEval : public moeoEvalFunc < EOT >
 {
@@ -71,28 +72,26 @@ public:
         _modItemsTree = EAStdOptimizationEval._modItemsTree;
         _tempDir = EAStdOptimizationEval._tempDir;
         _subModels = EAStdOptimizationEval._subModels;
-        _previousSubModel = EAStdOptimizationEval._previousSubModel;
         _nbObj = EAStdOptimizationEval._nbObj;
         _bObjectives = EAStdOptimizationEval._bObjectives;
-    };
+    }
 
 
     /**
      * \brief Ctor.
      */
-    EAStdOptimizationEval(Project* project,Optimization* problem,QList<ModModelPlus*> subModels,QString tempDir
-                          ,ModItemsTree* modItemsTree)
+    EAStdOptimizationEval(Project* project,Optimization* problem,QList<QList<ModModelPlus*> > subModels,QString tempDir
+                           ,ModItemsTree* modItemsTree)
     {
         _project = project;
         _problem = problem;
         _modItemsTree = modItemsTree;
         _tempDir = tempDir;
         _subModels = subModels;
-        _previousSubModel = -1;
 
         /************************************
-  OBJECTIVE FUNCTIONS DEFINITION
-  ************************************/
+        OBJECTIVE FUNCTIONS DEFINITION
+        ************************************/
         _nbObj = _problem->objectives()->items.size();
         OptObjective::Direction objDirection;
 
@@ -110,43 +109,40 @@ public:
         }
         moeoObjectiveVectorTraits::setup(_nbObj,_bObjectives);
 
-    };
+    }
 
     void operator () (EOT & eo)
     {
         if (eo.invalidObjectiveVector())
         {
             moeoRealObjectiveVector< moeoObjectiveVectorTraits > objVec;
-            ModModelPlus* model;
+            QList<ModModelPlus*> models;
+
+            // get modmodelplus to simulate
             int iSubModel = -1;
             if(_subModels.size()>1)
             {
                 iSubModel = eo.intVars.at(eo.intVars.size()-1);
-                model = _subModels.at(iSubModel);
+                models = _subModels.at(iSubModel);
             }
             else
-                model = _problem->modModelPlus();
-
-            /************************************
-             Creating a new OneSimulation
-            ************************************/
-            OneSimulation *oneSim = new OneSimulation(_project,model);
-            oneSim->_filesToCopy = _problem->_filesToCopy;
-
-            // copy controls
-            oneSim->setCtrls(*_problem->ctrls());
-
-            //Reading chromosome and placing it in overwritedvariables
-            int nbVar = _problem->optimizedVariables()->items.size();
-            Variable* curVar;
-
-            int iDouble = 0;
-            int iInt = 0;
-            int iBool = 0;
-
-            for(int i=0;i<nbVar;i++)
             {
-                curVar = new Variable(*_problem->optimizedVariables()->items.at(i));
+                QStringList modelsNames = _problem->models();
+                for(int i=0;i<modelsNames.size();i++)
+                    models.push_back(_project->modModelPlus(modelsNames.at(i)));
+            }
+
+            //******************************
+            // get variables
+            //******************************
+            Variables* overwritedVariables = new Variables(true);
+            Variable *curVar;
+            int iDouble, iBool, iInt;
+
+            int nbVars = _problem->optimizedVariables()->size();
+            for(int i=0;i<nbVars;i++)
+            {
+                curVar = new Variable(*_problem->optimizedVariables()->at(i));
                 switch(curVar->getFieldValue(Variable::DATATYPE).toInt())
                 {
                 case OMREAL :
@@ -162,70 +158,58 @@ public:
                     iInt++;
                     break;
                 }
-                oneSim->overwritedVariables()->addItem(curVar);
+                overwritedVariables->addItem(curVar);
             }
 
-            oneSim->scannedVariables()->cloneFromOtherVector(_problem->scannedVariables());
+            // copying relevant scanned variables
+            ScannedVariables* scannedVariables = _problem->scannedVariables()->clone();
+
 
 
             /************************************
-            Launch OneSimulation
+                    Evaluate
             ************************************/
-            bool refillTempDir = false;
-            QDir dir(_tempDir);
-            if(dir.entryList().isEmpty())
-                refillTempDir = true;
-            else
-            {
-                if((_subModels.size()>1)&&(iSubModel!=_previousSubModel))
-                    refillTempDir = true;
-            }
-            ProblemConfig config();
-            OneSimResult *result =  dynamic_cast<OneSimResult*>(oneSim->launch(config));
+            bool evaluationOk = true;
+            MOOptVector* resultVariables = _problem->evaluate(models,overwritedVariables,scannedVariables,evaluationOk);
 
-            _previousSubModel = iSubModel;
 
             /************************************
             Read results
             ************************************/
-            QString objName;
-            int iVarObj;
-            OptObjective* curObj;
-            bool resultOk = true;
 
-            if (!result->isSuccess())
+            bool readingObjOk = true;
+            if(evaluationOk)
             {
-
-                resultOk = false;
-            }
-            else
-            {
-                //InfoSender::instance()->send(( Info(ListInfo::ONESIMULATIONSUCCESS));
                 //Recover Objective values
                 int nbObj = _problem->objectives()->items.size();
                 int iObj=0;
                 double curObjResult;
+                OptObjective* curObj;
 
-                while(resultOk && (iObj<nbObj))
+                while(readingObjOk && (iObj<nbObj))
                 {
                     curObj = _problem->objectives()->items.at(iObj);
-                    //looking for its value in finalVariables
-                    curObjResult = VariablesManip::calculateObjValue(curObj,result->finalVariables(),resultOk,0);
+
+                    //looking for its value in resultVariables
+                    curObjResult = VariablesManip::calculateObjValue(curObj,resultVariables,readingObjOk,0);
                     objVec[iObj]=curObjResult;
 
                     iObj++;
                 }
             }
 
-            if (!resultOk)
+            if (!evaluationOk || !readingObjOk)
             {
                 // Penalty
                 objVec = worstObjVec();
             }
 
             eo.objectiveVector(objVec);
-            delete oneSim;
-            delete result;
+
+            //************
+            // free memory
+            //************
+            delete resultVariables;
         }
     }
 
@@ -250,12 +234,10 @@ protected:
     Optimization* _problem;
     Project* _project;
     ModItemsTree* _modItemsTree;
-    QList<ModModelPlus*> _subModels;
+    QList<QList<ModModelPlus*> > _subModels;
     std::vector<OneSimResult*> *_resultPoints;
     QString _tempDir;
-    int _previousSubModel;
     int _nbObj;
     std::vector<bool> _bObjectives;
 };
-
 #endif

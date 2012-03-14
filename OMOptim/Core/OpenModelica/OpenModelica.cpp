@@ -153,7 +153,8 @@ void OpenModelica::getInputVariablesFromTxtFile(MOomc *_omc,QTextStream * text, 
         {
             fields = rx.capturedTexts();
             newVariable = new Variable();
-            newVariable->setName(_modelName+"."+rx.cap(2));
+            newVariable->setName(rx.cap(2));
+            newVariable->setModel(_modelName);
             newVariable->setValue(rx.cap(1).toDouble());
             variables->addItem(newVariable);
             //get datatype
@@ -163,7 +164,8 @@ void OpenModelica::getInputVariablesFromTxtFile(MOomc *_omc,QTextStream * text, 
         {
             fields = rxDefault.capturedTexts();
             newVariable = new Variable();
-            newVariable->setName(_modelName+"."+rxDefault.cap(2));
+            newVariable->setName(rxDefault.cap(2));
+            newVariable->setModel(_modelName);
             newVariable->setValue(rxDefault.cap(1).toDouble());
             variables->addItem(newVariable);
             //get datatype
@@ -218,7 +220,7 @@ bool OpenModelica::getInputVariablesFromXmlFile(MOomc *omc,const QDomDocument & 
 
 }
 
-Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modModelName,  bool & ok)
+Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modelName,  bool & ok)
 {
     ok = true;
     QString name = el.attribute("name");
@@ -229,7 +231,8 @@ Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modModelN
     }
 
     Variable* newVar = new Variable();
-    newVar->setName(modModelName+"."+name);
+    newVar->setName(name);
+    newVar->setModel(modelName);
     newVar->setDescription(el.attribute("description"));
 
     //look for type
@@ -312,7 +315,8 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
     for (int i = 0; i < reader.nall; i++)
     {
         newVar = new Variable();
-        newVar->setName(_modelName+"."+QString(reader.allInfo[i].name));
+        newVar->setName(QString(reader.allInfo[i].name));
+        newVar->setModel(_modelName);
 
         // read the variable final value
         var = omc_matlab4_find_var(&reader, reader.allInfo[i].name);
@@ -352,7 +356,8 @@ bool OpenModelica::getFinalVariablesFromFile(QTextStream *text, MOVector<Variabl
     for(int i=0;i<varValues.size();i++)
     {
         newVar = new Variable();
-        newVar->setName(_modelName+"."+varNames.at(i));
+        newVar->setName(varNames.at(i));
+        newVar->setModel(_modelName);
         newVar->setValue(varValues.at(i).toDouble());
         variables->addItem(newVar);
     }
@@ -381,8 +386,8 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
         for(int iV=0;iV<variables->size();iV++)
         {
             curVar = variables->at(iV);
-            varName = curVar->name(Variable::FULL);
-            varName = varName.remove(modModelName+".");
+            varName = curVar->name(Variable::SHORT);
+            //varName = varName.remove(modModelName+".");
             rxLine.setPattern(sciNumRx()+"\\s*(//[\\w*|\\s*]*//|//)\\s*"+varName);
             index = rxLine.indexIn(allText);
 
@@ -525,8 +530,8 @@ void OpenModelica::setInputVariablesXml(QDomDocument & doc, QString modelName, M
     for(int i=0;i<variables->size();i++)
     {
         // getting local var name (name in init file does not contain model name)
-        localVarName = variables->at(i)->name(Variable::FULL);
-        localVarName = localVarName.remove(modelName+".");
+        localVarName = variables->at(i)->name(Variable::SHORT);
+        //localVarName = localVarName.remove(modelName+".");
 
         index = mapScalarVars.value(localVarName,-1);
         if(index>-1)

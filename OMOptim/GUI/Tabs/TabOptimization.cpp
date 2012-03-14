@@ -71,13 +71,23 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
         _widgetFilesList->setInfos("Select here files needed for simulation to perform. Those would be copied in temporary directory along with simulation executable.");
         addDockWidget("Files",_widgetFilesList,_widgetSelectOptVars);
 
-        _widgetCtrl = new WidgetCtrlParameters(_problem->modModelPlus(),_problem->ctrls(),false,this);
+        _widgetCtrl = new WidgetCtrlParameters(_project,_problem->ctrls(),false,this);
         addDockWidget("Simulator",_widgetCtrl,_widgetSelectOptVars);
+
+        _widgetModels = new WidgetModelsList(_project,_problem,this);
+        addDockWidget("Models",_widgetModels,_widgetSelectOptVars);
 
         _widgetOptimActions = new WidgetOptimActions(_project,_problem,false,NULL,this);
         addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
-    actualizeGui();
+
+
+        actualizeGui();
+
+
+        // connect fow widget ctrls to be updated
+        connect(_problem,SIGNAL(removedModel(QString)),this,SLOT(onModelsChanged()));
+        connect(_problem,SIGNAL(addedModel(QString)),this,SLOT(onModelsChanged()));
 
         //change view to show variables
         mapDockWidgets.key(_widgetSelectOptVars)->raise();
@@ -97,6 +107,11 @@ void TabOptimization::actualizeGui()
 #ifdef USEBLOCKSUB
         _widgetSelectComponents->actualizeGui();
 #endif
+}
+
+void TabOptimization::onModelsChanged()
+{
+    _widgetCtrl->update(_problem->ctrls());
 }
 
 

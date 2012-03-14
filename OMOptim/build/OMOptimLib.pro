@@ -253,7 +253,9 @@ HEADERS += ../config.h \
     ../../SimulationRuntime/c/util/read_matlab4.h \
     ../Core/OMC/OMCThreads.h \
     ../GUI/Tools/OMOptimGuiTools.h \
+    ../GUI/Widgets/WidgetModelsList.h \
     ../Core/OMOptimSettings.h
+
 
 FORMS += ../GUI/MainWindow.ui \
          ../GUI/Dialogs/AboutOMOptim.ui \
@@ -281,7 +283,8 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Tabs/TabProject.ui \
          ../GUI/Tabs/TabOptimization.ui \
     ../GUI/Tabs/TabOMC.ui \
-    ../GUI/Widgets/WidgetResultInfos.ui
+    ../GUI/Widgets/WidgetResultInfos.ui \
+    ../GUI/Widgets/WidgetModelsList.ui
 
 SOURCES += ../Core/OptObjective.cpp \
            ../Core/ParetoDominance.cpp \
@@ -374,4 +377,6 @@ SOURCES += ../Core/OptObjective.cpp \
     ../Core/VariablesManip.cpp \
     ../GUI/Tools/OMOptimGuiTools.cpp \
      ../../SimulationRuntime/c/util/read_matlab4.c \
-    ../Core/OMOptimSettings.cpp
+    ../Core/OMOptimSettings.cpp \
+     ../GUI/Widgets/WidgetModelsList.cpp
+

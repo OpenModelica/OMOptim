@@ -45,7 +45,7 @@
 #include<QtGui/QFileDialog>
 
 
-#include "BlockSubsScene.h"
+#include "Scene/BlockSubsScene.h"
 #include "OptimResult.h"
 #include "Optimization.h"
 #include "Project.h"

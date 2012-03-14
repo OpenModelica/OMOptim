@@ -63,14 +63,14 @@ class OptimResult : public Result
 public:
 
     OptimResult();
-    OptimResult(Project*, ModModelPlus*,const Optimization &,OptimAlgo* algo);
+    OptimResult(Project*,const Optimization &,OptimAlgo* algo);
     OptimResult(Project*,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok);
     OptimResult(const OptimResult &_res);
     virtual ~OptimResult(void);
     static QString className(){return "OptimResult";}
     virtual QString getClassName(){return OptimResult::className();}
 
-    QDomElement toXmlData(QDomDocument &);
+    virtual QDomElement toXmlData(QDomDocument &);
 
     void updateRecomputedPointsFromFolder();
     void loadOptimValuesFromFrontFile(QString fileName);
@@ -112,8 +112,6 @@ public :
     QString _optVarsFrontFileName;
     QString _allVarsFrontFileName;
 
-    ModModel* modModel()const{return _modModelPlus->modModel();}
-    ModModelPlus* modModelPlus()const{return _modModelPlus;}
 
 protected:
     Project* _omProject;
@@ -130,7 +128,7 @@ protected:
 
 
     //Model
-    ModModelPlus* _modModelPlus;
+    QStringList _models;
 };
 
 

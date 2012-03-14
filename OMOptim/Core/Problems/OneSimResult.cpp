@@ -59,7 +59,7 @@ OneSimResult::OneSimResult(Project* project, ModModelPlus* modelPlus, const OneS
     _omProject = project;
     _modModelPlus = modelPlus;
 
-    _inputVariables = new Variables(true,_modModelPlus->modModelName());
+    _inputVariables = new Variables(true);
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
 
     // files to copy
@@ -80,7 +80,7 @@ OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const
     this->setName(domResInfos.attribute("name", "" ));
 
     // input variables
-    _inputVariables = new Variables(true,_modModelPlus->modModelName());
+    _inputVariables = new Variables(true);
 
     //FinalVariables
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points

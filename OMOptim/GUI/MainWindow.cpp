@@ -1054,19 +1054,17 @@ void MainWindow::onPushedNewProblem()
             case ProblemInterface::NOMODEL:
                 break;
             case ProblemInterface::ONEMODEL:
-                widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),this);
+            case ProblemInterface::SEVERALMODELS:
+                widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),interface->modelNeeds(),this);
                 if(widgetSelect->exec()==QDialog::Accepted)
                 {
-                    ModModel* curModel = widgetSelect->selectedModel;
-                    if(curModel)
-                        modelsList.push_back(curModel->name());
+                    QList<ModModel*> models = widgetSelect->_selectedModels;
+                    for(int i=0;i<models.size();i++)
+                        modelsList.push_back(models.at(i)->name());
                 }
                 else
                     pursue = false;
                 delete widgetSelect;
-                break;
-            case  ProblemInterface::SEVERALMODELS :
-                /// @todo Manage several modmodelplus specification
                 break;
             }
             if(pursue)

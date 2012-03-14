@@ -46,7 +46,7 @@
 #include<QtGui/QFileDialog>
 #include "Project.h"
 #include "ui_BlockSubstituteConnDlg.h"
-#include "BlockSubstitution.h"
+#include "BlockSubs/BlockSubstitution.h"
 #include <QtGui/QLabel>
 
 namespace Ui {

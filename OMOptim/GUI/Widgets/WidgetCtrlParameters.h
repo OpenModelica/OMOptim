@@ -59,9 +59,9 @@ class WidgetCtrlParameters : public QWidget {
 
 
 public:
-    explicit WidgetCtrlParameters(ModModelPlus* modelPlus,ModPlusCtrls * ctrls,bool isResult,QWidget *parent = NULL);
-    explicit WidgetCtrlParameters(QMap<ModModelPlus*,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent = NULL);
-    void update(QMap<ModModelPlus*,ModPlusCtrls *> ctrls);
+    explicit WidgetCtrlParameters(Project* project, QString model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent = NULL);
+    explicit WidgetCtrlParameters(Project* project, QMap<QString,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent = NULL);
+    void update(QMap<QString,ModPlusCtrls *> ctrls);
     virtual ~WidgetCtrlParameters();
 
 
@@ -72,16 +72,18 @@ public slots :
         void changedCtrl();
         void openCtrlParameters();
         void compile();
+        void onModelsChanged();
 
 
  private :
          QList<QObject*> _widgetsCreated;
-         QMap<ModModelPlus*,ModPlusCtrls *> _ctrls;
-         QMap<ModModelPlus*,QComboBox*> _comboBoxs;
-         QMap<ModModelPlus*,QPushButton*> _parametersPbs;
-         QMap<ModModelPlus*,QPushButton*> _compilePbs;
+         QMap<QString,ModPlusCtrls *> _ctrls;
+         QMap<QString,QComboBox*> _comboBoxs;
+         QMap<QString,QPushButton*> _parametersPbs;
+         QMap<QString,QPushButton*> _compilePbs;
          bool _isResult;// defines wether form could be editable or not
          QGridLayout* _layout;
+         Project* _project;
 
  };
 

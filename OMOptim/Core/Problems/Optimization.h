@@ -37,8 +37,8 @@
     @version
 
   */
-#if !defined(_OPTIMIZATION_H)
-#define _OPTIMIZATION_H
+#if !defined(_Optimization_H)
+#define _Optimization_H
 
 
 #include "Problem.h"
@@ -66,14 +66,14 @@ protected :
 
     Project* _omProject;
     //Model
-    ModModelPlus* _modModelPlus;
+    QList<QString> _models;
+    QMap<QString,ModPlusCtrls*> _ctrls;
+
+
     ScannedVariables *_scannedVariables;
     OptVariables *_optimizedVariables;
     OptObjectives *_objectives;
     BlockSubstitutions *_blockSubstitutions;
-
-    // Simulation controlers
-    ModPlusCtrls* _ctrls;
 
     bool _useScan;
 
@@ -83,32 +83,39 @@ protected :
 
 public:
     //Optimization(void);
-    Optimization(Project*,ModModelPlus* modModelPlus);
+    Optimization(Project*,QStringList models);
     Optimization(const Optimization &);
     Optimization(QDomElement domProblem,Project* project,bool &ok);
     virtual Problem* clone() const;
     virtual ~Optimization(void);
 
-    static QString className(){return "Optimization";};
-    virtual QString getClassName(){return Optimization::className();};
+    static QString className(){return "Optimization";}
+    virtual QString getClassName(){return Optimization::className();}
     virtual bool hasQuickEndOption(){return true;}
 
     //Get functions
-    ModModelPlus* modModelPlus() const;
-    ScannedVariables* scannedVariables()const{return _scannedVariables;};
-    OptVariables *optimizedVariables()const{return _optimizedVariables;};
-    OptObjectives *objectives()const{return _objectives;};
-    BlockSubstitutions *blockSubstitutions()const{return _blockSubstitutions;};
+    ScannedVariables* scannedVariables()const{return _scannedVariables;}
+    OptVariables *optimizedVariables()const{return _optimizedVariables;}
+    OptObjectives *objectives()const{return _objectives;}
+    BlockSubstitutions *blockSubstitutions()const{return _blockSubstitutions;}
 
+    // evaluate function
+    virtual MOOptVector* evaluate(QList<ModModelPlus*> models, Variables *overwritedVariables, ScannedVariables*, bool &ok);
+
+    //Models functions
+    QStringList models() const;
+    bool addModel(QString model,ModPlusCtrls* ctrls=NULL);
+    bool addModel(ModModelPlus* model);
+    bool removeModel(QString model);
 
     //overwrited functions (also virtual since other problems might inherit Optimization)
     virtual bool checkBeforeComp(QString & error);
-    virtual Result* launch(ProblemConfig _config);
+    virtual Result* launch(ProblemConfig config);
     virtual void store(QString destFolder, QString tempDir);
     virtual QDomElement toXmlData(QDomDocument & doc);
 
     //specific functions
-    void createSubExecs(QList<ModModelPlus*> & _subMod, QList<BlockSubstitutions*> & _subBlocks);
+    void createSubExecs(QList<QList<ModModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks);
 
     //algo functions
     int getiCurAlgo();
@@ -117,23 +124,24 @@ public:
     void setiCurAlgo(int);
 
     // controlers
-    ModPlusCtrl* ctrl() const;
-    ModPlusCtrls* ctrls() const;
-    ModPlusCtrl::Type  ctrlType() const;
-    void setCtrlType(ModPlusCtrl::Type);
-
-
-    //block substitution
-    void setBlockSubstitutions(BlockSubstitutions*);
+    ModPlusCtrl* ctrl(QString model) const;
+    ModPlusCtrls* ctrls(QString model) const;
+    QMap<QString, ModPlusCtrls *> ctrls() const;
+    ModPlusCtrl::Type  ctrlType(QString model) const;
+    void setCtrlType(QString model,ModPlusCtrl::Type);
 
     int nbScans();
 
     // recompute points
     virtual void recomputePoints(OptimResult*, std::vector<int>,bool forceRecompute = false);
 
+
 public slots :
     void onQuickEndAsked();
 
+signals :
+    void addedModel(QString);
+    void removedModel(QString);
 
 };
 

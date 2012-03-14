@@ -45,24 +45,28 @@
 #include "LowTools.h"
 
 
-Optimization::Optimization(Project* project,ModModelPlus* modModelPlus)
+Optimization::Optimization(Project* project,QStringList models)
     :Problem((ProjectBase*)project)
 {
     _omProject = project;
-    _modModelPlus = modModelPlus;
+
 
     _name="Optimization";
-    _optimizedVariables = new OptVariables(true,modModelPlus->modModelName());
-    _scannedVariables = new ScannedVariables(true,modModelPlus->modModelName());
-    _objectives = new OptObjectives(true,modModelPlus->modModelName());
+    _optimizedVariables = new OptVariables(true);
+    _scannedVariables = new ScannedVariables(true);
+    _objectives = new OptObjectives(true);
     _blockSubstitutions = new BlockSubstitutions();
 
     _algos = OptimAlgoUtils::getNewAlgos(this);
 
     _iCurAlgo=0;
 
-    // ctrls
-    _ctrls = new ModPlusCtrls(project,modModelPlus);
+
+    // models and ctrls
+    for(int i=0;i<models.size();i++)
+    {
+        this->addModel(models.at(i));
+    }
 
 }
 
@@ -70,13 +74,19 @@ Optimization::Optimization(const Optimization &optim)
     :Problem(optim)
 {
 
-    _modModelPlus = optim._modModelPlus;
+
 
     _optimizedVariables = optim._optimizedVariables->clone();
     _scannedVariables = optim._scannedVariables->clone();
     _objectives = optim._objectives->clone();
     _blockSubstitutions = optim._blockSubstitutions->clone();
-    _ctrls = optim._ctrls->clone();
+
+    QString curModel;
+    for(int i=0;i<optim._models.size();i++)
+    {
+        curModel = optim._models.at(i);
+        this->addModel(curModel,optim._ctrls.value(curModel)->clone());
+    }
 
 
     //cloning algos
@@ -103,8 +113,78 @@ Optimization::~Optimization()
     delete _optimizedVariables;
     delete _objectives;
     delete _blockSubstitutions;
-    delete _ctrls;
 
+    for(int i=0;i<_ctrls.values().size();i++)
+    {
+        delete _ctrls.values().at(i);
+    }
+
+}
+
+/**
+  * This function is used to evaluate a single configuration. It is called within optimization process, in fitness evaluation function.
+  * @sa EAStdOptimizationEval
+  * Returns a vector of final variables.
+  * @param ok : is set to true if evaluation is successful, to false otherwise.
+  */
+
+MOOptVector *Optimization::evaluate(QList<ModModelPlus*> models, Variables *overwritedVariables, ScannedVariables *scannedVariables, bool &ok)
+{
+    ok = true;
+    bool useScan = (scannedVariables->size()>0);
+    bool usePoints = false;
+    MOOptVector* resultVariables = new MOOptVector(true,useScan,usePoints);
+
+    for(int iM=0;iM<models.size();iM++)
+    {
+        if(ok)
+        {
+            /************************************
+            Creating a new OneSimulation
+            ************************************/
+            QString modelName = models.at(iM)->modModelName();
+            OneSimulation *oneSim = new OneSimulation(_omProject,models.at(iM));
+            oneSim->_filesToCopy = this->_filesToCopy;
+
+
+            int nbVar = overwritedVariables->size();
+            Variable* curVar;
+
+            // copying relevant overwriting variables
+            for(int i=0;i<nbVar;i++)
+            {
+                curVar = overwritedVariables->at(i);
+                if(curVar->model()==modelName)
+                {
+                    oneSim->overwritedVariables()->addItem(curVar->clone());
+                }
+            }
+
+            // copying relevant scanned variables
+            for(int iS=0;iS<scannedVariables->size();iS++)
+            {
+                if(scannedVariables->at(iS)->model()==modelName)
+                {
+                    oneSim->scannedVariables()->addItem(scannedVariables->at(iS)->clone());
+                }
+            }
+
+
+            /************************************
+            Launch OneSimulation
+            ************************************/
+            ProblemConfig config();
+            OneSimResult *result =  dynamic_cast<OneSimResult*>(oneSim->launch(config));
+            ok = ok && result->isSuccess();
+            resultVariables->append(*result->finalVariables(),true);
+
+            // free memory
+            delete oneSim;
+            delete result;
+        }
+    }
+
+    return resultVariables;
 }
 
 
@@ -113,96 +193,82 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
 {
     // initialization
     _omProject = project;
-    _modModelPlus = NULL;
     _algos = OptimAlgoUtils::getNewAlgos(this);
 
     // look for modmodelplus
-    QDomElement domInfos;
     ok = !domProblem.isNull();
     ok = ok && (domProblem.tagName()==Optimization::className());
     if(ok)
     {
-        domInfos = domProblem.firstChildElement("Infos");
-        QString modelName = domInfos.attribute("model");
 
-        // Find modModelPlus
-        ModModel* modModel = _omProject->findModModel(modelName);
-        if(modModel == NULL)
-        {
-            InfoSender::instance()->sendWarning("Unable to find model "+modelName);
-            ok = false;
-
-        }
-        _modModelPlus = project->modModelPlus(modelName);
-    }
-
-    if(!_modModelPlus)
-    {
-        ok = false;
-        //initialize default(otherwise seg fault in destructor)
-        _optimizedVariables = new OptVariables(true);
-        _scannedVariables = new ScannedVariables(true);
-        _objectives = new OptObjectives(true);
-        _blockSubstitutions = new BlockSubstitutions();
-        _ctrls = new ModPlusCtrls(project,NULL);
-    }
-    else
-    {
-
-        // finishing initialization
-        _optimizedVariables = new OptVariables(true,_modModelPlus->modModelName());
-        _scannedVariables = new ScannedVariables(true,_modModelPlus->modModelName());
-        _objectives = new OptObjectives(true,_modModelPlus->modModelName());
-        _blockSubstitutions = new BlockSubstitutions();
-
-        _iCurAlgo=0;
-
-
-        // Infos
+        QDomElement  domInfos = domProblem.firstChildElement("Infos");
         this->setName(domInfos.attribute("name", "" ));
 
-        // Optimized Variables
-        QDomElement domOptVars = domProblem.firstChildElement("OptimizedVariables");
-        this->optimizedVariables()->setItems(domOptVars);
-
-        // Objectives
-        QDomElement domObj = domProblem.firstChildElement("Objectives");
-        this->objectives()->setItems(domObj);
-
-        // Scanned Variables
-        QDomElement domScann = domProblem.firstChildElement("ScannedVariables");
-        this->scannedVariables()->setItems(domScann);
-
-        // Files to copy
-        QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
-        QString text = cFilesToCopy.text();
-        this->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
-
-        // Controlers
-        QDomElement cControlers = domProblem.firstChildElement("Controlers");
-        _ctrls = new ModPlusCtrls(project,_modModelPlus,cControlers);
-
-        // BlockSubstitutions
-        QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
-        this->setBlockSubstitutions(new BlockSubstitutions(project,_modModelPlus,domBlockSubs));
-
-        // EA
-        QDomElement domEA = domProblem.firstChildElement("EA");
-        QDomElement domEAInfos = domEA.firstChildElement("Infos");
-        if(!domEAInfos.isNull())
+        QDomElement domModels = domProblem.firstChildElement("Models");
+        QDomElement domModel = domModels.firstChildElement("Model");
+        while(!domModel.isNull())
         {
-            this->setiCurAlgo(domEAInfos.attribute("num", "" ).toInt());
+            QString modelName = domModel.attribute("name");
+            ModModelPlus* model = project->modModelPlus(modelName);
+
+            // read corresponding controlers
+            QDomElement domCtrls = domModel.firstChildElement(ModPlusCtrls::className());
+            ModPlusCtrls* ctrls = new ModPlusCtrls(project,model,domCtrls);
+
+            // add model and controlers
+            this->addModel(modelName,ctrls);
+
+
+            domModel = domModel.nextSiblingElement("Model");
         }
-        QDomElement domEAParameters = domEA.firstChildElement("Parameters");
-        if(!domEAParameters.isNull())
-        {
-            this->getCurAlgo()->_parameters->update(domEAParameters);
-        }
+
+    }
+
+
+    //initialize default(otherwise seg fault in destructor)
+    _optimizedVariables = new OptVariables(true);
+    _scannedVariables = new ScannedVariables(true);
+    _objectives = new OptObjectives(true);
+
+
+
+    // Optimized Variables
+    QDomElement domOptVars = domProblem.firstChildElement("OptimizedVariables");
+    this->optimizedVariables()->setItems(domOptVars);
+
+    // Objectives
+    QDomElement domObj = domProblem.firstChildElement("Objectives");
+    this->objectives()->setItems(domObj);
+
+    // Scanned Variables
+    QDomElement domScann = domProblem.firstChildElement("ScannedVariables");
+    this->scannedVariables()->setItems(domScann);
+
+    // Files to copy
+    QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
+    QString text = cFilesToCopy.text();
+    this->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
+
+    // BlockSubstitutions
+    QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
+    _blockSubstitutions = new BlockSubstitutions(project,domBlockSubs);
+
+    // EA
+    QDomElement domEA = domProblem.firstChildElement("EA");
+    QDomElement domEAInfos = domEA.firstChildElement("Infos");
+    if(!domEAInfos.isNull())
+    {
+        this->setiCurAlgo(domEAInfos.attribute("num", "" ).toInt());
+    }
+    QDomElement domEAParameters = domEA.firstChildElement("Parameters");
+    if(!domEAParameters.isNull())
+    {
+        this->getCurAlgo()->_parameters->update(domEAParameters);
     }
 }
 
 
-/** Launch optimization procedure. checkBeforeComp() is not called in this function.
+/** Launch Optimization procedure. checkBeforeComp() is not called in this function.
 *   Be sure it has been called previously.
 */
 bool Optimization::checkBeforeComp(QString & error)
@@ -269,7 +335,7 @@ bool Optimization::checkBeforeComp(QString & error)
         nbErrors++;
     }
 
-    // check if optimization algorithm compatible with objectives number
+    // check if Optimization algorithm compatible with objectives number
     if((_objectives->size()>1) && ! getCurAlgo()->acceptMultiObjectives())
     {
         ok = false;
@@ -308,10 +374,10 @@ bool Optimization::checkBeforeComp(QString & error)
 
 
 
-/** Description : Launch optimization procedure. checkBeforeComp() is not called in this function.
+/** Description : Launch Optimization procedure. checkBeforeComp() is not called in this function.
 *   Be sure it has been called previously.
 */
-Result* Optimization::launch(ProblemConfig _config)
+Result* Optimization::launch(ProblemConfig config)
 {
 
     // first create temp dir
@@ -320,14 +386,18 @@ Result* Optimization::launch(ProblemConfig _config)
         dir.rmdir(_project->tempPath());
     dir.mkdir(_project->tempPath());
 
+
+    EABase* algo = ((EABase*)getCurAlgo());
+
 #ifdef USEBLOCKSUB
     //create different dymosim executable for blocksubstitutions
-    QList<ModModelPlus*> _subModels;
-    QList<BlockSubstitutions*> _subBlocks;
-    createSubExecs(_subModels,_subBlocks);
+    QList<ModModelPlus*> subModels;
+    QList<BlockSubstitutions*> subBlocks;
+    createSubExecs(subModels,subBlocks);
+    algo->setSubModels(subModels,subBlocks);
 #endif
 
-    OptimResult* result = dynamic_cast<OptimResult*>(((EABase*)getCurAlgo())->launch(_project->tempPath()));
+    OptimResult* result = dynamic_cast<OptimResult*>(algo->launch(_project->tempPath()));
 
     result->setName(this->name()+" result");
 
@@ -382,90 +452,94 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
                 }
             }
 
-            //*************************************************************
-            //Creating a new OneSimulation problem based on same model
-            //and specifying overwrited variables from optimized variable values
-            //*************************************************************
-            OneSimulation *oneSim = new OneSimulation(_omProject,result->modModelPlus());
-            Variable* overVar;
-            for(int iOverVar=0;iOverVar < result->optVariablesResults()->size();iOverVar++)
+            for(int iM=0;iM<_models.size();iM++)
             {
-                overVar = new Variable();
-                for(int iField=0;iField<Variable::nbFields;iField++)
+                //*************************************************************
+                //Creating a new OneSimulation problem based on same model
+                //and specifying overwrited variables from optimized variable values
+                //*************************************************************
+                ModModelPlus* modelPlus = _omProject->modModelPlus(_models.at(iM));
+                OneSimulation *oneSim = new OneSimulation(_omProject,modelPlus);
+                Variable* overVar;
+                for(int iOverVar=0;iOverVar < result->optVariablesResults()->size();iOverVar++)
                 {
-                    overVar->setFieldValue(iField,result->optVariablesResults()->at(iOverVar)->getFieldValue(iField));
+                    overVar = new Variable();
+                    for(int iField=0;iField<Variable::nbFields;iField++)
+                    {
+                        overVar->setFieldValue(iField,result->optVariablesResults()->at(iOverVar)->getFieldValue(iField));
+                    }
+                    overVar->setFieldValue(Variable::VALUE,result->optVariablesResults()->at(iOverVar)->finalValue(0,iPoint));
+                    oneSim->overwritedVariables()->items.push_back(overVar);
                 }
-                overVar->setFieldValue(Variable::VALUE,result->optVariablesResults()->at(iOverVar)->finalValue(0,iPoint));
-                oneSim->overwritedVariables()->items.push_back(overVar);
-            }
 
-            // Add scannedVariables
-            oneSim->scannedVariables()->cloneFromOtherVector(this->scannedVariables());
-
-            //****************************************************
-            // Launch simulation
-            //****************************************************
-            ProblemConfig config;
-            OneSimResult *oneSimRes = dynamic_cast<OneSimResult*>(oneSim->launch(config));
-
-            if(!oneSimRes->isSuccess())
-            {
-                InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTFAILED,QString::number(iPoint)));
-            }
-            else
-            {
-                InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTSUCCESS,QString::number(iPoint)));
+                // Add scannedVariables
+                oneSim->scannedVariables()->cloneFromOtherVector(this->scannedVariables());
 
                 //****************************************************
-                // Filing recomputedVariables values
+                // Launch simulation
                 //****************************************************
-                VariableResult* newVariableResult;
-                VariableResult* curFinalVariable;
-                int iRecVar;
-                for(int iVar=0;iVar<oneSimRes->finalVariables()->size();iVar++)
+                ProblemConfig config;
+                OneSimResult *oneSimRes = dynamic_cast<OneSimResult*>(oneSim->launch(config));
+
+                if(!oneSimRes->isSuccess())
                 {
-                    curFinalVariable = oneSimRes->finalVariables()->at(iVar);
-                    // look in recomputed variables
-                    iRecVar = result->recomputedVariables()->findItem(curFinalVariable->name());
-                    if(iRecVar>-1)
-                    {
-                        result->recomputedVariables()->at(iRecVar)->setFinalValuesAtPoint(iPoint,
-                                                                                          curFinalVariable->finalValuesAtPoint(0));
-                    }
-                    else
-                    {
-                        // copy from a Variable cast to avoid finalValues copying
-                        newVariableResult =  new VariableResult(*dynamic_cast<Variable*>(curFinalVariable));
-                        newVariableResult->setFinalValuesAtPoint(iPoint,
-                                                                 curFinalVariable->finalValuesAtPoint(0));
-                        result->recomputedVariables()->addItem(newVariableResult);
-
-                        QString msg;
-                        msg.sprintf("Variable %s added in recomputed variables list",
-                                    newVariableResult->name().toLatin1().data());
-                        InfoSender::instance()->debug(msg);
-                    }
-                    // update objective value if necessary (should'nt be the case, but if model has been changed)
-                    int iObj = result->optObjectivesResults()->findItem(curFinalVariable->name());
-                    if(iObj>-1)
-                    {
-                        bool objOk=false;
-                        double objValue = VariablesManip::calculateObjValue(this->objectives()->at(iObj),oneSimRes->finalVariables(),objOk);
-                        result->optObjectivesResults()->at(iObj)->setFinalValue(0,iPoint,objValue,objOk);
-                    }
+                    InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTFAILED,QString::number(iPoint)));
                 }
-                //*****************************
-                //Saving results into csv file
-                //*****************************
-                //update scan folders
-                dir.mkdir(pointSaveFolder);
-                QFile file(pointSaveFolder+QDir::separator()+"resultVar.csv");
-                file.open(QIODevice::WriteOnly);
-                QTextStream ts( &file );
-                ts << CSVBase::variableResultToValueLines(result->recomputedVariables(),iPoint);
-                file.close();
+                else
+                {
+                    InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTSUCCESS,QString::number(iPoint)));
 
-                delete oneSimRes;
+                    //****************************************************
+                    // Filing recomputedVariables values
+                    //****************************************************
+                    VariableResult* newVariableResult;
+                    VariableResult* curFinalVariable;
+                    int iRecVar;
+                    for(int iVar=0;iVar<oneSimRes->finalVariables()->size();iVar++)
+                    {
+                        curFinalVariable = oneSimRes->finalVariables()->at(iVar);
+                        // look in recomputed variables
+                        iRecVar = result->recomputedVariables()->findItem(curFinalVariable->name());
+                        if(iRecVar>-1)
+                        {
+                            result->recomputedVariables()->at(iRecVar)->setFinalValuesAtPoint(iPoint,
+                                                                                              curFinalVariable->finalValuesAtPoint(0));
+                        }
+                        else
+                        {
+                            // copy from a Variable cast to avoid finalValues copying
+                            newVariableResult =  new VariableResult(*dynamic_cast<Variable*>(curFinalVariable));
+                            newVariableResult->setFinalValuesAtPoint(iPoint,
+                                                                     curFinalVariable->finalValuesAtPoint(0));
+                            result->recomputedVariables()->addItem(newVariableResult);
+
+                            QString msg;
+                            msg.sprintf("Variable %s added in recomputed variables list",
+                                        newVariableResult->name().toLatin1().data());
+                            InfoSender::instance()->debug(msg);
+                        }
+                        // update objective value if necessary (should'nt be the case, but if model has been changed)
+                        int iObj = result->optObjectivesResults()->findItem(curFinalVariable->name());
+                        if(iObj>-1)
+                        {
+                            bool objOk=false;
+                            double objValue = VariablesManip::calculateObjValue(this->objectives()->at(iObj),oneSimRes->finalVariables(),objOk);
+                            result->optObjectivesResults()->at(iObj)->setFinalValue(0,iPoint,objValue,objOk);
+                        }
+                    }
+                    //*****************************
+                    //Saving results into csv file
+                    //*****************************
+                    //update scan folders
+                    dir.mkdir(pointSaveFolder);
+                    QFile file(pointSaveFolder+QDir::separator()+"resultVar.csv");
+                    file.open(QIODevice::WriteOnly);
+                    QTextStream ts( &file );
+                    ts << CSVBase::variableResultToValueLines(result->recomputedVariables(),iPoint);
+                    file.close();
+
+                    delete oneSimRes;
+                }
             }
         }
         else
@@ -477,19 +551,23 @@ void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool
 }
 
 
-void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockSubstitutions*> & subBlocks)
+void Optimization::createSubExecs(QList<QList<ModModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks)
 {
 
     subModels.clear();
     subBlocks.clear();
 
-    QMultiMap<QString,QString> map;
+    QMultiMap<QString,QString> map; // <orgComponent,subcomponent>
+    QMap<QString,QString> mapModel; //<orgComponent,model>
     // fill map
     for(int i=0; i < _blockSubstitutions->getSize();i++)
     {
         BlockSubstitution *curBlockSub = _blockSubstitutions->getAt(i);
         if(!curBlockSub->_subComponent.isEmpty())
+        {
             map.insert(curBlockSub->_orgComponent,curBlockSub->_subComponent);
+            mapModel.insert(curBlockSub->_orgComponent,curBlockSub->_model);
+        }
     }
 
     int nbOrgs = map.uniqueKeys().size();
@@ -498,6 +576,7 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
     {
         map.insert(map.uniqueKeys().at(i),map.uniqueKeys().at(i));
     }
+
 
     //build first index and maximum index
     QList<int> index, maxIndex;
@@ -509,10 +588,18 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
         maxIndex.push_back(subs.size()-1);
     }
 
-    // genuine mo file information
-    QString oldMoFilePath = _modModelPlus->modModel()->filePath();
-    QFile oldMoFile(oldMoFilePath);
-    QFileInfo oldMoFileInfo(oldMoFile);
+
+    QStringList models = mapModel.values();
+    models.removeDuplicates();
+
+
+
+    // storing genuine mo file paths
+    QStringList oldMoFilePaths;
+    for(int iM=0;iM<models.size();iM++)
+    {
+        oldMoFilePaths.push_back(_omProject->modModelPlus(models.at(iM))->modModel()->filePath());
+    }
 
 
 
@@ -520,6 +607,8 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
     bool oneChange;
     while(!index.isEmpty())
     {
+
+
         // Display case (for debug)
         QString msg = "CASE " + QString::number(iCase) + "\n";
         for(int i=0; i < index.size(); i++)
@@ -535,91 +624,143 @@ void Optimization::createSubExecs(QList<ModModelPlus*> & subModels, QList<BlockS
 
 
         // create folder
-        QString newName = _modModelPlus->modModelName() + "_case_"+QString::number(iCase);
+        QString newName = "case_"+QString::number(iCase);
         QString newFolder = saveFolder()+ QDir::separator() + "SubModels" + QDir::separator() + newName;
         QDir dir(saveFolder());
         dir.mkpath(newFolder);
         QDir newDir(newFolder);
-        QString newMmoFilePath = newDir.absoluteFilePath(newName+".mmo");
 
-        // clone mo file.
-        QString newMoPath = newDir.filePath(oldMoFileInfo.fileName());
-        bool removeExistingMo = newDir.remove(newMoPath);
-        oldMoFile.copy(newMoPath);
 
-        // load file (! will replace previously loaded)
-        _omProject->loadMoFile(newMoPath,false,true);
-
-        // create new modModel
-        ModModel* newModModel = dynamic_cast<ModModel*>(_omProject->modItemsTree()->findItem(_modModelPlus->modModelName()));
-
-        if(newModModel)
+        // clone mo files and load them
+        // and create corresponding modmodelplus
+        QStringList newMoPaths;
+        QStringList newMmoPaths;
+        QMap<QString,ModModelPlus*> newModModels;
+        for(int iM=0;iM<oldMoFilePaths.size();iM++)
         {
+            QFileInfo oldMoFileInfo(oldMoFilePaths.at(iM));
+            QFile oldMoFile(oldMoFilePaths.at(iM));
+
+            QString newMoPath = newDir.filePath(oldMoFileInfo.fileName());
+            QString newMmoPath = newMoPath;
+            newMmoPath = newMmoPath.replace(".mo",".mmo");
+
+            newDir.remove(newMoPath);
+            oldMoFile.copy(newMoPath);
+
+            newMoPaths.append(newMoPath);
+            newMmoPaths.append(newMmoPath);
+
+
+            // load file (! will replace previously loaded)
+            _omProject->loadMoFile(newMoPath,false,true);
+
             // create new modModelPlus
-            ModModelPlus* newModModelPlus = new ModModelPlus(_omProject,newModModel->name());
-            newModModelPlus->setMmoFilePath(newMmoFilePath);
+            ModModelPlus* newModModelPlus = new ModModelPlus(_omProject,models.at(iM));
+            newModModelPlus->setMmoFilePath(newMmoPath);
+            newModModels.insert(models.at(iM),newModModelPlus);
+        }
 
-            // apply blocksubs
-            BlockSubstitutions *curSubBlocks = new BlockSubstitutions();
 
-            oneChange = false;
-            for(int i=0; i<index.size();i++)
+        // apply blocksubs
+        BlockSubstitutions *curSubBlocks = new BlockSubstitutions();
+
+        QMap<QString,bool> changes; // <model,hasChanged>
+        changes.clear();
+        for(int i=0; i<index.size();i++)
+        {
+            QString replacedComp = map.uniqueKeys().at(i);
+            QString replacingComp = map.values(map.uniqueKeys().at(i)).at(index.at(i));
+
+            if(replacedComp != replacingComp)
             {
-                QString replacedComp = map.uniqueKeys().at(i);
-                QString replacingComp = map.values(map.uniqueKeys().at(i)).at(index.at(i));
-
-                if(replacedComp != replacingComp)
+                BlockSubstitution* blockSub = _blockSubstitutions->find(replacedComp,replacingComp);
+                if(blockSub)
                 {
-                    BlockSubstitution* blockSub = _blockSubstitutions->find(replacedComp,replacingComp);
-                    if(blockSub)
-                    {
-                        oneChange =  newModModelPlus->applyBlockSub(blockSub,true) || oneChange ;
-                        curSubBlocks->push_back(blockSub);
-                    }
-                }
-
-            }
-
-            if(oneChange)
-            {
-                bool compiledOk = newModModelPlus->compile(ctrl());
-
-                if(compiledOk)
-                {
-                    // store subModel and subBlocks
-                    subModels.push_back(newModModelPlus);
-                    subBlocks.push_back(curSubBlocks);
-                    _foldersToCopy << newFolder;
-
-                    InfoSender::instance()->send( Info(ListInfo::SUBMODELADDED,newName));
-                }
-                else
-                {
-                    InfoSender::instance()->send( Info(ListInfo::SUBMODELNOTADDED,newName));
+                    ModModelPlus* corrNewModModelPlus = newModModels.value(blockSub->_model);
+                    oneChange =  corrNewModModelPlus->applyBlockSub(blockSub,true) || oneChange ;
+                    curSubBlocks->push_back(blockSub);
+                    changes.insert(blockSub->_model,true);
                 }
             }
         }
+
+        QStringList modelsToCompile = changes.keys(true);// those which have been modified
+        bool compilationOk = true;
+        for(int iM=0;iM<modelsToCompile.size();iM++)
+        {
+            ModModelPlus* modelPlus = newModModels.value(modelsToCompile.at(iM));
+            compilationOk = modelPlus->compile(ctrl(modelsToCompile.at(iM))) && compilationOk;
+        }
+
+        if(compilationOk)
+        {
+
+            // store subModel and subBlocks
+            subModels.push_back(newModModels.values());
+            subBlocks.push_back(curSubBlocks);
+            _foldersToCopy << newFolder;
+
+            InfoSender::instance()->send( Info(ListInfo::SUBMODELADDED,newName));
+        }
+        else
+        {
+            InfoSender::instance()->send( Info(ListInfo::SUBMODELNOTADDED,newName));
+        }
+
+
         iCase++;
         index = LowTools::nextIndex(index,maxIndex);
     }
 
     // reload genuine mo file
     if(iCase>0)
-        _omProject->loadMoFile(oldMoFilePath,false,true);
+    {
+        for(int i=0;i<oldMoFilePaths.size();i++)
+            _omProject->loadMoFile(oldMoFilePaths.at(i),false,true);
+    }
 }
 
-ModModelPlus* Optimization::modModelPlus() const
+QStringList Optimization::models() const
 {
-    return _modModelPlus;
+    return _models;
 }
 
-void Optimization::setBlockSubstitutions(BlockSubstitutions* blockSubstitutions)
+bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
 {
-    if(_blockSubstitutions)
-        delete _blockSubstitutions;
+    if(_models.contains(modelName))
+        return false;
+    else
+    {
+        _models.push_back(modelName);
+        if(ctrls==NULL)
+            _ctrls.insert(modelName,new ModPlusCtrls(_omProject,_omProject->modModelPlus(modelName)));
+        else
+            _ctrls.insert(modelName,ctrls);
 
-    _blockSubstitutions = blockSubstitutions;
+        emit addedModel(modelName);
+        return true;
+    }
 }
+
+bool Optimization::addModel(ModModelPlus *model)
+{
+    return addModel(model->name());
+}
+
+bool Optimization::removeModel(QString model)
+{
+    if(!_models.contains(model))
+        return false;
+
+    delete _ctrls.value(model);
+    _models.removeAll(model);
+    _ctrls.remove(model);
+
+    emit removedModel(model);
+    return true;
+}
+
 
 /**
 * Description Save problem in a folder in XML form.
@@ -639,7 +780,20 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     QDomElement cInfos = doc.createElement("Infos");
     cProblem.appendChild(cInfos);
     cInfos.setAttribute("name", name());
-    cInfos.setAttribute("model", _modModelPlus->modModelName());
+
+    QDomElement cModels = doc.createElement("Models");
+    QString curModel;
+    for(int i=0;i<_models.size();i++)
+    {
+        curModel = _models.at(i);
+        QDomElement cModel = doc.createElement("Model");
+        cModel.setAttribute("name",curModel);
+
+        QDomElement cCtrls = this->ctrls(curModel)->toXmlData(doc);
+        cModel.appendChild(cCtrls);
+        cModels.appendChild(cModel);
+    }
+    cProblem.appendChild(cModels);
 
     // Optimized variables
     QDomElement cOptVariables = _optimizedVariables->toXmlData(doc,"OptimizedVariables");
@@ -656,10 +810,6 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     //BlockSubstitutions
     QDomElement cBlocks = _blockSubstitutions->toXmlData(doc);
     cProblem.appendChild(cBlocks);
-
-    // Controlers
-    QDomElement cControlers = ctrls()->toXmlData(doc);
-    cProblem.appendChild(cControlers);
 
     // Files to copy
     QDomElement cFilesToCopy = doc.createElement("FilesToCopy");
@@ -727,7 +877,7 @@ void Optimization::setiCurAlgo(int iCurAlgo)
 }
 
 /**
-  * This function allows to finish optimization the soonest but getting intermediary results.
+  * This function allows to finish Optimization the soonest but getting intermediary results.
   * e.g. in population algorithms, it stops at the end of the current generation. This allows
   * to keep results (thus differs from ProblemThread::onStopAsked() )
   */
@@ -739,22 +889,40 @@ void Optimization::onQuickEndAsked()
 
 
 
-ModPlusCtrl* Optimization::ctrl() const
+ModPlusCtrl* Optimization::ctrl(QString model) const
 {
-    return _ctrls->currentCtrl();
+    ModPlusCtrls* ctrls = _ctrls.value(model,NULL);
+    if(!ctrls)
+        return NULL;
+    else
+        return ctrls->currentCtrl();
 }
 
-ModPlusCtrls* Optimization::ctrls() const
+ModPlusCtrls* Optimization::ctrls(QString model) const
+{
+    return _ctrls.value(model);
+}
+
+
+QMap<QString,ModPlusCtrls*> Optimization::ctrls() const
 {
     return _ctrls;
 }
 
-ModPlusCtrl::Type  Optimization::ctrlType() const
+
+
+ModPlusCtrl::Type  Optimization::ctrlType(QString model) const
 {
-    return _ctrls->currentCtrlType();
+    ModPlusCtrls* ctrls = _ctrls.value(model,NULL);
+    if(!ctrls)
+        return ModPlusCtrl::OPENMODELICA;
+    else
+        return ctrls->currentCtrlType();
 }
 
-void Optimization::setCtrlType(ModPlusCtrl::Type type)
+void Optimization::setCtrlType(QString model,ModPlusCtrl::Type type)
 {
-    _ctrls->setCurrentCtrlType(type);
+    ModPlusCtrls* ctrls = _ctrls.value(model,NULL);
+    if(ctrls)
+        ctrls->setCurrentCtrlType(type);
 }

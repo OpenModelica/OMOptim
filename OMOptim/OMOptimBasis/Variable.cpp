@@ -57,6 +57,7 @@ Variable::Variable(const Variable & var):MOItem(var)
     _filledFields = var._filledFields;
     _editableFields = var._editableFields;
 }
+
 Variable::Variable(QDomElement & domEl)
 {
     QDomNamedNodeMap attributes = domEl.attributes();
@@ -77,7 +78,6 @@ Variable::Variable(QDomElement & domEl)
 Variable::~Variable(void)
 {
 }
-
 
 Variable* Variable::clone() const
 {
@@ -146,6 +146,8 @@ QVariant Variable::getFieldValue(int ifield, int role) const
         {
         case NAME :
             return _name;
+        case MODEL :
+            return _model;
         case VALUE :
             return _value;
         case DESCRIPTION :
@@ -175,7 +177,6 @@ QVariant Variable::getFieldValue(int ifield, int role) const
             }
             else
                 return _dataType;
-
         default :
             return "unknown field";
         }
@@ -188,6 +189,8 @@ QString Variable::sFieldName(int ifield, int role)
     {
     case NAME :
         return "Name";
+    case MODEL :
+        return "Model";
     case VALUE :
         return "Value";
     case DESCRIPTION :
@@ -221,16 +224,17 @@ QString Variable::name(Variable::NameFormat format) const
     switch(format)
     {
     case Variable::FULL :
-        return _name;
+        if(!_model.isEmpty())
+            return _model+"."+_name;
+        else
+            return _name;
     case Variable::SHORT :
-        return _name.section(".",-1,-1);
-    case Variable::WITHOUTROOT :
-        /// \todo check for grandchildren models
-        return _name.section(".",1,-1);
+        return _name;
     default :
         return QString();
     }
 }
+
 bool Variable::setFieldValue(int ifield,QVariant value)
 {
     try{
@@ -242,6 +246,8 @@ bool Variable::setFieldValue(int ifield,QVariant value)
         case VALUE :
             _value=value.toDouble();
             break;
+        case MODEL :
+            _model = value.toString();
         case DESCRIPTION :
             _description = value.toString();
             break;
@@ -286,6 +292,19 @@ QString Variable::getStrToolTip()
     return result;
 
 }
+
+void Variable::setModel(QString model)
+{
+    _model = model;
+
+    _filledFields << Variable::MODEL;
+}
+
+QString Variable::model() const
+{
+    return _model;
+}
+
 VariableResult::VariableResult()
 {
     for(int i=0;i<Variable::nbFields;i++)
@@ -667,6 +686,8 @@ QVariant OptVariable::getFieldValue(int ifield, int role) const
         {
         case NAME :
             return _name;
+        case MODEL :
+            return _model;
         case VALUE :
             return _value;
         case DESCRIPTION :
@@ -718,6 +739,8 @@ QString OptVariable::sFieldName(int ifield, int role)
     {
     case NAME :
         return "Name";
+    case MODEL :
+        return "Model";
     case VALUE :
         return "Value";
     case DESCRIPTION :
@@ -751,6 +774,9 @@ bool OptVariable::setFieldValue(int ifield,QVariant value)
         switch (ifield)
         {
         case NAME :
+            _name=value.toString();
+            break;
+        case MODEL :
             _name=value.toString();
             break;
         case VALUE :
@@ -909,6 +935,8 @@ QVariant ScannedVariable::getFieldValue(int ifield, int role) const
         {
         case NAME :
             return _name;
+        case MODEL :
+            return _model;
         case VALUE :
             return _value;
         case DESCRIPTION :
@@ -956,6 +984,8 @@ QString ScannedVariable::sFieldName(int ifield, int role)
     {
     case NAME :
         return "Name";
+    case MODEL :
+        return "Model";
     case VALUE :
         return "Value";
     case DESCRIPTION :
@@ -990,6 +1020,9 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
         {
         case NAME :
             _name=value.toString();
+            break;
+        case MODEL :
+            _model=value.toString();
             break;
         case VALUE :
             _value=value.toDouble();
@@ -1031,6 +1064,8 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
         return false;
     }
 }
+
+
 
 
 //

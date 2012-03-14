@@ -51,7 +51,7 @@ class MOOptVector : public MOVector<VariableResult>
 
 public:
 
-    MOOptVector(bool ownner,bool useScan, bool usePoints,QString modelName = QString());
+    MOOptVector(bool ownner,bool useScan, bool usePoints);
 
     QVariant data(const QModelIndex &index, int role) const;
     //void addItem(VariableResult*);
@@ -85,9 +85,6 @@ protected :
 
     int _nbScans;
     int _nbPoints;
-
-    QString _modelName;
-    bool _displayShort;
 
 signals:
     void usePointsChanged();

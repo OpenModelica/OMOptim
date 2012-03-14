@@ -42,31 +42,31 @@
 #include <QtGui/QErrorMessage>
 
 
-WidgetCtrlParameters::WidgetCtrlParameters(ModModelPlus* model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent)
+WidgetCtrlParameters::WidgetCtrlParameters(Project* project, QString model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent)
     : QWidget(parent)
 {
-
+    _project= project;
     _layout = new QGridLayout(this);
     _isResult = isResult;
 
-    QMap<ModModelPlus*,ModPlusCtrls *> tmpCtrls;
+    QMap<QString,ModPlusCtrls *> tmpCtrls;
     tmpCtrls.insert(model,ctrls);
 
     update(tmpCtrls);
 }
 
-WidgetCtrlParameters::WidgetCtrlParameters(QMap<ModModelPlus*,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent)
+WidgetCtrlParameters::WidgetCtrlParameters(Project* project, QMap<QString,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent)
     : QWidget(parent)
 {
+    _project= project;
     _layout = new QGridLayout(this);
     _isResult = isResult;
     update(ctrls);
 }
 
-void WidgetCtrlParameters::update(QMap<ModModelPlus*,ModPlusCtrls *> ctrlsMap)
+void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
 {
-    QList<ModModelPlus*> models = ctrlsMap.keys();
-
+    QStringList models = ctrlsMap.keys();
 
     // delete old widgets
     for(int i=0;i<_widgetsCreated.size();i++)
@@ -87,7 +87,7 @@ void WidgetCtrlParameters::update(QMap<ModModelPlus*,ModPlusCtrls *> ctrlsMap)
     _parametersPbs.clear();
     _compilePbs.clear();
 
-    ModModelPlus* curmodel;
+    QString curmodel;
     ModPlusCtrls *curCtrls;
     int iRow;
     for(int i=0;i<models.size();i++)
@@ -120,7 +120,7 @@ void WidgetCtrlParameters::update(QMap<ModModelPlus*,ModPlusCtrls *> ctrlsMap)
         newCb->setEnabled(!_isResult);
         _comboBoxs.insert(curmodel,newCb);
         iRow = _layout->rowCount()+1;
-        QLabel *newLabel = new QLabel(curmodel->modModelName(),this);
+        QLabel *newLabel = new QLabel(curmodel,this);
         _layout->addWidget(newLabel,iRow,0);
         _layout->addWidget(newCb,iRow,1);
 
@@ -165,7 +165,7 @@ void WidgetCtrlParameters::changedCtrl()
     if(cb)
     {
 
-        ModModelPlus* model = _comboBoxs.key(cb);
+        QString model = _comboBoxs.key(cb);
         ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
 
         if(modelCtrls)
@@ -185,7 +185,7 @@ void WidgetCtrlParameters::openCtrlParameters()
     if(pb)
     {
 
-        ModModelPlus* model = _parametersPbs.key(pb);
+        QString model = _parametersPbs.key(pb);
         ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
 
         if(modelCtrls)
@@ -205,8 +205,10 @@ void WidgetCtrlParameters::compile()
     if(pb)
     {
 
-        ModModelPlus* modelPlus = _compilePbs.key(pb);
-        ModPlusCtrls *modelCtrls = _ctrls.value(modelPlus,NULL);
+        QString model = _compilePbs.key(pb);
+        ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
+
+        ModModelPlus* modelPlus = _project->modModelPlus(model);
 
         if(modelCtrls)
         {
@@ -218,5 +220,6 @@ void WidgetCtrlParameters::compile()
         }
     }
 }
+
 
 

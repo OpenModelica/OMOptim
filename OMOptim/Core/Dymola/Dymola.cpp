@@ -324,7 +324,8 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     line = text->readLine();
     while (!line.isEmpty()){
         newVariable = new Variable();
-        newVariable->setName(modelName+"."+line);
+        newVariable->setName(line);
+        newVariable->setModel(modelName);
         variables->addItem(newVariable);
         line=text->readLine();
     }
@@ -455,7 +456,8 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
     line = text->readLine(); //read line
     while (!line.isEmpty()){
         newVariable = new Variable();
-        newVariable->setName(_modelName+"."+line);
+        newVariable->setName(line);
+        newVariable->setModel(_modelName);
         variables->addItem(newVariable);
         line=text->readLine();
     }
@@ -637,8 +639,8 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
             InfoSender::instance()->debug("Setting variable "+ varName+" in "+fileName);
 
             curVar = variables->at(iV);
-            varName = curVar->name(Variable::FULL);
-            varName = varName.remove(modelName+".");
+            varName = curVar->name(Variable::SHORT);
+            //varName = varName.remove(modelName+".");
             rxLine.setPattern(sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s*#\\s*("+varName+")\\s*");
 
             // extracting only text around varname

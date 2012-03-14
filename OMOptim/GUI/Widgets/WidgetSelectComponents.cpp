@@ -58,20 +58,21 @@ WidgetSelectComponents::WidgetSelectComponents(Project* project,Optimization* pr
     //Tree components
     _ui->treeLibrary->setModel(project->modItemsTree());
 
-    ModItemsTree* modelTree = OMOptimGuiTools::ModItemToTreeView(_project->modLoader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
-                                                           _ui->treeComponents,true);
+    ///@todo make modelTree compatible with several models
+//    ModItemsTree* modelTree = OMOptimGuiTools::ModItemToTreeView(_project->modLoader(),_project->moomc(),*_problem->modModelPlus()->modModel(),
+//                                                           _ui->treeComponents,true);
 
-    // Diagram of blocks
-    _blockScene = new BlockSubsScene(_problem->blockSubstitutions(),_problem->modModelPlus()->modModel(),
-                                     _project->modItemsTree(),true);
-    _ui->graphBlocks->setScene(_blockScene);
-    _ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
-    connect(_blockScene, SIGNAL(zoomRect(QRectF)),
-            this, SLOT(doZoomRect(QRectF)));
-    _blockScene->zoomFit();
+//    // Diagram of blocks
+//    _blockScene = new BlockSubsScene(_problem->blockSubstitutions(),_problem->modModelPlus()->modModel(),
+//                                     _project->modItemsTree(),true);
+//    _ui->graphBlocks->setScene(_blockScene);
+//    _ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
+//    connect(_blockScene, SIGNAL(zoomRect(QRectF)),
+//            this, SLOT(doZoomRect(QRectF)));
+//    _blockScene->zoomFit();
 
-    connect(_ui->pushAddReplaced,SIGNAL(clicked()), this, SLOT(addReplacedComponent()));
-    connect(_ui->pushAddReplacing,SIGNAL(clicked()), this, SLOT(addReplacingComponent()));
+//    connect(_ui->pushAddReplaced,SIGNAL(clicked()), this, SLOT(addReplacedComponent()));
+//    connect(_ui->pushAddReplacing,SIGNAL(clicked()), this, SLOT(addReplacingComponent()));
 }
 
 WidgetSelectComponents::~WidgetSelectComponents()
@@ -82,70 +83,69 @@ WidgetSelectComponents::~WidgetSelectComponents()
 
 void WidgetSelectComponents::addReplacedComponent()
 {
-    QModelIndex index = _ui->treeComponents->currentIndex();
-    ModItem* curComponent = static_cast<ModItem*>(index.internalPointer());
+//    QModelIndex index = _ui->treeComponents->currentIndex();
+//    ModItem* curComponent = static_cast<ModItem*>(index.internalPointer());
 
 
-    QString replacedCompName = curComponent->name(ModItem::FULL);
+//    QString replacedCompName = curComponent->name(ModItem::FULL);
 
-    QStringList alreadyReplaced = _problem->blockSubstitutions()->getReplacedComponentsNames();
+//    QStringList alreadyReplaced = _problem->blockSubstitutions()->getReplacedComponentsNames();
 
-    bool ok=true;
+//    bool ok=true;
 
-    if(!alreadyReplaced.contains(replacedCompName))
-    {
-        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
-                                                               replacedCompName,QString(),true,ok);
+//    if(!alreadyReplaced.contains(replacedCompName))
+//    {
+//        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus()->modModelName(),replacedCompName,QString(),true,ok);
 
-        if(ok)
-            _problem->blockSubstitutions()->add(newBlockSub);
-        else
-            delete newBlockSub;
-    }
+//        if(ok)
+//            _problem->blockSubstitutions()->add(newBlockSub);
+//        else
+//            delete newBlockSub;
+//    }
 
-    if(ok)
-        _blockScene->selectOrg(replacedCompName,true);
+//    if(ok)
+//        _blockScene->selectOrg(replacedCompName,true);
 }
 
 
 void WidgetSelectComponents::addReplacingComponent()
 {
 
-    // looking for selected component to replace
-    QStringList replacedCompNames = _blockScene->getSelectedOrg();
+//    // looking for selected component to replace
+//    QStringList replacedCompNames = _blockScene->getSelectedOrg();
 
-    if(replacedCompNames.size()==1)
-    {
-        // replacing component
-        QModelIndex index = _ui->treeLibrary->currentIndex();
-        ModItem* curReplacingComponent = static_cast<ModItem*>(index.internalPointer());
-        QString replacingCompName = curReplacingComponent->name(ModItem::FULL);
+//    if(replacedCompNames.size()==1)
+//    {
+//        // replacing component
+//        QModelIndex index = _ui->treeLibrary->currentIndex();
+//        ModItem* curReplacingComponent = static_cast<ModItem*>(index.internalPointer());
+//        QString replacingCompName = curReplacingComponent->name(ModItem::FULL);
 
-        // look for an existing but empty block
-        bool ok;
-        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus(),_problem->modModelPlus()->connections(),
-                                                               replacedCompNames.at(0),replacingCompName,true,ok);
+//        // look for an existing but empty block
+//        bool ok;
+//        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus()->modModelName(),
+//                                                               replacedCompNames.at(0),replacingCompName,true,ok);
 
-        if(!ok)
-            delete newBlockSub;
-        else
-        {
-            if(openConnections(newBlockSub))
-            {
-                _problem->blockSubstitutions()->add(newBlockSub);
+//        if(!ok)
+//            delete newBlockSub;
+//        else
+//        {
+//            if(openConnections(newBlockSub))
+//            {
+//                _problem->blockSubstitutions()->add(newBlockSub);
 
-                // refreshing gui
-                //actualizeReplacingComponentList();
-                _blockScene->selectSub(replacedCompNames.at(0),replacingCompName,true);
-            }
-        }
-    }
-    else
-    {
-        QMessageBox msgBox;
-        msgBox.setText("Please select one and only one component to replace.");
-        msgBox.exec();
-    }
+//                // refreshing gui
+//                //actualizeReplacingComponentList();
+//                _blockScene->selectSub(replacedCompNames.at(0),replacingCompName,true);
+//            }
+//        }
+//    }
+//    else
+//    {
+//        QMessageBox msgBox;
+//        msgBox.setText("Please select one and only one component to replace.");
+//        msgBox.exec();
+//    }
 }
 
 bool WidgetSelectComponents::openConnections(BlockSubstitution* blockSub)

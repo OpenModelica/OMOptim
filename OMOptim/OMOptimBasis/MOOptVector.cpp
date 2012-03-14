@@ -41,7 +41,7 @@
 #include "MOOptVector.h"
 
 
-MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints,QString modelName)
+MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints)
     :MOVector<VariableResult>(owner)
 {
     _useScan = useScan;
@@ -53,8 +53,6 @@ MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints,QString modelNa
     _nbScans = 0;
     _nbPoints = 0;
 
-    _modelName = modelName;
-    _displayShort = true;
 
     connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
@@ -119,17 +117,6 @@ QVariant MOOptVector::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid()) return QVariant();
 
-    if(index.isValid()
-            && (index.column()== VariableResult::NAME)
-            && (role==Qt::DisplayRole)
-            && _displayShort)
-    {
-        QString shortName = items.at(index.row())->name();
-        shortName = shortName.remove(QRegExp("^"+_modelName+"."));
-        return QVariant(shortName);
-    }
-
-
     if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
 
@@ -173,7 +160,7 @@ bool MOOptVector::isAvailablePoint(int iVar,int iScan,int iPoint) const
 MOOptVector* MOOptVector::clone() const
 {
 
-    MOOptVector* newVector = new MOOptVector(_owner,_useScan,_usePoints,_modelName);
+    MOOptVector* newVector = new MOOptVector(_owner,_useScan,_usePoints);
 
     int i;
     VariableResult* newItem;
