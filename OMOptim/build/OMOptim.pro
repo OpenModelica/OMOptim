@@ -23,9 +23,9 @@ win32 {
     PRE_TARGETDEPS += $$VERSION_HEADER
     QMAKE_EXTRA_TARGETS += versiontarget
 
-    include(../build/OMOptim.windowsconfig.in)
+    include(OMOptim.windowsconfig.in)
 }else {
-    include(../build/OMOptim.config)
+    include(OMOptim.config)
 }
 
 INCLUDEPATH += . \

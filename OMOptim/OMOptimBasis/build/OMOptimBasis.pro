@@ -5,9 +5,9 @@ CONFIG += staticlib warn_off
 QT +=  core gui xml
 
 win32 {
-    include(../build/OMOptimBasis.windowsconfig.in)
+    include(OMOptimBasis.windowsconfig.in)
 }else {
-    include(../build/OMOptimBasis.config)
+    include(OMOptimBasis.config)
 }
 
 CONFIG(debug, debug|release){
