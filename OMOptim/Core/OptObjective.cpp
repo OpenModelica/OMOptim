@@ -144,8 +144,8 @@ bool OptObjective::check(QString &error)
 
     //if(type==FIXED)
     //{
-    //	error.sprintf("Objective value is considered as a model input. Its value probably won't be affected by variables modification");
-    //	ok = false;
+    //  error.sprintf("Objective value is considered as a model input. Its value probably won't be affected by variables modification");
+    //  ok = false;
     //}
 
     return ok;

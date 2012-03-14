@@ -57,11 +57,11 @@ public :
                                  int &nbDouble,int &nbInt,int &nbBool);
 
 
-    //inline static void setBounds(VariableDet*,
-    //					   QVector<QVector< int> > &index,
-    //					  std::vector<eoRealInterval> &doubleBounds,
-    //						std::vector<eoIntInterval> &intBounds,
-    //						int &nbDouble,int &nbInt,int &nbBool);
+//    inline static void setBounds(VariableDet*,
+//                                           QVector<QVector< int> > &index,
+//                                          std::vector<eoRealInterval> &doubleBounds,
+//                                                std::vector<eoIntInterval> &intBounds,
+//                                                int &nbDouble,int &nbInt,int &nbBool);
 };
 
 
