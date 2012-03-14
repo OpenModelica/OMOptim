@@ -1,6 +1,7 @@
 
 ## defines qwthome when OMDEV not defined : use PluginEIDev
-isEmpty($$(OMDEV)){
+QWTHOME = $$(OMDEV)
+isEmpty(QWTHOME){
     QWTHOME = "$$(PLUGINEIDEV)/qwt-5.2.1-mingw"
 }else{
     QWTHOME = "$$(OMDEV)/lib/qwt-5.2.1-mingw"
