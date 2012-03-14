@@ -72,7 +72,6 @@ public slots :
         void changedCtrl();
         void openCtrlParameters();
         void compile();
-        void onModelsChanged();
 
 
  private :
