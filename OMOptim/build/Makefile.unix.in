@@ -31,5 +31,5 @@ $(NAME).config: $(NAME).config.in
 
 clean:
 	test ! -f Makefile || $(MAKE) -f Makefile clean
-	rm -f *.o
+	rm -f *.o *.a OMOptim
 
