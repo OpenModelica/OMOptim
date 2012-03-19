@@ -276,6 +276,21 @@ void MOOptVector::addItem(VariableResult* item)
     endInsertRows();
 }
 
+VariableResult *MOOptVector::findVariable(QString model, QString varName)
+{
+    int iVar=0;
+    bool found = 0;
+    while(!found && (iVar<this->size()))
+    {
+        found = ((this->at(iVar)->name()==varName) && (this->at(iVar)->model()==model));
+    }
+    if(found)
+        return this->at(iVar);
+    else
+        return NULL;
+
+}
+
 QString MOOptVector::toCSV(int iPoint)
 {
     QString csv;
