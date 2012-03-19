@@ -730,6 +730,8 @@ bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
 {
     if(_models.contains(modelName))
         return false;
+    if(_ctrls.contains(modelName)&&(ctrls==NULL))
+        return false;
     else
     {
         _models.push_back(modelName);
@@ -773,7 +775,7 @@ void Optimization::store(QString destFolder, QString tempDir)
 QDomElement Optimization::toXmlData(QDomDocument & doc)
 {
 
-    QDomElement cProblem = doc.createElement(getClassName());
+    QDomElement cProblem = doc.createElement(Optimization::className());
     //***********************
     // Problem definition
     //***********************

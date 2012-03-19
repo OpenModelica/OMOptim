@@ -95,3 +95,14 @@ void InfoSender::send(Info info)
         emit sent(info);
 }
 
+void InfoSender::sendCurrentTask(QString msg)
+{
+    instance()->send(Info(msg,ListInfo::NORMAL2));
+    instance()->setCurrentTask(msg);
+}
+
+void InfoSender::eraseCurrentTask()
+{
+    instance()->sendCurrentTask(QString());
+}
+

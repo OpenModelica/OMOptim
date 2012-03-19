@@ -70,7 +70,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     if(arch.size()==0)
         return NULL;
 
-    OptimResult *result = new OptimResult(project,*problem,problem->getCurAlgo()->clone());
+    OptimResult *result = new OptimResult(project,*problem);
     result->setName(problem->name()+" result");
     result->_subBlocks = subBlocks;
 

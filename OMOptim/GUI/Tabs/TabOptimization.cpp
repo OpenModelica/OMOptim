@@ -65,7 +65,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
 #endif
 
         _widgetOptParameters = new WidgetOptParameters(_project,_problem,false,this);
-        addDockWidget("Optimization",_widgetOptParameters,_widgetSelectOptVars);
+        addDockWidget("Parameters",_widgetOptParameters,_widgetSelectOptVars);
     
         _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
         _widgetFilesList->setInfos("Select here files needed for simulation to perform. Those would be copied in temporary directory along with simulation executable.");

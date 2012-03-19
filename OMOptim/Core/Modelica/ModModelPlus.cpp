@@ -66,7 +66,7 @@ ModModelPlus::ModModelPlus( Project* project,QString modModelName)
     _project = project;
     _moomc = _project->moomc();
     _modModelName = modModelName;
-    _variables = new Variables(this);
+    _variables = new Variables(true);
     _connections = new ModelicaConnections(_project->modItemsTree());
     _modifiers = new MOVector<ModelicaModifier>(true);
 
@@ -204,7 +204,7 @@ Variables * ModModelPlus::variables()
 */
 Variables* ModModelPlus::variables(ModItem* element)
 {
-    Variables* elVars = new Variables(this);
+    Variables* elVars = new Variables(false);
     QString elName = element->name();
     QString curElName;
     Variable* curVar;

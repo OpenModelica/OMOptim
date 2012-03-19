@@ -16,7 +16,7 @@ public :
     QWidget* createResultTab(Result *,QWidget* parent);
 
 
-    virtual ModelNeeds modelNeeds(){return ONEMODEL;}
+    virtual ModelNeeds modelNeeds(QString){return ONEMODEL;}
     virtual QStringList problemTypes(){return QStringList(OneSimulation::className());}
     QString name(){return OneSimulation::className();}
     virtual Problem* loadProblem(QFileInfo saveFile,const QDomElement & domOMCase,ProjectBase *);

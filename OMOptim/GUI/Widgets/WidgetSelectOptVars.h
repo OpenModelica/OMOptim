@@ -70,6 +70,7 @@ public:
 public:
     Ui::WidgetSelectOptVarsClass *_ui;
 
+    void addPermanentVar(Variable*);
 
 public slots :
     void actualizeGui();
@@ -88,7 +89,8 @@ private:
     Optimization* _problem;
     Project* _project;
     bool _isEditable;
-    Variables *_allModelsVars;
+    Variables *_allModelsVars; /// Variables of optimization models
+    Variables *_permanentVars; /// Variables that do not come from models
 
     QSortFilterProxyModel *_variableProxyModel;
     QSortFilterProxyModel *_optVariableProxyModel;

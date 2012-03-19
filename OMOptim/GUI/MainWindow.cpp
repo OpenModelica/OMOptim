@@ -1049,13 +1049,13 @@ void MainWindow::onPushedNewProblem()
         QStringList modelsList;
         if(interface)
         {
-            switch(interface->modelNeeds())
+            switch(interface->modelNeeds(problemType))
             {
             case ProblemInterface::NOMODEL:
                 break;
             case ProblemInterface::ONEMODEL:
             case ProblemInterface::SEVERALMODELS:
-                widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),interface->modelNeeds(),this);
+                widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),interface->modelNeeds(problemType),this);
                 if(widgetSelect->exec()==QDialog::Accepted)
                 {
                     QList<ModModel*> models = widgetSelect->_selectedModels;
@@ -1152,10 +1152,12 @@ void MainWindow::increaseStProgressBar()
 
 void MainWindow::setStatusBarText(QString text)
 {
+    _statusBar->setVisible(true);
     _statusBar->showMessage(text);
 }
 
 void MainWindow::eraseStatusBarText()
 {
+    _statusBar->hide();
     _statusBar->clearMessage();
 }

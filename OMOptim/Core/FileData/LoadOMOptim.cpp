@@ -186,7 +186,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     {
         QFileInfo fileinfo = QFileInfo(pluginsPaths.at(i));
         if (!fileinfo.exists())
-            InfoSender::instance()->sendError("Plugin file does not exist : "+modelMmoFilePaths.at(i));
+            InfoSender::instance()->sendError("Plugin file does not exist : "+pluginsPaths.at(i));
         else
             _project->loadPlugin(pluginsPaths.at(i));
     }

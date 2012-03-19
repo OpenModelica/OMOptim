@@ -74,7 +74,7 @@ public:
 
     void addModels(QStringList);
     void setInfos(const QString &);
-
+    void refreshList();
 
 public slots:
     void addModels();

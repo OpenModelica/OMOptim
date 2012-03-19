@@ -60,8 +60,7 @@ OptimResult::OptimResult():Result()
     _curScan = -1;
 }
 
-OptimResult::OptimResult(Project* project, const Optimization & problem,
-                         OptimAlgo* algo)
+OptimResult::OptimResult(Project* project, const Optimization & problem)
     :Result((ProjectBase*)project,problem)
 {
     _omProject = project;
@@ -80,7 +79,7 @@ OptimResult::OptimResult(Project* project, const Optimization & problem,
     _curPoint = -1;
     _curScan = -1;
 
-    _algo = algo;
+    _algo = problem.getCurAlgo()->clone();
 
 }
 
@@ -110,7 +109,7 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     _curPoint = -1;
     _curScan = -1;
 
-    _algo = problem.getCurAlgo();
+    _algo = problem.getCurAlgo()->clone();
 
     setSuccess(true);
 
@@ -200,6 +199,7 @@ OptimResult::~OptimResult(void)
     delete _optVariablesResults;
     delete _optObjectivesResults;
     delete _recomputedVariables;
+    delete _algo;
 }
 
 void OptimResult::loadOptimValuesFromFrontFile(QString fileName)

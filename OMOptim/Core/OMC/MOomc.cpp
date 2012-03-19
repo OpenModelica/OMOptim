@@ -997,6 +997,8 @@ QStringList MOomc::getDependenciesPaths(QString fileName,bool commentImportPaths
 
 void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
 {
+
+
     bool doLoad = true;
     if(!force)
     {
@@ -1081,6 +1083,8 @@ QStringList MOomc::loadFiles(const QStringList & filePaths)
 
 QString MOomc::loadFile(const QString & filePath)
 {
+    InfoSender::sendCurrentTask("Loading model "+filePath);
+
     QString localFile = filePath;
     localFile = localFile.replace("\\","/");
     QString cmd = QString("loadFile(\"") + localFile + QString("\")");

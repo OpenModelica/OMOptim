@@ -63,7 +63,7 @@ class OptimResult : public Result
 public:
 
     OptimResult();
-    OptimResult(Project*,const Optimization &,OptimAlgo* algo);
+    OptimResult(Project*,const Optimization &);
     OptimResult(Project*,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok);
     OptimResult(const OptimResult &_res);
     virtual ~OptimResult(void);

@@ -159,23 +159,23 @@ protected:
     //****************************
     // Save/ Load functions
     //****************************
-    void save(bool saveAllOMCases);
-    void save(Problem*);
-    void save(Result*);
-    bool load(QString);
+    virtual void save(bool saveAllOMCases);
+    virtual void save(Problem*);
+    virtual void save(Result*);
+    virtual bool load(QString);
 
     //****************************
     // Plugins
     //****************************
-    bool loadPlugin(QString filePath, bool storePath=true,bool forceLoad=true);
-    bool unloadPlugin(QString pluginPath);
-    bool unloadPlugins();
+    virtual bool loadPlugin(QString filePath, bool storePath=true,bool forceLoad=true);
+    virtual bool unloadPlugin(QString pluginPath);
+    virtual bool unloadPlugins();
 
     //****************************
     // Misc
     //****************************
     void createTempDir();
-    bool checkConfiguration();
+    virtual bool checkConfiguration();
 
     //****************************
     // Slots

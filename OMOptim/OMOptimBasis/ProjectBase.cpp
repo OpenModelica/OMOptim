@@ -40,6 +40,7 @@
   */
 #include "ProjectBase.h"
 #include "MOSettings.h"
+#include <QApplication>
 
 ProjectBase::ProjectBase()
 {
@@ -146,11 +147,21 @@ bool ProjectBase::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
         return false;
 
     // unload if needed
+    QFileInfo pluginFile(pluginPath);
+    QDir appDir(QApplication::applicationDirPath());
+    QString destPluginPath = appDir.absoluteFilePath(pluginFile.fileName());
+
     if(forceLoad && _pluginsLoaded.values().contains(pluginPath))
-        unloadPlugin(pluginPath);
+        unloadPlugin(destPluginPath);
+
+    // copy plugin in application folder since it requires libraries
+    if(pluginPath!=destPluginPath)
+        appDir.remove(pluginFile.fileName());
+    QFile::copy(pluginPath,destPluginPath);
+
 
     // first try to load
-    QPluginLoader loader(pluginPath);
+    QPluginLoader loader(destPluginPath);
     QObject *plugin = loader.instance();
     ProblemInterface* pbInter = qobject_cast<ProblemInterface*>(plugin);
 
@@ -189,7 +200,10 @@ bool ProjectBase::unloadPlugin(QString pluginPath)
 
     _pluginsLoaded.remove(_pluginsLoaded.key(pluginPath));
 
-    QPluginLoader loader(pluginPath);
+    QFileInfo pluginFile(pluginPath);
+    QString loadedFile = QApplication::applicationDirPath()+QDir::separator()+pluginFile.fileName();
+
+    QPluginLoader loader(loadedFile);
     if(loader.unload())
     {
         emit projectChanged();

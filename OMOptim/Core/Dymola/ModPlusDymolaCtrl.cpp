@@ -123,7 +123,7 @@ bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,Q
 
 bool ModPlusDymolaCtrl::readOutputVariablesDSFINAL(MOVector<Variable> *finalVariables, QString dsfinalFile)
 {
-    InfoSender::instance()->send(Info("Reading final variables in "+dsfinalFile,ListInfo::NORMAL2));
+    InfoSender::sendCurrentTask("Reading final variables in "+dsfinalFile);
 
     finalVariables->clear();
     QFileInfo dsfinalInfo = QFileInfo(dsfinalFile);
@@ -139,7 +139,7 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSFINAL(MOVector<Variable> *finalVari
 
 bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariables, QString dsresFile)
 {
-    InfoSender::instance()->send(Info("Reading final variables in "+dsresFile,ListInfo::NORMAL2));
+    InfoSender::sendCurrentTask("Reading final variables in "+dsresFile);
 
     finalVariables->clear();
 
@@ -174,7 +174,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,b
         dsinFile = _modModelPlus->mmoFolder()+QDir::separator()+_dsinFile;
     }
 
-    InfoSender::instance()->send(Info("Reading initial variables in "+dsinFile,ListInfo::NORMAL2));
+    InfoSender::sendCurrentTask("Reading initial variables in "+dsinFile);
 
     initVariables->clear();
 
@@ -199,8 +199,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,b
 
 bool ModPlusDymolaCtrl::compile(const QStringList & moDependencies)
 {
-
-    InfoSender::instance()->send(Info("Compiling model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
+    InfoSender::sendCurrentTask("Compiling model "+_modModelPlus->modModelName());
 
     //QString logFilePath = _mmoFolder+QDir::separator()+"log.html";
     QString logFilePath = _modModelPlus->mmoFolder()+QDir::separator()+"buildlog.txt";
@@ -215,7 +214,9 @@ bool ModPlusDymolaCtrl::compile(const QStringList & moDependencies)
     else
         iMsg = ListInfo::MODELCOMPILATIONFAIL;
 
+    // Infos
     InfoSender::instance()->send(Info(iMsg,_modModelPlus->modModelName(),logFilePath));
+    InfoSender::instance()->eraseCurrentTask();
 
     return success;
 }
@@ -243,7 +244,7 @@ bool ModPlusDymolaCtrl::isCompiled()
 bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy,QStringList moDependencies)
 {
     // Info
-    InfoSender::instance()->send(Info("Simulating model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
+    InfoSender::sendCurrentTask("Simulating model "+_modModelPlus->modModelName());
 
     // clear outputVars
     outputVars->clear();
@@ -251,7 +252,7 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
     bool compileOk = isCompiled();
     // eventually compile model
     if(!compileOk)
-        compileOk = compile();
+        compileOk = compile(moDependencies);
 
     if(!compileOk)
         return false; // compilation failed, useless to pursue

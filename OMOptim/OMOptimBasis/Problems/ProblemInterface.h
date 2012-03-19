@@ -39,7 +39,7 @@ public :
 
     virtual QWidget* createProblemTab(Problem *,QWidget* parent) = 0;
     virtual QWidget* createResultTab(Result*,QWidget* parent) = 0;
-    virtual ModelNeeds modelNeeds() = 0;
+    virtual ModelNeeds modelNeeds(QString problemType) = 0;
     virtual QStringList problemTypes() = 0;
     virtual QString name() = 0;
 

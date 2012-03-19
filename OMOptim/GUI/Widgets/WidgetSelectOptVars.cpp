@@ -59,6 +59,9 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     for(int i=0;i<_problem->models().size();i++)
         _allModelsVars->append(*_project->modModelPlus(_problem->models().at(i))->variables(),false);
 
+    // create permanent vars vector
+    _permanentVars = new Variables(false);
+
     // tables' model
     _optVariableProxyModel = GuiTools::ModelToViewWithFilter(_problem->optimizedVariables(),
                                                              _ui->tableOptimizedVariables,NULL);
@@ -174,6 +177,11 @@ WidgetSelectOptVars::~WidgetSelectOptVars()
 {
     delete _ui;
     delete _allModelsVars;
+}
+
+void WidgetSelectOptVars::addPermanentVar(Variable * var)
+{
+    _permanentVars->addItem(var);
 }
 
 
@@ -362,7 +370,7 @@ void WidgetSelectOptVars::readVariables()
         {
             // already compiled, ask user if we should only read init file or recompile model
             QMessageBox msgBox;
-            msgBox.setText("Model is already compiled.");
+            msgBox.setText("Model "+_problem->models().at(i)+" is already compiled.");
             msgBox.setInformativeText("Would you like to compile it again ?");
             msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
             msgBox.setDefaultButton(QMessageBox::Yes);
@@ -379,6 +387,9 @@ void WidgetSelectOptVars::readVariables()
         }
         curModelPlus->readVariables(_problem->ctrl(_problem->models().at(i)),shouldForceRecompile);
         _allModelsVars->addItems(curModelPlus->variables(),true);
-     }
+    }
+
+    _allModelsVars->addItems(_permanentVars,true);
+
     _ui->tableVariables->resizeColumnsToContents();
 }

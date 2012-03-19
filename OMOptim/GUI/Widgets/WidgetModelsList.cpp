@@ -54,12 +54,8 @@ WidgetModelsList::WidgetModelsList(Project* project,Optimization* problem,QWidge
     _project= project;
     _problem = problem;
 
-    QStringList models = _problem->models();
 
-
-    for(int i=0;i<models.size();i++)
-        _ui->filesList->addItem(models.at(i));
-
+    refreshList();
 
 
     _editable = editable;
@@ -115,6 +111,14 @@ void WidgetModelsList::setInfos(const QString &infos)
         _ui->labelInfos->hide();
     else
         _ui->labelInfos->show();
+}
+
+void WidgetModelsList::refreshList()
+{
+    _ui->filesList->clear();
+    QStringList models = _problem->models();
+    for(int i=0;i<models.size();i++)
+        _ui->filesList->addItem(models.at(i));
 }
 
 void WidgetModelsList::removeModels()

@@ -107,7 +107,7 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
         args.push_back(filePath);
 
         //start process
-        InfoSender::instance()->send(Info("Launching Dymola..."));
+        InfoSender::sendCurrentTask("Launching Dymola...");
         scriptProcess.start(dymolaPath,args);
         bool ok = scriptProcess.waitForFinished(-1);
         if(!ok)

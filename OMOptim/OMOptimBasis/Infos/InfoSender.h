@@ -57,12 +57,16 @@ public:
     void setLogStream(QTextStream* logStream);
     ~InfoSender(void);
 
+    static void eraseCurrentTask();
+    static void sendCurrentTask(QString msg);
+
 public slots :
     void send(Info);
     void debug(QString msg){send(Info(msg,ListInfo::INFODEBUG));}
     void sendWarning(QString msg){send(Info(msg,ListInfo::WARNING2));}
     void sendError(QString msg){send(Info(msg,ListInfo::ERROR2));}
     void sendNormal(QString msg){send(Info(msg,ListInfo::NORMAL2));}
+
 
 
 signals :

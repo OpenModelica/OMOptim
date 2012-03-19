@@ -196,7 +196,7 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool 
 bool ModPlusOMCtrl::compile(const QStringList & moDeps)
 {
 
-    InfoSender::instance()->send(Info("Compiling model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
+    InfoSender::sendCurrentTask("Compiling model "+_modModelPlus->modModelName());
 
     // compile
     QString logFile = _modModelPlus->mmoFolder()+_modModelPlus->modModelName()+".log";
@@ -209,6 +209,7 @@ bool ModPlusOMCtrl::compile(const QStringList & moDeps)
     else
         InfoSender::instance()->send(Info("Model "+_modModelPlus->modModelName()+" failed to compile. See OMC log tab for details.",ListInfo::ERROR2));
 
+    InfoSender::instance()->eraseCurrentTask();
 
     return success;
 }
@@ -236,7 +237,7 @@ bool ModPlusOMCtrl::isCompiled()
 bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy,QStringList moDependencies)
 {
     // Info
-    InfoSender::instance()->send(Info("Simulating model "+_modModelPlus->modModelName(),ListInfo::NORMAL2));
+    InfoSender::sendCurrentTask("Simulating model "+_modModelPlus->modModelName());
 
     // load moDependencies
     _moomc->loadFiles(moDependencies);

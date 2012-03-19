@@ -87,34 +87,6 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     QDomElement domBasic = root.firstChildElement("Basic");
     _project->setName(domBasic.attribute("name", "" ));
 
-    // Mo files
-    QStringList modelMoFilePaths;
-    QDomElement domMoFiles = root.firstChildElement("MoFiles");
-    QDomNodeList listMoFiles = domMoFiles.elementsByTagName("MoFile");
-    for(int i=0;i<listMoFiles.size();i++)
-    {
-        tmpPath = listMoFiles.at(i).toElement().attribute("path", "" );
-        QFileInfo modelFileInfo(tmpPath);
-        if(!modelFileInfo.exists())
-        {
-            modelFileInfo=QFileInfo(projectDir,tmpPath); //stored in relative path
-            if(!modelFileInfo.exists())
-            {
-
-                InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,tmpPath));
-            }
-            else
-            {
-                tmpPath = modelFileInfo.canonicalFilePath();
-                modelMoFilePaths.push_back(tmpPath);
-            }
-        }
-        else
-            modelMoFilePaths.push_back(tmpPath);
-    }
-
-
-
     // Plugins
     QStringList pluginsPaths;
     QDomElement domPlugins = root.firstChildElement("Plugins");
