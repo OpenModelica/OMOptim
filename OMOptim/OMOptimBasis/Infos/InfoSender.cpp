@@ -97,8 +97,7 @@ void InfoSender::send(Info info)
 
 void InfoSender::sendCurrentTask(QString msg)
 {
-    instance()->send(Info(msg,ListInfo::NORMAL2));
-    instance()->setCurrentTask(msg);
+    instance()->send(Info(msg,ListInfo::TASK));
 }
 
 void InfoSender::eraseCurrentTask()

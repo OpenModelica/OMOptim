@@ -213,6 +213,7 @@ void MainWindow::displayInfo(Info i)
     switch(i.infoType)
     {
     case ListInfo::NORMAL2 :
+    case ListInfo::TASK :
         prefix = "";
         suffix = "";
         infoFormat.setForeground(Qt::black);
@@ -266,6 +267,7 @@ void MainWindow::displayInfo(Info i)
     case ListInfo::NORMAL2 :
     case ListInfo::WARNING2 :
     case ListInfo::ERROR2 :
+    case ListInfo::TASK :
         _textLog->setCurrentCharFormat(infoFormat);
         _textLog->append(msg);
         break;
@@ -279,6 +281,11 @@ void MainWindow::displayInfo(Info i)
         _ui->textDebug->setCurrentCharFormat(infoFormat);
         _ui->textDebug->append(msg);
         break;
+    }
+
+    if(i.infoType==ListInfo::TASK)
+    {
+        setStatusBarText(msg);
     }
 }
 

@@ -56,7 +56,8 @@ namespace ListInfo{
         OPTIMNORMAL,
         OPTIMERROR,
         OPTIMWARNING,
-                INFODEBUG
+        INFODEBUG,
+        TASK
     };
 
     enum InfoNum{

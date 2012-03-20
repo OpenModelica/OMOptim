@@ -1,4 +1,4 @@
-
+### PREPROCESSOR and FLAGS
 QMAKE_LFLAGS += -enable-auto-import
 
 DEFINES += __x86__ \
@@ -13,52 +13,23 @@ DEFINES += __x86__ \
     _MBCS \
     QWT_DLL
 
-CONFIG(debug, debug|release){
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
-    -lomniORB414_rtd \
-    -lomnithread34_rtd \
-    -lomniDynamic414_rtd \
-    -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/lib \
-    -leo \
-    -leoutils \
-    -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/lib \
-    -lmoeo \
-    -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
-    -lqwtd5 \
-    -L../bin \
-    -lOMOptimBasisd
-
-INCLUDEPATH  += ../OMOptimBasis/build/debug/generatedfiles/ui
-INCLUDEPATH  += ../build/debug/generatedfiles/ui
-
+### FOLDERS, INCLUDES
 DESTDIR = ../bin
-UI_DIR = debug/generatedfiles/ui
-MOC_DIR = debug/generatedfiles/moc
-RCC_DIR = debug/generatedfiles/rcc
+
+
+CONFIG(debug, debug|release){
+    UI_DIR = debug/generatedfiles/ui
+    MOC_DIR = debug/generatedfiles/moc
+    RCC_DIR = debug/generatedfiles/rcc
+
+    INCLUDEPATH  += ../OMOptimBasis/build/debug/generatedfiles/ui
 
 }else {
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
-    -lomniORB414_rt \
-    -lomnithread34_rt \
-    -lomniDynamic414_rt \
-    -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/lib \
-    -leo \
-    -leoutils \
-    -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/lib \
-    -lmoeo \
-    -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
-    -lqwt5 \
-    -L../bin \
-    -lOMOptimBasis
+    UI_DIR = release/generatedfiles/ui
+    MOC_DIR = release/generatedfiles/moc
+    RCC_DIR = release/generatedfiles/rcc
 
-INCLUDEPATH  += ../OMOptimBasis/build/release/generatedfiles/ui
-INCLUDEPATH  += ../build/release/generatedfiles/ui
-
-DESTDIR = ../bin/
-UI_DIR = release/generatedfiles/ui
-MOC_DIR = release/generatedfiles/moc
-RCC_DIR = release/generatedfiles/rcc
-
+    INCLUDEPATH  += ../OMOptimBasis/build/release/generatedfiles/ui
 }
 
 INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.4-mingw/include \
@@ -67,3 +38,34 @@ INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.4-mingw/include \
                $$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/src/utils \
                $$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/src \
                $$(OMDEV)/lib/paradiseo-mingw/paradiseo-mo/src
+
+### LIBRARIES (order has an impact !!)
+CONFIG(debug, debug|release){
+    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
+    -lomniORB414_rtd \
+    -lomnithread34_rtd \
+    -lomniDynamic414_rtd \
+    -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
+    -lqwtd5 \
+    -L../bin \
+    -lOMOptimBasisd
+}else {
+    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
+    -lomniORB414_rt \
+    -lomnithread34_rt \
+    -lomniDynamic414_rt \
+    -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
+    -lqwt5 \
+    -L../bin \
+    -lOMOptimBasis
+}
+
+LIBS += \
+    -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/lib \
+    -leo \
+    -leoutils \
+    -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/lib \
+    -lmoeo
+
+
+
