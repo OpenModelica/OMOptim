@@ -1,17 +1,15 @@
 #ifndef PROBLEMINTERFACE_H
 #define PROBLEMINTERFACE_H
 
+
 #include <QtPlugin>
-#include <QString>
-#include <QMap>
-#include <QFileInfo>
+#include <QtCore>
+#include <QObject>
 #include <QDomElement>
 
-
 class ProjectBase;
-class MOTabBase;
-class Result;
 class Problem;
+class Result;
 class MOParameters;
 
 /**
@@ -22,6 +20,7 @@ class MOParameters;
   *
   * ProblemInterface is more precisely used to create new problem instances and to get relevant GUI.
 */
+
 class ProblemInterface : public QObject
 {
 public :
@@ -59,19 +58,6 @@ protected :
     MOParameters *_parameters;
  };
 
-class ProblemInterfaces :  public QMap<QString,ProblemInterface*>
-{
-
-public :
-    bool addProblemInterface(ProblemInterface* interface);
-    bool addProblemInterfaces(QList<ProblemInterface*> interfaces);
-    bool removeProblemInterface(QString problemInterfaceName);
-
-    ProblemInterface* interfaceOf(Problem* problem);
-    ProblemInterface* interfaceOf(QString problemType);
-
-    QList<ProblemInterface*> uniqueInterfaces();
-};
 
 
 Q_DECLARE_INTERFACE(ProblemInterface,"com.OMOptim.ProblemInterface/0.1")

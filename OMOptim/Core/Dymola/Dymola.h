@@ -48,18 +48,17 @@
  */
 
 #include <iostream>
-#include <vector>
-#include "Variable.h"
+#include <QtCore>
+
 #include "MOVector.h"
-#include <QtCore/QObject>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QTextStream>
-#include "ModItem.h"
-#include "MOVector.h"
+
+
 #include "vqtconvert.h"
 #include "MOParameter.h"
+#include "VariableType.h"
+
+class Variable;
+class MOParameters;
 
 class Dymola
 {

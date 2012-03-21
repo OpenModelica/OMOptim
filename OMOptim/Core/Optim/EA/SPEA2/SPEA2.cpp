@@ -101,7 +101,7 @@ SPEA2::SPEA2(Project* project,Problem* problem)
     :EABase(project,problem)
 {
     setDefaultParameters();
-};
+}
 
 
 SPEA2::SPEA2(Project* project,Problem* problem,MOParameters* parameters)
@@ -109,7 +109,7 @@ SPEA2::SPEA2(Project* project,Problem* problem,MOParameters* parameters)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
-};
+}
 
 
 SPEA2::SPEA2(const SPEA2 & ea):EABase(ea)

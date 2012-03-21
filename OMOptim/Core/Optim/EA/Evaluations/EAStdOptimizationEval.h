@@ -137,7 +137,9 @@ public:
             //******************************
             Variables* overwritedVariables = new Variables(true);
             Variable *curVar;
-            int iDouble, iBool, iInt;
+            int iDouble = 0;
+            int iBool = 0;
+            int iInt = 0;
 
             int nbVars = _problem->optimizedVariables()->size();
             for(int i=0;i<nbVars;i++)
@@ -163,8 +165,6 @@ public:
 
             // copying relevant scanned variables
             ScannedVariables* scannedVariables = _problem->scannedVariables()->clone();
-
-
 
             /************************************
                     Evaluate
@@ -210,6 +210,8 @@ public:
             // free memory
             //************
             delete resultVariables;
+            delete overwritedVariables;
+            delete scannedVariables;
         }
     }
 

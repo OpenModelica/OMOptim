@@ -49,12 +49,13 @@
 #include "CSV.h"
 #include "reportingHook.h"
 #include "Project.h"
+#include "ModPlusCtrls.h"
+#include "VariablesManip.h"
 
 OneSimulation::OneSimulation(Project* project,ModModelPlus* modModelPlus)
     :Problem((ProjectBase*)project)
 {
 
-    InfoSender::instance()->debug("New onesim");
     _modModelPlus = modModelPlus;
     _name="One Simulation";
     _omProject = project;
@@ -69,7 +70,7 @@ OneSimulation::OneSimulation(Project* project,ModModelPlus* modModelPlus)
 OneSimulation::OneSimulation(const OneSimulation &oneSim)
     :Problem(oneSim)
 {
-    InfoSender::instance()->debug("New onesim");
+    _omProject = oneSim._omProject;
     _modModelPlus = oneSim._modModelPlus;
     _neededFiles = oneSim._neededFiles;
     _filesToCopy = oneSim._filesToCopy;
@@ -163,7 +164,7 @@ Result* OneSimulation::launch(ProblemConfig config)
     // Creating a variables instance containing updated variables
     //MOVector<Variable> inputVariables(*modModelPlus->variables());
     //inputVariables.replaceIn(overwritedVariables);
-    MOVector<Variable> updatedVariables(*_overwritedVariables);
+    Variables updatedVariables(*_overwritedVariables);
 
     OneSimResult* result = new OneSimResult(_omProject,_modModelPlus,*this);
     result->setName(this->name()+" result");

@@ -40,6 +40,8 @@ http://www-cep.ensmp.fr/english/
 */
 #include "ModPlusOMCtrl.h"
 #include "ModModelPlus.h"
+#include "ModModel.h"
+#include "MOParameter.h"
 
 ModPlusOMCtrl::ModPlusOMCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc)
     :ModPlusCtrl(project,modModelPlus,moomc)
@@ -325,6 +327,8 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
         maxNSec=_parameters->at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
 
     OpenModelica::start(tempExeFile,maxNSec);
+
+    InfoSender::eraseCurrentTask();
 
     //getting results
     //Checking if successed

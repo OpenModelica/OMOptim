@@ -38,8 +38,9 @@
   @version
 
   */
+
 #include "OMCThreads.h"
-#include <QtGui/QDialog>
+#include "MOomc.h"
 
 namespace MOThreads
 {

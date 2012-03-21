@@ -55,8 +55,6 @@ OMCase::OMCase(ProjectBase* project)
 
 OMCase::OMCase(const OMCase &omCase)
 {
-
-
     _name = omCase._name;
     _project = omCase._project;
 
@@ -158,11 +156,11 @@ void OMCase::store(QString destFolder, QString tempDir)
     {
         dir.mkpath(_saveFolder);
     }
-    else
-    {
-        LowTools::removeDir(_saveFolder);
-        dir.mkdir(_saveFolder);
-    }
+//    else
+//    {
+//        LowTools::removeDir(_saveFolder);
+//        dir.mkdir(_saveFolder);
+//    }
 
     //copy needed path from old place to new one
     if(tempDir != "")
@@ -218,7 +216,8 @@ void OMCase::rename(QString newName, bool changeFolder)
         }
 
         LowTools::copyDir(oldSaveFolder,newSaveFolder);
-        LowTools::removeDir(oldSaveFolder);
+        if(oldSaveFolder!=newSaveFolder)
+            LowTools::removeDir(oldSaveFolder);
 
         newDir.rename(oldSaveFileName,newSaveFileName);
 

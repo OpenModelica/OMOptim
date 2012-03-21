@@ -1,8 +1,12 @@
 #include <QInputDialog>
+#include <QHeaderView>
+#include <QMenu>
+#include <QMessageBox>
 
 #include "MyTreeView.h"
 #include "OMCases.h"
 #include "ProjectBase.h"
+
 
 MyTreeView::MyTreeView(QWidget* parent)
     :QTreeView(parent)

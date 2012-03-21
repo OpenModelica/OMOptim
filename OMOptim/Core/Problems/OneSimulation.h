@@ -40,13 +40,15 @@
 #if !defined(_ONESIMULATION_H)
 #define _ONESIMULATION_H
 
+#include <QDomElement>
 #include "Problem.h"
-#include "OneSimResult.h"
-#include "ProblemConfig.h"
-#include "VariablesManip.h"
-#include "ModPlusCtrls.h"
+#include "ModPlusCtrl.h"
 
 class Project;
+class ModPlusCtrls;
+class ModModelPlus;
+class Variables;
+class ScannedVariables;
 
 /**
   * @brief Basic problem which consists in simulating a model with modified input variables.
@@ -61,7 +63,7 @@ public:
     OneSimulation(QDomElement domProblem,Project* project,bool &ok);
 
     Problem* clone() const;
-    ~OneSimulation(void);
+    virtual ~OneSimulation(void);
 
     static QString className(){return "OneSimulation";};
     virtual QString getClassName(){return OneSimulation::className();};
@@ -87,7 +89,7 @@ public:
 
     // get functions
     Variables *overwritedVariables() const {return _overwritedVariables;}
-    MOVector<ScannedVariable> *scannedVariables() const {return _scannedVariables;}
+    ScannedVariables *scannedVariables() const {return _scannedVariables;}
     ModModelPlus* modModelPlus() const;
     QString model() const;
 

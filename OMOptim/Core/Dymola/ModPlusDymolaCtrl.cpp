@@ -42,6 +42,8 @@ http://www-cep.ensmp.fr/english/
 #include "ModPlusDymolaCtrl.h"
 #include "reportingHook.h"
 #include "Project.h"
+#include "ModModelPlus.h"
+#include "MOomc.h"
 
 ModPlusDymolaCtrl::ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* moomc)
     :ModPlusCtrl(project,model,moomc)
@@ -134,6 +136,7 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSFINAL(MOVector<Variable> *finalVari
     }
     Dymola::getVariablesFromDsFile(dsfinalFile,finalVariables,_modModelPlus->modModelName());
 
+    InfoSender::eraseCurrentTask();
     return true;
 }
 
@@ -153,10 +156,14 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariab
     if (dsresInfo.exists())
     {
         Dymola::getFinalVariablesFromDsFile(dsresFile,finalVariables,_modModelPlus->modModelName());
+        InfoSender::eraseCurrentTask();
         return true;
     }
     else
+    {
+        InfoSender::eraseCurrentTask();
         return false;
+    }
 }
 
 bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool forceRecompile,QString dsinFile)
@@ -182,11 +189,12 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,b
     {
         createDsin();
     }
+    InfoSender::eraseCurrentTask();
 
     if(!QFile::exists(dsinFile))
     {
         QString msg = "Unable to create DsinFile. See <A href=\"file:///"+ logFile +"\">log file</A> for detail.";
-              InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
+        InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
         return false;
     }
     else
@@ -318,7 +326,9 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
     }
 
     bool readOk = readOutputVariables(outputVars,tempFolder);
+    InfoSender::eraseCurrentTask();
     return readOk;
+
 }
 
 void ModPlusDymolaCtrl::stopSimulation()

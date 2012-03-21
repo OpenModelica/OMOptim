@@ -39,8 +39,27 @@
 */
 
 #include "TabResOptimization.h"
+#include "TabOptimization.h"
+
 #include <QtGui/QSortFilterProxyModel>
+
+#include "ui_TabResOptimization.h"
+
+#include "Project.h"
 #include "Plots/MOOptPlot.h"
+#include "OptimResult.h"
+#include "Tabs/MO2ColTab.h"
+#include "Widgets/WidgetBlocks.h"
+#include "Widgets/WidgetMooPlot.h"
+#include "Widgets/WidgetMooPointsList.h"
+#include "Widgets/WidgetOptTable.h"
+#include "Widgets/WidgetTableRecVar.h"
+#include "Widgets/WidgetToolBar.h"
+#include "Widgets/WidgetCalculateMooPoints.h"
+#include "Widgets/WidgetOptimActions.h"
+#include "Widgets/WidgetResultInfos.h"
+#include "Widgets/WidgetCtrlParameters.h"
+#include "Widgets/WidgetOptParameters.h"
 
 
 namespace Ui

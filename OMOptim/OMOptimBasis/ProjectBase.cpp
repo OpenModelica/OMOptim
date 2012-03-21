@@ -38,9 +38,28 @@
   @version
 
   */
+
+#include <QApplication>
+
 #include "ProjectBase.h"
 #include "MOSettings.h"
-#include <QApplication>
+
+
+
+#include "OMCases.h"
+#include "Problems.h"
+#include "Results.h"
+#include "InfoSender.h"
+#include "MOVector.h"
+#include "SleeperThread.h"
+#include "Info.h"
+#include "LowTools.h"
+#include "HighTools.h"
+#include "Save.h"
+#include "Load.h"
+#include "MOThreads.h"
+#include "ProblemInterface.h"
+#include "ProblemInterfaces.h"
 
 ProjectBase::ProjectBase()
 {
@@ -57,6 +76,8 @@ ProjectBase::ProjectBase()
 ProjectBase::~ProjectBase()
 {
     qDebug("deleting Project");
+
+    terminateProblemsThreads();
 
     _problems->clear();
     _results->clear();
@@ -223,6 +244,19 @@ bool ProjectBase::unloadPlugins()
     emit projectChanged();
 
     return ok;
+}
+
+void ProjectBase::terminateProblemsThreads()
+{
+    QList<MOThreads::ProblemThread *> allLaunchedThreads = _problemsThreads.values();
+
+    for(int i=0;i<allLaunchedThreads.size();i++)
+    {
+        QString msg ="Stopping thread "+allLaunchedThreads.at(i)->_name;
+        qDebug(msg.toLatin1().data());
+        InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
+        allLaunchedThreads.at(i)->terminate();
+    }
 }
 
 
@@ -438,7 +472,7 @@ void ProjectBase::launchProblem(Problem* problem)
         connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SIGNAL(problemFinished(Problem*,Result*)));
 
         // store thread-problem
-        _launchedThreads.insert(launchedProblem,launchThread);
+        _problemsThreads.insert(launchedProblem,launchThread);
 
         // start problem
         launchThread->start();
@@ -453,7 +487,7 @@ void ProjectBase::onProjectChanged()
 
 void ProjectBase::onProblemStopAsked(Problem* problem)
 {
-    //    MOThreads::ProblemThread *thread = _launchedThreads.value(problem,NULL);
+    //    MOThreads::ProblemThread *thread = _problemsThreads.value(problem,NULL);
 
     //    if(thread)
     //        thread->onStopAsked();
@@ -487,7 +521,7 @@ void ProjectBase::onProblemFinished(Problem* problem,Result* result)
         }
     }
     _problemLaunchMutex.unlock();
-    _launchedThreads.remove(problem);
+    _problemsThreads.remove(problem);
 }
 
 Problem* ProjectBase::restoreProblemFromResult(int numResult)

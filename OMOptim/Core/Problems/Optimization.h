@@ -133,7 +133,7 @@ public:
     int nbScans();
 
     // recompute points
-    virtual void recomputePoints(OptimResult*, std::vector<int>,bool forceRecompute = false);
+    virtual void recomputePoints(OptimResult*, QList<int>,bool forceRecompute = false);
 
 
 public slots :

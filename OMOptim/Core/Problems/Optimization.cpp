@@ -43,6 +43,7 @@
 #include "OptimAlgoUtils.h"
 #include "CSVBase.h"
 #include "LowTools.h"
+#include "ModPlusCtrls.h"
 
 
 Optimization::Optimization(Project* project,QStringList models)
@@ -73,9 +74,7 @@ Optimization::Optimization(Project* project,QStringList models)
 Optimization::Optimization(const Optimization &optim)
     :Problem(optim)
 {
-
-
-
+    _omProject = optim._omProject;
     _optimizedVariables = optim._optimizedVariables->clone();
     _scannedVariables = optim._scannedVariables->clone();
     _objectives = optim._objectives->clone();
@@ -405,7 +404,7 @@ Result* Optimization::launch(ProblemConfig config)
 }
 
 
-void Optimization::recomputePoints(OptimResult* result, vector<int> iPoints,bool forceRecompute)
+void Optimization::recomputePoints(OptimResult* result, QList<int> iPoints,bool forceRecompute)
 {
 
     int iPoint;

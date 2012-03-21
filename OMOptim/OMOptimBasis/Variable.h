@@ -106,6 +106,7 @@ public :
 
 public:
     Variable(void);
+    Variable(QString name);
     Variable(const Variable &);
     Variable(QDomElement &);
     ~Variable(void);

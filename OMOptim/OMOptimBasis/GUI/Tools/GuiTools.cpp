@@ -39,6 +39,9 @@
 */
 
 #include "Tools/GuiTools.h"
+#include "Problem.h"
+#include "MyTreeView.h"
+#include "ProjectBase.h"
 
 
 

@@ -47,6 +47,7 @@
 #include "Problem.h"
 #include "Result.h"
 
+#include "ProblemConfig.h"
 
 namespace MOThreads
 {
@@ -61,6 +62,7 @@ namespace MOThreads
                 Result* result();
 
                 QDateTime _launchDate;
+                QString _name;
 
     private:
                 Problem* _problem;

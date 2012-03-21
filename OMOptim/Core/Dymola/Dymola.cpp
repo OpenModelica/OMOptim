@@ -11,23 +11,20 @@ http://www-cep.ensmp.fr/english/
 */
 
 
-
-#include "Dymola.h"
-#include <vector>
-#include "Variable.h"
-#include <QtCore/QObject>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QTextStream>
-#include <QtCore/QAbstractTableModel>
-#include <QtCore/QProcess>
 #include <stdio.h>
 #ifdef WIN32
 #include <windows.h>
 #endif
 #include <iostream>
+
+
+#include "Dymola.h"
 #include "MOSettings.h"
+#include "Variable.h"
+#include "Variables.h"
+#include "InfoSender.h"
+
+
 
 
 
@@ -119,7 +116,7 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
 
         //look if it succeed
         bool success = dymoFile.exists();
-
+        InfoSender::eraseCurrentTask();
         return success;
     }
 }

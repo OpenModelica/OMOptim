@@ -62,5 +62,18 @@ MOParameters* ModPlusCtrl::parameters() const
     return _parameters;
 }
 
+bool operator==(const ModPlusCtrl &a, const ModPlusCtrl &b)
+{
+        bool sameType =  (a.type()==b.type());
+
+        if(!sameType)
+            return false;
+        else
+        {
+            bool sameParameters = ((*a.parameters())==(*b.parameters()));
+            return sameParameters;
+        }
+}
+
 
 

@@ -40,7 +40,7 @@
 #if !defined(_MOVECTOR_H)
 #define _MOVECTOR_H
 
-#include <vector>
+
 #include <QtCore/QObject>
 #include <QtCore/QVector>
 #include <QtCore/QAbstractTableModel>
@@ -51,7 +51,7 @@
 
 #include "XMLTools.h"
 #include "InfoSender.h"
-#include "Variable.h"
+
 
 /** MOVector :Container for MOElements (e.g. Variable, OptObjective...)
 It uses template C++ functionality
@@ -91,7 +91,7 @@ public:
     void removeRow(QString);
     bool removeRows(int index, int count,const QModelIndex &parent = QModelIndex());
     bool removeRows(QList<int> indexes);
-    int findItem(QString,Qt::CaseSensitivity=Qt::CaseInsensitive) const;
+    virtual int findItem(QString,Qt::CaseSensitivity=Qt::CaseInsensitive) const;
     int findItem(QVariant itemFieldValue,int iField) const;
     bool contains(ItemClass*);
     bool alreadyIn(QString);
@@ -197,7 +197,6 @@ void MOVector<ItemClass>::update(const QDomElement & domList)
         QDomNode nameNode = attributes.namedItem("Name");
         QString name = nameNode.toAttr().value().replace(XMLTools::space()," ");
 
-        bool in=false;
         int index=-1;
         if(!nameNode.isNull())
         {
@@ -447,7 +446,7 @@ int MOVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity caseSens
 
     while((!found)&&(i<nbItems))
     {
-        itemName2=items.at(i)->getFieldValue(ItemClass::NAME).toString();
+        itemName2=items.at(i)->name();
         found=(itemName.compare(itemName2,caseSens)==0);
         i++;
     }

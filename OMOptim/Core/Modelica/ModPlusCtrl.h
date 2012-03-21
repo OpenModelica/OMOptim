@@ -40,16 +40,17 @@
 #ifndef _MODPLUSCTRL_H
 #define _MODPLUSCTRL_H
 
-#include "Modelica.h"
-#include "ModItem.h"
-#include "ModPackage.h"
-#include "ModModel.h"
-#include "ModComponent.h"
-#include "MOSettings.h"
-#include "MOParameter.h"
+#include <QObject>
+#include <QString>
+
+#include "MOVector.h"
 
 class ModModelPlus;
 class Project;
+class Variable;
+class MOomc;
+class MOParameters;
+
 
 class ModPlusCtrl :public QObject
 {
@@ -102,21 +103,7 @@ class ModPlusCtrl :public QObject
 
         //bool operator==(const ModPlusCtrl &) const;
 
-        friend bool operator==(const ModPlusCtrl & a,const ModPlusCtrl & b)
-        {
-            bool sameType =  (a.type()==b.type());
-
-            if(!sameType)
-                return false;
-            else
-            {
-                bool sameParameters = ((*a.parameters())==(*b.parameters()));
-                return sameParameters;
-            }
-
-
-
-        }
+        friend bool operator==(const ModPlusCtrl & a,const ModPlusCtrl & b);
 
 
 protected:

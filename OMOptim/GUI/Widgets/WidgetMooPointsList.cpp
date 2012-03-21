@@ -175,8 +175,8 @@ void WidgetMooPointsList::setOnlyPareto(bool onlyPareto)
 
 void WidgetMooPointsList::recomputeSelectedPoints()
 {
-    std::vector<int> pointsList;
-    pointsList = this->_listPoints->getSelectedIndexes().toVector().toStdVector();
+    QList<int> pointsList;
+    pointsList = this->_listPoints->getSelectedIndexes();
 
 
     // parameters

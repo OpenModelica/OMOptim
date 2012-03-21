@@ -56,19 +56,13 @@
 #include <QPluginLoader>
 
 #include "MOItem.h"
-#include "OMCases.h"
+#include "MOThreads.h"
+#include "ProblemInterfaces.h"
+#include "ProblemInterface.h"
+#include "Problem.h"
 #include "Problems.h"
 #include "Results.h"
-#include "InfoSender.h"
-#include "MOVector.h"
-#include "SleeperThread.h"
-#include "Info.h"
-#include "LowTools.h"
-#include "HighTools.h"
-#include "Save.h"
-#include "Load.h"
-#include "MOThreads.h"
-#include "ProblemInterface.h"
+
 
 
 /**
@@ -88,7 +82,7 @@ public :
     QMutex _componentMutex;
     QMutex _connectionMutex;
     QMutex _problemLaunchMutex;
-    QMap<Problem*,MOThreads::ProblemThread *> _launchedThreads;
+    QMap<Problem*,MOThreads::ProblemThread *> _problemsThreads;
 
 
 protected:
@@ -140,7 +134,7 @@ protected:
     //****************************
     // Get/Set functions
     //****************************
-    bool isDefined(){return _isdefined;};
+    bool isDefined(){return _isdefined;}
     QString problemsFolder();
     QString resultsFolder();
     QString filePath();
@@ -174,6 +168,7 @@ protected:
     //****************************
     // Misc
     //****************************
+    void terminateProblemsThreads();
     void createTempDir();
     virtual bool checkConfiguration();
 

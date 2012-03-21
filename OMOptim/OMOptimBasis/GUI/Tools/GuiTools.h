@@ -57,12 +57,12 @@
 #include <QtGui/QScrollBar>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QSortFilterProxyModel>
 
-#include "Problem.h"
-#include "MyTreeView.h"
-#include "ProjectBase.h"
-
-
+class ProjectBase;
+class Result;
+class Problem;
+class MyTreeView;
 
 class GuiTools: public QObject
 {

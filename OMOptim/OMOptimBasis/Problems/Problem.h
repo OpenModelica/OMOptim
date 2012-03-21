@@ -46,17 +46,16 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 
-#include "Result.h"
-#include "ProblemConfig.h"
-#include "InfoSender.h"
-#include "MOParameter.h"
+
 #include "OMCase.h"
 
 
 
 
 class Result;
+class MOParameters;
 class ProjectBase;
+class ProblemConfig;
 
 
 

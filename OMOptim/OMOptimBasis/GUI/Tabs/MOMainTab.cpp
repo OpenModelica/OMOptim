@@ -40,6 +40,8 @@
 
 #include "MOMainTab.h"
 #include "GuiTools.h"
+#include "Problems.h"
+#include "Results.h"
 
 MOMainTab::MOMainTab(QWidget* mainWindow,ProjectBase* project):QTabWidget(mainWindow)
 {

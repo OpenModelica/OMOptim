@@ -40,6 +40,10 @@
   */
 #include "Problem.h"
 #include "LowTools.h"
+#include "Result.h"
+#include "ProblemConfig.h"
+#include "InfoSender.h"
+#include "MOParameter.h"
 
 Problem::Problem(ProjectBase* project)
     :OMCase(project)

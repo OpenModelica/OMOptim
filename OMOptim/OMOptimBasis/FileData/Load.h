@@ -49,14 +49,9 @@
 #include <QtXml/QDomDocument>
 #include "QtCore/QSettings"
 
-#include "Result.h"
-#include "ProjectBase.h"
-#include "Problem.h"
-#include "MOVector.h"
-#include "MOThreads.h"
-#include "Info.h"
-
-class OptimResult;
+class ProjectBase;
+class Info;
+class OMCase;
 
 class Load : public QObject
 {

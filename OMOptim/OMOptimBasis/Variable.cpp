@@ -46,6 +46,11 @@ Variable::Variable(void)
 {
 }
 
+Variable::Variable(QString name)
+{
+    setName(name);
+}
+
 Variable::Variable(const Variable & var):MOItem(var)
 {
     QVariant curValue;

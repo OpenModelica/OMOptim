@@ -11,9 +11,16 @@ http://www-cep.ensmp.fr/english/
 #ifndef _MODPLUSDYMOLACTRL_H
 #define _MODPLUSDYMOLACTRL_H
 
-#include "ModPlusCtrl.h"
-#include "Dymola.h"
+#include <QtCore>
 #include <limits>
+
+
+#include "ModPlusCtrl.h"
+
+class ModModelPlus;
+class MOomc;
+class Project;
+class Variable;
 
 class ModPlusDymolaCtrl :public ModPlusCtrl
 {

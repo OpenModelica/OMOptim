@@ -40,6 +40,7 @@
   */
 #include "OMOptimSettings.h"
 #include "Dymola.h"
+#include <QApplication>
 
 void OMOptimSettings::initialize()
 {

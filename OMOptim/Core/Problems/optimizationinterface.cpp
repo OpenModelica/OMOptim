@@ -3,6 +3,7 @@
 #include "TabOptimization.h"
 #include "TabResOptimization.h"
 #include "OptimResult.h"
+#include "Project.h"
 
 
 Problem* OptimizationInterface::createNewProblem(ProjectBase* projectBase,const QStringList modelsList,QString problemType)

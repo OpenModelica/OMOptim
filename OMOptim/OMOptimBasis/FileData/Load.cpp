@@ -40,6 +40,14 @@
   */
 #include "Load.h"
 
+#include "Result.h"
+#include "ProjectBase.h"
+#include "Problem.h"
+#include "MOVector.h"
+#include "MOThreads.h"
+#include "Info.h"
+
+
 Load::Load(void)
 {
 }

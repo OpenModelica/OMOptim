@@ -41,13 +41,10 @@
 #if !defined(_OMCTHREADS_H)
 #define _OMCTHREADS_H
 
-#include "ModModelPlus.h"
+#include <QString>
+#include <QThread>
 
-#include "MOVector.h"
-#include <QtCore/QThread>
-#include <QtCore/QMutex>
-#include "Problem.h"
-#include "Result.h"
+class MOomc;
 
 
 namespace MOThreads

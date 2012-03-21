@@ -48,6 +48,8 @@
 #include <QtCore/QStringList>
 #include <QtXml/QDomDocument>
 #include <limits>
+
+
 #include "Info.h"
 #include "InfoSender.h"
 #include "XMLTools.h"
@@ -91,7 +93,7 @@ public:
     
     //Name
     virtual void setName(QString);
-    QString name() const;
+    virtual QString name() const;
 
     //All fields
     virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;

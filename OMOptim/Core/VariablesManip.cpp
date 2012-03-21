@@ -53,7 +53,7 @@ VariablesManip::~VariablesManip(void)
 /** Update values of vars : following indexes indicated in iScan, values are calculated from ScannedVariables
 *   using value = min + iScan * step for each variable.
 */
-void VariablesManip::updateScanValues(MOVector<Variable> *vars, MOVector<ScannedVariable> *scannedVars,QList<int> iScan)
+void VariablesManip::updateScanValues(Variables *vars, ScannedVariables *scannedVars,QList<int> iScan)
 {
     int iv,iov;
     double curMin,curStep,curValue;
@@ -81,7 +81,7 @@ void VariablesManip::updateScanValues(MOVector<Variable> *vars, MOVector<Scanned
     }
 }
 
-int VariablesManip::nbScans(MOVector<ScannedVariable> *scannedVars)
+int VariablesManip::nbScans(ScannedVariables *scannedVars)
 {
     int nbScans = 1;
     for(int i=0;i<scannedVars->size();i++)
@@ -90,7 +90,7 @@ int VariablesManip::nbScans(MOVector<ScannedVariable> *scannedVars)
     return nbScans;
 }
 
-double VariablesManip::calculateObjValue(OptObjective* optObj,MOVector<VariableResult> * oneSimFinalVars,bool & ok,int iPoint)
+double VariablesManip::calculateObjValue(OptObjective* optObj,MOOptVector * oneSimFinalVars,bool & ok,int iPoint)
 {
     int iVarObj = oneSimFinalVars->findItem(optObj->name());
     ok = false;

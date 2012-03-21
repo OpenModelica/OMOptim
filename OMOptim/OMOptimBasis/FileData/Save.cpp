@@ -42,6 +42,9 @@
 #include "Result.h"
 #include "MOVector.h"
 #include "ProjectBase.h"
+#include "Problem.h"
+#include "Problems.h"
+#include "Results.h"
 
 Save::Save(void)
 {

@@ -34,6 +34,21 @@ Qt::DropActions Variables::supportedDropActions() const{
     return Qt::CopyAction | Qt::MoveAction;
 }
 
+Variable *Variables::findVariable(QString model, QString varName)
+{
+    int iVar=0;
+    bool found = 0;
+    while(!found && (iVar<this->size()))
+    {
+        found = ((this->at(iVar)->name()==varName) && (this->at(iVar)->model()==model));
+    }
+    if(found)
+        return this->at(iVar);
+    else
+        return NULL;
+}
+
+
 QStringList Variables::mimeTypes () const
 {
     QStringList types;

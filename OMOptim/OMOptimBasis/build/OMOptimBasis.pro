@@ -107,7 +107,8 @@ HEADERS += \
     ../GUI/Dialogs/DlgSelectFiles.h \
     ../GUI/Widgets/WidgetSelectVars.h \
     ../GUI/Widgets/WidgetList.h \
-    ../GUI/Dialogs/NewProjectBaseForm.h
+    ../GUI/Dialogs/NewProjectBaseForm.h \
+    ../Problems/ProblemInterfaces.h
 
 SOURCES += \
     ../Variables.cpp \
@@ -170,7 +171,8 @@ SOURCES += \
     ../GUI/Dialogs/DlgSelectFiles.cpp \
     ../GUI/Widgets/WidgetSelectVars.cpp \
     ../GUI/Widgets/WidgetList.cpp \
-    ../GUI/Dialogs/NewProjectBaseForm.cpp
+    ../GUI/Dialogs/NewProjectBaseForm.cpp \
+    ../Problems/ProblemInterfaces.cpp
 
 FORMS += \
     ../GUI/Widgets/WidgetFilesList.ui \

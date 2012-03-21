@@ -49,6 +49,7 @@ ProblemThread::ProblemThread(Problem* problem,ProblemConfig config)
     _problem = problem;
     _config = config;
     _result = NULL;
+    _name = problem->name();
 
     connect(this,SIGNAL(finished()),this,SLOT(onFinished()));
 

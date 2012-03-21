@@ -179,9 +179,9 @@ WidgetSelectOptVars::~WidgetSelectOptVars()
     delete _allModelsVars;
 }
 
-void WidgetSelectOptVars::addPermanentVar(Variable * var)
+void WidgetSelectOptVars::addPermanentVars(Variables * vars)
 {
-    _permanentVars->addItem(var);
+    _permanentVars->append(vars,false);
 }
 
 

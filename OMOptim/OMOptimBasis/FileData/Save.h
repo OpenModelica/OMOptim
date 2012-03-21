@@ -48,12 +48,12 @@
 #include <QtCore/QTextStream>
 #include <QtXml/QDomDocument>
 
-#include "Result.h"
-#include "Problem.h"
-#include "MOVector.h"
+
 
 class Optimization;
 class ProjectBase;
+class Problem;
+class Result;
 
 class Save
 {

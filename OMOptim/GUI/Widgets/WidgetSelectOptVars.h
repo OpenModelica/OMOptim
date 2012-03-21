@@ -70,7 +70,7 @@ public:
 public:
     Ui::WidgetSelectOptVarsClass *_ui;
 
-    void addPermanentVar(Variable*);
+    void addPermanentVars(Variables*);
 
 public slots :
     void actualizeGui();

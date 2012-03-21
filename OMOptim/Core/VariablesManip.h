@@ -41,7 +41,8 @@
 #define VARIABLESMANIP_H
 
 
-#include "MOVector.h"
+#include "MOOptVector.h"
+#include "Variables.h"
 #include "Variable.h"
 #include "OptObjective.h"
 #include <QtCore/QObject>
@@ -54,11 +55,11 @@ public:
     VariablesManip(void);
     ~VariablesManip(void);
 
-    static void updateScanValues(MOVector<Variable> *vars, MOVector<ScannedVariable> *scannedVars,QList<int> iScan);
-    static int nbScans(MOVector<ScannedVariable> *scannedVars);
+    static void updateScanValues(Variables *vars, ScannedVariables *scannedVars,QList<int> iScan);
+    static int nbScans(ScannedVariables *scannedVars);
 
     // Functions which help to calculate objectives
-    static double calculateObjValue(OptObjective* optObj,MOVector<VariableResult> * oneSimFinalVars,bool & ok,int iPoint=0);
+    static double calculateObjValue(OptObjective* optObj,MOOptVector * oneSimFinalVars,bool & ok,int iPoint=0);
     static double calculateScanSum(VariableResult* var,bool &ok, int iPoint = 0);
     static double calculateScanAverage(VariableResult* var,bool &ok, int iPoint = 0);
     static double calculateScanStandardDev(VariableResult* var,bool &ok, int iPoint = 0);

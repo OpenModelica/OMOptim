@@ -40,17 +40,18 @@
 #ifndef TABOPTIMIZATIONCLASS_H
 #define TABOPTIMIZATIONCLASS_H
 
-#include "Optimization.h"
-#include "Project.h"
+
 #include "Tabs/MO2ColTab.h"
 
-#include "Widgets/WidgetOptParameters.h"
-#include "Widgets/WidgetSelectOptVars.h"
-#include "Widgets/WidgetSelectComponents.h"
-#include "Widgets/WidgetFilesList.h"
-#include "Widgets/WidgetOptimActions.h"
-#include "Widgets/WidgetCtrlParameters.h"
-#include "Widgets/WidgetModelsList.h"
+class Project;
+class Optimization;
+class WidgetOptParameters;
+class WidgetSelectOptVars;
+class WidgetSelectComponents;
+class WidgetFilesList;
+class WidgetOptimActions;
+class WidgetCtrlParameters;
+class WidgetModelsList;
 
 class TabOptimization : public MO2ColTab {
     Q_OBJECT

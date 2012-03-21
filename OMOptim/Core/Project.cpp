@@ -41,6 +41,7 @@
 #include "Project.h"
 #include "onesimulationinterface.h"
 #include "optimizationinterface.h"
+#include "Save.h"
 
 Project::Project()
 {
@@ -67,7 +68,9 @@ Project::Project()
 Project::~Project()
 {
     qDebug("deleting Project");
+
     terminateOmsThreads();
+
     _moomc->stopServer();
 
     _problems->clear();

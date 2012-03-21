@@ -647,6 +647,7 @@ void MOomc::buildModel(QString model)
 {
     QString commandText = "buildModel("+model+")";
     QString commandRes= evalCommand(commandText);
+    QString erroString = evalCommand("getErrorString()");
 }
 
 
@@ -1088,11 +1089,10 @@ QString MOomc::loadFile(const QString & filePath)
     QString localFile = filePath;
     localFile = localFile.replace("\\","/");
     QString cmd = QString("loadFile(\"") + localFile + QString("\")");
-    InfoSender::instance()->send( Info(QString("Loading file : " + localFile),ListInfo::NORMAL2));
     QString result = evalCommand(cmd);
 
     emit loadedFile(localFile,result);
-
+    InfoSender::eraseCurrentTask();
     return result;
 }
 

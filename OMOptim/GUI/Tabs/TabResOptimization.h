@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,21 +34,15 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 */
 
 #ifndef TABRESOPTIMIZATIONCLASS_H
 #define TABRESOPTIMIZATIONCLASS_H
 
 #include <QtGui/QWidget>
-#include "OptimResult.h"
-#include "ui_TabResOptimization.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
-#include "Project.h"
-#include "Plots/MOOptPlot.h"
-#include "OptimResult.h"
-
 #include <qwt_plot.h>
 #include <qwt_painter.h>
 #include <qwt_plot_canvas.h>
@@ -60,44 +54,54 @@
 #include <qwt_math.h>
 #include <qwt_picker.h>
 
-#include "TabOptimization.h"
+
+#include "ui_TabResOptimization.h"
 #include "Tabs/MO2ColTab.h"
-#include "Widgets/WidgetBlocks.h"
-#include "Widgets/WidgetMooPlot.h"
-#include "Widgets/WidgetMooPointsList.h"
-#include "Widgets/WidgetOptTable.h"
-#include "Widgets/WidgetTableRecVar.h"
-#include "Widgets/WidgetToolBar.h"
-#include "Widgets/WidgetCalculateMooPoints.h"
-#include "Widgets/WidgetOptimActions.h"
-#include "Widgets/WidgetResultInfos.h"
+
+class TabOptimization;
+class MO2ColTab;
+class WidgetBlocks;
+class WidgetMooPlot;
+class WidgetMooPointsList;
+class WidgetOptTable;
+class WidgetTableRecVar;
+class WidgetToolBar;
+class WidgetCalculateMooPoints;
+class WidgetOptimActions;
+class WidgetResultInfos;
+class WidgetCtrlParameters;
+class WidgetOptParameters;
+class WidgetBlocks;
+class OptimResult;
+class Project;
+class Optimization;
 
 namespace Ui {
-    class TabResOptimizationClass;
+class TabResOptimizationClass;
 }
 
 class TabResOptimization : public MO2ColTab {
     Q_OBJECT
 
 public:
-        TabResOptimization(OptimResult *result, QWidget *parent = 0);
-        virtual ~TabResOptimization();
+    TabResOptimization(OptimResult *result, QWidget *parent = 0);
+    virtual ~TabResOptimization();
     TabType tabType(){return TABSOLVEDPROBLEM;};
 
-        Project *_project;
-        Optimization *_problem;
-        OptimResult* _result;
+    Project *_project;
+    Optimization *_problem;
+    OptimResult* _result;
 
-        WidgetMooPointsList* _widgetMooPointsList;
-        WidgetMooPlot* _widgetMooPlot;
+    WidgetMooPointsList* _widgetMooPointsList;
+    WidgetMooPlot* _widgetMooPlot;
 #ifdef USEBLOCKSUB
-        WidgetBlocks *_widgetBlocks;
+    WidgetBlocks *_widgetBlocks;
 #endif
-        WidgetTableRecVar* _widgetTableRecVar;
-        WidgetOptimActions* _widgetOptimActions;
-        WidgetCtrlParameters *_widgetCtrl;
-        WidgetOptParameters *_widgetOptParameters;
-        WidgetResultInfos *_widgetInfos;
+    WidgetTableRecVar* _widgetTableRecVar;
+    WidgetOptimActions* _widgetOptimActions;
+    WidgetCtrlParameters *_widgetCtrl;
+    WidgetOptParameters *_widgetOptParameters;
+    WidgetResultInfos *_widgetInfos;
 
 
 };

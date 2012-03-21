@@ -40,26 +40,13 @@
   */
 
 #include "ModModelPlus.h"
-#include "Dymola.h"
-#include "Variable.h"
-#include <iostream>
-#include <vector>
-#include <QtCore/QObject>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QTextStream>
-#include <QtCore/QStringList>
-#include "MOomc.h"
-#include "LowTools.h"
-#include "HighTools.h"
-#include "Load.h"
-#include "Save.h"
-#include "ModPlusCtrl.h"
-#include "ModPlusOMCtrl.h"
-#include "ModPlusDymolaCtrl.h"
-#include "MOParametersDlg.h"
+
+#include <QtCore>
+
 #include "Project.h"
+#include "Dialogs/DlgSelectFiles.h"
+#include "ModelicaModifier.h"
+
 
 ModModelPlus::ModModelPlus( Project* project,QString modModelName)
 {

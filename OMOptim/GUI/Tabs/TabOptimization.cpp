@@ -39,13 +39,22 @@
 */
 
 #include "TabOptimization.h"
+
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QSpinBox>
 #include <QtCore/QObject>
 #include <QtCore/QObjectList>
 #include <QtGui/QMessageBox>
 
-
+#include "Optimization.h"
+#include "Project.h"
+#include "Widgets/WidgetOptParameters.h"
+#include "Widgets/WidgetSelectOptVars.h"
+#include "Widgets/WidgetSelectComponents.h"
+#include "Widgets/WidgetFilesList.h"
+#include "Widgets/WidgetOptimActions.h"
+#include "Widgets/WidgetCtrlParameters.h"
+#include "Widgets/WidgetModelsList.h"
 #include "BlockSubstituteConnDlg.h"
 #include "Tools/GuiTools.h"
 

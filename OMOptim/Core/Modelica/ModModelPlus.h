@@ -41,25 +41,22 @@
 #define _MODMODELPLUS_H
 
 
-#include "Variable.h"
+#include <QObject>
+
+#include "MOItem.h"
 #include "MOVector.h"
-#include "MOomc.h"
-#include "Info.h"
-#include "ModLoader.h"
-#include "ModelicaConnections.h"
-#include "ModelicaModifier.h"
-#include "BlockSubs/BlockSubstitution.h"
-#include "MOSettings.h"
-#include "ModModel.h"
-#include "InfoSender.h"
-#include "ModPlusCtrl.h"
-#include "ModPlusDymolaCtrl.h"
-#include "Variables.h"
-#include "Dialogs/DlgSelectFiles.h"
 
-
-using std::vector;
 class Project;
+class InfoSender;
+class Variables;
+class ModModel;
+class ModelicaConnections;
+class MOomc;
+class BlockSubstitution;
+class ModPlusCtrl;
+class ModelicaModifier;
+class ModItem;
+class Variable;
 
 /**
 * \brief ModModelPlus is a class dedicated to information storage concerning Modelica models.
