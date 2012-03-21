@@ -602,6 +602,8 @@ MOVector<ItemClass>* MOVector<ItemClass>::clone() const
 template<class ItemClass>
 void MOVector<ItemClass>::clear()
 {
+
+    qDebug(QString(QString("MOVector::clear() : ")+QString::number(items.size())).toLatin1().data());
     if(items.size()>0)
     {
         beginRemoveRows(QModelIndex(),0,items.size()-1);

@@ -109,7 +109,7 @@ public:
     Variable(QString name);
     Variable(const Variable &);
     Variable(QDomElement &);
-    ~Variable(void);
+    virtual ~Variable(void);
 
     Variable* clone() const;
 
