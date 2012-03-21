@@ -23,6 +23,7 @@ CONFIG(debug, debug|release){
     RCC_DIR = debug/generatedfiles/rcc
 
     INCLUDEPATH  += ../OMOptimBasis/build/debug/generatedfiles/ui
+    INCLUDEPATH  += ../build/debug/generatedfiles/ui
 
 }else {
     UI_DIR = release/generatedfiles/ui
@@ -30,6 +31,7 @@ CONFIG(debug, debug|release){
     RCC_DIR = release/generatedfiles/rcc
 
     INCLUDEPATH  += ../OMOptimBasis/build/release/generatedfiles/ui
+    INCLUDEPATH  += ../build/release/generatedfiles/ui
 }
 
 INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.4-mingw/include \
