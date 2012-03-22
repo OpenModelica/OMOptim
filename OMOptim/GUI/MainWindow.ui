@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1146</width>
-    <height>842</height>
+    <width>962</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -177,7 +177,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1146</width>
+     <width>962</width>
      <height>20</height>
     </rect>
    </property>
@@ -315,7 +315,7 @@ color:white;
         <string>Add .mo</string>
        </property>
        <property name="icon">
-        <iconset resource="Resources/OMOptim.qrc">
+        <iconset>
          <normaloff>:/Folder</normaloff>:/Folder</iconset>
        </property>
       </widget>
@@ -513,8 +513,6 @@ color:white;
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="Resources/OMOptim.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

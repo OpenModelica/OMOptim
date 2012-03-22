@@ -38,6 +38,9 @@ class MainWindowClass;
 MainWindow::MainWindow(Project* project,QWidget *parent)
     : QMainWindow(parent), _ui(new Ui::MainWindowClass)
 {
+
+    this->resize(800, 600);
+
     //************************
     // Basic initialization
     //************************
