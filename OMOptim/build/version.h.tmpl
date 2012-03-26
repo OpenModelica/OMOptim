@@ -12,7 +12,7 @@ namespace Version
  
  static QString version()
  {
-	return QString::number(MAJOR)+QString::number(MINOR)+QString::number(REVISION);
+   return QString::number(MAJOR)+QString::number(MINOR)+QString::number(REVISION);
  }
 }
 
