@@ -224,7 +224,7 @@ void WidgetMooPointsList::exportSelectedPoints()
         if(!csvPath.isNull())
         {
 
-            QString csvText = _result->buildVarsFrontCSV(selectedOptVars,listPoints);
+            QString csvText = _result->buildVarsFrontCSV(selectedOptVars,listPoints,",");
 
             QFile frontFile(csvPath);
             if(frontFile.exists())

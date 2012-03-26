@@ -118,6 +118,7 @@ protected :
         * If yes, content will be deleted with vector, or when an item replaces another one
         */
     bool _owner;
+
 };
 
 
@@ -602,7 +603,7 @@ MOVector<ItemClass>* MOVector<ItemClass>::clone() const
 template<class ItemClass>
 void MOVector<ItemClass>::clear()
 {
-
+    this->beginResetModel();
     qDebug(QString(QString("MOVector::clear() : ")+QString::number(items.size())).toLatin1().data());
     if(items.size()>0)
     {
@@ -610,6 +611,7 @@ void MOVector<ItemClass>::clear()
         removeRows(0,items.size());
         endRemoveRows();
     }
+    this->endResetModel();
 }
 
 

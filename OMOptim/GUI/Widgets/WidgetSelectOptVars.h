@@ -72,6 +72,7 @@ public:
 
     void addPermanentVars(Variables*);
 
+
 public slots :
     void actualizeGui();
     void addOptVariables();
@@ -96,6 +97,9 @@ private:
     QSortFilterProxyModel *_optVariableProxyModel;
     QSortFilterProxyModel *_objectiveProxyModel;
     QSortFilterProxyModel *_scannedProxyModel;
+
+protected slots :
+    void refreshAllModelsVars();
 
 
 

@@ -75,7 +75,26 @@ void ProblemThread::run()
         QString msg = "Launching problem : name = "+_problem->name()+" ; type = "+_problem->getClassName();
         InfoSender::instance()->send(Info(msg));
         _launchDate = QDateTime::currentDateTime();
-        _result = _problem->launch(_config);
+        try
+        {
+            _result = _problem->launch(_config);
+        }
+        catch(const std::exception& e)
+        {
+            InfoSender::instance()->sendError("Error : " + QString(e.what()));
+            _result = NULL;
+        }
+        catch(char * str)
+        {
+            InfoSender::instance()->sendError("Error : " + QString(str));
+            _result = NULL;
+        }
+        catch(...)
+        {
+            InfoSender::instance()->sendError("Unknown Error ");
+            _result = NULL;
+        }
+
 
         if(_result)
         {

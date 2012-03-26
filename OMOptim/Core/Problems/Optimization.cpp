@@ -203,6 +203,21 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         QDomElement  domInfos = domProblem.firstChildElement("Infos");
         this->setName(domInfos.attribute("name", "" ));
 
+        // compatibility with older saving format (one model, saved in Infos node)
+        if(!domInfos.attribute("model").isEmpty())
+        {
+            QString modelName = domInfos.attribute("model");
+            ModModelPlus* model = project->modModelPlus(modelName);
+
+            // read corresponding controlers
+            QDomElement domCtrls = domProblem.firstChildElement(ModPlusCtrls::className());
+            ModPlusCtrls* ctrls = new ModPlusCtrls(project,model,domCtrls);
+
+            // add model
+            this->addModel(domInfos.attribute("model"));
+        }
+
+        // new format
         QDomElement domModels = domProblem.firstChildElement("Models");
         QDomElement domModel = domModels.firstChildElement("Model");
         while(!domModel.isNull())

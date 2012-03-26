@@ -15,6 +15,7 @@ DEFINES += __x86__ \
 
 ### FOLDERS, INCLUDES
 DESTDIR = ../bin
+DEPENDPATH += ../bin
 
 
 CONFIG(debug, debug|release){

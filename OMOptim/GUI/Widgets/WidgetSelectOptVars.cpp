@@ -55,12 +55,20 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     _isEditable = isEditable;
 
     // concatenate model variables
-    _allModelsVars = new Variables(false);
+    _allModelsVars = new Variables(true);
     for(int i=0;i<_problem->models().size();i++)
-        _allModelsVars->append(*_project->modModelPlus(_problem->models().at(i))->variables(),false);
+    {
+        Variables* modelVars = _project->modModelPlus(_problem->models().at(i))->variables();
+        connect(modelVars,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(refreshAllModelsVars()));
+    }
 
     // create permanent vars vector
     _permanentVars = new Variables(false);
+
+
+    refreshAllModelsVars();
+
+
 
     // tables' model
     _optVariableProxyModel = GuiTools::ModelToViewWithFilter(_problem->optimizedVariables(),
@@ -386,10 +394,24 @@ void WidgetSelectOptVars::readVariables()
             }
         }
         curModelPlus->readVariables(_problem->ctrl(_problem->models().at(i)),shouldForceRecompile);
-        _allModelsVars->addItems(curModelPlus->variables(),true);
     }
 
-    _allModelsVars->addItems(_permanentVars,true);
+    refreshAllModelsVars();
 
     _ui->tableVariables->resizeColumnsToContents();
+}
+
+
+void WidgetSelectOptVars::refreshAllModelsVars()
+{
+    _allModelsVars->clear();
+
+    for(int i=0;i<_problem->models().size();i++)
+    {
+        Variables* modelVars = _project->modModelPlus(_problem->models().at(i))->variables();
+        _allModelsVars->append(*modelVars,true);
+    }
+
+    _allModelsVars->append(_permanentVars,true);
+
 }

@@ -9,6 +9,7 @@ CONFIG(debug, debug|release){
     DEFINES+=DEBUG
     # ADD LINK TO OMOPTIM LIB
     LIBS += -L. -lOMOptimd
+
     TARGET = $$join(TARGET,,,d)
 }else{
     LIBS += -L. -lOMOptim
@@ -27,6 +28,10 @@ win32 {
 }else {
     include(OMOptim.config)
 }
+
+win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += ../bin/libOMOptimd.a
+else:win32:CONFIG(release, debug|release): PRE_TARGETDEPS += ../bin/libOMOptim.a
+
 
 INCLUDEPATH += . \
               .. \
