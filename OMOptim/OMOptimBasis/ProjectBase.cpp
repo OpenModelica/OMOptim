@@ -405,6 +405,7 @@ void ProjectBase::addOMCase(QString filePath)
 
 void ProjectBase::addProblem(Problem *problem)
 {
+     HighTools::checkUniqueProblemName(this,problem,_problems);
     _problems->addCase(problem);
 
     //update GUI

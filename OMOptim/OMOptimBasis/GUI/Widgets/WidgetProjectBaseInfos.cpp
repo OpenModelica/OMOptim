@@ -65,7 +65,6 @@ WidgetProjectBaseInfos::WidgetProjectBaseInfos(ProjectBase *project,QList<QActio
     _project = project;
     connect(_ui->pushNewProject, SIGNAL(clicked()), this, SIGNAL(newProject()));
     connect(_ui->pushLoadProject, SIGNAL(clicked()), this, SIGNAL(loadProject()));
-
     connect(_project,SIGNAL(infosChanged()),this,SLOT(actualizeGuiFromProject()));
 
 
