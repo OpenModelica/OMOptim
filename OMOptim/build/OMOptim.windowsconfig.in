@@ -52,6 +52,9 @@ CONFIG(debug, debug|release){
     -lqwtd5 \
     -L../bin \
     -lOMOptimBasisd
+
+    PRE_TARGETDEPS += ../bin/libOMOptimBasisd.a
+
 }else {
     LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
     -lomniORB414_rt \
@@ -61,6 +64,8 @@ CONFIG(debug, debug|release){
     -lqwt5 \
     -L../bin \
     -lOMOptimBasis
+
+    PRE_TARGETDEPS += ../bin/libOMOptimBasis.a
 }
 
 LIBS += \
