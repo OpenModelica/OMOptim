@@ -48,31 +48,40 @@ LowTools::~LowTools(void)
 {
 }
 
+bool LowTools::removeDirContents(QString folder)
+{
+    bool  allRemoved = true;
+
+    QDir dir = QDir(folder);
+    QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
+    QString provFile;
+    for (int indf=0;indf<files.size();indf++)
+    {
+        provFile = files[indf];
+        allRemoved = dir.remove(provFile) && allRemoved;
+    }
+
+    QStringList folders = dir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
+    QString provFolder;
+    for (int indf=0;indf<folders.size();indf++)
+    {
+        provFolder = folders[indf];
+        allRemoved = removeDir(dir.absolutePath()+QDir::separator()+provFolder) && allRemoved;
+    }
+
+    return allRemoved;
+
+}
 
 bool LowTools::removeDir(QString folder)
 {
 
+    bool removed;
     QDir dir = QDir(folder);
     // if dir already exists, deleting it
     if (dir.exists())
     {
-        bool removed,tempBool;
-
-        QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
-        QString provFile;
-        for (int indf=0;indf<files.size();indf++)
-        {
-            provFile = files[indf];
-            tempBool = dir.remove(provFile);
-        }
-
-        QStringList folders = dir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
-        QString provFolder;
-        for (int indf=0;indf<folders.size();indf++)
-        {
-            provFolder = folders[indf];
-            removeDir(dir.absolutePath()+QDir::separator()+provFolder);
-        }
+        LowTools::removeDirContents(folder);
 
         bool temp = dir.cdUp();
         dir.refresh();
@@ -98,19 +107,16 @@ bool LowTools::removeDir(QString folder)
 
 }
 
-void LowTools::copyDir(QString org,QString dest)
+void LowTools::copyDirContents(QString org,QString dest)
 {
-    InfoSender::instance()->debug("Copy dir "+org +" to "+dest);
+    InfoSender::instance()->debug("Copy dir contents "+org +" to "+dest);
 
     QDir orgDir = QDir(org);
 
     QDir destDir(dest);
-    // if dir already exists, deleting it
-    if(destDir.exists())
-        removeDir(dest);
-
-    destDir.mkpath(dest);
-
+    // if dir does not exist, create it
+    if(!destDir.exists())
+        destDir.mkpath(dest);
 
     if (orgDir.exists())
     {
@@ -123,6 +129,17 @@ void LowTools::copyDir(QString org,QString dest)
             QFile::copy(orgFilePath,destFilePath);
         }
     }
+}
+void LowTools::copyDir(QString org,QString dest)
+{
+    InfoSender::instance()->debug("Copy dir "+org +" to "+dest);
+
+    QDir destDir(dest);
+    // if dir already exists, deleting it
+    if(destDir.exists())
+        removeDir(dest);
+
+    copyDirContents(org,dest);
 }
 
 QStringList LowTools::getDuplicates(const QStringList & list)

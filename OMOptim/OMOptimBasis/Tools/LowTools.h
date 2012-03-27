@@ -95,6 +95,8 @@ public:
 
 
 
+    static bool removeDirContents(QString folder);
+    static void copyDirContents(QString org, QString dest);
 };
 
 template < class T>

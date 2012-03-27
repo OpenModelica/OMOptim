@@ -782,7 +782,7 @@ bool OptVariable::setFieldValue(int ifield,QVariant value)
             _name=value.toString();
             break;
         case MODEL :
-            _name=value.toString();
+            _model=value.toString();
             break;
         case VALUE :
             _value=value.toDouble();
