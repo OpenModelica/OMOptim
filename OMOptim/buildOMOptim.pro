@@ -27,7 +27,7 @@ win32 {
                                 $$(OMDEV)/lib/omniORB-4.1.4-mingw/bin/x86_win32/omniORB414_rt.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.4-mingw/bin/x86_win32/omnithread34_rt.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.4-mingw/bin/x86_win32/omniDynamic414_rt.dll
-        release_libs.path = bin
+        release_libs.path = ./bin
 
         debug_libs.files = $${QMAKE_LIBDIR_QT}/QtCored4.dll \
                               $${QMAKE_LIBDIR_QT}/QtGuid4.dll \
@@ -38,12 +38,13 @@ win32 {
                                 $$(OMDEV)/lib/omniORB-4.1.4-mingw/bin/x86_win32/omniORB414_rtd.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.4-mingw/bin/x86_win32/omnithread34_rtd.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.4-mingw/bin/x86_win32/omniDynamic414_rtd.dll
-        debug_libs.path = bin
+        debug_libs.path = ./bin
 
 
 CONFIG(debug, debug|release){
     INSTALLS += debug_libs
 }else{
+    message("Release libs")
     INSTALLS += release_libs
 }
 
