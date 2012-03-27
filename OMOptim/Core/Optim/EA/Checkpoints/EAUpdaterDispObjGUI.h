@@ -34,7 +34,7 @@ class EAUpdaterDispObjGUI : public eoUpdater, public QObject
      */
     void operator()()
     {
-        QString msg = "Current vector [double params, int params, bool params, objectives]";
+        QString msg = "Current vector [double params, int params, bool params, objectives]\n";
         for (unsigned int i = 0; i < arch.size (); i++)
         {
             // add double parameters

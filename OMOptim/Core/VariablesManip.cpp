@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 #include "VariablesManip.h"
@@ -97,38 +97,38 @@ double VariablesManip::calculateObjValue(OptObjective* optObj,MOOptVector * oneS
     double result;
     if(iVarObj==-1)
     {
-            InfoSender::instance()->send(Info("Could not find variable "+optObj->name()+". Setting value to 0",ListInfo::WARNING2));
-            ok = false;
-            return 0;
+        InfoSender::instance()->send(Info("Could not find variable "+optObj->name()+". Setting value to 0",ListInfo::WARNING2));
+        ok = false;
+        return 0;
     }
     else
     {
         switch(optObj->scanFunction())
         {
-            case OptObjective::SUM :
-                result = VariablesManip::calculateScanSum(oneSimFinalVars->at(iVarObj),ok,iPoint);
-                break;
-            case OptObjective::AVERAGE :
-                result = VariablesManip::calculateScanAverage(oneSimFinalVars->at(iVarObj),ok,iPoint);
-                break;
-            case OptObjective::DEVIATION :
-                result = VariablesManip::calculateScanStandardDev(oneSimFinalVars->at(iVarObj),ok,iPoint);
-                break;
+        case OptObjective::SUM :
+            result = VariablesManip::calculateScanSum(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            break;
+        case OptObjective::AVERAGE :
+            result = VariablesManip::calculateScanAverage(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            break;
+        case OptObjective::DEVIATION :
+            result = VariablesManip::calculateScanStandardDev(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            break;
         case OptObjective::MINIMUM :
             result = VariablesManip::extractMinimum(oneSimFinalVars->at(iVarObj),ok,iPoint);
             break;
         case OptObjective::MAXIMUM :
             result = VariablesManip::extractMaximum(oneSimFinalVars->at(iVarObj),ok,iPoint);
             break;
-            default : 
-                result = oneSimFinalVars->at(iVarObj)->finalValue(0,iPoint);
-                ok=true;
-                break;
+        default :
+            result = oneSimFinalVars->at(iVarObj)->finalValue(0,iPoint);
+            ok=true;
+            break;
         }
     }
 
-        if(ok && (result>=optObj->min())
-                &&(result<=optObj->max()))
+    if(ok && (result>=optObj->min())
+            &&(result<=optObj->max()))
         return result;
     else
     {
@@ -198,7 +198,7 @@ double VariablesManip::extractMinimum(VariableResult* var,bool &ok, int iPoint)
     }
     else
     {
-         min = var->finalValue(0,iPoint);
+        min = var->finalValue(0,iPoint);
     }
 
     for(int iScan=1;iScan<nbScans;iScan++)
@@ -221,7 +221,7 @@ double VariablesManip::extractMaximum(VariableResult* var,bool &ok, int iPoint)
     }
     else
     {
-         max = var->finalValue(0,iPoint);
+        max = var->finalValue(0,iPoint);
     }
 
     for(int iScan=1;iScan<nbScans;iScan++)

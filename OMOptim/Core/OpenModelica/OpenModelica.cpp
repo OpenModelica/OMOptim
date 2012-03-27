@@ -76,6 +76,9 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
         _omc->loadModel(moPath,true,loadOk,loadError);
     }
 
+    if(storeFolder.contains(" "))
+        InfoSender::instance()->sendWarning("Compiling folder contains space : "+storeFolder);
+
     _omc->changeDirectory(storeFolder);
     _omc->buildModel(modelToConsider);
 

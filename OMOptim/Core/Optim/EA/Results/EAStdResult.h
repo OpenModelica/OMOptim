@@ -209,14 +209,16 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     for(int iObj=0;iObj<nbObj;iObj++)
     {
         iCorrRecompVar = result->recomputedVariables()->findItem(result->optObjectivesResults()->items[iObj]->name());
-
-        for(int i=0;i<arch.size();i++)
+        if(iCorrRecompVar>-1)
         {
-            curResultPoint = &arch.at(i);
-            resObjVector = curResultPoint->objectiveVector();
-            result->optObjectivesResults()->items[iObj]->appendFinalValue(resObjVector.at(iObj),0);
-            if(fillRecompValues)
-                result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(resObjVector.at(iObj),0);
+            for(int i=0;i<arch.size();i++)
+            {
+                curResultPoint = &arch.at(i);
+                resObjVector = curResultPoint->objectiveVector();
+                result->optObjectivesResults()->items[iObj]->appendFinalValue(resObjVector.at(iObj),0);
+                if(fillRecompValues)
+                    result->recomputedVariables()->items[iCorrRecompVar]->appendFinalValue(resObjVector.at(iObj),0);
+            }
         }
     }
 

@@ -111,7 +111,7 @@ public:
     Variable(QDomElement &);
     virtual ~Variable(void);
 
-    Variable* clone() const;
+    virtual Variable* clone() const;
 
     virtual QString getClassName(){return "Variable";};
 
