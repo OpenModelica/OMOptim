@@ -82,11 +82,11 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
     QDir workDir(OMCHelper::tmpPath);
     LowTools::removeDirContents(OMCHelper::tmpPath);
 
-    _omc->changeDirectory(workDir);
+    _omc->changeDirectory(OMCHelper::tmpPath);
     _omc->buildModel(modelToConsider);
 
 
-    LowTools::copyDir(OMCHelper::tmpPath,storeFolder)
+    LowTools::copyDir(OMCHelper::tmpPath,storeFolder);
 
 
 #ifdef WIN32
