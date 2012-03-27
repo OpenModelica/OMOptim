@@ -1364,14 +1364,15 @@ QString MOomc::getResult()
 
 QString MOomc::changeDirectory(QString directory)
 {
-    if (directory.isEmpty())
+    QString correctedDir = QDir(directory).absolutePath();
+    if (correctedDir.isEmpty())
     {
         evalCommand("cd()");
     }
     else
     {
-        directory = directory.replace("\\", "/");
-        evalCommand("cd(\"" + directory + "\")");
+        correctedDir = correctedDir.replace("\\", "/");
+        evalCommand("cd(\"" + correctedDir + "\")");
     }
     return getResult();
 }
