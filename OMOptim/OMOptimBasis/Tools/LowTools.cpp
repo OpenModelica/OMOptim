@@ -100,6 +100,8 @@ bool LowTools::removeDir(QString folder)
 
 void LowTools::copyDir(QString org,QString dest)
 {
+    InfoSender::instance()->debug("Copy dir "+org +" to "+dest);
+
     QDir orgDir = QDir(org);
 
     QDir destDir(dest);

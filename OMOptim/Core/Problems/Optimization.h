@@ -104,9 +104,9 @@ public:
 
     //Models functions
     QStringList models() const;
-    bool addModel(QString model,ModPlusCtrls* ctrls=NULL);
-    bool addModel(ModModelPlus* model);
-    bool removeModel(QString model);
+    virtual bool addModel(QString model,ModPlusCtrls* ctrls=NULL);
+    virtual bool addModels(QStringList models);
+    virtual bool removeModel(QString model);
 
     //overwrited functions (also virtual since other problems might inherit Optimization)
     virtual bool checkBeforeComp(QString & error);

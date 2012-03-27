@@ -124,10 +124,10 @@ public:
     // Path functions
     //*************************
     void setMmoFilePath(QString);
-    void setMoFilePath(QString);
     void setmodelToConsider(QString);
 
     QString mmoFilePath();
+    QString moFilePath();
     QString mmoFileName();
     QString mmoFolder();
     QString modModelName();

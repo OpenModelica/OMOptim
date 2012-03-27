@@ -168,7 +168,7 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariab
 
 bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool forceRecompile,QString dsinFile)
 {
-
+    InfoSender::sendCurrentTask("Reading initial variables in "+dsinFile);
 
     bool authorizeRecreate=false;
      QString logFile = _modModelPlus->mmoFolder()+QDir::separator()+ "buildlog.txt";
@@ -179,9 +179,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,b
     {
         authorizeRecreate=true;
         dsinFile = _modModelPlus->mmoFolder()+QDir::separator()+_dsinFile;
-    }
-
-    InfoSender::sendCurrentTask("Reading initial variables in "+dsinFile);
+    }   
 
     initVariables->clear();
 
@@ -207,7 +205,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,b
 
 bool ModPlusDymolaCtrl::compile(const QStringList & moDependencies)
 {
-    InfoSender::sendCurrentTask("Compiling model "+_modModelPlus->modModelName());
+    InfoSender::sendCurrentTask("Dymola : Compiling model "+_modModelPlus->modModelName());
 
     //QString logFilePath = _mmoFolder+QDir::separator()+"log.html";
     QString logFilePath = _modModelPlus->mmoFolder()+QDir::separator()+"buildlog.txt";
@@ -252,7 +250,7 @@ bool ModPlusDymolaCtrl::isCompiled()
 bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy,QStringList moDependencies)
 {
     // Info
-    InfoSender::sendCurrentTask("Simulating model "+_modModelPlus->modModelName());
+    InfoSender::sendCurrentTask("Dymola : Simulating model "+_modModelPlus->modModelName());
 
     // clear outputVars
     outputVars->clear();
@@ -346,7 +344,7 @@ bool ModPlusDymolaCtrl::createDsin()
     QDir dir(_modModelPlus->mmoFolder());
 
     // copy dependencies
-    QString moFilePath = _modModelPlus->modModel()->filePath();
+    QString moFilePath = _modModelPlus->moFilePath();
     QStringList depFileNames = _moomc->getDependenciesPaths(moFilePath,false);
     for(int i=0;i<depFileNames.size();i++)
     {
@@ -356,7 +354,7 @@ bool ModPlusDymolaCtrl::createDsin()
         if(!depFileInfo.exists())
         {
             // check in folder
-            depFileInfo = QFileInfo(_modModelPlus->modModel()->filePath()+QDir::separator()+depFileNames.at(i));
+            depFileInfo = QFileInfo(_modModelPlus->moFilePath()+QDir::separator()+depFileNames.at(i));
         }
 
         // copy

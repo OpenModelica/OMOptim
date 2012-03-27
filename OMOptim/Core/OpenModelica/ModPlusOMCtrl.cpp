@@ -198,11 +198,11 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool 
 bool ModPlusOMCtrl::compile(const QStringList & moDeps)
 {
 
-    InfoSender::sendCurrentTask("Compiling model "+_modModelPlus->modModelName());
+    InfoSender::sendCurrentTask("OpenModelica : Compiling model "+_modModelPlus->modModelName());
 
     // compile
     QString logFile = _modModelPlus->mmoFolder()+_modModelPlus->modModelName()+".log";
-    bool success = OpenModelica::compile(_moomc,_modModelPlus->modModel()->filePath(),_modModelPlus->modModelName(),_modModelPlus->mmoFolder(),moDeps);
+    bool success = OpenModelica::compile(_moomc,_modModelPlus->moFilePath(),_modModelPlus->modModelName(),_modModelPlus->mmoFolder(),moDeps);
 
     // Inform
     ListInfo::InfoNum iMsg;
@@ -239,7 +239,7 @@ bool ModPlusOMCtrl::isCompiled()
 bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy,QStringList moDependencies)
 {
     // Info
-    InfoSender::sendCurrentTask("Simulating model "+_modModelPlus->modModelName());
+    InfoSender::sendCurrentTask("Open Modelica : Simulating model "+_modModelPlus->modModelName());
 
     // load moDependencies
     _moomc->loadFiles(moDependencies);

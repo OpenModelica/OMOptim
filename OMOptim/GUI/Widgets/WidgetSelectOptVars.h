@@ -82,7 +82,7 @@ public slots :
     void addScannedVariables();
     void deleteScannedVariables();
     void readVariables();
-
+    void refreshAllModelsVars();
 
 
 private:
@@ -98,8 +98,6 @@ private:
     QSortFilterProxyModel *_objectiveProxyModel;
     QSortFilterProxyModel *_scannedProxyModel;
 
-protected slots :
-    void refreshAllModelsVars();
 
 
 

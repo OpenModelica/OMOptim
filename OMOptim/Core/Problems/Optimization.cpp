@@ -144,6 +144,7 @@ MOOptVector *Optimization::evaluate(QList<ModModelPlus*> models, Variables *over
             QString modelName = models.at(iM)->modModelName();
             OneSimulation *oneSim = new OneSimulation(_omProject,models.at(iM));
             oneSim->_filesToCopy = this->_filesToCopy;
+            oneSim->setCtrls(*this->ctrls(modelName));
 
 
             int nbVar = overwritedVariables->size();
@@ -175,7 +176,7 @@ MOOptVector *Optimization::evaluate(QList<ModModelPlus*> models, Variables *over
             ProblemConfig config();
             OneSimResult *result =  dynamic_cast<OneSimResult*>(oneSim->launch(config));
             ok = ok && result->isSuccess();
-            resultVariables->append(*result->finalVariables(),true);
+            resultVariables->addItems(result->finalVariables(),true);
 
             // free memory
             delete oneSim;
@@ -612,7 +613,7 @@ void Optimization::createSubExecs(QList<QList<ModModelPlus*> > & subModels, QLis
     QStringList oldMoFilePaths;
     for(int iM=0;iM<models.size();iM++)
     {
-        oldMoFilePaths.push_back(_omProject->modModelPlus(models.at(iM))->modModel()->filePath());
+        oldMoFilePaths.push_back(_omProject->modModelPlus(models.at(iM))->moFilePath());
     }
 
 
@@ -742,9 +743,7 @@ QStringList Optimization::models() const
 
 bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
 {
-    if(_models.contains(modelName))
-        return false;
-    if(_ctrls.contains(modelName)&&(ctrls==NULL))
+    if(_models.contains(modelName)&&(ctrls==NULL))
         return false;
     else
     {
@@ -759,10 +758,12 @@ bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
     }
 }
 
-bool Optimization::addModel(ModModelPlus *model)
+bool Optimization::addModels(QStringList models)
 {
-    return addModel(model->name());
+    for(int i=0;i<models.size();i++)
+        addModel(models.at(i));
 }
+
 
 bool Optimization::removeModel(QString model)
 {

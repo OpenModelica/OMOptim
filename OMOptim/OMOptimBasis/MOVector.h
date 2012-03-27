@@ -75,9 +75,9 @@ public:
 
     QStringList getItemNames();
 
-   // void append(std::vector<ItemClass*>* toAppend);
+    // void append(std::vector<ItemClass*>* toAppend);
     void setItems(QDomElement & domList);
-    virtual void append(const MOVector &,bool makeACopy);
+    //virtual void append(const MOVector &,bool makeACopy);
     void update(const QDomElement & domList);
 
     int rowCount(const QModelIndex &parent ) const;
@@ -96,7 +96,7 @@ public:
     bool contains(ItemClass*);
     bool alreadyIn(QString);
     void replaceIn(MOVector<ItemClass> *);
-    void addItems(MOVector<ItemClass> *,bool replaceIfPresent);
+    void addItems(MOVector<ItemClass> *,bool makeACopy);
 
     void cloneFromOtherVector(const MOVector*);
     MOVector<ItemClass>* clone() const;
@@ -221,23 +221,6 @@ QStringList MOVector<ItemClass>::getItemNames()
     return _names;
 }
 
-//template<class ItemClass>
-//void MOVector<ItemClass>::append(std::vector<ItemClass*>* toAppend )
-//{
-//    int iCurItem;
-//    for(int i=0;i<toAppend->size();i++)
-//    {
-//        iCurItem = findItem(toAppend->at(i)->name());
-//        if(iCurItem==-1)
-//            addItem(toAppend->at(i));
-//        else
-//        {
-//            if(_owner)
-//                delete items.at(iCurItem);
-//            items.replace(iCurItem,toAppend->at(i));
-//        }
-//    }
-//}
 
 template<class ItemClass>
 void MOVector<ItemClass>::setItems(QDomElement & domList)
@@ -259,36 +242,36 @@ void MOVector<ItemClass>::setItems(QDomElement & domList)
     }
 }
 
-template<class ItemClass>
-void MOVector<ItemClass>::append(const MOVector &vector,bool makeACopy)
-{
-//    int iCurItem;
-    for(int i=0;i<vector.items.size();i++)
-    {
-//        iCurItem = findItem(_vector.items.at(i)->name());
-//        if(iCurItem==-1)
-//        {
-            if(makeACopy)
-                addItem(new ItemClass(*vector.items.at(i)));
-            else
-                addItem(vector.items.at(i));
-//        }
+//template<class ItemClass>
+//void MOVector<ItemClass>::append(const MOVector &vector,bool makeACopy)
+//{
+//    //    int iCurItem;
+//    for(int i=0;i<vector.items.size();i++)
+//    {
+//        //        iCurItem = findItem(_vector.items.at(i)->name());
+//        //        if(iCurItem==-1)
+//        //        {
+//        if(makeACopy)
+//            addItem(new ItemClass(*vector.items.at(i)));
 //        else
-//        {
-//            InfoSender::instance()->debug("replace item in vector (name : "+_vector.items.at(i)->name()+")");
-//            delete items.at(iCurItem);
-//            if(makeACopy)
-//                items.replace(iCurItem,new ItemClass(*_vector.items.at(i)));
-//            else
-//                items.replace(iCurItem,_vector.items.at(i));
-//        }
-    }
+//            addItem(vector.items.at(i));
+//        //        }
+//        //        else
+//        //        {
+//        //            InfoSender::instance()->debug("replace item in vector (name : "+_vector.items.at(i)->name()+")");
+//        //            delete items.at(iCurItem);
+//        //            if(makeACopy)
+//        //                items.replace(iCurItem,new ItemClass(*_vector.items.at(i)));
+//        //            else
+//        //                items.replace(iCurItem,_vector.items.at(i));
+//        //        }
+//    }
 
-    if(makeACopy && !_owner)
-    {
-        InfoSender::instance()->debug("In MOVector : memory leak !");
-    }
-}
+//    if(makeACopy && !_owner)
+//    {
+//        InfoSender::instance()->debug("In MOVector : memory leak !");
+//    }
+//}
 
 template<class ItemClass>
 int MOVector<ItemClass>::rowCount(const QModelIndex &parent ) const
@@ -536,34 +519,37 @@ void MOVector<ItemClass>::replaceIn(MOVector<ItemClass> *overVector)
 }
 
 template<class ItemClass>
-void MOVector<ItemClass>::addItems(MOVector<ItemClass> * newItems,bool replaceIfPresent)
+void MOVector<ItemClass>::addItems(MOVector<ItemClass> * newItems,bool makeACopy)
 {
-    int iv,iov;
+    int iov;
     QString curName;
 
     for(iov=0;iov<newItems->size();iov++)
     {
         curName = newItems->at(iov)->name();
-        if(replaceIfPresent)
-        {
-            iv=findItem(curName);
+        //        if(replaceIfPresent)
+        //        {
+        //            iv=findItem(curName);
 
-            if(iv!=-1)
-            {
-                if(_owner)
-                    delete items.at(iv);
-                items.erase(items.begin()+iv,items.begin()+iv+1);
-                items.insert(items.begin()+iv,newItems->at(iov));
-            }
-            else
-            {
-                 addItem(newItems->at(iov));
-            }
-        }
+        //            if(iv!=-1)
+        //            {
+        //                if(_owner)
+        //                    delete items.at(iv);
+        //                items.erase(items.begin()+iv,items.begin()+iv+1);
+        //                items.insert(items.begin()+iv,newItems->at(iov));
+        //            }
+        //            else
+        //            {
+        //                 addItem(newItems->at(iov));
+        //            }
+        //        }
+        //        else
+        //        {
+        if(makeACopy)
+            addItem(newItems->at(iov)->clone());
         else
-        {
             addItem(newItems->at(iov));
-        }
+        //        }
     }
 
 

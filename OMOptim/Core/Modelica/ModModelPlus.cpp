@@ -117,6 +117,18 @@ QString ModModelPlus::mmoFilePath()
     return _mmoFilePath;
 }
 
+QString ModModelPlus::moFilePath()
+{
+    ModItem* modItem = _project->findModModel(_modModelName);
+    if(!modItem)
+    {
+        InfoSender::instance()->debug("Can't find model "+_modModelName);
+        return QString();
+    }
+    else
+        return modItem->filePath();
+}
+
 QString ModModelPlus::mmoFileName()
 {
     QFileInfo fileInfo(_mmoFilePath);

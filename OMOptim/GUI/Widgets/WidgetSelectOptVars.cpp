@@ -63,7 +63,7 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     }
 
     // create permanent vars vector
-    _permanentVars = new Variables(false);
+    _permanentVars = new Variables(true);
 
 
     refreshAllModelsVars();
@@ -189,7 +189,7 @@ WidgetSelectOptVars::~WidgetSelectOptVars()
 
 void WidgetSelectOptVars::addPermanentVars(Variables * vars)
 {
-    _permanentVars->append(vars,false);
+    _permanentVars->addItems(vars,true);
 }
 
 
@@ -409,9 +409,9 @@ void WidgetSelectOptVars::refreshAllModelsVars()
     for(int i=0;i<_problem->models().size();i++)
     {
         Variables* modelVars = _project->modModelPlus(_problem->models().at(i))->variables();
-        _allModelsVars->append(*modelVars,true);
+        _allModelsVars->addItems(modelVars,true);
     }
 
-    _allModelsVars->append(_permanentVars,true);
+    _allModelsVars->addItems(_permanentVars,true);
 
 }
