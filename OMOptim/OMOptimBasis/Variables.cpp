@@ -34,13 +34,13 @@ Qt::DropActions Variables::supportedDropActions() const{
     return Qt::CopyAction | Qt::MoveAction;
 }
 
-Variable *Variables::findVariable(QString model, QString varName)
+Variable *Variables::findVariable(QString model, QString shortVarName)
 {
     int iVar=0;
     bool found = 0;
     while(!found && (iVar<this->size()))
     {
-        found = ((this->at(iVar)->name()==varName) && (this->at(iVar)->model()==model));
+        found = ((this->at(iVar)->name(Variable::SHORT)==shortVarName) && (this->at(iVar)->model()==model));
         if(!found)
             iVar++;
     }

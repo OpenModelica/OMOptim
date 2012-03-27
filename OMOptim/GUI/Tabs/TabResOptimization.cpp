@@ -62,10 +62,6 @@
 #include "Widgets/WidgetOptParameters.h"
 
 
-namespace Ui
-{
-    class TabResOptimizationClass;
-}
 
 TabResOptimization::TabResOptimization(OptimResult *result, QWidget *parent) :
 MO2ColTab(result->project()->name(),result,false,parent)

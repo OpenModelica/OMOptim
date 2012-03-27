@@ -55,7 +55,6 @@
 #include <qwt_picker.h>
 
 
-#include "ui_TabResOptimization.h"
 #include "Tabs/MO2ColTab.h"
 
 class TabOptimization;
@@ -76,9 +75,6 @@ class OptimResult;
 class Project;
 class Optimization;
 
-namespace Ui {
-class TabResOptimizationClass;
-}
 
 class TabResOptimization : public MO2ColTab {
     Q_OBJECT

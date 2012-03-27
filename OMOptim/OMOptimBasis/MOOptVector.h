@@ -71,7 +71,7 @@ public:
 
     MOOptVector* clone() const;
     void addItem(VariableResult* item_);
-    VariableResult* findVariable(QString model,QString varName);
+    VariableResult* findVariable(QString model,QString shortVarName);
 
 
     double value(const QString &name,bool &ok,int iScan=0,int iPoint=0);

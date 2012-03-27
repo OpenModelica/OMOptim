@@ -276,13 +276,16 @@ void MOOptVector::addItem(VariableResult* item)
     endInsertRows();
 }
 
-VariableResult *MOOptVector::findVariable(QString model, QString varName)
+VariableResult *MOOptVector::findVariable(QString model, QString shortVarName)
 {
     int iVar=0;
     bool found = 0;
     while(!found && (iVar<this->size()))
     {
-        found = ((this->at(iVar)->name()==varName) && (this->at(iVar)->model()==model));
+        found = ((this->at(iVar)->name(Variable::SHORT)==shortVarName) && (this->at(iVar)->model()==model));
+        if(!found)
+            iVar++;
+
     }
     if(found)
         return this->at(iVar);

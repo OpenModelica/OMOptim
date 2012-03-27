@@ -174,8 +174,8 @@ Result* SPEA2::launch(QString tempDir)
 
 
     /************************************
- FITNESS EVALUATION
- ************************************/
+    FITNESS EVALUATION
+    ************************************/
     moeoEvalFunc < EOStd > *plainEval;
     plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,
                                                  _modItemsTree);

@@ -34,9 +34,28 @@ class EAUpdaterDispObjGUI : public eoUpdater, public QObject
      */
     void operator()()
     {
-        QString msg = "Current gen. objective vector :";
+        QString msg = "Current vector [double params, int params, bool params, objectives]";
         for (unsigned int i = 0; i < arch.size (); i++)
         {
+            // add double parameters
+            for(int j=0;j<arch.at(i).doubleVars.size();j++)
+            {
+                msg+=QString::number(arch.at(i).doubleVars.at(j))+="\t";
+            }
+
+            // add int parameters
+            for(int j=0;j<arch.at(i).intVars.size();j++)
+            {
+                msg+=QString::number(arch.at(i).intVars.at(j))+="\t";
+            }
+
+            // add bool parameters
+            for(int j=0;j<arch.at(i).boolVars.size();j++)
+            {
+                msg+=QVariant(arch.at(i).boolVars.at(j)).toString()+="\t";
+            }
+
+            // add objectives
             for(int j=0;j<arch.at(i).objectiveVector().size();j++)
             {
                 msg+=QString::number(arch.at(i).objectiveVector().at(j))+="\t";
