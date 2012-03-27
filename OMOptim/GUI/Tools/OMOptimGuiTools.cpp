@@ -95,6 +95,61 @@ void OMOptimGuiTools::addCommonActions(QMenu* menu,Project* project, const QPoin
     connect(edit,SIGNAL(triggered()),selectedModItem,SLOT(openInEditor()));
     menu->addAction(edit);
 }
+
+void OMOptimGuiTools::consolidateModelsPath(QString projectFile, QWidget *mainWindow)
+{
+    // read models
+    QStringList models = LoadOMOptim::getModelsPath(projectFile);
+    QStringList oldModels = models;
+
+    // consolidate models : find whether they exist or not. Redirection if not.
+    consolidateModelsPath(models,QDir(projectFile),mainWindow);
+
+    // save file
+    if(models!=oldModels)
+        SaveOMOptim::setModelsPath(projectFile,models);
+}
+
+void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir projectFolder,QWidget* mainWindow)
+{
+    QString oldModelPath;
+    QString newModelPath;
+    modelsPath.removeDuplicates();
+
+    for(int i=0;i<modelsPath.size();i++)
+    {
+        oldModelPath = modelsPath.at(i);
+        if(!projectFolder.exists(oldModelPath))
+        {
+            QMessageBox msgBox;
+            msgBox.setText("Model file could not be found :"+oldModelPath+"\n oldModelPath");
+            msgBox.setInformativeText("Do you want to set another path for it ?");
+            msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+            switch (ret)
+            {
+            case QMessageBox::Yes:
+                newModelPath = QFileDialog::getOpenFileName(
+                            mainWindow,
+                            "MO - Select .mo file",
+                            projectFolder.absolutePath(),
+                            "Modelica file (*.mo)" );
+                if(!newModelPath.isEmpty())
+                {
+                    modelsPath.removeAll(oldModelPath);
+                    modelsPath.push_back(newModelPath);
+                }
+                break;
+            case QMessageBox::No:
+                break;
+            default:
+                // should never be reached
+                break;
+            }
+        }
+    }
+}
 void OMOptimGuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & iPoint,ModModel* selectedModel)
 {
 

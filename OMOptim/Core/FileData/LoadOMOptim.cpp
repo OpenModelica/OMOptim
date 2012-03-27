@@ -43,7 +43,6 @@
 
 bool LoadOMOptim::loadProject(QString filePath,Project* _project)
 {
-
     InfoSender::instance()->send(Info(ListInfo::LOADINGPROJECT,filePath));
     _project->clear();
     _project->setFilePath(filePath);
@@ -281,6 +280,38 @@ bool LoadOMOptim::loadModModelPlus(Project* project,QString mmoFilePath)
         project->addModModelPlus(newModelPlus);
         return true;
     }
+}
+
+QStringList LoadOMOptim::getModelsPath(QString projectFilePath)
+{
+    QStringList result;
+
+    // Open and read file
+    QDomDocument doc( "MOProjectXML" );
+    QFile file(projectFilePath);
+    if( !file.open( QIODevice::ReadOnly ) || ! doc.setContent( &file ) )
+    {
+        return result;
+    }
+    file.close();
+    QDomElement root = doc.documentElement();
+    if( root.tagName() != "MOProject" )
+    {
+        return result;
+    }
+
+    //**************************************
+    // Reading XML file
+    //**************************************
+    QDomElement domMoFiles = root.firstChildElement("MoFiles");
+    QDomNodeList listMoFiles = domMoFiles.elementsByTagName("MoFile");
+    QString tmpPath;
+    for(int i=0;i<listMoFiles.size();i++)
+    {
+        tmpPath = listMoFiles.at(i).toElement().attribute("path", "" );
+        result.push_back(tmpPath);
+    }
+    return result;
 }
 
 

@@ -245,3 +245,52 @@ void SaveOMOptim::saveModModelPlus(ModModelPlus* modModelPlus)
     file.close();
 }
 
+bool SaveOMOptim::setModelsPath(QString projectFilePath, QStringList modelsPaths)
+{
+    // Open and read file
+    QDomDocument doc( "MOProjectXML" );
+    QFile file(projectFilePath);
+    if( !file.open( QIODevice::ReadOnly ) || ! doc.setContent( &file ) )
+    {
+        return false;
+    }
+    file.close();
+    QDomElement root = doc.documentElement();
+    if( root.tagName() != "MOProject" )
+    {
+        return false;
+    }
+
+    // remove old moFiles
+    QDomElement oldDomMoFiles = root.firstChildElement("MoFiles");
+    root.removeChild(oldDomMoFiles);
+
+    // set new
+    // Mo files
+    QDomElement newMoFiles = doc.createElement("MoFiles");
+    for(int i=0;i<modelsPaths.size();i++)
+    {
+        QDomElement newMoFile = doc.createElement("MoFile");
+        newMoFile.setAttribute("path",modelsPaths.at(i));
+        newMoFiles.appendChild(newMoFile);
+    }
+    root.appendChild(newMoFiles);
+
+
+    //Writing in .min file
+    QFileInfo fileInfo(projectFilePath);
+    QDir dir = fileInfo.absoluteDir();
+    dir.mkpath(dir.absolutePath());
+
+
+    if(file.exists())
+    {
+        file.remove();
+    }
+    file.open(QIODevice::WriteOnly);
+    QTextStream ts( &file );
+    ts << doc.toString();
+    file.close();
+}
+
+

@@ -83,6 +83,9 @@ public:
     static void addCommonActions(QMenu*,Project*,const QPoint &,ModItem*);
 
 
+    // models path consolidation
+    static void consolidateModelsPath(QString projectFile,QWidget* mainWindow);
+    static void consolidateModelsPath(QStringList & modelsPath,QDir projectFolder,QWidget* mainWindow);
 };
 
 

@@ -59,7 +59,7 @@ OpenModelica::~OpenModelica(void)
 {
 }
 
-bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,const QStringList & moDeps)
+bool OpenModelica::compile(QString tempFolder,MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,const QStringList & moDeps)
 {
     // check if model already loaded
     QString loadedMoPath = _omc->getFileOfClass(modelToConsider);
@@ -76,32 +76,11 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
         _omc->loadModel(moPath,true,loadOk,loadError);
     }
 
-
-
-    // Create OM script
-    //    QString filePath = storeFolder+QDir::separator()+"MOFirstRun.mos";
-    //    QFile file(filePath);
-    //    if(file.exists())
-    //    {
-    //        file.remove();
-    //    }
-    //    file.open(QIODevice::WriteOnly);
-
-    //    QString scriptText;
-    //    //scriptText.append("cd(\""+storeFolder+"\");\n");
-    //    scriptText.append("buildModel("+modelToConsider+");\n");
-
-    //    QTextStream ts( &file );
-    //    ts << scriptText;
-    //    file.close();
-
-    //    // delete previous model .exe
-
-
-    //    // Run script
-    //    _omc->runScript(filePath);
-
+    _omc->changeDirectory(tempFolder);
     _omc->buildModel(modelToConsider);
+
+
+
 
 #ifdef WIN32
     QString modelExeName = modelToConsider+".exe";
@@ -109,10 +88,10 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
     QString modelExeName = modelToConsider;
 #endif
 
-    // copy folder contents
-    QString workingDirPath = _omc->getWorkingDirectory();
 
-    LowTools::copyDir(workingDirPath,storeFolder);
+    QDir tempDir(tempFolder);
+    QDir storeDir(storeFolder);
+
 
     //look if it succeed
     bool success = QDir(storeFolder).exists(modelExeName);

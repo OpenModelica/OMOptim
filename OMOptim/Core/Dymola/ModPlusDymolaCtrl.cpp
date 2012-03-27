@@ -142,7 +142,7 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSFINAL(MOVector<Variable> *finalVari
 
 bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariables, QString dsresFile)
 {
-    InfoSender::sendCurrentTask("Reading final variables in "+dsresFile);
+
 
     finalVariables->clear();
 
@@ -150,6 +150,7 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariab
     {
         dsresFile = _modModelPlus->mmoFolder()+QDir::separator()+_dsresFile;
     }
+    InfoSender::sendCurrentTask("Reading final variables in "+dsresFile);
 
     QFileInfo dsresInfo = QFileInfo(dsresFile);
 
@@ -168,18 +169,19 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariab
 
 bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool forceRecompile,QString dsinFile)
 {
-    InfoSender::sendCurrentTask("Reading initial variables in "+dsinFile);
+
 
     bool authorizeRecreate=false;
-     QString logFile = _modModelPlus->mmoFolder()+QDir::separator()+ "buildlog.txt";
-     if(QFile::exists(logFile))
-         QFile::remove(logFile);
+    QString logFile = _modModelPlus->mmoFolder()+QDir::separator()+ "buildlog.txt";
+    if(QFile::exists(logFile))
+        QFile::remove(logFile);
 
     if(dsinFile.isEmpty())
     {
         authorizeRecreate=true;
         dsinFile = _modModelPlus->mmoFolder()+QDir::separator()+_dsinFile;
-    }   
+    }
+    InfoSender::sendCurrentTask("Reading initial variables in "+dsinFile);
 
     initVariables->clear();
 
