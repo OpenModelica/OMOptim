@@ -129,8 +129,9 @@ void WidgetModelsList::removeModels()
     {
         _problem->removeModel(itemsList.at(i)->text());
     }
-    //remove from listWidget
-    qDeleteAll(itemsList);
+//    //remove from listWidget
+//    qDeleteAll(itemsList);
+    _ui->filesList->clear();
 }
 
 

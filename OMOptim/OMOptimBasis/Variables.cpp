@@ -41,6 +41,8 @@ Variable *Variables::findVariable(QString model, QString varName)
     while(!found && (iVar<this->size()))
     {
         found = ((this->at(iVar)->name()==varName) && (this->at(iVar)->model()==model));
+        if(!found)
+            iVar++;
     }
     if(found)
         return this->at(iVar);

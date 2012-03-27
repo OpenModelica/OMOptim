@@ -133,7 +133,7 @@ void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir project
                 newModelPath = QFileDialog::getOpenFileName(
                             mainWindow,
                             "MO - Select .mo file",
-                            projectFolder.absolutePath(),
+                            projectFolder.absolutePath()+QDir::separator()+oldModelPath,
                             "Modelica file (*.mo)" );
                 if(!newModelPath.isEmpty())
                 {
