@@ -122,7 +122,7 @@ void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir project
         if(!projectFolder.exists(oldModelPath))
         {
             QMessageBox msgBox;
-            msgBox.setText("Model file could not be found :"+oldModelPath+"\n oldModelPath");
+            msgBox.setText("Model file could not be found :"+oldModelPath+"\n");
             msgBox.setInformativeText("Do you want to set another path for it ?");
             msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
             msgBox.setDefaultButton(QMessageBox::Yes);

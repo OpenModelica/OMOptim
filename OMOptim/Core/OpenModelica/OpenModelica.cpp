@@ -59,7 +59,7 @@ OpenModelica::~OpenModelica(void)
 {
 }
 
-bool OpenModelica::compile(QString tempFolder,MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,const QStringList & moDeps)
+bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,const QStringList & moDeps)
 {
     // check if model already loaded
     QString loadedMoPath = _omc->getFileOfClass(modelToConsider);
@@ -76,7 +76,7 @@ bool OpenModelica::compile(QString tempFolder,MOomc *_omc,QString moPath,QString
         _omc->loadModel(moPath,true,loadOk,loadError);
     }
 
-    _omc->changeDirectory(tempFolder);
+    _omc->changeDirectory(storeFolder);
     _omc->buildModel(modelToConsider);
 
 
@@ -88,9 +88,6 @@ bool OpenModelica::compile(QString tempFolder,MOomc *_omc,QString moPath,QString
     QString modelExeName = modelToConsider;
 #endif
 
-
-    QDir tempDir(tempFolder);
-    QDir storeDir(storeFolder);
 
 
     //look if it succeed

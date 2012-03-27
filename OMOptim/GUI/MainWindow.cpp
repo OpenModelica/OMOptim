@@ -380,6 +380,7 @@ void MainWindow::loadProject()
 
     if (!filename.isNull())
     {
+        OMOptimGuiTools::consolidateModelsPath(filename,this);
         bool loaded = _project->load(filename);
 
         if(loaded)
@@ -397,13 +398,14 @@ void MainWindow::loadProject()
     refreshModelTreeView();
 }
 
-void MainWindow::loadProject(QString _fileName)
+void MainWindow::loadProject(QString filename)
 {
-    bool loaded = _project->load(_fileName);
+    OMOptimGuiTools::consolidateModelsPath(filename,this);
+    bool loaded = _project->load(filename);
     if(loaded)
     {
-        updateRecentFilesList(_fileName);
-        QFileInfo info = QFileInfo(_fileName);
+        updateRecentFilesList(filename);
+        QFileInfo info = QFileInfo(filename);
         setLastProjectFolder(info.absolutePath());
     }
 
