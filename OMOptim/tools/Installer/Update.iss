@@ -11,7 +11,7 @@
 
 #sub ProcessFileLine
 #pragma message "FileLine : " + FileLine
-#define public Version = "v"+Copy(""+FileLine, 0, Len(FileLine)-1)
+#define public Version = "v"+Copy(""+FileLine, 0, Len(FileLine))
 #pragma message "Detected Version: " + Version
 #endsub
 #define FileHandle FileOpen(VerSrc)
