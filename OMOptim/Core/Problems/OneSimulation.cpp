@@ -193,7 +193,8 @@ Result* OneSimulation::launch(ProblemConfig config)
 
         // Simulate
         curVariables.clear();
-        curSimSuccess = ctrl()->simulate(_project->tempPath(), &updatedVariables, &curVariables,_filesToCopy);
+        curSimSuccess = ctrl()->simulate(_project->tempPath(), &updatedVariables, &curVariables,
+                                         _modModelPlus->neededFiles(),_modModelPlus->moDependencies());
         allSimSuccess = allSimSuccess && curSimSuccess;
 
         if(allSimSuccess)

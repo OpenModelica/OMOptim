@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 #ifndef LOWTOOLS_H
@@ -75,7 +75,7 @@ public:
     static bool removeDir(QString);
     static void copyDir(QString,QString);
 
-        static QStringList getDuplicates(const QStringList & list);
+    static QStringList getDuplicates(const QStringList & list);
     static void removeDuplicates(QStringList & list);
     static void removeDuplicates(QVector<double> & vector);
     static void removeWhiteSpaceStrings(QStringList &list);
@@ -85,7 +85,7 @@ public:
     static QString getValueFromElementInfo(QString elementInfoLine,QString fieldName);
 
     static int round(double);
-        static double roundToMultiple(double value, double multiple);
+    static double roundToMultiple(double value, double multiple);
     static QList<int> nextIndex(QList<int> oldIndex, QList<int>  maxIndex);
 
     static bool isNan(double d);
@@ -97,6 +97,7 @@ public:
 
     static bool removeDirContents(QString folder);
     static void copyDirContents(QString org, QString dest);
+    static void copyFilesInFolder(QStringList files, QString folder);
 };
 
 template < class T>

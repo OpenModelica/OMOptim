@@ -59,7 +59,7 @@ OpenModelica::~OpenModelica(void)
 {
 }
 
-bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,const QStringList & moDeps)
+bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,const QStringList & moDeps, QStringList neededFiles, QStringList neededFolders)
 {
     // check if model already loaded
     QString loadedMoPath = _omc->getFileOfClass(modelToConsider);
@@ -76,9 +76,7 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
         _omc->loadModel(moPath,true,loadOk,loadError);
     }
 
-    if(storeFolder.contains(" "))
-        InfoSender::instance()->sendWarning("Compiling folder contains space : "+storeFolder);
-
+    // Create working dir
     QDir workDir(OMCHelper::tmpPath);
     if(workDir.exists())
         LowTools::removeDirContents(OMCHelper::tmpPath);
@@ -87,6 +85,9 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
         QDir dir;
         dir.mkpath(OMCHelper::tmpPath);
     }
+
+    // Copy file and folder
+    LowTools::copyFilesInFolder(neededFiles,workDir.absolutePath());
 
     _omc->changeDirectory(OMCHelper::tmpPath);
     _omc->buildModel(modelToConsider);

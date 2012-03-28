@@ -131,8 +131,8 @@ public:
     QString mmoFileName();
     QString mmoFolder();
     QString modModelName();
-    QStringList neededFilesNames();
-    QStringList neededFoldersNames();
+    QStringList neededFiles();
+    QStringList neededFolders();
 
 
     //*************************
@@ -186,6 +186,7 @@ public slots:
     void openMmoFolder();
     void openMoFile();
     void openDependenciesDlg();
+    void openNeededFilesDlg();
 
 
     virtual bool readConnections();

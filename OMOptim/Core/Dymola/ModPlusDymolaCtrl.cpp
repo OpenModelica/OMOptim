@@ -187,7 +187,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,b
 
     if((!QFile::exists(dsinFile) && authorizeRecreate)||forceRecompile)
     {
-        createDsin();
+        createDsin(_modModelPlus->moDependencies());
     }
     InfoSender::eraseCurrentTask();
 
@@ -213,7 +213,8 @@ bool ModPlusDymolaCtrl::compile(const QStringList & moDependencies)
     QString logFilePath = _modModelPlus->mmoFolder()+QDir::separator()+"buildlog.txt";
 
     // compile
-    bool success = Dymola::firstRun(_project->moFiles(),_modModelPlus->modModelName(),_modModelPlus->mmoFolder(),logFilePath,moDependencies);
+    bool success = Dymola::firstRun(_project->moFiles(),_modModelPlus->modModelName(),
+                                    _modModelPlus->mmoFolder(),logFilePath,moDependencies,_modModelPlus->neededFiles());
 
     // Inform
     ListInfo::InfoNum iMsg;
@@ -341,8 +342,9 @@ bool ModPlusDymolaCtrl::canBeStoped()
     return true;
 }
 
-bool ModPlusDymolaCtrl::createDsin()
+bool ModPlusDymolaCtrl::createDsin(QStringList moDeps)
 {
+
     QDir dir(_modModelPlus->mmoFolder());
 
     // copy dependencies
@@ -368,7 +370,8 @@ bool ModPlusDymolaCtrl::createDsin()
     }
 
     // compile
-    bool success = Dymola::createDsin(_project->moFiles(),_modModelPlus->modModelName(),_modModelPlus->mmoFolder());
+    bool success = Dymola::createDsin(_project->moFiles(),_modModelPlus->modModelName(),_modModelPlus->mmoFolder(),
+                                      moDeps,_modModelPlus->neededFiles());
 
     // Return
     return success;

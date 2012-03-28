@@ -52,7 +52,8 @@ void Dymola::verifyInstallation()
 }
 
 
-bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath,const QStringList & moDeps)
+bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath,
+                      const QStringList & moDeps, QStringList neededFiles)
 {
     // Create Dymola script
     QString filePath = storeFolder+QDir::separator()+"MOFirstRun.mos";
@@ -82,6 +83,8 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
     ts << scriptText;
     file.close();
 
+    // Copy needed files
+    LowTools::copyFilesInFolder(neededFiles,storeFolder);
 
     // Run script
     QString dymolaPath = MOSettings::value("dymolaExe").toString();
@@ -121,7 +124,8 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
     }
 }
 
-bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString folder,const QStringList & moDeps)
+bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString folder,
+                        const QStringList & moDeps,QStringList neededFiles)
 {
     // Create Dymola script
     QString filePath = folder+QDir::separator()+"MOFirstRun.mos";
@@ -148,6 +152,9 @@ bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString fold
     QTextStream ts( &file );
     ts << scriptText;
     file.close();
+
+    // Copy needed files
+    LowTools::copyFilesInFolder(neededFiles,folder);
 
     // Run script
     QString dymolaPath = MOSettings::value("dymolaExe").toString();

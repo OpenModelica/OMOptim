@@ -141,12 +141,12 @@ QString ModModelPlus::mmoFolder()
     return fileInfo.absolutePath();
 }
 
-QStringList ModModelPlus::neededFilesNames()
+QStringList ModModelPlus::neededFiles()
 {
     return _neededFiles;
 }
 
-QStringList ModModelPlus::neededFoldersNames()
+QStringList ModModelPlus::neededFolders()
 {
     return _neededFolders;
 }
@@ -365,6 +365,12 @@ void ModModelPlus::openDependenciesDlg()
     dlgSelectFiles.exec();
 }
 
+void ModModelPlus::openNeededFilesDlg()
+{
+    QWidget widget;
+    DlgSelectFiles dlgSelectFiles(_neededFiles,&widget,"*.*");
+    dlgSelectFiles.exec();
+}
 
 
 QString ModModelPlus::modModelName()

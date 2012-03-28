@@ -171,7 +171,7 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool 
 
     if((!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt)&& authorizeRecreate)||forceRecompile)
     {
-        createInitFile();
+        createInitFile(_modModelPlus->moDependencies());
     }
 
     if(!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt))
@@ -203,7 +203,8 @@ bool ModPlusOMCtrl::compile(const QStringList & moDeps)
 
     // compile
     QString logFile = _modModelPlus->mmoFolder()+_modModelPlus->modModelName()+".log";
-    bool success = OpenModelica::compile(_moomc,_modModelPlus->moFilePath(),_modModelPlus->modModelName(),_modModelPlus->mmoFolder(),moDeps);
+    bool success = OpenModelica::compile(_moomc,_modModelPlus->moFilePath(),_modModelPlus->modModelName(),_modModelPlus->mmoFolder(),
+                                         moDeps,_modModelPlus->neededFiles(),_modModelPlus->neededFolders());
 
     // Inform
     ListInfo::InfoNum iMsg;
@@ -251,7 +252,7 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
     bool compileOk = isCompiled();
     // eventually compile model
     if(!compileOk)
-        compileOk = compile();
+        compileOk = compile(_modModelPlus->moDependencies());
 
     if(!compileOk)
         return false; // compilation failed, useless to pursue

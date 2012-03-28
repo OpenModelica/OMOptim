@@ -76,8 +76,10 @@ public:
 
 
     static QString getExecutablePath();
-    static bool firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath,const QStringList & moDeps=QStringList());
-    static bool createDsin(QStringList moPaths,QString modelToConsider,QString folder,const QStringList & moDeps=QStringList());
+    static bool firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,
+                         QString logFilePath,const QStringList & moDeps,QStringList neededFiles);
+    static bool createDsin(QStringList moPaths,QString modelToConsider,QString folder,const QStringList & moDeps,
+                           QStringList neededFiles);
     static void start(QString path,QProcess &,int maxNSec=-1);
     static void verifyInstallation();
     //static QString getPreambleFromDsin(QTextStream *);

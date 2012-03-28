@@ -130,6 +130,23 @@ void LowTools::copyDirContents(QString org,QString dest)
         }
     }
 }
+
+void LowTools::copyFilesInFolder(QStringList files, QString folder)
+{
+    QDir dir(folder);
+    if(!dir.exists())
+    {
+        QDir tmpDir;
+        tmpDir.mkpath(folder);
+    }
+
+    for(int i=0;i<files.size();i++)
+    {
+        QFileInfo fileInfo(files.at(i));
+        QFile::copy(fileInfo.absoluteFilePath(),dir.filePath(fileInfo.fileName()));
+    }
+}
+
 void LowTools::copyDir(QString org,QString dest)
 {
     InfoSender::instance()->debug("Copy dir "+org +" to "+dest);

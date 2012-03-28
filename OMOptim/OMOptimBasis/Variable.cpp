@@ -326,6 +326,7 @@ VariableResult::VariableResult(const VariableResult& var):Variable(var)
 
 VariableResult::VariableResult(const Variable& var):Variable(var)
 {
+    setFinalValue(0,0,_value);
 }
 
 VariableResult::VariableResult(QDomElement & domEl)

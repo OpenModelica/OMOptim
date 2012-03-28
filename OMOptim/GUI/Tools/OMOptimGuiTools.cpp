@@ -191,6 +191,11 @@ void OMOptimGuiTools::addModModelActions(QMenu* menu,Project* project, const QPo
     connect(setMoDeps,SIGNAL(triggered()),selectedModModelPlus,SLOT(openDependenciesDlg()));
     menu->addAction(setMoDeps);
 
+    // Set needed files
+    QAction *setNeededFiles = new QAction("Set needed files for compilation ...",menu);
+    connect(setNeededFiles,SIGNAL(triggered()),selectedModModelPlus,SLOT(openNeededFilesDlg()));
+    menu->addAction(setNeededFiles);
+
 //    //Select simulator
 //    QActionGroup *simulator = new QActionGroup(menu);
 //    simulator->setExclusive(true);

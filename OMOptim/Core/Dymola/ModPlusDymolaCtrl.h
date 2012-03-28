@@ -51,13 +51,13 @@ public:
         void setDefaultParameters();
 
         // Compile function
-        bool createDsin();
+        bool createDsin(QStringList moDeps);
         bool isCompiled();
-        bool compile(const QStringList & moDependencies=QStringList());
+        bool compile(const QStringList & moDependencies);
 
         // Simulate function
         bool simulate(QString tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,
-                      QStringList filesTocopy=QStringList(),QStringList moDependencies=QStringList());
+                      QStringList filesTocopy,QStringList moDependencies);
         void stopSimulation();
         bool canBeStoped();
 
