@@ -186,6 +186,7 @@ Result* OneSimulation::launch(ProblemConfig config)
     MOVector<Variable> curVariables(true);
     bool allSimSuccess=true;
     bool curSimSuccess;
+    int iScan=0;
     do
     {
         // Update values
@@ -208,7 +209,7 @@ Result* OneSimulation::launch(ProblemConfig config)
                 {
                     result->finalVariables()->addItem(new VariableResult(*curVariables.items.at(i)));
                     curValue = curVariables.items.at(i)->getFieldValue(Variable::VALUE).toDouble();
-                    result->finalVariables()->at(i)->appendScanValue(curValue,true);
+                    result->finalVariables()->at(i)->setFinalValue(iScan,0,curValue,true);
                 }
             }
             else
@@ -221,20 +222,20 @@ Result* OneSimulation::launch(ProblemConfig config)
                     if(iVar>-1)
                     {
                         curValue = curVariables.items.at(iVar)->getFieldValue(Variable::VALUE).toDouble();
-                        result->finalVariables()->at(i)->appendScanValue(curValue,true);
+                        result->finalVariables()->at(i)->setFinalValue(iScan,0,curValue,true);
                     }
                     else
-                        result->finalVariables()->at(i)->appendScanValue(-1,false);
+                        result->finalVariables()->at(i)->setFinalValue(iScan,0,-1,false);
                 }
             }
         }
 
         indexes = LowTools::nextIndex(indexes,maxIndexes);
+        iScan++;
     }
     while(!indexes.isEmpty() && allSimSuccess);
 
     result->setSuccess(allSimSuccess);
-
 
     return result;
 }

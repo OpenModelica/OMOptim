@@ -86,6 +86,7 @@ OptimResult::OptimResult(Project* project, const Optimization & problem)
 OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok)
     :Result((ProjectBase*)project,(const Problem&)problem)
 {
+    ok = true;
     _omProject = project;
     _models = problem.models();
     this->setSaveFolder(resultDir.absolutePath());

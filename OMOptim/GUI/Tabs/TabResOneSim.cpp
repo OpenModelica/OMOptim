@@ -66,9 +66,9 @@ TabResOneSim::TabResOneSim(OneSimResult *result, QWidget *parent) :
     mapDockWidgets.key(_finalTableVars)->setSizePolicy(sizePolicy);
 
     _widgetCtrl = new WidgetCtrlParameters(_project,problem->model(),problem->ctrls(),true,this);
-    addDockWidget("Simulator",_widgetCtrl,_inputTableVars);
+    addDockWidget("Simulator",_widgetCtrl,_finalTableVars);
 
-    _finalTableVars->raise();
+    mapDockWidgets.key(_finalTableVars)->raise();
 
 
 
