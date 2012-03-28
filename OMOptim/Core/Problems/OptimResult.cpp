@@ -90,9 +90,11 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     _models = problem.models();
     this->setSaveFolder(resultDir.absolutePath());
 
+
     _recomputedVariables = new MOOptVector(true,true,true);
     _optObjectivesResults = new MOOptVector(true,false,true); //objectives are constant for one scan
     _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
+    _algo = NULL;
 
     if(domResult.isNull() || (domResult.tagName()!=OptimResult::className()))
     {
@@ -199,7 +201,8 @@ OptimResult::~OptimResult(void)
     delete _optVariablesResults;
     delete _optObjectivesResults;
     delete _recomputedVariables;
-    delete _algo;
+    if(_algo)
+        delete _algo;
 }
 
 void OptimResult::loadOptimValuesFromFrontFile(QString fileName)
@@ -433,7 +436,7 @@ QDomElement OptimResult::toXmlData(QDomDocument & doc)
 
     // Result element
     QDomElement cRoot = doc.createElement("OMResult");
-    QDomElement cResult = doc.createElement(this->getClassName());
+    QDomElement cResult = doc.createElement(OptimResult::className());
     cRoot.appendChild(cResult);
 
 

@@ -308,15 +308,39 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
         newVar->setName(QString(reader.allInfo[i].name));
         newVar->setModel(_modelName);
 
+
         // read the variable final value
         var = omc_matlab4_find_var(&reader, reader.allInfo[i].name);
-        status = omc_matlab4_val(&value,&reader,var,stopTime);
+
+
+        if (!var->isParam)
+        {
+            status = omc_matlab4_val(&value,&reader,var,stopTime);
+        }
+        // if variable is a parameter then take at first step
+        else
+        {
+            status = omc_matlab4_val(&value,&reader,var,0.0);
+        }
+
+
         varOk = (status==0);
+        if(!varOk && reader.nrows>0)
+        {
+            double *vals = omc_matlab4_read_vals(&reader,var->index);
+            value = vals[reader.nrows-1];
+            varOk = true;
+        }
         newVar->setValue(value);
+
+
         if(varOk)
             variables->addItem(newVar);
         else
+        {
+            InfoSender::instance()->debug("Couldn't find value of variable in .mat file :" + newVar->name());
             delete newVar;
+        }
     }
 
     return true;
