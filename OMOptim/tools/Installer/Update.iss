@@ -11,7 +11,7 @@
 
 #sub ProcessFileLine
 #pragma message "FileLine : " + FileLine
-#define public Version = "v"+Copy(""+FileLine, 0, Len(FileLine))
+#define public Version = Copy(""+FileLine, 0, Len(FileLine))
 #pragma message "Detected Version: " + Version
 #endsub
 #define FileHandle FileOpen(VerSrc)
@@ -24,15 +24,15 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{2C27A169-E374-4967-BBE3-B488F2F412AA}
 AppName=OMOptim
-AppVerName=OMOptim {code:GetAppCurrentVersion|''}
-AppVersion={code:GetAppCurrentVersion|''}
+AppVerName=OMOptim {#Version}
+AppVersion={#Version}
 AppPublisher=Hubert Thieriot (ARMINES)
 CreateAppDir=no
 DisableProgramGroupPage=yes
 ;DefaultDirName={%OPENMODELICAHOME}
 ;VersionInfoVersion=0.9
 DefaultGroupName=OMOptim
-OutputBaseFilename=update{#Version}
+OutputBaseFilename=updatev{#Version}
 Compression=lzma
 SolidCompression=yes
 ;WizardImageFile=D:\Documents\MinEIT\Developpement\OMOptim\trunk\files\Resources\icons\Synchronize\Synchronize_256x256.png
@@ -125,7 +125,7 @@ begin
 
   OMDirPage := CreateInputDirPage(wpSelectDir,
     'OpenModelica Directory', '',
-    'Please select OpenModelica main folder.',
+    'Please select OpenModelica main folder. Please note that version 1.8.1 or newer one is required',
     False, '');
   OMDirPage.Add('');
 
