@@ -52,7 +52,7 @@ void Dymola::verifyInstallation()
 }
 
 
-bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeFolder,QString logFilePath,
+bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder,QString logFilePath,
                       const QStringList & moDeps, QStringList neededFiles)
 {
     // Create Dymola script
@@ -69,8 +69,8 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
     for(int i=0;i<moDeps.size();i++)
         scriptText.append("openModel(\""+moDeps.at(i)+"\")\n");
 
-    for(int i=0;i<moPaths.size();i++)
-        scriptText.append("openModel(\""+moPaths.at(i)+"\")\n");
+    //for(int i=0;i<moPaths.size();i++)
+        scriptText.append("openModel(\""+moPath+"\")\n");
 
     scriptText.append("cd "+storeFolder+"\n");
     scriptText.append("experimentSetupOutput(textual=true)\n");
@@ -101,6 +101,11 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
         if(dymoFile.exists())
             dymoFile.remove();
 
+        // delete previous dsin file
+        QFile dsinFile(storeFolder+QDir::separator()+"dsin.txt");
+        if(dsinFile.exists())
+            dsinFile.remove();
+
         // launch script
         QProcess scriptProcess;
         QStringList args;
@@ -124,7 +129,7 @@ bool Dymola::firstRun(QStringList moPaths,QString modelToConsider,QString storeF
     }
 }
 
-bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString folder,
+bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder,
                         const QStringList & moDeps,QStringList neededFiles)
 {
     // Create Dymola script
@@ -140,8 +145,8 @@ bool Dymola::createDsin(QStringList moPaths,QString modelToConsider,QString fold
     for(int i=0;i<moDeps.size();i++)
         scriptText.append("openModel(\""+moDeps.at(i)+"\")\n");
 
-    for(int i=0;i<moPaths.size();i++)
-        scriptText.append("openModel(\""+moPaths.at(i)+"\")\n");
+   // for(int i=0;i<moPaths.size();i++)
+        scriptText.append("openModel(\""+moPath+"\")\n");
 
     scriptText.append("cd "+folder+"\n");
     scriptText.append("translateModel(\""+modelToConsider+"\")\n");

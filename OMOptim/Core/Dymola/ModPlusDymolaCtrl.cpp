@@ -213,7 +213,7 @@ bool ModPlusDymolaCtrl::compile(const QStringList & moDependencies)
     QString logFilePath = _modModelPlus->mmoFolder()+QDir::separator()+"buildlog.txt";
 
     // compile
-    bool success = Dymola::firstRun(_project->moFiles(),_modModelPlus->modModelName(),
+    bool success = Dymola::firstRun(_modModelPlus->moFilePath(),_modModelPlus->modModelName(),
                                     _modModelPlus->mmoFolder(),logFilePath,moDependencies,_modModelPlus->neededFiles());
 
     // Inform
@@ -370,7 +370,7 @@ bool ModPlusDymolaCtrl::createDsin(QStringList moDeps)
     }
 
     // compile
-    bool success = Dymola::createDsin(_project->moFiles(),_modModelPlus->modModelName(),_modModelPlus->mmoFolder(),
+    bool success = Dymola::createDsin(_modModelPlus->moFilePath(),_modModelPlus->modModelName(),_modModelPlus->mmoFolder(),
                                       moDeps,_modModelPlus->neededFiles());
 
     // Return

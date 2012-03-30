@@ -43,7 +43,7 @@
 #include <QtGui/QDialog>
 #include <QtGui/QWidget>
 #include "ui_AboutOMOptim.h"
-
+#include "version.h"
 
 namespace Ui {
     class AboutOMOptim;
