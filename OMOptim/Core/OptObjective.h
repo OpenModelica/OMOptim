@@ -147,7 +147,7 @@ public:
 
     void setFinalValues(const std::vector<double> &);
     void setFinalValueAtPoint(double,int);
-    void appendFinalValue(double);
+  //  void appendFinalValue(double);
 
     void clearFinalValues();
     OptObjectiveResult* clone() const;

@@ -490,39 +490,39 @@ void VariableResult::setFinalValue(int iScan,int iPoint,double value,bool comput
     _computedPoints.at(iScan).at(iPoint) = computed;
 }
 
-void VariableResult::appendFinalValue(double value,int iScan)
-{
-    if(iScan==_finalValues.size())
-    {
-        _finalValues.push_back(std::vector<double>());
-        _computedPoints.push_back(std::vector<bool>());
-    }
-    if(iScan>=_finalValues.size())
-    {
-        QString msg;
-        msg.sprintf("appdendFinalValue with iScan > finalValues.nbScans (variable : %s",name().utf16());
-        InfoSender::instance()->send(Info(msg,ListInfo::INFODEBUG));
-    }
+//void VariableResult::appendFinalValue(double value,int iScan)
+//{
+//    if(iScan==_finalValues.size())
+//    {
+//        _finalValues.push_back(std::vector<double>());
+//        _computedPoints.push_back(std::vector<bool>());
+//    }
+//    if(iScan>=_finalValues.size())
+//    {
+//        QString msg;
+//        msg.sprintf("appdendFinalValue with iScan > finalValues.nbScans (variable : %s",name().utf16());
+//        InfoSender::instance()->send(Info(msg,ListInfo::INFODEBUG));
+//    }
 
-    _finalValues.at(iScan).push_back(value);
-    _computedPoints.at(iScan).push_back(true);
-}
+//    _finalValues.at(iScan).push_back(value);
+//    _computedPoints.at(iScan).push_back(true);
+//}
 
-void VariableResult::appendScanValues(std::vector<double> values,std::vector<bool> computedPoints)
-{
-    _finalValues.push_back(values);
-    _computedPoints.push_back(computedPoints);
-}
+//void VariableResult::appendScanValues(std::vector<double> values,std::vector<bool> computedPoints)
+//{
+//    _finalValues.push_back(values);
+//    _computedPoints.push_back(computedPoints);
+//}
 
-void VariableResult::appendScanValue(double value,bool computedPoint)
-{
-    std::vector<double> values;
-    std::vector<bool> computedPoints;
-    values.push_back(value);
-    computedPoints.push_back(computedPoint);
-    _finalValues.push_back(values);
-    _computedPoints.push_back(computedPoints);
-}
+//void VariableResult::appendScanValue(double value,bool computedPoint)
+//{
+//    std::vector<double> values;
+//    std::vector<bool> computedPoints;
+//    values.push_back(value);
+//    computedPoints.push_back(computedPoint);
+//    _finalValues.push_back(values);
+//    _computedPoints.push_back(computedPoints);
+//}
 
 bool VariableResult::isComputedPoint(int iScan, int iPoint) const
 {

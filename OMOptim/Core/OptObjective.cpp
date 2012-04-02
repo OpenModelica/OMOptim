@@ -460,11 +460,11 @@ void OptObjectiveResult::setFinalValueAtPoint(double value,int index)
     _computedPoints.at(index)=true;
 }
 
-void OptObjectiveResult::appendFinalValue(double value)
-{
-    _finalValues.push_back(value);
-    _computedPoints.push_back(true);
-}
+//void OptObjectiveResult::appendFinalValue(double value)
+//{
+//    _finalValues.push_back(value);
+//    _computedPoints.push_back(true);
+//}
 
 bool OptObjectiveResult::isComputedPoint(int i) const
 {

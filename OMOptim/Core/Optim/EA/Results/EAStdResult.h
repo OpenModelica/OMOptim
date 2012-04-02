@@ -91,6 +91,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
         for (int i=0;i< modelPlus->variables()->items.size();i++)
         {
             curRecompVar = new VariableResult(*modelPlus->variables()->items.at(i));
+            curRecompVar->clearFinalValues();
             result->recomputedVariables()->addItem(curRecompVar);
         }
     }
@@ -105,6 +106,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     for (int iOptVar = 0; iOptVar < nbOptVar; iOptVar++)
     {
         curOptVarRes = new VariableResult(*problem->optimizedVariables()->items.at(iOptVar));
+        curOptVarRes->clearFinalValues();
         result->optVariablesResults()->addItem(curOptVarRes);
         if(result->recomputedVariables()->findItem(curOptVarRes->name(Variable::FULL))==-1)
             result->recomputedVariables()->addItem(curOptVarRes->clone());
@@ -118,6 +120,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     for (int iOptObj = 0; iOptObj < nbOptObj; iOptObj++)
     {
         curOptObjRes = new VariableResult(*problem->objectives()->at(iOptObj));
+        curOptObjRes->clearFinalValues();
         result->optObjectivesResults()->addItem(curOptObjRes);
         if(result->recomputedVariables()->findItem(curOptObjRes->name(Variable::FULL))==-1)
             result->recomputedVariables()->addItem(curOptObjRes->clone());

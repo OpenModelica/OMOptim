@@ -201,9 +201,9 @@ public :
     void setFinalValuesAtPoint(int iPoint,const std::vector<double> &);
     void setFinalValueAtPoint(int iPoint,double );
     void setFinalValue(int iScan, int iPoint,double,bool computed = true);
-    void appendFinalValue(double, int iScan);
-    void appendScanValues(std::vector<double> _values,std::vector<bool> _computedPoints);
-    void appendScanValue(double _value,bool _computedPoint);
+//    void appendFinalValue(double, int iScan);
+//    void appendScanValues(std::vector<double> _values,std::vector<bool> _computedPoints);
+//    void appendScanValue(double _value,bool _computedPoint);
     void clearFinalValues();
     void clearFinalValuesAtIpoint(int iPoint);
 

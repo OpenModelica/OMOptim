@@ -257,6 +257,7 @@ void OptimResult::loadOptimValuesFromFrontFile(QString fileName)
 
     // Filling variables and objectives values
     QStringList curLine;
+    int iPoint=0;
     int curIndex = 0; // to skip empty, partial or comment lines
     for (int iLine = 1; iLine<lines.size(); iLine++)
     {
@@ -268,15 +269,15 @@ void OptimResult::loadOptimValuesFromFrontFile(QString fileName)
             {
                 if (objIndex[iCol]>-1)
                 {
-                    this->optObjectivesResults()->at(objIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
+                    this->optObjectivesResults()->at(objIndex[iCol])->setFinalValue(0,iPoint,curLine[iCol].toDouble());
                 }
                 if (optVarIndex[iCol]>-1)
                 {
-                    this->optVariablesResults()->at(optVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
+                    this->optVariablesResults()->at(optVarIndex[iCol])->setFinalValue(0,iPoint,curLine[iCol].toDouble());
                 }
                 if ((recompVarIndex[iCol]>-1)&&(!useScan))
                 {
-                    this->recomputedVariables()->at(recompVarIndex[iCol])->appendFinalValue(curLine[iCol].toDouble(),0);
+                    this->recomputedVariables()->at(recompVarIndex[iCol])->setFinalValue(0,iPoint,curLine[iCol].toDouble());
                 }
             }
 
@@ -284,6 +285,7 @@ void OptimResult::loadOptimValuesFromFrontFile(QString fileName)
                 this->_iSubModels.push_back(curLine[iiSubBlock].toInt());
 
             curIndex ++;
+            iPoint++;
         }
     }
 }
