@@ -122,7 +122,7 @@ void ModPlusOMCtrl::setDefaultParameters()
     _parameters->addItem(new MOParameter(STEPSIZE,"stepSize","Step size",0.002,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
     _parameters->addItem(new MOParameter(STARTTIME,"startTime","Start time",0,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
 
-    _parameters->addItem(new MOParameter((int)MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
+    _parameters->addItem(new MOParameter((int)MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
 
     QMap<int,QString> mapOutput;
     mapOutput.insert(ModPlusOMCtrl::MAT,"mat");

@@ -98,7 +98,7 @@ void ModPlusDymolaCtrl::setDefaultParameters()
     mapSolvers.insert(Dymola::EULER,"Euler");
 
     _parameters->addItem( new MOParameterListed((int)Dymola::SOLVER,"Solver","Solver",Dymola::DASSL,mapSolvers));
-    _parameters->addItem(new MOParameter((int)Dymola::MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
+    _parameters->addItem(new MOParameter((int)Dymola::MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
 
     QMap<int,QString> finalFiles;
     finalFiles.insert(DSFINAL,"dsfinal");

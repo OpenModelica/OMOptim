@@ -195,6 +195,9 @@ OptimResult::OptimResult(const OptimResult &res)
 
     _curScan = res._curScan;
     _curPoint = res._curPoint;
+
+    _optVarsFrontFileName = res._optVarsFrontFileName;
+    _allVarsFrontFileName = res._allVarsFrontFileName;
 }
 
 OptimResult::~OptimResult(void)
