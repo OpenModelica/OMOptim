@@ -14,8 +14,8 @@ class OMProcess : public QProcess
 {
     Q_OBJECT
 public:
-    explicit OMProcess(QString appName, bool dispOut, QObject *parent = 0);
-
+    explicit OMProcess(QObject *parent = 0);
+    void setAppName(QString appName);
 signals:
 
 public slots:

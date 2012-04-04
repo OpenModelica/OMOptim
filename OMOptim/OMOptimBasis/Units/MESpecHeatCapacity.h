@@ -57,7 +57,8 @@ public:
     enum Units
     {
             J_KG_K,
-        KJ_KG_K
+            KJ_KG_K,
+            MJ_KG_K
     };
 
     QString unit(int iUnit)  const;

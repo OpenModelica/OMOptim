@@ -61,6 +61,8 @@ QString MESpecHeatCapacity::unit(int iUnit) const
 {
     switch(iUnit)
     {
+    case MJ_KG_K :
+        return "MJ/kg.K";
     case KJ_KG_K :
         return "kJ/kg.K";
     case J_KG_K :
@@ -77,7 +79,7 @@ QString MESpecHeatCapacity::unit() const
 
 unsigned MESpecHeatCapacity::nbUnits() const
 {
-    return 2;
+    return 3;
 }
 
 double MESpecHeatCapacity::convert(double value,int orgUnit,int dstUnit) const
@@ -89,6 +91,9 @@ double MESpecHeatCapacity::convert(double value,int orgUnit,int dstUnit) const
     case KJ_KG_K :
         result = result*1000;
         break;
+    case MJ_KG_K :
+        result = result*1E6;
+        break;
     default :
         break;
     }
@@ -98,6 +103,9 @@ double MESpecHeatCapacity::convert(double value,int orgUnit,int dstUnit) const
     {
     case KJ_KG_K :
         result = result/1000;
+        break;
+    case MJ_KG_K :
+        result = result/1E6;
         break;
     default :
         break;

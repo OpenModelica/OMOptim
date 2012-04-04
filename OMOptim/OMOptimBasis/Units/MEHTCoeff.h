@@ -54,7 +54,9 @@ public:
 
     enum Units
     {
-            W_M2_K
+            W_M2_K,
+            KW_M2_K,
+            MW_M2_K
     };
 
     QString unit(int iUnit)  const;

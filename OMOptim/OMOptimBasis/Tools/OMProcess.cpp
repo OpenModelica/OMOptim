@@ -1,10 +1,10 @@
 #include "OMProcess.h"
 
-OMProcess::OMProcess(QString appName, bool dispOut, QObject *parent) :
+OMProcess::OMProcess(QObject *parent) :
     QProcess(parent)
 {
-    _appName = appName;
-    _dispOut = dispOut;
+
+    _dispOut = true;
 
     setProcessChannelMode(MergedChannels);
     if(_dispOut)
@@ -15,4 +15,9 @@ void OMProcess::onReadyRead()
 {
     QString msg = "["+_appName+"] : "+QString(readAllStandardOutput());
     InfoSender::instance()->send(Info(msg));
+}
+
+void OMProcess::setAppName(QString appName)
+{
+    _appName = appName;
 }

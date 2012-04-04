@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -40,17 +40,17 @@
 #include "MEHTCoeff.h"
 
 MEHTCoeff::MEHTCoeff():
-MEDimValue()
+    MEDimValue()
 {
 }
 
 MEHTCoeff::MEHTCoeff(double value,int unit):
-MEDimValue(value,unit)
+    MEDimValue(value,unit)
 {
 }
 
 MEHTCoeff::MEHTCoeff(const MEHTCoeff& temp):
-MEDimValue(temp._value,temp._unit)
+    MEDimValue(temp._value,temp._unit)
 {
 }
 
@@ -64,6 +64,10 @@ QString MEHTCoeff::unit(int iUnit) const
     {
     case W_M2_K :
         return "W/m2.K";
+    case KW_M2_K :
+        return "kW/m2.K";
+    case MW_M2_K :
+        return "MW/m2.K";
     default :
         return "-";
     }
@@ -71,22 +75,27 @@ QString MEHTCoeff::unit(int iUnit) const
 
 QString MEHTCoeff::unit() const
 {
-        return unit(_unit);
+    return unit(_unit);
 }
 
 unsigned MEHTCoeff::nbUnits() const
 {
-        return 1;
+    return 3;
 }
 
 double MEHTCoeff::convert(double value,int orgUnit,int dstUnit) const
 {
     double result=value;
-        // convert to m2
+    // convert to W/m2
     switch(orgUnit)
     {
-        case W_M2_K :
-
+    case W_M2_K :
+        break;
+    case KW_M2_K :
+        result = result*1E3;
+        break;
+    case MW_M2_K :
+        result = result*1E6;
         break;
     default :
         break;
@@ -95,7 +104,14 @@ double MEHTCoeff::convert(double value,int orgUnit,int dstUnit) const
     // convert to dstUnit
     switch(dstUnit)
     {
-                break;
+    case W_M2_K :
+        break;
+    case KW_M2_K :
+        result = result/1E3;
+        break;
+    case MW_M2_K :
+        result = result/1E6;
+        break;
     default :
         break;
     }
