@@ -259,7 +259,11 @@ bool ModModelPlus::isCompiled(ModPlusCtrl* ctrl)
 
 bool ModModelPlus::compile(ModPlusCtrl* ctrl)
 {
-    return ctrl->compile(moDependencies());
+    QStringList modelsToLoad = moDependencies();
+    modelsToLoad.append(_project->moFiles());
+    modelsToLoad.removeDuplicates();
+
+    return ctrl->compile(modelsToLoad);
 }
 
 void ModModelPlus::addConnection(ModItem* a, ModItem* b)
