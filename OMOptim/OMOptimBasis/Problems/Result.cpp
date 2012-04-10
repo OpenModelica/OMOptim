@@ -104,7 +104,7 @@ Problem* Result::problem()
     return _problem;
 }
 
-void Result::setProblem(const Problem & problem)
+void Result::setProblem(Problem & problem)
 {
     if(_problem)
         delete _problem;

@@ -94,7 +94,7 @@ public:
     Problem* problem();
     bool isSuccess();
 
-    void setProblem(const Problem &);
+    virtual void setProblem(Problem &);
     void setSuccess(bool);
 
 };
