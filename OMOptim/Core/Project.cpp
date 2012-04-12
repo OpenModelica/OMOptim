@@ -200,6 +200,32 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
 
 /**
 * \brief
+* Unload a modelica file
+* \param moFilePath full file path of .mo
+* \param storePath yes/no should path be removed from project
+*/
+void Project::unloadMoFile(QString moFilePath, bool removePath)
+{
+    // unwatch mo file (avoid recursive call)
+    bool wasThere = _mofilesWatcher.files().contains(moFilePath);
+    _mofilesWatcher.removePath(moFilePath);
+
+
+    // remove from mofileloadedlist
+    if(removePath)
+        _moFiles.removeAll(moFilePath);
+
+    // unload moFile ...
+    _modLoader->unloadMoFile(modItemsTree(),moFilePath);
+
+    _modItemsTree->emitDataChanged();
+
+
+    emit projectChanged();
+}
+
+/**
+* \brief
 * Load Modelica library (calls OpenModelica load library function
 * \param storePath yes/no should path be stored in project file
 * (as to be reloaded when loading project)
@@ -518,6 +544,17 @@ void Project::onReloadMOFileAsked()
     {
         QString moFile = button->data().toString();
         this->loadMoFile(moFile,true,true);
+        _modItemsTree->readFromOMCWThread(_modItemsTree->rootElement(),2);
+    }
+}
+
+void Project::onUnloadMOFileAsked()
+{
+    QAction* button = dynamic_cast<QAction*>(sender());
+    if(button)
+    {
+        QString moFile = button->data().toString();
+        this->unloadMoFile(moFile,true);
         _modItemsTree->readFromOMCWThread(_modItemsTree->rootElement(),2);
     }
 }

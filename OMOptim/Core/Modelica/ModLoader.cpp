@@ -108,6 +108,28 @@ void ModLoader::loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bo
     modItemsTree->readFromOMCWThread(modItemsTree->rootElement(),2);
 }
 
+void ModLoader::unloadMoFile(ModItemsTree *modItemsTree, QString filePath)
+{
+    InfoSender::sendCurrentTask("Unloading .mo file : "+filePath);
+    // loading file in moomc
+    QString error;
+    bool loadOk;
+
+    // get classNames of file
+    QStringList classNames = _moomc->getClassesOfFile(filePath);
+
+    // delete classes
+    for(int i=0;i<classNames.size();i++)
+        _moomc->deleteClass(classNames.at(i));
+
+    // clear tree
+    modItemsTree->clear();
+
+
+    // reread first elements of modItemsTree
+    modItemsTree->readFromOMCWThread(modItemsTree->rootElement(),2);
+}
+
 int ModLoader::getDepthMax()
 {
     int depthMax = MOSettings::value("DepthReadWhileLoadingModModel").toInt();

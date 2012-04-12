@@ -67,8 +67,10 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
     bool loadOk;
     QString loadError;
 
-    // load modependencies
-    _omc->loadFiles(moDeps);
+    // load moDependencies if not already loaded
+    // forceLoad = false
+    for(int i=0;i<moDeps.size();i++)
+        _omc->loadModel(moDeps.at(i),false,loadOk,loadError);
 
     // if not already loaded, reload
     if(loadedMoPath.compare(moPath))

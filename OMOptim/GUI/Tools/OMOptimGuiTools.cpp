@@ -90,6 +90,12 @@ void OMOptimGuiTools::addCommonActions(QMenu* menu,Project* project, const QPoin
     connect(reload,SIGNAL(triggered()),project,SLOT(onReloadMOFileAsked()));
     menu->addAction(reload);
 
+    // Unload
+    QAction *unload = new QAction("Unload .mo file",menu);
+    unload->setData(selectedModItem->filePath());
+    connect(unload,SIGNAL(triggered()),project,SLOT(onUnloadMOFileAsked()));
+    menu->addAction(unload);
+
     // Edit mo file
     QAction *edit = new QAction("Open .mo file",menu);
     connect(edit,SIGNAL(triggered()),selectedModItem,SLOT(openInEditor()));

@@ -42,7 +42,7 @@ http://www-cep.ensmp.fr/english/
 #include "ModModelPlus.h"
 #include "ModModel.h"
 #include "MOParameter.h"
-
+#include "Project.h"
 
 ModPlusOMCtrl::ModPlusOMCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc)
     :ModPlusCtrl(project,modModelPlus,moomc)
@@ -243,8 +243,11 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
     // Info
     InfoSender::sendCurrentTask("Open Modelica : Simulating model "+_modModelPlus->modModelName());
 
-    // load moDependencies
-    _moomc->loadFiles(moDependencies);
+
+    // load moDependencies if not already loaded
+    // storePaths in project = false
+    // forceLoad = false
+    _project->loadMoFiles(moDependencies,false,false);
 
     // clear outputVars
     outputVars->clear();

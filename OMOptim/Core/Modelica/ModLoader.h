@@ -65,6 +65,7 @@ public:
     // Load functions
         void loadMoFile(ModItemsTree* modItemsTree,QString filePath,bool forceLoad = true);
         void loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bool forceLoad = true);
+        void unloadMoFile(ModItemsTree* modItemsTree,QString filePath);
 
         int getDepthMax();
 

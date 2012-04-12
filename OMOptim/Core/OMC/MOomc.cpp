@@ -663,6 +663,14 @@ bool MOomc::deleteComponent(QString compName)
     return (commandRes=="true");
 
 }
+
+bool MOomc::deleteClass(QString className)
+{
+    QString commandText = "deleteClass(" + className+")";
+    QString commandRes= evalCommand(commandText);
+    return (commandRes=="true");
+}
+
 bool MOomc::deleteConnection(const QString & org,const QString & dest, const QString & model)
 {
     // getting short names

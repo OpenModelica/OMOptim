@@ -147,6 +147,7 @@ public :
     void buildModel(QString model);
 
     bool deleteComponent(QString compName);
+    bool deleteClass(QString className);
     bool save(QString model);
     bool addComponent(QString name,QString className, QString modelName,QString annotation);
 

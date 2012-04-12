@@ -125,6 +125,7 @@ private:
     //Model managment
     //****************************
     void loadMoFile(QString filePath, bool storePath=true, bool forceLoad = true);
+    void unloadMoFile(QString filePath, bool removePath=true);
     void loadMoFiles(QStringList filePaths, bool storePath=true, bool forceLoad = true);
     bool loadModelicaLibrary(bool storePath=true, bool forceLoad = true);
     void loadModModelPlus(QString mmoFilePath);
@@ -181,6 +182,7 @@ public slots :
 
     void onModItemSelectionChanged(QList<ModItem*> &classes);
     void onReloadMOFileAsked();
+    void onUnloadMOFileAsked();
 
     //****************************
     // Signals
