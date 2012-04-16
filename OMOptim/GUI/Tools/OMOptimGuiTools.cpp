@@ -122,10 +122,34 @@ void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir project
     QString newModelPath;
     modelsPath.removeDuplicates();
 
+    bool exist;
+
+    QStringList newPaths;
+
     for(int i=0;i<modelsPath.size();i++)
     {
         oldModelPath = modelsPath.at(i);
-        if(!projectFolder.exists(oldModelPath))
+        newModelPath = oldModelPath;
+
+        QFileInfo oldModelFI(oldModelPath);
+
+        // first try absolute path
+        exist=oldModelFI.exists();
+
+        // try relative path (path=test.mo)
+        exist= exist || projectFolder.exists(oldModelPath);
+
+        // look for a similar name in current folder (path=inexistingfolder/test.mo -> projectFolder/test.mo)
+        if(!exist)
+        {
+            if(projectFolder.exists(oldModelFI.completeBaseName()))
+            {
+                newModelPath = oldModelFI.completeBaseName(); // change name
+                exist = true;
+            }
+        }
+
+        if(!exist)
         {
             QMessageBox msgBox;
             msgBox.setText("Model file could not be found :"+oldModelPath+"\n");
@@ -141,11 +165,7 @@ void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir project
                             "MO - Select .mo file",
                             projectFolder.absolutePath()+QDir::separator()+oldModelPath,
                             "Modelica file (*.mo)" );
-                if(!newModelPath.isEmpty())
-                {
-                    modelsPath.removeAll(oldModelPath);
-                    modelsPath.push_back(newModelPath);
-                }
+
                 break;
             case QMessageBox::No:
                 break;
@@ -154,7 +174,14 @@ void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir project
                 break;
             }
         }
+
+        // update values
+        newPaths.push_back(newModelPath);
     }
+
+    newPaths.removeDuplicates();
+
+    modelsPath = newPaths;
 }
 void OMOptimGuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & iPoint,ModModel* selectedModel)
 {

@@ -50,7 +50,61 @@
 #include <QSettings>
 #include <QApplication>
 
-MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
+
+void MOParametersWidget::onSelectFileClicked()
+{
+    QPushButton* button = dynamic_cast<QPushButton*>(sender());
+
+    QLineEdit* line = _pathsMap.value(button,NULL);
+
+    if(line)
+    {
+        QString filename = QFileDialog::getOpenFileName(this);
+        if(!filename.isEmpty())
+            line->setText(filename);
+    }
+}
+
+void MOParametersWidget::onSelectFolderClicked()
+{
+    QPushButton* button = dynamic_cast<QPushButton*>(sender());
+
+    QLineEdit* line = _pathsMap.value(button,NULL);
+
+    if(line)
+    {
+        QString filename = QFileDialog::getExistingDirectory(this);
+        if(!filename.isEmpty())
+            line->setText(filename);
+    }
+}
+
+void MOParametersWidget::setDefaultValues()
+{
+    QVariant defaultValue;
+    MOParameter* curParam;
+    QWidget* curWidget;
+
+
+    for(int i=0;i<_mapValueWidgets.keys().size();i++)
+    {
+//        curIndex = _mapValueWidgets.keys().at(i);
+//        iParam = _localParameters->findItem(curIndex,MOParameter::INDEX);
+        curParam = _mapValueWidgets.keys().at(i);
+        curWidget = _mapValueWidgets.value(curParam,NULL);
+
+        // get default value
+        defaultValue = curParam->getFieldValue(MOParameter::DEFAULTVALUE);
+
+        setValue(curWidget,defaultValue);
+    }
+
+}
+
+
+
+
+MOParametersWidget::MOParametersWidget(MOParameters *parameters, bool editable)
 {
     this->setLocale(QLocale::C);
     this->setWindowTitle("Parameters");
@@ -62,12 +116,9 @@ MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
     //        QApplication::postEvent( this, new QCloseEvent() );
     //    }
 
-
-    _orgParameters = parameters;
-    _localParameters = _orgParameters->clone();
+    _localParameters = parameters->clone();
 
     _editable = editable;
-
 
     QGridLayout *newLayout = buildLayoutFromParameters();
     this->setLayout(newLayout);
@@ -75,14 +126,14 @@ MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
 }
 
 
-QGridLayout* MOParametersDlg::buildLayoutFromParameters()
+QGridLayout* MOParametersWidget::buildLayoutFromParameters()
 {
     //Adding Layout
     QGridLayout *mainLayout = new QGridLayout(this);
 
     // get groups
-    QMultiMap<QString,MOParameter*> map = _localParameters->map();
-    QStringList groups = map.uniqueKeys();
+    QMultiMap<QString,MOParameter*> groupmap = _localParameters->groupmap();
+    QStringList groups = groupmap.uniqueKeys();
 
 
     QStringList paramNames;
@@ -101,7 +152,7 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
         QGroupBox *box = new QGroupBox(groups.at(iG),this);
         QGridLayout *boxLayout = new QGridLayout(box);
 
-        groupParameters = map.values(groups.at(iG));
+        groupParameters = groupmap.values(groups.at(iG));
         sortItems<MOParameter>::applyToInt(groupParameters,MOParameter::INDEX);
 
         for(int iP=0;iP<groupParameters.size();iP++)
@@ -218,33 +269,7 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
     }
 
 
-    QHBoxLayout *buttonsLayout = new QHBoxLayout(this);
 
-
-    QPushButton *pushOk = new QPushButton("Ok",this);
-
-    buttonsLayout->addItem(new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Minimum));
-
-    buttonsLayout->addWidget(pushOk);
-    connect(pushOk,SIGNAL(clicked()),this,SLOT(pushedOk()));
-
-    if(_editable)
-    {
-        QPushButton *pushDefault = new QPushButton("Restore default",this);
-        connect(pushDefault,SIGNAL(clicked()),this,SLOT(pushedDefault()));
-        QPushButton *pushCancel = new QPushButton("Cancel",this);
-        connect(pushCancel,SIGNAL(clicked()),this,SLOT(pushedCancel()));
-
-        buttonsLayout->addWidget(pushDefault);
-        buttonsLayout->addWidget(pushCancel);
-    }
-
-    pushOk->setDefault(true);
-
-    QWidget *buttonsWidget = new QWidget(this);
-    buttonsWidget->setLayout(buttonsLayout);
-
-    mainLayout->addWidget(buttonsWidget);
 
     if(_editable)
         updateEnabled(); //update
@@ -252,7 +277,7 @@ QGridLayout* MOParametersDlg::buildLayoutFromParameters()
     return mainLayout;
 }
 
-void MOParametersDlg::onValueChanged()
+void MOParametersWidget::onValueChanged()
 {
 
     QWidget* widgetChanged = dynamic_cast<QWidget*>(sender());
@@ -269,7 +294,7 @@ void MOParametersDlg::onValueChanged()
 
 
 
-void MOParametersDlg::updateEnabled()
+void MOParametersWidget::updateEnabled()
 {
     MOParameter* curParam;
     QWidget* curWidget;
@@ -285,7 +310,7 @@ void MOParametersDlg::updateEnabled()
     }
 }
 
-QVariant MOParametersDlg::getValue(QWidget* curWidget)
+QVariant MOParametersWidget::getValue(QWidget* curWidget)
 {
 
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
@@ -309,7 +334,7 @@ QVariant MOParametersDlg::getValue(QWidget* curWidget)
         return combo->itemData(combo->currentIndex());
 }
 
-void MOParametersDlg::setValue(QWidget* curWidget,QVariant value)
+void MOParametersWidget::setValue(QWidget* curWidget,QVariant value)
 {
 
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
@@ -339,7 +364,7 @@ void MOParametersDlg::setValue(QWidget* curWidget,QVariant value)
 
 void MOParametersDlg::pushedOk()
 {
-    _orgParameters->cloneFromOtherVector(_localParameters);
+    _orgParameters->cloneFromOtherVector(_widget->localParameters());
     accept();
 }
 
@@ -350,56 +375,43 @@ void MOParametersDlg::pushedCancel()
 
 void MOParametersDlg::pushedDefault()
 {
-
-    QSettings globalSettings(QApplication::applicationName(), "Settings");
-    QVariant defaultValue;
-    QVariant curValue;
-    MOParameter* curParam;
-    QWidget* curWidget;
-    int curIndex;
-    int iParam;
-
-
-    for(int i=0;i<_mapValueWidgets.keys().size();i++)
-    {
-//        curIndex = _mapValueWidgets.keys().at(i);
-//        iParam = _localParameters->findItem(curIndex,MOParameter::INDEX);
-        curParam = _mapValueWidgets.keys().at(i);
-        curWidget = _mapValueWidgets.value(curParam,NULL);
-
-        // get default value
-        defaultValue = curParam->getFieldValue(MOParameter::DEFAULTVALUE);
-
-        setValue(curWidget,defaultValue);
-    }
+    _widget->setDefaultValues();
 }
 
-
-void MOParametersDlg::onSelectFileClicked()
+MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
 {
-    QPushButton* button = dynamic_cast<QPushButton*>(sender());
+    // save parameters
+    _orgParameters = parameters;
 
-    QLineEdit* line = _pathsMap.value(button,NULL);
+    // create layout
+    this->setLayout(new QVBoxLayout(this));
 
-    if(line)
+    // add parameters widget
+    _widget = new MOParametersWidget(parameters,editable);
+    this->layout()->addWidget(_widget);
+
+    // add buttons
+    QHBoxLayout *buttonsLayout = new QHBoxLayout(this);
+    QPushButton *pushOk = new QPushButton("Ok",this);
+    buttonsLayout->addItem(new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    buttonsLayout->addWidget(pushOk);
+    connect(pushOk,SIGNAL(clicked()),this,SLOT(pushedOk()));
+
+    if(editable)
     {
-        QString filename = QFileDialog::getOpenFileName(this);
-        if(!filename.isEmpty())
-            line->setText(filename);
+        QPushButton *pushDefault = new QPushButton("Restore default",this);
+        connect(pushDefault,SIGNAL(clicked()),this,SLOT(pushedDefault()));
+        QPushButton *pushCancel = new QPushButton("Cancel",this);
+        connect(pushCancel,SIGNAL(clicked()),this,SLOT(pushedCancel()));
+
+        buttonsLayout->addWidget(pushDefault);
+        buttonsLayout->addWidget(pushCancel);
     }
+
+    pushOk->setDefault(true);
+
+    QWidget *buttonsWidget = new QWidget(this);
+    buttonsWidget->setLayout(buttonsLayout);
+
+    this->layout()->addWidget(buttonsWidget);
 }
-
-void MOParametersDlg::onSelectFolderClicked()
-{
-    QPushButton* button = dynamic_cast<QPushButton*>(sender());
-
-    QLineEdit* line = _pathsMap.value(button,NULL);
-
-    if(line)
-    {
-        QString filename = QFileDialog::getExistingDirectory(this);
-        if(!filename.isEmpty())
-            line->setText(filename);
-    }
-}
-

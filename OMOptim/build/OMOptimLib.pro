@@ -163,7 +163,6 @@ HEADERS += ../config.h \
            ../GUI/Dialogs/HelpDlg.h \
            ../GUI/Dialogs/newprojectform.h \
            ../GUI/Plots/MOOptPlot.h \
-           ../GUI/Plots/MyQwtPlotPicker.h \
            ../GUI/Scene/arrow.h \
            ../GUI/Scene/BlockDrawItem.h \
            ../GUI/Scene/BlockSubsScene.h \
@@ -325,7 +324,6 @@ SOURCES += ../Core/OptObjective.cpp \
            ../GUI/Dialogs/HelpDlg.cpp \
            ../GUI/Dialogs/newprojectform.cpp \
            ../GUI/Plots/MOPlot.cpp \
-           ../GUI/Plots/MyQwtPlotPicker.cpp \
            ../GUI/Scene/arrow.cpp \
            ../GUI/Scene/BlockDrawItem.cpp \
            ../GUI/Scene/BlockSubsScene.cpp \

@@ -54,7 +54,7 @@ DlgSettings::DlgSettings(bool editable)
     
 void DlgSettings::pushedOk()
 {
-    _orgParameters->cloneFromOtherVector(_localParameters);
+    _orgParameters->cloneFromOtherVector(_widget->localParameters());
 
     // save in QSettings
     MOSettings::save();

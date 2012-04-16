@@ -60,20 +60,19 @@
 #include "MOVector.h"
 
 
-
-
-class MOParametersDlg : public QDialog
+class MOParametersWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    MOParametersDlg(MOParameters *parameters, bool editable=true);
+    MOParametersWidget(MOParameters *parameters, bool editable=true);
 
+    MOParameters* localParameters(){return _localParameters;}
 
 protected :
     QMap<QPushButton*,QLineEdit*> _pathsMap;
     MOParameters *_localParameters;
-    MOParameters *_orgParameters;
+
     QMap<MOParameter*,QWidget*> _mapValueWidgets;
     QStringList _paramNames;
     QVector<int> _paramTypes;
@@ -84,16 +83,32 @@ protected :
     QVariant getValue(QWidget* curWidget);
     void setValue(QWidget* curWidget,QVariant value);
 
+
+public slots:
+    void onValueChanged();
+    void onSelectFileClicked();
+    void onSelectFolderClicked();
+    void setDefaultValues();
+};
+
+
+class MOParametersDlg : public QDialog
+{
+    Q_OBJECT
+
+public:
+    MOParametersDlg(MOParameters *parameters, bool editable=true);
+
+
+
+protected :
+    MOParametersWidget* _widget;
+    MOParameters *_orgParameters;
+
 public slots:
     virtual void pushedOk();
     void pushedCancel();
     void pushedDefault();
-    void onValueChanged();
-    void onSelectFileClicked();
-    void onSelectFolderClicked();
-
-
-
 };
 
 

@@ -83,7 +83,7 @@ public :
         // make parameters enabled only when needed
         QList<int> grIndexes;
         grIndexes << USESTARTFILE << STARTFILEPATH;
-        parameters->regroup("Pursue computation",grIndexes);
+        parameters->setGroup("Pursue computation",grIndexes);
         grIndexes.removeAll(USESTARTFILE);
         parameters->addEnablingIndex(grIndexes,USESTARTFILE,true);
     };

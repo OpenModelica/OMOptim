@@ -58,6 +58,7 @@ MOParameter::MOParameter(const MOParameter & param):MOItem(param)
     _index = param._index;
     _enablingIndexes = param._enablingIndexes;
     _group = param._group;
+    _panel = param._panel;
 }
 
 MOParameter::MOParameter(int index,QString name,QString description, QVariant defaultValue, Type type, QVariant minValue, QVariant maxValue,int enablingIndex,QVariant enablingValue,QString group):
@@ -77,6 +78,7 @@ MOParameter::MOParameter(int index,QString name,QString description, QVariant de
     _filledFields.push_back(MOParameter::DESCRIPTION);
     _filledFields.push_back(MOParameter::INDEX);
     _filledFields.push_back(MOParameter::GROUP);
+    _filledFields.push_back(MOParameter::PANEL);
 
     _editableFields.clear();
     _editableFields << MOParameter::VALUE;
@@ -138,6 +140,9 @@ bool MOParameter::setFieldValue(int ifield,QVariant value)
         case GROUP:
             _group=value.toString();
             break;
+        case PANEL:
+            _panel=value.toString();
+            break;
         }
         if(!_filledFields.contains(ifield))
             _filledFields.push_back(ifield);
@@ -176,6 +181,8 @@ QVariant MOParameter::getFieldValue(int ifield, int role) const
             return _index;
         case GROUP :
             return _group;
+        case PANEL :
+            return _panel;
         default :
             return "unknown field";
         }
@@ -210,6 +217,8 @@ QString MOParameter::sFieldName(int iField, int role)
         return "DefaultValue";
     case GROUP :
         return "Group";
+    case PANEL :
+        return "Panel";
     default :
         return "unknown field";
     }
@@ -299,6 +308,9 @@ bool MOParameterListed::setFieldValue(int ifield,QVariant value)
     case GROUP:
         _group=value.toString();
         break;
+    case PANEL:
+        _panel=value.toString();
+        break;
     }
     if(!_filledFields.contains(ifield))
         _filledFields.push_back(ifield);
@@ -331,6 +343,8 @@ QVariant MOParameterListed::getFieldValue(int ifield, int role) const
             return _index;
         case GROUP :
             return _group;
+        case PANEL :
+            return _panel;
         default :
             return "unknown field";
         }
@@ -391,7 +405,7 @@ bool MOParameters::setValue(int index,QVariant value)
         return false;
 }
 
-QMultiMap<QString,MOParameter*> MOParameters::map() const
+QMultiMap<QString,MOParameter*> MOParameters::groupmap() const
 {
     QMultiMap<QString,MOParameter*> map;
     for(int i=0;i<size();i++)
@@ -400,7 +414,9 @@ QMultiMap<QString,MOParameter*> MOParameters::map() const
     return map;
 }
 
-void MOParameters::regroup(QString group,QList<int> indexes)
+
+
+void MOParameters::setGroup(QString group,QList<int> indexes)
 {
     int iParam;
     for(int i=0;i<indexes.size();i++)
@@ -408,6 +424,15 @@ void MOParameters::regroup(QString group,QList<int> indexes)
         iParam = this->findItem(indexes.at(i),MOParameter::INDEX);
         if(iParam>-1)
             this->at(iParam)->setFieldValue(MOParameter::GROUP,group);
+    }
+}
+
+void MOParameters::setPanel(QString panel)
+{
+    int iParam;
+    for(int i=0;i<size();i++)
+    {
+        iParam = this->at(i)->setFieldValue(MOParameter::PANEL,panel);
     }
 }
 
