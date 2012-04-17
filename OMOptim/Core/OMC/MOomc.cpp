@@ -1125,11 +1125,11 @@ void MOomc::loadStandardLibrary()
     evalCommand("loadModel(Modelica)");
     evalCommand("loadModel(ModelicaServices)");
 
-    //! @todo Remove it once we have removed Media   and  and    and  and   Fluid from MSL.
-    // just added to remove Fluid   and  and    and  and   Media Library...
+//    //! @todo Remove it once we have removed Media   and  and    and  and   Fluid from MSL.
+//    // just added to remove Fluid   and  and    and  and   Media Library...
 
-    evalCommand("deleteClass(Modelica.Media)");
-    evalCommand("deleteClass(Modelica.Fluid)");
+//    evalCommand("deleteClass(Modelica.Media)");
+//    evalCommand("deleteClass(Modelica.Fluid)");
 }
 
 void MOomc::clear()

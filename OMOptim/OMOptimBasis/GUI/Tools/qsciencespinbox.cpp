@@ -28,6 +28,7 @@ QScienceSpinBox::QScienceSpinBox(QWidget * parent)
 
         this->setLocale(QLocale::C);
         this->setButtonSymbols(QAbstractSpinBox::NoButtons);
+        this->setKeyboardTracking(false);
 }
 
 void QScienceSpinBox::initLocalValues(QWidget *parent)

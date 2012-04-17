@@ -187,9 +187,6 @@ MOPlot::~MOPlot()
 
 void MOPlot::setCurves(QList<QwtPlotCurve*>& _curves)
 {
-    QString msg = "MOPlot::drawItems";
-    qDebug(msg.toLatin1().data());
-
 
     clear();
     
@@ -206,9 +203,6 @@ void MOPlot::setCurves(QList<QwtPlotCurve*>& _curves)
 
 void MOPlot::clear()
 {
-    QString msg = "MOPlot::clear";
-    qDebug(msg.toLatin1().data());
-
     // first detach curves in order not to delete them
     for(int i=0;i<curves.size();i++)
     {
@@ -223,9 +217,6 @@ void MOPlot::clear()
 
 void MOPlot::addCurve(QwtPlotCurve *_curve)
 {
-    QString msg = "MOPlot::addCurve";
-    qDebug(msg.toLatin1().data());
-
     if(!curves.contains(_curve))
         curves.push_back(_curve);
     
@@ -347,10 +338,6 @@ void MOPlot::onClicked(const QwtDoublePoint & pos)
 void MOPlot::drawItems (QPainter *painter, const QRect &rect,
                            const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
 {
-
-    QString msg = "MOPlot::drawItems";
-    qDebug(msg.toLatin1().data());
-
     painter->save();
 
     const QwtPlotItemList& itmList = itemList();

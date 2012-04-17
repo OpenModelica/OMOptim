@@ -4,11 +4,13 @@ CONFIG += staticlib warn_off
 
 QT +=  core gui svg xml
 
-MAKEFILE = MakefileLib /// needed to avoid conflic with OMOptim.pro
+#MAKEFILE = MakefileLib /// needed to avoid conflic with OMOptim.pro
+# but does not work properly : always run .debug makefile when launching from CERES
 
 CONFIG(debug, debug|release){
     DEFINES+=DEBUG
     TARGET = $$join(TARGET,,,d)
+    message("OMOptimLibDebug")
 }
 
 win32 {
