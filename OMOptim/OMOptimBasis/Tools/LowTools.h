@@ -42,20 +42,9 @@
 
 
 #include <QtCore/QDir>
-#include <QtGui/QMessageBox>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QTableView>
-#include <QtGui/QMenu>
-#include <QtGui/QLineEdit>
 #include <vector>
-#include <QtGui/QWidget>
-#include <QtGui/QPushButton>
-#include <QtGui/QTabWidget>
-#include <QtGui/QLayout>
 #include <QDesktopServices>
 #include <QUrl>
-#include <QtGui/QHeaderView>
-#include <QtGui/QScrollBar>
 
 #include <math.h>
 

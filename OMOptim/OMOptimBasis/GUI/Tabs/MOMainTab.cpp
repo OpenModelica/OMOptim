@@ -49,7 +49,7 @@ MOMainTab::MOMainTab(QWidget* mainWindow,ProjectBase* project):QTabWidget(mainWi
     _mainWindow = mainWindow;
     setMovable(true);
 
-    setContentsMargins(2,0,2,0);
+    setContentsMargins(0,0,0,0);
     setTabsClosable(false);
 }
 

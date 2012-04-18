@@ -44,7 +44,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QAbstractTableModel>
 #include <QtCore/QTextStream>
-#include <QtGui/QSortFilterProxyModel>
 #include <limits>
 #include "ModItem.h"
 #include "MOItem.h"

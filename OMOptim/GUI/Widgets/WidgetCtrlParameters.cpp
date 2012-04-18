@@ -41,6 +41,7 @@
 #include "Widgets/WidgetCtrlParameters.h"
 #include <QtGui/QErrorMessage>
 
+#include "ModModelPlus.h"
 
 WidgetCtrlParameters::WidgetCtrlParameters(Project* project, QString model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent)
     : QWidget(parent)

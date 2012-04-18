@@ -93,8 +93,8 @@ public:
     ModModelPlus* modModelPlus() const;
     QString model() const;
 
-public slots :
-    void setCtrlType();
+//public slots :
+//    void setCtrlType();
 
 protected :
     Project* _omProject; /// same adress than _project but casted to Project* instead of ProjectBase*

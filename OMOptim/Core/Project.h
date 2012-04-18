@@ -51,32 +51,16 @@
 #include <QtCore/QTextStream>
 #include <QtXml/QDomDocument>
 #include <QtCore/QSettings>
-
-#include "ModModelPlus.h"
-#include "MOItem.h"
-#include "OMCases.h"
-#include "Problems.h"
-#include "Results.h"
-#include "MOomc.h"
-#include "ModPlusCtrl.h"
-#include "ModLoader.h"
-#include "InfoSender.h"
-#include "MOVector.h"
-#include "SleeperThread.h"
-#include "Info.h"
-#include "OneSimResult.h"
-#include "OneSimulation.h"
-#include "Optimization.h"
-#include "LowTools.h"
-#include "HighTools.h"
-#include "SaveOMOptim.h"
-#include "LoadOMOptim.h"
-#include "MOThreads.h"
-#include "ModItemsTree.h"
-#include "ProblemInterface.h"
-#include "ProjectBase.h"
 #include <QObject>
 
+#include "ProjectBase.h"
+
+class ModItem;
+class MOomc;
+class ModLoader;
+class ModItemsTree;
+class ModModelPlus;
+class ModModel;
 
 
 /**
@@ -156,7 +140,7 @@ private:
     MOomc* moomc(){return _moomc;};
     ModLoader* modLoader(){return _modLoader;};
     ModItemsTree* modItemsTree(){return _modItemsTree;};
-    ModItem* rootModItem(){return _modItemsTree->rootElement();};
+    ModItem* rootModItem();
     QMap<QString,ModModelPlus*> mapModelPlus(){return _mapModelPlus;};
 
 

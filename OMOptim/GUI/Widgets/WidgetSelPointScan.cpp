@@ -41,6 +41,7 @@
 #include "Widgets/WidgetSelPointScan.h"
 #include <QtGui/QSortFilterProxyModel>
 #include "Tools/GuiTools.h"
+#include "MOOptVector.h"
 
 namespace Ui
 {

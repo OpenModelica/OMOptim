@@ -48,6 +48,8 @@
 #include "Project.h"
 #include "Tabs/MOTab.h"
 
+class MOOptVector;
+
 namespace Ui {
     class WidgetSelPointScanClass;
 }

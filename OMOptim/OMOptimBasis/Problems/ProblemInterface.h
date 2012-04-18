@@ -6,6 +6,8 @@
 #include <QtCore>
 #include <QObject>
 #include <QDomElement>
+#include <QWidget>
+
 
 class ProjectBase;
 class Problem;

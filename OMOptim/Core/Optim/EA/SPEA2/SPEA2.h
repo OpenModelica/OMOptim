@@ -41,37 +41,24 @@
 #define _SPEA2_H
 
 #include "EABase.h"
+
 #include <stdio.h>
 #include <eo>
 #include <moeo>
 #include <es/eoRealInitBounded.h>
 #include <es/eoRealOp.h>
-
-// the stopping criterion
 #include <do/make_continue_moeo.h>
-// outputs (stats, population dumps, ...)
 #include <do/make_checkpoint_moeo.h>
-
 #include <do/make_ea_moeo.h>
+#include "Chromosome/EOStd.h"
 
 
-#include "Project.h"
-#include "Problem.h"
-#include "OneSimulation.h"
-#include "Optimization.h"
-#include "OptimResult.h"
-#include "Results/EAStdResult.h"
-
-#include "SPEA2/SPEA2Parameters.h"
-
-
-/********************************************************
+/**
+******************************************************
 First multi-objective genetic algorithm implementation.
 SPEA2 use NSGAII algorithm.
 It allows multi-objectives but only real variables (no integer)
 **********************************************************/
-#include "Chromosome/EOStd.h"
-
 class SPEA2 : public EABase
 {
 public : 
@@ -89,18 +76,12 @@ public :
     void setDefaultParameters();
 
 private :
-    inline Result* buildResult(moeoUnboundedArchive<EOStd> & );
-
+    Result* buildResult(moeoUnboundedArchive<EOStd> & );
 
 
 };
 
-Result* SPEA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
-{
-    Result* result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,arch);
 
-    return result;
-}
 
 
 

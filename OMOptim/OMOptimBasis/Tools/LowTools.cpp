@@ -39,6 +39,7 @@
 
   */
 #include "LowTools.h"
+#include <QVector>
 
 LowTools::LowTools(void)
 {

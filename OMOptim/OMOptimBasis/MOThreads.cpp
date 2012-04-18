@@ -39,7 +39,6 @@
 
   */
 #include "MOThreads.h"
-#include <QtGui/QDialog>
 
 namespace MOThreads
 {

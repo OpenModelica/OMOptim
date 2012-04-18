@@ -43,7 +43,7 @@ HEADERS += \
     ../Variable.h \
     ../MOVector.h \
     ../MOThreads.h \
-    ../MOTableView.h \
+    ../GUI/MOTableView.h \
     ../MOParameter.h \
     ../MOOptVector.h \
     ../MOKeepVector.h \
@@ -114,7 +114,7 @@ SOURCES += \
     ../Variables.cpp \
     ../Variable.cpp \
     ../MOThreads.cpp \
-    ../MOTableView.cpp \
+    ../GUI/MOTableView.cpp \
     ../MOParameter.cpp \
     ../MOOptVector.cpp \
     ../MOItem.cpp \

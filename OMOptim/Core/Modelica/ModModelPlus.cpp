@@ -46,7 +46,11 @@
 #include "Project.h"
 #include "Dialogs/DlgSelectFiles.h"
 #include "ModelicaModifier.h"
-
+#include "Variables.h"
+#include "ModelicaConnections.h"
+#include "BlockSubstitution.h"
+#include "SaveOMOptim.h"
+#include "ModPlusCtrl.h"
 
 ModModelPlus::ModModelPlus( Project* project,QString modModelName)
 {

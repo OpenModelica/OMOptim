@@ -51,6 +51,8 @@
 #include "Project.h"
 #include "ModPlusCtrls.h"
 #include "VariablesManip.h"
+#include "OneSimResult.h"
+#include "ModModelPlus.h"
 
 OneSimulation::OneSimulation(Project* project,ModModelPlus* modModelPlus)
     :Problem((ProjectBase*)project)
@@ -327,17 +329,17 @@ void OneSimulation::setCtrls(const ModPlusCtrls & ctrls)
     _ctrls->setFromOtherCtrls(ctrls);
 }
 
-void OneSimulation::setCtrlType()
-{
-    QObject* signalSender = sender();
-    QAction* actionSender = dynamic_cast<QAction*>(signalSender);
+//void OneSimulation::setCtrlType()
+//{
+//    QObject* signalSender = sender();
+//    QAction* actionSender = dynamic_cast<QAction*>(signalSender);
 
-    if(actionSender)
-    {
-        bool ok;
-        int intType = actionSender->data().toInt(&ok);
+//    if(actionSender)
+//    {
+//        bool ok;
+//        int intType = actionSender->data().toInt(&ok);
 
-        if(ok)
-            setCtrlType((ModPlusCtrl::Type)intType);
-    }
-}
+//        if(ok)
+//            setCtrlType((ModPlusCtrl::Type)intType);
+//    }
+//}

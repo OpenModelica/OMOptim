@@ -45,7 +45,6 @@
 #include <QtCore/QVector>
 #include <QtCore/QAbstractTableModel>
 #include <QtCore/QTextStream>
-#include <QtGui/QSortFilterProxyModel>
 #include <QtXml/QDomDocument>
 #include <QtCore/QStringList>
 

@@ -40,6 +40,9 @@
   */
 #include "BlockSubstitution.h"
 #include "Project.h"
+#include "ModModelPlus.h"
+#include "ModItemsTree.h"
+#include "ModelicaConnections.h"
 
 BlockSubstitution::BlockSubstitution(Project* project,QString model, QString orgComponent, QString subComponent,
                                      QStringList orgPorts,QList<QStringList> orgConnectedComps,

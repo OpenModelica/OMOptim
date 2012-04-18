@@ -40,7 +40,6 @@
   */
 #include "ModItemsTree.h"
 
-#include <QtGui>
 
 
 

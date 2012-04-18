@@ -39,9 +39,9 @@
 */
 
 #include "TabProject.h"
-#include <QtGui/QSortFilterProxyModel>
-#include "Plots/MOOptPlot.h"
 
+#include "Project.h"
+#include "WidgetProjectInfos.h"
 
 namespace Ui
 {

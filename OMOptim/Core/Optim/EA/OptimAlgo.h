@@ -41,11 +41,12 @@
 #define _OPTIMALGO_H
 
 #include <QtCore/QObject>
-#include "MOParameter.h"
+
 
 class Problem;
 class Result;
 class Project;    
+class MOParameters;
 
 class OptimAlgo : public QObject
 {

@@ -39,7 +39,8 @@
 */
 
 #include "Tools/OMOptimGuiTools.h"
-
+#include "LoadOMOptim.h"
+#include "SaveOMOptim.h"
 
 
 ModItemsTree* OMOptimGuiTools::ModItemToTreeView(ModLoader* modLoader ,MOomc* moomc,const ModItem & modClass,QTreeView* treeView,bool showComponent)

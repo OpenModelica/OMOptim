@@ -11,14 +11,15 @@
 #if !defined(_BLOCKSUBSTITUTION_H)
 #define _BLOCKSUBSTITUTION_H
 
-#include "ModItemsTree.h"
 #include <QtCore/QStringList>
 #include <QtXml/QDomDocument>
-#include "ModelicaConnections.h"
+
+
 
 class Project;
 class ModModelPlus;
 class BlockSubstitution
+
 {
 public:
 

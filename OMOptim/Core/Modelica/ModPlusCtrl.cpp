@@ -39,7 +39,7 @@
 
   */
 #include "ModPlusCtrl.h"
-
+#include "MOParameter.h"
 #include "Project.h"
 
 ModPlusCtrl::ModPlusCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc)

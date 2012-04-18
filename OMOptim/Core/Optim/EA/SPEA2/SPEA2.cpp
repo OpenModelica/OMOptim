@@ -92,6 +92,15 @@
 #include "EAStdResult.h"
 #include "SPEA2Algo.h"
 
+#include "Project.h"
+#include "Problem.h"
+#include "OneSimulation.h"
+#include "Optimization.h"
+#include "OptimResult.h"
+#include "Results/EAStdResult.h"
+
+#include "SPEA2/SPEA2Parameters.h"
+
 SPEA2::SPEA2():EABase()
 {
     setDefaultParameters();
@@ -296,4 +305,14 @@ Result* SPEA2::launch(QString tempDir)
 
 }
 
+/**
+  * Build optimization result from optimization archive
+  *
+  */
+Result* SPEA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
+{
+    Result* result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,arch);
+
+    return result;
+}
 

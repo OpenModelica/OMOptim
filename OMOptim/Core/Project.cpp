@@ -43,6 +43,29 @@
 #include "optimizationinterface.h"
 #include "Save.h"
 
+#include "ModModelPlus.h"
+#include "MOItem.h"
+#include "OMCases.h"
+#include "Problems.h"
+#include "Results.h"
+#include "ModLoader.h"
+#include "InfoSender.h"
+#include "MOVector.h"
+#include "SleeperThread.h"
+#include "Info.h"
+#include "OneSimResult.h"
+#include "OneSimulation.h"
+#include "Optimization.h"
+#include "LowTools.h"
+#include "HighTools.h"
+#include "SaveOMOptim.h"
+#include "LoadOMOptim.h"
+#include "MOThreads.h"
+#include "ModItemsTree.h"
+#include "ProblemInterface.h"
+
+
+
 Project::Project()
 {
     _isdefined = false;
@@ -516,6 +539,11 @@ QStringList Project::moFiles()
 QStringList Project::mmoFiles()
 {
     return _mmoFiles;
+}
+
+ModItem *Project::rootModItem()
+{
+    return _modItemsTree->rootElement();
 }
 
 

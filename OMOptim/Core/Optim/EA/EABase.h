@@ -41,20 +41,22 @@
 #define _EABASE_H
 
 #include <QtCore/QObject>
-#include "ProblemConfig.h"
-#include "OptimAlgo.h"
-#include "ModItemsTree.h"
-#include "ModPlusCtrl.h"
+#include <QVector>
 #include <time.h> //needed in paradiseo (not included otherwhere!!)
 
+#include "OptimAlgo.h"
 
 class Project;
 class Problem;
-
 class Result;
 class BlockSubstitutions;
 class ModModelPlus;
+class ModItemsTree;
 
+
+/**
+  * Base class for evolutionary algorithms (e.g. SPEA2, NSGA2)
+  */
 class EABase : public OptimAlgo
 {
     Q_OBJECT

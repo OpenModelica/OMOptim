@@ -44,6 +44,8 @@ http://www-cep.ensmp.fr/english/
 #include "Project.h"
 #include "ModModelPlus.h"
 #include "MOomc.h"
+#include "MOParameter.h"
+#include "Dymola.h"
 
 ModPlusDymolaCtrl::ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* moomc)
     :ModPlusCtrl(project,model,moomc)

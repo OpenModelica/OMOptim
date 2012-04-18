@@ -42,6 +42,9 @@
 #include <QtGui/QSortFilterProxyModel>
 #include "Tools/GuiTools.h"
 #include "MyDelegates.h"
+#include "ModModelPlus.h"
+#include "Variable.h"
+#include "Variables.h"
 
 namespace Ui
 {

@@ -44,7 +44,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtCore/QMutex>
-
+#include "ModModelPlus.h"
 
 ModLoader::ModLoader(MOomc *moomc)
 {
