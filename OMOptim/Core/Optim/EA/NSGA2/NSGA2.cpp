@@ -158,7 +158,7 @@ Result* NSGA2::launch(QString tempDir)
     std::vector<eoRealInterval> doubleBounds;
     std::vector<eoIntInterval> intBounds;
     int nbDouble=0,nbInt=0,nbBool=0;
-
+    int nbObj = ((Optimization*)_problem)->objectives()->size();
     EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 
 
@@ -272,7 +272,7 @@ Result* NSGA2::launch(QString tempDir)
     /************************************
  OUTPUT
  ************************************/
-    eoCheckPoint<EOStd>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir);
+    eoCheckPoint<EOStd>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir,nbObj);
 
 
     ///************************************

@@ -160,8 +160,6 @@ void Project::clear()
 }
 
 
-
-
 /**
 * \brief
 * Load a modelica file
@@ -222,8 +220,7 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
 }
 
 /**
-* \brief
-* Unload a modelica file
+* \brief Unload a modelica file
 * \param moFilePath full file path of .mo
 * \param storePath yes/no should path be removed from project
 */
@@ -248,8 +245,7 @@ void Project::unloadMoFile(QString moFilePath, bool removePath)
 }
 
 /**
-* \brief
-* Load Modelica library (calls OpenModelica load library function
+* \brief Load Modelica library (calls OpenModelica load library function
 * \param storePath yes/no should path be stored in project file
 * (as to be reloaded when loading project)
 * \param forceLoad yes/no should mo file be reloaded in OMC when already loaded in OMC
@@ -269,8 +265,7 @@ bool Project::loadModelicaLibrary(bool storePath, bool forceLoad)
 }
 
 /**
-* \brief
-* Load a ModModelPlus defined by a filePath. It will be loaded only if refers to an existing model in current workspace.
+* \brief load a ModModelPlus defined by a filePath. It will be loaded only if refers to an existing model in current workspace.
 * \param mmoFilePath full file path of .mmo
 */
 void Project::loadModModelPlus(QString mmoFilePath)
@@ -282,8 +277,7 @@ void Project::loadModModelPlus(QString mmoFilePath)
 }
 
 /**
-* \brief
-* Store mmoFilePath in project file. It will therefore be loaded when reloading project file.
+* \brief store mmoFilePath in project file. It will therefore be loaded when reloading project file.
 */
 void Project::storeMmoFilePath(QString mmoFilePath)
 {
@@ -298,7 +292,7 @@ void Project::storeMmoFilePath(QString mmoFilePath)
 }
 
 /**
-*    Reload the mo file of model
+*    \brief Reload the mo file of model
 */
 void Project::reloadModModel(QString modModelName)
 {
@@ -314,8 +308,7 @@ void Project::reloadModModel(QString modModelName)
 
 
 /**
-* \brief
-*    Refresh modelica tree in GUI. Do not reload in OpenModelica ! Just reread hierarchy.
+* \brief Refresh modelica tree in GUI. Do not reload in OpenModelica ! Just reread hierarchy.
 */
 void Project::refreshAllMod()
 {
@@ -325,8 +318,7 @@ void Project::refreshAllMod()
 }
 
 /**
-* \brief
-* Return selected ModModel. Return NULL if no ModModel selected.
+* \brief Return selected ModModel. Return NULL if no ModModel selected.
 */
 ModModel* Project::curModModel()
 {
@@ -337,7 +329,6 @@ ModModel* Project::curModModel()
 }
 /**
 * \brief Find a ModModel within _modItemsTree
-* Find a ModModel within _modItemsTree.
 * \arg modelName name of the model looked for
 */
 ModModel* Project::findModModel(QString modelName)
@@ -351,19 +342,24 @@ ModModel* Project::findModModel(QString modelName)
 }
 
 /**
-* \brief Returns allModModelPlus contained in project
-* Returns allModModelPlus contained in project.
+* \brief Returns all ModModelPlus contained in project
 */
 QList<ModModelPlus*> Project::allModModelPlus()
 {
     return _mapModelPlus.values();
 }
 
+/**
+* \brief Adds modModelPlus in project
+*/
 void Project::addModModelPlus(ModModelPlus* modModelPlus)
 {
     _mapModelPlus.insert(modModelPlus->modModelName(),modModelPlus);
 }
 
+/**
+  * @brief Returns selected modModelPlus
+  */
 ModModelPlus* Project::curModModelPlus()
 {
     ModModel* curMM = curModModel();
@@ -385,6 +381,11 @@ void Project::setCurModItem(ModItem* modClass)
     }
 }
 
+/**
+  * @brief Returns modModelPlus of modModelName.
+  * If it does not exist, this function creates a new ModModelPlus, adds it to the project,
+  * and returns it.
+  */
 ModModelPlus* Project::modModelPlus(QString modModelName)
 {
     ModModelPlus* corrModModelPlus = _mapModelPlus.value(modModelName,NULL);
@@ -399,7 +400,10 @@ ModModelPlus* Project::modModelPlus(QString modModelName)
     }
 }
 
-
+/**
+  * @brief Creates a new modModelPlus for a model.
+  * New modModelPlus is automatically added to project.
+  */
 ModModelPlus* Project::newModModelPlus(QString modelName)
 {
     // Create ModModelFile
@@ -442,7 +446,9 @@ ModModelPlus* Project::newModModelPlus(QString modelName)
 }
 
 
-
+/** @brief Save project.
+  * @param saveAllOMCases Should we save all problems and results.
+  */
 void Project::save(bool saveAllOMCases)
 {
     SaveOMOptim::saveProject(this,saveAllOMCases);
@@ -451,6 +457,8 @@ void Project::save(bool saveAllOMCases)
     emit projectChanged();
 }
 
+/** @brief Save project and result given as parameter.
+  */
 void Project::save(Result* result)
 {
     // save project but not all omcases
@@ -462,6 +470,8 @@ void Project::save(Result* result)
     emit projectChanged();
 }
 
+/** @brief Save project and problem given as parameter.
+  */
 void Project::save(Problem* problem)
 {
     // save project but not all omcases
@@ -473,6 +483,8 @@ void Project::save(Problem* problem)
     emit projectChanged();
 }
 
+/** @brief Load project from file given as parameter.
+  */
 bool Project::load(QString loadPath)
 {
     terminateOmsThreads();
@@ -499,13 +511,16 @@ bool Project::load(QString loadPath)
 }
 
 
-
+/** @brief Return folder containting modModelPlus saving files
+  */
 QString Project::modModelPlusFolder()
 {
     return folder()+QDir::separator()+"Models";
 }
 
-
+/**
+  * @brief Check configuration. e.g. : checks omc is started.
+  */
 bool Project::checkConfiguration()
 {
     bool ok = true;
@@ -516,6 +531,9 @@ bool Project::checkConfiguration()
     return ok;
 }
 
+/**
+  * @brief All threads using OMC are terminated.
+  */
 void Project::terminateOmsThreads()
 {
     if(_moomc!=NULL)

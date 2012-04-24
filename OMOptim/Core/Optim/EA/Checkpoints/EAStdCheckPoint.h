@@ -64,6 +64,7 @@
 #include <QtCore/QObject>
 #include "EAUpdaterDispObjGUI.h"
 #include "MOParameter.h"
+#include "MyEoGnuplot1DMonitor.h"
 //#include "myEOArchiveUpdater.h"
 
 bool testDirRes(std::string _dirName, bool _erase);
@@ -80,19 +81,18 @@ bool testDirRes(std::string _dirName, bool _erase);
 template < class MOEOT >
 eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _state, eoEvalFuncCounter < MOEOT > & _eval,
                                              eoContinue < MOEOT > & _continue, eoPop < MOEOT > & _pop, moeoArchive < MOEOT > & _archive,
-                                                       Project* _project, MOParameters *_parameters,QString tempDir)
+                                                       Project* _project, MOParameters *_parameters,QString tempDir, int nbObj)
 {
   eoCheckPoint < MOEOT > & checkpoint = _state.storeFunctor(new eoCheckPoint < MOEOT > (_continue));
   /* the objective vector type */
   typedef typename MOEOT::ObjectiveVector ObjectiveVector;
 
-
-  QString saveFolder = tempDir;
   QString genSaveFilePath = tempDir+QDir::separator() + "iteration";
   QString archSaveFilePath = tempDir+QDir::separator() + "archive";
   QString contribSaveFilePath = tempDir+QDir::separator() + "contribution";
   QString secondStatsSaveFilePath = tempDir+QDir::separator() + "secondStats";
   QString bestStatsSaveFilePath = tempDir+QDir::separator() + "bestStats";
+  QString plotFile = tempDir+QDir::separator() + "plotData";
   
   
     unsigned int saveFreq = _parameters->value("SaveFrequency",50).toInt();
@@ -129,7 +129,6 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
   // Archive
   //////////////////
   // update the archive every generation
-
   moeoArchiveUpdater< MOEOT > * updater = new moeoArchiveUpdater < MOEOT > (_archive, _pop);
   _state.storeFunctor(updater);
   checkpoint.add(*updater);
@@ -152,23 +151,31 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
   checkpoint.add(*contribution_updater);
 
   // Stats
+  eoBestFitnessStat<MOEOT> *bestStat = new   eoBestFitnessStat<MOEOT>;
+  checkpoint.add(*bestStat);
+  _state.storeFunctor(bestStat);
+
+  eoSecondMomentStats<MOEOT> *secondStat = new eoSecondMomentStats<MOEOT>;
+  checkpoint.add(*secondStat);
+  _state.storeFunctor(secondStat);
+
+  // Monitors
+  MyEoGnuplot1DMonitor *gnuplotMonitor = new MyEoGnuplot1DMonitor(QDir(tempDir),nbObj,false);
+  checkpoint.add(*gnuplotMonitor);
+  _state.storeFunctor(gnuplotMonitor);
+  gnuplotMonitor->add(*evalCounter);
+  gnuplotMonitor->add(*bestStat);
+
   eoFileMonitor *bestStatsFileMonitor = new eoFileMonitor(bestStatsSaveFilePath.toStdString());
   checkpoint.add(*bestStatsFileMonitor);
   _state.storeFunctor(bestStatsFileMonitor);
+   bestStatsFileMonitor->add(*bestStat);
 
   eoFileMonitor *secondStatsFileMonitor = new eoFileMonitor(secondStatsSaveFilePath.toStdString());
   checkpoint.add(*secondStatsFileMonitor);
   _state.storeFunctor(secondStatsFileMonitor);
+    secondStatsFileMonitor->add(*secondStat);
 
-  eoBestFitnessStat<MOEOT> *bestStat = new   eoBestFitnessStat<MOEOT>;
-  checkpoint.add(*bestStat);
-  _state.storeFunctor(bestStat);
-  bestStatsFileMonitor->add(*bestStat);
-  // Second moment stats: average and stdev
-  eoSecondMomentStats<MOEOT> *secondStat = new eoSecondMomentStats<MOEOT>;
-  checkpoint.add(*secondStat);
-  _state.storeFunctor(secondStat);
-  secondStatsFileMonitor->add(*secondStat);
 
   
   // and that's it for the (control and) output

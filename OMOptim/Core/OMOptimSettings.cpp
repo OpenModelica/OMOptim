@@ -89,6 +89,21 @@ void OMOptimSettings::initialize()
     defaultValues << 5;
     types.push_back(MOParameter::INT);
 
+    //*******************************
+    // Gnuplot
+    //*******************************
+    names << QString("useGnuplot");
+    groups << QString();
+    descs << QString("Use gnuplot to display intermediary results");
+    defaultValues << false;
+    types.push_back(MOParameter::BOOL);
+
+    names << QString("pgnuplotEXE");
+    groups << QString();
+    descs << QString("Path of gnuplot pipe executable (pGnuplot.exe)");
+    defaultValues << QString();
+    types.push_back(MOParameter::FILEPATH);
+
 
     // processing
     MOParameters* params = new MOParameters();

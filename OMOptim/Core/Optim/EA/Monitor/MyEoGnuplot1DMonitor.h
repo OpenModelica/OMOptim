@@ -60,7 +60,7 @@ MyEoGnuplot1DMonitor plots stats through gnuplot
 Assumes that the same file is appened every so and so, and replots it
 everytime
 */
-class MyEoGnuplot1DMonitor : public eoFileMonitor, public MyEoGnuplot
+class MyEoGnuplot1DMonitor : public eoMonitor, public MyEoGnuplot
 {
 public:
 
@@ -69,21 +69,27 @@ public:
   //    using eoMonitor::vec;
 
     /** Constructor */
-    MyEoGnuplot1DMonitor(std::string _filename, bool _top=false) :
-        eoFileMonitor(_filename, " "),
+    MyEoGnuplot1DMonitor(QDir folder, int nbObj,bool _top=false) :
+        eoMonitor(),
         MyEoGnuplot()
-        {}
+        {_folder = folder;
+        _nbObj = nbObj;}
 
     /** Destructor */
     virtual ~MyEoGnuplot1DMonitor(){}
 
     virtual eoMonitor& operator()();
 
-    virtual void FirstPlot();
+   // virtual void FirstPlot();
+    virtual QString plotArchiveCommand();
 
     /** Class name */
     virtual std::string className() const
         { return "MyEoGnuplot1DMonitor"; }
+
+private :
+    QDir _folder;
+    int _nbObj;
 };
 
 

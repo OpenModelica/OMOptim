@@ -247,7 +247,11 @@ bool ModPlusOMCtrl::simulate(QString tempFolder,MOVector<Variable> * inputVars,M
     // load moDependencies if not already loaded
     // storePaths in project = false
     // forceLoad = false
-    _project->loadMoFiles(moDependencies,false,false);
+    //_project->loadMoFiles(moDependencies,false,false);
+    // Create a segfault afterwards since problem is in a different thread than GUI :
+    // _project->loadMoFiles clears moditemstree but GUI will still call it
+    // (beginresetmodel seems not working in multithreading)
+    // However, we should not need to load modependencies with OM since alreaedy loaded.
 
     // clear outputVars
     outputVars->clear();

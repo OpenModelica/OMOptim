@@ -92,6 +92,7 @@
 #include "MyEoGnuplot1DMonitor.h"
 #include "EAStdOptimizationEval.h"
 #include "EAStdResult.h"
+#include <utils/selectors.h>
 
 
 SPEA2Adapt::SPEA2Adapt():EABase()
@@ -158,14 +159,15 @@ Result* SPEA2Adapt::launch(QString tempDir)
     std::vector<eoRealInterval> doubleBounds;
     std::vector<eoIntInterval> intBounds;
     int nbDouble=0,nbInt=0,nbBool=0;
+    int nbObj = ((Optimization*)_problem)->objectives()->size();
 
 
     EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 
 
     /************************************
- PROGRESS AND CONTINUATOR
- ************************************/
+    PROGRESS AND CONTINUATOR
+    ************************************/
     unsigned initPopSize = _parameters->value(SPEA2AdaptParameters::POPULATIONSIZE,20).toInt();
     unsigned offSpringRate = _parameters->value(SPEA2AdaptParameters::OFFSPRINGRATE,3).toInt();
     unsigned nTotalGen = _parameters->value(SPEA2AdaptParameters::MAXGENERATIONS,100).toInt();
@@ -178,8 +180,8 @@ Result* SPEA2Adapt::launch(QString tempDir)
     eoGenContinue < EOAdapt > genContinuator(nTotalGen);
 
     /************************************
- FITNESS EVALUATION
- ************************************/
+    FITNESS EVALUATION
+    ************************************/
     moeoEvalFunc < EOAdapt > *plainEval;
     plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
                                                    _modItemsTree);
@@ -211,8 +213,8 @@ Result* SPEA2Adapt::launch(QString tempDir)
     op -> add(*mutation, 1.0); // and mutation
 
     /************************************
- POPULATION
- ************************************/
+    POPULATION
+    ************************************/
     //eoPop<EOAdapt>& pop = state.takeOwnership(eoPop<EOAdapt>());
     eoPop<EOAdapt> pop;
     bool loadFailed=false;
@@ -270,8 +272,8 @@ Result* SPEA2Adapt::launch(QString tempDir)
 
 
     /************************************
- ARCHIVE
- ************************************/
+    ARCHIVE
+    ************************************/
     moeoUnboundedArchive<EOAdapt> arch;
 
     /************************************
@@ -281,9 +283,9 @@ Result* SPEA2Adapt::launch(QString tempDir)
     //state.storeFunctor(evalCont);
 
     /************************************
- OUTPUT
- ************************************/
-    eoCheckPoint<EOAdapt>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir);
+    OUTPUT
+    ************************************/
+    eoCheckPoint<EOAdapt>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir,nbObj);
 
     /************************************
  MONITOR
@@ -302,17 +304,23 @@ Result* SPEA2Adapt::launch(QString tempDir)
     //   checkpoint.add(averageStat);
     //   checkpoint.add(fdcStat);
 
-    // The Stdout monitor will print parameters to the screen ...
-    MyEoGnuplot1DMonitor monitor("export_monitor.xg",false);
-    // when called by the checkpoint (i.e. at every generation)
-    checkpoint.add(monitor);
 
-    // the monitor will output a series of parameters: add them
-    monitor.add(generationCounter);
-    // monitor.add(eval);        // because now eval is an eoEvalFuncCounter!
-    //monitor.add(bestStat);
-    //monitor.add(SecondStat);
+//    //monitor.add(SecondStat);
     //monitor.add(fdcStat);
+
+//    eoGnuplot1DMonitor *gnuMonitor = new eoGnuplot1DMonitor(QDir(tempDir).absoluteFilePath("mybest.xg").toLatin1().data(),minimizing_fitness<EOAdapt>());
+
+//     // save and give to checkpoint
+//    state.storeFunctor(gnuMonitor);
+//    checkpoint.add(*gnuMonitor);
+//    gnuMonitor->add(*eval);
+
+//    eoBestFitnessStat<EOAdapt>* bestStat = new eoBestFitnessStat<EOAdapt>;
+//    state.storeFunctor(bestStat);
+//    gnuMonitor->add(*bestStat);
+
+
+
 
     ///************************************
     //BUILD SPEAAdapt1
