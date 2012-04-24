@@ -40,6 +40,7 @@
   */
 #include "LowTools.h"
 #include <QVector>
+#include <QFile>
 
 LowTools::LowTools(void)
 {
@@ -54,12 +55,12 @@ bool LowTools::removeDirContents(QString folder)
     bool  allRemoved = true;
 
     QDir dir = QDir(folder);
-    QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
-    QString provFile;
+    QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
     for (int indf=0;indf<files.size();indf++)
     {
-        provFile = files[indf];
-        allRemoved = dir.remove(provFile) && allRemoved;
+        QFile provFile(files.at(indf).absoluteFilePath());
+        provFile.setPermissions(provFile.permissions() | QFile::WriteUser);
+        allRemoved = dir.remove(provFile.fileName()) && allRemoved;
     }
 
     QStringList folders = dir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);

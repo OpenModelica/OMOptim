@@ -113,8 +113,8 @@ QString MyEoGnuplot1DMonitor::plotArchiveCommand()
         for(int iPlot=0;iPlot<nbPlots;iPlot++)
         {
             QString columns = "u "+QString::number(xCol)+":"+QString::number(yCol)+" ";
-            QString labels = "set xlabel "+QString::number(xCol)+" \n";
-            labels += "set ylabel "+QString::number(yCol)+"\n";
+            QString labels = "set xlabel \'"+QString::number(xCol)+"\' \n";
+            labels += "set ylabel \'"+QString::number(yCol)+"\' \n";
             cmd += labels;
 
             QString title;
