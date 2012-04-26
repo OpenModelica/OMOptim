@@ -35,7 +35,7 @@ CONFIG(debug, debug|release){
     INCLUDEPATH  += ../build/release/generatedfiles/ui
 }
 
-INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.4-mingw/include \
+INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.6-mingw/include \
                $$(OMDEV)/lib/qwt-5.2.1-mingw/include \
                $$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/src \
                $$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/src/utils \
@@ -44,10 +44,10 @@ INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.4-mingw/include \
 
 ### LIBRARIES (order has an impact !!)
 CONFIG(debug, debug|release){
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
-    -lomniORB414_rtd \
+    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 \
+    -lomniORB416_rtd \
     -lomnithread34_rtd \
-    -lomniDynamic414_rtd \
+    -lomniDynamic416_rtd \
     -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
     -lqwtd5 \
     -L../bin \
@@ -56,10 +56,10 @@ CONFIG(debug, debug|release){
     PRE_TARGETDEPS += ../bin/libOMOptimBasisd.a
 
 }else {
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.4-mingw/lib/x86_win32 \
-    -lomniORB414_rt \
+    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 \
+    -lomniORB416_rt \
     -lomnithread34_rt \
-    -lomniDynamic414_rt \
+    -lomniDynamic416_rt \
     -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
     -lqwt5 \
     -L../bin \
