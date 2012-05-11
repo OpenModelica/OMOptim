@@ -59,7 +59,7 @@
 #include "MOItem.h"
 #include "ProblemInterfaces.h"
 
-
+class ProblemInterface;
 class Problems;
 class Results;
 class Problem;

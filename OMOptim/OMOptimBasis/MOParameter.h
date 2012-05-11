@@ -109,6 +109,9 @@ public:
     QVariant value(){return getFieldValue(VALUE);};
     QString description(){return _description;};
 
+    virtual QDomElement toXmlData(QDomDocument & doc);
+    virtual void update(QDomElement & domEl);
+
 protected :
     QString _description;
     QVariant _value;

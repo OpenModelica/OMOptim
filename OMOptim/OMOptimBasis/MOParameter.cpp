@@ -234,7 +234,55 @@ QMap<int,QVariant> MOParameter::enablingIndexes() const
     return _enablingIndexes;
 }
 
+/**
+* Equivalent to MOItem::toXmlData() but here, we do not save
+* index field. Because if index changed (e.g. order is changed between two versions),
+* there would be misunderstanding to keep index. Name is the field used to refer.
+* @sa MOItem::toXmlData()
+*/
+QDomElement MOParameter::toXmlData(QDomDocument & doc)
+{
+    QDomElement cItem = doc.createElement(this->getClassName());
+    QString fieldName;
+    QString fieldValue;
+    for(int iF=0;iF<getNbFields();iF++)
+    {
+        if(iF!=MOParameter::INDEX)
+        {
+            fieldName = getFieldName(iF,Qt::UserRole);
+            fieldName.replace(" ",XMLTools::space());
+            fieldValue = getFieldValue(iF).toString();
+            fieldValue.replace(" ",XMLTools::space());
+            cItem.setAttribute(fieldName,fieldValue);
+        }
+    }
+    return cItem;
+}
 
+/**
+* Equivalent to MOItem::update() but here, we do not read field.
+* Because if index changed (e.g. order is changed between two versions),
+* there would be misunderstanding to keep index. Name is the field used to refer.
+* @sa MOParameter::toXmlData()
+* @sa MOItem::update(QDomElement & domEl)
+*/
+void MOParameter::update(QDomElement & domEl)
+{
+    QDomNamedNodeMap attributes = domEl.attributes();
+    QString fieldName;
+    QString fieldValue;
+    int iField;
+    for(int i=0;i<attributes.count();i++)
+    {
+        fieldName = attributes.item(i).toAttr().name();
+        fieldName.replace(XMLTools::space()," ");
+        fieldValue = attributes.item(i).toAttr().value();
+        fieldValue.replace(XMLTools::space()," ");
+        iField = getFieldIndex(fieldName,Qt::UserRole);
+        if(iField!=MOParameter::INDEX)
+            setFieldValue(iField,QVariant(fieldValue));
+    }
+}
 
 MOParameterListed::MOParameterListed(){
     _editableFields.clear();

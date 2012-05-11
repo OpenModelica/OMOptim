@@ -24,6 +24,13 @@ Problems is a MOVector of Problem.
 Problem is an abstract class corresponding to all kind of optimization problem we'll could have. Optimization, OneSimulation and future other problems inherit Problem.
 Main functions to implement include Problem::launch which perform calculations, loading and saving functions. Lauching a problem should return a result inheriting Result (cf. Problem class).
 
+\subsection ProblemInterface
+OMOptim may easily be updated to have new kind of problems/results. To achieve this, OMOptim uses ProblemInterface abstract class.
+
+ProblemInterface offers to Project instance the needed functions to handle problems and their corresponding interface. Especially, it offers instantiation function, GUI functions and save/load functions.
+
+\image html Images/ProblemInterface "ProblemInterface" width=10cm
+
 \section Modelica
 
 \subsection ModClassTree
