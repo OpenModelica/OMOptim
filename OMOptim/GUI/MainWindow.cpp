@@ -27,7 +27,8 @@
 #include <QDebug>
 #include "OMOptimGuiTools.h"
 #include "GuiTools.h"
-
+#include "Problems.h"
+#include "Results.h"
 
 namespace Ui
 {

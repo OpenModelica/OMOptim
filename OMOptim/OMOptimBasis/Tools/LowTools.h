@@ -86,7 +86,7 @@ public:
 
     static bool removeDirContents(QString folder);
     static void copyDirContents(QString org, QString dest);
-    static void copyFilesInFolder(QStringList files, QString folder);
+    static void copyFilesInFolder(QFileInfoList files, QDir folder);
 };
 
 template < class T>

@@ -60,6 +60,11 @@
 #include "MOThreads.h"
 #include "ProblemInterface.h"
 #include "ProblemInterfaces.h"
+#include "MOItem.h"
+#include "MOThreads.h"
+#include "Problem.h"
+#include "Problems.h"
+#include "Results.h"
 
 ProjectBase::ProjectBase()
 {

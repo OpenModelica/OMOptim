@@ -39,6 +39,8 @@ http://www-cep.ensmp.fr/english/
 
 
 */
+
+
 #include "ModPlusDymolaCtrl.h"
 #include "reportingHook.h"
 #include "Project.h"
@@ -103,24 +105,24 @@ void ModPlusDymolaCtrl::setDefaultParameters()
     _parameters->addItem(new MOParameter((int)Dymola::MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
 
     QMap<int,QString> finalFiles;
-    finalFiles.insert(DSFINAL,"dsfinal");
-    finalFiles.insert(DSRES,"dsres");
-    _parameters->addItem( new MOParameterListed((int)Dymola::FINALFILE,"Final file considered","File where variables are read (longer if dsres but all variables are within)",DSFINAL,finalFiles));
+    finalFiles.insert(Dymola::DSFINAL,"dsfinal");
+    finalFiles.insert(Dymola::DSRES,"dsres");
+    _parameters->addItem( new MOParameterListed((int)Dymola::FINALFILE,"Final file considered","File where variables are read (longer if dsres but all variables are within)",Dymola::DSFINAL,finalFiles));
 }
 
-bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString folder)
+bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString path)
 {
-    if(folder.isEmpty())
+    QDir folder(path);
+    if(folder.path().isEmpty())
         folder = _modModelPlus->mmoFolder();
-    QDir dir(folder);
 
-    int outputFile = _parameters->value(Dymola::FINALFILE,DSFINAL).toInt();
+    int outputFile = _parameters->value(Dymola::FINALFILE,Dymola::DSFINAL).toInt();
     switch(outputFile)
     {
-    case DSFINAL :
-        return readOutputVariablesDSFINAL(finalVariables,dir.absoluteFilePath(_dsfinalFile));
-    case DSRES :
-        return readOutputVariablesDSRES(finalVariables,dir.absoluteFilePath(_dsresFile));
+    case Dymola::DSFINAL :
+        return readOutputVariablesDSFINAL(finalVariables,folder.absoluteFilePath(_dsfinalFile));
+    case Dymola::DSRES :
+        return readOutputVariablesDSRES(finalVariables,folder.absoluteFilePath(_dsresFile));
     }
     return false;
 }
@@ -150,7 +152,7 @@ bool ModPlusDymolaCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVariab
 
     if(dsresFile.isEmpty())
     {
-        dsresFile = _modModelPlus->mmoFolder()+QDir::separator()+_dsresFile;
+        dsresFile = _modModelPlus->mmoFolder().absoluteFilePath(_dsresFile);
     }
     InfoSender::sendCurrentTask("Reading final variables in "+dsresFile);
 
@@ -174,14 +176,14 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,b
 
 
     bool authorizeRecreate=false;
-    QString logFile = _modModelPlus->mmoFolder()+QDir::separator()+ "buildlog.txt";
+    QString logFile = _modModelPlus->mmoFolder().absoluteFilePath("buildlog.txt");
     if(QFile::exists(logFile))
         QFile::remove(logFile);
 
     if(dsinFile.isEmpty())
     {
         authorizeRecreate=true;
-        dsinFile = _modModelPlus->mmoFolder()+QDir::separator()+_dsinFile;
+        dsinFile = _modModelPlus->mmoFolder().absoluteFilePath(_dsinFile);
     }
     InfoSender::sendCurrentTask("Reading initial variables in "+dsinFile);
 
@@ -207,16 +209,30 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,b
     }
 }
 
-bool ModPlusDymolaCtrl::compile(const QStringList & moDependencies)
+bool ModPlusDymolaCtrl::compile(const QFileInfoList & moDependencies)
 {
     InfoSender::sendCurrentTask("Dymola : Compiling model "+_modModelPlus->modModelName());
 
     //QString logFilePath = _mmoFolder+QDir::separator()+"log.html";
-    QString logFilePath = _modModelPlus->mmoFolder()+QDir::separator()+"buildlog.txt";
+    QString logFilePath = _modModelPlus->mmoFolder().absoluteFilePath("buildlog.txt");
+
+    //********************
+    // update dependencies
+    //********************
+    QFileInfoList moDeps = moDependencies;
+    // 1- add project loaded mo files
+    QFileInfoList projectMoFiles = _project->moFiles();
+    for(int i=0;i<projectMoFiles.size();i++)
+        if(!moDeps.contains(projectMoFiles.at(i)))
+            moDeps.push_back(projectMoFiles.at(i));
+
+    // 2 - remove modelica library from moDependencies since Dymola
+    // automatically loads it
+    moDeps.removeAll(_project->moomc()->getFileOfClass("Modelica"));
 
     // compile
     bool success = Dymola::firstRun(_modModelPlus->moFilePath(),_modModelPlus->modModelName(),
-                                    _modModelPlus->mmoFolder(),logFilePath,moDependencies,_modModelPlus->neededFiles());
+                                    _modModelPlus->mmoFolder(),logFilePath,moDeps,_modModelPlus->neededFiles());
 
     // Inform
     ListInfo::InfoNum iMsg;
@@ -243,8 +259,7 @@ bool ModPlusDymolaCtrl::isCompiled()
     QString filePath;
     for(int i=0;i<filesNeeded.size();i++)
     {
-        filePath = _modModelPlus->mmoFolder()+QDir::separator()+filesNeeded.at(i);
-        filesExist = filesExist && QFile::exists(filePath);
+        filesExist = filesExist && _modModelPlus->mmoFolder().exists(filesNeeded.at(i));
     }
     return filesExist;
 }
@@ -252,7 +267,7 @@ bool ModPlusDymolaCtrl::isCompiled()
 
 
 
-bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QStringList filesTocopy,QStringList moDependencies)
+bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QFileInfoList filesTocopy,QFileInfoList moDependencies)
 {
     // Info
     InfoSender::sendCurrentTask("Dymola : Simulating model "+_modModelPlus->modModelName());
@@ -271,22 +286,20 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
 
 
     // Create tempDir
-    QDir modelTempDir(tempFolder);
-    modelTempDir.mkdir(tempFolder);
+    QDir().mkdir(tempDir.absolutePath());
 
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
-    QStringList allFilesToCopy;
+    QFileInfoList allFilesToCopy;
     QDir mmoDir = QDir(_modModelPlus->mmoFolder());
     allFilesToCopy << mmoDir.filePath("dsin.txt") << mmoDir.filePath("dymosim.exe");
     allFilesToCopy.append(filesTocopy);
 
-    QDir tempDir = QDir(tempFolder);
     QFileInfo fileToCopyInfo;
     QFile fileToCopy;
 
     for(int i=0; i< allFilesToCopy.size();i++)
     {
-        fileToCopy.setFileName(allFilesToCopy.at(i));
+        fileToCopy.setFileName(allFilesToCopy.at(i).absoluteFilePath());
         fileToCopyInfo.setFile(fileToCopy);
         tempDir.remove(fileToCopyInfo.fileName());
         fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
@@ -310,7 +323,7 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
     int iParam = _parameters->findItem((int)Dymola::MAXSIMTIME,MOParameter::INDEX);
     if(iParam>-1)
         maxNSec=_parameters->at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
-    Dymola::start(tempFolder,_simProcess,maxNSec);
+    Dymola::start(tempDir,_simProcess,maxNSec);
 
     QString logFile = tempDir.absoluteFilePath("dslog.txt");
 
@@ -328,7 +341,7 @@ bool ModPlusDymolaCtrl::simulate(QString tempFolder,MOVector<Variable> * updated
         InfoSender::instance()->send(Info(ListInfo::ONESIMULATIONSUCCESS,logFile));
     }
 
-    bool readOk = readOutputVariables(outputVars,tempFolder);
+    bool readOk = readOutputVariables(outputVars,tempDir.absolutePath());
     InfoSender::eraseCurrentTask();
     return readOk;
 
@@ -344,7 +357,7 @@ bool ModPlusDymolaCtrl::canBeStoped()
     return true;
 }
 
-bool ModPlusDymolaCtrl::createDsin(QStringList moDeps)
+bool ModPlusDymolaCtrl::createDsin(QFileInfoList moDeps)
 {
 
     QDir dir(_modModelPlus->mmoFolder());

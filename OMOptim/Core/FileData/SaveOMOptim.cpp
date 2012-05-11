@@ -49,6 +49,8 @@
 #include "OptimResult.h"
 #include "version.h"
 #include "Save.h"
+#include "Problems.h"
+#include "Results.h"
 
 
 /**
@@ -75,14 +77,14 @@ void SaveOMOptim::saveProject(Project* project,bool saveAllCases)
     QString relPath;
 
     // Mo files
-    QStringList moFilesPath = project->moFiles();
+    QFileInfoList moFilesPath = project->moFiles();
     if(moFilesPath.size()>0)
     {
         QDomElement cMoFiles = doc.createElement("MoFiles");
         for(int i=0;i<moFilesPath.size();i++)
         {
             QDomElement cMoFile = doc.createElement("MoFile");
-            cMoFile.setAttribute("path",moFilesPath.at(i));
+            cMoFile.setAttribute("path",moFilesPath.at(i).absoluteFilePath());
             cMoFiles.appendChild(cMoFile);
         }
         root.appendChild(cMoFiles);
@@ -90,14 +92,14 @@ void SaveOMOptim::saveProject(Project* project,bool saveAllCases)
 
 
     // Mmo files
-    QStringList mmoFilesPath = project->mmoFiles();
+    QFileInfoList mmoFilesPath = project->mmoFiles();
     if(mmoFilesPath.size()>0)
     {
         QDomElement cMmoFiles = doc.createElement("MmoFiles");
         for(int i=0;i<mmoFilesPath.size();i++)
         {
             QDomElement cMmoFile = doc.createElement("MmoFile");
-            relPath = projectDir.relativeFilePath(mmoFilesPath.at(i));
+            relPath = projectDir.relativeFilePath(mmoFilesPath.at(i).absoluteFilePath());
             cMmoFile.setAttribute("path",relPath);
             cMmoFiles.appendChild(cMmoFile);
         }
@@ -223,7 +225,7 @@ void SaveOMOptim::saveModModelPlus(ModModelPlus* modModelPlus)
     QString strMoDeps;
     for (int nof=0;nof<modModelPlus->moDependencies().size();nof++)
     {
-        strMoDeps.append(modModelPlus->moDependencies().at(nof)+";");
+        strMoDeps.append(modModelPlus->moDependencies().at(nof).absoluteFilePath()+";");
     }
     cMoDeps.setAttribute("list",strMoDeps);
     root.appendChild(cMoDeps);

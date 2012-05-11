@@ -46,7 +46,7 @@ class ModComponent : public ModItem
 {
 public:
     ModComponent(MOomc*);
-    ModComponent(MOomc*,ModItem* parent,QString name,QString className,QString filePath="");
+    ModComponent(MOomc*,ModItem* parent,QString name,QString className,QFileInfo file = QFileInfo());
     ~ModComponent(void);
         virtual ModItem* clone() const;
 
@@ -61,7 +61,7 @@ public:
         FILEPATH
     };
 
-    QString getModItemName();
+    QString getModClassName();
 
     virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int iField, QVariant value);

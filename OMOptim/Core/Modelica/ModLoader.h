@@ -63,7 +63,7 @@ public:
         ModLoader(MOomc *moomc);
 
     // Load functions
-        void loadMoFile(ModItemsTree* modItemsTree,QString filePath,bool forceLoad = true);
+        bool loadMoFile(ModItemsTree* modItemsTree,QString filePath,QString &msg,bool forceLoad = true);
         void loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bool forceLoad = true);
         void unloadMoFile(ModItemsTree* modItemsTree,QString filePath);
 

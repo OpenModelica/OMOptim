@@ -55,19 +55,25 @@
 #include <QFileSystemWatcher>
 #include <QPluginLoader>
 
+
 #include "MOItem.h"
-#include "MOThreads.h"
 #include "ProblemInterfaces.h"
-#include "ProblemInterface.h"
-#include "Problem.h"
-#include "Problems.h"
-#include "Results.h"
 
 
+class Problems;
+class Results;
+class Problem;
+class Result;
+class OMCase;
 
+namespace MOThreads
+{
+    class ProblemThread;
+}
 /**
- * \brief Main class managing problems, results, models,
+ * Main class managing problems, results, models,
  * paths information, save/load main functions, threads.
+ * So far, only one project is run at a time.
  */
 class ProjectBase: public MOItem
 {
@@ -98,13 +104,13 @@ protected:
     Results* _results;
 
     // Problems interfaces
-    ProblemInterfaces _problemsInterfaces;
+    ProblemInterfaces _problemsInterfaces; /// List of problemInterface pluged to project
 
  public:
     ProjectBase();
     ~ProjectBase();
 
-    virtual QString getClassName(){return "ProjectBase";};
+    virtual QString getClassName(){return "ProjectBase";}
     virtual void clear();
     virtual QString getFieldName(int iField,int role);
     virtual unsigned getNbFields();
@@ -146,8 +152,8 @@ protected:
     Problem* curLaunchedProblem();
     QMap<QString,QString> pluginsLoaded();
 
-    Problems* problems(){return _problems;};
-    Results* results(){return _results;};
+    Problems* problems(){return _problems;}
+    Results* results(){return _results;}
 
 
     //****************************
@@ -194,12 +200,10 @@ public slots :
     // Signals
     //****************************
 signals:
-
     void sendProgress(float);
     void sendProgress(float,int,int);
     void projectAboutToBeReset();
     void projectChanged();
-
 
     void addedProblem(Problem*);
     void addedResult(Result*);
@@ -219,4 +223,4 @@ signals:
 
 
 
-#endif  //_PROJECT_H
+#endif

@@ -59,6 +59,7 @@
 
 class Variable;
 class MOParameters;
+class Project;
 
 class Dymola
 {
@@ -76,11 +77,11 @@ public:
 
 
     static QString getExecutablePath();
-    static bool firstRun(QString moPath,QString modelToConsider,QString storeFolder,
-                         QString logFilePath,const QStringList & moDeps,QStringList neededFiles);
-    static bool createDsin(QString moPath,QString modelToConsider,QString folder,const QStringList & moDeps,
-                           QStringList neededFiles);
-    static void start(QString path,QProcess &,int maxNSec=-1);
+    static bool firstRun(QFileInfo moPath,QString modelToConsider,QDir storeFolder,
+                         QFileInfo logFilePath,const QFileInfoList & moDeps,QFileInfoList neededFiles);
+    static bool createDsin(QFileInfo moPath,QString modelToConsider,QDir folder,const QFileInfoList & moDeps,
+                           QFileInfoList neededFiles);
+    static void start(QDir folder,QProcess &,int maxNSec=-1);
     static void verifyInstallation();
     //static QString getPreambleFromDsin(QTextStream *);
     static bool getVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);
@@ -95,10 +96,16 @@ public:
 
     // Parameters
     enum DymolaParameters{STOPTIME,TOLERANCE,NINTERVAL,SOLVER,MAXSIMTIME,FINALFILE};
+    enum OutputReadMode
+    {
+            DSFINAL,
+            DSRES
+    };
     enum DymolaSolvers{DASSL=8,EULER=11};
 private :
     static QString sciNumRx();
     static VariableType convertVariableType(int dymDataType);
+    static VariableCausality convertToCausality(int dymValueType, int dymCategory);
 };
 
 #endif

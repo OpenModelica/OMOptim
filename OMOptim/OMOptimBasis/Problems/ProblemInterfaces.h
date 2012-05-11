@@ -3,8 +3,10 @@
 
 
 #include <QtCore>
+#include <QMap>
 
-#include "ProblemInterface.h"
+class ProblemInterface;
+class Problem;
 
 class ProblemInterfaces :  public QMap<QString,ProblemInterface*>
 {

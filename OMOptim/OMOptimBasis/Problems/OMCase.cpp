@@ -156,17 +156,17 @@ void OMCase::store(QString destFolder, QString tempDir)
     {
         dir.mkpath(_saveFolder);
     }
-//    else
-//    {
-//        LowTools::removeDir(_saveFolder);
-//        dir.mkdir(_saveFolder);
-//    }
+    //    else
+    //    {
+    //        LowTools::removeDir(_saveFolder);
+    //        dir.mkdir(_saveFolder);
+    //    }
 
     //copy needed path from old place to new one
     if(tempDir != "")
     {
         QDir tmpDir(tempDir);
-        QDir newDir(_saveFolder);
+        QString fileToCopy;
 
         // copy problem files and folders
         QStringList fileNames = tmpDir.entryList();
@@ -177,7 +177,12 @@ void OMCase::store(QString destFolder, QString tempDir)
 
         for(int i=0;i<_filesToCopy.size();i++)
         {
-            QFile::copy(tempDir + QDir::separator() + _filesToCopy.at(i),_saveFolder + QDir::separator() + _filesToCopy.at(i));
+            if(_filesToCopy.at(i).isRelative())
+                fileToCopy = tmpDir.absoluteFilePath(_filesToCopy.at(i).filePath());
+            else
+                fileToCopy= _filesToCopy.at(i).absoluteFilePath();
+
+            QFile::copy(fileToCopy,_saveFolder + QDir::separator() + _filesToCopy.at(i).fileName());
         }
     }
 

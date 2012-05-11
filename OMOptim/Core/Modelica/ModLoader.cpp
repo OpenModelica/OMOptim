@@ -53,22 +53,21 @@ ModLoader::ModLoader(MOomc *moomc)
 
 
 
-void ModLoader::loadMoFile(ModItemsTree* modItemsTree,QString filePath,bool forceLoad)
+bool ModLoader::loadMoFile(ModItemsTree* modItemsTree,QString filePath,QString &msg,bool forceLoad)
 {
     // Read it in moomc
     if( !QFile::exists(filePath))
     {
         InfoSender::instance()->send(Info(ListInfo::FILENOTEXISTS,filePath));
-        return ;
+        return false;
     }
 
     // loading file in moomc
-    QString error;
     bool loadOk;
 
 
     // Load file
-    _moomc->loadModel(filePath,forceLoad,loadOk,error);
+    _moomc->loadModel(filePath,forceLoad,loadOk,msg);
 
 
     // clear tree
@@ -78,6 +77,7 @@ void ModLoader::loadMoFile(ModItemsTree* modItemsTree,QString filePath,bool forc
     // reread first elements of modItemsTree
     modItemsTree->readFromOMCWThread(modItemsTree->rootElement(),2);
 
+    return loadOk;
 }
 
 

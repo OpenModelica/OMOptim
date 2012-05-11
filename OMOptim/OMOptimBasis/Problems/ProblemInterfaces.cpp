@@ -1,5 +1,6 @@
 #include "ProblemInterfaces.h"
 #include "Problem.h"
+#include "ProblemInterface.h"
 
 bool ProblemInterfaces::addProblemInterface(ProblemInterface* interface)
 {

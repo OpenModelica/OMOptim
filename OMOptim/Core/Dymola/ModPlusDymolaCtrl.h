@@ -28,11 +28,7 @@ class ModPlusDymolaCtrl :public ModPlusCtrl
 
 
 public:
-    enum OutputReadMode
-    {
-            DSFINAL,
-            DSRES
-    };
+
 
         ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* omc);
         ~ModPlusDymolaCtrl(void);
@@ -42,7 +38,7 @@ public:
         QString name();
 
         // Variables functions
-        bool readOutputVariables(MOVector<Variable> *,QString folder="");
+        bool readOutputVariables(MOVector<Variable> *,QString path);
         bool readOutputVariablesDSRES(MOVector<Variable> *,QString _dsresFile);
         bool readOutputVariablesDSFINAL(MOVector<Variable> *,QString _dsfinalFile);
         bool readInitialVariables(MOVector<Variable> *,bool forceRecompile,QString _dsinFile="");
@@ -51,13 +47,13 @@ public:
         void setDefaultParameters();
 
         // Compile function
-        bool createDsin(QStringList moDeps);
+        bool createDsin(QFileInfoList moDeps);
         bool isCompiled();
-        bool compile(const QStringList & moDependencies);
+        bool compile(const QFileInfoList & moDependencies);
 
         // Simulate function
-        bool simulate(QString tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,
-                      QStringList filesTocopy,QStringList moDependencies);
+        bool simulate(QDir tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,
+                      QFileInfoList filesTocopy,QFileInfoList moDependencies);
         void stopSimulation();
         bool canBeStoped();
 
@@ -66,7 +62,6 @@ private:
         QString _dsinFile;
         QString _dsresFile;
         QString _dsfinalFile;
-        OutputReadMode _outputReadMode;
         QProcess _simProcess;
 
 };

@@ -71,11 +71,11 @@ class ModPlusOMCtrl :public ModPlusCtrl
 
         // Compile function
         bool isCompiled();
-        bool compile(const QStringList & moDeps);
-        bool createInitFile(const QStringList & moDeps );
+        bool compile(const QFileInfoList & moDeps);
+        bool createInitFile(const QFileInfoList & moDeps );
 
         // Simulate function
-        bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QStringList filesToCopy ,QStringList moDependencies);
+        bool simulate(QDir tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QFileInfoList filesToCopy ,QFileInfoList moDependencies);
 
 private :
         QString _initFileXml;

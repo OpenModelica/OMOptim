@@ -44,8 +44,8 @@ ModComponent::ModComponent(MOomc* moomc):ModItem(moomc)
 {
 }
 
-ModComponent::ModComponent(MOomc* moomc,ModItem* parent,QString name,QString modClassName,QString filePath)
-:ModItem(moomc,parent,name,filePath)
+ModComponent::ModComponent(MOomc* moomc,ModItem* parent,QString name,QString modClassName,QFileInfo file)
+:ModItem(moomc,parent,name,file)
 {
     _modClassName = modClassName;
 }
@@ -57,7 +57,7 @@ ModComponent::~ModComponent()
 
 ModItem* ModComponent::clone() const
 {
-    ModComponent* newModComp = new ModComponent(_moomc,_parent,_name,_modClassName,_filePath);
+    ModComponent* newModComp = new ModComponent(_moomc,_parent,_name,_modClassName,_file);
     newModComp->_childrenReaden = _childrenReaden;
 
     for(int i=0;i<children().size();i++)
@@ -68,7 +68,7 @@ ModItem* ModComponent::clone() const
 }
 
 
-QString ModComponent::getModItemName()
+QString ModComponent::getModClassName()
 {
     return _modClassName;
 }
@@ -83,7 +83,7 @@ QVariant ModComponent::getFieldValue(int iField, int role) const
         case CLASSNAME:
         return _modClassName;
     case FILEPATH:
-        return _filePath;
+        return _file.absoluteFilePath();
     default :
         return QVariant();
     }
@@ -100,7 +100,7 @@ bool ModComponent::setFieldValue(int iField, QVariant value)
                 case CLASSNAME:
             _modClassName = value.toString();
         case FILEPATH:
-            _filePath = value.toString();
+            _file = value.toString();
             break;
         }
         return true;

@@ -59,14 +59,14 @@ class WidgetFilesList : public QWidget {
 
 
 public:
-    explicit WidgetFilesList(QStringList &filesList,QWidget *parent,QString filter = "*.*",QString infos=QString(),bool editable=true);
+    explicit WidgetFilesList(QFileInfoList &filesList,QWidget *parent,QString filter = "*.*",QString infos=QString(),bool editable=true);
     virtual ~WidgetFilesList();
 
 
 
 public:
     Ui::WidgetFilesListClass *_ui;
-    QStringList & _filesList;
+    QFileInfoList & _filesList;
     QString _filter;
     bool _editable;
 

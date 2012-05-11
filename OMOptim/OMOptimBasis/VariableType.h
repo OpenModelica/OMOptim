@@ -48,5 +48,12 @@ enum VariableType
     OMSTRING = 3
 };
 
+enum VariableCausality
+{
+    UNKNOWN,
+    INPUT,
+    OUTPUT
+};
+
 
 #endif // VARIABLETYPE_H

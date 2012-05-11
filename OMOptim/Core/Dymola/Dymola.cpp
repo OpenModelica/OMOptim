@@ -26,8 +26,6 @@ http://www-cep.ensmp.fr/english/
 
 
 
-
-
 Dymola::Dymola(void)
 {
 }
@@ -52,11 +50,11 @@ void Dymola::verifyInstallation()
 }
 
 
-bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder,QString logFilePath,
-                      const QStringList & moDeps, QStringList neededFiles)
+bool Dymola::firstRun(QFileInfo moPath,QString modelToConsider,QDir storeFolder,QFileInfo logFile,
+                      const QFileInfoList & moDeps, QFileInfoList neededFiles)
 {
     // Create Dymola script
-    QString filePath = storeFolder+QDir::separator()+"MOFirstRun.mos";
+    QString filePath = storeFolder.absoluteFilePath("MOFirstRun.mos");
     QFile file(filePath);
     if(file.exists())
     {
@@ -65,14 +63,21 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
     file.open(QIODevice::WriteOnly);
 
     QString scriptText;
-
+    QString curPath;
+    // load dependencies
     for(int i=0;i<moDeps.size();i++)
-        scriptText.append("openModel(\""+moDeps.at(i)+"\")\n");
+    {
+        curPath = QDir::fromNativeSeparators(moDeps.at(i).absoluteFilePath());
+        scriptText.append("openModel(\""+curPath+"\")\n");
+    }
 
     //for(int i=0;i<moPaths.size();i++)
-        scriptText.append("openModel(\""+moPath+"\")\n");
+    scriptText.append("openModel(\""+moPath.absoluteFilePath()+"\")\n");
 
-    scriptText.append("cd "+storeFolder+"\n");
+    QString strFolder = QDir::fromNativeSeparators(storeFolder.absolutePath());
+    QString logFilePath = QDir::fromNativeSeparators(logFile.absoluteFilePath());
+
+    scriptText.append("cd "+strFolder+"\n");
     scriptText.append("experimentSetupOutput(textual=true)\n");
     scriptText.append("Advanced.StoreProtectedVariables:=true;\n");
     scriptText.append("checkModel(\""+modelToConsider+"\",simulate=true)\n");
@@ -97,12 +102,12 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
     else
     {
         // delete previous dymosim.exe
-        QFile dymoFile(storeFolder+QDir::separator()+"dymosim.exe");
+        QFile dymoFile(storeFolder.absoluteFilePath("dymosim.exe"));
         if(dymoFile.exists())
             dymoFile.remove();
 
         // delete previous dsin file
-        QFile dsinFile(storeFolder+QDir::separator()+"dsin.txt");
+        QFile dsinFile(storeFolder.absoluteFilePath("dsin.txt"));
         if(dsinFile.exists())
             dsinFile.remove();
 
@@ -129,26 +134,28 @@ bool Dymola::firstRun(QString moPath,QString modelToConsider,QString storeFolder
     }
 }
 
-bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder,
-                        const QStringList & moDeps,QStringList neededFiles)
+bool Dymola::createDsin(QFileInfo moFile,QString modelToConsider,QDir folder,
+                        const QFileInfoList & moDeps,QFileInfoList neededFiles)
 {
     // Create Dymola script
-    QString filePath = folder+QDir::separator()+"MOFirstRun.mos";
-    QFile file(filePath);
+    QFile file(folder.absoluteFilePath("MOFirstRun.mos"));
     if(file.exists())
     {
         file.remove();
     }
     file.open(QIODevice::WriteOnly);
 
+    QString strFolder = QDir::fromNativeSeparators(folder.absolutePath());
+    QString moPath = QDir::fromNativeSeparators(moFile.absoluteFilePath());
+
     QString scriptText;
     for(int i=0;i<moDeps.size();i++)
-        scriptText.append("openModel(\""+moDeps.at(i)+"\")\n");
+        scriptText.append("openModel(\""+QDir::fromNativeSeparators(moDeps.at(i).absoluteFilePath())+"\")\n");
 
-   // for(int i=0;i<moPaths.size();i++)
-        scriptText.append("openModel(\""+moPath+"\")\n");
+    // for(int i=0;i<moPaths.size();i++)
+    scriptText.append("openModel(\""+moPath+"\")\n");
 
-    scriptText.append("cd "+folder+"\n");
+    scriptText.append("cd "+strFolder+"\n");
     scriptText.append("translateModel(\""+modelToConsider+"\")\n");
     scriptText.append("exportInitialDsin(\"dsin.txt\")\n");
     scriptText.append("savelog(\"buildlog.txt\")\n");
@@ -167,11 +174,11 @@ bool Dymola::createDsin(QString moPath,QString modelToConsider,QString folder,
 
     QProcess simProcess;
     QStringList args;
-    args.push_back(filePath);
+    args.push_back(QFileInfo(file).absoluteFilePath());
 
 
     // delete previous dsin file
-    QFile dsinFile(folder+QDir::separator()+"dsin.txt");
+    QFile dsinFile(folder.absoluteFilePath("dsin.txt"));
     if(dsinFile.exists())
         dsinFile.remove();
 
@@ -222,14 +229,12 @@ QString Dymola::getExecutablePath()
 }
 
 
-void Dymola::start(QString path,QProcess &simProcess,int maxNSec)
+void Dymola::start(QDir folder,QProcess &simProcess,int maxNSec)
 {
 #ifdef WIN32
-    simProcess.setWorkingDirectory(path);
+    simProcess.setWorkingDirectory(folder.absolutePath());
 
-
-    QString appPath = "\""+path+"\\"+"Dymosim.exe\"";
-
+    QString appPath = folder.absoluteFilePath("Dymosim.exe");
 
     simProcess.start(appPath, QStringList());
 
@@ -304,6 +309,29 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
         lines.replace(iLSolver,newLine);
     }
 
+    int iFinalFile = parameters->value((int)Dymola::FINALFILE,-1).toInt();
+    int iLineLRes = lines.indexOf(QRegExp(".*  # lres     0/1 do not/store results .*"));
+    if((iLineLRes>-1) && (iFinalFile>-1))
+    {
+        int lRes;
+        switch(iFinalFile)
+        {
+        case DSFINAL :
+            lRes = 0;
+            break;
+        case DSRES :
+        default :
+            lRes = 1;
+            break;
+        }
+
+        newLine =  "       "
+                +QString::number(lRes)
+                +"                   # lres     0/1 do not/store results on result file";
+        lines.replace(iLineLRes,newLine);
+    }
+
+
     allDsinText = lines.join("\n");
 }
 
@@ -371,10 +399,12 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
             variables->items[nv]->setValue(linefields[1].toDouble());
             int dymDataType = linefields[5].toInt();
             variables->items[nv]->setDataType(convertVariableType(dymDataType));
+            int dymValueType = linefields[0].toInt();
+            int dymCategory = linefields[4].toInt();
+            variables->items[nv]->setCausality(convertToCausality(dymValueType,dymCategory));
             nv++;
         }
         line = text->readLine();
-
     }
 
     // Get variables' description
@@ -392,8 +422,6 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
         nv++;
     }
     return true;
-
-
 }
 
 bool Dymola::getVariablesFromDsFile(QString fileName_, MOVector<Variable> *variables,QString _modelName)
@@ -732,4 +760,15 @@ VariableType Dymola::convertVariableType(int dymDataType)
     default :
         return OMREAL;
     }
+}
+
+VariableCausality Dymola::convertToCausality(int dymValueType, int dymCategory)
+{
+    if((dymValueType==-1)||(dymCategory==1)||(dymCategory==5))
+        return INPUT;
+
+    if((dymValueType==-2)||(dymValueType==-0))
+        return OUTPUT;
+
+    return UNKNOWN;
 }

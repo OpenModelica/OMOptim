@@ -39,7 +39,7 @@
 
   */
 #include "ModItem.h"
-
+#include "MOomc.h"
 
 ModItem::ModItem(MOomc* moomc)
 {
@@ -49,18 +49,18 @@ ModItem::ModItem(MOomc* moomc)
 }
 
 
-ModItem::ModItem(MOomc* moomc,ModItem* parent,QString fullname,QString filePath)
+ModItem::ModItem(MOomc* moomc,ModItem* parent,QString fullname,QFileInfo file)
 {
     _moomc = moomc;
     _parent = parent;
     _name = fullname;
-    _filePath = filePath;
+    _file = file;
     _childrenReaden = false;
 }
 
 ModItem* ModItem::clone() const
 {
-    ModItem* newModItem = new ModItem(_moomc,_parent,_name,_filePath);
+    ModItem* newModItem = new ModItem(_moomc,_parent,_name,_file);
     newModItem->_childrenReaden = _childrenReaden;
 
     for(int i=0;i<_children.size();i++)
@@ -84,7 +84,7 @@ QVariant ModItem::getFieldValue(int iField, int role) const
         return _name;
         break;
     case FILEPATH:
-        return _filePath;
+        return _file.absoluteFilePath();
         break;
     default :
         return QVariant();
@@ -101,7 +101,7 @@ bool ModItem::setFieldValue(int iField, QVariant value)
             _name = value.toString();
             break;
         case FILEPATH:
-            _filePath = value.toString();
+            _file.setFile(value.toString());
             break;
         }
         emit modified();
@@ -304,16 +304,18 @@ int ModItem::indexInParent()
 QString ModItem::filePath()
 {
     ModItem* parent = _parent;
-    QString filePath = _filePath;
-    while(filePath.isEmpty()&&(parent!=NULL))
+    QFileInfo file = _file;
+    while(file.fileName().isEmpty()&&(parent!=NULL))
     {
-        filePath = parent->_filePath;
+        file = parent->_file;
         parent = parent->parent();
     }
-    if(filePath.isEmpty())
-        filePath = _moomc->getFileOfClass(getModItemName());
 
-    return filePath;
+    if(file.fileName().isEmpty())
+    {
+        file = _moomc->getFileOfClass(name());
+    }
+    return file.absoluteFilePath();
 }
 
 QString ModItem::name(ModItem::NameFormat type)
@@ -345,7 +347,7 @@ QString ModItem::name(ModItem::NameFormat type)
     }
 }
 
-QString ModItem::getModItemName()
+QString ModItem::getModClassName()
 {
     return name(ModItem::FULL);
 }
@@ -374,7 +376,7 @@ void ModItem::clear()
 
     _parent = NULL;
     _name = QString();
-    _filePath = QString();
+    _file = QString();
     _childrenReaden = false;
 
     emit cleared();

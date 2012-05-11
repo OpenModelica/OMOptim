@@ -48,7 +48,6 @@ HEADERS += \
     ../MOOptVector.h \
     ../MOKeepVector.h \
     ../MOItem.h \
-    ../MOClasses.h \
     ../Variables.h \
     ../GUI/Widgets/WidgetMOItem.h \
     ../GUI/Widgets/WidgetFilesList.h \

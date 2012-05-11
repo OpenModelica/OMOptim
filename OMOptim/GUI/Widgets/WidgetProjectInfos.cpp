@@ -92,7 +92,7 @@ void WidgetProjectInfos::actualizeGuiFromProject()
         QStringList listMO;
         for(int i=0;i<_project->moFiles().size();i++)
         {
-            listMO.push_back(_project->moFiles().at(i));
+            listMO.push_back(_project->moFiles().at(i).absoluteFilePath());
         }
         msg += listMO.join("<br>")+"<br>";
 

@@ -50,7 +50,7 @@ OptimResult::OptimResult():Result()
     _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
 
     // files to copy
-    _filesToCopy << "iteration*.sav";
+    _filesToCopy.push_back(QFileInfo("iteration*.sav"));
 
     _optVarsFrontFileName = "optVarsFront.csv";
     _allVarsFrontFileName = "allVarsFront.csv";
@@ -71,7 +71,7 @@ OptimResult::OptimResult(Project* project, const Optimization & problem)
     _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
 
     // files to copy
-    _filesToCopy << "iteration*.sav";
+    _filesToCopy.push_back(QFileInfo("iteration*.sav"));
 
     _optVarsFrontFileName = "optVarsFront.csv";
     _allVarsFrontFileName = "allVarsFront.csv";
@@ -104,7 +104,7 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     }
 
     // files to copy
-    _filesToCopy << "iteration*.sav";
+    _filesToCopy.push_back(QFileInfo("iteration*.sav"));
 
     _optVarsFrontFileName = "optVarsFront.csv";
     _allVarsFrontFileName = "allVarsFront.csv";

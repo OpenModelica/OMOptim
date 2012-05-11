@@ -122,8 +122,8 @@ signals:
 
 protected :
     QString _name;
-    QList<int> _filledFields;
-    QList<int> _editableFields;
+    QList<int> _filledFields; /// list of fields index that have been set
+    QList<int> _editableFields; /// list of fields that are editable by the user (e.g. through GUI)
     
 };
 

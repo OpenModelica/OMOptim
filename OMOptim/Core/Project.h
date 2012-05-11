@@ -84,8 +84,8 @@ private:
     MOomc *_moomc;
 
     // Models
-    QStringList _moFiles;
-    QStringList _mmoFiles;
+    QFileInfoList _moFiles;
+    QFileInfoList _mmoFiles;
 
 
     ModLoader* _modLoader;
@@ -134,8 +134,8 @@ private:
     // Get/Set functions
     //****************************
     QString modModelPlusFolder();
-    QStringList moFiles();
-    QStringList mmoFiles();
+    QFileInfoList moFiles();
+    QFileInfoList mmoFiles();
 
     MOomc* moomc(){return _moomc;};
     ModLoader* modLoader(){return _modLoader;};

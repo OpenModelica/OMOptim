@@ -42,6 +42,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QFileInfo>
 
 #include "MOVector.h"
 
@@ -84,7 +85,7 @@ class ModPlusCtrl :public QObject
 
         // Compile function
         virtual bool isCompiled() = 0;
-        virtual bool compile(const QStringList & moDependencies) = 0;
+        virtual bool compile(const QFileInfoList & moDependencies) = 0;
 
         // Parameters
         virtual void setDefaultParameters() = 0;
@@ -94,8 +95,8 @@ class ModPlusCtrl :public QObject
         virtual QString name() = 0;
 
         // Simulate function
-        virtual bool simulate(QString tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,
-                              QStringList filesToCopy ,QStringList moDependencies) = 0;
+        virtual bool simulate(QDir tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,
+                              QFileInfoList filesToCopy ,QFileInfoList moDependencies) = 0;
         virtual void stopSimulation(){}
         virtual bool canBeStoped(){return false;}
 

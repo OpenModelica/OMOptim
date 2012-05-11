@@ -42,7 +42,7 @@
 
 #include <QtGui/QScrollBar>
 
-DlgSelectFiles::DlgSelectFiles(QStringList &filesList,QWidget* parent,QString filter,bool editable)
+DlgSelectFiles::DlgSelectFiles(QFileInfoList &filesList,QWidget* parent,QString filter,bool editable)
     :_files(filesList),QDialog(parent)
 {
     _filesLocal = _files;

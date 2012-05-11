@@ -49,7 +49,7 @@ OneSimResult::OneSimResult(void)
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
 
     // files to copy
-    _filesToCopy << "dsin.txt";
+    _filesToCopy.push_back(QFileInfo("dsin.txt"));
 }
 
 OneSimResult::OneSimResult(Project* project, ModModelPlus* modelPlus, const OneSimulation &problem)
@@ -63,7 +63,7 @@ OneSimResult::OneSimResult(Project* project, ModModelPlus* modelPlus, const OneS
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
 
     // files to copy
-    _filesToCopy << "dsin.txt";
+    _filesToCopy.push_back(QFileInfo("dsin.txt"));
 }
 
 OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok)

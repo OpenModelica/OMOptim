@@ -215,6 +215,9 @@ bool MOItem::isEditableField(int iField)
     return(_editableFields.indexOf(iField)>-1);
 }
 
+/**
+* Creates a string with all field values consecutively.
+*/
 QString MOItem::toSavingString()
 {
     QString savingString;
@@ -256,6 +259,10 @@ QDomElement MOItem::toXmlData(QDomDocument & doc)
     return cItem;
 }
 
+/**
+* Returns string that should be displayed as a tooltip
+* By default, it is the name.
+*/
 QString MOItem::getStrToolTip()
 {
     return _name;

@@ -44,8 +44,8 @@ ModRecord::ModRecord(MOomc* moomc):ModItem(moomc)
 {
 }
 
-ModRecord::ModRecord(MOomc* moomc,ModItem* parent,QString name,QString filePath)
-:ModItem(moomc,parent,name,filePath)
+ModRecord::ModRecord(MOomc* moomc,ModItem* parent,QString name,QFileInfo file)
+:ModItem(moomc,parent,name,file)
 {
 }
 
@@ -56,7 +56,7 @@ ModRecord::~ModRecord()
 
 ModItem* ModRecord::clone() const
 {
-    ModRecord* newModRecord = new ModRecord(_moomc,_parent,_name,_filePath);
+    ModRecord* newModRecord = new ModRecord(_moomc,_parent,_name,_file);
     newModRecord->_childrenReaden = _childrenReaden;
 
     for(int i=0;i<children().size();i++)

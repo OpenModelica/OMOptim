@@ -44,6 +44,7 @@
 
 Variable::Variable(void)
 {
+    _causality = UNKNOWN;
 }
 
 Variable::Variable(QString name)
@@ -141,6 +142,14 @@ void Variable::setDataType(VariableType dataType)
     _dataType = dataType;
 }
 
+void Variable::setCausality(VariableCausality causality)
+{
+    if(!_filledFields.contains(Variable::CAUSALITY))
+        _filledFields.push_back(Variable::CAUSALITY);
+    _causality = causality;
+}
+
+
 QVariant Variable::getFieldValue(int ifield, int role) const
 {
     if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
@@ -182,6 +191,23 @@ QVariant Variable::getFieldValue(int ifield, int role) const
             }
             else
                 return _dataType;
+        case CAUSALITY :
+            if(role==Qt::DisplayRole)
+            {
+                switch(_causality)
+                {
+                case INPUT :
+                    return "Input";
+                case OUTPUT :
+                    return "Output";
+                case UNKNOWN:
+                    return "-";
+                default :
+                    return "-";
+                }
+            }
+            else
+                return _causality;
         default :
             return "unknown field";
         }
@@ -210,14 +236,12 @@ QString Variable::sFieldName(int ifield, int role)
    return "Category";*/
     case DATATYPE:
         return "Data type";
+    case CAUSALITY:
+        return "Causality";
     default :
         return "unknown field";
     }
 }
-
-
-
-
 
 QString Variable::description()
 {
@@ -270,6 +294,9 @@ bool Variable::setFieldValue(int ifield,QVariant value)
    break;*/
         case DATATYPE :
             _dataType=(VariableType)value.toInt();
+            break;
+        case CAUSALITY :
+            _causality=(VariableCausality)value.toInt();
             break;
         }
         if(!_filledFields.contains(ifield))
@@ -723,6 +750,23 @@ QVariant OptVariable::getFieldValue(int ifield, int role) const
             }
             else
                 return _dataType;
+        case CAUSALITY :
+            if(role==Qt::DisplayRole)
+            {
+                switch(_causality)
+                {
+                case INPUT :
+                    return "Input";
+                case OUTPUT :
+                    return "Output";
+                case UNKNOWN:
+                    return "-";
+                default :
+                    return "-";
+                }
+            }
+            else
+                return _causality;
         case OPTMIN :
             if((role == Qt::DisplayRole)&&(_optMin==-std::numeric_limits<double>::max()))
                 return "-";
@@ -761,6 +805,8 @@ QString OptVariable::sFieldName(int ifield, int role)
    return "Category";*/
     case DATATYPE:
         return "Data type";
+    case CAUSALITY:
+        return "Causality";
     case OPTMIN:
         return "Opt Minimum";
     case OPTMAX:
@@ -805,6 +851,9 @@ bool OptVariable::setFieldValue(int ifield,QVariant value)
    break;*/
         case DATATYPE :
             _dataType=(VariableType)value.toInt();
+            break;
+        case CAUSALITY :
+            _causality=(VariableCausality)value.toInt();
             break;
         case OPTMIN :
             _optMin = value.toDouble(&isDouble);
@@ -972,6 +1021,23 @@ QVariant ScannedVariable::getFieldValue(int ifield, int role) const
             }
             else
                 return _dataType;
+        case CAUSALITY :
+            if(role==Qt::DisplayRole)
+            {
+                switch(_causality)
+                {
+                case INPUT :
+                    return "Input";
+                case OUTPUT :
+                    return "Output";
+                case UNKNOWN :
+                    return "-";
+                default :
+                    return "-";
+                }
+            }
+            else
+                return _causality;
         case SCANMIN :
             return _scanMin;
         case SCANMAX :
@@ -1006,6 +1072,8 @@ QString ScannedVariable::sFieldName(int ifield, int role)
    return "Category";*/
     case DATATYPE:
         return "Data type";
+    case CAUSALITY:
+        return "Causality";
     case SCANMIN:
         return "Scan Minimum";
     case SCANMAX:
@@ -1050,6 +1118,9 @@ bool ScannedVariable::setFieldValue(int ifield,QVariant value)
    break;*/
         case DATATYPE :
             _dataType=(VariableType)value.toInt();
+            break;
+        case CAUSALITY :
+            _causality=(VariableCausality)value.toInt();
             break;
         case SCANMIN :
             _scanMin=value.toDouble();

@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 #ifndef _ModItem_H
@@ -45,13 +45,14 @@
 
 #include "MOItem.h"
 #include "MOVector.h"
-#include "MOomc.h"
 #include "Modelica.h"
 #include "ModelicaConnection.h"
 #include "Variable.h"
 
 
 #include "LowTools.h"
+
+class MOomc;
 
 class ModItem : public MOItem
 {
@@ -70,9 +71,9 @@ class ModItem : public MOItem
 protected:
     bool _childrenReaden;
     MOomc* _moomc;
-    QString _filePath;
-        ModItem *_parent;
-        QList<ModItem*> _children;
+    QFileInfo _file;
+    ModItem *_parent;
+    QList<ModItem*> _children;
     
 public :
     QMutex _readMutex;
@@ -80,14 +81,14 @@ public :
     // Functions
     //***********************
 public:
-        ModItem(MOomc*);
-        ModItem(MOomc*,ModItem* _parent,QString _name,QString filePath="");
-        virtual QString getClassName(){return "ModItem";};
+    ModItem(MOomc*);
+    ModItem(MOomc*,ModItem* _parent,QString _name,QFileInfo filePath=QFileInfo());
+    virtual QString getClassName(){return "ModItem";};
 
-        virtual ModItem* clone() const;
-        //virtual ModItem* cloneStructure(QString newName); // clone all fields excepted connections and variables
-        virtual ~ModItem(void);
-    virtual Modelica::ClassRestr getClassRestr(){return Modelica::GENERIC;};    
+    virtual ModItem* clone() const;
+    //virtual ModItem* cloneStructure(QString newName); // clone all fields excepted connections and variables
+    virtual ~ModItem(void);
+    virtual Modelica::ClassRestr getClassRestr(){return Modelica::GENERIC;};
     
     // Data fields and management
     enum Field
@@ -110,14 +111,14 @@ public:
     virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int iField, QVariant value);
     static QString sFieldName(int field, int role);
-        virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModItem::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModItem::sFieldName(i,role);};
 
-        virtual QString getModItemName();
+    virtual QString getModClassName();
     void emitModified();
 
     // Parent
-        ModItem* parent();
-        void setParent(ModItem *);
+    ModItem* parent();
+    void setParent(ModItem *);
 
     // Local information
     QString name(ModItem::NameFormat = ModItem::FULL);
@@ -125,28 +126,28 @@ public:
     
     // Tree functions
     int depth();
-        
+
     //*****************************
     //Children
     //*****************************
-        bool addChild(ModItem*);
+    bool addChild(ModItem*);
     void clearDescendants();
     virtual void clear();
     int compChildCount();
     int modelChildCount();
     int packageChildCount();
-        int recordChildCount();
-        int childCount() const;
+    int recordChildCount();
+    int childCount() const;
     QStringList getChildrenNames();
     bool childrenReaden();
     void setChildrenReaden(bool);
-        int indexInParent();
+    int indexInParent();
 
-        ModItem* child(int row) const;
-        ModItem* compChild(int row) const;
-        ModItem* modelChild(int row) const;
-        ModItem* packageChild(int row) const;
-        ModItem* recordChild(int row) const;
+    ModItem* child(int row) const;
+    ModItem* compChild(int row) const;
+    ModItem* modelChild(int row) const;
+    ModItem* packageChild(int row) const;
+    ModItem* recordChild(int row) const;
 
     
 
@@ -155,14 +156,14 @@ public:
     //******************************
     virtual QString getStrToolTip();
 
-    public slots:
-        void openMoFolder();
-                void openInEditor();
+public slots:
+    void openMoFolder();
+    void openInEditor();
 
 
 signals:
     //void connectionsUpdated();
-        void addedChild(ModItem*);
+    void addedChild(ModItem*);
     void modified();
     void cleared();
 };

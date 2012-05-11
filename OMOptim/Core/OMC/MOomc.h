@@ -152,7 +152,7 @@ public :
     bool addComponent(QString name,QString className, QString modelName,QString annotation);
 
     // added functions
-    QString getFileOfClass(QString);
+    QFileInfo getFileOfClass(QString);
     QStringList getClassesOfFile(QString);
     QString runScript(QString);
     QString changeDirectory(QString directory);

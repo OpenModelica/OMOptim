@@ -42,6 +42,7 @@
 
 
 #include <QObject>
+#include <QFileInfoList>
 
 #include "MOItem.h"
 #include "MOVector.h"
@@ -83,9 +84,9 @@ protected :
     ModelicaConnections *_connections; /// List of connections between components in Modelica model
     QString _modModelName; /// ModModelName
     MOVector<ModelicaModifier> *_modifiers; /// @deprecated Never been used. Maybe in the future...
-    QStringList _neededFiles; /// List of files needed in the simulation folder.
+    QFileInfoList _neededFiles; /// List of files needed in the simulation folder.
     QStringList _neededFolders; /// List of folders needed in the simulation folder.
-    QStringList _moDependencies; /// List of .mo files needed to be loaded before simulation
+    QFileInfoList _moDependencies; /// List of .mo files needed to be loaded before simulation
 
     MOomc* _moomc;
     Project* _project;
@@ -115,10 +116,11 @@ public:
     unsigned getNbFields(){return 0;};
 
     void setModModelName(QString);
-    void addMoDependency(const QString &);
-    void addMoDependencies(const QStringList &);
+    void addMoDependency(const QFileInfo &);
+    void addMoDependencies(const QFileInfoList &);
     void setMoDependencies(const QStringList &);
-    QStringList moDependencies() const;
+    void setMoDependencies(const QFileInfoList &);
+    QFileInfoList moDependencies() const;
 
     //*************************
     // Path functions
@@ -129,9 +131,9 @@ public:
     QString mmoFilePath();
     QString moFilePath();
     QString mmoFileName();
-    QString mmoFolder();
+    QDir mmoFolder();
     QString modModelName();
-    QStringList neededFiles();
+    QFileInfoList neededFiles();
     QStringList neededFolders();
 
 

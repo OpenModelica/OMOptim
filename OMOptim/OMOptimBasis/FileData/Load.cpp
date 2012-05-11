@@ -46,7 +46,7 @@
 #include "MOVector.h"
 #include "MOThreads.h"
 #include "Info.h"
-
+#include "ProblemInterface.h"
 
 Load::Load(void)
 {

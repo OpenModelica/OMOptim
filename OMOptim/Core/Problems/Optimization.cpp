@@ -262,7 +262,9 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     // Files to copy
     QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
     QString text = cFilesToCopy.text();
-    this->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
+    QStringList strList = text.split("\n",QString::SkipEmptyParts);
+    for(int i=0;i<strList.size();i++)
+        this->_filesToCopy.push_back(QFileInfo(strList.at(i)));
 
     // BlockSubstitutions
     QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
@@ -830,7 +832,10 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
 
     // Files to copy
     QDomElement cFilesToCopy = doc.createElement("FilesToCopy");
-    QDomText cFiles = doc.createTextNode(_filesToCopy.join("\n"));
+    QStringList strList;
+    for(int  i=0;i<_filesToCopy.size();i++)
+        strList.push_back(_filesToCopy.at(i).absoluteFilePath());
+    QDomText cFiles = doc.createTextNode(strList.join("\n"));
     cFilesToCopy.appendChild(cFiles);
     cProblem.appendChild(cFilesToCopy);
 

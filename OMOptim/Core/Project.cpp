@@ -176,10 +176,11 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
 
     // add to mofileloadedlist
     if(storePath && !_moFiles.contains(moFilePath))
-        _moFiles.push_back(moFilePath);
+        _moFiles.push_back(QFileInfo(moFilePath));
 
     // load moFile ...
-    _modLoader->loadMoFile(modItemsTree(),moFilePath,forceLoad);
+    QString msg;
+    bool loadOk = _modLoader->loadMoFile(modItemsTree(),moFilePath,msg,forceLoad);
 
     // watch mo file
     if(storePath || wasThere)
@@ -253,7 +254,7 @@ void Project::unloadMoFile(QString moFilePath, bool removePath)
 bool Project::loadModelicaLibrary(bool storePath, bool forceLoad)
 {
     _moomc->loadStandardLibrary();
-    QString libPath = _moomc->getFileOfClass("Modelica");
+    QFileInfo libPath = _moomc->getFileOfClass("Modelica");
     if(storePath)
         _moFiles.push_back(libPath);
 
@@ -549,12 +550,12 @@ void Project::terminateOmsThreads()
 }
 
 
-QStringList Project::moFiles()
+QFileInfoList Project::moFiles()
 {
     return _moFiles;
 }
 
-QStringList Project::mmoFiles()
+QFileInfoList Project::mmoFiles()
 {
     return _mmoFiles;
 }

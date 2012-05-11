@@ -59,10 +59,10 @@ OpenModelica::~OpenModelica(void)
 {
 }
 
-bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,const QStringList & moDeps, QStringList neededFiles, QStringList neededFolders)
+bool OpenModelica::compile(MOomc *_omc,QFileInfo moFile,QString modelToConsider,QDir storeFolder,const QFileInfoList & moDeps, QFileInfoList neededFiles, QStringList neededFolders)
 {
     // check if model already loaded
-    QString loadedMoPath = _omc->getFileOfClass(modelToConsider);
+    QFileInfo loadedMoFile = _omc->getFileOfClass(modelToConsider);
 
     bool loadOk;
     QString loadError;
@@ -70,12 +70,12 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
     // load moDependencies if not already loaded
     // forceLoad = false
     for(int i=0;i<moDeps.size();i++)
-        _omc->loadModel(moDeps.at(i),false,loadOk,loadError);
+        _omc->loadModel(moDeps.at(i).absoluteFilePath(),false,loadOk,loadError);
 
     // if not already loaded, reload
-    if(loadedMoPath.compare(moPath))
+    if(loadedMoFile != moFile)
     {
-        _omc->loadModel(moPath,true,loadOk,loadError);
+        _omc->loadModel(moFile.absoluteFilePath(),true,loadOk,loadError);
     }
 
     // Create working dir
@@ -95,7 +95,7 @@ bool OpenModelica::compile(MOomc *_omc,QString moPath,QString modelToConsider,QS
     _omc->buildModel(modelToConsider);
 
 
-    LowTools::copyDir(OMCHelper::tmpPath,storeFolder);
+    LowTools::copyDir(OMCHelper::tmpPath,storeFolder.absolutePath());
 
 
 #ifdef WIN32
@@ -246,6 +246,8 @@ Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modelName
         newVar->setDataType(OMBOOLEAN);
         newVar->setValue(elType.attribute("start")=="true");
     }
+
+    //look for causality
 
     if(!ok)
     {

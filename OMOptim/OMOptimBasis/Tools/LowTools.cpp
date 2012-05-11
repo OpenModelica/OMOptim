@@ -133,19 +133,20 @@ void LowTools::copyDirContents(QString org,QString dest)
     }
 }
 
-void LowTools::copyFilesInFolder(QStringList files, QString folder)
+
+
+void LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
 {
-    QDir dir(folder);
-    if(!dir.exists())
+    if(!folder.exists())
     {
         QDir tmpDir;
-        tmpDir.mkpath(folder);
+        tmpDir.mkpath(folder.absolutePath());
     }
 
     for(int i=0;i<files.size();i++)
     {
         QFileInfo fileInfo(files.at(i));
-        QFile::copy(fileInfo.absoluteFilePath(),dir.filePath(fileInfo.fileName()));
+        QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
     }
 }
 
@@ -212,8 +213,6 @@ void LowTools::removeWhiteSpaceStrings(QStringList &list)
 void LowTools::openFolder(QString folderPath)
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(folderPath));
-
-
 }
 
 bool LowTools::openFile(QString filePath)

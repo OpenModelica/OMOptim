@@ -1,5 +1,5 @@
 // $Id$
-        /**
+/**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 
@@ -43,11 +43,11 @@
 #include "windows.h"
 #endif
 
-        //STD Headers
+//STD Headers
 #include <iostream>
 #include <stdexcept>
 
-        //QT Headers
+//QT Headers
 #include <QtCore/QStringList>
 #include <QtCore/QThread>
 #include <QtCore/QTextStream>
@@ -425,21 +425,18 @@ QStringList MOomc::getComponentModifierNames(QString componentName)
 
 QString MOomc::getFlattenedModel(const QString & modelName)
 {
-        QString flatcmd = "instantiateModel("+modelName+")";
-        QString flattened = evalCommand(flatcmd);
+    InfoSender::instance()->sendNormal("Instantiating model "+modelName);
+    QString flatcmd = "instantiateModel("+modelName+")";
+    QString flattened = evalCommand(flatcmd);
 
-        return flattened;
+    return flattened;
 }
 
 QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName)
 {
-
     QString flattened = getFlattenedModel(modelName);
     return getFlattenedModifierValue(modelName,componentName,modifierName,flattened);
-
 }
-
-
 
 QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName,const QString & flattenedModel)
 {
@@ -477,28 +474,28 @@ QString MOomc::getComponentModifierValue(QString modelName,QString shortComponen
     QStringList modifierNames;
     QString commandText,commandRes;
 
-//    QStringList levelNames = componentName.split(".");
-//    //Checking that component is a first level one
-//    if(levelNames.size()!=2)
-//    {
-//        InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
-//        QString errorString;
-//        return errorString;
-//    }
-//    else
-//    {
-        commandText = "getComponentModifierValue(" + modelName +","+shortComponentName+"."+modifierName+")";
-        commandRes = evalCommand(commandText);
-        if(commandRes.contains("Error",Qt::CaseInsensitive))
+    //    QStringList levelNames = componentName.split(".");
+    //    //Checking that component is a first level one
+    //    if(levelNames.size()!=2)
+    //    {
+    //        InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
+    //        QString errorString;
+    //        return errorString;
+    //    }
+    //    else
+    //    {
+    commandText = "getComponentModifierValue(" + modelName +","+shortComponentName+"."+modifierName+")";
+    commandRes = evalCommand(commandText);
+    if(commandRes.contains("Error",Qt::CaseInsensitive))
     {
-            InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,shortComponentName));
-            return QString();
+        InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,shortComponentName));
+        return QString();
     }
-        commandRes.remove("=");
-        commandRes.remove(" ");
-        return commandRes;
-  //  }
-    }
+    commandRes.remove("=");
+    commandRes.remove(" ");
+    return commandRes;
+    //  }
+}
 
 bool MOomc::setComponentModifiers(QString compName,QString model, QStringList modNames,QStringList modValues)
 {
@@ -572,11 +569,11 @@ Modelica::ClassRestr MOomc::getClassRestriction(QString className)
     else
         if(isModel(className))
             return Modelica::MODEL;
-    else
-        if(isComponent(className))
-            return Modelica::COMPONENT;
-    else
-        return Modelica::OTHER;
+        else
+            if(isComponent(className))
+                return Modelica::COMPONENT;
+            else
+                return Modelica::OTHER;
 }
 
 QString MOomc::getAnnotation(QString compName,QString compClass,QString model)
@@ -584,34 +581,34 @@ QString MOomc::getAnnotation(QString compName,QString compClass,QString model)
 
     QString annot;
     /// \todo
-//    QString commandText = "list("+model+")";
-//    QString list= evalCommand(commandText);
+    //    QString commandText = "list("+model+")";
+    //    QString list= evalCommand(commandText);
 
 
-//    QStringList listLines = list.split("\n");
-//    QString compShortName = compName.section(".",-1,-1);
+    //    QStringList listLines = list.split("\n");
+    //    QString compShortName = compName.section(".",-1,-1);
 
-//    QRegExp regExp(".*"+compClass+"[\\s]*"+ compName.section(".",-1,-1)+"\\(.*\\)[\\s]*;");
-//    int iLine = listLines.indexOf(regExp);
+    //    QRegExp regExp(".*"+compClass+"[\\s]*"+ compName.section(".",-1,-1)+"\\(.*\\)[\\s]*;");
+    //    int iLine = listLines.indexOf(regExp);
 
-//    QStringList cap=regExp.capturedTexts();
-//    listLines.at(iLine).contains(regExp);
-//    cap = regExp.capturedTexts();
+    //    QStringList cap=regExp.capturedTexts();
+    //    listLines.at(iLine).contains(regExp);
+    //    cap = regExp.capturedTexts();
 
-//    if(iLine == -1)
-//        return QString();
-//    else
-//    {
-//        QString annot = listLines.at(iLine);
-//        if(!annot.contains("annotation"))
-//            return QString();
-//        else
-//        {
-//            annot.remove(QRegExp(".*annotation\\("));
-//            annot.remove(QRegExp("\\)[\\s]*;"));
-//            return annot;
-//        }
-//    }
+    //    if(iLine == -1)
+    //        return QString();
+    //    else
+    //    {
+    //        QString annot = listLines.at(iLine);
+    //        if(!annot.contains("annotation"))
+    //            return QString();
+    //        else
+    //        {
+    //            annot.remove(QRegExp(".*annotation\\("));
+    //            annot.remove(QRegExp("\\)[\\s]*;"));
+    //            return annot;
+    //        }
+    //    }
     return annot;
 }
 
@@ -795,22 +792,22 @@ QString MOomc::evalCommand(QString command)
     if (!mHasInitialized)
     {
         InfoSender::instance()->send(Info(QString("OMC not started. Please start it again (menu OMC->restart)"),ListInfo::WARNING2));
-            return QString();
-        }
+        return QString();
+    }
 
-//        if(!startServer())
-//        {
-//            InfoSender::instance()->send(Info(QString("Unable to communicate with OMC ")));
-//            return QString();
-//        }
-//    }
+    //        if(!startServer())
+    //        {
+    //            InfoSender::instance()->send(Info(QString("Unable to communicate with OMC ")));
+    //            return QString();
+    //        }
+    //    }
 
     // Send command to server
     try
     {
         //mResult = mOMC->sendExpression(command.toLatin1());
         mResult = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
-       // logOMCMessages(command);
+        // logOMCMessages(command);
         InfoSender::instance()->send(Info(getResult(),ListInfo::OMCNORMAL2));
     }
     catch(CORBA::Exception&)
@@ -819,7 +816,7 @@ QString MOomc::evalCommand(QString command)
         if (command == "quit()")
             return QString();
 
-       QFile::remove(mObjectRefFile);
+        QFile::remove(mObjectRefFile);
         InfoSender::instance()->send(Info(QString("Communication with OMC server has lost ")));
     }
 
@@ -1002,11 +999,9 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
         int i=0;
         while(doLoad && i<classLoaded.size())
         {
-            QString fileOfClassInOMC = getFileOfClass(classLoaded.at(i));
-            fileOfClassInOMC = QFileInfo(fileOfClassInOMC).canonicalFilePath();
-            QString fileOfClass = QFileInfo(filename).canonicalFilePath();
+            QFileInfo fileOfClassInOMC = getFileOfClass(classLoaded.at(i));
 
-            if(fileOfClassInOMC == fileOfClass)
+            if(fileOfClassInOMC == QFileInfo(filename))
                 doLoad = false;
 
             i++;
@@ -1085,6 +1080,15 @@ QString MOomc::loadFile(const QString & filePath)
     localFile = localFile.replace("\\","/");
     QString cmd = QString("loadFile(\"") + localFile + QString("\")");
     QString result = evalCommand(cmd);
+    QString errorString = evalCommand("getErrorString()");
+
+    // if file is not in UTF-8, try with another encoding
+    if(result.contains("false",Qt::CaseInsensitive) && errorString.contains("The file was not encoded in UTF-8"))
+    {
+        cmd = QString("loadFile(\"") + localFile + QString("\",encoding=\"ISO-8859-1\")");
+        result = evalCommand(cmd);
+        errorString = evalCommand("getErrorString()");
+    }
 
     emit loadedFile(localFile,result);
     InfoSender::eraseCurrentTask();
@@ -1112,11 +1116,11 @@ void MOomc::loadStandardLibrary()
     evalCommand("loadModel(Modelica)");
     evalCommand("loadModel(ModelicaServices)");
 
-//    //! @todo Remove it once we have removed Media   and  and    and  and   Fluid from MSL.
-//    // just added to remove Fluid   and  and    and  and   Media Library...
+    //    //! @todo Remove it once we have removed Media   and  and    and  and   Fluid from MSL.
+    //    // just added to remove Fluid   and  and    and  and   Media Library...
 
-//    evalCommand("deleteClass(Modelica.Media)");
-//    evalCommand("deleteClass(Modelica.Fluid)");
+    //    evalCommand("deleteClass(Modelica.Media)");
+    //    evalCommand("deleteClass(Modelica.Fluid)");
 }
 
 void MOomc::clear()
@@ -1133,8 +1137,8 @@ void MOomc::exit()
     {
         if( mHasInitialized )
         {
-           // delegate_->closeConnection();
-           // delegate_->reconnect();
+            // delegate_->closeConnection();
+            // delegate_->reconnect();
             stopServer();
         }
     }
@@ -1246,7 +1250,7 @@ bool MOomc::startServer()
         }
     }
 
-       // mCommunicator = &OmcCommunicator::getInstance();
+    // mCommunicator = &OmcCommunicator::getInstance();
 
     // set the temp directory.
     changeDirectory(OMCHelper::tmpPath);
@@ -1333,7 +1337,7 @@ bool MOomc::startServer()
 void MOomc::stopServer()
 {
     if(isStarted())
-  //  if( delegate_ )
+        //  if( delegate_ )
     {
         QString quit = "quit()";
         mOMC->sendExpression( quit.toLatin1() );
@@ -1374,15 +1378,14 @@ QString MOomc::changeDirectory(QString directory)
 
 QString MOomc::getWorkingDirectory()
 {
-     evalCommand("cd()");
-     QString path = getResult();
-     path = path.remove("\"");
-     return path;
+    evalCommand("cd()");
+    QString path = getResult();
+    path = path.remove("\"");
+    return path;
 }
 
-QString MOomc::getFileOfClass(QString _className)
+QFileInfo MOomc::getFileOfClass(QString _className)
 {
-
     QString filePath = "";
     QString res = evalCommand("getElementsInfo("+_className+")");
 
@@ -1394,7 +1397,7 @@ QString MOomc::getFileOfClass(QString _className)
         filePath = res.mid(idStart+1,idEnd-idStart-1);
     }
 
-    return filePath;
+    return QFileInfo(filePath);
 }
 
 QString MOomc::runScript(QString scriptFile)

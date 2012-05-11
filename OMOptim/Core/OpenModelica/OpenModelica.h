@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 #ifndef _OpenModelica_H
@@ -70,38 +70,38 @@ class OpenModelica
    *  All functions defined in this class are static. There are used to :
    *    -read/write input or output files
    *    -compile model
-   *    
+   *
    */
 
 public:
     OpenModelica();
     ~OpenModelica(void);
 
-        static bool compile(MOomc *_omc,QString moPath,QString modelToConsider,QString storeFolder,
-                            const QStringList & moDeps, QStringList neededFiles, QStringList neededFolders);
-        static void getInputVariablesFromTxtFile(MOomc *_omc,QString filePath, MOVector<Variable> *,QString _modelName);
-        static void getInputVariablesFromTxtFile(MOomc *_omc,QTextStream *, MOVector<Variable> *,QString _modelName);
-        static bool getInputVariablesFromXmlFile(MOomc *_omc,QString,QString modModelName, MOVector<Variable> *);
-        static bool getInputVariablesFromXmlFile(MOomc *_omc,const QDomDocument &,QString modModelName, MOVector<Variable> *);
+    static bool compile(MOomc *_omc,QFileInfo moFile,QString modelToConsider,QDir storeFolder,
+                        const QFileInfoList & moDeps, QFileInfoList neededFiles, QStringList neededFolders);
+    static void getInputVariablesFromTxtFile(MOomc *_omc,QString filePath, MOVector<Variable> *,QString _modelName);
+    static void getInputVariablesFromTxtFile(MOomc *_omc,QTextStream *, MOVector<Variable> *,QString _modelName);
+    static bool getInputVariablesFromXmlFile(MOomc *_omc,QString,QString modModelName, MOVector<Variable> *);
+    static bool getInputVariablesFromXmlFile(MOomc *_omc,const QDomDocument &,QString modModelName, MOVector<Variable> *);
 
-        static bool getFinalVariablesFromFile(QString, MOVector<Variable> *,QString _modelName);
+    static bool getFinalVariablesFromFile(QString, MOVector<Variable> *,QString _modelName);
     static bool getFinalVariablesFromFile(QTextStream *, MOVector<Variable> *,QString _modelName);
 
-        static bool getFinalVariablesFromMatFile(QString, MOVector<Variable> *,QString _modelName);
+    static bool getFinalVariablesFromMatFile(QString, MOVector<Variable> *,QString _modelName);
 
 
-        static void setInputVariablesTxt(QString, MOVector<Variable> *,QString modModelName,MOParameters *parameters=NULL);
-        static bool setInputXml(QString, MOVector<Variable> *, QString modelName,MOParameters *parameters=NULL);
-        static void start(QString exeFile,int maxnsec);
+    static void setInputVariablesTxt(QString, MOVector<Variable> *,QString modModelName,MOParameters *parameters=NULL);
+    static bool setInputXml(QString, MOVector<Variable> *, QString modelName,MOParameters *parameters=NULL);
+    static void start(QString exeFile,int maxnsec);
     static QString sciNumRx();
-        static QString home();
+    static QString home();
 
 
 
 private :
-        static Variable* variableFromFmi(const QDomElement & ,QString modModelName, bool & ok);
-        static void setInputVariablesXml(QDomDocument &, QString modModelName,MOVector<Variable> *);
-        static void setInputParametersXml(QDomDocument &, MOParameters *);
+    static Variable* variableFromFmi(const QDomElement & ,QString modModelName, bool & ok);
+    static void setInputVariablesXml(QDomDocument &, QString modModelName,MOVector<Variable> *);
+    static void setInputParametersXml(QDomDocument &, MOParameters *);
 
     // Parameters
 

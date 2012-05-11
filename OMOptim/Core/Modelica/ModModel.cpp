@@ -44,8 +44,8 @@ ModModel::ModModel(MOomc* moomc):ModItem(moomc)
 {
 }
 
-ModModel::ModModel(MOomc* moomc,ModItem* parent,QString name,QString filePath)
-:ModItem(moomc,parent,name,filePath)
+ModModel::ModModel(MOomc* moomc,ModItem* parent,QString name,QFileInfo file)
+:ModItem(moomc,parent,name,file)
 {
 }
 
@@ -56,7 +56,7 @@ ModModel::~ModModel()
 
 ModItem* ModModel::clone() const
 {
-    ModModel* newModModel = new ModModel(_moomc,_parent,_name,_filePath);
+    ModModel* newModModel = new ModModel(_moomc,_parent,_name,_file);
     newModModel->_childrenReaden = _childrenReaden;
 
     for(int i=0;i<children().size();i++)

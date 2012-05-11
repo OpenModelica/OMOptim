@@ -90,8 +90,6 @@ eoMonitor& MyEoGnuplot1DMonitor::operator() (void)
 
 QString MyEoGnuplot1DMonitor::plotArchiveCommand()
 {
-
-
     QString cmd;
     QStringList archFiles = _folder.entryList(QStringList("archive.*"));
     int nbArchFilesConsidered =  5;// disp only the five last generations
@@ -109,6 +107,7 @@ QString MyEoGnuplot1DMonitor::plotArchiveCommand()
         cmd = "cd \'"+_folder.absolutePath()+"\'\n";
         cmd += "set multiplot layout " +QString::number(nbRows)+","+QString::number(nbCols) + "\n";
         cmd += "set autoscale \n";
+        cmd += "set key left top \n";
 
         for(int iPlot=0;iPlot<nbPlots;iPlot++)
         {
@@ -121,7 +120,12 @@ QString MyEoGnuplot1DMonitor::plotArchiveCommand()
             cmd+= "plot ";
             for(int i=0;i<archFiles.size();i++)
             {
-                title = " t \'"+QFileInfo(_folder,archFiles.at(i)).completeSuffix()+"\' ";
+                // legend only on first plot
+                if(iPlot==0)
+                    title = " t \'"+QFileInfo(_folder,archFiles.at(i)).completeSuffix()+"\' ";
+                else
+                    title = QString();
+
                 cmd+= "\'"+archFiles.at(i)+"\'" + columns + title;
                 cmd+=",";
             }

@@ -141,7 +141,7 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
             bool readClasses = readModels;
 
             QString fullParentName = parent->name(ModItem::FULL);
-            QString parentClassName = parent->getModItemName();
+            QString parentClassName = parent->getModClassName();
             QString prefix;
             if(!fullParentName.isEmpty())
                 prefix = fullParentName+".";
@@ -231,7 +231,7 @@ void ModItemsTree::readFromOmcV2(ModItem* parent,int depthMax,QString direction,
         if((curDepth<=depthMax)&&!parent->childrenReaden())
         {
             QString childrenDirection = direction.section(".",curDepth+1,curDepth+1);
-            QString fullParentClass = parent->getModItemName();
+            QString fullParentClass = parent->getModClassName();
 
             QString fullParentName = parent->name(ModItem::FULL);
             QString prefix;
@@ -299,7 +299,7 @@ void ModItemsTree::readFromOmcV3(ModItem* parent,int depthMax,QString direction,
         if((curDepth<=depthMax)&&!parent->childrenReaden())
         {
             QString childrenDirection = direction.section(".",curDepth+1,curDepth+1);
-            QString fullParentClass = parent->getModItemName();
+            QString fullParentClass = parent->getModClassName();
             QString fullParentName = parent->name(ModItem::FULL);
 
 
@@ -445,7 +445,7 @@ QList<ModItem*> ModItemsTree::findInDescendantsByClass(QString className,ModItem
     for(iChild=0;iChild<parent->childCount();iChild++)
     {
         curClass = parent->child(iChild);
-        if(curClass->getModItemName()==className)
+        if(curClass->getModClassName()==className)
             curClasses.push_back(curClass);
 
         //look deeper in children
@@ -786,7 +786,7 @@ bool ModItemsTree::hasChildren ( const QModelIndex & parent ) const
                 // look if has component children
                 QStringList compNames;
                 QStringList compClasses;
-                _moomc->getContainedComponents(parentElement->getModItemName(),compNames,compClasses,true);
+                _moomc->getContainedComponents(parentElement->getModClassName(),compNames,compClasses,true);
                 hasChildren = (!compNames.isEmpty());
             }
         }

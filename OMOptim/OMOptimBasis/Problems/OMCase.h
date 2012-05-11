@@ -76,7 +76,7 @@ protected :
 
 
 public:
-    QStringList _filesToCopy; /** Files to copy in temp directory of in save directory */
+    QFileInfoList _filesToCopy; /** Files to copy in temp directory of in save directory */
     QStringList _foldersToCopy; /** Files to copy in temp directory of in save directory */
 
 
@@ -88,8 +88,8 @@ public:
 
     // Managment functions
     /**
- * Description Save problem information in XML form.
- */
+    * Description Save problem information in XML form.
+    */
     virtual QDomElement toXmlData(QDomDocument & doc) = 0;
     virtual void store(QString destFolder, QString tempDir);
     virtual void rename(QString name,bool changeFolder);
@@ -98,7 +98,7 @@ public:
     QString saveFolder();
     QString saveFileName();
     QString entireSavePath();
-    QStringList filesToCopy(){return _filesToCopy;};
+    QFileInfoList filesToCopy(){return _filesToCopy;};
     ProjectBase* project(){return _project;};
 
 

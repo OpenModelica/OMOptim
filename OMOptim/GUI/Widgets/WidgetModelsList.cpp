@@ -124,14 +124,12 @@ void WidgetModelsList::refreshList()
 void WidgetModelsList::removeModels()
 {
     QList<QListWidgetItem*> itemsList = _ui->filesList->selectedItems();
-    int iFile;
+
     for(int i=0;i<itemsList.size();i++)
     {
         _problem->removeModel(itemsList.at(i)->text());
+        _ui->filesList->removeItemWidget(itemsList.at(i));
     }
-//    //remove from listWidget
-//    qDeleteAll(itemsList);
-    _ui->filesList->clear();
 }
 
 

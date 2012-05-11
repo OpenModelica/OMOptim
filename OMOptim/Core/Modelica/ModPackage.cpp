@@ -44,8 +44,8 @@ ModPackage::ModPackage(MOomc* _oms):ModItem(_oms)
 {
 }
 
-ModPackage::ModPackage(MOomc* _oms,ModItem* _parent,QString _name,QString _filePath)
-:ModItem(_oms,_parent,_name,_filePath)
+ModPackage::ModPackage(MOomc* oms,ModItem* parent,QString name,QFileInfo file)
+:ModItem(oms,parent,name,file)
 {
 }
 
@@ -56,7 +56,7 @@ ModPackage::~ModPackage()
 
 ModItem* ModPackage::clone() const
 {
-    ModPackage* newModPackage = new ModPackage(_moomc,_parent,_name,_filePath);
+    ModPackage* newModPackage = new ModPackage(_moomc,_parent,_name,_file);
     newModPackage->_childrenReaden = _childrenReaden;
 
     for(int i=0;i<children().size();i++)

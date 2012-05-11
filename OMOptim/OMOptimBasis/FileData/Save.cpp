@@ -45,6 +45,7 @@
 #include "Problem.h"
 #include "Problems.h"
 #include "Results.h"
+#include "ProblemInterface.h"
 
 Save::Save(void)
 {

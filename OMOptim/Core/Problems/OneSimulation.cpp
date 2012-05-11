@@ -53,6 +53,7 @@
 #include "VariablesManip.h"
 #include "OneSimResult.h"
 #include "ModModelPlus.h"
+#include "ProblemConfig.h"
 
 OneSimulation::OneSimulation(Project* project,ModModelPlus* modModelPlus)
     :Problem((ProjectBase*)project)
@@ -125,8 +126,9 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
 
         // Files to copy
         QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
-        QString text = cFilesToCopy.text();
-        this->_filesToCopy = text.split("\n",QString::SkipEmptyParts);
+        QStringList strList = cFilesToCopy.text().split("\n",QString::SkipEmptyParts);
+        for(int i=0;i<strList.size();i++)
+            this->_filesToCopy.push_back(QFileInfo(strList.at(i)));
 
         // addOverWritedCVariables
         // make their value editable
@@ -284,7 +286,10 @@ QDomElement OneSimulation::toXmlData(QDomDocument & doc)
 
     // Files to copy
     QDomElement cFilesToCopy = doc.createElement("FilesToCopy");
-    QDomText cFiles = doc.createTextNode(_filesToCopy.join("\n"));
+    QStringList strFilesToCopy;
+    for(int i=0;i<_filesToCopy.size();i++)
+        strFilesToCopy.push_back(_filesToCopy.at(i).absoluteFilePath());
+    QDomText cFiles = doc.createTextNode(strFilesToCopy.join("\n"));
     cFilesToCopy.appendChild(cFiles);
     cProblem.appendChild(cFilesToCopy);
 

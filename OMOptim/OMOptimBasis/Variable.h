@@ -76,8 +76,10 @@ public :
         MAX,
         TYPE,
         CATEGORY,*/
-        DATATYPE
+        DATATYPE,
+        CAUSALITY
     };
+
 
     /*enum Category
     {
@@ -126,7 +128,7 @@ public :
     static QString sFieldName(int field, int role);
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return Variable::sFieldName(i,role);};
 
-    static const int nbFields = 5;
+    static const int nbFields = 6;
     virtual unsigned getNbFields(){return nbFields;};
 
     //Specific functions
@@ -138,6 +140,7 @@ public :
     //void setMax(double);
     //void setCategory(int);
     void setDataType(VariableType);
+    void setCausality(VariableCausality causality);
     QString description();
     virtual QString name(Variable::NameFormat = Variable::FULL) const;
     virtual QString getStrToolTip();
@@ -152,7 +155,9 @@ protected :
     //int type;
     //int category;
     VariableType _dataType;
+    VariableCausality _causality;
     double _value;
+
     //double min;
     //double max;
 };
@@ -177,7 +182,7 @@ public:
     VariableResult* clone() const;
     virtual QString getClassName(){return "VariableResult";};
 
-    static const int nbFields = 5;
+    static const int nbFields = 6;
 
 private:
     std::vector<std::vector<double> > _finalValues;
@@ -225,6 +230,7 @@ public :
         TYPE,
         CATEGORY,*/
         DATATYPE,
+        CAUSALITY,
         OPTMIN,
         OPTMAX
     };
@@ -246,7 +252,7 @@ public :
     virtual bool setFieldValue(int ifield, QVariant value_);
     static QString sFieldName(int field, int role);
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptVariable::sFieldName(i,role);};
-    static const int nbFields = 7;
+    static const int nbFields = 8;
     virtual unsigned getNbFields(){return nbFields;};
 
     void initOptExtremum();
@@ -276,7 +282,7 @@ public :
         TYPE,
         CATEGORY,*/
         DATATYPE,
-
+        CAUSALITY,
         SCANMIN,
         SCANMAX,
         SCANSTEP
@@ -300,7 +306,7 @@ public :
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ScannedVariable::sFieldName(i,role);};
 
 
-    static const int nbFields = 8;
+    static const int nbFields = 9;
     virtual unsigned getNbFields(){return nbFields;};
 
 

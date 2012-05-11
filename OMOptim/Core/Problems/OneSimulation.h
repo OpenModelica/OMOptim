@@ -51,7 +51,11 @@ class Variables;
 class ScannedVariables;
 
 /**
-  * @brief Basic problem which consists in simulating a model with modified input variables.
+  * Basic problem which consists in simulating a model with modified input variables.
+  * Model is simulated using a controler (ModPlusCtrl).
+  * The result of a OneSimulation problem is a OneSimResult which contains
+  * final variables.
+  * OneSimulation inherits the abstract class Problem.
   */
 class OneSimulation : public Problem
 {

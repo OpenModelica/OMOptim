@@ -130,7 +130,10 @@ QString ModModelPlus::moFilePath()
         return QString();
     }
     else
-        return modItem->filePath();
+    {
+        QString filePath = modItem->filePath();
+        return filePath;
+    }
 }
 
 QString ModModelPlus::mmoFileName()
@@ -139,13 +142,13 @@ QString ModModelPlus::mmoFileName()
     return fileInfo.fileName();
 }
 
-QString ModModelPlus::mmoFolder()
+QDir ModModelPlus::mmoFolder()
 {
     QFileInfo fileInfo(_mmoFilePath);
-    return fileInfo.absolutePath();
+    return fileInfo.dir();
 }
 
-QStringList ModModelPlus::neededFiles()
+QFileInfoList ModModelPlus::neededFiles()
 {
     return _neededFiles;
 }
@@ -160,23 +163,32 @@ void ModModelPlus::setModModelName(QString modModelName)
     _modModelName = modModelName;
 }
 
-void ModModelPlus::addMoDependency(const QString & dep)
+void ModModelPlus::addMoDependency(const QFileInfo & dep)
 {
     _moDependencies.push_back(dep);
 }
 
-void ModModelPlus::addMoDependencies(const QStringList & deps)
+void ModModelPlus::addMoDependencies(const QFileInfoList & deps)
 {
     _moDependencies.append(deps);
 }
 
 void ModModelPlus::setMoDependencies(const QStringList & deps)
 {
+    QFileInfoList list;
+    for(int i=0;i<deps.size();i++)
+        list.push_back(QFileInfo(deps.at(i)));
+
+    setMoDependencies(list);
+}
+
+void ModModelPlus::setMoDependencies(const QFileInfoList & deps)
+{
     _moDependencies.clear();
     _moDependencies.append(deps);
 }
 
-QStringList ModModelPlus::moDependencies() const
+QFileInfoList ModModelPlus::moDependencies() const
 {
     return _moDependencies;
 }
@@ -253,7 +265,7 @@ bool ModModelPlus::readAll(ModPlusCtrl *ctrl)
 void ModModelPlus::loadDependencies()
 {
     for(int i=0;i<_moDependencies.size();i++)
-        _moomc->loadFile(_moDependencies.at(i));
+        _moomc->loadFile(_moDependencies.at(i).absoluteFilePath());
 }
 
 bool ModModelPlus::isCompiled(ModPlusCtrl* ctrl)
@@ -263,9 +275,7 @@ bool ModModelPlus::isCompiled(ModPlusCtrl* ctrl)
 
 bool ModModelPlus::compile(ModPlusCtrl* ctrl)
 {
-    QStringList modelsToLoad = moDependencies();
-    modelsToLoad.append(_project->moFiles());
-    modelsToLoad.removeDuplicates();
+    QFileInfoList modelsToLoad = moDependencies();
 
     return ctrl->compile(modelsToLoad);
 }
@@ -306,7 +316,7 @@ bool ModModelPlus::readConnections(ModItem* element,bool includeChildren)
     if(!element)
         return false;
 
-    QString className = ((ModComponent*)element)->getModItemName();
+    QString className = ((ModComponent*)element)->getModClassName();
     QString name = element->name(ModItem::FULL);
 
     QStringList aNames, bNames;
@@ -359,7 +369,7 @@ void ModModelPlus::openMoFolder()
 }
 void ModModelPlus::openMmoFolder()
 {
-    LowTools::openFolder(mmoFolder());
+    LowTools::openFolder(mmoFolder().absolutePath());
 }
 
 void ModModelPlus::openMoFile()
