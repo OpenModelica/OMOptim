@@ -44,7 +44,7 @@ INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.6-mingw/include \
 
 ### LIBRARIES (order has an impact !!)
 CONFIG(debug, debug|release){
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32 \
+    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 \
     -lomniORB416_rtd \
     -lomnithread34_rtd \
     -lomniDynamic416_rtd \
@@ -56,7 +56,7 @@ CONFIG(debug, debug|release){
     PRE_TARGETDEPS += ../bin/libOMOptimBasisd.a
 
 }else {
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32 \
+    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 \
     -lomniORB416_rt \
     -lomnithread34_rt \
     -lomniDynamic416_rt \
