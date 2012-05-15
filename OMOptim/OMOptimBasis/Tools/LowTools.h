@@ -63,6 +63,7 @@ public:
 
     static bool removeDir(QString);
     static void copyDir(QString,QString);
+    static bool mkdir(QString,bool eraseExisting);
 
     static QStringList getDuplicates(const QStringList & list);
     static void removeDuplicates(QStringList & list);

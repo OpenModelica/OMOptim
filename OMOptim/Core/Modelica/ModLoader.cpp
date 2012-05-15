@@ -81,7 +81,6 @@ bool ModLoader::loadMoFile(ModItemsTree* modItemsTree,QString filePath,QString &
 }
 
 
-
 void ModLoader::loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bool forceLoad)
 {
     QString error;

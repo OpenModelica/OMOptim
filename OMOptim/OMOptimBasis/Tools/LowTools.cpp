@@ -162,6 +162,26 @@ void LowTools::copyDir(QString org,QString dest)
     copyDirContents(org,dest);
 }
 
+bool LowTools::mkdir(QString dirPath,bool eraseExisting)
+{
+    bool ok;
+
+    QDir tempDir(dirPath);
+    QFile tempDirFile(dirPath);
+    tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
+
+    if(tempDir.exists()&&eraseExisting)
+        LowTools::removeDir(dirPath);
+
+    tempDir.mkdir(dirPath);
+    tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
+
+    ok = tempDir.exists() && tempDirFile.isWritable()
+            && (tempDir.entryList(QDir::NoDotAndDotDot).isEmpty() || !eraseExisting);
+
+    return ok;
+}
+
 QStringList LowTools::getDuplicates(const QStringList & list)
 {
     QStringList result;

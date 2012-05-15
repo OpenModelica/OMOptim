@@ -48,6 +48,7 @@ http://www-cep.ensmp.fr/english/
 #include "MOomc.h"
 #include "MOParameter.h"
 #include "Dymola.h"
+#include "LowTools.h"
 
 ModPlusDymolaCtrl::ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* moomc)
     :ModPlusCtrl(project,model,moomc)
@@ -286,7 +287,7 @@ bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,M
 
 
     // Create tempDir
-    QDir().mkdir(tempDir.absolutePath());
+    LowTools::mkdir(tempDir.absolutePath(),true);
 
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QFileInfoList allFilesToCopy;

@@ -175,7 +175,7 @@ protected:
     // Misc
     //****************************
     void terminateProblemsThreads();
-    void createTempDir();
+    bool createTempDir();
     virtual bool checkConfiguration();
 
     //****************************

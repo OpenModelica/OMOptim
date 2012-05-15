@@ -186,10 +186,11 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
     if(storePath || wasThere)
         _mofilesWatcher.addPath(moFilePath);
 
-    _modItemsTree->emitDataChanged();
-
-
-    emit projectChanged();
+    if(loadOk)
+    {
+        _modItemsTree->emitDataChanged();
+        emit projectChanged();
+    }
 }
 
 /**
@@ -416,18 +417,12 @@ ModModelPlus* Project::newModModelPlus(QString modelName)
     // Store it
     // create folder
     QDir allModPlusdir(modModelPlusFolder());
-    if(!allModPlusdir.exists())
-    {
-        QDir tmpDir(folder());
-        tmpDir.mkdir(allModPlusdir.absolutePath());
-    }
+    LowTools::mkdir(allModPlusdir.absolutePath(),true);
 
     // modModelPlus dir
     QDir modPlusdir(allModPlusdir.absolutePath()+QDir::separator()+modelName);
-    if(!modPlusdir.exists())
-    {
-        allModPlusdir.mkdir(modPlusdir.absolutePath());
-    }
+    LowTools::mkdir(modPlusdir.absolutePath(),true);
+
 
     // mmo file
     QString newMmoFilePath = modPlusdir.absolutePath() + QDir::separator() + modelName + ".mmo";

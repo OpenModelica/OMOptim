@@ -72,6 +72,7 @@
 
 #include "MOSettings.h"
 #include "InfoSender.h"
+#include <QProcess>
 
 /** Base class for calls to gnuplot
 
@@ -124,6 +125,8 @@ protected:
     /** Communication with gnuplot OK */
     FILE *gnuplotPipe;
     bool pipeOpen;
+
+    QProcess gnuPlotProcess;
 
     /** Internal counter for gnuplot windows */
     static unsigned numWindow;

@@ -267,7 +267,7 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
 
 
     // Create tempDir
-    QDir().mkdir(tempFolder.absolutePath());
+    LowTools::mkdir(tempFolder.absolutePath(),false);
 
 
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)

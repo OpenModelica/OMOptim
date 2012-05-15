@@ -44,6 +44,7 @@ http://www-cep.ensmp.fr/english/
 
 #include "OpenModelica.h"
 #include "ModPlusOMCtrl.h"
+#include "VariableType.h"
 
 
 // for .mat reading
@@ -248,6 +249,7 @@ Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modelName
     }
 
     //look for causality
+    newVar->setCausality(varCausality(el));
 
     if(!ok)
     {
@@ -258,7 +260,14 @@ Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modelName
         return newVar;
 }
 
-
+VariableCausality OpenModelica::varCausality(const QDomElement & el)
+{
+    QString variability = el.attribute("variability");
+    if(variability.compare("parameter"))
+        return INPUT;
+    else
+        return UNKNOWN;
+}
 
 bool OpenModelica::getFinalVariablesFromFile(QString fileName_, MOVector<Variable> *variables,QString _modelName)
 {
@@ -278,6 +287,12 @@ bool OpenModelica::getFinalVariablesFromFile(QString fileName_, MOVector<Variabl
     else
         return true;
 }
+
+
+/**
+  * Uses OpenModelica functions to read from .mat files : faster than csv (both writing and reading)
+  * @note : don't forget to free reader (omc_free_matlab4_reader()) in order to let files writable
+  */
 bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Variable> * variables,QString _modelName)
 {
 
@@ -293,6 +308,7 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
     if(0 != (msg = omc_new_matlab4_reader(fileName.toStdString().c_str(), &reader)))
     {
         InfoSender::instance()->sendError("Unable to read .mat file");
+        omc_free_matlab4_reader(&reader);
         return false;
     }
 
@@ -302,6 +318,7 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
     if (reader.nvar < 1)
     {
         InfoSender::instance()->sendError("Unable to read .mat file : no variable inside");
+        omc_free_matlab4_reader(&reader);
         return false;
     }
 
@@ -347,6 +364,8 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
         }
     }
 
+
+    omc_free_matlab4_reader(&reader);
     return true;
 }
 bool OpenModelica::getFinalVariablesFromFile(QTextStream *text, MOVector<Variable> * variables,QString _modelName)

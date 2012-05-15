@@ -61,6 +61,7 @@
 #include <iostream>
 #include "MOParameter.h"
 #include <QtCore/QProcess>
+#include "VariableType.h"
 
 class OpenModelica
 {
@@ -88,6 +89,8 @@ public:
     static bool getFinalVariablesFromFile(QTextStream *, MOVector<Variable> *,QString _modelName);
 
     static bool getFinalVariablesFromMatFile(QString, MOVector<Variable> *,QString _modelName);
+
+    static VariableCausality varCausality(const QDomElement & el);
 
 
     static void setInputVariablesTxt(QString, MOVector<Variable> *,QString modModelName,MOParameters *parameters=NULL);

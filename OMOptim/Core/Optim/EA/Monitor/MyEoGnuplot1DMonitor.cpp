@@ -98,16 +98,16 @@ QString MyEoGnuplot1DMonitor::plotArchiveCommand()
 
     if((_nbObj>0)&&(archFiles.size()>0))
     {
-        int nbRows = (int)(std::ceil(std::sqrt(_nbObj)));
-        int nbCols = nbRows;
         int nbPlots = (_nbObj*(_nbObj-1))/2;
-        int xCol=0;
-        int yCol=1;
+        int nbRows = (int)(std::ceil(std::sqrt(nbPlots)));
+        int nbCols = nbRows;
+        int xCol=1;
+        int yCol=2;
 
         cmd = "cd \'"+_folder.absolutePath()+"\'\n";
         cmd += "set multiplot layout " +QString::number(nbRows)+","+QString::number(nbCols) + "\n";
         cmd += "set autoscale \n";
-        cmd += "set key left top \n";
+        cmd += "set key left top outside\n";
 
         for(int iPlot=0;iPlot<nbPlots;iPlot++)
         {

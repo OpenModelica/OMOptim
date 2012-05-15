@@ -1243,7 +1243,7 @@ bool MOomc::startServer()
     QDir dir;
     if (!dir.exists(OMCHelper::tmpPath))
     {
-        if (!dir.mkdir(OMCHelper::tmpPath))
+        if (!LowTools::mkdir(OMCHelper::tmpPath,false))
         {
             InfoSender::instance()->send(Info( QString("Failed to create temp dir ").append(OMCHelper::tmpPath),ListInfo::ERROR2));
             return false;

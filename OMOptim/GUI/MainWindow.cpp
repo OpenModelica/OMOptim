@@ -112,7 +112,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _stProgressBar = new QProgressBar;
     _stProgressBar->setMaximumWidth(300);
     _stProgressBar->setTextVisible(false);
-    _statusBar->addPermanentWidget(_stProgressBar);
+    //_statusBar->addPermanentWidget(_stProgressBar);
     _statusBar->setVisible(false);
     this->setStatusBar(_statusBar);
 
@@ -207,6 +207,8 @@ void MainWindow::clearLog()
 
 void MainWindow::displayInfo(Info i)
 {
+    if(i.infoMsg.isEmpty())
+        return ;
 
     QTextCharFormat infoFormat;
 

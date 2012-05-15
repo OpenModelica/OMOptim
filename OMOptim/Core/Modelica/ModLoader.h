@@ -52,7 +52,8 @@ class ModModelPlus;
 class ModItemsTree;
 
 /**
-  * \brief ModLoader offers loading functions for openmodelica.
+  * ModLoader offers loading functions for openmodelica.
+  * @sa MOomc
   */
 class ModLoader : public QObject
 {

@@ -398,10 +398,7 @@ Result* Optimization::launch(ProblemConfig config)
 {
 
     // first create temp dir
-    QDir dir;
-    if(dir.exists(_project->tempPath()))
-        dir.rmdir(_project->tempPath());
-    dir.mkdir(_project->tempPath());
+    LowTools::mkdir(_project->tempPath(),false);
 
 
     EABase* algo = ((EABase*)getCurAlgo());
@@ -548,7 +545,7 @@ void Optimization::recomputePoints(OptimResult* result, QList<int> iPoints,bool 
                     //Saving results into csv file
                     //*****************************
                     //update scan folders
-                    dir.mkdir(pointSaveFolder);
+                    LowTools::mkdir(pointSaveFolder,true);
                     QFile file(pointSaveFolder+QDir::separator()+"resultVar.csv");
                     file.open(QIODevice::WriteOnly);
                     QTextStream ts( &file );

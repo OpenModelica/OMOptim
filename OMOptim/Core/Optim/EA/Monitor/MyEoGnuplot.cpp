@@ -68,6 +68,7 @@ MyEoGnuplot::~MyEoGnuplot()
 {
     if( gnuplotPipe )
         pclose(gnuplotPipe);
+
 }
 
 void MyEoGnuplot::gnuplotCommand(const QString & _command)
@@ -78,6 +79,7 @@ void MyEoGnuplot::gnuplotCommand(const QString & _command)
         fprintf(gnuplotPipe, cmd.toAscii().data());
         fflush(gnuplotPipe);
     }
+
 }
 
 void MyEoGnuplot::initGnuPlot()
@@ -91,7 +93,6 @@ void MyEoGnuplot::initGnuPlot()
     else
     {
         QString pgnuplotFilePath = MOSettings::value("pgnuplotEXE").toString();
-        //QString command("\""+pgnuplotFilePath+"\" -persist ");
         QString command("\""+pgnuplotFilePath +" -persist\"");
         command.replace("/","\\");
 

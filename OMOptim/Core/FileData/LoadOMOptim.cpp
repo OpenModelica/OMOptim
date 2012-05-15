@@ -47,6 +47,8 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     _project->clear();
     _project->setFilePath(filePath);
     QDir projectDir(_project->folder());
+    // set current dir as project dir : allows to use relative paths
+    QDir::setCurrent(projectDir.absolutePath());
 
     QString tmpPath;
 
@@ -92,7 +94,6 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
             modelFileInfo=QFileInfo(projectDir,tmpPath); //stored in relative path
             if(!modelFileInfo.exists())
             {
-
                 InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,tmpPath));
             }
             else
@@ -161,6 +162,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     for(int i=0;i<modelMoFilePaths.size();i++)
     {
         QFileInfo fileinfo = QFileInfo(modelMoFilePaths.at(i));
+
         if (!fileinfo.exists())
             InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMoFilePaths.at(i)));
     }
@@ -172,6 +174,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     for(int i=0;i<modelMmoFilePaths.size();i++)
     {
         QFileInfo fileinfo = QFileInfo(modelMmoFilePaths.at(i));
+
         if (!fileinfo.exists())
             InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
         else
