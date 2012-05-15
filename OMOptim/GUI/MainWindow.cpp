@@ -377,9 +377,9 @@ void MainWindow::loadProject()
 
     QString filename = QFileDialog::getOpenFileName(
                 this,
-                "MO - Open Project",
+                qAppName()+" - Open Project",
                 getLastProjectFolder(),
-                "MO project (*.min)" );
+                "project (*.min)" );
 
     if (!filename.isNull())
     {

@@ -511,7 +511,7 @@ bool Project::load(QString loadPath)
   */
 QString Project::modModelPlusFolder()
 {
-    return folder()+QDir::separator()+"Models";
+    return folder().absoluteFilePath("Models");
 }
 
 /**

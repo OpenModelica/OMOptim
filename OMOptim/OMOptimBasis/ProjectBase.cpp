@@ -337,27 +337,27 @@ QString ProjectBase::filePath()
     return _filePath;
 }
 
-QString ProjectBase::folder()
+QDir ProjectBase::folder()
 {
     QFileInfo fileInfo(_filePath);
-    return fileInfo.absolutePath();
+    return fileInfo.absoluteDir();
 }
 
 QString ProjectBase::tempPath()
 {
-    return folder()+QDir::separator()+"temp";
+    return folder().absoluteFilePath("temp");
 }
 
 
 QString ProjectBase::problemsFolder()
 {
 
-    return folder()+QDir::separator()+"Problems";
+    return folder().absoluteFilePath("Problems");
 }
 
 QString ProjectBase::resultsFolder()
 {
-    return folder()+QDir::separator()+"Results";
+    return folder().absoluteFilePath("Results");
 }
 
 void ProjectBase::addProblemInterface(ProblemInterface* problemInterface)

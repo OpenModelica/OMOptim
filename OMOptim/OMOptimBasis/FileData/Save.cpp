@@ -71,7 +71,7 @@ void Save::saveProject(ProjectBase* project,bool saveAllCases)
 
 
     // Project info
-    QDir projectDir(project->folder());
+    QDir projectDir = project->folder();
     QDomElement cBasic = doc.createElement( "Basic" );
     cBasic.setAttribute( "name", project->name() );
     root.appendChild(cBasic);

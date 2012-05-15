@@ -46,7 +46,8 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     InfoSender::instance()->send(Info(ListInfo::LOADINGPROJECT,filePath));
     _project->clear();
     _project->setFilePath(filePath);
-    QDir projectDir(_project->folder());
+    QDir projectDir = _project->folder();
+
     // set current dir as project dir : allows to use relative paths
     QDir::setCurrent(projectDir.absolutePath());
 
@@ -91,19 +92,10 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
         QFileInfo modelFileInfo(tmpPath);
         if(!modelFileInfo.exists())
         {
-            modelFileInfo=QFileInfo(projectDir,tmpPath); //stored in relative path
-            if(!modelFileInfo.exists())
-            {
-                InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,tmpPath));
-            }
-            else
-            {
-                tmpPath = modelFileInfo.canonicalFilePath();
-                modelMoFilePaths.push_back(tmpPath);
-            }
+            InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,tmpPath));
         }
         else
-            modelMoFilePaths.push_back(tmpPath);
+            modelMoFilePaths.push_back(modelFileInfo.absoluteFilePath());
     }
 
     // Mmo files
@@ -114,8 +106,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     {
         tmpPath = listMmoFiles.at(i).toElement().attribute("path", "" );
         QFileInfo modelFileInfo(projectDir,tmpPath);
-        tmpPath = modelFileInfo.canonicalFilePath();
-        modelMmoFilePaths.push_back(tmpPath);
+        modelMmoFilePaths.push_back(modelFileInfo.absoluteFilePath());
     }
 
     // Plugins
@@ -126,8 +117,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     {
         tmpPath = listPlugins.at(i).toElement().attribute("path", "" );
         QFileInfo pluginFileInfo(tmpPath);
-        tmpPath = pluginFileInfo.canonicalFilePath();
-        pluginsPaths.push_back(tmpPath);
+        pluginsPaths.push_back(pluginFileInfo.absoluteFilePath());
     }
 
     // Problems to load
@@ -138,7 +128,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     {
         tmpPath = listOMCases.at(i).toElement().attribute("path", "" );
         QFileInfo problemFileInfo(projectDir,tmpPath);
-        problemsPaths.push_back(problemFileInfo.canonicalFilePath());
+        problemsPaths.push_back(problemFileInfo.absoluteFilePath());
     }
 
     // Results to load
@@ -149,7 +139,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     {
         tmpPath = listResults.at(i).toElement().attribute("path", "" );
         QFileInfo solvedFileInfo(projectDir,tmpPath);
-        resultsPaths.push_back(solvedFileInfo.canonicalFilePath());
+        resultsPaths.push_back(solvedFileInfo.absoluteFilePath());
     }
 
 
@@ -157,11 +147,10 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     // Reading Mo Files
     //**************************************
     QSettings settings("MO", "Settings");
-
-
     for(int i=0;i<modelMoFilePaths.size();i++)
     {
         QFileInfo fileinfo = QFileInfo(modelMoFilePaths.at(i));
+        qDebug(fileinfo.absoluteFilePath().toLatin1().data());
 
         if (!fileinfo.exists())
             InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMoFilePaths.at(i)));

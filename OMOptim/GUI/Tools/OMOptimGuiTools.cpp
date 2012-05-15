@@ -110,7 +110,8 @@ void OMOptimGuiTools::consolidateModelsPath(QString projectFile, QWidget *mainWi
     QStringList oldModels = models;
 
     // consolidate models : find whether they exist or not. Redirection if not.
-    consolidateModelsPath(models,QDir(projectFile),mainWindow);
+    QDir projectDir = QFileInfo(projectFile).absoluteDir();
+    consolidateModelsPath(models,projectDir,mainWindow);
 
     // save file
     if(models!=oldModels)

@@ -62,7 +62,7 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     InfoSender::instance()->send(Info(ListInfo::LOADINGPROJECT,filePath));
     _project->clear();
     _project->setFilePath(filePath);
-    QDir projectDir(_project->folder());
+    QDir projectDir = _project->folder();
 
     QString tmpPath;
 

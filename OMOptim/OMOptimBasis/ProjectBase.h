@@ -144,7 +144,7 @@ protected:
     QString problemsFolder();
     QString resultsFolder();
     QString filePath();
-    QString folder();
+    QDir folder();
     QString tempPath();
     void setName(QString);
     void setFilePath(QString);
