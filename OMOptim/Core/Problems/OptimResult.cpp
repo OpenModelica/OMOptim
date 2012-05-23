@@ -165,7 +165,7 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     {
         curModel = _omProject->modModelPlus(_models.at(iM));
 
-        if(curModel->variables()->items.isEmpty())
+        if(curModel->variables()->items.isEmpty() && curModel->isCompiled(problem.ctrl(_models.at(iM))))
             curModel->readVariables(problem.ctrl(_models.at(iM)));
 
         for (int i=0;i<curModel->variables()->size();i++)

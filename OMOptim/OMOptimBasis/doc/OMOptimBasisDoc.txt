@@ -1,0 +1,29 @@
+/*! \page pageOMOptimBasis OMOptimBasis
+
+OMOptimBasis is a library containing main classes of OMOptim but that can be used in other libraries (e.g. PluginEI).
+There is no mention of Modelica in OMOptimBasis. It is focused on ProjectBase class, Problems, Results and ProblemInterface.
+
+
+\section ProjectBase
+Each session of the user corresponds to a project (class ProjectBase). Only one project is loaded at a time. Project instance holds main containers :
+	
+	- List of problems (class Problems)
+	- List of results (class Results)
+	- Files paths (project, problems)
+
+It's from Project that main managing functions are called : save, addProblem, launchProblem...
+	
+\image html Images/ProjectBase.png "Project overview" width=10cm
+
+	
+\section Problems
+See dedicated page \ref pageProblems.
+
+Problems is a MOVector of Problem.
+\subsection Problem
+Problem is an abstract class corresponding to all kind of optimization problem we'll could have. Optimization, OneSimulation and future other problems inherit Problem.
+Main functions to implement include Problem::launch which perform calculations, loading and saving functions. Lauching a problem should return a result inheriting Result (cf. Problem class).
+
+
+
+ **/

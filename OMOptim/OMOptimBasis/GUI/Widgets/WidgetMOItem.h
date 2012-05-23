@@ -90,6 +90,7 @@ protected :
 
     public slots:
         void onValueChanged(const QString &);
+        void onLineEditValueChanged();
         void onCheckChanged(int state);
         void actualizeValues();
 

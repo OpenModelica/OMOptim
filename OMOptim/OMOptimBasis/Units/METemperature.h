@@ -58,7 +58,7 @@ public:
         C
     };
 
-    QString unit(int iUnit)  const;
+    QString unit(int iUnit) const;
     QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
     unsigned nbUnits() const;
     double convert(double value,int orgUnit,int dstUnit) const;

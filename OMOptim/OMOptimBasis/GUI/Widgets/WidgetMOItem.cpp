@@ -128,8 +128,8 @@ void WidgetMOItem::initializeGui()
 
                 QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
                 if(lineEdit)
-                    connect(lineEdit,SIGNAL(textChanged ( const QString & )),
-                            this,SLOT(onValueChanged(const QString &)));
+                    connect(lineEdit,SIGNAL(editingFinished()),
+                            this,SLOT(onLineEditValueChanged()));
             }
         }
     }
@@ -159,6 +159,12 @@ void WidgetMOItem::onValueChanged(const QString & txt)
 {
     QWidget *editor = qobject_cast<QWidget *>(sender());
     changeValue(editor,QVariant(txt));
+}
+
+void WidgetMOItem::onLineEditValueChanged()
+{
+    QLineEdit *editor = qobject_cast<QLineEdit*>(sender());
+    changeValue(editor,QVariant(editor->text()));
 }
 
 void WidgetMOItem::onCheckChanged(int state)

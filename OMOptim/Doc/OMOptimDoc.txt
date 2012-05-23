@@ -1,0 +1,53 @@
+/*! \page pageOMOptim OMOptim main structure
+
+
+\section Project
+Each session of the user corresponds to a project (class Project). Only one project is loaded at a time. Project instance holds main containers :
+	- List of problems (class Problems)
+	- List of results (class Results)
+	- Modelica tree (class ModClassTree) : this class contains all modelica items loaded in OMC.
+	- Files paths (project, loaded mo files, loaded mmo files...)
+
+Project instance also holds controlers :
+	- Instance of OpenModelica communicator (class MOomc) : one instance spread in entire program through pointer.
+	
+
+
+It's from Project that main managing functions are called : save, addProblem, launchProblem...
+	
+\image html Images/Project.png "Project overview" width=10cm
+
+\section Main classes	
+\subsection Problems
+Problems is a MOVector of Problem.
+\subsubsection Problem
+Problem is an abstract class corresponding to all kind of optimization problem we'll could have. Optimization, OneSimulation and future other problems inherit Problem.
+Main functions to implement include Problem::launch which perform calculations, loading and saving functions. Lauching a problem should return a result inheriting Result (cf. Problem class).
+
+\subsubsection ProblemInterface
+OMOptim may easily be updated to have new kind of problems/results. To achieve this, OMOptim uses ProblemInterface abstract class.
+
+ProblemInterface offers to Project instance the needed functions to handle problems and their corresponding interface. Especially, it offers instantiation function, GUI functions and save/load functions.
+
+\image html Images/ProblemInterface "ProblemInterface" width=10cm
+
+\subsection Modelica
+
+\subsubsection ModClassTree
+ModClassTree is the main container of modelica in OMOptim. It inherits QAbstractItemModel (cf. Qt Documentation) and proposes a hierarchical organization. It allows to display functions but also reading and editing items (reading and finding functions are stored in ModReader instance).
+
+\subsubsection Modelica reader (ModReader)
+ModReader allows to read modelica models information. Current implementation uses openModelica API through corba communication. Also contains finding functions in ModClass hierarchy.
+
+\subsubsection Modelica controller (ModPlusCtrl)
+ModPlusCtrl allows to compile, simulate, read initial and final variables. It is an abstract class which must be implemented following the software we want to use.
+At this moment, only two controlers are implemented : one using OpenModelica (cf. ModPlusOMCtrl), the other using dymola (cf. ModPlusDymolaCtrl).
+
+\subsubsection ModModelPlus
+ModModelPlus allows to store informations about Modelica models but also to manage them. More precisely, it holds input variables of model, controller chosen and its parameters.
+It also allows to compile model, simulate it and read variables (calling the specified controller). In other words, it serves as an interface between problems requiring simulation data and different simulation softwares.
+
+\section Extending OMOptim
+See how to add a new kind of problem here : \ref pageAddANewProblem
+
+ **/

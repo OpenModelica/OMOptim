@@ -170,6 +170,7 @@ void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir project
 
                 break;
             case QMessageBox::No:
+                newModelPath = oldModelPath;
                 break;
             default:
                 // should never be reached

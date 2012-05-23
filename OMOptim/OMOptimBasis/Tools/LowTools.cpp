@@ -218,6 +218,16 @@ void LowTools::removeDuplicates(QStringList &list)
     }
 }
 
+void LowTools::removeDuplicates(QFileInfoList &list)
+{
+    for(int i=0;i<list.size();i++)
+    {
+        while(list.lastIndexOf(list.at(i))>i)
+        {
+            list.removeAt(list.lastIndexOf(list.at(i)));
+        }
+    }
+}
 
 void LowTools::removeWhiteSpaceStrings(QStringList &list)
 {

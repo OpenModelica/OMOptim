@@ -64,15 +64,19 @@ bool Dymola::firstRun(QFileInfo moPath,QString modelToConsider,QDir storeFolder,
 
     QString scriptText;
     QString curPath;
-    // load dependencies
-    for(int i=0;i<moDeps.size();i++)
+
+    // load dependencies and model
+    QFileInfoList moToLoad;
+    moToLoad.append(moDeps);
+    moToLoad.push_back(moPath);
+    LowTools::removeDuplicates(moToLoad);
+
+    for(int i=0;i<moToLoad.size();i++)
     {
-        curPath = QDir::fromNativeSeparators(moDeps.at(i).absoluteFilePath());
-        scriptText.append("openModel(\""+curPath+"\")\n");
+            curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
+            scriptText.append("openModel(\""+curPath+"\")\n");
     }
 
-    //for(int i=0;i<moPaths.size();i++)
-    scriptText.append("openModel(\""+moPath.absoluteFilePath()+"\")\n");
 
     QString strFolder = QDir::fromNativeSeparators(storeFolder.absolutePath());
     QString logFilePath = QDir::fromNativeSeparators(logFile.absoluteFilePath());
@@ -146,14 +150,22 @@ bool Dymola::createDsin(QFileInfo moFile,QString modelToConsider,QDir folder,
     file.open(QIODevice::WriteOnly);
 
     QString strFolder = QDir::fromNativeSeparators(folder.absolutePath());
-    QString moPath = QDir::fromNativeSeparators(moFile.absoluteFilePath());
 
     QString scriptText;
-    for(int i=0;i<moDeps.size();i++)
-        scriptText.append("openModel(\""+QDir::fromNativeSeparators(moDeps.at(i).absoluteFilePath())+"\")\n");
+    QString curPath;
 
-    // for(int i=0;i<moPaths.size();i++)
-    scriptText.append("openModel(\""+moPath+"\")\n");
+    // load dependencies and model
+    QFileInfoList moToLoad;
+    moToLoad.append(moDeps);
+    moToLoad.push_back(moFile);
+    LowTools::removeDuplicates(moToLoad);
+
+    for(int i=0;i<moToLoad.size();i++)
+    {
+            curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
+            scriptText.append("openModel(\""+curPath+"\")\n");
+    }
+
 
     scriptText.append("cd "+strFolder+"\n");
     scriptText.append("translateModel(\""+modelToConsider+"\")\n");

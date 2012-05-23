@@ -67,6 +67,7 @@ public:
 
     static QStringList getDuplicates(const QStringList & list);
     static void removeDuplicates(QStringList & list);
+    static void removeDuplicates(QFileInfoList & list);
     static void removeDuplicates(QVector<double> & vector);
     static void removeWhiteSpaceStrings(QStringList &list);
 

@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 #if !defined(_MEDIMVALUE_H)
@@ -49,46 +49,106 @@
 class MEDimValue
 {
 public:
-        MEDimValue();
-        MEDimValue(double value,int unit);
+    MEDimValue();
+    MEDimValue(double value,int unit);
     virtual ~MEDimValue(void);
 
     QStringList units()  const ;
-        virtual QString unit() const ;
+    virtual QString unit() const ;
     int iUnit() const ;
     virtual QString unit(int iUnit) const =0;
     virtual unsigned nbUnits() const =0;
     virtual void setValue(double,int iUnit=-1);
     virtual bool setValue(double,QString unit);
     virtual void setUnit(int iUnit);
-        virtual bool setUnit(QString iUnit);
+    virtual bool setUnit(QString iUnit);
     double value(int iUnit) const;
-        double value() const;
-        QString strValue(int iUnit) const;
-        QString strValue() const;
+    double value() const;
+    QString strValue(int iUnit) const;
+    QString strValue() const;
     
-        virtual QString toString() const {return QString::number(value(_unit))+" "+unit();}
+    virtual QString toString() const {return QString::number(value(_unit))+" "+unit();}
 
-        virtual MEDimValue & operator=(const MEDimValue &);
-        virtual bool operator<(const MEDimValue &) const;
-        virtual bool operator>(const MEDimValue &) const;
-        virtual bool operator==(const MEDimValue &) const;
-        virtual bool operator!=(const MEDimValue &) const;
-        virtual bool operator<=(const MEDimValue &) const;
-        virtual bool operator>=(const MEDimValue &) const;
-        virtual bool equalsRel(const MEDimValue& b,double maxRelDistance) const;
+    virtual MEDimValue & operator=(const MEDimValue &);
+    virtual bool operator<(const MEDimValue &) const;
+    virtual bool operator>(const MEDimValue &) const;
+    virtual bool operator==(const MEDimValue &) const;
+    virtual bool operator!=(const MEDimValue &) const;
+    virtual bool operator<=(const MEDimValue &) const;
+    virtual bool operator>=(const MEDimValue &) const;
+    virtual bool equalsRel(const MEDimValue& b,double maxRelDistance) const;
 
 
-        bool isValid() const;
-        void invalidate();
-        void validate();
+    bool isValid() const;
+    void invalidate();
+    void validate();
+
+
+
 
 protected :
     int _unit;
     double _value;
-        bool _isValid;
+    bool _isValid;
 
     virtual double convert(double value,int orgUnit,int dstUnit) const =0 ;
+};
+
+
+template<class DimValue>
+class MEDimValueTools
+{
+public :
+    /**
+      * Convert a list of MEDimValue to a QString
+      * Used for GUI or saving/load functions
+      */
+    static QString listToString(const QList<DimValue> &list, int iUnit)
+    {
+        QString separator = ";";
+        QString result="\[";
+        bool allAreId = true; // if all are id then copy only num value
+        for(int i=0;i<list.size();i++)
+        {
+            result+=QString::number(list.at(i).value(iUnit));
+            result+=separator;
+            allAreId = allAreId && (list.at(i).value(iUnit)==list.at(0).value(iUnit));
+        }
+        if(allAreId)
+            return QString::number(list.at(0).value(iUnit));
+        else
+        {
+            result.remove(result.size()-separator.size(),separator.size());
+            result.push_back("\]");
+            return result;
+        }
+    }
+
+    /**
+      * Convert a Qstring to a list of DimValue
+      */
+    static QList<DimValue> stringToList(QString str,int iUnit, bool &ok)
+    {
+        bool tmpOk;
+        QList<DimValue> result;
+        QString separator = ";"; // be sure to set the same in listToString function.
+        str = str.remove("\[");
+        str = str.remove("\]");
+
+
+        QStringList strList = str.split(separator);
+        ok = !strList.isEmpty();
+
+        for(int i=0;i<strList.size();i++)
+        {
+            DimValue newT(strList.at(i).toDouble(&tmpOk),iUnit);
+            ok = ok && tmpOk;
+            result.push_back(newT);
+        }
+
+        return result;
+    }
+
 };
 
 

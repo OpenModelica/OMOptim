@@ -214,6 +214,8 @@ bool ProjectBase::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
         _pluginsLoaded.insert(pbInter->name(),pluginPath);
         emit projectChanged();
     }
+
+    return loadOk;
 }
 
 /**
@@ -233,7 +235,10 @@ bool ProjectBase::unloadPlugin(QString pluginPath)
     if(loader.unload())
     {
         emit projectChanged();
+        return true;
     }
+    else
+        return false;
 }
 
 /**

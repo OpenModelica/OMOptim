@@ -417,7 +417,7 @@ ModModelPlus* Project::newModModelPlus(QString modelName)
     // Store it
     // create folder
     QDir allModPlusdir(modModelPlusFolder());
-    LowTools::mkdir(allModPlusdir.absolutePath(),true);
+    LowTools::mkdir(allModPlusdir.absolutePath(),false);
 
     // modModelPlus dir
     QDir modPlusdir(allModPlusdir.absolutePath()+QDir::separator()+modelName);
