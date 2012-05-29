@@ -128,7 +128,8 @@ void WidgetModelsList::removeModels()
     for(int i=0;i<itemsList.size();i++)
     {
         _problem->removeModel(itemsList.at(i)->text());
-        _ui->filesList->removeItemWidget(itemsList.at(i));
+        //_ui->filesList->removeItemWidget(itemsList.at(i));
+        delete itemsList.at(i);
     }
 }
 

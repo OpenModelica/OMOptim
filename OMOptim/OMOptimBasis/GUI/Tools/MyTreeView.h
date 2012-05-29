@@ -68,6 +68,8 @@ public slots :
 };
 
 
+
+
 class OMCasesTreeView : public QTreeView
 {
     Q_OBJECT

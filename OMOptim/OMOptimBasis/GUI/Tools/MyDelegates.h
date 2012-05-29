@@ -48,6 +48,7 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QLineEdit>
 #include <QtGui/QDoubleSpinBox>
+#include <QtGui/QProgressBar>
 #include <limits>
 
 #include "qsciencespinbox.h"
@@ -168,46 +169,6 @@ public :
     double _max;
     int _decimals;
 };
-
-/*class FuzzyStatusDelegate : public QStyledItemDelegate
-{
-Q_OBJECT
-
-public:
-FuzzyStatusDelegate(QObject *parent = 0);
-
-QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-const QModelIndex &index) const;
-
-void setEditorData(QWidget *editor, const QModelIndex &index) const;
-void setModelData(QWidget *editor, QAbstractItemModel *model,
-const QModelIndex &index) const;
-
-
-private slots:
-void emitCommitData();
-
-};
-
-class FuzzyPrecStatusDelegate : public QStyledItemDelegate
-{
-Q_OBJECT
-
-public:
-FuzzyPrecStatusDelegate(QObject *parent = 0);
-
-QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-const QModelIndex &index) const;
-
-void setEditorData(QWidget *editor, const QModelIndex &index) const;
-void setModelData(QWidget *editor, QAbstractItemModel *model,
-const QModelIndex &index) const;
-
-
-private slots:
-void commitAndCloseEditor();
-
-};*/
 
 
 

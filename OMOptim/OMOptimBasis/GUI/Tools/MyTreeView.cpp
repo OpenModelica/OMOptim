@@ -24,6 +24,8 @@ int MyTreeView::getColHintSize(int iCol)
     return this->sizeHintForColumn(iCol);
 }
 
+
+
 void MyTreeView::onDataChanged(const QModelIndex & indexA,const QModelIndex & indexB)
 {
 

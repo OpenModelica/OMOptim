@@ -47,6 +47,7 @@
 #include <QtCore/QTextStream>
 #include <QtXml/QDomDocument>
 #include <QtCore/QStringList>
+#include <QMimeData>
 
 #include "XMLTools.h"
 #include "InfoSender.h"
@@ -86,6 +87,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     virtual void addItem(ItemClass*);
+    virtual void insertItem(ItemClass*,int);
     bool removeRow(int index,const QModelIndex &parent = QModelIndex());
     void removeRow(QString);
     bool removeRows(int index, int count,const QModelIndex &parent = QModelIndex());
@@ -106,6 +108,14 @@ public:
     // save and load functions
     virtual QString toSavingString();
     virtual QDomElement toXmlData(QDomDocument & doc,QString listTitle);
+
+    // drag and drop functions
+    QStringList mimeTypes() const;
+    QMimeData* mimeData(const QModelIndexList &indexes) const;
+    Qt::DropActions supportedDropActions() const;
+    bool dropMimeData(const QMimeData *data,
+                      Qt::DropAction action, int row, int column, const QModelIndex &parent);
+
 
     //read and access functions
     int size() const;
@@ -173,7 +183,7 @@ MOVector<ItemClass>::MOVector(QDomElement & domList, bool owner)
 {
     _owner = owner;
     setItems(domList);
-    t(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
+    (this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
 
@@ -241,36 +251,6 @@ void MOVector<ItemClass>::setItems(QDomElement & domList)
     }
 }
 
-//template<class ItemClass>
-//void MOVector<ItemClass>::append(const MOVector &vector,bool makeACopy)
-//{
-//    //    int iCurItem;
-//    for(int i=0;i<vector.items.size();i++)
-//    {
-//        //        iCurItem = findItem(_vector.items.at(i)->name());
-//        //        if(iCurItem==-1)
-//        //        {
-//        if(makeACopy)
-//            addItem(new ItemClass(*vector.items.at(i)));
-//        else
-//            addItem(vector.items.at(i));
-//        //        }
-//        //        else
-//        //        {
-//        //            InfoSender::instance()->debug("replace item in vector (name : "+_vector.items.at(i)->name()+")");
-//        //            delete items.at(iCurItem);
-//        //            if(makeACopy)
-//        //                items.replace(iCurItem,new ItemClass(*_vector.items.at(i)));
-//        //            else
-//        //                items.replace(iCurItem,_vector.items.at(i));
-//        //        }
-//    }
-
-//    if(makeACopy && !_owner)
-//    {
-//        InfoSender::instance()->debug("In MOVector : memory leak !");
-//    }
-//}
 
 template<class ItemClass>
 int MOVector<ItemClass>::rowCount(const QModelIndex &parent ) const
@@ -329,13 +309,15 @@ QVariant MOVector<ItemClass>::data(const QModelIndex &index, int role) const
 template<class ItemClass>
 Qt::ItemFlags MOVector<ItemClass>::flags(const QModelIndex &index) const
 {
+    Qt::ItemFlags flags = Qt::ItemIsDropEnabled ;
+
     if(!index.isValid())
-        return 0;
+        return flags;
 
     if(items.at(index.row())->isEditableField(index.column()))
-        return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+        return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
     else
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
 template<class ItemClass>
@@ -352,6 +334,16 @@ void MOVector<ItemClass>::addItem(ItemClass* item_)
     insertRow(index);//,createIndex(0,0));
     beginInsertRows(QModelIndex(),index,index);
     items.push_back(item_);
+    endInsertRows();
+}
+
+template<class ItemClass>
+void MOVector<ItemClass>::insertItem(ItemClass* item,int index)
+{
+    // Add an item pointer in Vector
+    insertRow(index);//,createIndex(0,0));
+    beginInsertRows(QModelIndex(),index,index);
+    items.push_back(item);
     endInsertRows();
 }
 
@@ -659,5 +651,71 @@ ItemClass* MOVector<ItemClass>::at(int i) const
     return items.at(i);
 }
 
+template<class ItemClass>
+QStringList MOVector<ItemClass>::mimeTypes () const
+{
+    QStringList types;
+    types << "text/plain";
+    return types;
+}
 
+template<class ItemClass>
+QMimeData* MOVector<ItemClass>::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData *mimeData = new QMimeData();
+
+    // create xml data
+    QDomDocument doc;
+    QDomElement domContainer = doc.createElement("EIItems");
+    for(int i=0;i<indexes.size();i++)
+    {
+        ItemClass* item = (ItemClass*)indexes.at(i).internalPointer();
+        domContainer.appendChild(item->toXmlData(doc));
+    }
+    doc.appendChild(domContainer);
+    mimeData->setText("XML::"+doc.toString());
+
+    return mimeData;
+}
+
+template<class ItemClass>
+Qt::DropActions MOVector<ItemClass>::supportedDropActions() const{
+    return  Qt::MoveAction | Qt::CopyAction;
+}
+
+template<class ItemClass>
+bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
+                          Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    if (action == Qt::IgnoreAction)
+        return true;
+
+    if (!data->hasText())
+        return false;
+
+    QString text = data->text();
+
+    bool somethingDone = false;
+
+    if(text.indexOf("XML::")==0)
+    {
+        somethingDone = true;
+
+        // look for item
+        QString xmlContent = text.remove(QRegExp("^XML::"));
+        QDomDocument doc;
+        doc.setContent(xmlContent);
+
+        // create items from xml
+        QDomElement el = doc.toElement();
+        MOVector<ItemClass> dropedVector(el,false);
+
+        for(int i=0;i<dropedVector.size();i++)
+        {
+            insertItem(dropedVector.at(i),row);
+        }
+    }
+
+    return somethingDone;
+}
 #endif

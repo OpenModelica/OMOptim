@@ -59,10 +59,8 @@ ModModelPlus::ModModelPlus( Project* project,QString modModelName)
     _modModelName = modModelName;
     _variables = new Variables(true);
     _connections = new ModelicaConnections(_project->modItemsTree());
-    _modifiers = new MOVector<ModelicaModifier>(true);
 
     _variablesRead = false;
-    _modifiersRead = false;
     _connectionsRead = false;
 
     _name = modModelName;
@@ -78,7 +76,6 @@ ModModelPlus::ModModelPlus( Project* project,QString modModelName)
 ModModelPlus::~ModModelPlus()
 {
     delete _connections;
-    delete _modifiers;
     delete _variables;
 }
 
@@ -89,7 +86,6 @@ ModModelPlus::~ModModelPlus()
 void ModModelPlus::clear()
 {
     _variablesRead = false;
-    _modifiersRead = false;
     _connectionsRead = false;
 
     _name.clear();
@@ -97,7 +93,6 @@ void ModModelPlus::clear()
 
     //connections
     _connections->clear();
-    _modifiers->clear();
     _variables->clear();
 }
 

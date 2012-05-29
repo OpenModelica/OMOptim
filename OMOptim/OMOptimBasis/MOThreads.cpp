@@ -64,7 +64,6 @@ void ProblemThread::run()
     if(!ok)
     {
         InfoSender::instance()->send(Info(error,ListInfo::WARNING2));
-        //QMessageBox::warning(QApplication::activeWindow(), "Error",error,QMessageBox::Ok,QMessageBox::Ok);
         _result = NULL;
     }
     else

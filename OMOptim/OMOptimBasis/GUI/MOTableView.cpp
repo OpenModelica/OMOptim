@@ -39,7 +39,10 @@
 
   */
 #include "MOTableView.h"
-
+#include <QDrag>
+#include <QDragEnterEvent>
+#include "InfoSender.h"
+#include <QDebug>
 
 MOTableView::MOTableView(QWidget* parent):QTableView(parent)
 {
@@ -111,3 +114,56 @@ bool MOTableView::eventFilter( QObject *obj, QEvent *ev )
     }
     return false;
 }
+
+void MOTableView::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (children().contains(event->source())) {
+        InfoSender::instance()->debug("drag from same widget");
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+    } else {
+        event->acceptProposedAction();
+    }
+}
+
+void MOTableView::startDrag(Qt::DropActions supportedActions)
+{
+    qDebug() << "QAbstractItemView::startDrag; begin";
+    QModelIndexList indexes = selectedIndexes();
+    QList<QPersistentModelIndex> persistentIndexes;
+
+    if (indexes.count() > 0) {
+        QMimeData *data = model()->mimeData(indexes);
+        if (!data)
+            return;
+        for (int i = 0; i<indexes.count(); i++){
+            QModelIndex idx = indexes.at(i);
+            persistentIndexes.append(QPersistentModelIndex(idx));
+        }
+
+        QPixmap pixmap = indexes.first().data(Qt::DecorationRole).value<QPixmap>();
+        QDrag *drag = new QDrag(this);
+        drag->setPixmap(pixmap);
+        drag->setMimeData(data);
+        drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
+
+        Qt::DropAction defaultDropAction = Qt::IgnoreAction;
+        if (supportedActions & Qt::MoveAction && dragDropMode() != QAbstractItemView::InternalMove)
+            defaultDropAction = Qt::MoveAction; //was Qt::CopyAction THIS WAS THE CULPRIT!
+
+        if ( drag->exec(supportedActions, defaultDropAction) == Qt::MoveAction ){
+            //when we get here any copying done in dropMimeData has messed up our selected indexes
+            //that's why we use persistent indexes
+            for (int i = 0; i<indexes.count(); i++){
+                QPersistentModelIndex idx = persistentIndexes.at(i);
+                if (idx.isValid()){ //the item is not top level
+                    model()->removeRow(idx.row(), idx.parent());
+                }
+                else{
+                    model()->removeRow(idx.row(), QModelIndex());
+                }
+            }
+        }
+    }
+}
+

@@ -83,7 +83,6 @@ protected :
     Variables *_variables; /// List of model variables
     ModelicaConnections *_connections; /// List of connections between components in Modelica model
     QString _modModelName; /// ModModelName
-    MOVector<ModelicaModifier> *_modifiers; /// @deprecated Never been used. Maybe in the future...
     QFileInfoList _neededFiles; /// List of files needed in the simulation folder.
     QStringList _neededFolders; /// List of folders needed in the simulation folder.
     QFileInfoList _moDependencies; /// List of .mo files needed to be loaded before simulation
@@ -93,7 +92,6 @@ protected :
 
     // status booleans
     bool _variablesRead; /// indicates whether variables have been read or not
-    bool _modifiersRead; /// @deprecated Never been used. Maybe in the future... @sa _modifiers
     bool _connectionsRead;/// indicates whether variables have been read or not
 
     QString _mmoFilePath; /// File path of file where all informations are stored

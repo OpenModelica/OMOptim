@@ -415,7 +415,7 @@ void ProjectBase::addOMCase(QString filePath)
 
 void ProjectBase::addProblem(Problem *problem)
 {
-     HighTools::checkUniqueProblemName(this,problem,_problems);
+    HighTools::checkUniqueProblemName(this,problem,_problems);
     _problems->addCase(problem);
 
     //update GUI
@@ -438,8 +438,6 @@ void ProjectBase::addResult(Result *result)
 bool ProjectBase::checkConfiguration()
 {
     bool ok = true;
-
-
 
     return ok;
 }
@@ -494,11 +492,9 @@ void ProjectBase::onProjectChanged()
 
 void ProjectBase::onProblemStopAsked(Problem* problem)
 {
-    //    MOThreads::ProblemThread *thread = _problemsThreads.value(problem,NULL);
-
-    //    if(thread)
-    //        thread->onStopAsked();
     problem->stop();
+    _problemLaunchMutex.unlock();
+    _problemsThreads.remove(problem);
 }
 
 void ProjectBase::onProblemFinished(Problem* problem,Result* result)
@@ -640,8 +636,6 @@ bool ProjectBase::renameResult(Result* result,QString newName)
     save(result);
     return true;
 }
-
-
 
 QMap<QString,QString> ProjectBase::pluginsLoaded()
 {

@@ -62,6 +62,9 @@ public:
     virtual void setModel(QAbstractItemModel *model);
     bool eventFilter( QObject *obj, QEvent *ev );
 
+    void dragEnterEvent(QDragEnterEvent *event);
+    void startDrag(Qt::DropActions supportedActions);
+
     public slots:
         void adjustViewSize();
 };

@@ -124,7 +124,7 @@ QString MyEoGnuplot1DMonitor::plotArchiveCommand()
                 if(iPlot==0)
                     title = " t \'"+QFileInfo(_folder,archFiles.at(i)).completeSuffix()+"\' ";
                 else
-                    title = QString();
+                    title = "notitle";
 
                 cmd+= "\'"+archFiles.at(i)+"\'" + columns + title;
                 cmd+=",";
