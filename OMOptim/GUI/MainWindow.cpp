@@ -595,6 +595,10 @@ void MainWindow::quit()
             break;
         }
     }
+    // if the slot is activated by the File->Quit menuitem.
+    QAction *pActionQuit = qobject_cast<QAction*>(const_cast<QObject*>(sender()));
+    if (pActionQuit)
+      qApp->quit();
 }
 void MainWindow::onProjectAboutToBeReset()
 {
