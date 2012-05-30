@@ -98,6 +98,11 @@ private:
     QSortFilterProxyModel *_objectiveProxyModel;
     QSortFilterProxyModel *_scannedProxyModel;
 
+    MOTableView *_tableVariables;
+    MOTableView *_tableOptimizedVars;
+    MOTableView *_tableScannedVars;
+    MOTableView *_tableObjectives;
+
 
 
 

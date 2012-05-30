@@ -552,8 +552,10 @@ void ProjectBase::removeResult(Result* result)
         emit beforeRemoveResult(result);
 
         // remove folder and data
-        QString folder = QDir(result->saveFolder()).absolutePath();
-        LowTools::removeDir(folder);
+        QFileInfo folder = QFileInfo(result->saveFolder());
+        if(folder!=QFileInfo(resultsFolder()))
+            LowTools::removeDir(folder.absolutePath());
+
         _results->removeRow(num);
 
         save(false);
@@ -570,8 +572,10 @@ void ProjectBase::removeProblem(Problem* problem)
         emit beforeRemoveProblem(problem);
 
         // remove folder and data
-        QString folder = QFileInfo(problem->saveFolder()).absolutePath();
-        LowTools::removeDir(folder);
+        QFileInfo folder = QFileInfo(problem->saveFolder());
+        if(folder!=QFileInfo(problemsFolder()))
+            LowTools::removeDir(folder.absolutePath());
+
         _problems->removeRow(num);
 
         save(false);

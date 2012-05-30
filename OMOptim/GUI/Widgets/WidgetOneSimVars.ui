@@ -48,7 +48,7 @@
         <string>Simulate</string>
        </property>
        <property name="icon">
-        <iconset resource="../Resources/OMOptim.qrc">
+        <iconset resource="../../../GUI/Resources/CERESGui.qrc">
          <normaloff>:/Play</normaloff>:/Play</iconset>
        </property>
       </widget>
@@ -168,7 +168,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../Resources/OMOptim.qrc">
+      <iconset resource="../../../GUI/Resources/CERESGui.qrc">
        <normaloff>:/Add</normaloff>:/Add</iconset>
      </property>
     </widget>
@@ -185,7 +185,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../Resources/OMOptim.qrc">
+      <iconset resource="../../../GUI/Resources/CERESGui.qrc">
        <normaloff>:/Delete</normaloff>:/Delete</iconset>
      </property>
     </widget>
@@ -202,7 +202,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../Resources/OMOptim.qrc">
+      <iconset resource="../../../GUI/Resources/CERESGui.qrc">
        <normaloff>:/Add</normaloff>:/Add</iconset>
      </property>
     </widget>
@@ -219,7 +219,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../Resources/OMOptim.qrc">
+      <iconset resource="../../../GUI/Resources/CERESGui.qrc">
        <normaloff>:/Delete</normaloff>:/Delete</iconset>
      </property>
     </widget>
@@ -261,7 +261,7 @@
       <string>Update variables</string>
      </property>
      <property name="icon">
-      <iconset resource="../Resources/OMOptim.qrc">
+      <iconset resource="../../../GUI/Resources/CERESGui.qrc">
        <normaloff>:/Refresh</normaloff>:/Refresh</iconset>
      </property>
     </widget>
@@ -269,7 +269,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../Resources/OMOptim.qrc"/>
+  <include location="../../../GUI/Resources/CERESGui.qrc"/>
  </resources>
  <connections/>
 </ui>

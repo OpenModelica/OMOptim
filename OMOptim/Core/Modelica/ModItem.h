@@ -130,6 +130,7 @@ public:
     //*****************************
     //Children
     //*****************************
+    QList<ModItem*> children() const;
     bool addChild(ModItem*);
     void clearDescendants();
     virtual void clear();

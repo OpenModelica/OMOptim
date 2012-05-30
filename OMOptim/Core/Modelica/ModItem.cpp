@@ -368,6 +368,11 @@ int ModItem::depth()
         return curParent->depth()+1;
 }
 
+QList<ModItem *> ModItem::children() const
+{
+    return _children;
+}
+
 
 void ModItem::clear()
 {

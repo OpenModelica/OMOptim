@@ -59,6 +59,7 @@ public:
     MOTableView(QWidget *parent);
     ~MOTableView();
 
+    void setEditable(bool editable);
     virtual void setModel(QAbstractItemModel *model);
     bool eventFilter( QObject *obj, QEvent *ev );
 

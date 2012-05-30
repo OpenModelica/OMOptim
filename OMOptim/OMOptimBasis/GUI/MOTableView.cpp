@@ -52,12 +52,36 @@ MOTableView::MOTableView(QWidget* parent):QTableView(parent)
         horizontalHeader()->setResizeMode(QHeaderView::Interactive);
     verticalHeader()->hide();
     
-    //edit triggers
-    setEditTriggers(QAbstractItemView::AllEditTriggers);
+    //editable ?
+    setEditable(true);
+
 }
 
 MOTableView::~MOTableView()
 {
+}
+
+void MOTableView::setEditable(bool editable)
+{
+
+    // drag and drop
+    this->setDragEnabled(editable);
+    this->setAcceptDrops(editable);
+    this->setDropIndicatorShown(editable);
+    this->viewport()->setAcceptDrops(editable);
+
+    if(editable)
+    {
+        this->setDragDropMode(QAbstractItemView::DragDrop);
+        this->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
+
+    }
+    else
+    {
+        /// \todo find a way to avoid checking/unchecking
+        this->setDragDropMode(QAbstractItemView::NoDragDrop);
+        this->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    }
 }
 
 void MOTableView::adjustViewSize()
@@ -117,12 +141,14 @@ bool MOTableView::eventFilter( QObject *obj, QEvent *ev )
 
 void MOTableView::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (children().contains(event->source())) {
+    if (children().contains(event->source())|| (event->source()==this)) {
         InfoSender::instance()->debug("drag from same widget");
         event->setDropAction(Qt::MoveAction);
         event->accept();
     } else {
-        event->acceptProposedAction();
+        InfoSender::instance()->debug("drag to another widget");
+        event->setDropAction(Qt::CopyAction);
+        event->accept();
     }
 }
 

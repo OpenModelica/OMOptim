@@ -746,11 +746,13 @@ bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
         return false;
     else
     {
+        // create and add controlers
         _models.push_back(modelName);
         if(ctrls==NULL)
             _ctrls.insert(modelName,new ModPlusCtrls(_omProject,_omProject->modModelPlus(modelName)));
         else
             _ctrls.insert(modelName,ctrls);
+
 
         emit addedModel(modelName);
         return true;

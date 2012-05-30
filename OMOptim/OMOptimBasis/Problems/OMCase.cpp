@@ -199,35 +199,38 @@ void OMCase::store(QString destFolder, QString tempDir)
 */
 void OMCase::rename(QString newName, bool changeFolder)
 {
-    QString oldName = _name;
-    setName(newName);
-
-    if(changeFolder)
+    if(newName != _name)
     {
-        QString oldSaveFolder = saveFolder();
-        QString newSaveFolder = oldSaveFolder;
-        newSaveFolder.replace(oldName,newName);
+        QString oldName = _name;
+        setName(newName);
 
-        QString oldSaveFileName = saveFileName();
-        QString newSaveFileName = oldSaveFileName;
-        newSaveFileName.replace(oldName,newName);
-
-        QDir newDir(newSaveFolder);
-        if(newDir.exists())
+        if(changeFolder)
         {
-            newDir.cd("..");
-            newDir.rmdir(newSaveFolder);
-            newDir.setCurrent(newSaveFolder);
+            QString oldSaveFolder = saveFolder();
+            QString newSaveFolder = oldSaveFolder;
+            newSaveFolder.replace(oldName,newName);
+
+            QString oldSaveFileName = saveFileName();
+            QString newSaveFileName = oldSaveFileName;
+            newSaveFileName.replace(oldName,newName);
+
+            QDir newDir(newSaveFolder);
+            if(newDir.exists())
+            {
+                newDir.cd("..");
+                newDir.rmdir(newSaveFolder);
+                newDir.setCurrent(newSaveFolder);
+            }
+
+            LowTools::copyDir(oldSaveFolder,newSaveFolder);
+            if(oldSaveFolder!=newSaveFolder)
+                LowTools::removeDir(oldSaveFolder);
+
+            newDir.rename(oldSaveFileName,newSaveFileName);
+
+            setSaveFolder(newSaveFolder);
+            _saveFileName = newSaveFileName;
         }
-
-        LowTools::copyDir(oldSaveFolder,newSaveFolder);
-        if(oldSaveFolder!=newSaveFolder)
-            LowTools::removeDir(oldSaveFolder);
-
-        newDir.rename(oldSaveFileName,newSaveFileName);
-
-        setSaveFolder(newSaveFolder);
-        _saveFileName = newSaveFileName;
     }
 }
 

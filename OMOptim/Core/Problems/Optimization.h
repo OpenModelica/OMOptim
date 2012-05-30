@@ -108,6 +108,7 @@ public:
     virtual bool addModels(QStringList models);
     virtual bool removeModel(QString model);
 
+
     //overwrited functions (also virtual since other problems might inherit Optimization)
     virtual bool checkBeforeComp(QString & error);
     virtual Result* launch(ProblemConfig config);

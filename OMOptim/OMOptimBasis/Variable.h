@@ -242,6 +242,7 @@ public:
     OptVariable(const OptVariable &);
     OptVariable(QDomElement &);
     OptVariable* clone() const;
+    OptVariable & operator=(const OptVariable &);
     virtual QString getClassName(){return "OptVariable";};
 
 

@@ -684,7 +684,6 @@ OptVariable* OptVariable::clone() const
     return new OptVariable(*this);
 }
 
-
 void OptVariable::initOptExtremum()
 {
     // should take half of maximum/minimum values since

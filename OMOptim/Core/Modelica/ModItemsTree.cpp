@@ -137,7 +137,7 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
             bool readPackages = (parent->getClassRestr()==Modelica::PACKAGE) || (parent->getClassRestr()==Modelica::GENERIC);
             bool readModels = (parent->getClassRestr()==Modelica::PACKAGE) || (parent->getClassRestr()==Modelica::GENERIC);
             bool readComponents = (parent->getClassRestr()==Modelica::MODEL) || (parent->getClassRestr()==Modelica::GENERIC) || (parent->getClassRestr()==Modelica::COMPONENT);
-            bool readRecords = (parent->getClassRestr()==Modelica::PACKAGE) || (parent->getClassRestr()==Modelica::GENERIC)|| (parent->getClassRestr()==Modelica::COMPONENT);
+            bool readRecords = (parent->getClassRestr()==Modelica::PACKAGE) || (parent->getClassRestr()==Modelica::MODEL) ||(parent->getClassRestr()==Modelica::GENERIC)|| (parent->getClassRestr()==Modelica::COMPONENT);
             bool readClasses = readModels;
 
             QString fullParentName = parent->name(ModItem::FULL);
@@ -646,29 +646,18 @@ const
         parentComponent = static_cast<ModItem*>(parent.internalPointer());
 
     // looking in children
-    int nbPacks = parentComponent->packageChildCount();
-    int nbModels = parentComponent->modelChildCount();
-    int nbComps = parentComponent->compChildCount();
-
-    if(row<0 || row>= nbPacks+nbModels+nbComps)
+    if(row>parentComponent->childCount())
         return QModelIndex();
 
+    ModItem *childElement = parentComponent->child(row);
 
-    ModItem *childElement = NULL;
-    // start by packages
-    if(row<nbPacks)
-        childElement = parentComponent->packageChild(row);
-    // then models
-    else if (row<nbPacks+nbModels)
-        childElement = parentComponent->modelChild(row - nbPacks);
-    // then components
-    else if ((row < nbPacks+nbModels+nbComps)&&_showComponents)
-        childElement = parentComponent->compChild(row - nbPacks - nbModels);
+    if (!childElement)
+        return QModelIndex();
 
-    if (childElement)
-        return createIndex(row, column, childElement);
+    if(!_showComponents&&(childElement->getClassRestr()==Modelica::COMPONENT))
+        return QModelIndex();
     else
-        return QModelIndex();
+        return createIndex(row, column, childElement);
 }
 
 QModelIndex ModItemsTree::indexOf(ModItem* item,int column)
@@ -700,39 +689,9 @@ QModelIndex ModItemsTree::parent(const QModelIndex &index) const
     ModItem *grandParentElement = NULL;
     grandParentElement = parentElement->parent();
 
-    //looking for row number of child in parent
-    int nbPacks = grandParentElement->packageChildCount();
-    int nbModels = grandParentElement->modelChildCount();
-    int nbComps = grandParentElement->compChildCount();
+    int iC = grandParentElement->children().indexOf(parentElement);
 
-    int iC=0;
-    bool found = false;
-    //start by packages
-    while(!found && iC<nbPacks)
-    {
-        found = (grandParentElement->packageChild(iC)==parentElement);
-        if(!found)
-            iC++;
-    }
-
-    //then Models
-    while(!found && iC<nbPacks+nbModels)
-    {
-        found = (grandParentElement->modelChild(iC-nbPacks)==parentElement);
-        if(!found)
-            iC++;
-    }
-
-    // then components
-    while(!found && iC<nbPacks + nbModels + nbComps)
-    {
-        found = (grandParentElement->compChild(iC - nbPacks - nbModels)==parentElement);
-        if(!found)
-            iC++;
-    }
-
-
-    if(!found)
+    if(iC==-1)
     {
         // ERROR
         return QModelIndex();

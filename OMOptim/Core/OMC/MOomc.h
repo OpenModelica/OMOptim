@@ -97,7 +97,7 @@ public :
     QStringList getElementInfos(QString parentClass);
 
     QStringList getParameterNames(QString parentClass, bool includeInherited=false);
-    QStringList getInheritedClasses(QString parentClass);
+    QStringList getInheritedClasses(QString inheritingClass);
     QStringList getComponentModifierNames(QString componentName);
     QString getFlattenedModifierValue(const QString & modelName,const QString & shortComponentName,const QString & modifierName,const QString & flattenedModel);
     QString getFlattenedModel(const QString & modelName);
@@ -106,6 +106,7 @@ public :
     bool setComponentModifiers(QString compName,QString model, QStringList modNames,QStringList modValues);
 
     QString getAnnotation(QString compName,QString compClass,QString model);
+    QString getComment(QString modelName,QString compName);
 
     int getConnectionNumber(QString className);
     QMap<QString,QString> getConnections(const QString &curComp);

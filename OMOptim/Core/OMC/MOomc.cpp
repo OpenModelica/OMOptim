@@ -160,7 +160,6 @@ QStringList MOomc::getPackages(QString parentClass)
 }
 QStringList MOomc::getRecords(QString parentClass)
 {
-
     QStringList allClasses = getClassNames(parentClass);
     QStringList models;
 
@@ -271,6 +270,7 @@ QStringList MOomc::getParameterNames(QString parentClass,bool includeInherited)
 
     commandRes.remove("}");
     commandRes.remove("{");
+    commandRes.remove(" ");
     parameterNames = commandRes.split(",");
 
     if(includeInherited)
@@ -312,10 +312,10 @@ QMap<QString,QString> MOomc::getConnections(const QString & curModel)
     return result;
 }
 
-QStringList MOomc::getInheritedClasses(QString parentClass)
+QStringList MOomc::getInheritedClasses(QString inheritingClass)
 {
     // Getting number and names of inherited classes
-    QString commandText = "getInheritanceCount(" + parentClass +")";
+    QString commandText = "getInheritanceCount(" + inheritingClass +")";
     QString commandRes= evalCommand(commandText);
 
     int nbInheritance = 0;
@@ -327,7 +327,7 @@ QStringList MOomc::getInheritedClasses(QString parentClass)
 
         for(int i=0;i<nbInheritance;i++)
         {
-            commandText = "getNthInheritedClass(" + parentClass +","+QString::number(i+1)+")";
+            commandText = "getNthInheritedClass(" + inheritingClass +","+QString::number(i+1)+")";
             commandRes= evalCommand(commandText);
             inheritedClasses << commandRes;
         }
@@ -610,6 +610,26 @@ QString MOomc::getAnnotation(QString compName,QString compClass,QString model)
     //        }
     //    }
     return annot;
+}
+
+QString MOomc::getComment(QString modelName, QString compName)
+{
+    QString commandRes= evalCommand("getComponents(" + modelName +")");
+
+    if(commandRes.indexOf("error",Qt::CaseInsensitive)==0)
+        return QString();
+
+  //  {{Modelica.SIunits.Temp_K,TorcH,"ORC hot temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}},{Modelica.SIunits.Temp_K,TorcC,"ORC cold temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}}}
+
+    QRegExp rexp(".*"+compName+","+"\"\\(.*\\)\"(\\.*)");
+    rexp.setMinimal(true);
+    if(commandRes.contains(rexp)&&rexp.capturedTexts().size()>1)
+    {
+        QStringList captured = rexp.capturedTexts();
+        return captured.at(1);
+    }
+    else
+        return QString();
 }
 
 int MOomc::getConnectionNumber(QString className)

@@ -240,7 +240,6 @@ void MOVector<ItemClass>::setItems(QDomElement & domList)
     while( !n.isNull() )
     {
         QDomElement domItem = n.toElement();
-        QDomAttr domAttr;
         ItemClass* newItem;
         if( !domItem.isNull() )
         {
@@ -341,9 +340,10 @@ template<class ItemClass>
 void MOVector<ItemClass>::insertItem(ItemClass* item,int index)
 {
     // Add an item pointer in Vector
+    qDebug(QString("Insert item at range :" + QString::number(index)).toLatin1().data());
     insertRow(index);//,createIndex(0,0));
     beginInsertRows(QModelIndex(),index,index);
-    items.push_back(item);
+    items.insert(index,item);
     endInsertRows();
 }
 
@@ -666,13 +666,15 @@ QMimeData* MOVector<ItemClass>::mimeData(const QModelIndexList &indexes) const
 
     // create xml data
     QDomDocument doc;
-    QDomElement domContainer = doc.createElement("EIItems");
+    MOVector<ItemClass> dragVector(false);
     for(int i=0;i<indexes.size();i++)
     {
         ItemClass* item = (ItemClass*)indexes.at(i).internalPointer();
-        domContainer.appendChild(item->toXmlData(doc));
+        if(!dragVector.contains(item))
+            dragVector.addItem(item);
     }
-    doc.appendChild(domContainer);
+
+    doc.appendChild(dragVector.toXmlData(doc,"list"));
     mimeData->setText("XML::"+doc.toString());
 
     return mimeData;
@@ -703,17 +705,18 @@ bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
 
         // look for item
         QString xmlContent = text.remove(QRegExp("^XML::"));
+        qDebug(QString("Drop :"+xmlContent).toLatin1().data());
         QDomDocument doc;
         doc.setContent(xmlContent);
 
         // create items from xml
-        QDomElement el = doc.toElement();
+        QDomElement el = doc.firstChildElement("list");
         MOVector<ItemClass> dropedVector(el,false);
-
         for(int i=0;i<dropedVector.size();i++)
         {
             insertItem(dropedVector.at(i),row);
         }
+
     }
 
     return somethingDone;

@@ -129,7 +129,6 @@ void WidgetModelsList::removeModels()
     {
         _problem->removeModel(itemsList.at(i)->text());
         //_ui->filesList->removeItemWidget(itemsList.at(i));
-        delete itemsList.at(i);
     }
 }
 
