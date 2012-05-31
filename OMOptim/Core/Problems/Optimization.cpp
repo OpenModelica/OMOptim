@@ -54,6 +54,7 @@ Optimization::Optimization(Project* project,QStringList models)
 
     _name="Optimization";
     _optimizedVariables = new OptVariables(true);
+    _overwritedVariables = new Variables(true);
     _scannedVariables = new ScannedVariables(true);
     _objectives = new OptObjectives(true);
     _blockSubstitutions = new BlockSubstitutions();
@@ -77,6 +78,7 @@ Optimization::Optimization(const Optimization &optim)
     _omProject = optim._omProject;
     _optimizedVariables = optim._optimizedVariables->clone();
     _scannedVariables = optim._scannedVariables->clone();
+    _overwritedVariables = optim._overwritedVariables->clone();
     _objectives = optim._objectives->clone();
     _blockSubstitutions = optim._blockSubstitutions->clone();
 
@@ -127,7 +129,7 @@ Optimization::~Optimization()
   * @param ok : is set to true if evaluation is successful, to false otherwise.
   */
 
-MOOptVector *Optimization::evaluate(QList<ModModelPlus*> models, Variables *overwritedVariables, ScannedVariables *scannedVariables, bool &ok)
+MOOptVector *Optimization::evaluate(QList<ModModelPlus*> models, Variables *optimVariables, ScannedVariables *scannedVariables, bool &ok)
 {
     ok = true;
     bool useScan = (scannedVariables->size()>0);
@@ -147,13 +149,23 @@ MOOptVector *Optimization::evaluate(QList<ModModelPlus*> models, Variables *over
             oneSim->setCtrls(*this->ctrls(modelName));
 
 
-            int nbVar = overwritedVariables->size();
+            int nbVar = optimVariables->size();
             Variable* curVar;
 
-            // copying relevant overwriting variables
+            // set optim variables in one simulation
             for(int i=0;i<nbVar;i++)
             {
-                curVar = overwritedVariables->at(i);
+                curVar = optimVariables->at(i);
+                if(curVar->model()==modelName)
+                {
+                    oneSim->overwritedVariables()->addItem(curVar->clone());
+                }
+            }
+
+            // add overwrited variables of optimization in simulation
+            for(int i=0;i<overwritedVariables()->size();i++)
+            {
+                curVar = overwritedVariables()->at(i);
                 if(curVar->model()==modelName)
                 {
                     oneSim->overwritedVariables()->addItem(curVar->clone());
@@ -243,9 +255,8 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     //initialize default(otherwise seg fault in destructor)
     _optimizedVariables = new OptVariables(true);
     _scannedVariables = new ScannedVariables(true);
+    _overwritedVariables = new Variables(true);
     _objectives = new OptObjectives(true);
-
-
 
     // Optimized Variables
     QDomElement domOptVars = domProblem.firstChildElement("OptimizedVariables");
@@ -258,6 +269,10 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     // Scanned Variables
     QDomElement domScann = domProblem.firstChildElement("ScannedVariables");
     this->scannedVariables()->setItems(domScann);
+
+    // Overvars Variables
+    QDomElement domOverVars = domProblem.firstChildElement("OverwritedVariables");
+    this->overwritedVariables()->setItems(domOverVars);
 
     // Files to copy
     QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
@@ -488,6 +503,10 @@ void Optimization::recomputePoints(OptimResult* result, QList<int> iPoints,bool 
 
                 // Add scannedVariables
                 oneSim->scannedVariables()->cloneFromOtherVector(this->scannedVariables());
+
+                // Add overwrited variables
+                for(int iV=0;iV<overwritedVariables()->size();iV++)
+                    oneSim->overwritedVariables()->addItem(overwritedVariables()->at(iV)->clone());
 
                 //****************************************************
                 // Launch simulation
@@ -824,6 +843,11 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     // ScannedVariables
     QDomElement cScanned = _scannedVariables->toXmlData(doc,"ScannedVariables");
     cProblem.appendChild(cScanned);
+
+    // Overwrited variables
+    QDomElement cOverVars = _overwritedVariables->toXmlData(doc,"OverwritedVariables");
+    cProblem.appendChild(cOverVars);
+
 
     //BlockSubstitutions
     QDomElement cBlocks = _blockSubstitutions->toXmlData(doc);

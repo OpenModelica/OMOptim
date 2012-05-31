@@ -142,10 +142,14 @@ public :
         for(int i=0;i<strList.size();i++)
         {
             DimValue newT(strList.at(i).toDouble(&tmpOk),iUnit);
-            ok = ok && tmpOk;
+            // if field was empty, stream not in concerned period
+            if(!tmpOk)
+            {
+                newT.invalidate();
+            }
             result.push_back(newT);
         }
-
+        ok = true;
         return result;
     }
 

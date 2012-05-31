@@ -58,6 +58,7 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QSortFilterProxyModel>
+#include <QGroupBox>
 
 class ProjectBase;
 class Result;
@@ -119,6 +120,33 @@ protected:
 
 signals :
     void deletePressed();
+};
+
+class MyGroupBox : public QGroupBox
+{
+    Q_OBJECT
+public :
+    MyGroupBox(QWidget* parent=0)
+        :QGroupBox(parent)
+    {
+
+    }
+
+    MyGroupBox(const QString &title, QWidget* parent=0)
+        :QGroupBox(title,parent)
+    {
+
+    }
+
+public Q_SLOTS :
+
+    void setChecked( bool checked )
+    {
+        QList<QWidget *> ch = findChildren<QWidget *>();
+        for( int i = 0; i < ch.count(); i++ ) ch[i]->setVisible( checked );
+        QGroupBox::setChecked( checked );
+        setFlat( ! checked );
+    }
 };
 
 #endif

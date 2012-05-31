@@ -71,7 +71,8 @@ public:
     Ui::WidgetSelectOptVarsClass *_ui;
 
     void addPermanentVars(Variables*);
-
+    void setShownColumns();
+    void setDelegates();
 
 public slots :
     void actualizeGui();
@@ -81,6 +82,8 @@ public slots :
     void deleteOptObjectives();
     void addScannedVariables();
     void deleteScannedVariables();
+    void addOverVariables();
+    void deleteOverVariables();
     void readVariables();
     void refreshAllModelsVars();
 
@@ -97,10 +100,12 @@ private:
     QSortFilterProxyModel *_optVariableProxyModel;
     QSortFilterProxyModel *_objectiveProxyModel;
     QSortFilterProxyModel *_scannedProxyModel;
+    QSortFilterProxyModel *_overVarsProxyModel;
 
     MOTableView *_tableVariables;
     MOTableView *_tableOptimizedVars;
     MOTableView *_tableScannedVars;
+    MOTableView *_tableOverVars;
     MOTableView *_tableObjectives;
 
 

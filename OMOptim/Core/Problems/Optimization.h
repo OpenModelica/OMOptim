@@ -70,6 +70,7 @@ protected :
     QMap<QString,ModPlusCtrls*> _ctrls;
 
 
+    Variables *_overwritedVariables;
     ScannedVariables *_scannedVariables;
     OptVariables *_optimizedVariables;
     OptObjectives *_objectives;
@@ -94,6 +95,7 @@ public:
     virtual bool hasQuickEndOption(){return true;}
 
     //Get functions
+    Variables* overwritedVariables()const{return _overwritedVariables;}
     ScannedVariables* scannedVariables()const{return _scannedVariables;}
     OptVariables *optimizedVariables()const{return _optimizedVariables;}
     OptObjectives *objectives()const{return _objectives;}

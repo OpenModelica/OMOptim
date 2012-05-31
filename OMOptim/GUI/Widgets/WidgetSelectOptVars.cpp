@@ -65,25 +65,25 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     // create permanent vars vector
     _permanentVars = new Variables(true);
 
-
-    refreshAllModelsVars();
-
-
     // create tables
     _tableVariables = new MOTableView(this);
     _tableScannedVars = new MOTableView(this);
     _tableOptimizedVars = new MOTableView(this);
     _tableObjectives = new MOTableView(this);
+    _tableOverVars = new MOTableView(this);
 
     _tableVariables->setSelectionBehavior(QAbstractItemView::SelectRows);
+    _tableVariables->setSelectionMode(QAbstractItemView::ExtendedSelection);
     _tableScannedVars->setSelectionBehavior(QAbstractItemView::SelectRows);
     _tableOptimizedVars->setSelectionBehavior(QAbstractItemView::SelectRows);
     _tableObjectives->setSelectionBehavior(QAbstractItemView::SelectRows);
+    _tableOverVars->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     _ui->layoutObjectives->addWidget(_tableObjectives);
     _ui->layoutScannedVars->addWidget(_tableScannedVars);
     _ui->layoutOptimizedVars->addWidget(_tableOptimizedVars);
     _ui->layoutTableVariables->addWidget(_tableVariables);
+    _ui->layoutOvervars->addWidget(_tableOverVars);
 
     // tables' model
     _optVariableProxyModel = GuiTools::ModelToViewWithFilter(_problem->optimizedVariables(),
@@ -98,81 +98,14 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     _objectiveProxyModel = GuiTools::ModelToViewWithFilter(_problem->objectives(),
                                                            _tableObjectives,NULL);
 
-
-    // Hide columns
-    QList<int> varsColsToHide;
-    //varsColsToHide;
-    for(int i=0;i<varsColsToHide.size();i++)
-        _tableVariables->setColumnHidden(varsColsToHide.at(i),true);
-
-//    QList<int> optColsToHide;
-//    optColsToHide << OptVariable::DESCRIPTION;
-//    for(int i=0;i<optColsToHide.size();i++)
-//        _tableOptimizedVars->setColumnHidden(optColsToHide.at(i),true);
-
-    QList<int> scannedColsToHide;
-    scannedColsToHide << ScannedVariable::DESCRIPTION;
-    for(int i=0;i<scannedColsToHide.size();i++)
-        _tableScannedVars->setColumnHidden(scannedColsToHide.at(i),true);
-
-    QList<int> objColsToHide;
-    objColsToHide << OptObjective::DESCRIPTION;
-    for(int i=0;i<objColsToHide.size();i++)
-        _tableObjectives->setColumnHidden(objColsToHide.at(i),true);
-
-    //tables' delegates
-    QList<int> values;
-    QStringList titles;
-    values << OptObjective::MINIMIZE    << OptObjective::MAXIMIZE;
-    titles << "Minimize"                << "Maximize";
-    GenericDelegate *directionDelegate = new GenericDelegate(values,titles,this);
-    _tableObjectives->setItemDelegateForColumn(OptObjective::DIRECTION,directionDelegate);
-
-    values.clear();
-    titles.clear();
-    values << OptObjective::NONE
-           << OptObjective::SUM
-           << OptObjective::AVERAGE
-           << OptObjective::DEVIATION
-           << OptObjective::MINIMUM
-           << OptObjective::MAXIMUM ;
-
-    titles << "None"
-           << "Sum"
-           << "Average"
-           << "Standard deviation"
-           << "Minimum"
-           << "Maximum";
-
-    GenericDelegate *scanFunctionDelegate = new GenericDelegate(values,titles,this);
-    _tableObjectives->setItemDelegateForColumn(OptObjective::SCANFUNCTION,scanFunctionDelegate);
-
-    values.clear();
-    titles.clear();
-    values << OMREAL << OMINTEGER << OMBOOLEAN << OMSTRING ;
-    titles << "Real" << "Integer" << "Boolean" << "String";
-    GenericDelegate *dataTypeDelegate = new GenericDelegate(values,titles,this);
-    _tableOptimizedVars->setItemDelegateForColumn(OptVariable::DATATYPE,dataTypeDelegate);
+    _overVarsProxyModel = GuiTools::ModelToViewWithFilter(_problem->overwritedVariables(),
+                                                          _tableOverVars,NULL);
 
 
-    DoubleSpinBoxDelegate* minDelegate = new DoubleSpinBoxDelegate(this,30);
-    DoubleSpinBoxDelegate* maxDelegate = new DoubleSpinBoxDelegate(this,30);
-    _tableOptimizedVars->setItemDelegateForColumn(OptVariable::OPTMIN,minDelegate);
-    _tableOptimizedVars->setItemDelegateForColumn(OptVariable::OPTMAX,maxDelegate);
 
-    DoubleSpinBoxDelegate* minObjDelegate = new DoubleSpinBoxDelegate(this,30);
-    DoubleSpinBoxDelegate* maxObjDelegate = new DoubleSpinBoxDelegate(this,30);
-    _tableObjectives->setItemDelegateForColumn(OptObjective::MIN,minObjDelegate);
-    _tableObjectives->setItemDelegateForColumn(OptObjective::MAX,maxObjDelegate);
-
-    DoubleSpinBoxDelegate* minScanDelegate = new DoubleSpinBoxDelegate(this,30);
-    DoubleSpinBoxDelegate* maxScanDelegate = new DoubleSpinBoxDelegate(this,30);
-    DoubleSpinBoxDelegate* valueScanDelegate = new DoubleSpinBoxDelegate(this,30);
-    DoubleSpinBoxDelegate* stepScanDelegate = new DoubleSpinBoxDelegate(this,30);
-    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::SCANMIN,minScanDelegate);
-    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::SCANMAX,maxScanDelegate);
-    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::VALUE,valueScanDelegate);
-    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::SCANSTEP,stepScanDelegate);
+    setShownColumns();
+    setDelegates();
+    refreshAllModelsVars();
 
     //buttons
     connect(_ui->pushAddVariables, SIGNAL(clicked()), this, SLOT(addOptVariables()));
@@ -181,6 +114,9 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     connect(_ui->pushRemoveObjectives, SIGNAL(clicked()), this, SLOT(deleteOptObjectives()));
     connect(_ui->pushAddScanned, SIGNAL(clicked()), this, SLOT(addScannedVariables()));
     connect(_ui->pushRemoveScanned, SIGNAL(clicked()), this, SLOT(deleteScannedVariables()));
+    connect(_ui->pushAddParam, SIGNAL(clicked()), this, SLOT(addOverVariables()));
+    connect(_ui->pushRemoveParam, SIGNAL(clicked()), this, SLOT(deleteOverVariables()));
+
     connect(_ui->pushReadVariables,SIGNAL(clicked()),this,SLOT(readVariables()));
 
 
@@ -287,6 +223,47 @@ void WidgetSelectOptVars::deleteScannedVariables()
     _problem->scannedVariables()->removeRows(rows);
 
     _tableScannedVars->resizeColumnsToContents();
+}
+
+void WidgetSelectOptVars::addOverVariables()
+{
+    QModelIndexList proxyIndexes = _tableVariables->selectionModel()->selectedRows();
+    QModelIndex curProxyIndex;
+    QModelIndex curSourceIndex;
+    Variable* selVar;
+    Variable* varProv;
+    // Adding selected variables in overwritedVariables
+    bool alreadyIn;
+
+    foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
+    {
+        curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+        selVar=_allModelsVars->at(curSourceIndex.row());
+        alreadyIn = _problem->overwritedVariables()->alreadyIn(selVar->name());
+        if (!alreadyIn)
+        {
+            varProv = new Variable(*selVar);
+            _problem->overwritedVariables()->addItem(varProv);
+        }
+    }
+
+    _tableOverVars->resizeColumnsToContents();
+}
+
+void WidgetSelectOptVars::deleteOverVariables()
+{
+    QModelIndexList indexList = _tableOverVars->selectionModel()->selectedRows();
+    QModelIndex curSourceIndex;
+
+    QList<int> rows;
+    for(int i=0;i<indexList.size();i++)
+    {
+        curSourceIndex = _overVarsProxyModel->mapToSource(indexList.at(i));
+        rows.push_back(curSourceIndex.row());
+    }
+    _problem->overwritedVariables()->removeRows(rows);
+
+    _tableOverVars->resizeColumnsToContents();
 }
 
 
@@ -424,4 +401,90 @@ void WidgetSelectOptVars::refreshAllModelsVars()
 
     _allModelsVars->addItems(_permanentVars,true);
 
+}
+
+
+void WidgetSelectOptVars::setShownColumns()
+{
+    // Hide columns
+    QList<int> varsColsToShow;
+    //varsColsToHide;
+    varsColsToShow << Variable::NAME << Variable::DESCRIPTION;
+
+
+    for(int i=0;i<_tableVariables->horizontalHeader()->count();i++)
+        _tableVariables->setColumnHidden(i,!varsColsToShow.contains(i));
+
+//    QList<int> optColsToHide;
+//    optColsToHide << OptVariable::DESCRIPTION;
+//    for(int i=0;i<optColsToHide.size();i++)
+//        _tableOptimizedVars->setColumnHidden(optColsToHide.at(i),true);
+
+//    QList<int> scannedColsToHide;
+//    scannedColsToHide << ScannedVariable::DESCRIPTION;
+//    for(int i=0;i<scannedColsToHide.size();i++)
+//        _tableScannedVars->setColumnHidden(scannedColsToHide.at(i),true);
+
+//    QList<int> objColsToHide;
+//    objColsToHide << OptObjective::DESCRIPTION;
+//    for(int i=0;i<objColsToHide.size();i++)
+//        _tableObjectives->setColumnHidden(objColsToHide.at(i),true);
+
+}
+
+void WidgetSelectOptVars::setDelegates()
+{
+    //tables' delegates
+    QList<int> values;
+    QStringList titles;
+    values << OptObjective::MINIMIZE    << OptObjective::MAXIMIZE;
+    titles << "Minimize"                << "Maximize";
+    GenericDelegate *directionDelegate = new GenericDelegate(values,titles,this);
+    _tableObjectives->setItemDelegateForColumn(OptObjective::DIRECTION,directionDelegate);
+
+    values.clear();
+    titles.clear();
+    values << OptObjective::NONE
+           << OptObjective::SUM
+           << OptObjective::AVERAGE
+           << OptObjective::DEVIATION
+           << OptObjective::MINIMUM
+           << OptObjective::MAXIMUM ;
+
+    titles << "None"
+           << "Sum"
+           << "Average"
+           << "Standard deviation"
+           << "Minimum"
+           << "Maximum";
+
+    GenericDelegate *scanFunctionDelegate = new GenericDelegate(values,titles,this);
+    _tableObjectives->setItemDelegateForColumn(OptObjective::SCANFUNCTION,scanFunctionDelegate);
+
+    values.clear();
+    titles.clear();
+    values << OMREAL << OMINTEGER << OMBOOLEAN << OMSTRING ;
+    titles << "Real" << "Integer" << "Boolean" << "String";
+    GenericDelegate *dataTypeDelegate = new GenericDelegate(values,titles,this);
+    _tableOptimizedVars->setItemDelegateForColumn(OptVariable::DATATYPE,dataTypeDelegate);
+
+
+    DoubleSpinBoxDelegate* minDelegate = new DoubleSpinBoxDelegate(this,30);
+    DoubleSpinBoxDelegate* maxDelegate = new DoubleSpinBoxDelegate(this,30);
+    _tableOptimizedVars->setItemDelegateForColumn(OptVariable::OPTMIN,minDelegate);
+    _tableOptimizedVars->setItemDelegateForColumn(OptVariable::OPTMAX,maxDelegate);
+
+    DoubleSpinBoxDelegate* minObjDelegate = new DoubleSpinBoxDelegate(this,30);
+    DoubleSpinBoxDelegate* maxObjDelegate = new DoubleSpinBoxDelegate(this,30);
+    _tableObjectives->setItemDelegateForColumn(OptObjective::MIN,minObjDelegate);
+    _tableObjectives->setItemDelegateForColumn(OptObjective::MAX,maxObjDelegate);
+
+    DoubleSpinBoxDelegate* minScanDelegate = new DoubleSpinBoxDelegate(this,30);
+    DoubleSpinBoxDelegate* maxScanDelegate = new DoubleSpinBoxDelegate(this,30);
+    DoubleSpinBoxDelegate* valueScanDelegate = new DoubleSpinBoxDelegate(this,30);
+    DoubleSpinBoxDelegate* stepScanDelegate = new DoubleSpinBoxDelegate(this,30);
+    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::SCANMIN,minScanDelegate);
+    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::SCANMAX,maxScanDelegate);
+    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::VALUE,valueScanDelegate);
+    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::SCANSTEP,stepScanDelegate);
 }
