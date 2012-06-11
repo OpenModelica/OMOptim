@@ -356,7 +356,8 @@ QString ProjectBase::tempPath()
 
 QString ProjectBase::problemsFolder()
 {
-
+    qDebug(folder().absolutePath().toLatin1().data());
+    qDebug(folder().absoluteFilePath("Problems").toLatin1().data());
     return folder().absoluteFilePath("Problems");
 }
 
@@ -552,8 +553,8 @@ void ProjectBase::removeResult(Result* result)
         emit beforeRemoveResult(result);
 
         // remove folder and data
-        QFileInfo folder = QFileInfo(result->saveFolder());
-        if(folder!=QFileInfo(resultsFolder()))
+        QDir folder(result->saveFolder());
+        if(folder!=QDir(resultsFolder()))
             LowTools::removeDir(folder.absolutePath());
 
         _results->removeRow(num);
@@ -572,9 +573,11 @@ void ProjectBase::removeProblem(Problem* problem)
         emit beforeRemoveProblem(problem);
 
         // remove folder and data
-        QFileInfo folder = QFileInfo(problem->saveFolder());
-        if(folder!=QFileInfo(problemsFolder()))
-            LowTools::removeDir(folder.absolutePath());
+        QDir problemFolderInfo(problem->saveFolder());
+        QDir problemsFolderInfo(problemsFolder());
+
+        if(problemFolderInfo!=problemsFolderInfo)
+            LowTools::removeDir(problemFolderInfo.absolutePath());
 
         _problems->removeRow(num);
 

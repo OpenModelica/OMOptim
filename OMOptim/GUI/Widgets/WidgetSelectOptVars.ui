@@ -132,7 +132,7 @@
         <string>Optimized variables</string>
        </property>
        <property name="checkable">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_8">
         <property name="margin">
@@ -260,7 +260,7 @@
         <string>Scanned variables</string>
        </property>
        <property name="checkable">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_9">
         <property name="margin">
@@ -372,7 +372,7 @@
         <string>Parameters</string>
        </property>
        <property name="checkable">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_10">
         <property name="margin">
@@ -460,7 +460,7 @@
         <string>Objectives</string>
        </property>
        <property name="checkable">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <property name="margin">
