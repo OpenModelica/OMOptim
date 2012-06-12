@@ -341,10 +341,12 @@ void MOVector<ItemClass>::insertItem(ItemClass* item,int index)
 {
     // Add an item pointer in Vector
     qDebug(QString("Insert item at range :" + QString::number(index)).toLatin1().data());
-    insertRow(index);//,createIndex(0,0));
-    beginInsertRows(QModelIndex(),index,index);
-    items.insert(index,item);
-    endInsertRows();
+    if(index>-1)
+    {
+        beginInsertRows(QModelIndex(),index,index);
+        items.insert(index,item);
+        endInsertRows();
+    }
 }
 
 template<class ItemClass>
@@ -687,7 +689,7 @@ Qt::DropActions MOVector<ItemClass>::supportedDropActions() const{
 
 template<class ItemClass>
 bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
-                          Qt::DropAction action, int row, int column, const QModelIndex &parent)
+                                       Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
     if (action == Qt::IgnoreAction)
         return true;
