@@ -48,7 +48,7 @@ class ModPlusOMCtrl :public ModPlusCtrl
 {
     public:
 
-    enum Parameters{STOPTIME,MAXSIMTIME,SOLVER,TOLERANCE,STEPSIZE,STARTTIME,OUTPUT};
+    enum Parameters{STOPTIME,MAXSIMTIME,SOLVER,TOLERANCE,NBINTERVALS,STARTTIME,OUTPUT};
     enum Solvers{DASSL,EULER};
     enum Output{CSV,MAT};
 

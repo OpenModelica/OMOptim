@@ -308,7 +308,15 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
     if(0 != (msg = omc_new_matlab4_reader(fileName.toStdString().c_str(), &reader)))
     {
         InfoSender::instance()->sendError("Unable to read .mat file");
-        omc_free_matlab4_reader(&reader);
+//        try
+//        {
+//            omc_free_matlab4_reader(&reader);
+//        }
+//        catch(std::exception &e)
+//        {
+//            InfoSender::instance()->debug("Seg fault while freeing reader");
+//        }
+
         return false;
     }
 
@@ -608,6 +616,11 @@ void OpenModelica::setInputParametersXml(QDomDocument &doc,MOParameters *paramet
     QDomElement oldxExp = xExp;
 
 
+    double starttime = parameters->value(ModPlusOMCtrl::STARTTIME,0).toDouble();
+    double stoptime = parameters->value(ModPlusOMCtrl::STOPTIME,1).toDouble();
+    int nbIntervals = parameters->value(ModPlusOMCtrl::NBINTERVALS,2).toInt();
+    double stepSize = (stoptime-starttime)/nbIntervals;
+
 
     MOParameter * curParam;
     MOParameterListed* curParamListed;
@@ -627,6 +640,10 @@ void OpenModelica::setInputParametersXml(QDomDocument &doc,MOParameters *paramet
             case ModPlusOMCtrl::OUTPUT :
                 curParamListed = dynamic_cast<MOParameterListed*>(curParam);
                 xExp.setAttribute(curParamListed->name(),curParamListed->strValue());
+                break;
+            // if number of intervals, calculate and set step size
+            case ModPlusOMCtrl::NBINTERVALS :
+                xExp.setAttribute("stepSize",QString::number(stepSize));
                 break;
             default :
                 xExp.setAttribute(curParam->name(),curParam->value().toString());

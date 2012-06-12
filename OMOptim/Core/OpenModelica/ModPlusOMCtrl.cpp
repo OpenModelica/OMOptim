@@ -119,7 +119,7 @@ void ModPlusOMCtrl::setDefaultParameters()
     _parameters->addItem( new MOParameterListed((int)SOLVER,"solver","Solver",ModPlusOMCtrl::DASSL,mapSolvers));
 
     _parameters->addItem(new MOParameter(TOLERANCE,"tolerance","Tolerance",1e-6,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
-    _parameters->addItem(new MOParameter(STEPSIZE,"stepSize","Step size",0.002,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+    _parameters->addItem(new MOParameter(NBINTERVALS,"NbIntervals","Number of output intervals",2,MOParameter::INT,2,std::numeric_limits<int>::max()));
     _parameters->addItem(new MOParameter(STARTTIME,"startTime","Start time",0,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
 
     _parameters->addItem(new MOParameter((int)MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
