@@ -97,6 +97,7 @@ public :
     QStringList getElementInfos(QString parentClass);
 
     QStringList getParameterNames(QString parentClass, bool includeInherited=false);
+    QString getParameterValue(QString parentClass, QString parameterName);
     QStringList getInheritedClasses(QString inheritingClass);
     QStringList getComponentModifierNames(QString componentName);
     QString getFlattenedModifierValue(const QString & modelName,const QString & shortComponentName,const QString & modifierName,const QString & flattenedModel);
@@ -174,6 +175,7 @@ public :
     QString loadFileWThread(QString filePath);
 
     //OmcCommunicator* getCommunicator();
+
 
 public slots :
     QStringList loadFiles(const QStringList & filePath);

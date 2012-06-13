@@ -260,6 +260,14 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
     compClasses.append(inhClasses);
 }
 
+QString MOomc::getParameterValue(QString parentClass, QString parameterName)
+{
+    QString commandRes= evalCommand("getParameterValue(" + parentClass +","+ parameterName+")");
+    if(commandRes=="Error")
+        return QString();
+    else
+        return commandRes;
+}
 
 QStringList MOomc::getParameterNames(QString parentClass,bool includeInherited)
 {

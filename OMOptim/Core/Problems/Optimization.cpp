@@ -273,6 +273,8 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     // Overvars Variables
     QDomElement domOverVars = domProblem.firstChildElement("OverwritedVariables");
     this->overwritedVariables()->setItems(domOverVars);
+    for(int i=0;i<overwritedVariables()->size();i++)
+        overwritedVariables()->at(i)->setIsEditableField(Variable::VALUE,true);
 
     // Files to copy
     QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
