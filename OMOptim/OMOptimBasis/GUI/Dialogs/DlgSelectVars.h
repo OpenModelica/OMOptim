@@ -54,7 +54,7 @@
 
 #include "MOVector.h"
 #include "Variable.h"
-#include "WidgetSelectVars.h"
+#include "Widgets/WidgetSelectVars.h"
 
 class DlgSelectVars : public QDialog
 {
