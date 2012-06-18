@@ -133,7 +133,7 @@ QString MyEoGnuplot1DMonitor::plotArchiveCommand()
             cmd+="\n";
 
             // update data columns to plot
-            if(yCol<_nbObj-1)
+            if(yCol<_nbObj)
                 yCol++;
             else
             {
