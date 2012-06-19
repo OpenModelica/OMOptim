@@ -45,9 +45,10 @@ MEDimValue::MEDimValue()
     invalidate();
 }
 
-MEDimValue::MEDimValue(double value,int unit)
+MEDimValue::MEDimValue(double value,int unit,bool isValid)
 {
     setValue(value,unit);
+    _isValid = isValid;
 }
 
 MEDimValue::~MEDimValue(void)

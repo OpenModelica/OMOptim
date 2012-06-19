@@ -42,6 +42,7 @@
 #include "Optimization.h"
 #include "CSVBase.h"
 #include "Project.h"
+#include "VariablesManip.h"
 
 OptimResult::OptimResult():Result()
 {
@@ -63,7 +64,6 @@ OptimResult::OptimResult():Result()
 OptimResult::OptimResult(Project* project, const Optimization & problem)
     :Result((ProjectBase*)project,problem)
 {
-    _omProject = project;
     _models = problem.models();
 
     _recomputedVariables = new MOOptVector(true,true,true);
@@ -87,7 +87,6 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     :Result((ProjectBase*)project,(const Problem&)problem)
 {
     ok = true;
-    _omProject = project;
     _models = problem.models();
     this->setSaveFolder(resultDir.absolutePath());
 
@@ -163,7 +162,7 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     ModModelPlus* curModel;
     for(int iM=0;iM<_models.size();iM++)
     {
-        curModel = _omProject->modModelPlus(_models.at(iM));
+        curModel = omProject()->modModelPlus(_models.at(iM));
 
         if(curModel->variables()->items.isEmpty() && curModel->isCompiled(problem.ctrl(_models.at(iM))))
             curModel->readVariables(problem.ctrl(_models.at(iM)));
@@ -526,4 +525,156 @@ void OptimResult::exportFrontCSV(QString fileName, bool allVars)
     frontFile.close();
 }
 
+void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
+{
+
+    Optimization* problem = dynamic_cast<Optimization*>(_problem);
+
+    int iPoint;
+    int nbPoints = iPoints.size();
+
+    //Info
+    InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTS,QString::number(nbPoints)));
+
+    //Execution
+    QString resultFolder = this->saveFolder();
+    QString pointSaveFolder;
+
+    for(int i=0;i<nbPoints;i++)
+    {
+        iPoint = iPoints.at(i);
+
+
+        if (!this->recomputedPoints().contains(iPoint) || forceRecompute)
+        {
+
+            //****************************************************
+            //Deleting point dir
+            //****************************************************
+            pointSaveFolder = resultFolder+QDir::separator()+"point_"+QString::number(iPoint);
+            QDir dir = QDir(pointSaveFolder);
+            // if dir already exists, deleting it
+            if (dir.exists())
+            {
+                bool removed,tempBool;
+
+                QStringList files = dir.entryList();
+                QString provFile;
+                for (int indf=0;indf<files.size();indf++)
+                {
+                    provFile = files[indf];
+                    tempBool = dir.remove(provFile);
+                }
+                bool temp = dir.cdUp();
+                dir.refresh();
+                removed = dir.rmdir(pointSaveFolder);
+                if (!removed)
+                {
+                    InfoSender::instance()->send (Info(ListInfo::FOLDERUNREMOVABLE,pointSaveFolder));
+                }
+            }
+
+            for(int iM=0;iM<problem->models().size();iM++)
+            {
+                //*************************************************************
+                //Creating a new OneSimulation problem based on same model
+                //and specifying overwrited variables from optimized variable values
+                //*************************************************************
+                ModModelPlus* modelPlus = omProject()->modModelPlus(problem->models().at(iM));
+                OneSimulation *oneSim = new OneSimulation(omProject(),modelPlus);
+                Variable* overVar;
+                for(int iOverVar=0;iOverVar < this->optVariablesResults()->size();iOverVar++)
+                {
+                    overVar = new Variable();
+                    for(int iField=0;iField<Variable::nbFields;iField++)
+                    {
+                        overVar->setFieldValue(iField,this->optVariablesResults()->at(iOverVar)->getFieldValue(iField));
+                    }
+                    overVar->setFieldValue(Variable::VALUE,this->optVariablesResults()->at(iOverVar)->finalValue(0,iPoint));
+                    oneSim->overwritedVariables()->items.push_back(overVar);
+                }
+
+                // Add scannedVariables
+                oneSim->scannedVariables()->cloneFromOtherVector(problem->scannedVariables());
+
+                // Add overwrited variables
+                for(int iV=0;iV<problem->overwritedVariables()->size();iV++)
+                    oneSim->overwritedVariables()->addItem(problem->overwritedVariables()->at(iV)->clone());
+
+                //****************************************************
+                // Launch simulation
+                //****************************************************
+                ProblemConfig config;
+                OneSimResult *oneSimRes = dynamic_cast<OneSimResult*>(oneSim->launch(config));
+
+                if(!oneSimRes->isSuccess())
+                {
+                    InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTFAILED,QString::number(iPoint)));
+                }
+                else
+                {
+                    InfoSender::instance()->send( Info(ListInfo::RECOMPUTINGPOINTSUCCESS,QString::number(iPoint)));
+
+                    //****************************************************
+                    // Filing recomputedVariables values
+                    //****************************************************
+                    VariableResult* newVariableResult;
+                    VariableResult* curFinalVariable;
+                    int iRecVar;
+                    for(int iVar=0;iVar<oneSimRes->finalVariables()->size();iVar++)
+                    {
+                        curFinalVariable = oneSimRes->finalVariables()->at(iVar);
+                        // look in recomputed variables
+                        iRecVar = this->recomputedVariables()->findItem(curFinalVariable->name());
+                        if(iRecVar>-1)
+                        {
+                            this->recomputedVariables()->at(iRecVar)->setFinalValuesAtPoint(iPoint,
+                                                                                              curFinalVariable->finalValuesAtPoint(0));
+                        }
+                        else
+                        {
+                            // copy from a Variable cast to avoid finalValues copying
+                            newVariableResult =  new VariableResult(*dynamic_cast<Variable*>(curFinalVariable));
+                            newVariableResult->setFinalValuesAtPoint(iPoint,
+                                                                     curFinalVariable->finalValuesAtPoint(0));
+                            this->recomputedVariables()->addItem(newVariableResult);
+
+                            QString msg;
+                            msg.sprintf("Variable %s added in recomputed variables list",
+                                        newVariableResult->name().toLatin1().data());
+                            InfoSender::instance()->debug(msg);
+                        }
+                        // update objective value if necessary (should'nt be the case, but if model has been changed)
+                        int iObj = this->optObjectivesResults()->findItem(curFinalVariable->name());
+                        if(iObj>-1)
+                        {
+                            bool objOk=false;
+                            double objValue = VariablesManip::calculateObjValue(problem->objectives()->at(iObj),oneSimRes->finalVariables(),objOk);
+                            this->optObjectivesResults()->at(iObj)->setFinalValue(0,iPoint,objValue,objOk);
+                        }
+                    }
+                    //*****************************
+                    //Saving results into csv file
+                    //*****************************
+                    //update scan folders
+                    LowTools::mkdir(pointSaveFolder,true);
+                    QFile file(pointSaveFolder+QDir::separator()+"resultVar.csv");
+                    file.open(QIODevice::WriteOnly);
+                    QTextStream ts( &file );
+                    ts << CSVBase::variableResultToValueLines(this->recomputedVariables(),iPoint);
+                    file.close();
+
+                    delete oneSimRes;
+                }
+            }
+        }
+        else
+        {
+            QString msg = "Point " + QString::number(iPoint)+" already computed. Won't be recomputed";
+            InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
+        }
+    }
+
+    emit recomputedPoints(iPoints);
+}
 

@@ -188,8 +188,7 @@ void WidgetMooPointsList::recomputeSelectedPoints()
     if(dlg.exec()==QDialog::Accepted)
     {
         bool forceRecompute = parameters.value(index).toBool();
-        Optimization* problem = ((Optimization*)_result->problem());
-        problem->recomputePoints(_result,pointsList,forceRecompute);
+        _result->recomputePoints(pointsList,forceRecompute);
         emit pointsRecomputed();
     }
 }

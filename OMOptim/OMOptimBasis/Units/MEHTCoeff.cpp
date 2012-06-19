@@ -45,12 +45,12 @@ MEHTCoeff::MEHTCoeff():
 }
 
 MEHTCoeff::MEHTCoeff(double value,int unit):
-    MEDimValue(value,unit)
+    MEDimValue(value,unit,true)
 {
 }
 
 MEHTCoeff::MEHTCoeff(const MEHTCoeff& temp):
-    MEDimValue(temp._value,temp._unit)
+    MEDimValue(temp._value,temp._unit,temp.isValid())
 {
 }
 

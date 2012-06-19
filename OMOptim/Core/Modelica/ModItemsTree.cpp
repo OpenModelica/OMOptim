@@ -457,6 +457,46 @@ QList<ModItem*> ModItemsTree::findInDescendantsByClass(QString className,ModItem
 }
 
 /**
+  * Finding function : returns all ModItem whom class equals or inherits className.
+  */
+QList<ModItem*> ModItemsTree::findInDescendantsByInheritedClass(QString className,ModItem* parent)
+{
+    if(parent==NULL)
+        parent = _rootElement;
+
+    ModItem* curChild;
+    QString curChildClass;
+    QList<ModItem*> result;
+    int iChild;
+
+    int curDepth = parent->depth();
+
+
+
+    // then check children are readen
+    if(!parent->childrenReaden())
+    {
+        // if not, check in its direction
+        readFromOMCWThread(parent,curDepth+1,QString(),curDepth);
+    }
+
+    // looking if one child corresponds
+    for(iChild=0;iChild<parent->childCount();iChild++)
+    {
+        curChild = parent->child(iChild);
+        curChildClass = curChild->getModClassName();
+        if((curChildClass==className)||_moomc->inherits(curChildClass,className))
+            result.push_back(curChild);
+
+        //look deeper in children
+        result <<  findInDescendantsByInheritedClass(className,curChild);
+    }
+
+    return result;
+
+}
+
+/**
   * Finding function : returns all components whom classname equals argument className.
   */
 QList<ModItem*> ModItemsTree::findCompOfClassInDescendants(QString className,ModItem* parent)

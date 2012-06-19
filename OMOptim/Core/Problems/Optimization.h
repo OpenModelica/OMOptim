@@ -135,9 +135,6 @@ public:
 
     int nbScans();
 
-    // recompute points
-    virtual void recomputePoints(OptimResult*, QList<int>,bool forceRecompute = false);
-
 
 public slots :
     void onQuickEndAsked();

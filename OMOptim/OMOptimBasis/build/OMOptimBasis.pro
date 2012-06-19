@@ -109,7 +109,8 @@ HEADERS += \
     ../GUI/Widgets/WidgetSelectVars.h \
     ../GUI/Widgets/WidgetList.h \
     ../GUI/Dialogs/NewProjectBaseForm.h \
-    ../Problems/ProblemInterfaces.h
+    ../Problems/ProblemInterfaces.h \
+    ../MOVectors.h
 
 SOURCES += \
     ../Variables.cpp \

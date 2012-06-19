@@ -68,6 +68,7 @@ public:
 
     MOVector(bool owner);
     MOVector(const MOVector &);
+    MOVector<ItemClass>& operator=(const MOVector<ItemClass> &copied);
     MOVector(QString savedData,bool owner);
     MOVector(QDomElement & domList,bool owner);
 
@@ -145,6 +146,12 @@ MOVector<ItemClass>::MOVector(bool owner) : QAbstractTableModel()
 template<class ItemClass>
 MOVector<ItemClass>::MOVector(const MOVector & copied)
 {
+    *this = copied;
+}
+
+template<class ItemClass>
+MOVector<ItemClass>& MOVector<ItemClass>::operator=(const MOVector<ItemClass> &copied)
+{
     int iv;
     for(iv=0;iv<copied.items.size();iv++)
     {
@@ -153,7 +160,6 @@ MOVector<ItemClass>::MOVector(const MOVector & copied)
     }
 
     _owner = true; // indeed, should be true every time !!!
-
 }
 
 template<class ItemClass>

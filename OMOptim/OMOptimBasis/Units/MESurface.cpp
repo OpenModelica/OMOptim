@@ -47,12 +47,12 @@ MEDimValue()
 
 
 MESurface::MESurface(double value,int unit):
-MEDimValue(value,unit)
+MEDimValue(value,unit,true)
 {
 }
 
 MESurface::MESurface(const MESurface& temp):
-MEDimValue(temp._value,temp._unit)
+MEDimValue(temp._value,temp._unit,temp.isValid())
 {
 }
 

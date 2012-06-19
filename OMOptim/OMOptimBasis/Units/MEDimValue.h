@@ -50,7 +50,7 @@ class MEDimValue
 {
 public:
     MEDimValue();
-    MEDimValue(double value,int unit);
+    MEDimValue(double value,int unit, bool isValid);
     virtual ~MEDimValue(void);
 
     QStringList units()  const ;
@@ -105,6 +105,9 @@ public :
       */
     static QString listToString(const QList<DimValue> &list, int iUnit)
     {
+        if(list.isEmpty())
+            return QString();
+
         QString separator = ";";
         QString result="\[";
         bool allAreId = true; // if all are id then copy only num value

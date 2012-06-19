@@ -176,6 +176,7 @@ public:
     VariableResult(const Variable &);
     VariableResult(QDomElement &);
 
+    Variable extractPoint(int iPoint,int iScan = 0);
 
     ~VariableResult(void);
 

@@ -119,6 +119,7 @@ public :
     bool addConnections(QStringList orgs, QStringList dests);
     bool addConnections(QStringList orgs, QList<QStringList> dests);
 
+    bool inherits(QString childClass, QString parentClass);
     void getInheritedComponents(QString parentClass, QStringList & names, QStringList & classes);
     void getContainedComponents(QString parentClass, QStringList & compNames,QStringList & compClasses,bool includeInherited=true);
 

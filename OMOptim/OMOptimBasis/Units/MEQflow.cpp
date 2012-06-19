@@ -47,7 +47,7 @@ MEDimValue()
 }
 
 MEQflow::MEQflow(double value,int unit):
-MEDimValue(value,unit)
+MEDimValue(value,unit,true)
 {
 }
 

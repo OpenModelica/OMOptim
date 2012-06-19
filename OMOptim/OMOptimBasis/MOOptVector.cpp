@@ -39,7 +39,7 @@
 
   */
 #include "MOOptVector.h"
-
+#include "Variables.h"
 
 MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints)
     :MOVector<VariableResult>(owner)
@@ -315,4 +315,22 @@ QString MOOptVector::toCSV(int iPoint)
     }
     return csv;
 
+}
+
+/**
+  * Creates a vector of variables corresponding
+  * to results at point iPoint.
+  * Result is the owner of variables.
+  */
+Variables MOOptVector::extractPoint(int iPoint)
+{
+
+    Variables result(true);
+
+    for(int i=0;i<items.size();i++)
+    {
+        result.addItem(new Variable(items.at(i)->extractPoint(iPoint)));
+    }
+
+    return result;
 }

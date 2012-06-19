@@ -80,6 +80,7 @@ public:
     bool isInDescendants(QString fullName,ModItem* parent=NULL);
     ModItem* findInDescendants(QString fullName,ModItem* parent=NULL);
     QList<ModItem*> findInDescendantsByClass(QString _className,ModItem* parent=NULL);
+    QList<ModItem*> findInDescendantsByInheritedClass(QString _className,ModItem* parent=NULL);
     QList<ModItem*> findCompOfClassInDescendants(QString _className,ModItem* parent=NULL);
 
     ModModel* modelOf(ModItem* item);

@@ -51,6 +51,7 @@
 #include "CSV.h"
 #include "ProblemConfig.h"
 #include "EA/OptimAlgo.h"
+#include "Project.h"
 
 class Save;
 class Optimization;
@@ -94,6 +95,7 @@ public:
 signals:
     void curPointChanged();
     void curScanChanged(int );
+    void recomputedPoints(QList<int>);
 
 
 public :
@@ -102,6 +104,7 @@ public :
     MOOptVector *recomputedVariables(){return _recomputedVariables;}
 
     QList<int> recomputedPoints(){return _recomputedPoints;};
+    void recomputePoints(QList<int> iPoints, bool forceRecompute);
 
     // index for each point of subBlocks included (in subBlocks)
     QList<int> _iSubModels;
@@ -112,9 +115,11 @@ public :
     QString _optVarsFrontFileName;
     QString _allVarsFrontFileName;
 
+    Project* omProject(){return dynamic_cast<Project*>(_project);}
+
 
 protected:
-    Project* _omProject;
+
     int _curPoint;
     int _curScan;
 

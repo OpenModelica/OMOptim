@@ -788,6 +788,22 @@ bool MOomc::addConnections(QStringList orgs, QList<QStringList> dests)
     }
 }
 
+bool MOomc::inherits(QString childClass, QString parentClass)
+{
+    QStringList inherited = getInheritedClasses(childClass);
+    while(!inherited.isEmpty())
+    {
+        if(inherited.contains(parentClass))
+            return true;
+        else
+        {
+            inherited.append(getInheritedClasses(inherited.at(0)));
+            inherited.removeAt(0);
+        }
+    }
+    return false;
+}
+
 
 bool MOomc::addComponent(QString name,QString className, QString modelName,QString annotation)
 {

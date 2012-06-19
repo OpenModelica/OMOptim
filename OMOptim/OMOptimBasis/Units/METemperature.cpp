@@ -46,13 +46,14 @@ MEDimValue()
 }
 
 METemperature::METemperature(double value,int unit):
-MEDimValue(value,unit)
+MEDimValue(value,unit,true)
 {
 }
 
 METemperature::METemperature(const METemperature& temp):
-MEDimValue(temp._value,temp._unit)
+MEDimValue(temp._value,temp._unit,temp.isValid())
 {
+
 }
 
 METemperature::~METemperature(void)

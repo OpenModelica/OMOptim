@@ -46,12 +46,12 @@ MEDimValue()
 }
 
 MEMassFlow::MEMassFlow(double value,int unit):
-MEDimValue(value,unit)
+MEDimValue(value,unit,true)
 {
 }
 
 MEMassFlow::MEMassFlow(const MEMassFlow& temp):
-MEDimValue(temp._value,temp._unit)
+MEDimValue(temp._value,temp._unit,temp.isValid())
 {
 }
 

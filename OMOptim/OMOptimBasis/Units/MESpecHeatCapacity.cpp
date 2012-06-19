@@ -44,12 +44,12 @@ MESpecHeatCapacity::MESpecHeatCapacity():
 }
 
 MESpecHeatCapacity::MESpecHeatCapacity(double value,int unit):
-    MEDimValue(value,unit)
+    MEDimValue(value,unit,true)
 {
 }
 
 MESpecHeatCapacity::MESpecHeatCapacity(const MESpecHeatCapacity& temp):
-    MEDimValue(temp._value,temp._unit)
+    MEDimValue(temp._value,temp._unit,temp.isValid())
 {
 }
 

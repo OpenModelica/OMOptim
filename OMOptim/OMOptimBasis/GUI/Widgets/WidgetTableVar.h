@@ -91,5 +91,43 @@ public slots :
     void exportCSV();
 };
 
+/**
+  * Widget for displaying a vector
+  */
+class WidgetTable : public QWidget
+{
+    Q_OBJECT
+
+
+
+public:
+    WidgetTable(QAbstractItemModel *vector,QWidget *parent) :QWidget(parent)
+    {
+        _vector = vector;
+        this->setLocale(QLocale::C);
+
+        // Layouts
+        _allLayout = new QGridLayout(this);
+        this->setLayout(_allLayout);
+
+        // variables table
+        _table = new MOTableView(this);
+
+
+        GuiTools::ModelToView(vector,_table);
+        GuiTools::minimizeTableSize(_table);
+        _allLayout->addWidget(_table);
+    }
+
+
+public:
+
+    QGridLayout* _allLayout;
+    QAbstractItemModel *_vector;
+    MOTableView *_table;
+
+
+};
+
 
 #endif

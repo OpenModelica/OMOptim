@@ -381,6 +381,13 @@ VariableResult::VariableResult(QDomElement & domEl)
     }
 }
 
+Variable VariableResult::extractPoint(int iPoint, int iScan)
+{
+    Variable result(*this);
+    result.setValue(this->finalValue(iScan,iPoint));
+    return result;
+}
+
 
 
 VariableResult::~VariableResult()

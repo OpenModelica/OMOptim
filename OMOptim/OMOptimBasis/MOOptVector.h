@@ -42,6 +42,7 @@
 
 #include "MOVector.h"
 #include "Variable.h"
+#include "Variables.h"
 
 class ModModelPlus;
 
@@ -78,6 +79,8 @@ public:
     void append(const MOOptVector &,bool makeACopy);
     void clearAtiPoint(int iPoint);
     QString toCSV(int iPoint=0);
+
+    Variables extractPoint(int iPoint);
 
 protected :
     bool _useScan;

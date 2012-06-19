@@ -72,8 +72,7 @@ void WidgetCalculateMooPoints::recomputeSelectedPoints()
     pointsList = _widgetMooPointsList->_listPoints->getSelectedIndexes();
 
     bool forceRecompute = _ui->checkForceRecompute->isChecked();
-    Optimization* problem = ((Optimization*)_result->problem());
-    problem->recomputePoints(_result,pointsList,forceRecompute);
+    _result->recomputePoints(pointsList,forceRecompute);
 
 }
 
