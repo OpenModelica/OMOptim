@@ -136,10 +136,21 @@ MOVectors<ItemClass>::MOVectors(const MOVectors & copied)
 template<class ItemClass>
 MOVectors<ItemClass>::MOVectors(QDomElement & domList)
 {
-    /// @todo
-    //    domList.
-    //    setItems(domList);
-    //    (this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
+    // Root element
+    QDomNode n = domList.firstChild();
+    while( !n.isNull() )
+    {
+        QDomElement domItem = n.toElement();
+        if(domItem.tagName().contains("MOVector"))
+        {
+            int iPoint = domItem.attribute("iPoint","-1").toInt();
+            if(iPoint>-1)
+            {
+                this->setVector(new MOVector<ItemClass>(domItem,true),iPoint);
+            }
+        }
+        n = n.nextSibling();
+    }
 }
 
 
@@ -154,7 +165,7 @@ MOVectors<ItemClass>::~MOVectors()
 template<class ItemClass>
 void MOVectors<ItemClass>::setVector(MOVector<ItemClass>* vector, int i)
 {
-    while(iPoint>_items.size())
+    while(i>_items.size())
     {
         pushBackVector(new MOVector<ItemClass>(true));
     }
@@ -168,7 +179,11 @@ void MOVectors<ItemClass>::setVector(MOVector<ItemClass>* vector, int i)
         // change curPoint
         delete this->at(i);
         _items.replace(i,vector);
-        connectVector(vector);
+        connectVector(i);
+    }
+    else
+    {
+        pushBackVector(vector);
     }
 
     if(iPoint()==i)
@@ -248,11 +263,13 @@ QDomElement MOVectors<ItemClass>::toXmlData(QDomDocument & doc,QString listTitle
     // Root element
     QDomElement cList = doc.createElement(listTitle);
 
-//    for(int i=0;i<items.size();i++)
-//    {
-//        QDomElement cItem = items.at(i)->toXmlData(doc);
-//        cList.appendChild(cItem);
-//    }
+    QString movectorName = "MOVector";
+    for(int i=0;i<_items.size();i++)
+    {
+        QDomElement cItem = _items.at(i)->toXmlData(doc,movectorName);
+        cItem.setAttribute("iPoint",i);
+        cList.appendChild(cItem);
+    }
     return cList;
 }
 

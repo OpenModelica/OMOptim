@@ -648,6 +648,38 @@ bool Optimization::removeModel(QString model)
     _models.removeAll(model);
     _ctrls.remove(model);
 
+    // remove optimized variables
+    int varToRemove = _optimizedVariables->findItem(model,OptVariable::MODEL);
+    while(varToRemove>-1)
+    {
+        _optimizedVariables->removeRow(varToRemove);
+        varToRemove = _optimizedVariables->findItem(model,OptVariable::MODEL);
+    }
+
+    // removed scanned variables
+    varToRemove = _scannedVariables->findItem(model,ScannedVariable::MODEL);
+    while(varToRemove>-1)
+    {
+        _scannedVariables->removeRow(varToRemove);
+        varToRemove = _scannedVariables->findItem(model,ScannedVariable::MODEL);
+    }
+
+    // removed overwrited variables
+    varToRemove = _overwritedVariables->findItem(model,Variable::MODEL);
+    while(varToRemove>-1)
+    {
+        _overwritedVariables->removeRow(varToRemove);
+        varToRemove = _overwritedVariables->findItem(model,Variable::MODEL);
+    }
+
+    // removed objectives
+    varToRemove = _objectives->findItem(model,OptObjective::MODEL);
+    while(varToRemove>-1)
+    {
+        _objectives->removeRow(varToRemove);
+        varToRemove = _objectives->findItem(model,OptObjective::MODEL);
+    }
+
     emit removedModel(model);
     return true;
 }

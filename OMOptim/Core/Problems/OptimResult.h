@@ -95,7 +95,7 @@ public:
 signals:
     void curPointChanged();
     void curScanChanged(int );
-    void recomputedPoints(QList<int>);
+    void finishedRecomputingPoints(QList<int> );
 
 
 public :

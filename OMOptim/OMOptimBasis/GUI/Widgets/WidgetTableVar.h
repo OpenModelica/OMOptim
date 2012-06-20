@@ -112,10 +112,11 @@ public:
 
         // variables table
         _table = new MOTableView(this);
+        _table->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
 
         GuiTools::ModelToView(vector,_table);
-        GuiTools::minimizeTableSize(_table);
+        //GuiTools::minimizeTableSize(_table);
         _allLayout->addWidget(_table);
     }
 

@@ -675,6 +675,6 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
         }
     }
 
-    emit recomputedPoints(iPoints);
+    emit finishedRecomputingPoints(iPoints);
 }
 

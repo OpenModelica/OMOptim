@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 #include "MOTableView.h"
@@ -49,7 +49,7 @@ MOTableView::MOTableView(QWidget* parent):QTableView(parent)
     
     //_view->installEventFilter(this);
     installEventFilter(this);
-        horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+    horizontalHeader()->setResizeMode(QHeaderView::Interactive);
     verticalHeader()->hide();
     
     //editable ?
@@ -86,34 +86,34 @@ void MOTableView::setEditable(bool editable)
 
 void MOTableView::adjustViewSize()
 {
-//        // Resize columns and rows.
-//        resizeRowsToContents();
-//        resizeColumnsToContents();
+    //        // Resize columns and rows.
+    //        resizeRowsToContents();
+    //        resizeColumnsToContents();
 
-//        // Complete width of view port.
-//        int totalWidth = viewport()->width();
-//        int availableWidth = totalWidth;
+    //        // Complete width of view port.
+    //        int totalWidth = viewport()->width();
+    //        int availableWidth = totalWidth;
 
-//        // Iterate all columns and give them the required size.
-//        // The last column should receive the left size.
-//        for( int i = 0; i < horizontalHeader()->count(); i++ )
-//        {
-//                        int reqColumnSize = columnWidth(i);
-//                        availableWidth -= reqColumnSize;
-//        }
+    //        // Iterate all columns and give them the required size.
+    //        // The last column should receive the left size.
+    //        for( int i = 0; i < horizontalHeader()->count(); i++ )
+    //        {
+    //                        int reqColumnSize = columnWidth(i);
+    //                        availableWidth -= reqColumnSize;
+    //        }
 
-//        if( availableWidth > 0 && availableWidth<totalWidth )
-//        {
-//                float ratio = (float)totalWidth/(float)(totalWidth-availableWidth);
+    //        if( availableWidth > 0 && availableWidth<totalWidth )
+    //        {
+    //                float ratio = (float)totalWidth/(float)(totalWidth-availableWidth);
 
 
-//                for( int i = 0; i < horizontalHeader()->count(); i++ )
-//                {
-//                        setColumnWidth(i,(int)((float)columnWidth(i)*ratio));
-//                }
+    //                for( int i = 0; i < horizontalHeader()->count(); i++ )
+    //                {
+    //                        setColumnWidth(i,(int)((float)columnWidth(i)*ratio));
+    //                }
 
-//        }
-        
+    //        }
+
 }
 
 void MOTableView::setModel(QAbstractItemModel *_model)
@@ -141,6 +141,7 @@ bool MOTableView::eventFilter( QObject *obj, QEvent *ev )
 
 void MOTableView::dragEnterEvent(QDragEnterEvent *event)
 {
+    qDebug() << "MOTableView::dragEnterEvent; begin";
     if (children().contains(event->source())|| (event->source()==this)) {
         InfoSender::instance()->debug("drag from same widget");
         event->setDropAction(Qt::MoveAction);
@@ -150,11 +151,13 @@ void MOTableView::dragEnterEvent(QDragEnterEvent *event)
         event->setDropAction(Qt::CopyAction);
         event->accept();
     }
+    qDebug() << "MOTableView::dragEnterEvent; end";
 }
+
 
 void MOTableView::startDrag(Qt::DropActions supportedActions)
 {
-    qDebug() << "QAbstractItemView::startDrag; begin";
+    qDebug() << "MOTableView::startDrag; begin";
     QModelIndexList indexes = selectedIndexes();
     QList<QPersistentModelIndex> persistentIndexes;
 
@@ -191,5 +194,6 @@ void MOTableView::startDrag(Qt::DropActions supportedActions)
             }
         }
     }
+    qDebug() << "MOTableView::startDrag; end";
 }
 

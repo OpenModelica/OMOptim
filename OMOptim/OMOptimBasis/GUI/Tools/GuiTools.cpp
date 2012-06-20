@@ -58,19 +58,19 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
         tableView->resizeColumnsToContents();
         tableView->resizeRowsToContents();
 
-        // set maximum height
-        int count = model->rowCount(QModelIndex());
-        int h=0;
-        for (int i = 0; i < count; i++)
-            h += tableView->rowHeight(i);
-        int maxH =
-                (h +                                                      // total row height
-                 count +                                                  // to account for the pixel(s) used in the grid
-                 tableView->horizontalHeader()->height() +
-                 tableView->horizontalScrollBar()->height());   // Need room for the horizontal scrollbar
+//        // set maximum height
+//        int count = model->rowCount(QModelIndex());
+//        int h=0;
+//        for (int i = 0; i < count; i++)
+//            h += tableView->rowHeight(i);
+//        int maxH =
+//                (h +                                                      // total row height
+//                 count +                                                  // to account for the pixel(s) used in the grid
+//                 tableView->horizontalHeader()->height() +
+//                 tableView->horizontalScrollBar()->height());   // Need room for the horizontal scrollbar
 
-        tableView->setMaximumHeight(maxH);
-        tableView->resize(tableView->width(),maxH);
+//        tableView->setMaximumHeight(maxH);
+//        tableView->resize(tableView->width(),maxH);
 
     }
 

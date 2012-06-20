@@ -110,7 +110,8 @@ HEADERS += \
     ../GUI/Widgets/WidgetList.h \
     ../GUI/Dialogs/NewProjectBaseForm.h \
     ../Problems/ProblemInterfaces.h \
-    ../MOVectors.h
+    ../MOVectors.h \
+    ../registermetatypes.h
 
 SOURCES += \
     ../Variables.cpp \
@@ -174,7 +175,8 @@ SOURCES += \
     ../GUI/Widgets/WidgetSelectVars.cpp \
     ../GUI/Widgets/WidgetList.cpp \
     ../GUI/Dialogs/NewProjectBaseForm.cpp \
-    ../Problems/ProblemInterfaces.cpp
+    ../Problems/ProblemInterfaces.cpp \
+    ../registermetatypes.cpp
 
 FORMS += \
     ../GUI/Widgets/WidgetFilesList.ui \
