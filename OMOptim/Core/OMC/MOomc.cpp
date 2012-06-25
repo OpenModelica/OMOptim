@@ -511,7 +511,7 @@ bool MOomc::setComponentModifiers(QString compName,QString model, QStringList mo
     {
         QString commandText = "setComponentModifierValue(";
         commandText += model+",";
-        commandText += compName.section(".",-1,-1)+"."+modNames.at(i)+","+"Code(="+modValues.at(i)+"))";
+        commandText += compName.section(".",-1,-1)+"."+modNames.at(i)+","+"$Code(="+modValues.at(i)+"))";
 
         QString commandRes = evalCommand(commandText);
     }
