@@ -101,9 +101,10 @@ class MEDimValueTools
 public :
     /**
       * Convert a list of MEDimValue to a QString
-      * Used for GUI or saving/load functions
+      * Used for GUI or saving/load functions.
+      * if DisplayInvalid = false,invalid values are replaced with "-"
       */
-    static QString listToString(const QList<DimValue> &list, int iUnit)
+    static QString listToString(const QList<DimValue> &list, int iUnit,bool displayInvalid = false)
     {
         if(list.isEmpty())
             return QString();
@@ -113,7 +114,10 @@ public :
         bool allAreId = true; // if all are id then copy only num value
         for(int i=0;i<list.size();i++)
         {
-            result+=QString::number(list.at(i).value(iUnit));
+            if(!displayInvalid && !list.at(i).isValid())
+                result+="-";
+            else
+                result+=QString::number(list.at(i).value(iUnit));
             result+=separator;
             allAreId = allAreId && (list.at(i).value(iUnit)==list.at(0).value(iUnit));
         }

@@ -111,7 +111,8 @@ HEADERS += \
     ../GUI/Dialogs/NewProjectBaseForm.h \
     ../Problems/ProblemInterfaces.h \
     ../MOVectors.h \
-    ../registermetatypes.h
+    ../registermetatypes.h \
+    ../Units/METime.h
 
 SOURCES += \
     ../Variables.cpp \
@@ -176,7 +177,8 @@ SOURCES += \
     ../GUI/Widgets/WidgetList.cpp \
     ../GUI/Dialogs/NewProjectBaseForm.cpp \
     ../Problems/ProblemInterfaces.cpp \
-    ../registermetatypes.cpp
+    ../registermetatypes.cpp \
+    ../Units/METime.cpp
 
 FORMS += \
     ../GUI/Widgets/WidgetFilesList.ui \
