@@ -111,6 +111,7 @@ Result* ProblemThread::result()
     return _result;
 }
 
+
 void ProblemThread::publicExec()
 {
     exec();

@@ -120,6 +120,18 @@ public:
         _allLayout->addWidget(_table);
     }
 
+    QList<int> selectedRows()
+    {
+        QList<int> result;
+        QModelIndexList indexes = _table->selectionModel()->selectedIndexes();
+        for(int i=0;i<indexes.size();i++)
+        {
+            if(!result.contains(indexes.at(i).row()))
+                result.push_back(indexes.at(i).row());
+        }
+        result.removeAll(-1);
+        return result;
+    }
 
 public:
 

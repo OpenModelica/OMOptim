@@ -61,6 +61,7 @@ public:
     virtual void setValue(double,int iUnit=-1);
     virtual bool setValue(double,QString unit);
     virtual void setUnit(int iUnit);
+    virtual void setDispUnit(int iUnit);
     virtual bool setUnit(QString iUnit);
     double value(int iUnit) const;
     double value() const;

@@ -130,6 +130,7 @@ protected:
     void addProblem(Problem *);
     void addOMCase(QString filePath);
     void launchProblem(Problem*);
+    void launchProblems(QList<Problem*>);
     void removeResult(Result*);
     void removeProblem(Problem*);
     void removeCases(QList<OMCase*>);

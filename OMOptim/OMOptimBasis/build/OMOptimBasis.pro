@@ -112,7 +112,8 @@ HEADERS += \
     ../Problems/ProblemInterfaces.h \
     ../MOVectors.h \
     ../registermetatypes.h \
-    ../Units/METime.h
+    ../Units/METime.h \
+    ../GUI/Dialogs/DlgSelect.h
 
 SOURCES += \
     ../Variables.cpp \
@@ -178,7 +179,8 @@ SOURCES += \
     ../GUI/Dialogs/NewProjectBaseForm.cpp \
     ../Problems/ProblemInterfaces.cpp \
     ../registermetatypes.cpp \
-    ../Units/METime.cpp
+    ../Units/METime.cpp \
+    ../GUI/Dialogs/DlgSelect.cpp
 
 FORMS += \
     ../GUI/Widgets/WidgetFilesList.ui \

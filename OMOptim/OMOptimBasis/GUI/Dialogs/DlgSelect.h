@@ -1,10 +1,10 @@
-// $Id$
+// $Id: DlgSelect.h 9677 2011-08-24 13:09:00Z hubert.thieriot $
 /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linkpings universitet, Department of Computer and Information Science,
- * SE-58183 Linkping, Sweden.
+ * c/o Linköpings universitet, Department of Computer and Information Science,
+ * SE-58183 Linköping, Sweden.
  *
  * All rights reserved.
  *
@@ -29,59 +29,59 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-    @file ProblemThread.h
-     @brief Comments for file documentation.
-     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-     Company : CEP - ARMINES (France)
-     http://www-cep.ensmp.fr/english/
-     @version
+  @file DlgSelect.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
+*/
 
-  */
+#if !defined(_DlgSelect_H)
+#define _DlgSelect_H
 
-#if !defined(_MOTHREADS_H)
-#define _MOTHREADS_H
+#include <QtGui/QWidget>
+#include <QtGui/QDialog>
+#include <QtGui/QSortFilterProxyModel>
+#include <QtGui/QHeaderView>
+#include <QtGui/QSpinBox>
+#include <QtGui/QGridLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtCore/QObject>
+#include <QtCore/QObjectList>
+
 
 #include "MOVector.h"
-#include <QtCore/QThread>
-#include <QtCore/QMutex>
-#include "Problem.h"
-#include "Result.h"
+#include "Variable.h"
+#include "Widgets/WidgetTableVar.h"
 
-#include "ProblemConfig.h"
-
-namespace MOThreads
-{
-
-class ProblemThread : public QThread
+class DlgSelect : public QDialog
 {
     Q_OBJECT
+
 public:
-    ProblemThread(Problem*,ProblemConfig);
-    void run();
-    void publicExec();
-    Result* result();
+    DlgSelect(QAbstractItemModel *vector,QWidget* parent);
 
-    QDateTime _launchDate;
-    QString _name;
+    QList<int> selected;
 
+private :
 
-private:
-    Problem* _problem;
-    ProblemConfig _config;
-    Result* _result;
+    QPushButton *_pushOk;
+    QPushButton *_pushCancel;
+
+    WidgetTable* _widgetTable;
 
 
-public slots :
-    void onStopAsked();
-    void onFinished();
-signals :
-    void finished(Problem*,Result*);
-    void begun(Problem*);
-    void newProgress(float);
-    void newProgress(float,int,int);
+
+public slots:
+    void pushedOk();
+    void pushedCancel();
+
+
 
 };
 
-} //namespace
+
 
 #endif

@@ -96,6 +96,17 @@ void MEDimValue::setUnit(int iUnit)
     _unit = iUnit;
 }
 
+/**
+  * Change the unit but also convert values
+  * -> the physical value is unchanged, only the
+  * displayed one is modified.
+  */
+void MEDimValue::setDispUnit(int iUnit)
+{
+    _value = convert(_value,_unit,iUnit);
+    _unit = iUnit;
+}
+
 bool MEDimValue::setUnit(QString unit)
 {
     int iUnit = units().indexOf(unit);

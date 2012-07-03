@@ -485,6 +485,59 @@ void ProjectBase::launchProblem(Problem* problem)
     }
 }
 
+void ProjectBase::launchProblems(QList<Problem*> problems)
+{
+    if(!_problemLaunchMutex.tryLock())
+    {
+        QString msg = "Another problem is already running. Could not launch a new one.";
+        InfoSender::instance()->send(Info(msg));
+    }
+    else
+    {
+
+        // Create temporary directory where calculations are performed
+        createTempDir();
+
+        QList<MOThreads::ProblemThread*> threads;
+
+        for(int i=0;i<problems.size();i++)
+        {
+            //Copy launched problem from selected one
+            Problem* launchedProblem;
+            launchedProblem = problems.at(i)->clone();
+
+
+            //Create problem thread
+            ProblemConfig config;
+            MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
+
+            // connect signals
+            connect(launchThread,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
+            connect(launchThread,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
+            connect(launchThread,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
+            connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
+            connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SIGNAL(problemFinished(Problem*,Result*)));
+
+            // store thread-problem
+            _problemsThreads.insert(launchedProblem,launchThread);
+
+            threads.push_back(launchThread);
+        }
+
+        for(int i=0;i<threads.size()-1;i++)
+        {
+            connect(threads.at(i),SIGNAL(finished()),threads.at(i+1),SLOT(start()));
+        }
+
+
+        // start first thread
+        if(threads.size()>0)
+            threads.at(0)->start();
+        else
+            _problemLaunchMutex.unlock();
+    }
+}
+
 void ProjectBase::onProjectChanged()
 {
     _isSaved = false;
