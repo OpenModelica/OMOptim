@@ -69,6 +69,7 @@ public:
     static void removeDuplicates(QStringList & list);
     static void removeDuplicates(QFileInfoList & list);
     static void removeDuplicates(QVector<double> & vector);
+    static void removeDuplicates(QList<int> &list);
     static void removeWhiteSpaceStrings(QStringList &list);
 
 
@@ -89,6 +90,7 @@ public:
     static bool removeDirContents(QString folder);
     static void copyDirContents(QString org, QString dest);
     static void copyFilesInFolder(QFileInfoList files, QDir folder);
+
 };
 
 template < class T>

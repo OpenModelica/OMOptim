@@ -51,6 +51,8 @@
 //-----------------------------------------------------------------------------
 
 #include "MOParameter.h"
+#include "LowTools.h"
+
 /** changes all values of the std::vector by uniform choice with range epsilon
 with probability p_change per variable
 \class eoUniformMutation 

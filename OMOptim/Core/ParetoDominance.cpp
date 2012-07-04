@@ -39,6 +39,7 @@
 
   */
 #include "ParetoDominance.h"
+#include <math.h>
 
 ParetoDominance::ParetoDominance()
 {

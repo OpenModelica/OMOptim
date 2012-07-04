@@ -47,7 +47,7 @@
 #include <QtGui/QHeaderView>
 #include "Project.h"
 #include "Plots/MOOptPlot.h"
-#include "LowTools.h"
+
 
 #include <qwt_plot.h>
 #include <qwt_painter.h>

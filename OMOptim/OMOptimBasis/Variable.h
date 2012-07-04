@@ -49,7 +49,6 @@
 #include <QtXml/QDomDocument>
 
 #include "MOItem.h"
-#include "LowTools.h"
 #include "VariableType.h"
 
 

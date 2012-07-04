@@ -39,8 +39,7 @@
 */
 
 #include "Widgets/WidgetProjectInfos.h"
-
-
+#include "LowTools.h"
 
 namespace Ui
 {

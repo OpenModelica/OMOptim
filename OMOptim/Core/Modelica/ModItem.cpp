@@ -40,6 +40,7 @@
   */
 #include "ModItem.h"
 #include "MOomc.h"
+#include "LowTools.h"
 
 ModItem::ModItem(MOomc* moomc)
 {

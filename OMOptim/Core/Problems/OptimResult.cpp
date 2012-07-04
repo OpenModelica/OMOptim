@@ -43,6 +43,7 @@
 #include "CSVBase.h"
 #include "Project.h"
 #include "VariablesManip.h"
+#include "LowTools.h"
 
 OptimResult::OptimResult():Result()
 {

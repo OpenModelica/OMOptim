@@ -40,7 +40,7 @@
   */
 #include "Variable.h"
 #include "CSVBase.h"
-
+#include "LowTools.h"
 
 Variable::Variable(void)
 {

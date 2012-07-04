@@ -44,8 +44,7 @@
 #include "ui_WidgetProjectBaseInfos.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
-#include "ProjectBase.h"
-#include "LowTools.h"
+
 
 #include <qwt_plot.h>
 #include <qwt_painter.h>
@@ -58,6 +57,8 @@
 #include <qwt_math.h>
 #include <qwt_picker.h>
 #include "Tools/MyTextLog.h"
+
+class ProjectBase;
 
 namespace Ui {
     class WidgetProjectBaseInfos_Class;

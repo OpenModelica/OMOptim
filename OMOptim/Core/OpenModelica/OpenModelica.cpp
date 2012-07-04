@@ -45,7 +45,7 @@ http://www-cep.ensmp.fr/english/
 #include "OpenModelica.h"
 #include "ModPlusOMCtrl.h"
 #include "VariableType.h"
-
+#include "LowTools.h"
 
 // for .mat reading
 #include "../../SimulationRuntime/c/util/read_matlab4.h"

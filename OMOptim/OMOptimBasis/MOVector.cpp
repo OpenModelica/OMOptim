@@ -26,6 +26,8 @@ MOVector<ItemClass>& MOVector<ItemClass>::operator=(const MOVector<ItemClass> &c
     }
 
     _owner = true; // indeed, should be true every time !!!
+
+    return *this;
 }
 
 template<class ItemClass>

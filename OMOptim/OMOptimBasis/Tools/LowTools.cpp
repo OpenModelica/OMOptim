@@ -194,6 +194,17 @@ QStringList LowTools::getDuplicates(const QStringList & list)
     return result;
 }
 
+void LowTools::removeDuplicates(QList<int> &list)
+{
+    for(int i=0;i<list.size();i++)
+    {
+        while(list.lastIndexOf(list.at(i))>i)
+        {
+            list.removeAt(list.lastIndexOf(list.at(i)));
+        }
+    }
+}
+
 void LowTools::removeDuplicates(QVector<double> &vector)
 {
 

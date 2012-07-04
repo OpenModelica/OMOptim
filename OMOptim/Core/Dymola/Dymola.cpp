@@ -23,7 +23,7 @@ http://www-cep.ensmp.fr/english/
 #include "Variable.h"
 #include "Variables.h"
 #include "InfoSender.h"
-
+#include "LowTools.h"
 
 
 Dymola::Dymola(void)

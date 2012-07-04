@@ -51,6 +51,7 @@
 #include "BlockSubstitution.h"
 #include "SaveOMOptim.h"
 #include "ModPlusCtrl.h"
+#include "LowTools.h"
 
 ModModelPlus::ModModelPlus( Project* project,QString modModelName)
 {
