@@ -3,6 +3,6 @@ QMAKE_CXX = @CXX@
 QMAKE_LINK = @CXX@
 
 LIBS += @CORBALIBS@ -lqwt@with_qwt_suffix@ -lmoeo -leo -leoutils -L../OMOptimBasis/build -lOMOptimBasis
-INCLUDEPATH += @with_qwt@ @CORBA_QMAKE_INCLUDES@ @with_paradiseo@/include/paradiseo/ @with_paradiseo@/include/paradiseo/utils/
+INCLUDEPATH += @with_qwt@ @CORBA_QMAKE_INCLUDES@ @with_paradiseo_include@
 
-QMAKE_LFLAGS += @LDFLAGS@ -L@with_paradiseo@/lib/paradiseo/
+QMAKE_LFLAGS += @LDFLAGS@ -L@with_paradiseo_lib@
