@@ -1,46 +1,33 @@
 /*! \page pageProblems OMCases, Problems and Results
 
+\section OMCase
 
-\section Project
-Each session of the user corresponds to a project (class Project). Only one project is loaded at a time. Project instance holds main containers :
-	- List of problems (class Problems)
-	- List of results (class Results)
-	- Modelica tree (class ModClassTree) : this class contains all modelica items loaded in OMC.
-	- Files paths (project, loaded mo files, loaded mmo files...)
+OMCase is a base class corresponding either to a Result or a Problem (those are inheriting classes of OMCase). It is used since results and problems share functions and attributes, like:
 
-Project instance also holds controlers :
-	- Instance of OpenModelica communicator (class MOomc) : one instance spread in entire program through pointer.
+-# a file path.
+-# a save function.
+-# a Xml conversion function.
+-# a pointer to their related project.
 	
-
-
-It's from Project that main managing functions are called : save, addProblem, launchProblem...
 	
-\image html Images/Project.png "Project overview" width=10cm
+\section Problem
 
-	
-\section Problems
-See dedicated page \ref pageProblems.
+Problem is an abstract class inheriting OMCase. It can correspond to all kind of optimization problems we could have. For instance, Optimization, OneSimulation and future other problems inherit Problem.
 
-Problems is a MOVector of Problem.
-\subsection Problem
-Problem is an abstract class corresponding to all kind of optimization problem we'll could have. Optimization, OneSimulation and future other problems inherit Problem.
-Main functions to implement include Problem::launch which perform calculations, loading and saving functions. Lauching a problem should return a result inheriting Result (cf. Problem class).
 
-\section Modelica
+Main functions to implement include Problem::launch which perform calculations, loading and saving functions. Lauching a problem should return a result inheriting Result class.
 
-\subsection ModClassTree
-ModClassTree is the main container of modelica in OMOptim. It inherits QAbstractItemModel (cf. Qt Documentation) and proposes a hierarchical organization. It allows to display functions but also reading and editing items (reading and finding functions are stored in ModReader instance).
 
-\subsection Modelica reader (ModReader)
-ModReader allows to read modelica models information. Current implementation uses openModelica API through corba communication. Also contains finding functions in ModClass hierarchy.
+\subsection Problems
+Problems is a vector of Problem instances. It inherits MOVector<Problem>.
 
-\subsection Modelica controller (ModPlusCtrl)
-ModPlusCtrl allows to compile, simulate, read initial and final variables. It is an abstract class which must be implemented following the software we want to use.
-At this moment, only two controlers are implemented : one using OpenModelica (cf. ModPlusOMCtrl), the other using dymola (cf. ModPlusDymolaCtrl).
+\section Result
 
-\subsection ModModelPlus
-ModModelPlus allows to store informations about Modelica models but also to manage them. More precisely, it holds input variables of model, controller chosen and its parameters.
-It also allows to compile model, simulate it and read variables (calling the specified controller). In other words, it serves as an interface between problems requiring simulation data and different simulation softwares.
+As Problem class, Result class is an abstract class inheriting OMCase. It can correspond to all kind of optimization results we could have. For instance, OptimResult, OneSimResult and future other problems inherit Result.
 
+Within a result class, there should be the copy of the problem of which it is the result.
+
+\subsection Results
+Results is a vector of Result instances. It inherits MOVector<Result>.
 
  **/

@@ -1,0 +1,12 @@
+/*! \page pageProject Project
+
+In OMOptim, each session of the user corresponds to a project (class Project). Only one project is loaded at a time. Project class inherits ProjectBase (cf. \ref pageProjectBase).
+
+Compared to its mother class, Project adds models management (cf. \ref pageModels).
+	
+\image html Images/Project.png "Project overview" width=10cm
+
+
+
+
+**/

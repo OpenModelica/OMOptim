@@ -1,6 +1,6 @@
 /*! \page pageAddANewProblem How to add a new kind of problem
 
-OMOptim can be extended in different ways.
+Tools based on OMOptimBasis can be extended in different ways. This document illustrates how to add a new kind of problem.
 
 \section Add a new kind of problem
 To add your own kind of problem, one should procede in several steps :

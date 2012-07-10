@@ -1,0 +1,19 @@
+/*! \page pageModels Models management
+
+
+
+\subsection ModClassTree
+ModClassTree is the main container of modelica in OMOptim. It inherits QAbstractItemModel (cf. Qt Documentation) and proposes a hierarchical organization. It allows to display functions but also reading and editing items (reading and finding functions are stored in ModReader instance).
+
+\subsection Modelica reader (ModReader)
+ModReader allows to read modelica models information. Current implementation uses openModelica API through corba communication. Also contains finding functions in ModClass hierarchy.
+
+\subsection Modelica controller (ModPlusCtrl)
+ModPlusCtrl allows to compile, simulate, read initial and final variables. It is an abstract class which must be implemented following the software we want to use.
+At this moment, only two controlers are implemented : one using OpenModelica (cf. ModPlusOMCtrl), the other using dymola (cf. ModPlusDymolaCtrl).
+
+\subsection ModModelPlus
+ModModelPlus allows to store informations about Modelica models but also to manage them. More precisely, it holds input variables of model, controller chosen and its parameters.
+It also allows to compile model, simulate it and read variables (calling the specified controller). In other words, it serves as an interface between problems requiring simulation data and different simulation softwares.
+
+**/
