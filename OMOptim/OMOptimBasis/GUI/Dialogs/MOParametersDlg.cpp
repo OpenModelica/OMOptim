@@ -153,7 +153,7 @@ QGridLayout* MOParametersWidget::buildLayoutFromParameters()
         QGridLayout *boxLayout = new QGridLayout(box);
 
         groupParameters = groupmap.values(groups.at(iG));
-        sortItems<MOParameter>::applyToInt(groupParameters,MOParameter::INDEX);
+        //sortItems<MOParameter>::applyToInt(groupParameters,MOParameter::INDEX);
 
         for(int iP=0;iP<groupParameters.size();iP++)
         {
@@ -305,7 +305,7 @@ void MOParametersWidget::updateEnabled()
 
         if(curWidget)
         {
-            curWidget->setEnabled(_localParameters->shouldBeEnabled(curParam->index()));
+            curWidget->setEnabled(_localParameters->shouldBeEnabled(curParam->name()));
         }
     }
 }

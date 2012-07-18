@@ -112,7 +112,7 @@ void OMOptimSettings::initialize()
     for(int i=0; i<names.size();i++)
     {
             // update
-            param = new MOParameter(i,names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
+            param = new MOParameter(names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
             param->setFieldValue(MOParameter::GROUP,groups.at(i));
             params->addItem(param);
     }

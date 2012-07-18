@@ -124,6 +124,7 @@ public :
     void getContainedComponents(QString parentClass, QStringList & compNames,QStringList & compClasses,bool includeInherited=true);
 
     void readElementInfos(QString parentClass,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &recordsNames,QStringList &compsNames,QStringList &compsClasses);
+    static QString getValueFromElementInfo(QString elementInfoLine,QString fieldName);
 
     void loadModel(QString filename,bool force,bool &ok,QString & Error);
 

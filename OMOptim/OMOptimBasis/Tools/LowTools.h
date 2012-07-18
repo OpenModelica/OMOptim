@@ -51,13 +51,20 @@
 #include "SleeperThread.h"
 #include "InfoSender.h"
 
+class METime;
+class MOItem;
 
+/**
+  * LowTools is a class offering basic functions such as files management, list managment (filtering, sorting)
+  * and some numerical functions.
+  */
 class LowTools
 {
 public:
     LowTools(void);
     ~LowTools(void);
 
+    // files/ folder functions
     static void openFolder(QString);
     static bool openFile(QString);
 
@@ -65,17 +72,25 @@ public:
     static void copyDir(QString,QString);
     static bool mkdir(QString,bool eraseExisting);
 
+    static bool removeDirContents(QString folder);
+    static void copyDirContents(QString org, QString dest);
+    static void copyFilesInFolder(QFileInfoList files, QDir folder);
+
+
+    // list management
     static QStringList getDuplicates(const QStringList & list);
     static void removeDuplicates(QStringList & list);
     static void removeDuplicates(QFileInfoList & list);
     static void removeDuplicates(QVector<double> & vector);
-    static void removeDuplicates(QList<int> &list);
     static void removeWhiteSpaceStrings(QStringList &list);
 
+    template < class T>
+    static void removeDuplicates(QList<T> &list);
+
+//    static void sortItemsByField(QList<MOItem*> &list,int iField);
 
 
-    static QString getValueFromElementInfo(QString elementInfoLine,QString fieldName);
-
+    // numerical functions
     static int round(double);
     static double roundToMultiple(double value, double multiple);
     static QList<int> nextIndex(QList<int> oldIndex, QList<int>  maxIndex);
@@ -85,60 +100,41 @@ public:
 
     static double gaussRandom(double average,double dev);
 
-
-
-    static bool removeDirContents(QString folder);
-    static void copyDirContents(QString org, QString dest);
-    static void copyFilesInFolder(QFileInfoList files, QDir folder);
-
 };
 
 template < class T>
-class removeDuplicates
+void LowTools::removeDuplicates(QList<T> &list)
 {
-public :
-    static void apply(QList<T> &list)
+    int j;
+    for(int i=0;i<list.size();i++)
     {
-        int j;
-        for(int i=0;i<list.size();i++)
+        j=list.indexOf(list.at(i),i+1);
+        while(j>i)
         {
+            list.removeAt(j);
             j=list.indexOf(list.at(i),i+1);
-            while(j>i)
-            {
-                list.removeAt(j);
-                j=list.indexOf(list.at(i),i+1);
-            }
         }
     }
-};
+}
 
+//template < class T>
+//class removeDuplicates
+//{
+//public :
+//    static void apply(QList<T> &list)
+//    {
+//        int j;
+//        for(int i=0;i<list.size();i++)
+//        {
+//            j=list.indexOf(list.at(i),i+1);
+//            while(j>i)
+//            {
+//                list.removeAt(j);
+//                j=list.indexOf(list.at(i),i+1);
+//            }
+//        }
+//    }
+//};
 
-template < class T>
-class sortItems
-{
-public :
-    static void applyToInt(QList<T*> &list, int iField)
-    {
-        //filling index
-        QMap<int,T*> map;
-        int index;
-        for(int i=0;i<list.size();i++)
-        {
-            index = list.at(i)->getFieldValue(iField).toInt();
-            map.insert(index,list.at(i));
-        }
-        QList<int> indexes = map.keys();
-
-
-
-        //sorting
-        qSort(indexes.begin(),indexes.end());
-
-        //filling list
-        list.clear();
-        for(int i=0;i<indexes.size();i++)
-            list.push_back(map.value(indexes.at(i)));
-    }
-};
 
 #endif

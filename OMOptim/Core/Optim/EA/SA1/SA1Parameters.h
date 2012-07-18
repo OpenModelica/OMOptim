@@ -60,24 +60,42 @@ public :
         STARTFILEPATH
     };
 
+    static QString str(parameters index)
+    {
+        switch(index)
+        {
+        case MAXITERATIONS :return "MaxIterations";
+        case INITTEMPERATURE :return "InitialTemperature";
+        case FINALTEMPERATURE :return "FinalTemperature";
+        case DECREASINGFACTOR : return "DecreasingFactor";
+        case SPAN : return "Span";
+        case SAVEFREQUENCY :return "SaveFrequency";
+        case USESTARTFILE :return "UseStartFile";
+        case STARTFILEPATH :return "StartFilePath";
+
+        }
+        return QString();
+    }
+
+
     static void setDefaultParameters(MOParameters *parameters)
     {
-        parameters->addItem(new MOParameter(MAXITERATIONS,"MaxIterations","Max Iterations",10000,MOParameter::INT,1,1000000000));
-        parameters->addItem(new MOParameter(INITTEMPERATURE,"InitialTemperature","Initial Temperature",1,MOParameter::DOUBLE,0.001,10000));
-        parameters->addItem(new MOParameter(FINALTEMPERATURE,"FinalTemperature","Final Temperature",0.01,MOParameter::DOUBLE,0.00001,100));
-        parameters->addItem(new MOParameter(DECREASINGFACTOR,"DecreasingFactor","Decreasing Factor",0.9,MOParameter::DOUBLE,0.1,0.99));
-        parameters->addItem(new MOParameter(SPAN,"Span","Number of iterations with the same temperature",100,MOParameter::INT,1,10000));
-        parameters->addItem(new MOParameter(SAVEFREQUENCY,"SaveFrequency","Population saving frequency (# generations, 0 = save only final state)",1,MOParameter::INT,0,10000000));
-        parameters->addItem(new MOParameter(USESTARTFILE,"UseStartFile","Use start file (restart from previous result)",false,MOParameter::BOOL));
-        parameters->addItem(new MOParameter(STARTFILEPATH,"StartFilePath","Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
+        parameters->addItem(new MOParameter(str(MAXITERATIONS),"Max Iterations",10000,MOParameter::INT,1,1000000000));
+        parameters->addItem(new MOParameter(str(INITTEMPERATURE),"Initial Temperature",1,MOParameter::DOUBLE,0.001,10000));
+        parameters->addItem(new MOParameter(str(FINALTEMPERATURE),"Final Temperature",0.01,MOParameter::DOUBLE,0.00001,100));
+        parameters->addItem(new MOParameter(str(DECREASINGFACTOR),"Decreasing Factor",0.9,MOParameter::DOUBLE,0.1,0.99));
+        parameters->addItem(new MOParameter(str(SPAN),"Number of iterations with the same temperature",100,MOParameter::INT,1,10000));
+        parameters->addItem(new MOParameter(str(SAVEFREQUENCY),"Population saving frequency (# generations, 0 = save only final state)",1,MOParameter::INT,0,10000000));
+        parameters->addItem(new MOParameter(str(USESTARTFILE),"Use start file (restart from previous result)",false,MOParameter::BOOL));
+        parameters->addItem(new MOParameter(str(STARTFILEPATH),"Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
 
         // make parameters enabled only when needed
-        QList<int> grIndexes;
-        grIndexes << USESTARTFILE << STARTFILEPATH;
+        QStringList grIndexes;
+        grIndexes << str(USESTARTFILE) << str(STARTFILEPATH);
         parameters->setGroup("Pursue computation",grIndexes);
-        grIndexes.removeAll(USESTARTFILE);
-        parameters->addEnablingIndex(grIndexes,USESTARTFILE,true);
-    };
+        grIndexes.removeAll(str(USESTARTFILE));
+        parameters->addEnablingIndex(grIndexes,str(USESTARTFILE),true);
+    }
 };
 
 #endif

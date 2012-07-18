@@ -44,6 +44,7 @@ http://www-cep.ensmp.fr/english/
 #include "MOParameter.h"
 #include "Project.h"
 #include "LowTools.h"
+#include "OpenModelicaParameters.h"
 
 ModPlusOMCtrl::ModPlusOMCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc)
     :ModPlusCtrl(project,modModelPlus,moomc)
@@ -62,9 +63,7 @@ ModPlusOMCtrl::ModPlusOMCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* 
     _copyAllMoOfFolder = true;
 
     _parameters = new MOParameters();
-    setDefaultParameters();
-
-    connect(_parameters,SIGNAL(modified()),this,SIGNAL(modified()));
+    OpenModelicaParameters::setDefaultParameters(_parameters);
 }
 
 ModPlusOMCtrl::~ModPlusOMCtrl(void)
@@ -97,7 +96,7 @@ QString ModPlusOMCtrl::name()
 
 bool ModPlusOMCtrl::useMat()
 {
-    return _parameters->value(ModPlusOMCtrl::OUTPUT,true).toBool();
+    return _parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::OUTPUT),true).toBool();
 }
 
 QString ModPlusOMCtrl::resFile()
@@ -109,29 +108,7 @@ QString ModPlusOMCtrl::resFile()
 }
 
 // Parameters
-void ModPlusOMCtrl::setDefaultParameters()
-{
-    _parameters->addItem(new MOParameter(STOPTIME,"stopTime","Stop time",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
 
-    QMap<int,QString> mapSolvers;
-    mapSolvers.insert(ModPlusOMCtrl::DASSL,"dassl");
-    mapSolvers.insert(ModPlusOMCtrl::EULER,"euler");
-
-    _parameters->addItem( new MOParameterListed((int)SOLVER,"solver","Solver",ModPlusOMCtrl::DASSL,mapSolvers));
-
-    _parameters->addItem(new MOParameter(TOLERANCE,"tolerance","Tolerance",1e-6,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
-    _parameters->addItem(new MOParameter(NBINTERVALS,"NbIntervals","Number of output intervals",2,MOParameter::INT,2,std::numeric_limits<int>::max()));
-    _parameters->addItem(new MOParameter(STARTTIME,"startTime","Start time",0,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
-
-    _parameters->addItem(new MOParameter((int)MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
-
-    QMap<int,QString> mapOutput;
-    mapOutput.insert(ModPlusOMCtrl::MAT,"mat");
-    mapOutput.insert(ModPlusOMCtrl::CSV,"csv");
-
-    _parameters->addItem( new MOParameterListed((int)OUTPUT,"outputFormat","Output",ModPlusOMCtrl::MAT,mapOutput));
-
-}
 
 bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString resFileLocal)
 {
@@ -329,10 +306,7 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
         OpenModelica::setInputVariablesTxt(tempInitFileTxt,inputVars,_modModelPlus->modModelName(),parameters());
 
     // Launching openmodelica
-    int maxNSec=-1;
-    int iParam = _parameters->findItem((int)MAXSIMTIME,MOParameter::INDEX);
-    if(iParam>-1)
-        maxNSec=_parameters->at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
+    int maxNSec=_parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::MAXSIMTIME),-1).toInt();
 
     OpenModelica::start(tempExeFile,maxNSec);
 

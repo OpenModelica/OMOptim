@@ -94,14 +94,9 @@ public:
     static void writeParameters(QString &allDsinText,MOParameters *parameters);
 
 
-    // Parameters
-    enum DymolaParameters{STOPTIME,TOLERANCE,NINTERVAL,SOLVER,MAXSIMTIME,FINALFILE};
-    enum OutputReadMode
-    {
-            DSFINAL,
-            DSRES
-    };
-    enum DymolaSolvers{DASSL=8,EULER=11};
+
+
+
 private :
     static QString sciNumRx();
     static VariableType convertVariableType(int dymDataType);

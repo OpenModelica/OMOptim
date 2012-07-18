@@ -168,7 +168,7 @@ Result* NSGA2::launch(QString tempDir)
     OMEAProgress* omEAProgress = new OMEAProgress();
     connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
     connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
-    int totalEval = _parameters->value(NSGA2Parameters::MAXITERATIONS,50).toInt();
+    int totalEval = _parameters->value(NSGA2Parameters::str(NSGA2Parameters::MAXITERATIONS),50).toInt();
 
     /************************************
  FITNESS EVALUATION
@@ -208,8 +208,8 @@ Result* NSGA2::launch(QString tempDir)
  ************************************/
     eoPop<EOStd> pop;
     bool loadFailed=false;
-    bool useStartFile = _parameters->value(NSGA2Parameters::USESTARTFILE,false).toBool();
-    QString reloadFilePath = _parameters->value(NSGA2Parameters::STARTFILEPATH).toString();
+    bool useStartFile = _parameters->value(NSGA2Parameters::str(NSGA2Parameters::USESTARTFILE),false).toBool();
+    QString reloadFilePath = _parameters->value(NSGA2Parameters::str(NSGA2Parameters::STARTFILEPATH)).toString();
 
     if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
     {
@@ -244,7 +244,7 @@ Result* NSGA2::launch(QString tempDir)
         pop = state.takeOwnership(eoPop<EOStd>());
     }
 
-    int populationSize = _parameters->value(NSGA2Parameters::POPULATIONSIZE,20).toInt();
+    int populationSize = _parameters->value(NSGA2Parameters::str(NSGA2Parameters::POPULATIONSIZE),20).toInt();
     if(pop.size() < populationSize)
     {
         pop.append(populationSize,*init);

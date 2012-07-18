@@ -226,6 +226,12 @@ void MOVector<ItemClass>::insertItem(ItemClass* item,int index)
 template<class ItemClass>
 bool MOVector<ItemClass>::removeRow(int index,const QModelIndex &parent)
 {
+    if(index<0)
+    {
+        qDebug(QString("!! Tried to remove item at index "+QString::number(index)).toLatin1().data());
+        return false;
+    }
+
     return removeRows(index,1,parent);
 }
 
@@ -237,6 +243,12 @@ bool MOVector<ItemClass>::removeRow(int index,const QModelIndex &parent)
 template<class ItemClass>
 bool MOVector<ItemClass>::removeRows(int index, int count, const QModelIndex &parent)
 {
+
+    if(index<0)
+    {
+       qDebug(QString("!! Tried to remove item at index "+QString::number(index)).toLatin1().data());
+        return false;
+    }
 
     if(items.size()>=index+count)
     {

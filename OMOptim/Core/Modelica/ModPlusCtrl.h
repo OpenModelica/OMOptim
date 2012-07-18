@@ -87,9 +87,6 @@ class ModPlusCtrl :public QObject
         virtual bool isCompiled() = 0;
         virtual bool compile(const QFileInfoList & moDependencies) = 0;
 
-        // Parameters
-        virtual void setDefaultParameters() = 0;
-
         // Info function
         virtual ModPlusCtrl::Type type()const = 0;
         virtual QString name() = 0;

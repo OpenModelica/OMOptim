@@ -179,7 +179,7 @@ Result* SPEA2::launch(QString tempDir)
     connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
     connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
 
-    int totalEval = _parameters->value(SPEA2Parameters::MAXITERATIONS,50).toInt();
+    int totalEval = _parameters->value(SPEA2Parameters::str(SPEA2Parameters::MAXITERATIONS),50).toInt();
 
 
 
@@ -215,12 +215,12 @@ Result* SPEA2::launch(QString tempDir)
 
 
     /************************************
- POPULATION
- ************************************/
+    POPULATION
+    ************************************/
     eoPop<EOStd> pop;
     bool loadFailed=false;
-    bool useStartFile = _parameters->value(SPEA2Parameters::USESTARTFILE,false).toBool();
-    QString reloadFilePath = _parameters->value(SPEA2Parameters::STARTFILEPATH).toString();
+    bool useStartFile = _parameters->value(SPEA2Parameters::str(SPEA2Parameters::USESTARTFILE),false).toBool();
+    QString reloadFilePath = _parameters->value(SPEA2Parameters::str(SPEA2Parameters::STARTFILEPATH)).toString();
 
     if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
     {
@@ -255,7 +255,7 @@ Result* SPEA2::launch(QString tempDir)
     }
 
 
-    int popSize = _parameters->value(SPEA2Parameters::POPULATIONSIZE,20).toInt();
+    int popSize = _parameters->value(SPEA2Parameters::str(SPEA2Parameters::POPULATIONSIZE),20).toInt();
     if(pop.size() < popSize)
     {
         pop.append(popSize-pop.size(),*init);
@@ -268,21 +268,21 @@ Result* SPEA2::launch(QString tempDir)
 
 
     /************************************
- ARCHIVE
- ************************************/
+     ARCHIVE
+    ************************************/
     moeoUnboundedArchive<EOStd> arch;
 
 
     /************************************
- STOPPING CRITERIA
- ************************************/
+     STOPPING CRITERIA
+     ************************************/
     MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_stop);
     state.storeFunctor(evalCont);
 
 
     /************************************
- OUTPUT
- ************************************/
+    OUTPUT
+    ************************************/
     eoCheckPoint<EOStd>& checkpoint = createEAStdCheckPoint(parser, state, *eval, *evalCont, pop, arch,_project,_parameters,tempDir,nbObj);
 
 

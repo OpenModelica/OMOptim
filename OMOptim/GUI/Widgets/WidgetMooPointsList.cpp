@@ -182,12 +182,12 @@ void WidgetMooPointsList::recomputeSelectedPoints()
     // parameters
     MOParameters parameters;
     int index=0;
-    parameters.addItem(new MOParameter(index,"forceRecompute","Should we simulate again already simulated points ?",false,MOParameter::BOOL));
+    parameters.addItem(new MOParameter("forceRecompute","Should we simulate again already simulated points ?",false,MOParameter::BOOL));
 
     MOParametersDlg dlg(&parameters);
     if(dlg.exec()==QDialog::Accepted)
     {
-        bool forceRecompute = parameters.value(index).toBool();
+        bool forceRecompute = parameters.value("forceRecompute").toBool();
         _result->recomputePoints(pointsList,forceRecompute);
         emit pointsRecomputed();
     }

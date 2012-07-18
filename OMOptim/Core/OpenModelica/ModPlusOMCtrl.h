@@ -48,9 +48,7 @@ class ModPlusOMCtrl :public ModPlusCtrl
 {
     public:
 
-    enum Parameters{STOPTIME,MAXSIMTIME,SOLVER,TOLERANCE,NBINTERVALS,STARTTIME,OUTPUT};
-    enum Solvers{DASSL,EULER};
-    enum Output{CSV,MAT};
+
 
 
         ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* oms);
@@ -66,8 +64,6 @@ class ModPlusOMCtrl :public ModPlusCtrl
         bool readOutputVariables(MOVector<Variable> *,QString resFile="");
         bool readInitialVariables(MOVector<Variable> *,bool forceRecompile,QString initFile="");
 
-        // Parameters
-        void setDefaultParameters();
 
         // Compile function
         bool isCompiled();

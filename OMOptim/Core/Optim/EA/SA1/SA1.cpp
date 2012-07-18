@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 /*
@@ -149,14 +149,14 @@ SA1::SA1():EABase()
 }
 
 SA1::SA1(Project* _project,Problem* _problem)
-:EABase(_project,_problem)
+    :EABase(_project,_problem)
 {
     setDefaultParameters();
 };
 
 
 SA1::SA1(Project* _project,Problem* _problem,MOParameters* parameters)
-:EABase(_project,_problem)
+    :EABase(_project,_problem)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
@@ -197,201 +197,205 @@ Result* SA1::launch(QString tempDir)
     char *argv1 = "";
     char **argv = &argv1;
 
-        //eoParser parser(argc, argv);  // for user-parameter reading
+    //eoParser parser(argc, argv);  // for user-parameter reading
     eoState state;
 
 
 
 
-        /* =========================================================
+    /* =========================================================
             *
             * Parameters
             *
             * ========================================================= */
 
-            // First define a parser from the command-line arguments
-            eoParser parser(argc, argv);
+    // First define a parser from the command-line arguments
+    eoParser parser(argc, argv);
 
-            // For each parameter, define Parameter, read it through the parser,
-            // and assign the value to the variable
-            eoValueParam<uint32_t> seedParam(time(0), "seed", "Random number seed", 'S');
-            parser.processParam( seedParam );
-            unsigned seed = seedParam.value();
+    // For each parameter, define Parameter, read it through the parser,
+    // and assign the value to the variable
+    eoValueParam<uint32_t> seedParam(time(0), "seed", "Random number seed", 'S');
+    parser.processParam( seedParam );
+    unsigned seed = seedParam.value();
 
-            // description of genotype
-            eoValueParam<unsigned int> vecSizeParam(8, "vecSize", "Genotype size", 'V');
-            parser.processParam( vecSizeParam, "Representation" );
-            unsigned vecSize = vecSizeParam.value();
+    // description of genotype
+    eoValueParam<unsigned int> vecSizeParam(8, "vecSize", "Genotype size", 'V');
+    parser.processParam( vecSizeParam, "Representation" );
+    unsigned vecSize = vecSizeParam.value();
 
-            // the name of the "status" file where all actual parameter values will be saved
-            string str_status = parser.ProgramName() + ".status"; // default value
-            eoValueParam<string> statusParam(str_status.c_str(), "status", "Status file");
-            parser.processParam( statusParam, "Persistence" );
+    // the name of the "status" file where all actual parameter values will be saved
+    string str_status = parser.ProgramName() + ".status"; // default value
+    eoValueParam<string> statusParam(str_status.c_str(), "status", "Status file");
+    parser.processParam( statusParam, "Persistence" );
 
-            // do the following AFTER ALL PARAMETERS HAVE BEEN PROCESSED
-            // i.e. in case you need parameters somewhere else, postpone these
-            if (parser.userNeedsHelp()) {
-                parser.printHelp(cout);
-                exit(1);
-            }
-            if (statusParam.value() != "") {
-                ofstream os(statusParam.value().c_str());
-                os << parser;// and you can use that file as parameter file
-            }
+    // do the following AFTER ALL PARAMETERS HAVE BEEN PROCESSED
+    // i.e. in case you need parameters somewhere else, postpone these
+    if (parser.userNeedsHelp()) {
+        parser.printHelp(cout);
+        exit(1);
+    }
+    if (statusParam.value() != "") {
+        ofstream os(statusParam.value().c_str());
+        os << parser;// and you can use that file as parameter file
+    }
 
-            /* =========================================================
+    /* =========================================================
              *
              * Random seed
              *
              * ========================================================= */
 
-            //reproducible random seed: if you don't change SEED above,
-            // you'll always get the same result, NOT a random run
-            rng.reseed(seed);
+    //reproducible random seed: if you don't change SEED above,
+    // you'll always get the same result, NOT a random run
+    rng.reseed(seed);
 
 
-                /************************************
+    /************************************
                 BOUNDS
                 ************************************/
-                std::vector<eoRealInterval> doubleBounds;
-                std::vector<eoIntInterval> intBounds;
-                int nbDouble=0,nbInt=0,nbBool=0;
+    std::vector<eoRealInterval> doubleBounds;
+    std::vector<eoIntInterval> intBounds;
+    int nbDouble=0,nbInt=0,nbBool=0;
 
 
     EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 
-                /************************************
+    /************************************
                 PROGRESS
                 ************************************/
-                    OMEAProgress* omEAProgress = new OMEAProgress();
-                    connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
-                    connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
-                    int totalEval = _parameters->value(SA1Parameters::MAXITERATIONS,100).toInt();
+    OMEAProgress* omEAProgress = new OMEAProgress();
+    connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
+    connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
+    int totalEval = _parameters->value(SA1Parameters::str(SA1Parameters::MAXITERATIONS),100).toInt();
 
-            /* =========================================================
+    /* =========================================================
              *
              * Eval fitness function
              *
              * ========================================================= */
-                moeoEvalFunc < EOStd > *plainEval;
-                plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modItemsTree);
+    moeoEvalFunc < EOStd > *plainEval;
+    plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modItemsTree);
 
-                OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
-                state.storeFunctor(eval);
-
-
+    OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
+    state.storeFunctor(eval);
 
 
-            /* =========================================================
+
+
+    /* =========================================================
              *
              * Initilisation of the solution
              *
              * ========================================================= */
 
-            EAStdInitBounded<EOStd> *init = new EAStdInitBounded<EOStd>(doubleBounds,intBounds,nbBool);
-            state.storeFunctor(init);
-            /* =========================================================
+    EAStdInitBounded<EOStd> *init = new EAStdInitBounded<EOStd>(doubleBounds,intBounds,nbBool);
+    state.storeFunctor(init);
+    /* =========================================================
              *
              * evaluation of a neighbor solution
              *
              * ========================================================= */
 
-            SA1moFullEvalByCopy<shiftNeighbor> shiftEval(*plainEval);
+    SA1moFullEvalByCopy<shiftNeighbor> shiftEval(*plainEval);
 
-            /* =========================================================
+    /* =========================================================
              *
              * the neighborhood of a solution
              *
              * ========================================================= */
 
 
-            SA1rndShiftNeighborhood rndShiftNH(nbDouble+nbInt+nbBool, doubleBounds, intBounds, nbBool);
+    SA1rndShiftNeighborhood rndShiftNH(nbDouble+nbInt+nbBool, doubleBounds, intBounds, nbBool);
 
 
 
-                /************************************
+    /************************************
                 STOPPING CRITERIA
                 ************************************/
 
-//                MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_stop);
-//                state.storeFunctor(evalCont);
+    //                MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_stop);
+    //                state.storeFunctor(evalCont);
 
 
-            /* =========================================================
+    /* =========================================================
              *
              * execute the local search from random solution
              *
              * ========================================================= */
 
-            EOStd  solution2;
+    EOStd  solution2;
 
-//            /* =========================================================
-//             *
-//             * the cooling schedule of the process
-//             *
-//             * ========================================================= */
+    //            /* =========================================================
+    //             *
+    //             * the cooling schedule of the process
+    //             *
+    //             * ========================================================= */
 
-//            // initial temp, factor of decrease, number of steps without decrease, final temp.
-            moSimpleCoolingSchedule<EOStd> coolingSchedule(_parameters->value(SA1Parameters::INITTEMPERATURE,100).toDouble(), _parameters->value(SA1Parameters::DECREASINGFACTOR,0.9).toDouble(), _parameters->value(SA1Parameters::SPAN,100).toDouble(), _parameters->value(SA1Parameters::FINALTEMPERATURE,1).toDouble());
+    //            // initial temp, factor of decrease, number of steps without decrease, final temp.
+    moSimpleCoolingSchedule<EOStd> coolingSchedule(
+                _parameters->value(SA1Parameters::str(SA1Parameters::INITTEMPERATURE),100).toDouble(),
+                _parameters->value(SA1Parameters::str(SA1Parameters::DECREASINGFACTOR),0.9).toDouble(),
+                _parameters->value(SA1Parameters::str(SA1Parameters::SPAN),100).toDouble(),
+                _parameters->value(SA1Parameters::str(SA1Parameters::FINALTEMPERATURE),1).toDouble());
 
-//            /* =========================================================
-//             *
-//             * Comparator of neighbors
-//             *
-//             * ========================================================= */
+    //            /* =========================================================
+    //             *
+    //             * Comparator of neighbors
+    //             *
+    //             * ========================================================= */
 
-//            SA1moSolNeighborComparator<shiftNeighbor> solComparator;
+    //            SA1moSolNeighborComparator<shiftNeighbor> solComparator;
 
-//            /* =========================================================
-//             *
-//             * Example of Checkpointing
-//             *
-//             * ========================================================= */
+    //            /* =========================================================
+    //             *
+    //             * Example of Checkpointing
+    //             *
+    //             * ========================================================= */
 
-            moTrueContinuator<shiftNeighbor> continuator;//always continue
-            moCheckpoint<shiftNeighbor> checkpoint2(continuator);
-            moFitnessStat<EOStd> fitStat;
-            checkpoint2.add(fitStat);
-            eoFileMonitor monitor("fitness.out", "");
-            moCounterMonitorSaver countMon(100, monitor);
-            checkpoint2.add(countMon);
-            monitor.add(fitStat);
-            // display obj vector in GUI
-            EAUpdaterDispObjGUIOneSol < EOStd > disp_updater(solution2);
-            checkpoint2.add(disp_updater);
+    moTrueContinuator<shiftNeighbor> continuator;//always continue
+    moCheckpoint<shiftNeighbor> checkpoint2(continuator);
+    moFitnessStat<EOStd> fitStat;
+    checkpoint2.add(fitStat);
+    eoFileMonitor monitor("fitness.out", "");
+    moCounterMonitorSaver countMon(100, monitor);
+    checkpoint2.add(countMon);
+    monitor.add(fitStat);
+    // display obj vector in GUI
+    EAUpdaterDispObjGUIOneSol < EOStd > disp_updater(solution2);
+    checkpoint2.add(disp_updater);
 
-//            moTrueContinuator<shiftNeighbor> continuator2;//always continue
-//            moCheckpoint<shiftNeighbor> checkpoint2(continuator2);
-//            moFitnessStat<EOStd> fitStat2;
-//            checkpoint1.add(fitStat2);
-//            // display obj vector in GUI
-//            EAUpdaterDispObjGUIOneSol < EOStd > disp_updater2(solution2);
-//            checkpoint2.add(disp_updater2);
-            SA1moSolNeighborComparator<shiftNeighbor> solComparator;
+    //            moTrueContinuator<shiftNeighbor> continuator2;//always continue
+    //            moCheckpoint<shiftNeighbor> checkpoint2(continuator2);
+    //            moFitnessStat<EOStd> fitStat2;
+    //            checkpoint1.add(fitStat2);
+    //            // display obj vector in GUI
+    //            EAUpdaterDispObjGUIOneSol < EOStd > disp_updater2(solution2);
+    //            checkpoint2.add(disp_updater2);
+    SA1moSolNeighborComparator<shiftNeighbor> solComparator;
 
-            SA1mo<shiftNeighbor> localSearch2(rndShiftNH, *plainEval, shiftEval, coolingSchedule, solComparator, checkpoint2);
+    SA1mo<shiftNeighbor> localSearch2(rndShiftNH, *plainEval, shiftEval, coolingSchedule, solComparator, checkpoint2);
 
-            (*init)(solution2);
+    (*init)(solution2);
 
-            (*plainEval)(solution2);
+    (*plainEval)(solution2);
 
-            std::cout << "#########################################" << std::endl;
-            std::cout << "initial solution2: " << solution2 << std::endl ;
+    std::cout << "#########################################" << std::endl;
+    std::cout << "initial solution2: " << solution2 << std::endl ;
 
-            localSearch2(solution2);
-
-
-
-
-
-
-        ///************************************
-        //GETTING RESULT FROM FINAL ARCHIVE
-        //************************************/
-        Result* result = buildResult(arch);
+    localSearch2(solution2);
 
 
-        return result;
+
+
+
+
+    ///************************************
+    //GETTING RESULT FROM FINAL ARCHIVE
+    //************************************/
+    Result* result = buildResult(arch);
+
+
+    return result;
 
 }
 

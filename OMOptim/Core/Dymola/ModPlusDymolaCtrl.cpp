@@ -59,7 +59,7 @@ ModPlusDymolaCtrl::ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc*
     _copyAllMoOfFolder = true;
 
     _parameters = new MOParameters();
-    setDefaultParameters();
+    DymolaParameters::setDefaultParameters(_parameters);
 
     connect(_parameters,SIGNAL(modified()),this,SIGNAL(modified()));
 }
@@ -91,25 +91,6 @@ QString ModPlusDymolaCtrl::name()
     return "Dymola";
 }
 
-void ModPlusDymolaCtrl::setDefaultParameters()
-{
-    _parameters->addItem(new MOParameter((int)Dymola::STOPTIME,"stop time","Stop time",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
-    _parameters->addItem(new MOParameter((int)Dymola::TOLERANCE,"tolerance","Tolerance",1E-4,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
-    _parameters->addItem(new MOParameter((int)Dymola::NINTERVAL,"nInterval","nInterval",500,MOParameter::INT,0,std::numeric_limits<int>::max()));
-
-
-    QMap<int,QString> mapSolvers;
-    mapSolvers.insert(Dymola::DASSL,"Dassl");
-    mapSolvers.insert(Dymola::EULER,"Euler");
-
-    _parameters->addItem( new MOParameterListed((int)Dymola::SOLVER,"Solver","Solver",Dymola::DASSL,mapSolvers));
-    _parameters->addItem(new MOParameter((int)Dymola::MAXSIMTIME,"MaxSimTime","Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
-
-    QMap<int,QString> finalFiles;
-    finalFiles.insert(Dymola::DSFINAL,"dsfinal");
-    finalFiles.insert(Dymola::DSRES,"dsres");
-    _parameters->addItem( new MOParameterListed((int)Dymola::FINALFILE,"Final file considered","File where variables are read (longer if dsres but all variables are within)",Dymola::DSFINAL,finalFiles));
-}
 
 bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QString path)
 {
@@ -117,12 +98,12 @@ bool ModPlusDymolaCtrl::readOutputVariables(MOVector<Variable> *finalVariables,Q
     if(folder.path().isEmpty())
         folder = _modModelPlus->mmoFolder();
 
-    int outputFile = _parameters->value(Dymola::FINALFILE,Dymola::DSFINAL).toInt();
+    int outputFile = _parameters->value(DymolaParameters::str(DymolaParameters::FINALFILE),DymolaParameters::DSFINAL).toInt();
     switch(outputFile)
     {
-    case Dymola::DSFINAL :
+    case DymolaParameters::DSFINAL :
         return readOutputVariablesDSFINAL(finalVariables,folder.absoluteFilePath(_dsfinalFile));
-    case Dymola::DSRES :
+    case DymolaParameters::DSRES :
         return readOutputVariablesDSRES(finalVariables,folder.absoluteFilePath(_dsresFile));
     }
     return false;
@@ -321,7 +302,7 @@ bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,M
 
     // Launching Dymosim
     int maxNSec=-1;
-    int iParam = _parameters->findItem((int)Dymola::MAXSIMTIME,MOParameter::INDEX);
+    int iParam = _parameters->findItem(DymolaParameters::str(DymolaParameters::MAXSIMTIME));
     if(iParam>-1)
         maxNSec=_parameters->at(iParam)->getFieldValue(MOParameter::VALUE).toInt();
     Dymola::start(tempDir,_simProcess,maxNSec);

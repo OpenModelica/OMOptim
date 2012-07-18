@@ -55,18 +55,17 @@ MOParameter::MOParameter(const MOParameter & param):MOItem(param)
     _type = param._type;
     _min = param._min;
     _max = param._max;
-    _index = param._index;
+    //_index = param._index;
     _enablingIndexes = param._enablingIndexes;
     _group = param._group;
     _panel = param._panel;
 }
 
-MOParameter::MOParameter(int index,QString name,QString description, QVariant defaultValue, Type type, QVariant minValue, QVariant maxValue,int enablingIndex,QVariant enablingValue,QString group):
-    _index(index),_description(description),_defaultValue(defaultValue),_type(type),_min(minValue),_max(maxValue),_group(group)
+MOParameter::MOParameter(QString name,QString description, QVariant defaultValue, Type type, QVariant minValue, QVariant maxValue,QString enablingIndex,QVariant enablingValue,QString group):
+    _description(description),_defaultValue(defaultValue),_type(type),_min(minValue),_max(maxValue),_group(group)
 {
     _name = name;
     _value = _defaultValue;
-
     _enablingIndexes.insert(enablingIndex,enablingValue);
 
     _filledFields.push_back(MOParameter::DEFAULTVALUE);
@@ -76,7 +75,7 @@ MOParameter::MOParameter(int index,QString name,QString description, QVariant de
     _filledFields.push_back(MOParameter::MAX);
     _filledFields.push_back(MOParameter::TYPE);
     _filledFields.push_back(MOParameter::DESCRIPTION);
-    _filledFields.push_back(MOParameter::INDEX);
+    //_filledFields.push_back(MOParameter::INDEX);
     _filledFields.push_back(MOParameter::GROUP);
     _filledFields.push_back(MOParameter::PANEL);
 
@@ -134,9 +133,9 @@ bool MOParameter::setFieldValue(int ifield,QVariant value)
         case MAX :
             _max=value;
             break;
-        case INDEX:
-            _index=value.toInt();
-            break;
+//        case INDEX:
+//            _index=value.toInt();
+//            break;
         case GROUP:
             _group=value.toString();
             break;
@@ -177,8 +176,8 @@ QVariant MOParameter::getFieldValue(int ifield, int role) const
             return _type;
         case DEFAULTVALUE :
             return _defaultValue;
-        case INDEX :
-            return _index;
+//        case INDEX :
+//            return _index;
         case GROUP :
             return _group;
         case PANEL :
@@ -211,8 +210,8 @@ QString MOParameter::sFieldName(int iField, int role)
         return "Max";
     case TYPE :
         return "Type";
-    case INDEX :
-        return "Index";
+//    case INDEX :
+//        return "Index";
     case DEFAULTVALUE :
         return "DefaultValue";
     case GROUP :
@@ -224,12 +223,12 @@ QString MOParameter::sFieldName(int iField, int role)
     }
 }
 
-void MOParameter::addEnablingIndex(int index,QVariant value)
+void MOParameter::addEnablingIndex(QString name,QVariant value)
 {
-    _enablingIndexes.insert(index,value);
+    _enablingIndexes.insert(name,value);
 }
 
-QMap<int,QVariant> MOParameter::enablingIndexes() const
+QMap<QString,QVariant> MOParameter::enablingIndexes() const
 {
     return _enablingIndexes;
 }
@@ -247,14 +246,14 @@ QDomElement MOParameter::toXmlData(QDomDocument & doc)
     QString fieldValue;
     for(int iF=0;iF<getNbFields();iF++)
     {
-        if(iF!=MOParameter::INDEX)
-        {
+//        if(iF!=MOParameter::INDEX)
+//        {
             fieldName = getFieldName(iF,Qt::UserRole);
             fieldName.replace(" ",XMLTools::space());
             fieldValue = getFieldValue(iF).toString();
             fieldValue.replace(" ",XMLTools::space());
             cItem.setAttribute(fieldName,fieldValue);
-        }
+//        }
     }
     return cItem;
 }
@@ -279,8 +278,7 @@ void MOParameter::update(QDomElement & domEl)
         fieldValue = attributes.item(i).toAttr().value();
         fieldValue.replace(XMLTools::space()," ");
         iField = getFieldIndex(fieldName,Qt::UserRole);
-        if(iField!=MOParameter::INDEX)
-            setFieldValue(iField,QVariant(fieldValue));
+        setFieldValue(iField,QVariant(fieldValue));
     }
 }
 
@@ -295,8 +293,8 @@ MOParameterListed::MOParameterListed(const MOParameterListed & param):MOParamete
     _mapList = param._mapList;
 }
 
-MOParameterListed::MOParameterListed(int index,QString name,QString description, QVariant defaultValue, QMap<int,QString> mapList,int enablingIndex,QVariant enablingValue):
-    MOParameter(index,name,description,defaultValue,LIST),_mapList(mapList)
+MOParameterListed::MOParameterListed(QString name,QString description, QVariant defaultValue, QMap<int,QString> mapList,QString enablingIndex,QVariant enablingValue):
+    MOParameter(name,description,defaultValue,LIST),_mapList(mapList)
 {
     addEnablingIndex(enablingIndex,enablingValue);
 }
@@ -350,9 +348,9 @@ bool MOParameterListed::setFieldValue(int ifield,QVariant value)
     case DEFAULTVALUE :
         _defaultValue = value;
         break;
-    case INDEX:
-        _index=value.toInt();
-        break;
+//    case INDEX:
+//        _index=value.toInt();
+//        break;
     case GROUP:
         _group=value.toString();
         break;
@@ -387,8 +385,8 @@ QVariant MOParameterListed::getFieldValue(int ifield, int role) const
             return _type;
         case DEFAULTVALUE :
             return _defaultValue;
-        case INDEX :
-            return _index;
+//        case INDEX :
+//            return _index;
         case GROUP :
             return _group;
         case PANEL :
@@ -422,14 +420,14 @@ MOParameters::MOParameters()
     connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
-QVariant MOParameters::value(int index,QVariant defaultValue) const
-{
-    int iParam = this->findItem(index,MOParameter::INDEX);
-    if(iParam>-1)
-        return this->at(iParam)->getFieldValue(MOParameter::VALUE);
-    else
-        return defaultValue;
-}
+//QVariant MOParameters::value(QString index,QVariant defaultValue) const
+//{
+//    int iParam = this->findItem(index,MOParameter::NAME);
+//    if(iParam>-1)
+//        return this->at(iParam)->getFieldValue(MOParameter::VALUE);
+//    else
+//        return defaultValue;
+//}
 
 QVariant MOParameters::value(QString name,QVariant defaultValue) const
 {
@@ -444,9 +442,9 @@ QVariant MOParameters::value(QString name,QVariant defaultValue) const
     }
 }
 
-bool MOParameters::setValue(int index,QVariant value)
+bool MOParameters::setValue(QString name,QVariant value)
 {
-    int iParam = this->findItem(index,MOParameter::INDEX);
+    int iParam = this->findItem(name);
     if(iParam>-1)
         return this->at(iParam)->setFieldValue(MOParameter::VALUE,value);
     else
@@ -464,12 +462,12 @@ QMultiMap<QString,MOParameter*> MOParameters::groupmap() const
 
 
 
-void MOParameters::setGroup(QString group,QList<int> indexes)
+void MOParameters::setGroup(QString group,QStringList indexes)
 {
     int iParam;
     for(int i=0;i<indexes.size();i++)
     {
-        iParam = this->findItem(indexes.at(i),MOParameter::INDEX);
+        iParam = this->findItem(indexes.at(i));
         if(iParam>-1)
             this->at(iParam)->setFieldValue(MOParameter::GROUP,group);
     }
@@ -484,12 +482,12 @@ void MOParameters::setPanel(QString panel)
     }
 }
 
-void MOParameters::addEnablingIndex(QList<int> enabledIndexes,int enablingIndex, QVariant enablingValue)
+void MOParameters::addEnablingIndex(QStringList enabledIndexes,QString enablingIndex, QVariant enablingValue)
 {
     int iParam;
     for(int i=0;i<enabledIndexes.size();i++)
     {
-        iParam = this->findItem(enabledIndexes.at(i),MOParameter::INDEX);
+        iParam = this->findItem(enabledIndexes.at(i));
         if(iParam>-1)
             this->at(iParam)->addEnablingIndex(enablingIndex,enablingValue);
     }
@@ -499,20 +497,20 @@ void MOParameters::addEnablingIndex(QList<int> enabledIndexes,int enablingIndex,
   Considering enablingIndex parameters and their values,
   return whether or not parameter indicated by index should be enabled.
   */
-bool MOParameters::shouldBeEnabled(int index)
+bool MOParameters::shouldBeEnabled(QString name)
 {
-    int iParam = this->findItem(index,MOParameter::INDEX);
+    int iParam = this->findItem(name);
     if(iParam==-1)
         return false;
 
-    QMap<int,QVariant> enablingIndexes = this->at(iParam)->enablingIndexes();
+    QMap<QString,QVariant> enablingIndexes = this->at(iParam)->enablingIndexes();
     bool result = true;
     int i=0;
-    int curKey;
+    QString curKey;
     while(result && (i<enablingIndexes.keys().size()))
     {
         curKey = enablingIndexes.keys().at(i);
-        if(curKey>-1)
+        if(!curKey.isEmpty())
             result = result && (value(curKey)==enablingIndexes.value(curKey));
         i++;
     }
@@ -533,12 +531,12 @@ bool MOParameters::operator==(const MOParameters& b)const
         return false;
 
     bool equals = true;
-    int curIndex;
+    QString curName;
     int i=0;
     while(equals && (i<size()))
     {
-        curIndex = this->at(i)->index();
-        equals = equals && (this->at(i)->value()==b.value(curIndex));
+        curName = this->at(i)->name();
+        equals = equals && (this->at(i)->value()==b.value(curName));
         i++;
     }
     return equals;

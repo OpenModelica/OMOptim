@@ -168,9 +168,9 @@ Result* SPEA2Adapt::launch(QString tempDir)
     /************************************
     PROGRESS AND CONTINUATOR
     ************************************/
-    unsigned initPopSize = _parameters->value(SPEA2AdaptParameters::POPULATIONSIZE,20).toInt();
-    unsigned offSpringRate = _parameters->value(SPEA2AdaptParameters::OFFSPRINGRATE,3).toInt();
-    unsigned nTotalGen = _parameters->value(SPEA2AdaptParameters::MAXGENERATIONS,100).toInt();
+    unsigned initPopSize = _parameters->value(SPEA2AdaptParameters::str(SPEA2AdaptParameters::POPULATIONSIZE),20).toInt();
+    unsigned offSpringRate = _parameters->value(SPEA2AdaptParameters::str(SPEA2AdaptParameters::OFFSPRINGRATE),3).toInt();
+    unsigned nTotalGen = _parameters->value(SPEA2AdaptParameters::str(SPEA2AdaptParameters::MAXGENERATIONS),100).toInt();
     unsigned nTotalEvals = initPopSize + initPopSize*nTotalGen*offSpringRate;
 
     OMEAProgress OMEAProgress;
@@ -218,8 +218,8 @@ Result* SPEA2Adapt::launch(QString tempDir)
     //eoPop<EOAdapt>& pop = state.takeOwnership(eoPop<EOAdapt>());
     eoPop<EOAdapt> pop;
     bool loadFailed=false;
-    bool useStartFile = _parameters->value(SPEA2AdaptParameters::USESTARTFILE,false).toBool();
-    QString reloadFilePath = _parameters->value(SPEA2AdaptParameters::STARTFILEPATH).toString();
+    bool useStartFile = _parameters->value(SPEA2AdaptParameters::str(SPEA2AdaptParameters::USESTARTFILE),false).toBool();
+    QString reloadFilePath = _parameters->value(SPEA2AdaptParameters::str(SPEA2AdaptParameters::STARTFILEPATH)).toString();
 
     if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
     {
@@ -246,7 +246,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
         {
             InfoSender::instance()->send(Info("Loading start file success : "+reloadFilePath,ListInfo::NORMAL2));
         }
-        bool reinitStdDev= _parameters->value(SPEA2AdaptParameters::REINITSTDDEV).toBool();
+        bool reinitStdDev= _parameters->value(SPEA2AdaptParameters::str(SPEA2AdaptParameters::REINITSTDDEV)).toBool();
         if(reinitStdDev)
         {
             EAAdaptReinitStdDev<EOAdapt>::reinitDblStdDev(pop,doubleBounds,initPopSize);
@@ -325,7 +325,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
     ///************************************
     //BUILD SPEAAdapt1
     //************************************/
-    double rate = _parameters->value(SPEA2AdaptParameters::OFFSPRINGRATE,3).toDouble();
+    double rate = _parameters->value(SPEA2AdaptParameters::str(SPEA2AdaptParameters::OFFSPRINGRATE),3).toDouble();
     SPEA2Algo<EOAdapt> spea2(checkpoint,*eval,*xover,1,*mutation,1,arch,initPopSize,rate,true);
 
     ///************************************

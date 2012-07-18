@@ -16,6 +16,7 @@ http://www-cep.ensmp.fr/english/
 
 
 #include "ModPlusCtrl.h"
+#include "DymolaParameters.h"
 
 class ModModelPlus;
 class MOomc;
@@ -24,6 +25,7 @@ class Variable;
 
 class ModPlusDymolaCtrl :public ModPlusCtrl
 {
+
 
 
 
@@ -43,8 +45,6 @@ public:
         bool readOutputVariablesDSFINAL(MOVector<Variable> *,QString _dsfinalFile);
         bool readInitialVariables(MOVector<Variable> *,bool forceRecompile,QString _dsinFile="");
 
-        // Parameters
-        void setDefaultParameters();
 
         // Compile function
         bool createDsin(QFileInfoList moDeps);

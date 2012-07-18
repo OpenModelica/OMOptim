@@ -1539,16 +1539,16 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
         fields = elementInfos.split(",");
 
         // get element type
-        type = LowTools::getValueFromElementInfo(elementInfos,"elementtype");
+        type = getValueFromElementInfo(elementInfos,"elementtype");
 
         // Package or Model
         if(type=="classdef")
         {
             //get classrestriction (MODEL or PACKAGE or RECORD)
-            QString restr = LowTools::getValueFromElementInfo(elementInfos,"classrestriction");
+            QString restr = getValueFromElementInfo(elementInfos,"classrestriction");
 
             //get classname
-            QString className = LowTools::getValueFromElementInfo(elementInfos,"classname");
+            QString className = getValueFromElementInfo(elementInfos,"classname");
 
             //add it
             if(restr.contains("MODEL"))
@@ -1580,10 +1580,10 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
         if(type=="component")
         {
             //get component class
-            compClass = LowTools::getValueFromElementInfo(elementInfos,"typename");
+            compClass = getValueFromElementInfo(elementInfos,"typename");
 
             //get classname
-            compName = LowTools::getValueFromElementInfo(elementInfos,"names");
+            compName = getValueFromElementInfo(elementInfos,"names");
             compName.remove("{");
             compName.remove("}");
             compName = compName.split(",").at(0);
@@ -1593,4 +1593,31 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
         }
 
     }
+}
+
+QString MOomc::getValueFromElementInfo(QString elementInfoLine,QString fieldName)
+{
+
+    QStringList fields = elementInfoLine.split(",");
+    QRegExp regExp(".*"+fieldName+"=.*");
+
+    int iField=fields.indexOf(regExp);
+    if(iField>-1)
+    {
+        try{
+            QString value = fields.at(iField).section("=",1,1);
+
+            // removing whitespaces for non-path fields
+            if(value.indexOf("\"")==-1)
+            {
+                value.remove(" ");
+            }
+            return value;
+        }
+        catch(std::exception &e)
+        {
+            return QString();
+        }
+    }
+    return QString();
 }

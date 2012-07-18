@@ -1,0 +1,172 @@
+/*! \page pageAddANewProblem How to add a new kind of problem
+
+Tools based on OMOptimBasis can be extended in different ways. This document illustrates how to add a new kind of problem.
+
+To add your own kind of problem, one should procede in several steps :
+
+- create MyProblem class, inheriting Problem
+- create MyResult class, inheriting Result
+- create MyProblemInterface class, inheriting ProblemInterface.
+
+Please note that sometimes, MyResult could be similar to an existing result (e.g. OptimResult). In that case, you don't need to create a new class.
+
+\section sec1 Create MyProblem class
+MyProblem should inherit Problem class.
+
+\code
+class MyProblem : public Problem
+{
+}
+\endcode
+
+Then, one should implement needed functions (Problem is an abstract class).
+
+\subsection secLaunch MyProblem::launch(...)
+The most important function: it defines the computation of the problem. Launch function should return a pointer to a Result inheriting instance. It may also return a NULL pointer if problem failed. In that case, one can also return a Result instance which function isSuccess() returns false.
+
+\code
+Result* MyProblem::launch(ProblemConfig config)
+{
+}
+\endcode
+
+
+\subsection ssec1	MyProblem::toXmlData(...)
+toXmlData function is used to save problem in a xml file (and thus to be reloaded).
+
+\code
+virtual QDomElement toXmlData(QDomDocument & doc)
+{
+}
+\endcode
+
+\section sec2 Create MyProblemInterface class
+ProblemInterface is used by Project class to manage problems. MyProblemInterface should implement next functions :
+
+
+\subsection ssec2 MyProblemInterface::createNewProblem(...)
+@sa ProblemInterface::createNewProblem()
+
+
+
+\code
+   Problem* MyProblemInterface::createNewProblem(ProjectBase* projectBase,const QStringList modelsList,QString problemType)
+{
+	if(problemType==MyProblem::className()) // security check
+		return new MyProblem(project);	
+	else
+		return NULL;		
+}
+\endcode
+
+\subsection ssec3 Graphical user interface functions
+
+@sa ProblemInterface::createProblemTab()
+
+
+\code
+QWidget* MyProblemInterface::createProblemTab(Problem * problem,QWidget* parent)
+{
+    OneSimulation* oneSim = dynamic_cast<OneSimulation*>(problem);
+    return new TabOneSim(oneSim,parent);
+}
+
+
+QWidget* MyProblemInterface::createResultTab(Result* result,QWidget* parent)
+{
+    OneSimResult* oneSimResult = dynamic_cast<OneSimResult*>(result);
+    return new TabResOneSim(oneSimResult,parent);
+}
+
+
+Problem* MyProblemInterface::loadProblem(QFileInfo saveFile,const QDomElement & domOMCase, ProjectBase * projectBase)
+{
+    if(domOMCase.isNull() || domOMCase.tagName()!="OMCase" )
+        return NULL;
+
+    Project* project = dynamic_cast<Project*>(projectBase);
+    if(!project)
+        return NULL;
+
+   QDomElement domOMProblem = domOMCase.firstChildElement("OMProblem");
+
+
+    Problem* problem = NULL;
+    bool ok = true;
+
+    QDomElement domProblem = domOMProblem.firstChildElement(OneSimulation::className());
+
+    problem = new OneSimulation(domProblem,project,ok);
+
+    if(!ok)
+    {
+        delete problem;
+        problem = NULL;
+    }
+    else
+    {
+        problem->setEntireSavePath(saveFile.absoluteFilePath());
+    }
+
+    return problem;
+}
+
+
+
+Result* MyProblemInterface::loadResult(QFileInfo saveFile,const QDomElement & domOMCase, ProjectBase * projectBase)
+{
+    if(domOMCase.isNull() || domOMCase.tagName()!="OMCase" )
+        return NULL;
+
+
+    Project* project = dynamic_cast<Project*>(projectBase);
+    if(!project)
+        return NULL;
+
+
+    // read problem
+    bool ok;
+    QDomElement domOMProblem = domOMCase.firstChildElement("OMProblem");
+    QDomElement domProblem = domOMProblem.firstChildElement(OneSimulation::className());
+    OneSimulation oneSim(domProblem,project,ok);
+
+    if(!ok)
+    {
+        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
+        return NULL;
+    }
+
+    // create result
+    QDomElement domOMResult = domOMCase.firstChildElement("OMResult");
+    QDomElement domResult = domOMResult.firstChildElement(OneSimResult::className());
+    Result* result = new OneSimResult(project,domResult,oneSim,ok);
+
+    if(!result)
+    {
+        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
+        return NULL;
+    }
+
+    // attribute problem to result
+    if(result)
+    {
+        // attribute file path to result
+        result->setEntireSavePath(saveFile.filePath());
+    }
+
+    return result;
+}
+
+\endcode
+	
+\section sec3 Add a new Optimization algorithm
+\subsection ssec4 Add it directly in OMOptimLib
+
+
+
+\subsection ssec5 Add it in your extension
+
+
+
+
+ **/

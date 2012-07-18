@@ -46,7 +46,7 @@ http://www-cep.ensmp.fr/english/
 #include "ModPlusOMCtrl.h"
 #include "VariableType.h"
 #include "LowTools.h"
-
+#include "OpenModelicaParameters.h"
 // for .mat reading
 #include "../../SimulationRuntime/c/util/read_matlab4.h"
 
@@ -454,8 +454,8 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
         /// @deprecated Now OM uses xml input.
         if(parameters)
         {
-            QList<ModPlusOMCtrl::Parameters> initParameters; // parameters to specify in init file
-            initParameters << ModPlusOMCtrl::STOPTIME;
+            QList<OpenModelicaParameters::Parameters> initParameters; // parameters to specify in init file
+            initParameters << OpenModelicaParameters::STOPTIME;
 
             QStringList paramIndicators;
             paramIndicators << "stop value";
@@ -467,7 +467,7 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
             int iP;
             for(int i=0;i<initParameters.size();i++)
             {
-                iP = parameters->findItem((int)initParameters.at(i),MOParameter::INDEX);
+                iP = parameters->findItem(OpenModelicaParameters::str(initParameters.at(i)));
                 if(iP>-1)
                 {
                     curParam = parameters->at(iP);
@@ -616,9 +616,9 @@ void OpenModelica::setInputParametersXml(QDomDocument &doc,MOParameters *paramet
     QDomElement oldxExp = xExp;
 
 
-    double starttime = parameters->value(ModPlusOMCtrl::STARTTIME,0).toDouble();
-    double stoptime = parameters->value(ModPlusOMCtrl::STOPTIME,1).toDouble();
-    int nbIntervals = parameters->value(ModPlusOMCtrl::NBINTERVALS,2).toInt();
+    double starttime = parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::STARTTIME),0).toDouble();
+    double stoptime = parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::STOPTIME),1).toDouble();
+    int nbIntervals = parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::NBINTERVALS),2).toInt();
     double stepSize = (stoptime-starttime)/nbIntervals;
 
 
@@ -630,24 +630,23 @@ void OpenModelica::setInputParametersXml(QDomDocument &doc,MOParameters *paramet
 
         if(!curParam->name().contains(" ")) // remove old parameters, temporary
         {
-            switch(curParam->index())
+            if(curParam->name()==OpenModelicaParameters::str(OpenModelicaParameters::SOLVER))
             {
-            // if solver or outputformat, use string value
-            case ModPlusOMCtrl::SOLVER :
                 curParamListed = dynamic_cast<MOParameterListed*>(curParam);
                 xExp.setAttribute(curParamListed->name(),curParamListed->strValue());
-                break;
-            case ModPlusOMCtrl::OUTPUT :
+            }
+            else if(curParam->name()==OpenModelicaParameters::str(OpenModelicaParameters::OUTPUT))
+            {
                 curParamListed = dynamic_cast<MOParameterListed*>(curParam);
                 xExp.setAttribute(curParamListed->name(),curParamListed->strValue());
-                break;
-            // if number of intervals, calculate and set step size
-            case ModPlusOMCtrl::NBINTERVALS :
+            }
+            else if (curParam->name()==OpenModelicaParameters::str(OpenModelicaParameters::NBINTERVALS))
+            {
                 xExp.setAttribute("stepSize",QString::number(stepSize));
-                break;
-            default :
+            }
+            else
+            {
                 xExp.setAttribute(curParam->name(),curParam->value().toString());
-                break;
             }
         }
     }

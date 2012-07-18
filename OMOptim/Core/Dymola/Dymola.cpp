@@ -24,7 +24,7 @@ http://www-cep.ensmp.fr/english/
 #include "Variables.h"
 #include "InfoSender.h"
 #include "LowTools.h"
-
+#include "DymolaParameters.h"
 
 Dymola::Dymola(void)
 {
@@ -73,8 +73,8 @@ bool Dymola::firstRun(QFileInfo moPath,QString modelToConsider,QDir storeFolder,
 
     for(int i=0;i<moToLoad.size();i++)
     {
-            curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
-            scriptText.append("openModel(\""+curPath+"\")\n");
+        curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
+        scriptText.append("openModel(\""+curPath+"\")\n");
     }
 
 
@@ -162,8 +162,8 @@ bool Dymola::createDsin(QFileInfo moFile,QString modelToConsider,QDir folder,
 
     for(int i=0;i<moToLoad.size();i++)
     {
-            curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
-            scriptText.append("openModel(\""+curPath+"\")\n");
+        curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
+        scriptText.append("openModel(\""+curPath+"\")\n");
     }
 
 
@@ -281,7 +281,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     }
 
 
-    int iPStopTime = parameters->findItem((int)Dymola::STOPTIME,MOParameter::INDEX);
+    int iPStopTime = parameters->findItem(DymolaParameters::str(DymolaParameters::STOPTIME));
     int iLStopTime = lines.indexOf(QRegExp(".* # StopTime .*"));
     if((iLStopTime>-1) && (iPStopTime>-1))
     {
@@ -291,7 +291,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
         lines.replace(iLStopTime,newLine);
     }
 
-    int iPTolerance = parameters->findItem((int)Dymola::TOLERANCE,MOParameter::INDEX);
+    int iPTolerance = parameters->findItem(DymolaParameters::str(DymolaParameters::TOLERANCE));
     int iLTolerance = lines.indexOf(QRegExp(".*  # Tolerance .*"));
     if((iLTolerance>-1) && (iPTolerance>-1))
     {
@@ -301,7 +301,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
         lines.replace(iLTolerance,newLine);
     }
 
-    int iPnInterval = parameters->findItem((int)Dymola::NINTERVAL,MOParameter::INDEX);
+    int iPnInterval = parameters->findItem(DymolaParameters::str(DymolaParameters::NINTERVAL));
     int iLnInterval = lines.indexOf(QRegExp(".*  # nInterval .*"));
     if((iLnInterval>-1) && (iPnInterval>-1))
     {
@@ -311,7 +311,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
         lines.replace(iLnInterval,newLine);
     }
 
-    int iPSolver = parameters->findItem((int)Dymola::SOLVER,MOParameter::INDEX);
+    int iPSolver = parameters->findItem(DymolaParameters::str(DymolaParameters::SOLVER));
     int iLSolver = lines.indexOf(QRegExp(".*  # Algorithm .*"));
     if((iLSolver>-1) && (iPSolver>-1))
     {
@@ -321,17 +321,17 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
         lines.replace(iLSolver,newLine);
     }
 
-    int iFinalFile = parameters->value((int)Dymola::FINALFILE,-1).toInt();
+    int iFinalFile = parameters->findItem(DymolaParameters::str(DymolaParameters::FINALFILE));
     int iLineLRes = lines.indexOf(QRegExp(".*  # lres     0/1 do not/store results .*"));
     if((iLineLRes>-1) && (iFinalFile>-1))
     {
         int lRes;
         switch(iFinalFile)
         {
-        case DSFINAL :
+        case DymolaParameters::DSFINAL :
             lRes = 0;
             break;
-        case DSRES :
+        case DymolaParameters::DSRES :
         default :
             lRes = 1;
             break;

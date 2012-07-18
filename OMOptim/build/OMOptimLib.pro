@@ -255,7 +255,9 @@ HEADERS += ../config.h \
     ../Core/OMC/OMCThreads.h \
     ../GUI/Tools/OMOptimGuiTools.h \
     ../GUI/Widgets/WidgetModelsList.h \
-    ../Core/OMOptimSettings.h
+    ../Core/OMOptimSettings.h \
+    ../Core/Dymola/DymolaParameters.h \
+    ../Core/OpenModelica/OpenModelicaParameters.h
 
 
 FORMS += ../GUI/MainWindow.ui \

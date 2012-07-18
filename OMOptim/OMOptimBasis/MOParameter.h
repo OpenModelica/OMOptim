@@ -64,7 +64,7 @@ public:
         MIN,
         MAX,
         DESCRIPTION,
-        INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
+        //INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
         GROUP, // used to display parameter in separated groupbox
         PANEL   // used to display parameter in separated panel
     };
@@ -83,14 +83,14 @@ public:
 
     MOParameter();
     MOParameter(const MOParameter &);
-    MOParameter(int index,QString name,QString desc,QVariant defaultValue, Type type, QVariant minValue=0, QVariant maxValue=std::numeric_limits<int>::max(),int enablingIndex=-1,QVariant enablingValue = true,QString group="");
+    MOParameter(QString name,QString desc,QVariant defaultValue, Type type, QVariant minValue=0, QVariant maxValue=std::numeric_limits<int>::max(),QString enablingIndex=QString(),QVariant enablingValue = true,QString group="");
     //MOParameter(QString);
     MOParameter(QDomElement & domEl);
     virtual ~MOParameter(void);
 
     virtual QString getClassName(){return "MOParameter";};
 
-    static const int nbFields = 10;
+    static const int nbFields = 9;
     virtual unsigned getNbFields(){return nbFields;};
 
 
@@ -101,9 +101,9 @@ public:
 
     virtual MOParameter* clone() const;
 
-    void addEnablingIndex(int,QVariant enablingValue);
-    QMap<int,QVariant> enablingIndexes() const;
-    int index(){return _index;}
+    void addEnablingIndex(QString index,QVariant enablingValue);
+    QMap<QString,QVariant> enablingIndexes() const;
+    //int index(){return _index;}
 
 
     QVariant value(){return getFieldValue(VALUE);};
@@ -119,8 +119,8 @@ protected :
     Type _type;
     QVariant _min;
     QVariant _max;
-    int _index;
-    QMap<int,QVariant> _enablingIndexes; /** map of enabling parameter (the one indexed by key) that enable this one.
+    //int _index;
+    QMap<QString,QVariant> _enablingIndexes; /** map of enabling parameter (the one indexed by key) that enable this one.
             QVariant corresponds to the value the enabling parameter should take to enable this parameter*/
 
     QString _group;
@@ -145,7 +145,7 @@ public:
         MIN,
         MAX,
         DESCRIPTION,
-        INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
+        //INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
         GROUP,
         PANEL
     };
@@ -154,7 +154,7 @@ public:
 
     MOParameterListed();
     MOParameterListed(const MOParameterListed &);
-    MOParameterListed(int index,QString name,QString desc,QVariant defaultValue, QMap<int,QString> mapList,int enablingIndex=-1,QVariant enablingValue = true);
+    MOParameterListed(QString name,QString desc,QVariant defaultValue, QMap<int,QString> mapList,QString enablingIndex=QString(),QVariant enablingValue = true);
     //MOParameterListed(QString);
     MOParameterListed(QDomElement & domEl);
     ~MOParameterListed(void);
@@ -162,7 +162,7 @@ public:
 
     virtual QString getClassName(){return "MOParameterListed";};
 
-    static const int nbFields = 10;
+    static const int nbFields = 9;
     virtual unsigned getNbFields(){return nbFields;};
 
 
@@ -183,14 +183,14 @@ class MOParameters : public MOVector<MOParameter>
     Q_OBJECT
 public :
     MOParameters();
-    QVariant value(int index,QVariant defaultValue = QVariant()) const;
+//    QVariant value(int index,QVariant defaultValue = QVariant()) const;
     QVariant value(QString name,QVariant defaultValue = QVariant()) const;
-    bool setValue(int index,QVariant value);
+    bool setValue(QString index,QVariant value);
     QMultiMap<QString,MOParameter*> groupmap() const;
-    void setGroup(QString group,QList<int> indexes);
+    void setGroup(QString group,QStringList indexes);
     void setPanel(QString panel);
-    void addEnablingIndex(QList<int> enabledIndexes,int enablingIndex, QVariant enablingValue);
-    bool shouldBeEnabled(int index);
+    void addEnablingIndex(QStringList enabledIndexes,QString enablingIndex, QVariant enablingValue);
+    bool shouldBeEnabled(QString name);
     MOParameters* clone() const;
 
     bool operator==(const MOParameters& b)const;

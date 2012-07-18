@@ -48,7 +48,6 @@ HEADERS += \
     ../GUI/MOTableView.h \
     ../MOParameter.h \
     ../MOOptVector.h \
-    ../MOKeepVector.h \
     ../MOItem.h \
     ../Variables.h \
     ../GUI/Widgets/WidgetMOItem.h \

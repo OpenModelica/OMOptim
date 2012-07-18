@@ -41,6 +41,8 @@
 #include "LowTools.h"
 #include <QVector>
 #include <QFile>
+#include "METime.h"
+#include "MOItem.h"
 
 LowTools::LowTools(void)
 {
@@ -194,16 +196,7 @@ QStringList LowTools::getDuplicates(const QStringList & list)
     return result;
 }
 
-void LowTools::removeDuplicates(QList<int> &list)
-{
-    for(int i=0;i<list.size();i++)
-    {
-        while(list.lastIndexOf(list.at(i))>i)
-        {
-            list.removeAt(list.lastIndexOf(list.at(i)));
-        }
-    }
-}
+
 
 void LowTools::removeDuplicates(QVector<double> &vector)
 {
@@ -217,27 +210,15 @@ void LowTools::removeDuplicates(QVector<double> &vector)
     }
 }
 
+
 void LowTools::removeDuplicates(QStringList &list)
 {
-
-    for(int i=0;i<list.size();i++)
-    {
-        while(list.lastIndexOf(list.at(i))>i)
-        {
-            list.removeAt(list.lastIndexOf(list.at(i)));
-        }
-    }
+   LowTools::removeDuplicates<QString>(list);
 }
 
 void LowTools::removeDuplicates(QFileInfoList &list)
 {
-    for(int i=0;i<list.size();i++)
-    {
-        while(list.lastIndexOf(list.at(i))>i)
-        {
-            list.removeAt(list.lastIndexOf(list.at(i)));
-        }
-    }
+   LowTools::removeDuplicates<QFileInfo>(list);
 }
 
 void LowTools::removeWhiteSpaceStrings(QStringList &list)
@@ -251,6 +232,36 @@ void LowTools::removeWhiteSpaceStrings(QStringList &list)
     }
 }
 
+//void LowTools::sortItemsByField(QList<MOItem *> &list, int iField)
+//{
+//        //filling index
+//        QMap<QVariant,MOItem*> map;
+//        QVariant index;
+//        for(int i=0;i<list.size();i++)
+//        {
+//            index = list.at(i)->getFieldValue(iField);
+//            map.insert(index,list.at(i));
+//        }
+//        QList<QVariant> indexes = map.keys();
+
+
+//        // try with double
+
+
+//        // try with QString
+
+
+
+
+//        //sorting
+//        qSort(indexes.begin(),indexes.end());
+
+//        //filling list
+//        list.clear();
+//        for(int i=0;i<indexes.size();i++)
+//            list.push_back(map.value(indexes.at(i)));
+//}
+
 void LowTools::openFolder(QString folderPath)
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(folderPath));
@@ -262,32 +273,6 @@ bool LowTools::openFile(QString filePath)
 }
 
 
-QString LowTools::getValueFromElementInfo(QString elementInfoLine,QString fieldName)
-{
-
-    QStringList fields = elementInfoLine.split(",");
-    QRegExp regExp(".*"+fieldName+"=.*");
-
-    int iField=fields.indexOf(regExp);
-    if(iField>-1)
-    {
-        try{
-            QString value = fields.at(iField).section("=",1,1);
-
-            // removing whitespaces for non-path fields
-            if(value.indexOf("\"")==-1)
-            {
-                value.remove(" ");
-            }
-            return value;
-        }
-        catch(std::exception &e)
-        {
-            return QString();
-        }
-    }
-    return QString();
-}
 
 
 QList<int> LowTools::nextIndex(QList<int> oldIndex, QList<int>  maxIndex)
