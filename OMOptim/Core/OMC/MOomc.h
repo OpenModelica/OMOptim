@@ -165,6 +165,7 @@ public :
     bool isStarted();
 
     //Communication functions
+    QString evalCommand(QString comm,QString &errorString);
     QString evalCommand(QString comm);
     //void setCommand(QString comm);
     //    void evalCommand();

@@ -48,7 +48,7 @@ class METime : public MEDimValue
 {
 public:
     METime();
-    METime(double value,int unit=0);
+    METime(double value,int unit); // better not to have default value for unit : forbid unwished conversion from double.
     METime(const METime&);
     ~METime();
 

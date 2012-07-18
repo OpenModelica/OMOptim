@@ -433,9 +433,11 @@ QStringList MOomc::getComponentModifierNames(QString componentName)
 
 QString MOomc::getFlattenedModel(const QString & modelName)
 {
+
     InfoSender::instance()->sendNormal("Instantiating model "+modelName);
     QString flatcmd = "instantiateModel("+modelName+")";
     QString flattened = evalCommand(flatcmd);
+
 
     return flattened;
 }
@@ -627,7 +629,7 @@ QString MOomc::getComment(QString modelName, QString compName)
     if(commandRes.indexOf("error",Qt::CaseInsensitive)==0)
         return QString();
 
-  //  {{Modelica.SIunits.Temp_K,TorcH,"ORC hot temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}},{Modelica.SIunits.Temp_K,TorcC,"ORC cold temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}}}
+    //  {{Modelica.SIunits.Temp_K,TorcH,"ORC hot temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}},{Modelica.SIunits.Temp_K,TorcC,"ORC cold temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}}}
 
     QRegExp rexp(".*"+compName+","+"\"\\(.*\\)\"(\\.*)");
     rexp.setMinimal(true);
@@ -659,7 +661,6 @@ void MOomc::buildModel(QString model)
 {
     QString commandText = "buildModel("+model+")";
     QString commandRes= evalCommand(commandText);
-    QString erroString = evalCommand("getErrorString()");
 }
 
 
@@ -828,6 +829,13 @@ bool MOomc::save(QString model)
 
 QString MOomc::evalCommand(QString command)
 {
+    QString errorString;
+    return evalCommand(command,errorString);
+}
+
+QString MOomc::evalCommand(QString command,QString &errorString)
+{
+    errorString.clear();
 
     QString msg;
     InfoSender::instance()->send( Info(msg.sprintf("OMC : %s",command.toLatin1().data()),ListInfo::OMCNORMAL2));
@@ -853,6 +861,13 @@ QString MOomc::evalCommand(QString command)
         mResult = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
         // logOMCMessages(command);
         InfoSender::instance()->send(Info(getResult(),ListInfo::OMCNORMAL2));
+
+        // display errors
+        command = "getErrorString()";
+        errorString = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
+        errorString.remove("\"");
+        if(!errorString.isEmpty())
+            InfoSender::instance()->send(Info(errorString,ListInfo::OMCWARNING2));
     }
     catch(CORBA::Exception&)
     {
@@ -1034,8 +1049,6 @@ QStringList MOomc::getDependenciesPaths(QString fileName,bool commentImportPaths
 
 void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
 {
-
-
     bool doLoad = true;
     if(!force)
     {
@@ -1054,6 +1067,7 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
 
     if(doLoad)
     {
+        InfoSender::sendCurrentTask("Loading model "+filename);
 
         // store mo file before modifying it
         // (imports will be commented)
@@ -1104,6 +1118,8 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
         ok = true;
         error = "";
     }
+
+    InfoSender::eraseCurrentTask();
 }
 
 QStringList MOomc::loadFiles(const QStringList & filePaths)
@@ -1123,15 +1139,15 @@ QString MOomc::loadFile(const QString & filePath)
     QString localFile = filePath;
     localFile = localFile.replace("\\","/");
     QString cmd = QString("loadFile(\"") + localFile + QString("\")");
-    QString result = evalCommand(cmd);
-    QString errorString = evalCommand("getErrorString()");
+
+    QString errorString;
+    QString result = evalCommand(cmd,errorString);
 
     // if file is not in UTF-8, try with another encoding
     if(result.contains("false",Qt::CaseInsensitive) && errorString.contains("The file was not encoded in UTF-8"))
     {
         cmd = QString("loadFile(\"") + localFile + QString("\",encoding=\"ISO-8859-1\")");
         result = evalCommand(cmd);
-        errorString = evalCommand("getErrorString()");
     }
 
     emit loadedFile(localFile,result);

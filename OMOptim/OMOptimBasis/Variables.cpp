@@ -62,7 +62,7 @@ int Variables::findVariable(QString model, QRegExp & shortVarName, int from)
             iVar++;
     }
     if(found)
-        iVar;
+        return iVar;
     else
         return -1;
 }

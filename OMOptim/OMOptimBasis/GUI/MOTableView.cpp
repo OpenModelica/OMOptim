@@ -65,10 +65,10 @@ void MOTableView::setEditable(bool editable)
 {
 
     // drag and drop
-    this->setDragEnabled(editable);
-    this->setAcceptDrops(editable);
-    this->setDropIndicatorShown(editable);
-    this->viewport()->setAcceptDrops(editable);
+//    this->setDragEnabled(editable);
+//    this->setAcceptDrops(editable);
+//    this->setDropIndicatorShown(editable);
+//    this->viewport()->setAcceptDrops(editable);
 
     if(editable)
     {
