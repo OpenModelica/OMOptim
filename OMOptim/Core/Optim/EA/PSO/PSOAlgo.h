@@ -1,4 +1,4 @@
-﻿#ifndef PSOALGO_H
+#ifndef PSOALGO_H
 #define PSOALGO_H
 
 // $Id: NSGA2Algo.h 9827 2011-09-15 18:05:03Z hubert.thieriot $

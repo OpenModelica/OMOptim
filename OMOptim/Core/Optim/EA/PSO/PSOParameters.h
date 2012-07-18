@@ -1,4 +1,4 @@
-﻿#ifndef PSOPARAMETERS_H
+#ifndef PSOPARAMETERS_H
 #define PSOPARAMETERS_H
 // $Id: NSGA2Parameters.h 10617 2011-11-30 16:17:55Z hubert.thieriot $
 /**
