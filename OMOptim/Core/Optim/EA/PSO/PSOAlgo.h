@@ -1,4 +1,4 @@
-#ifndef PSOALGO_H
+ï»¿#ifndef PSOALGO_H
 #define PSOALGO_H
 
 // $Id: NSGA2Algo.h 9827 2011-09-15 18:05:03Z hubert.thieriot $
@@ -6,8 +6,8 @@
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
- * c/o Linköpings universitet, Department of Computer and Information Science,
- * SE-58183 Linköping, Sweden.
+ * c/o LinkÃ¶pings universitet, Department of Computer and Information Science,
+ * SE-58183 LinkÃ¶ping, Sweden.
  *
  * All rights reserved.
  *
