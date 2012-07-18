@@ -84,7 +84,7 @@ void operator () (eoPop < MOEOT > &_pop, MOParameters *_parameters, moeoUnbounde
         MOEOT gbest; // global best point
         std::vector <MOEOT> velocity;
 
-        popEval (_pop, _pop);	// a first eval of _pop
+        popEval (_pop, _pop);  // a first eval of _pop
 
         // evaluate fitness and diversity
          fitnessAssignment(_pop);
@@ -144,7 +144,7 @@ void operator () (eoPop < MOEOT > &_pop, MOParameters *_parameters, moeoUnbounde
       //      replace (_pop, offspring);
 
 
-//        popEval (empty_pop, _pop);	// a first eval of _pop
+//        popEval (empty_pop, _pop);  // a first eval of _pop
 //        // evaluate fitness and diversity
 //        fitnessAssignment(_pop);
 //        diversityAssignment(_pop);
