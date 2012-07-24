@@ -88,8 +88,8 @@ void MOParametersWidget::setDefaultValues()
 
     for(int i=0;i<_mapValueWidgets.keys().size();i++)
     {
-//        curIndex = _mapValueWidgets.keys().at(i);
-//        iParam = _localParameters->findItem(curIndex,MOParameter::INDEX);
+        //        curIndex = _mapValueWidgets.keys().at(i);
+        //        iParam = _localParameters->findItem(curIndex,MOParameter::INDEX);
         curParam = _mapValueWidgets.keys().at(i);
         curWidget = _mapValueWidgets.value(curParam,NULL);
 
@@ -298,14 +298,17 @@ void MOParametersWidget::updateEnabled()
 {
     MOParameter* curParam;
     QWidget* curWidget;
-    for(int i=0;i<_localParameters->size();i++)
+    if(_editable)
     {
-        curParam = _localParameters->at(i);
-        curWidget = _mapValueWidgets.value(curParam,NULL);
-
-        if(curWidget)
+        for(int i=0;i<_localParameters->size();i++)
         {
-            curWidget->setEnabled(_localParameters->shouldBeEnabled(curParam->name()));
+            curParam = _localParameters->at(i);
+            curWidget = _mapValueWidgets.value(curParam,NULL);
+
+            if(curWidget)
+            {
+                curWidget->setEnabled(_localParameters->shouldBeEnabled(curParam->name()));
+            }
         }
     }
 }

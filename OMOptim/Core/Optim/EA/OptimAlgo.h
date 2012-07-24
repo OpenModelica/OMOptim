@@ -41,7 +41,8 @@
 #define _OPTIMALGO_H
 
 #include <QtCore/QObject>
-
+#include <QMap>
+#include "OptimAlgosList.h"
 
 class Problem;
 class Result;
@@ -56,13 +57,16 @@ public:
     OptimAlgo(void);
     virtual ~OptimAlgo(void);
     OptimAlgo(const OptimAlgo &);
+    static QString className(){return "OptimAlgo";}
 
     virtual OptimAlgo* clone() const = 0;
     virtual Result* launch(QString tempDir) = 0;
 
     virtual QString name() =0;
-    virtual void setProblem(Problem* _problem);
+    virtual void setProblem(Problem* problem);
+    virtual QDomElement toXmlData(QDomDocument & doc);
 
+    MOParameters* parameters(){return _parameters;}
 
     /**
           * \brief Determines if algorithm accepts or not several objectives.
@@ -74,15 +78,53 @@ public:
     * Set parameters that should be defined
     */
     virtual void setDefaultParameters() = 0;
-    virtual void onQuickEndAsked(){};
+    virtual void onQuickEndAsked(){}
 
-public :
-    MOParameters *_parameters;
+
+
 
 
 protected :
     Project* _project;
     Problem* _problem;
+    MOParameters *_parameters;
+};
+
+
+class OptimAlgos :public QObject, public QMap<QString,OptimAlgo*>
+{
+    Q_OBJECT
+
+public :
+    OptimAlgos(Project* project,Problem* problem);
+    OptimAlgos(Project* project,Problem* problem,const QDomElement &);
+    virtual ~OptimAlgos();
+
+    static QString className(){return "OptimAlgos";}
+
+    OptimAlgos* clone();
+    void setProblem(Problem *);
+    QDomElement toXmlData(QDomDocument & doc);
+
+
+    OptimAlgo* currentAlgo() const;
+    QString currentAlgoName() const;
+    void setCurrentAlgo(QString curAlgo);
+    void setFromOtherAlgos(const OptimAlgos &);
+
+    QStringList getNames() const;
+
+signals :
+    void modified();
+
+
+private :
+    Project *_project;
+    Problem* _problem;
+    OptimAlgo* _optimAlgo;
+    QString _curAlgoName;
+    void insertAlgo(QString name,OptimAlgo*);
+
 };
 
 #endif

@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 */
 
 #include "Widgets/WidgetOptParameters.h"
@@ -55,18 +55,27 @@ WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,
     _problem = problem;
     _isResult = isResult;
 
+    //Algorithm box
+    //Optim Algorithm box
+    OptimAlgo* curOptimAlgo;
+    for(int i=0;i<_problem->algos()->values().size();i++)
+    {
+        curOptimAlgo = _problem->algos()->values().at(i);
+        _ui->comboAlgo->addItem(curOptimAlgo->name(),curOptimAlgo->name());
+    }
+
+    QString curAlgoName = _problem->algos()->currentAlgoName();
+    _ui->comboAlgo->setCurrentIndex(_ui->comboAlgo->findData(curAlgoName));
+
 
     connect(_ui->pushEAParameters, SIGNAL(clicked()), this, SLOT(openAlgoParameters()));
 
     //changed algorithm
     connect(_ui->comboAlgo, SIGNAL(currentIndexChanged(int)),this, SLOT(changedAlgorithm()));
 
-    //Algorithm box
-    QStringList _algoNames = _problem->getAlgoNames();
-    int iCurAlgo = _problem->getiCurAlgo();
-    _ui->comboAlgo->addItems(_algoNames);
-    if(iCurAlgo>=0)
-        _ui->comboAlgo->setCurrentIndex(iCurAlgo);
+
+
+
 
     _ui->comboAlgo->setEnabled(!_isResult);
 
@@ -86,16 +95,17 @@ WidgetOptParameters::~WidgetOptParameters()
 void WidgetOptParameters::changedAlgorithm()
 {
     int iAlgo = _ui->comboAlgo->currentIndex();
-    _problem->setiCurAlgo(iAlgo);
+    QString algoName = _ui->comboAlgo->itemData(iAlgo).toString();
+    _problem->setCurAlgo(algoName);
 }
 
-    
+
 void WidgetOptParameters::openAlgoParameters()
 {
     if(_problem->getCurAlgo())
     {
-            MOParametersDlg dlg(_problem->getCurAlgo()->_parameters,!_isResult);
-            dlg.exec();
+        MOParametersDlg dlg(_problem->getCurAlgo()->parameters(),!_isResult);
+        dlg.exec();
     }
 }
 
@@ -120,7 +130,7 @@ void WidgetOptParameters::openAlgoParameters()
 
 //    if(!filename.isEmpty())
 //    {
-        
+
 //                int iSolved = _project->results()->findItem(_problem->name());
 //        if(iSolved>-1)
 //        {
@@ -139,23 +149,22 @@ void WidgetOptParameters::actualizeGui()
     
     // list of widgets to hide when problem is solved
     QWidgetList unsolvedWidgets;
-       // unsolvedWidgets <<  _ui->pushSelectStartFile;
+    // unsolvedWidgets <<  _ui->pushSelectStartFile;
 
     // list of widgets to hide when problem is unsolved
     QWidgetList solvedWidgets;
 
 
     // if problem is solved
-        if(_isResult)
+    if(_isResult)
     {
         for(int i=0; i < unsolvedWidgets.size(); i++)
             unsolvedWidgets.at(i)->hide();
-    
+
         for(int i=0; i < solvedWidgets.size(); i++)
             solvedWidgets.at(i)->show();
-    
+
         // combo algo
-        _ui->comboAlgo->setCurrentIndex(_problem->getiCurAlgo());
         _ui->comboAlgo->setEnabled(false);
 
     }
@@ -163,13 +172,14 @@ void WidgetOptParameters::actualizeGui()
     {
         for(int i=0; i < unsolvedWidgets.size(); i++)
             unsolvedWidgets.at(i)->show();
-    
+
         for(int i=0; i < solvedWidgets.size(); i++)
             solvedWidgets.at(i)->hide();
-    
+
         // combo algo
-        _ui->comboAlgo->setCurrentIndex(_problem->getiCurAlgo());
         _ui->comboAlgo->setEnabled(true);
 
     }
+    QString curAlgoName = _problem->algos()->currentAlgoName();
+    _ui->comboAlgo->setCurrentIndex(_ui->comboAlgo->findData(curAlgoName));
 }

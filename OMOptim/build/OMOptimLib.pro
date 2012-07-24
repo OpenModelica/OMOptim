@@ -187,7 +187,6 @@ HEADERS += ../config.h \
            ../Core/Optim/EA/AlgoParameter.h \
            ../Core/Optim/EA/EABase.h \
            ../Core/Optim/EA/OptimAlgo.h \
-           ../Core/Optim/EA/OptimAlgoUtils.h \
            ../Core/Optim/EA/OMEAEvalContinue.h \
            ../Core/Optim/EA/OMEAEvalFuncCounter.h \
            ../Core/Optim/EA/OMEAProgress.h \
@@ -380,5 +379,6 @@ SOURCES += ../Core/OptObjective.cpp \
     ../GUI/Tools/OMOptimGuiTools.cpp \
      ../../SimulationRuntime/c/util/read_matlab4.c \
     ../Core/OMOptimSettings.cpp \
-     ../GUI/Widgets/WidgetModelsList.cpp
+     ../GUI/Widgets/WidgetModelsList.cpp \
+    ../Core/Optim/EA/OptimAlgosList.cpp
 

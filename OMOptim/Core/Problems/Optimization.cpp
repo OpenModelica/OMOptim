@@ -40,7 +40,6 @@
   */
 #include "Optimization.h"
 #include "EA"
-#include "OptimAlgoUtils.h"
 #include "CSVBase.h"
 #include "LowTools.h"
 #include "ModPlusCtrls.h"
@@ -59,9 +58,7 @@ Optimization::Optimization(Project* project,QStringList models)
     _objectives = new OptObjectives(true);
     _blockSubstitutions = new BlockSubstitutions();
 
-    _algos = OptimAlgoUtils::getNewAlgos(this);
-
-    _iCurAlgo=0;
+    _algos = new OptimAlgos(project,this);
 
 
     // models and ctrls
@@ -89,16 +86,8 @@ Optimization::Optimization(const Optimization &optim)
         this->addModel(curModel,optim._ctrls.value(curModel)->clone());
     }
 
-
-    //cloning algos
-    for(int i=0;i<optim._algos.size();i++)
-    {
-        _algos.push_back(optim._algos.at(i)->clone());
-        _algos.at(i)->setProblem(this);
-    }
-
-    _iCurAlgo = optim._iCurAlgo;
-
+    _algos = optim._algos->clone();
+    _algos->setProblem(this);
 }
 
 Problem* Optimization::clone() const
@@ -108,8 +97,7 @@ Problem* Optimization::clone() const
 
 Optimization::~Optimization()
 {
-    for(int i=0;i<_algos.size();i++)
-        delete _algos.at(i);
+    delete _algos;
 
     delete _optimizedVariables;
     delete _objectives;
@@ -205,7 +193,6 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
 {
     // initialization
     _omProject = project;
-    _algos = OptimAlgoUtils::getNewAlgos(this);
 
     // look for modmodelplus
     ok = !domProblem.isNull();
@@ -287,17 +274,35 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
     _blockSubstitutions = new BlockSubstitutions(project,domBlockSubs);
 
-    // EA
-    QDomElement domEA = domProblem.firstChildElement("EA");
-    QDomElement domEAInfos = domEA.firstChildElement("Infos");
-    if(!domEAInfos.isNull())
+    // Algos
+    QDomElement cAlgos = domProblem.firstChildElement(OptimAlgos::className());
+    if(!cAlgos.isNull())
     {
-        this->setiCurAlgo(domEAInfos.attribute("num", "" ).toInt());
+        _algos = new OptimAlgos(project,this,cAlgos);
     }
-    QDomElement domEAParameters = domEA.firstChildElement("Parameters");
-    if(!domEAParameters.isNull())
+    else
     {
-        this->getCurAlgo()->_parameters->update(domEAParameters);
+        _algos = new OptimAlgos(project,this);
+        // older version
+        QDomElement domEA = domProblem.firstChildElement("EA");
+        QDomElement domEAInfos = domEA.firstChildElement("Infos");
+        QString algoName;
+        if(!domEAInfos.isNull())
+        {
+            int iAlgo = (OptimAlgosList::Type)domEAInfos.attribute("num", "" ).toInt();
+            OptimAlgo* algo = OptimAlgosList::getNewAlgo(project,this,(OptimAlgosList::Type)iAlgo);
+            if(algo)
+            {
+                algoName = algo->name();
+                setCurAlgo(algoName);
+                delete algo;
+            }
+        }
+        QDomElement domEAParameters = domEA.firstChildElement("Parameters");
+        if(!domEAParameters.isNull())
+        {
+            this->getCurAlgo()->parameters()->update(domEAParameters);
+        }
     }
 }
 
@@ -608,6 +613,11 @@ void Optimization::createSubExecs(QList<QList<ModModelPlus*> > & subModels, QLis
     }
 }
 
+OptimAlgos *Optimization::algos() const
+{
+    return _algos;
+}
+
 QStringList Optimization::models() const
 {
     return _models;
@@ -748,21 +758,9 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     cFilesToCopy.appendChild(cFiles);
     cProblem.appendChild(cFilesToCopy);
 
-    // ea configuration
-    OptimAlgo *curAlgo = getCurAlgo();
-
-    if(curAlgo)
-    {
-        QDomElement cEA = doc.createElement("EA");
-        cProblem.appendChild(cEA);
-
-        QDomElement cEAInfos = doc.createElement("Infos");
-        cEAInfos.setAttribute("num",getiCurAlgo());
-        cEA.appendChild(cEAInfos);
-
-        QDomElement cAlgoParameters = curAlgo->_parameters->toXmlData(doc,"Parameters");
-        cEA.appendChild(cAlgoParameters);
-    }
+    // Algos
+    QDomElement cAlgos = _algos->toXmlData(doc);
+    cProblem.appendChild(cAlgos);
 
     return cProblem;
 }
@@ -779,32 +777,20 @@ int Optimization::nbScans()
     return nbScans;
 }
 
-
-int Optimization::getiCurAlgo()
-{
-    return _iCurAlgo;
-}
-
 OptimAlgo* Optimization::getCurAlgo() const
 {
-    if((_iCurAlgo>-1)&&(_iCurAlgo<_algos.size()))
-        return _algos.at(_iCurAlgo);
-    else
-        return NULL;
+    return _algos->currentAlgo();
 }
 
 
 QStringList Optimization::getAlgoNames()
 {
-    QStringList names;
-    for(int i=0;i<_algos.size();i++)
-        names.push_back(_algos.at(i)->name());
-    return names;
+    return _algos->getNames();
 }
 
-void Optimization::setiCurAlgo(int iCurAlgo)
+void Optimization::setCurAlgo(QString curAlgoName)
 {
-    _iCurAlgo = iCurAlgo;
+    _algos->setCurrentAlgo(curAlgoName);
 }
 
 /**

@@ -79,8 +79,7 @@ protected :
     bool _useScan;
 
     // Algorithm information
-    QList<OptimAlgo*> _algos;
-    int _iCurAlgo;
+    OptimAlgos* _algos;
 
 public:
     //Optimization(void);
@@ -121,10 +120,10 @@ public:
     void createSubExecs(QList<QList<ModModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks);
 
     //algo functions
-    int getiCurAlgo();
+    OptimAlgos* algos() const;
     OptimAlgo* getCurAlgo() const;
     QStringList getAlgoNames();
-    void setiCurAlgo(int);
+    void setCurAlgo(QString algoName);
 
     // controlers
     ModPlusCtrl* ctrl(QString model) const;

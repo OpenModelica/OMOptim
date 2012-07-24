@@ -46,7 +46,6 @@
 
 #include "ui_WidgetOptParameters.h"
 #include "MyDelegates.h"
-#include "OptimAlgoUtils.h"
 #include "Optimization.h"
 #include "MOTableView.h"
 #include "Tools/GuiTools.h"
