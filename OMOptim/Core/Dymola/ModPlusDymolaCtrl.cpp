@@ -173,7 +173,21 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables,b
 
     if((!QFile::exists(dsinFile) && authorizeRecreate)||forceRecompile)
     {
-        createDsin(_modModelPlus->moDependencies());
+        //********************
+        // update dependencies
+        //********************
+        QFileInfoList moDeps = _modModelPlus->moDependencies();
+        // 1- add project loaded mo files
+        QFileInfoList projectMoFiles = _project->moFiles();
+        for(int i=0;i<projectMoFiles.size();i++)
+            if(!moDeps.contains(projectMoFiles.at(i)))
+                moDeps.push_back(projectMoFiles.at(i));
+
+        // 2 - remove modelica library from moDependencies since Dymola
+        // automatically loads it
+        moDeps.removeAll(_project->moomc()->getFileOfClass("Modelica"));
+
+        createDsin(moDeps);
     }
     InfoSender::eraseCurrentTask();
 
@@ -213,7 +227,7 @@ bool ModPlusDymolaCtrl::compile(const QFileInfoList & moDependencies)
     moDeps.removeAll(_project->moomc()->getFileOfClass("Modelica"));
 
     // compile
-    bool success = Dymola::firstRun(_modModelPlus->moFilePath(),_modModelPlus->modModelName(),
+    bool success = Dymola::compile(_modModelPlus->moFilePath(),_modModelPlus->modModelName(),
                                     _modModelPlus->mmoFolder(),logFilePath,moDeps,_modModelPlus->neededFiles());
 
     // Inform

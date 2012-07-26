@@ -57,7 +57,7 @@ MOVector<ItemClass>::MOVector(QDomElement & domList, bool owner)
 {
     _owner = owner;
     setItems(domList);
-    (this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
+    connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
 
@@ -469,7 +469,6 @@ template<class ItemClass>
 void MOVector<ItemClass>::clear()
 {
     this->beginResetModel();
-    qDebug(QString(QString("MOVector::clear() : ")+QString::number(items.size())).toLatin1().data());
     if(items.size()>0)
     {
         beginRemoveRows(QModelIndex(),0,items.size()-1);

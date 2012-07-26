@@ -127,7 +127,7 @@ public :
         else
         {
             result.remove(result.size()-separator.size(),separator.size());
-            result.push_back("\]");
+            result.push_back("]");
             return result;
         }
     }
@@ -140,8 +140,8 @@ public :
         bool tmpOk;
         QList<DimValue> result;
         QString separator = ";"; // be sure to set the same in listToString function.
-        str = str.remove("\[");
-        str = str.remove("\]");
+        str = str.remove("[");
+        str = str.remove("]");
 
 
         QStringList strList = str.split(separator);

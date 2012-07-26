@@ -77,7 +77,7 @@ public:
 
 
     static QString getExecutablePath();
-    static bool firstRun(QFileInfo moPath,QString modelToConsider,QDir storeFolder,
+    static bool compile(QFileInfo moPath,QString modelToConsider,QDir storeFolder,
                          QFileInfo logFilePath,const QFileInfoList & moDeps,QFileInfoList neededFiles);
     static bool createDsin(QFileInfo moPath,QString modelToConsider,QDir folder,const QFileInfoList & moDeps,
                            QFileInfoList neededFiles);

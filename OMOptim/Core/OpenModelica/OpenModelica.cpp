@@ -442,7 +442,6 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
                 newLine = curVar->getFieldValue(Variable::VALUE).toString() +"\t";
                 newLine += fields.at(2)+varName;
                 allText = allText.replace(rxLine.cap(0),newLine);
-                qDebug(newLine.toLatin1().data());
             }
             else
             {
@@ -673,7 +672,10 @@ void OpenModelica::start(QString exeFile,int maxnsec)
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     QString omHome = env.value("OpenModelicaHome");
     omHome = omHome+QDir::separator()+"bin";
-    env.insert("PATH", env.value("Path") + ";"+omHome);
+    QString mingw = env.value("OpenModelicaHome");
+    mingw = mingw+QDir::separator()+"MinGW"+QDir::separator()+"bin";
+    env.insert("PATH", env.value("Path") + ";"+omHome+";"+mingw);
+
     simProcess.setProcessEnvironment(env);
 
 
@@ -698,6 +700,8 @@ void OpenModelica::start(QString exeFile,int maxnsec)
         InfoSender::instance()->debug(msg);
         return;
     }
+    QString output(simProcess.readAllStandardOutput());
+    InfoSender::instance()->send(Info(output,ListInfo::OMCNORMAL2));
     return;
 }
 

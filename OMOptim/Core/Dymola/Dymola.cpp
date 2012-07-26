@@ -50,7 +50,7 @@ void Dymola::verifyInstallation()
 }
 
 
-bool Dymola::firstRun(QFileInfo moPath,QString modelToConsider,QDir storeFolder,QFileInfo logFile,
+bool Dymola::compile(QFileInfo moPath,QString modelToConsider,QDir storeFolder,QFileInfo logFile,
                       const QFileInfoList & moDeps, QFileInfoList neededFiles)
 {
     // Create Dymola script
@@ -84,7 +84,9 @@ bool Dymola::firstRun(QFileInfo moPath,QString modelToConsider,QDir storeFolder,
     scriptText.append("cd "+strFolder+"\n");
     scriptText.append("experimentSetupOutput(textual=true)\n");
     scriptText.append("Advanced.StoreProtectedVariables:=true;\n");
-    scriptText.append("checkModel(\""+modelToConsider+"\",simulate=true)\n");
+    //scriptText.append("checkModel(\""+modelToConsider+"\",simulate=true)\n");
+    scriptText.append("openModelFile(\""+modelToConsider+"\")\n");
+    scriptText.append("compile()\n");
     scriptText.append("savelog(\""+logFilePath+"\")\n");
     scriptText.append("exit\n");
 

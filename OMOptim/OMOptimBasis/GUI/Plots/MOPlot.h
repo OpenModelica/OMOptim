@@ -303,11 +303,11 @@ void MOPlot::addCurve(QwtPlotCurve *_curve)
 int MOPlot::getNearestPointIndex(QwtPlotCurve * curve,const QwtDoublePoint & point)
 {
 
-    double minDist=0;
-    double curDist=0;
+//    double minDist=0;
+//    double curDist=0;
 
-    int xPos = transform(QwtPlot::xBottom,point.x());
-    int yPos = transform(QwtPlot::yLeft,point.y());
+//    int xPos = transform(QwtPlot::xBottom,point.x());
+//    int yPos = transform(QwtPlot::yLeft,point.y());
 
     int indexMin = -1;
 

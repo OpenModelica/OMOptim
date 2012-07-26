@@ -156,7 +156,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     //*********************************
     connect(InfoSender::instance(),SIGNAL(setCurrentTask(QString)),this,SLOT(setStatusBarText(QString)));
     connect(InfoSender::instance(),SIGNAL(increaseTaskProgress()),this,SLOT(increaseStProgressBar()));
-    connect(InfoSender::instance(),SIGNAL(noCurrentTask()),this,SLOT(eraseStatusBarText(QString)));
+    connect(InfoSender::instance(),SIGNAL(noCurrentTask()),this,SLOT(eraseStatusBarText()));
     connect(InfoSender::instance(), SIGNAL(sent(Info)),this, SLOT( displayInfo(Info)));
 
 
