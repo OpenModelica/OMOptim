@@ -74,7 +74,7 @@ bool Dymola::compile(QFileInfo moPath,QString modelToConsider,QDir storeFolder,Q
     for(int i=0;i<moToLoad.size();i++)
     {
         curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
-        scriptText.append("openModel(\""+curPath+"\")\n");
+        scriptText.append("openModel(\""+curPath+"\",false)\n");
     }
 
 
@@ -85,7 +85,7 @@ bool Dymola::compile(QFileInfo moPath,QString modelToConsider,QDir storeFolder,Q
     scriptText.append("experimentSetupOutput(textual=true)\n");
     scriptText.append("Advanced.StoreProtectedVariables:=true;\n");
     //scriptText.append("checkModel(\""+modelToConsider+"\",simulate=true)\n");
-    scriptText.append("openModelFile(\""+modelToConsider+"\")\n");
+    scriptText.append("translateModel(\""+modelToConsider+"\")\n");
     scriptText.append("compile()\n");
     scriptText.append("savelog(\""+logFilePath+"\")\n");
     scriptText.append("exit\n");

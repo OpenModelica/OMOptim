@@ -431,9 +431,9 @@ QStringList MOomc::getComponentModifierNames(QString componentName)
     }
 }
 
+
 QString MOomc::getFlattenedModel(const QString & modelName)
 {
-
     InfoSender::instance()->sendNormal("Instantiating model "+modelName);
     QString flatcmd = "instantiateModel("+modelName+")";
     QString flattened = evalCommand(flatcmd);
@@ -451,6 +451,10 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
 QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName,const QString & flattenedModel)
 {
     QStringList lines = flattenedModel.split("\n");
+    if(lines.size()==1)
+    {
+        lines = flattenedModel.split("\\n");
+    }
 
     QRegExp modExp("[\\.]*"+componentName+"."+modifierName+"[\\.]*");
 
@@ -470,7 +474,7 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
 
 
     // 2nd format with unit
-    QRegExp exp2(".*"+componentName+"."+modifierName+"\\(.*\\)[\\s|=]*(\\S*);");
+    QRegExp exp2(".*"+componentName+"."+modifierName+"\\([.*]\\)[\\s|=]*(\\S*);");
     int i2 = lines.indexOf(exp2);
 
     if((i2>-1)&&exp2.capturedTexts().size()==2)
@@ -866,7 +870,7 @@ QString MOomc::evalCommand(QString command,QString &errorString)
         command = "getErrorString()";
         errorString = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
         errorString.remove("\"");
-        if(!errorString.isEmpty())
+        if((!errorString.isEmpty())&&(errorString!="\n"))
             InfoSender::instance()->send(Info(errorString,ListInfo::OMCWARNING2));
     }
     catch(CORBA::Exception&)
