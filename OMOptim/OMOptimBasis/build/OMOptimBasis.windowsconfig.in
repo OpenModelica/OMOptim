@@ -1,8 +1,8 @@
 
-## defines qwthome when OMDEV not defined : use PluginEIDev
+## defines qwthome when OMDEV not defined : use MinEITDev
 QWTHOME = $$(OMDEV)
 isEmpty(QWTHOME){
-    QWTHOME = "$${PLUGINEIDEV}/qwt-5.2.1-mingw"
+    QWTHOME = "$$(MINEITDEV)/qwt-5.2.1-mingw"
 }else{
     QWTHOME = "$$(OMDEV)/lib/qwt-5.2.1-mingw"
 }
@@ -31,6 +31,8 @@ UI_DIR = debug/generatedfiles/ui
 MOC_DIR = debug/generatedfiles/moc
 RCC_DIR = debug/generatedfiles/rcc
 
+    INCLUDEPATH  += debug/generatedfiles/ui
+
 }else {
     LIBS += -L$$QWTHOME/lib \
 			-lqwt5
@@ -39,6 +41,8 @@ DESTDIR = ../../bin
 UI_DIR = release/generatedfiles/ui
 MOC_DIR = release/generatedfiles/moc
 RCC_DIR = release/generatedfiles/rcc
+
+INCLUDEPATH  += release/generatedfiles/ui
 }
 
 INCLUDEPATH += $$QWTHOME/include
