@@ -1,11 +1,7 @@
 
-## defines qwthome when OMDEV not defined : use MinEITDev
-QWTHOME = $$(OMDEV)
-isEmpty(QWTHOME){
-    QWTHOME = "$$(MINEITDEV)/qwt-5.2.1-mingw"
-}else{
-    QWTHOME = "$$(OMDEV)/lib/qwt-5.2.1-mingw"
-}
+## defines qwthome
+QWTHOME = "$$(OMDEV)/lib/qwt-5.2.1-mingw"
+
 
 
 QMAKE_LFLAGS += -enable-auto-import
