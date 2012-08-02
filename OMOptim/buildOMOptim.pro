@@ -1,3 +1,4 @@
+### This .pro file also asks to build OMOptimBasis
 TEMPLATE = subdirs
 CONFIG += ordered
 
@@ -7,7 +8,7 @@ SUBDIRS +=  OMOptimBasis \
             OMOptim
 
 
-OMOptimBasis.file = OMOptimBasis/build/OMOptimBasis.pro
+OMOptimBasis.file = ../OMOptimBasis/build/OMOptimBasis.pro
 
 OMOptimLib.file = build/OMOptimLib.pro
 OMOptimLib.depends = OMOptimBasis

@@ -58,16 +58,16 @@ INCLUDEPATH += . \
               ../Core/Optim/EA/SPEA2 \
               ../Core/Optim/EA/SPEA2Adaptative \
               ../Core/Optim/EA/SA1 \
-              ../OMOptimBasis/ \
-                ../OMOptimBasis/FileData \
-                ../OMOptimBasis/GUI \
-                ../OMOptimBasis/GUI/Tools \
-                ../OMOptimBasis/GUI/Dialogs \
-                ../OMOptimBasis/GUI/Widgets \
-                ../OMOptimBasis/Infos \
-               ../OMOptimBasis/Units \
-                ../OMOptimBasis/Tools \
-                ../OMOptimBasis/Problems
+              ../../OMOptimBasis/ \
+                ../../OMOptimBasis/FileData \
+                ../../OMOptimBasis/GUI \
+                ../../OMOptimBasis/GUI/Tools \
+                ../../OMOptimBasis/GUI/Dialogs \
+                ../../OMOptimBasis/GUI/Widgets \
+                ../../OMOptimBasis/Infos \
+               ../../OMOptimBasis/Units \
+                ../../OMOptimBasis/Tools \
+                ../../OMOptimBasis/Problems
 
 DEPENDPATH += . \
               .. \
@@ -108,16 +108,16 @@ DEPENDPATH += . \
               ../Core/Optim/EA/SPEA2 \
               ../Core/Optim/EA/SPEA2Adaptative \
               ../Core/Optim/EA/SA1 \
-              ../OMOptimBasis/ \
-                ../OMOptimBasis/FileData \
-                ../OMOptimBasis/GUI \
-                ../OMOptimBasis/GUI/Tools \
-                ../OMOptimBasis/GUI/Dialogs \
-                ../OMOptimBasis/GUI/Widgets \
-                ../OMOptimBasis/Infos \
-               ../OMOptimBasis/Units \
-                ../OMOptimBasis/Tools \
-                ../OMOptimBasis/Problems
+              ../../OMOptimBasis/ \
+                ../../OMOptimBasis/FileData \
+                ../../OMOptimBasis/GUI \
+                ../../OMOptimBasis/GUI/Tools \
+                ../../OMOptimBasis/GUI/Dialogs \
+                ../../OMOptimBasis/GUI/Widgets \
+                ../../OMOptimBasis/Infos \
+               ../../OMOptimBasis/Units \
+                ../../OMOptimBasis/Tools \
+                ../../OMOptimBasis/Problems
 
 HEADERS += ../config.h \
            ../Core/OptObjective.h \
