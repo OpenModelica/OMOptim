@@ -2,7 +2,7 @@ TEMPLATE = lib
 TARGET = OMOptimBasis
 CONFIG += staticlib warn_off
 
-include(../../vars.pri)
+include(../vars.pri)
 
 QT +=  core gui xml
 

@@ -1,6 +1,6 @@
 .PHONY: install build $(NAME) always
 
-top_dir=../../../
+top_dir=../../
 NAME=OMOptimBasis
 DEST=.
 EXE=@EXE@
