@@ -1,0 +1,18 @@
+/*! \page pageOMOptimBasis OMOptimBasis
+
+OMOptimBasis is a library containing main classes of OMOptim but that can be used in other libraries (e.g. OMOptim, PluginEI). While it is historically linked, there is no mention of Modelica in OMOptimBasis. It is focused on ProjectBase class, Problems, Results and ProblemInterface.
+
+Its main goal is to make several components compatible each other and to offer basic but useful functions.
+
+The most useful classes are listed below:
+
+-# ProjectBase (cf. \ref pageProjectBase)
+-# Problem (cf. \ref pageProblems)
+-# MOItem
+-# MOVector
+
+It offers also graphical user interface items (widgets, tabs, dialogs...).
+
+
+
+ **/

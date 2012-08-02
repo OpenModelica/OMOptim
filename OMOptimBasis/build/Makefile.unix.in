@@ -1,0 +1,29 @@
+.PHONY: install build $(NAME) always
+
+top_dir=../../../
+NAME=OMOptimBasis
+DEST=.
+EXE=@EXE@
+QMAKE=@QMAKE@
+
+install: build
+	cp libOMOptimBasis.a $(top_dir)/build/lib/
+
+always:
+
+$(NAME): Makefile $(NAME).config
+	$(MAKE) -f Makefile
+
+build: $(NAME)
+
+Makefile: $(NAME).pro $(NAME).config
+	$(QMAKE) $<
+Makefile.unix: Makefile.unix.in
+	(cd $(top_dir); ./config.status)
+$(NAME).config: $(NAME).config.in
+	(cd $(top_dir); ./config.status)
+
+clean:
+	test ! -f Makefile || $(MAKE) -f Makefile clean
+	rm -f *.o *.so* *.a
+
