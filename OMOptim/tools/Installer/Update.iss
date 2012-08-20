@@ -46,7 +46,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\..\bin\OMOptim.exe"; DestDir: {code:GetOMDir}\bin; Flags: ignoreversion
-
+Source: "..\..\bin\omniORB416_rt.dll"; DestDir: {code:GetOMDir}\bin; Flags: ignoreversion
 ;Source:  "OMOptim.ico"; DestDir: {code:GetOMDir}\bin;
 ;Source:  "..\..\..\..\..\Documentation\Doc\OMOptimUsersGuide.pdf"; DestDir: {code:GetOMDir}\share\doc\omoptim;
 
