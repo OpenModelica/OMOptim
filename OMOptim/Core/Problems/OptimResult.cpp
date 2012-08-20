@@ -583,6 +583,7 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
                 //*************************************************************
                 ModModelPlus* modelPlus = omProject()->modModelPlus(problem->models().at(iM));
                 OneSimulation *oneSim = new OneSimulation(omProject(),modelPlus);
+                oneSim->setCtrls(*problem->ctrls(problem->models().at(iM)));
                 Variable* overVar;
                 for(int iOverVar=0;iOverVar < this->optVariablesResults()->size();iOverVar++)
                 {
