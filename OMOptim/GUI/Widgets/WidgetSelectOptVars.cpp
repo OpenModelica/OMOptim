@@ -43,7 +43,7 @@
 #include <QtGui/QErrorMessage>
 #include "Optimization.h"
 #include "Project.h"
-#include "modexeplus.h"
+#include "ModExePlus.h"
 
 WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,QWidget *parent):
     QWidget(parent),
