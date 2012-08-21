@@ -43,7 +43,7 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
-
+#include "exemodel.h"
 #include "ModItem.h"
 #include "ModLoader.h"
 #include "MOomc.h"
@@ -84,7 +84,7 @@ public:
     QList<ModItem*> findCompOfClassInDescendants(QString _className,ModItem* parent=NULL);
 
     ModModel* modelOf(ModItem* item);
-    ModModel* modelOf(QString itemName);
+    ModItem* modelOf(QString itemName);
 
     void childrenInfos(ModItem* parent,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &recordsClasses,QStringList &compsNames,QStringList &compsClasses);
 
@@ -122,7 +122,9 @@ public:
 
     void setShowComponent(bool);
     void emitDataChanged();
-    void readFromOMCWThread(ModItem*,int depthMax = 1000,  QString direction ="", int curDepth = 0);    //Read data and children with OMC calls
+    void readFromOMCWThread(ModItem*,int depthMax = 1000,  QString direction ="", int curDepth = 0);    //Read data and children with OMC call
+    void addExeModel(ModItem* parent,QString name, QString inputFile, QString exeFile);
+
 public slots :
     // Read and fullfill functions
     void readFromOmc(ModItem*,int depthMax,  QString direction, int curDepth);    //Read data and children with OMC calls
@@ -151,6 +153,7 @@ public:
     int _depthMax;
     QString _direction;
     int _curDepth;
+    static int num;
 
 
     void run();

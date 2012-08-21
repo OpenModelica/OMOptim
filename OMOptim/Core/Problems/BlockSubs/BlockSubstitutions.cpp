@@ -45,7 +45,9 @@ BlockSubstitutions::BlockSubstitutions(void)
 {
 }
 
+
 BlockSubstitutions::BlockSubstitutions(Project* project,const QDomElement & el)
+
 {
     QDomElement e2 = el.firstChildElement();
     bool ok;
@@ -53,6 +55,7 @@ BlockSubstitutions::BlockSubstitutions(Project* project,const QDomElement & el)
     {
         if(e2.tagName()=="BlockSubstitution")
         {
+
             BlockSubstitution* newBlock = new BlockSubstitution(project,e2,ok);
             if(ok)
                 add(newBlock);

@@ -74,7 +74,7 @@ public:
 
     static QStringList getModelsPath(QString projectFilePath);
     static bool loadProject(QString,Project*);
-    static bool loadModModelPlus(Project*, QString mmoFilePath);
+    static bool loadModelPlus(Project*, QString mmoFilePath);
 
 signals:
     void sendInfo(Info*);

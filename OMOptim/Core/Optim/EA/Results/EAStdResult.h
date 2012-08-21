@@ -70,7 +70,9 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     if(arch.size()==0)
         return NULL;
 
+
     OptimResult *result = new OptimResult(project,*problem);
+
     result->setName(problem->name()+" result");
     result->_subBlocks = subBlocks;
 
@@ -87,7 +89,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     VariableResult *curRecompVar;
     for(int iM=0;iM<problem->models().size();iM++)
     {
-        ModModelPlus* modelPlus = project->modModelPlus(problem->models().at(iM));
+        ModelPlus* modelPlus = project->modelPlus(problem->models().at(iM));
         for (int i=0;i< modelPlus->variables()->items.size();i++)
         {
             curRecompVar = new VariableResult(*modelPlus->variables()->items.at(i));

@@ -52,7 +52,7 @@
 #include "BlockSubs/BlockSubstitution.h"
 #include "BlockSubs/BlockSubstitutions.h"
 #include "OptObjectives.h"
-
+#include "ModelPlus.h"
 
 class EABase;
 
@@ -83,7 +83,9 @@ protected :
 
 public:
     //Optimization(void);
+
     Optimization(Project*,QStringList models);
+
     Optimization(const Optimization &);
     Optimization(QDomElement domProblem,Project* project,bool &ok);
     virtual Problem* clone() const;
@@ -100,8 +102,9 @@ public:
     OptObjectives *objectives()const{return _objectives;}
     BlockSubstitutions *blockSubstitutions()const{return _blockSubstitutions;}
 
+
     // evaluate function
-    virtual MOOptVector* evaluate(QList<ModModelPlus*> models, Variables *overwritedVariables, ScannedVariables*, bool &ok);
+    virtual MOOptVector* evaluate(QList<ModelPlus*> models, Variables *overwritedVariables, ScannedVariables*, bool &ok);
 
     //Models functions
     QStringList models() const;
@@ -117,7 +120,9 @@ public:
     virtual QDomElement toXmlData(QDomDocument & doc);
 
     //specific functions
-    void createSubExecs(QList<QList<ModModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks);
+
+    void createSubExecs(QList<QList<ModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks);
+
 
     //algo functions
     OptimAlgos* algos() const;

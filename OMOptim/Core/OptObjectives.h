@@ -4,6 +4,7 @@
 #include "OptObjective.h"
 #include "MOVector.h"
 
+class ModelPlus;
 class ModModelPlus;
 
 /**

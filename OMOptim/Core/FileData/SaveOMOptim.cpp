@@ -187,53 +187,24 @@ void SaveOMOptim::saveProject(Project* project,bool saveAllCases)
     }
 
     // Saving ModModelPlus
-    QList<ModModelPlus*> allModModelPlus = project->allModModelPlus();
-    for (int m=0;m<allModModelPlus.size();m++)
+    QList<ModelPlus*> allModelPlus = project->allModelPlus();
+    for (int m=0;m<allModelPlus.size();m++)
     {
-        SaveOMOptim::saveModModelPlus(allModModelPlus.at(m));
+        SaveOMOptim::saveModelPlus(allModelPlus.at(m));
     }
 }
 
 
-void SaveOMOptim::saveModModelPlus(ModModelPlus* modModelPlus)
+void SaveOMOptim::saveModelPlus(ModelPlus* modelPlus)
 {
     // MO file
     QDomDocument doc("MOModelXML");
-    QDomElement root = doc.createElement( "MOModel" );
-    doc.appendChild(root);
-
-    // Project info
-    QDir mmoDir(modModelPlus->mmoFolder());
-    QDomElement cBasic = doc.createElement( "Basic" );
-    cBasic.setAttribute( "name", modModelPlus->name() );
-    cBasic.setAttribute( "modelName", modModelPlus->modModelName());
-    root.appendChild(cBasic);
-
-    // Infos
-    QDomElement cInfos = doc.createElement( "Infos" );
-    cInfos.setAttribute("text",modModelPlus->infos());
-    root.appendChild(cInfos);
-
-    // Variables
-    QDomElement cVariables = modModelPlus->variables()->toXmlData(doc,"Variables");
-    root.appendChild(cVariables);
-
-
-
-    // .mo dependencies
-    QDomElement cMoDeps = doc.createElement( "moDependencies" );
-    QString strMoDeps;
-    for (int nof=0;nof<modModelPlus->moDependencies().size();nof++)
-    {
-        strMoDeps.append(modModelPlus->moDependencies().at(nof).absoluteFilePath()+";");
-    }
-    cMoDeps.setAttribute("list",strMoDeps);
-    root.appendChild(cMoDeps);
-
+    QDomElement domModel = modelPlus->toXmlData(doc);
+    doc.appendChild(domModel);
 
     //Writing in MO file
-    QFile file(modModelPlus->mmoFilePath());
-    QFileInfo fileInfo(modModelPlus->mmoFilePath());
+    QFile file(modelPlus->mmoFilePath().absoluteFilePath());
+    QFileInfo fileInfo(modelPlus->mmoFilePath());
     QDir dir = fileInfo.absoluteDir();
     dir.mkpath(dir.absolutePath());
 
@@ -242,8 +213,10 @@ void SaveOMOptim::saveModModelPlus(ModModelPlus* modModelPlus)
         file.remove();
     }
     file.open(QIODevice::WriteOnly);
+
     QTextStream ts( &file );
     ts << doc.toString();
+
     file.close();
 }
 

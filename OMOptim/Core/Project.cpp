@@ -63,7 +63,8 @@
 #include "MOThreads.h"
 #include "ModItemsTree.h"
 #include "ProblemInterface.h"
-
+#include "ProblemInterfaces.h"
+#include "ModExePlus.h"
 
 
 Project::Project()
@@ -221,6 +222,18 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
     emit projectChanged();
 }
 
+
+void Project::loadExeFiles(QStringList exeModelNames, QStringList exeFilePaths, QStringList inputFilePaths, bool forceLoad)
+{
+    for(int i = 0; i<exeFilePaths.size(); i++)
+    {
+        //    QString name = QFileInfo(exeFilePaths.at(i)).dir().dirName();
+        loadExecutableModel(exeModelNames.at(i),QFileInfo(exeFilePaths.at(i)), QFileInfo(inputFilePaths.at(i)));
+    }
+
+}
+
+
 /**
 * \brief Unload a modelica file
 * \param moFilePath full file path of .mo
@@ -266,13 +279,41 @@ bool Project::loadModelicaLibrary(bool storePath, bool forceLoad)
     return true;
 }
 
+bool Project::loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo inputFileInfo)
+{
+    QString exeFile = exeFileInfo.absoluteFilePath();
+    QString inputFile = inputFileInfo.absoluteFilePath();
+    //      QString modelFolderName = modModelPlusFolder()+ QDir::separator() + name;
+
+    //    if(!QDir(modelFolderName).exists())
+    //        QDir(modelFolderName).mkpath(modelFolderName);
+    //    bool copyExeFileOk = QFile::copy(exeFileInfo.absoluteFilePath(), exeFile );
+    //    bool copyInputFileOk = QFile::copy(inputFileInfo.absoluteFilePath(), inputFile);
+
+    _modItemsTree->addExeModel(_modItemsTree->rootElement(),name, inputFile, exeFile);
+    _modItemsTree->emitDataChanged();
+
+    // add modelplus
+    addModelPlus(newModelPlus(name));
+
+    // save project (and thus mmo)
+    save(false);
+    //Store the model
+    //    QDir modPlusdir(modModelPlusFolder()+QDir::separator()+name);
+    //    LowTools::mkdir(modPlusdir.absolutePath(),true);
+    //    QFile::copy(exeFileInfo.absoluteFilePath(), modPlusdir.absoluteFilePath(exeFileInfo.fileName()) );
+    //    QFile::copy(inputFileInfo.absoluteFilePath(), modPlusdir.absoluteFilePath(inputFileInfo.fileName()) );
+
+    return true;
+}
+
 /**
 * \brief load a ModModelPlus defined by a filePath. It will be loaded only if refers to an existing model in current workspace.
 * \param mmoFilePath full file path of .mmo
 */
-void Project::loadModModelPlus(QString mmoFilePath)
+void Project::loadModelPlus(QString mmoFilePath)
 {
-    LoadOMOptim::loadModModelPlus(this,mmoFilePath);
+    LoadOMOptim::loadModelPlus(this,mmoFilePath);
     storeMmoFilePath(mmoFilePath);
 
     emit projectChanged();
@@ -293,6 +334,17 @@ void Project::storeMmoFilePath(QString mmoFilePath)
     emit projectChanged();
 }
 
+//void Project::storeExeFilePath(QString exeFilePath)
+//{
+//    //    QString path = QFileInfo(exeFilePath).absoluteFilePath();
+
+//    if(!_exeFileInfoList.contains(QFileInfo(exeFilePath)))
+//    {
+//        _exeFileInfoList.push_back(exeFilePath);
+//    }
+
+//    emit projectChanged();
+//}
 /**
 *    \brief Reload the mo file of model
 */
@@ -333,20 +385,29 @@ ModModel* Project::curModModel()
 * \brief Find a ModModel within _modItemsTree
 * \arg modelName name of the model looked for
 */
-ModModel* Project::findModModel(QString modelName)
+//ModModel* Project::findModModel(QString modelName)
+//{
+//    ModItem* modModel = _modItemsTree->findInDescendants(modelName);
+
+//    if(!modModel || modModel->getClassRestr()!=Modelica::MODEL)
+//        return NULL;
+//    else
+//        return (ModModel*)modModel;
+//}
+
+ModItem* Project::findModModel(QString modelName)
 {
     ModItem* modModel = _modItemsTree->findInDescendants(modelName);
 
-    if(!modModel || modModel->getClassRestr()!=Modelica::MODEL)
+    if(!modModel)
         return NULL;
     else
-        return (ModModel*)modModel;
+        return modModel;
 }
-
 /**
 * \brief Returns all ModModelPlus contained in project
 */
-QList<ModModelPlus*> Project::allModModelPlus()
+QList<ModelPlus*> Project::allModelPlus()
 {
     return _mapModelPlus.values();
 }
@@ -354,19 +415,20 @@ QList<ModModelPlus*> Project::allModModelPlus()
 /**
 * \brief Adds modModelPlus in project
 */
-void Project::addModModelPlus(ModModelPlus* modModelPlus)
+void Project::addModelPlus(ModelPlus* modelPlus)
 {
-    _mapModelPlus.insert(modModelPlus->modModelName(),modModelPlus);
+    if(modelPlus)
+        _mapModelPlus.insert(modelPlus->modelName(),modelPlus);
 }
 
 /**
   * @brief Returns selected modModelPlus
   */
-ModModelPlus* Project::curModModelPlus()
+ModelPlus* Project::curModelPlus()
 {
     ModModel* curMM = curModModel();
     if(curMM)
-        return modModelPlus(curMM->name());
+        return modelPlus(curMM->name());
     else
         return NULL;
 }
@@ -388,57 +450,65 @@ void Project::setCurModItem(ModItem* modClass)
   * If it does not exist, this function creates a new ModModelPlus, adds it to the project,
   * and returns it.
   */
-ModModelPlus* Project::modModelPlus(QString modModelName)
+ModelPlus* Project::modelPlus(QString modelName)
 {
-    ModModelPlus* corrModModelPlus = _mapModelPlus.value(modModelName,NULL);
+    ModelPlus* corrModelPlus = _mapModelPlus.value(modelName,NULL);
 
-    if(corrModModelPlus)
-        return corrModModelPlus;
+    if(corrModelPlus)
+        return corrModelPlus;
     else
     {
-        corrModModelPlus = newModModelPlus(modModelName);
-        addModModelPlus(corrModModelPlus);
-        return corrModModelPlus;
+        corrModelPlus = newModelPlus(modelName);
+        if(corrModelPlus)
+            addModelPlus(corrModelPlus);
+        return corrModelPlus;
     }
 }
 
 /**
-  * @brief Creates a new modModelPlus for a model.
+  * @brief Creates a new modelPlus for a model.
   * New modModelPlus is automatically added to project.
   */
-ModModelPlus* Project::newModModelPlus(QString modelName)
+ModelPlus* Project::newModelPlus(QString modelName)
 {
-    // Create ModModelFile
-    ModModelPlus* newModModelPlus = new ModModelPlus(this,modelName);
+    // Create ModModelFile or ExeModelFile
+    ModItem* item = _modItemsTree->findItem(modelName);
+
+    ModelPlus* modelPlus=NULL;
+    ModModel* modModel = dynamic_cast<ModModel*> (item);
+    ExeModel* exeModel = dynamic_cast<ExeModel*> (item);
+
+    if(modModel)
+        modelPlus = new ModModelPlus(this,modelName);
+
+    if(exeModel)
+        modelPlus = new ModExePlus(this, modelName);
+
+    if(!modelPlus)
+        return NULL;
 
     // Add to map
-    _mapModelPlus.insert(modelName,newModModelPlus);
+    _mapModelPlus.insert(modelName,modelPlus);
 
     // Store it
     // create folder
-    QDir allModPlusdir(modModelPlusFolder());
+    QDir allModPlusdir(modelPlusFolder());
     LowTools::mkdir(allModPlusdir.absolutePath(),false);
-
-    // modModelPlus dir
     QDir modPlusdir(allModPlusdir.absolutePath()+QDir::separator()+modelName);
     LowTools::mkdir(modPlusdir.absolutePath(),true);
 
-
-    // mmo file
+    // update modelplus with its path
     QString newMmoFilePath = modPlusdir.absolutePath() + QDir::separator() + modelName + ".mmo";
-
-    // set mmoFilePath in ModModelPlus
-    newModModelPlus->setMmoFilePath(newMmoFilePath);
-
-    // save it
-    SaveOMOptim::saveModModelPlus(newModModelPlus);
-
-    // store path
     storeMmoFilePath(newMmoFilePath);
 
-    emit projectChanged();
+    // set mmoFilePath in ModelPlus
+    modelPlus->setMmoFilePath(newMmoFilePath);
 
-    return newModModelPlus;
+    // save it
+    SaveOMOptim::saveModelPlus(modelPlus);
+
+    emit projectChanged();
+    return modelPlus;
 }
 
 
@@ -507,12 +577,13 @@ bool Project::load(QString loadPath)
 }
 
 
-/** @brief Return folder containting modModelPlus saving files
+/** @brief Return folder containting modelPlus saving files
   */
-QString Project::modModelPlusFolder()
+QString Project::modelPlusFolder()
 {
     return folder().absoluteFilePath("Models");
 }
+
 
 /**
   * @brief Check configuration. e.g. : checks omc is started.
@@ -554,6 +625,21 @@ QFileInfoList Project::mmoFiles()
 {
     return _mmoFiles;
 }
+
+//QFileInfoList Project::exeFiles()
+//{
+//    return _exeFileInfoList;
+//}
+
+//QFileInfoList Project::inputFiles()
+//{
+//    return _inputFileInfoList;
+//}
+
+//QStringList Project::fileNameListForExec()
+//{
+//    return _fileNameListForExec;
+//}
 
 ModItem *Project::rootModItem()
 {

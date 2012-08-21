@@ -63,7 +63,7 @@ class OneSimResult : public Result
 
 public:
     OneSimResult(void);
-    OneSimResult(Project* project, ModModelPlus* modModelPlus, const OneSimulation & problem);
+        OneSimResult(Project* project, ModelPlus* modModelPlus, const OneSimulation & problem);
     OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok);
     virtual ~OneSimResult(void);
 
@@ -88,7 +88,7 @@ protected :
     MOOptVector *_finalVariables;
 
     //Model
-    ModModelPlus* _modModelPlus;
+        ModelPlus* _ModelPlus;
 
 
 signals:

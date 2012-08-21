@@ -61,7 +61,8 @@ class ModLoader;
 class ModItemsTree;
 class ModModelPlus;
 class ModModel;
-
+class ModelPlus;
+class ExeModel;
 
 /**
  * \brief Main class managing problems, results, models,
@@ -86,12 +87,14 @@ private:
     // Models
     QFileInfoList _moFiles;
     QFileInfoList _mmoFiles;
+//    QList<QFileInfo> _exeFileInfoList;
+//    QList<QFileInfo> _inputFileInfoList;
+//    QStringList _fileNameListForExec;
 
 
     ModLoader* _modLoader;
     ModItemsTree* _modItemsTree;
-    QMap<QString,ModModelPlus*> _mapModelPlus; //<modmodelName,modmodelplus>
-
+    QMap<QString,ModelPlus*> _mapModelPlus; //<modmodelName,modmodelplus>
 
 
  public:
@@ -111,19 +114,22 @@ private:
     void loadMoFile(QString filePath, bool storePath=true, bool forceLoad = true);
     void unloadMoFile(QString filePath, bool removePath=true);
     void loadMoFiles(QStringList filePaths, bool storePath=true, bool forceLoad = true);
+    void loadExeFiles(QStringList exeModelNames, QStringList exeFilePaths, QStringList inputFilePaths, bool forceLoad= true);
     bool loadModelicaLibrary(bool storePath=true, bool forceLoad = true);
-    void loadModModelPlus(QString mmoFilePath);
-    ModModelPlus* modModelPlus(QString modModelPlus);
-    ModModelPlus* newModModelPlus(QString modelName);
+    bool loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo inputFileInfo);
+    void loadModelPlus(QString mmoFilePath);
+    ModelPlus *modelPlus(QString modelName);
+    ModelPlus* newModelPlus(QString modelName);
     ModModel* curModModel();
-    ModModelPlus* curModModelPlus();
+    ModelPlus *curModelPlus();
     void setCurModItem(ModItem*);
-    ModModel* findModModel(QString name);
-    QList<ModModelPlus*> allModModelPlus();
-    void addModModelPlus(ModModelPlus*);
+    ModItem *findModModel(QString name);
+    QList<ModelPlus*> allModelPlus();
+    void addModelPlus(ModelPlus*);
 
 
     void storeMmoFilePath(QString mmoFilePath);
+    //void storeExeFilePath(QString exeFilePath);
     void refreshAllMod();
     void reloadModModel(QString modModelName);
 
@@ -133,15 +139,18 @@ private:
     //****************************
     // Get/Set functions
     //****************************
-    QString modModelPlusFolder();
+    QString modelPlusFolder();
     QFileInfoList moFiles();
     QFileInfoList mmoFiles();
+//    QFileInfoList exeFiles();
+//    QFileInfoList inputFiles();
+//    QStringList fileNameListForExec();
 
-    MOomc* moomc(){return _moomc;};
-    ModLoader* modLoader(){return _modLoader;};
-    ModItemsTree* modItemsTree(){return _modItemsTree;};
+    MOomc* moomc(){return _moomc;}
+    ModLoader* modLoader(){return _modLoader;}
+    ModItemsTree* modItemsTree(){return _modItemsTree;}
     ModItem* rootModItem();
-    QMap<QString,ModModelPlus*> mapModelPlus(){return _mapModelPlus;};
+    QMap<QString,ModelPlus*> mapModelPlus(){return _mapModelPlus;}
 
 
 

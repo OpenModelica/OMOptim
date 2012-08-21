@@ -3,7 +3,9 @@
 #include "TabOneSim.h"
 #include "TabResOneSim.h"
 
+
 Problem* OneSimulationInterface::createNewProblem(ProjectBase* projectBase,const QStringList modelsList,QString problemType)
+
 {
     Q_ASSERT(problemType==OneSimulation::className());
 
@@ -18,7 +20,7 @@ Problem* OneSimulationInterface::createNewProblem(ProjectBase* projectBase,const
         if(!project)
             return NULL;
         else
-            return new OneSimulation(project,project->modModelPlus(modelsList.at(0)));
+            return new OneSimulation(project,project->modelPlus(modelsList.at(0)));
     }
 }
 

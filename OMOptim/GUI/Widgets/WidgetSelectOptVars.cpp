@@ -43,6 +43,7 @@
 #include <QtGui/QErrorMessage>
 #include "Optimization.h"
 #include "Project.h"
+#include "modexeplus.h"
 
 WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,QWidget *parent):
     QWidget(parent),
@@ -58,7 +59,7 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     _allModelsVars = new Variables(true);
     for(int i=0;i<_problem->models().size();i++)
     {
-        Variables* modelVars = _project->modModelPlus(_problem->models().at(i))->variables();
+        Variables* modelVars = _project->modelPlus(_problem->models().at(i))->variables();
         connect(modelVars,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(refreshAllModelsVars()));
     }
 
@@ -88,6 +89,7 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     // tables' model
     _optVariableProxyModel = GuiTools::ModelToViewWithFilter(_problem->optimizedVariables(),
                                                              _tableOptimizedVars,NULL);
+
 
     _variableProxyModel = GuiTools::ModelToViewWithFilter(_allModelsVars,
                                                           _tableVariables,_ui->lineVariableFilter);
@@ -155,8 +157,11 @@ void WidgetSelectOptVars::addOptVariables()
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
         curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+
         selVar=_allModelsVars->at(curSourceIndex.row());
+
         alreadyIn = _problem->optimizedVariables()->alreadyIn(selVar->name());
+//        if ((!alreadyIn && !selVar->output()))
         if (!alreadyIn)
         {
             optVarProv = new OptVariable(*selVar);
@@ -197,8 +202,11 @@ void WidgetSelectOptVars::addScannedVariables()
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
         curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+
         selVar=_allModelsVars->at(curSourceIndex.row());
+
         alreadyIn = _problem->scannedVariables()->alreadyIn(selVar->name());
+//        if (!alreadyIn && !selVar->output())
         if (!alreadyIn)
         {
             scannedVarProv = new ScannedVariable(*selVar);
@@ -240,6 +248,7 @@ void WidgetSelectOptVars::addOverVariables()
         curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
         selVar=_allModelsVars->at(curSourceIndex.row());
         alreadyIn = _problem->overwritedVariables()->alreadyIn(selVar->name());
+//        if (!alreadyIn && !selVar->output())
         if (!alreadyIn)
         {
             varProv = new Variable(*selVar);
@@ -281,10 +290,14 @@ void WidgetSelectOptVars::addOptObjectives()
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
         curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+
         selVar=_allModelsVars->items[curSourceIndex.row()];
+
 
         alreadyIn = _problem->objectives()->alreadyIn(selVar->name());
         if (!alreadyIn)
+            /*&&  (((_problem->ctrlType(_problem->models().at(0)) !=  ModPlusCtrl::EXECUTABLE))
+                           || ((_problem->ctrlType(_problem->models().at(0)) == ModPlusCtrl::EXECUTABLE) && selVar->output())) )*/
         {
             newObj = new OptObjective(*selVar);
             _problem->objectives()->addItem(newObj);
@@ -352,16 +365,21 @@ void WidgetSelectOptVars::actualizeGui()
 
 void WidgetSelectOptVars::readVariables()
 {
+
     _allModelsVars->clear();
 
     for(int i=0;i<_problem->models().size();i++)
     {
-        ModModelPlus* curModelPlus = _project->modModelPlus(_problem->models().at(i));
+        ModelPlus* curModelPlus = _project->modelPlus(_problem->models().at(i));
 
         // is compiled
-        bool isCompiled = curModelPlus->isCompiled(_problem->ctrl(_problem->models().at(i)));
+        bool isCompiled;
+
+
+        if(curModelPlus->modelType() == ModelPlus::MODELICA)
+            isCompiled = ((ModModelPlus *) curModelPlus)->isCompiled(_problem->ctrl(_problem->models().at(i)));
         bool shouldForceRecompile = false;
-        if(isCompiled)
+        if(isCompiled && curModelPlus->modelType() == ModelPlus::MODELICA)
         {
             // already compiled, ask user if we should only read init file or recompile model
             QMessageBox msgBox;
@@ -379,8 +397,10 @@ void WidgetSelectOptVars::readVariables()
                 shouldForceRecompile = false;
                 break;
             }
+            ((ModModelPlus *)curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)),shouldForceRecompile);
         }
-        curModelPlus->readVariables(_problem->ctrl(_problem->models().at(i)),shouldForceRecompile);
+        if(curModelPlus->modelType() == ModelPlus::EXECUTABLE)
+         ((ModExePlus *) curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)));
     }
 
     refreshAllModelsVars();
@@ -395,7 +415,7 @@ void WidgetSelectOptVars::refreshAllModelsVars()
 
     for(int i=0;i<_problem->models().size();i++)
     {
-        Variables* modelVars = _project->modModelPlus(_problem->models().at(i))->variables();
+        Variables* modelVars = _project->modelPlus(_problem->models().at(i))->variables();
         _allModelsVars->addItems(modelVars,true);
     }
 

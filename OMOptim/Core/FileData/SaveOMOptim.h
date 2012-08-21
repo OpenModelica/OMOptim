@@ -67,7 +67,7 @@ public:
 
     
     static void saveProject(Project*,bool saveAllCases=true);
-    static void saveModModelPlus(ModModelPlus*);
+    static void saveModelPlus(ModelPlus* modelPlus);
     static bool setModelsPath(QString projectFilePath,QStringList modelsPaths);
 
 };

@@ -54,6 +54,7 @@ namespace Modelica
                 TYPE,
                 CLASS,
                 CONNECTOR,
+                EXECUTABLE,
         OTHER
     };
 

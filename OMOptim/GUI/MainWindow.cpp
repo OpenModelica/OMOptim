@@ -29,6 +29,8 @@
 #include "GuiTools.h"
 #include "Problems.h"
 #include "Results.h"
+#include "ProblemInterfaces.h"
+#include "widgetloadexemodel.h"
 
 namespace Ui
 {
@@ -145,10 +147,12 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionClearRecent, SIGNAL(triggered()), this, SLOT(clearRecentFilesMenu()));
     connect( _ui->actionLoadMoFile,  SIGNAL(triggered()), this, SLOT(loadMoFile()));
     connect( _ui->actionLoadModelicaLibrary,  SIGNAL(triggered()), this, SLOT(loadModelicaLibrary()));
+    connect( _ui->actionLoadExecutableModel,  SIGNAL(triggered()), this, SLOT(loadExecutableModel()));
     connect( _ui->actionRefreshModTree, SIGNAL(triggered()),this,SLOT(refreshModelTree()));
     connect( _ui->actionHelp, SIGNAL(triggered()),this, SLOT(openUserManual()));
     connect( _ui->actionStartOmc,SIGNAL(triggered()),_project->moomc(),SLOT(startServer()));
     connect( _ui->actionClearLog,SIGNAL(triggered()),this,SLOT(clearLog()));
+    connect( _ui->actionLoadCases,SIGNAL(triggered()),this,SLOT(loadCases()));
 
 
     //*********************************
@@ -447,6 +451,19 @@ void MainWindow::loadPlugins()
     }
 }
 
+void MainWindow::loadCases()
+{
+    // start with project folder
+    QString folder = _project->folder().absolutePath();
+
+    QString problemsFolder = QFileDialog::getExistingDirectory(
+                this,
+                "OMOptim - Load problems",
+                folder);
+
+    _project->addOMCases(problemsFolder);
+}
+
 void MainWindow::connectProject()
 {
 
@@ -617,7 +634,7 @@ void MainWindow::onProjectAboutToBeReset()
 void MainWindow::onAddedProblem(Problem* newProblem)
 {
     // Creating problem tab
-    ProblemInterface* interface = _project->problemsInterfaces().interfaceOf(newProblem);
+    ProblemInterface* interface = (_project->problemsInterfaces()).interfaceOf(newProblem);
 
     QTime elapsed;
     if(interface)
@@ -1012,6 +1029,28 @@ void MainWindow::loadModelicaLibrary()
     refreshModelTreeView();
 }
 
+void MainWindow::loadExecutableModel()
+{
+    WidgetLoadExeModel* widget = new WidgetLoadExeModel(_project,this);
+    QString name;
+    bool isloaded =false;
+    while((name.isEmpty() || _project->modItemsTree()->findInDescendants(name)) && !isloaded )
+    {
+        if(widget->exec() == QDialog::Accepted)
+        {
+            name = widget->name();
+            if( !widget->name().isEmpty() && !_project->modItemsTree()->findInDescendants(name))
+            {
+                _project->loadExecutableModel(name, widget->exeFileInfo(),widget->inputFileInfo());
+                refreshModelTreeView();
+                isloaded =true;
+            }
+        }
+        else
+            break;
+    }
+}
+
 void MainWindow::refreshModelTree()
 {
     _project->refreshAllMod();
@@ -1065,7 +1104,9 @@ void MainWindow::onPushedNewProblem()
         bool pursue = true;
 
         WidgetSelectModModel* widgetSelect;
+
         QStringList modelsList;
+
         if(interface)
         {
             switch(interface->modelNeeds(problemType))
@@ -1077,9 +1118,11 @@ void MainWindow::onPushedNewProblem()
                 widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),interface->modelNeeds(problemType),this);
                 if(widgetSelect->exec()==QDialog::Accepted)
                 {
-                    QList<ModModel*> models = widgetSelect->_selectedModels;
+
+                    QList<ModItem*> models = widgetSelect->_selectedModels;
                     for(int i=0;i<models.size();i++)
                         modelsList.push_back(models.at(i)->name());
+
                 }
                 else
                     pursue = false;

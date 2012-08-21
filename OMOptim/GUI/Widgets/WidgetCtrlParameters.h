@@ -62,6 +62,7 @@ public:
     explicit WidgetCtrlParameters(Project* project, QString model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent = NULL);
     explicit WidgetCtrlParameters(Project* project, QMap<QString,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent = NULL);
     void update(QMap<QString,ModPlusCtrls *> ctrls);
+
     virtual ~WidgetCtrlParameters();
 
 
@@ -80,6 +81,7 @@ public slots :
          QMap<QString,QComboBox*> _comboBoxs;
          QMap<QString,QPushButton*> _parametersPbs;
          QMap<QString,QPushButton*> _compilePbs;
+
          bool _isResult;// defines wether form could be editable or not
          QGridLayout* _layout;
          Project* _project;

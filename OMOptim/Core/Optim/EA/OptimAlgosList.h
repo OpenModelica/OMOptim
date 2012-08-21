@@ -55,14 +55,15 @@ class Problem;
 class OptimAlgosList
 {
 public :
-    static const int nbAlgos = 4;
+    static const int nbAlgos = 5;
 
     enum Type
     {
         iSPEA2Adapt,
         iNSGA2,
         iSPEA2,
-        iSA1
+        iSA1,
+        iPSO
     };
 
     static OptimAlgo* getNewAlgo(Project* project,Problem* problem,Type iAlgo);

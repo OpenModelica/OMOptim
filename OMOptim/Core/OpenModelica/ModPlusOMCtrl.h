@@ -44,12 +44,11 @@
 #include "OpenModelica.h"
 #include <limits>
 
+class ModModelPlus;
+
 class ModPlusOMCtrl :public ModPlusCtrl
 {
     public:
-
-
-
 
         ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* oms);
         ~ModPlusOMCtrl(void);
@@ -65,6 +64,11 @@ class ModPlusOMCtrl :public ModPlusCtrl
         bool readInitialVariables(MOVector<Variable> *,bool forceRecompile,QString initFile="");
 
 
+        // compatible models
+        virtual QList<ModelPlus::ModelType> compatibleModels();
+        
+
+
         // Compile function
         bool isCompiled();
         bool compile(const QFileInfoList & moDeps);
@@ -77,6 +81,7 @@ private :
         QString _initFileXml;
         QString _initFileTxt;
         QString _exeFile;
+        ModModelPlus *_modModelPlus;
 
 
 };

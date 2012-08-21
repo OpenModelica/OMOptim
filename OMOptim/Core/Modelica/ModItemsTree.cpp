@@ -43,7 +43,6 @@
 
 
 
-
 ModItemsTree::ModItemsTree(ModLoader* modLoader,MOomc* moomc,QObject *parent)
     : QAbstractItemModel(parent)
 {
@@ -99,6 +98,14 @@ void ModItemsTree::readFromOMCWThread(ModItem* parent,int depthMax,  QString dir
 
 }
 
+void ModItemsTree::addExeModel(ModItem* parent, QString name, QString inputFile, QString exeFile)
+{
+    ModItem* newExeElement = new ExeModel(name,exeFile,inputFile);
+    addChild(parent, newExeElement);
+    parent->setChildrenReaden(true);
+    parent->emitModified();
+}
+
 void ModItemsTree::emitDataChanged()
 {
 
@@ -131,6 +138,8 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
         if((curDepth<=depthMax)&&!parent->childrenReaden())
         {
             ModItem* newElement;
+
+
 
             QString childrenDirection = direction.section(".",curDepth+1,curDepth+1);
 
@@ -214,6 +223,8 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
             }
             parent->setChildrenReaden(true);
             parent->emitModified();
+
+
         }
         parent->_readMutex.unlock();
     }
@@ -378,7 +389,6 @@ ModItem* ModItemsTree::findInDescendants(QString fullName,ModItem* parent)
     if(parent==NULL)
         parent = _rootElement;
 
-
     ModItem* curChild;
     QString curFullName = parent->name(ModItem::FULL);
 
@@ -404,9 +414,13 @@ ModItem* ModItemsTree::findInDescendants(QString fullName,ModItem* parent)
     //QString childShortName = fullName.section(".",curDepth,curDepth);
     QString childShortName = fullName;
     // first remove parent name
+    // A ajouter la une condition if not executable else childShortName = curFullName !!!!!!
+    if(!fullName.endsWith(".exe"))
+    {
     childShortName.remove(QRegExp("^"+curFullName+"\\."));
     // then take first section
     childShortName = childShortName.section(".",0,0);
+
 
     // looking in children
     for(int iChild=0;iChild<parent->childCount();iChild++)
@@ -414,6 +428,18 @@ ModItem* ModItemsTree::findInDescendants(QString fullName,ModItem* parent)
         curChild = parent->child(iChild);
         if(curChild->name(ModItem::SHORT)==childShortName)
             return findInDescendants(fullName,curChild);
+    }
+    }
+    else
+    {
+        for(int iChild=0;iChild<parent->childCount();iChild++)
+        {
+            curChild = parent->child(iChild);
+            if(curChild->name(ModItem::FULL)==childShortName)
+                return findInDescendants(fullName,curChild);
+        }
+
+
     }
     return NULL;
 }
@@ -598,7 +624,6 @@ QVariant ModItemsTree::data(const QModelIndex &index, int role) const
             if((role == Qt::DisplayRole) && (index.column()==ModItem::NAME))
                 return item->name(ModItem::SHORT);
 
-
             return item->getFieldValue(index.column(),role);
         }
         else
@@ -686,7 +711,11 @@ const
         parentComponent = static_cast<ModItem*>(parent.internalPointer());
 
     // looking in children
-    if(row>parentComponent->childCount())
+//    int nbPacks = parentComponent->packageChildCount();
+//    int nbModels = parentComponent->modelChildCount();
+//    int nbComps = parentComponent->compChildCount();
+
+    if(row<0 || row>= parentComponent->childCount())
         return QModelIndex();
 
     ModItem *childElement = parentComponent->child(row);
@@ -825,7 +854,7 @@ int ModItemsTree::rowCount(const QModelIndex &parent) const
 * in order to update item value.
 * @param itemName : full name of item whom who are looking parent model
 */
-ModModel* ModItemsTree::modelOf(QString itemName)
+ModItem *ModItemsTree::modelOf(QString itemName)
 {
     ModItem* item = findInDescendants(itemName);
     return modelOf(item);
@@ -950,6 +979,8 @@ QIcon ModItemsTree::getModelicaNodeIcon(ModItem* ModItem) const
         return QIcon(":/icons/package-icon.png");
     case Modelica::TYPE:
         return QIcon(":/icons/type-icon.png");
+    case Modelica::EXECUTABLE:
+        return QIcon(":/icons/exe-icon.png");
     default :
         return QIcon();
     }
@@ -1009,6 +1040,7 @@ Qt::DropActions ModItemsTree::supportedDropActions() const
 }
 
 
+
 ModItemsLoader::ModItemsLoader(ModItemsTree* modItemsTree,ModItem* parent,int depthMax,  QString direction , int curDepth )
 {
     _modItemsTree = modItemsTree;
@@ -1017,9 +1049,13 @@ ModItemsLoader::ModItemsLoader(ModItemsTree* modItemsTree,ModItem* parent,int de
     _direction = direction;
     _curDepth = curDepth;
 
+
     connect(this, SIGNAL(readFromOmc(ModItem*,int,QString,int)),
-            modItemsTree,SLOT(readFromOmc(ModItem*,int,QString,int)));
+            _modItemsTree, SLOT(readFromOmc(ModItem*,int, QString,int)));
+    connect(this, SIGNAL(started()), this, SLOT(hasStarted()));
+    connect(this, SIGNAL(finished()), this, SLOT(hasFinished()));
 }
+
 
 
 void ModItemsLoader::run()

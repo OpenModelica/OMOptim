@@ -53,7 +53,7 @@ WidgetOptimActions::WidgetOptimActions(ProjectBase* project,Optimization *proble
 {
     _ui->setupUi(this);
     _ui->frame->setStyleSheet(GuiTools::launchBarStyleSheet());
-    //_ui->pushModel->setText("Model : "+problem->modModelPlus()->modModelName());
+
 
     _problem = problem;
     _result = result;
@@ -115,5 +115,5 @@ void WidgetOptimActions::restoreProblem()
 
 void WidgetOptimActions::onShowModelAsked()
 {
-    //emit showModclass(_problem->modModelPlus()->modModel());
+
 }

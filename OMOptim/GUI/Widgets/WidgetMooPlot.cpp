@@ -100,10 +100,10 @@ void WidgetMooPlot::varSelectionChanged()
 
     // updating short names
     QString shortXVarName = xVarName;
-  //  shortXVarName.remove(_result->modModelPlus()->name()+".");
+
 
     QString shortYVarName = yVarName;
-   // shortYVarName.remove(_result->modModelPlus()->name()+".");
+
 
 
 
@@ -222,8 +222,10 @@ void WidgetMooPlot::updateCombos()
     QString curName;
     for (int i=0;i<nbObj;i++)
     {
+
         fullNames.push_back(_result->optObjectivesResults()->at(i)->name(Variable::FULL));
         shortNames.push_back(_result->optObjectivesResults()->at(i)->name(Variable::SHORT));
+
     }
     for (int i=0;i<nbOpt;i++)
     {

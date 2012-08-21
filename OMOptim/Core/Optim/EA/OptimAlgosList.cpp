@@ -4,6 +4,7 @@
 #include "SPEA2.h"
 #include "SPEA2Adapt.h"
 #include "SA1.h"
+#include "PSO.h"
 
 
 OptimAlgo* OptimAlgosList::getNewAlgo(Project* project,Problem* problem,OptimAlgosList::Type iAlgo)
@@ -18,6 +19,8 @@ OptimAlgo* OptimAlgosList::getNewAlgo(Project* project,Problem* problem,OptimAlg
         return new SPEA2Adapt(project,problem);
     case OptimAlgosList::iSA1:
         return new SA1(project,problem);
+    case OptimAlgosList::iPSO:
+        return new PSO(project,problem);
     default:
         //Problem
         return NULL;

@@ -52,6 +52,7 @@ WidgetSelectModModel::WidgetSelectModModel(ModItemsTree* modItemsTree,ProblemInt
     _needs = needs;
 
     ui->treeView->setModel(modItemsTree);
+
     switch(_needs)
     {
     case ProblemInterface::ONEMODEL :
@@ -63,6 +64,7 @@ WidgetSelectModModel::WidgetSelectModModel(ModItemsTree* modItemsTree,ProblemInt
     }
 
     connect(ui->treeView, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
+//    connect(ui->treeView2, SIGNAL(clicked()),this, SLOT(onSelectedExeItem()));
     connect(ui->pushValidate,SIGNAL(clicked()),this,SLOT(accept()));
     connect(ui->pushCancel,SIGNAL(clicked()),this,SLOT(reject()));
     //setSelectedModModel(NULL);
@@ -92,19 +94,31 @@ WidgetSelectModModel::~WidgetSelectModModel()
 
 void WidgetSelectModModel::setSelectedModModel(QList<ModItem*> modClasses)
 {
+
     _selectedModels.clear();
     ui->pushValidate->setEnabled(false);
-    ModModel* curModel;
     for(int i=0;i<modClasses.size();i++)
     {
-        curModel = dynamic_cast<ModModel*>(modClasses.at(i));
+    if((dynamic_cast<ModModel*>(modClasses.at(i)))|| (dynamic_cast<ExeModel*>(modClasses.at(i))) )
 
-        if(curModel)
         {
-            _selectedModels.push_back(curModel);
+            _selectedModels.push_back(modClasses.at(i));
             ui->pushValidate->setEnabled(true);
             ui->pushValidate->setFocus();
+     //   selectedModel = modClass;
         }
+
+
+
+//        selectedModel = dynamic_cast<ModModel*>(modClass);
+
+//            if(selectedModel)
+//        {
+//                ui->pushValidate->setEnabled(true);
+//                ui->pushValidate->setFocus();
+//        }
+//            else
+//                ui->pushValidate->setEnabled(false);
     }
 }
 

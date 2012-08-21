@@ -2,15 +2,15 @@
 #define MODPLUSCTRLS_H
 
 #include "ModPlusCtrl.h"
-
+#include "ModelPlus.h"
 
 class ModPlusCtrls :public QObject, public QMap<ModPlusCtrl::Type,ModPlusCtrl*>
 {
     Q_OBJECT
 
 public :
-    ModPlusCtrls(Project* project,ModModelPlus* modModelPlus);
-    ModPlusCtrls(Project* project,ModModelPlus* modModelPlus,const QDomElement &);
+    ModPlusCtrls(Project* project,ModelPlus* ModPlus);
+    ModPlusCtrls(Project* project,ModelPlus* ModPlus,const QDomElement &);
     virtual ~ModPlusCtrls();
 
     static QString className(){return "Controlers";};
@@ -23,8 +23,9 @@ public :
     ModPlusCtrl* currentCtrl() const;
     ModPlusCtrl::Type currentCtrlType() const;
     void setCurrentCtrlType(ModPlusCtrl::Type);
-
     void setFromOtherCtrls(const ModPlusCtrls &);
+
+    static QList<ModPlusCtrl*> getCompatibleCtrls(Project* project, ModelPlus* modelPlus);
 
 signals :
     void modified();
@@ -32,11 +33,12 @@ signals :
 
 private :
     Project *_project;
-    ModModelPlus* _modModelPlus;
+    ModelPlus* _modelPlus;
     ModPlusCtrl::Type _ctrlType;
     void insertCtrl(ModPlusCtrl::Type,ModPlusCtrl*);
 
-    static ModPlusCtrl* getNewCtrl(ModPlusCtrl::Type type,Project* project,ModModelPlus* modModelPlus);
+    static ModPlusCtrl* getNewCtrl(ModPlusCtrl::Type type,Project* project,ModelPlus* ModPlus);
+    static void init(ModelPlus::ModelType,Project* project,ModelPlus* ModPlus);
 
 };
 

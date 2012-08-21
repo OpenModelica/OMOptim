@@ -1,17 +1,17 @@
 <RCC>
     <qresource prefix="/">
-    <file alias="Undo">icons/Undo.png</file>
-    <file>Mines.PNG</file>
-    <file alias="Search">icons/Search.png</file>
-    <file alias="Play">icons/Play.png</file>
-    <file alias="Refresh">icons/Refresh.png</file>
-    <file alias="Settings">icons/Settings.png</file>
-    <file alias="Save">icons/Save.png</file>
-    <file alias="Sync">icons/Synchronize.png</file>
-    <file alias="Globe">icons/Globe.png</file>
-    <file alias="Folder">icons/Folder.png</file>
-    <file alias="Delete">icons/Delete.png</file>
-    <file alias="Add">icons/Add.png</file>
+        <file alias="Undo">icons/Undo.png</file>
+        <file>Mines.PNG</file>
+        <file alias="Search">icons/Search.png</file>
+        <file alias="Play">icons/Play.png</file>
+        <file alias="Refresh">icons/Refresh.png</file>
+        <file alias="Settings">icons/Settings.png</file>
+        <file alias="Save">icons/Save.png</file>
+        <file alias="Sync">icons/Synchronize.png</file>
+        <file alias="Globe">icons/Globe.png</file>
+        <file alias="Folder">icons/Folder.png</file>
+        <file alias="Delete">icons/Delete.png</file>
+        <file alias="Add">icons/Add.png</file>
         <file>icons/type-icon.png</file>
         <file>icons/block-icon.png</file>
         <file>icons/class-icon.png</file>
@@ -20,5 +20,6 @@
         <file>icons/model-icon.png</file>
         <file>icons/package-icon.png</file>
         <file>icons/record-icon.png</file>
-  </qresource>
+        <file>icons/exe-icon.png</file>
+    </qresource>
 </RCC>

@@ -53,31 +53,35 @@
 #include "ModPlusCtrl.h"
 #include "LowTools.h"
 
-ModModelPlus::ModModelPlus( Project* project,QString modModelName)
+ModModelPlus::ModModelPlus( Project* project,QString modelName)
+    :ModelPlus(project,modelName)
 {
-    _project = project;
+
     _moomc = _project->moomc();
-    _modModelName = modModelName;
+
+
     _variables = new Variables(true);
+
     _connections = new ModelicaConnections(_project->modItemsTree());
 
-    _variablesRead = false;
     _connectionsRead = false;
+}
 
-    _name = modModelName;
-
-
-    connect(_variables,SIGNAL(modified()),this,SIGNAL(variablesUpdated()));
-
-
-    // read function
-    // readAll();
+ModModelPlus::ModModelPlus(Project *project, const QDomElement &domRoot)
+:ModelPlus(project,domRoot)
+{
+    // .mo dependencies
+    QDomElement cMoDeps = domRoot.firstChildElement("moDependencies");
+    QStringList strMoDeps  = cMoDeps.attribute("list").split(";",QString::SkipEmptyParts);
+    for (int nof=0;nof<strMoDeps.size();nof++)
+    {
+        this->addMoDependency(QFileInfo(strMoDeps.at(nof)));
+}
 }
 
 ModModelPlus::~ModModelPlus()
 {
     delete _connections;
-    delete _variables;
 }
 
 /**
@@ -86,43 +90,40 @@ ModModelPlus::~ModModelPlus()
   */
 void ModModelPlus::clear()
 {
-    _variablesRead = false;
+    ModelPlus::clear();
+
     _connectionsRead = false;
 
-    _name.clear();
     _mmoFilePath.clear();
 
     //connections
     _connections->clear();
-    _variables->clear();
+
 }
 
 void ModModelPlus::save()
 {
-    SaveOMOptim::saveModModelPlus(this);
+    SaveOMOptim::saveModelPlus(this);
     emit saved();
 }
 
 void ModModelPlus::reloadModel()
 {
-    _project->reloadModModel(_modModelName);
-}
-void ModModelPlus::setMmoFilePath(QString filePath)
-{
-    _mmoFilePath = filePath;
+    _project->reloadModModel(_modelName);
 }
 
-QString ModModelPlus::mmoFilePath()
+
+QFileInfo ModModelPlus::mmoFilePath()
 {
-    return _mmoFilePath;
+    return QFileInfo(_mmoFilePath);
 }
 
 QString ModModelPlus::moFilePath()
 {
-    ModItem* modItem = _project->findModModel(_modModelName);
+    ModItem* modItem = _project->findModModel(_modelName);
     if(!modItem)
     {
-        InfoSender::instance()->debug("Can't find model "+_modModelName);
+        InfoSender::instance()->debug("Can't find model "+_modelName);
         return QString();
     }
     else
@@ -138,26 +139,6 @@ QString ModModelPlus::mmoFileName()
     return fileInfo.fileName();
 }
 
-QDir ModModelPlus::mmoFolder()
-{
-    QFileInfo fileInfo(_mmoFilePath);
-    return fileInfo.dir();
-}
-
-QFileInfoList ModModelPlus::neededFiles()
-{
-    return _neededFiles;
-}
-
-QStringList ModModelPlus::neededFolders()
-{
-    return _neededFolders;
-}
-
-void ModModelPlus::setModModelName(QString modModelName)
-{
-    _modModelName = modModelName;
-}
 
 void ModModelPlus::addMoDependency(const QFileInfo & dep)
 {
@@ -189,31 +170,11 @@ QFileInfoList ModModelPlus::moDependencies() const
     return _moDependencies;
 }
 
-//************************
-//  Variables
-//************************
-void ModModelPlus::addVariable(Variable* var)
-{
-    // add item in variables vector
-    _variables->addItem(var);
-}
-
-/**
-* Returns pointer to variables.
-*/
-Variables * ModModelPlus::variables()
-{
-//    if(!_variablesRead && readIfNot)
-//        readVariables();
-
-    return _variables;
-}
-
 /**
 * Returns a vector containg the variables concerning a child element
 * @Param _element : child element
 */
-Variables* ModModelPlus::variables(ModItem* element)
+/*Variables* ModModelPlus::variables(ModItem* element)
 {
     Variables* elVars = new Variables(false);
     QString elName = element->name();
@@ -230,22 +191,9 @@ Variables* ModModelPlus::variables(ModItem* element)
     }
     return elVars;
 }
+*/
 
 
-QString ModModelPlus::infos()
-{
-    return _infos;
-}
-
-ModModel* ModModelPlus::modModel()
-{
-    return dynamic_cast<ModModel*>(_project->modItemsTree()->findItem(_modModelName));
-}
-
-void ModModelPlus::setInfos(QString infos)
-{
-    _infos = infos;
-}
 
 bool ModModelPlus::readAll(ModPlusCtrl *ctrl)
 {
@@ -262,6 +210,24 @@ void ModModelPlus::loadDependencies()
 {
     for(int i=0;i<_moDependencies.size();i++)
         _moomc->loadFile(_moDependencies.at(i).absoluteFilePath());
+}
+
+QDomElement ModModelPlus::toXmlData(QDomDocument &doc)
+{
+    QDomElement root = ModelPlus::toXmlData(doc) ;
+    root.setTagName(ModModelPlus::className());
+
+    // .mo dependencies
+    QDomElement cMoDeps = doc.createElement( "moDependencies" );
+    QString strMoDeps;
+    for (int nof=0;nof<moDependencies().size();nof++)
+    {
+        strMoDeps.append(moDependencies().at(nof).absoluteFilePath()+";");
+    }
+    cMoDeps.setAttribute("list",strMoDeps);
+    root.appendChild(cMoDeps);
+
+    return root;
 }
 
 bool ModModelPlus::isCompiled(ModPlusCtrl* ctrl)
@@ -300,6 +266,7 @@ bool ModModelPlus::readVariables(ModPlusCtrl* ctrl, bool forceRecompile)
 {
     _variablesRead = ctrl->readInitialVariables(_variables,forceRecompile);
     return _variablesRead;
+
 }
 
  bool ModModelPlus::variablesRead() const
@@ -389,7 +356,7 @@ void ModModelPlus::openNeededFilesDlg()
 
 QString ModModelPlus::modModelName()
 {
-    return _modModelName;
+    return _modelName;
 }
 
 //vector<ModModelPlusicaModifier*>* MOomc::getComponentModifiers(QString componentName,ModItem* component)

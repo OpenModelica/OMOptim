@@ -46,7 +46,11 @@
 
 #include "MOVector.h"
 
-class ModModelPlus;
+
+#include "ModelPlus.h";
+
+
+
 class Project;
 class Variable;
 class MOomc;
@@ -68,20 +72,28 @@ class ModPlusCtrl :public QObject
 
         public:
 
+
+
         enum Type
         {
                 OPENMODELICA,
-                DYMOLA
+                DYMOLA,
+                OMEXECUTABLE,
+                DYMOLAEXECUTABLE,
+                BLACKBOXEXECUTABLE
         };
-        static const int nbTypes = 2;
+        static const int nbTypes = 4;
 
-        ModPlusCtrl(Project*,ModModelPlus* modModelPlus,MOomc* moomc);
+        ModPlusCtrl(Project*,ModelPlus* ModPlus,MOomc* moomc);
         ~ModPlusCtrl(void);
         virtual ModPlusCtrl* clone()=0;
 
         // Variables functions
         virtual bool readOutputVariables(MOVector<Variable> *,QString outputfile="") = 0;
         virtual bool readInitialVariables(MOVector<Variable> *,bool forceRecompile = false,QString initfile="") = 0;
+
+        // compatible models
+        virtual QList<ModelPlus::ModelType> compatibleModels() = 0;
 
         // Compile function
         virtual bool isCompiled() = 0;
@@ -105,7 +117,7 @@ class ModPlusCtrl :public QObject
 
 
 protected:
-        ModModelPlus* _modModelPlus;
+        ModelPlus* _ModelPlus;
         bool _copyAllMoOfFolder;
         MOParameters *_parameters;
         MOomc* _moomc;

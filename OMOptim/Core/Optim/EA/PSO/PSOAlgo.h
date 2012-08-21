@@ -75,9 +75,9 @@ void operator () (eoPop < MOEOT > &_pop, MOParameters *_parameters, moeoUnbounde
     {
       //  eoPop < MOEOT > offspring, empty_pop;
 
-        double inertia = _parameters->value(PSOParameters::INERTIA,1.0).toDouble();
-        double alpha   = _parameters->value(PSOParameters::LEARNINGFACTORALPHA,2.0).toDouble();
-        double betta   = _parameters->value(PSOParameters::LEARNINGFACTORBETTA,2.0).toDouble();
+    double inertia = _parameters->value(PSOParameters::str(PSOParameters::INERTIA),1.0).toDouble();
+        double alpha   = _parameters->value(PSOParameters::str(PSOParameters::LEARNINGFACTORALPHA),2.0).toDouble();
+        double betta   = _parameters->value(PSOParameters::str(PSOParameters::LEARNINGFACTORBETTA),2.0).toDouble();
 
 
         eoPop <MOEOT> pbest; // best particle points

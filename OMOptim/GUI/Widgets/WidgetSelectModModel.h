@@ -67,7 +67,7 @@ public:
 public:
     Ui::WidgetSelectModModelClass *ui;
 
-    QList<ModModel*> _selectedModels;
+    QList<ModItem *> _selectedModels;
     void setSelectedModModel(QList<ModItem *> modClasses);
 
 public slots :

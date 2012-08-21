@@ -52,7 +52,7 @@ class Result;
 class BlockSubstitutions;
 class ModModelPlus;
 class ModItemsTree;
-
+class ModelPlus;
 
 /**
   * Base class for evolutionary algorithms (e.g. SPEA2, NSGA2)
@@ -74,14 +74,14 @@ public:
 
     // subModels (for Optimization problems)
     bool _useSubModels;
-    void setSubModels(QList<QList<ModModelPlus*> >,QList<BlockSubstitutions*>);
+    void setSubModels(QList<QList<ModelPlus *> >,QList<BlockSubstitutions*>);
 
 protected:
 
     ModItemsTree* _modItemsTree;
 
     // for Optimization problems
-    QList<QList<ModModelPlus*> > _subModels;
+    QList<QList<ModelPlus*> > _subModels;
     QList<BlockSubstitutions*> _subBlocks;
 
     // solve mixing pointdep-pointindep in bounds

@@ -51,6 +51,7 @@ http://www-cep.ensmp.fr/english/
 #include "../../SimulationRuntime/c/util/read_matlab4.h"
 
 
+
 OpenModelica::OpenModelica()
 {
 
@@ -60,7 +61,7 @@ OpenModelica::~OpenModelica(void)
 {
 }
 
-bool OpenModelica::compile(MOomc *_omc,QFileInfo moFile,QString modelToConsider,QDir storeFolder,const QFileInfoList & moDeps, QFileInfoList neededFiles, QStringList neededFolders)
+bool OpenModelica::compile(MOomc *_omc,QFileInfo moFile,QString modelToConsider,QDir storeFolder,const QFileInfoList & moDeps, QFileInfoList neededFiles, QFileInfoList neededFolders)
 {
     // check if model already loaded
     QFileInfo loadedMoFile = _omc->getFileOfClass(modelToConsider);
@@ -541,6 +542,8 @@ bool OpenModelica::setInputXml(QString fileName, MOVector<Variable> *variables, 
     return ok;
 }
 
+
+
 void OpenModelica::setInputVariablesXml(QDomDocument & doc, QString modelName, MOVector<Variable> *variables)
 {
     QDomElement xfmi = doc.firstChildElement("fmiModelDescription");
@@ -677,7 +680,6 @@ void OpenModelica::start(QString exeFile,int maxnsec)
     env.insert("PATH", env.value("Path") + ";"+omHome+";"+mingw);
 
     simProcess.setProcessEnvironment(env);
-
 
     //start process
     simProcess.start(appPath, QStringList());

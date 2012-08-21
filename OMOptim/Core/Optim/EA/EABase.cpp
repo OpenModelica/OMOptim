@@ -72,7 +72,7 @@ EABase::~EABase(void)
 
 }
 
-void EABase::setSubModels(QList<QList<ModModelPlus*> > subModels,QList<BlockSubstitutions*> subBlocks)
+void EABase::setSubModels(QList<QList<ModelPlus*> > subModels,QList<BlockSubstitutions*> subBlocks)
 {
     _subModels = subModels;
     _subBlocks = subBlocks;

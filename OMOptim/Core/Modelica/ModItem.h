@@ -122,7 +122,7 @@ public:
 
     // Local information
     QString name(ModItem::NameFormat = ModItem::FULL);
-    QString filePath();
+    virtual QString filePath();
     
     // Tree functions
     int depth();

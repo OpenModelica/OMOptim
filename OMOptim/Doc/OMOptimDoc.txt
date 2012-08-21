@@ -1,4 +1,4 @@
-/*! \page pageOMOptim OMOptim
+/*! \mainpage OMOptim
 
 OMOptim is an optimization software dedicated to optimization.
 

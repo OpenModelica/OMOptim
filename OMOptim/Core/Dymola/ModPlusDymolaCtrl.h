@@ -11,12 +11,15 @@ http://www-cep.ensmp.fr/english/
 #ifndef _MODPLUSDYMOLACTRL_H
 #define _MODPLUSDYMOLACTRL_H
 
+
 #include <QtCore>
 #include <limits>
 
-
 #include "ModPlusCtrl.h"
 #include "DymolaParameters.h"
+
+
+
 
 class ModModelPlus;
 class MOomc;
@@ -27,10 +30,7 @@ class ModPlusDymolaCtrl :public ModPlusCtrl
 {
 
 
-
-
 public:
-
 
         ModPlusDymolaCtrl(Project* project,ModModelPlus* model,MOomc* omc);
         ~ModPlusDymolaCtrl(void);
@@ -41,9 +41,12 @@ public:
 
         // Variables functions
         bool readOutputVariables(MOVector<Variable> *,QString path);
-        bool readOutputVariablesDSRES(MOVector<Variable> *,QString _dsresFile);
-        bool readOutputVariablesDSFINAL(MOVector<Variable> *,QString _dsfinalFile);
-        bool readInitialVariables(MOVector<Variable> *,bool forceRecompile,QString _dsinFile="");
+        bool readOutputVariablesDSRES(MOVector<Variable> *,QString dsresFile);
+        bool readOutputVariablesDSFINAL(MOVector<Variable> *,QString dsfinalFile);
+        bool readInitialVariables(MOVector<Variable> *,bool forceRecompile, QString dsinFile="");
+
+        // compatible models
+        virtual QList<ModelPlus::ModelType> compatibleModels();
 
 
         // Compile function
@@ -63,6 +66,7 @@ private:
         QString _dsresFile;
         QString _dsfinalFile;
         QProcess _simProcess;
+        ModModelPlus *_modModelPlus; /// cast of _ModelPlus
 
 };
 

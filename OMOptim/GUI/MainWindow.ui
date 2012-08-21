@@ -178,7 +178,7 @@
      <x>0</x>
      <y>0</y>
      <width>962</width>
-     <height>20</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -212,6 +212,7 @@
     </widget>
     <addaction name="menuOMC"/>
     <addaction name="actionSettings"/>
+    <addaction name="actionLoadCases"/>
    </widget>
    <widget class="QMenu" name="menuModels">
     <property name="title">
@@ -220,6 +221,7 @@
     <addaction name="actionLoadMoFile"/>
     <addaction name="actionLoadModelicaLibrary"/>
     <addaction name="actionRefreshModTree"/>
+    <addaction name="actionLoadExecutableModel"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -315,7 +317,7 @@ color:white;
         <string>Add .mo</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="Resources/OMOptim.qrc">
          <normaloff>:/Folder</normaloff>:/Folder</iconset>
        </property>
       </widget>
@@ -459,6 +461,9 @@ color:white;
    </property>
   </action>
   <action name="actionLoadMoFile">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Load Mo File...</string>
    </property>
@@ -511,8 +516,20 @@ color:white;
     <string>Unload plugins ...</string>
    </property>
   </action>
+  <action name="actionLoadExecutableModel">
+   <property name="text">
+    <string>Load Executable Model</string>
+   </property>
+  </action>
+  <action name="actionLoadCases">
+   <property name="text">
+    <string>Load problems/results...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="Resources/OMOptim.qrc"/>
+ </resources>
  <connections/>
 </ui>

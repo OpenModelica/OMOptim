@@ -63,7 +63,7 @@ WidgetOneSimVars::WidgetOneSimVars(ProjectBase *project,OneSimulation *problem, 
     _problem = problem;
 
     // fill variables' table
-    ModModelPlus* modModelPlus = _problem->modModelPlus();
+    ModelPlus* modModelPlus = _problem->modelPlus();
     _variables = modModelPlus->variables();
 
     _variableProxyModel = GuiTools::ModelToViewWithFilter(_variables,_ui->tableVariables,_ui->lineVariableFilter);
@@ -128,7 +128,9 @@ void WidgetOneSimVars::addModVariables()
         varProv = _variables->at(curSourceIndex.row());
 
         alreadyIn = _problem->overwritedVariables()->alreadyIn(varProv->name());
+//        if (!alreadyIn && !varProv->output())
         if (!alreadyIn)
+
         {
             // set value editable
             newVarProv = new Variable(*varProv);
@@ -170,6 +172,7 @@ void WidgetOneSimVars::addScannedVariables()
 
         alreadyIn = _problem->scannedVariables()->alreadyIn(varProv->name());
 
+        //        if (!alreadyIn && !varProv->output())
         if (!alreadyIn)
         {
             newVarProv = new ScannedVariable(*varProv);
@@ -202,6 +205,6 @@ void WidgetOneSimVars::simulate()
 
 void WidgetOneSimVars::readVariables()
 {
-    ModModelPlus* modModelPlus = _problem->modModelPlus();
+    ModelPlus* modModelPlus = _problem->modelPlus();
     modModelPlus->readVariables(_problem->ctrl());
 }

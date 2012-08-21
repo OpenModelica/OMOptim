@@ -43,6 +43,7 @@
 #include <QDomElement>
 #include "Problem.h"
 #include "ModPlusCtrl.h"
+#include "ModelPlus.h"
 
 class Project;
 class ModPlusCtrls;
@@ -62,7 +63,7 @@ class OneSimulation : public Problem
 
 public:
     //OneSimulation(void);
-    OneSimulation(Project*,ModModelPlus*);
+    OneSimulation(Project*,ModelPlus* ModPlus);
     OneSimulation(const OneSimulation &s);
     OneSimulation(QDomElement domProblem,Project* project,bool &ok);
 
@@ -94,15 +95,18 @@ public:
     // get functions
     Variables *overwritedVariables() const {return _overwritedVariables;}
     ScannedVariables *scannedVariables() const {return _scannedVariables;}
-    ModModelPlus* modModelPlus() const;
+    ModelPlus *modelPlus() const;
     QString model() const;
 
 //public slots :
 //    void setCtrlType();
 
 protected :
+
     Project* _omProject; /// same adress than _project but casted to Project* instead of ProjectBase*
-    ModModelPlus* _modModelPlus;
+
+    ModelPlus* _ModelPlus;
+
     Variables *_overwritedVariables;
     ScannedVariables *_scannedVariables;
 

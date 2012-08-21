@@ -39,6 +39,9 @@
 
   */
 #include "LoadOMOptim.h"
+#include "ModExePlus.h"
+#include "ModelPlus.h"
+#include "ModModelPlus.h"
 
 
 bool LoadOMOptim::loadProject(QString filePath,Project* _project)
@@ -109,6 +112,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
         modelMmoFilePaths.push_back(modelFileInfo.absoluteFilePath());
     }
 
+
     // Plugins
     QStringList pluginsPaths;
     QDomElement domPlugins = root.firstChildElement("Plugins");
@@ -146,7 +150,6 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     //**************************************
     // Reading Mo Files
     //**************************************
-    QSettings settings("MO", "Settings");
     for(int i=0;i<modelMoFilePaths.size();i++)
     {
         QFileInfo fileinfo = QFileInfo(modelMoFilePaths.at(i));
@@ -156,6 +159,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
             InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMoFilePaths.at(i)));
     }
     _project->loadMoFiles(modelMoFilePaths);
+
 
     //**************************************
     // Reading Mmo Files
@@ -167,7 +171,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
         if (!fileinfo.exists())
             InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
         else
-            _project->loadModModelPlus(modelMmoFilePaths.at(i));
+            _project->loadModelPlus(modelMmoFilePaths.at(i));
     }
 
     //**************************************
@@ -211,14 +215,12 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     return true;
 }
 
-bool LoadOMOptim::loadModModelPlus(Project* project,QString mmoFilePath)
+bool LoadOMOptim::loadModelPlus(Project* project,QString mmoFilePath)
 {
     InfoSender::instance()->send( Info(ListInfo::LOADINGMODEL,mmoFilePath));
 
     // Open file
     QDomDocument doc( "MOModelXML" );
-    QFileInfo mmoFileInfo(mmoFilePath);
-    QDir mmoDir(mmoFileInfo.absolutePath());
     QFile file(mmoFilePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
@@ -233,45 +235,39 @@ bool LoadOMOptim::loadModModelPlus(Project* project,QString mmoFilePath)
         return false;
     }
     file.close();
-    QDomElement root = doc.documentElement();
-    if( root.tagName() != "MOModel" )
+
+    ModelPlus* newModelPlus=NULL;
+
+    QDomElement root = doc.firstChildElement();
+    qDebug(root.tagName().toLatin1().data());
+    if(root.tagName()==ModelPlus::className())
     {
-        error = "Root tagname should be <MOModel>";
-        InfoSender::instance()->send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
+        // error : should be impossible
+        // but since old version
         return false;
     }
-    // Read file
-    QDomElement domBasic = root.firstChildElement("Basic");
-    QString name = domBasic.attribute("name");
-    QString modelName = domBasic.attribute("modelName");
-
-    // Check if model exist
-    ModModel* modModel = project->findModModel(modelName);
-    if(modModel==NULL)
-        return false;
-    else
+    else if(root.tagName()==ModExePlus::className())
     {
-        ModModelPlus* newModelPlus = new ModModelPlus(project,modelName);
+        newModelPlus = new ModExePlus(project,root);
+    }
+    else if(root.tagName()==ModModelPlus::className())
+    {
+        newModelPlus = new ModModelPlus(project,root);
+    }
+    // older version
+    else if(root.tagName()=="MOModel")
+    {
+        newModelPlus = new ModModelPlus(project,root);
+    }
 
-        // .mo dependencies
-        QDomElement domMoDeps = root.firstChildElement("moDependencies");
-        QString moDeps = domMoDeps.attribute( "list", "" );
-        newModelPlus->setMoDependencies(moDeps.split(";",QString::SkipEmptyParts));
-
-        // Infos
-        QDomElement domInfos = root.firstChildElement("Infos");
-        newModelPlus->setInfos(domInfos.attribute("text",""));
-
-        // FilePath
+    if(newModelPlus)
+    {
         newModelPlus->setMmoFilePath(mmoFilePath);
-
-        // Variables
-        QDomElement domVariables = root.firstChildElement("Variables");
-        newModelPlus->variables()->setItems(domVariables);
-
-        project->addModModelPlus(newModelPlus);
+        project->addModelPlus(newModelPlus);
         return true;
     }
+    else
+        return false;
 }
 
 QStringList LoadOMOptim::getModelsPath(QString projectFilePath)

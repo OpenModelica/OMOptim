@@ -39,13 +39,17 @@
 
   */
 #include "ModPlusCtrl.h"
+
 #include "MOParameter.h"
+
+#include "ModelPlus.h"
+
 #include "Project.h"
 
-ModPlusCtrl::ModPlusCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc)
+ModPlusCtrl::ModPlusCtrl(Project* project,ModelPlus* ModPlus,MOomc* moomc)
 {
     _project = project;
-    _modModelPlus = modModelPlus;
+    _ModelPlus = ModPlus;
     _moomc = moomc;
 
     // _parameters are not created here; it will be in inheriting classes

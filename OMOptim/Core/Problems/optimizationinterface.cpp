@@ -6,7 +6,9 @@
 #include "Project.h"
 
 
+
 Problem* OptimizationInterface::createNewProblem(ProjectBase* projectBase,const QStringList modelsList,QString problemType)
+
 {
     Q_ASSERT(problemType==Optimization::className());
 

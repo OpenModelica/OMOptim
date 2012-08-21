@@ -51,7 +51,7 @@ class EAStdBounds
 {
 public :
     inline static void setBounds(Optimization*,
-                                 QList<QList<ModModelPlus*> > subModels,
+                                 QList<QList<ModelPlus*> > subModels,
                                  std::vector<eoRealInterval> &doubleBounds,
                                  std::vector<eoIntInterval> &intBounds,
                                  int &nbDouble,int &nbInt,int &nbBool);
@@ -68,7 +68,7 @@ public :
 
 
 
-void EAStdBounds::setBounds(Optimization *_problem, QList<QList<ModModelPlus*> > subModels,std::vector<eoRealInterval> &doubleBounds, std::vector<eoIntInterval> &intBounds, int &nbDouble, int &nbInt, int &nbBool)
+void EAStdBounds::setBounds(Optimization *_problem, QList<QList<ModelPlus*> > subModels,std::vector<eoRealInterval> &doubleBounds, std::vector<eoIntInterval> &intBounds, int &nbDouble, int &nbInt, int &nbBool)
 {
     int nbVar = _problem->optimizedVariables()->items.size();
     OptVariable* curVar;

@@ -44,7 +44,8 @@
 #include <QObject>
 #include <QFileInfoList>
 
-#include "MOItem.h"
+
+#include "ModelPlus.h"
 #include "MOVector.h"
 
 class Project;
@@ -67,7 +68,7 @@ class Variable;
 * These informations are variables, connections, modifiers (deprecated), dependencies...
 * It is also responsible for compiling and reading functions, though these functions require a controler (ModPlusCtrl).
 */
-class ModModelPlus : public MOItem
+class ModModelPlus : public ModelPlus
 {
     Q_OBJECT
 
@@ -80,38 +81,30 @@ public :
 
 
 protected :
-    Variables *_variables; /// List of model variables
-    ModelicaConnections *_connections; /// List of connections between components in Modelica model
-    QString _modModelName; /// ModModelName
-    QFileInfoList _neededFiles; /// List of files needed in the simulation folder.
-    QStringList _neededFolders; /// List of folders needed in the simulation folder.
-    QFileInfoList _moDependencies; /// List of .mo files needed to be loaded before simulation
 
+    ModelicaConnections *_connections; /// List of connections between components in Modelica model
+    QFileInfoList _moDependencies; /// List of .mo files needed to be loaded before simulation
     MOomc* _moomc;
-    Project* _project;
 
     // status booleans
-    bool _variablesRead; /// indicates whether variables have been read or not
     bool _connectionsRead;/// indicates whether variables have been read or not
 
-    QString _mmoFilePath; /// File path of file where all informations are stored
-    QString _infos;
 
 public:
 
-    ModModelPlus(Project*,QString modModelName);
-    ~ModModelPlus(void);
-    virtual QString getClassName(){return "ModModelPlus";};
+    ModModelPlus(Project* project,QString modModelName);
+    ModModelPlus(Project* project,const QDomElement & );
+    ~ModModelPlus();
 
+    virtual QString getClassName(){return ModModelPlus::className();};
+    static QString className(){return "ModModelPlus";};
+
+    // model type
+    virtual ModelType modelType(){return ModelPlus::MODELICA;}
 
     //*************************
     // Get / Set functions
     //*************************
-    void setInfos(QString);
-    QString infos();
-    ModModel* modModel();
-    QString getFieldName(int,int role){return "-";};
-    unsigned getNbFields(){return 0;};
 
     void setModModelName(QString);
     void addMoDependency(const QFileInfo &);
@@ -119,43 +112,30 @@ public:
     void setMoDependencies(const QStringList &);
     void setMoDependencies(const QFileInfoList &);
     QFileInfoList moDependencies() const;
-
+    QString getFieldName(int,int role){return "-";};
+    unsigned getNbFields(){return 0;};
     //*************************
     // Path functions
     //*************************
-    void setMmoFilePath(QString);
-    void setmodelToConsider(QString);
 
-    QString mmoFilePath();
+    void setmodelToConsider(QString);
+    QFileInfo mmoFilePath();
     QString moFilePath();
     QString mmoFileName();
-    QDir mmoFolder();
     QString modModelName();
-    QFileInfoList neededFiles();
-    QStringList neededFolders();
-
 
     //*************************
     // Read functions
     //*************************
-    //virtual bool readElements(bool readAll = false);
 
     bool readAll(ModPlusCtrl*);
     void loadDependencies();
 
-    //************************
-    //  Variables
-    //************************
-    Variables* variables();
-    Variables* variables(ModItem*);
 
     //************************
     //  Connections
     //************************
     ModelicaConnections* connections();
-    //void outsideConnections(QList<ModItem*> &ports, QList<ModItem*> &outsideComps);
-    //void outsideConnections(QStringList &ports, QStringList &outsideComps);
-    //void outsideConnections(QStringList &uniqueports, QList<QStringList> &outsideComps);
 
     //************************
     // Block substitutions
@@ -170,11 +150,26 @@ public:
     virtual void save();
 
 
+    //**************************************
+    // Variables
+    //**************************************
+    void addVariable(Variable*);
+    virtual QDomElement toXmlData(QDomDocument &doc);
+    //**************************************
+    // Connections
+    //**************************************
+    bool readConnections(ModItem*,bool includeChildren);
+    void addConnection(ModItem*, ModItem*);
+    void addConnection(QString _aName,QString _bName);
+
+
     //************************
     //  Execution functions
     //************************
+
+  virtual  bool isCompiled(ModPlusCtrl* ctrl);
+
 public slots :
-    bool isCompiled(ModPlusCtrl* ctrl);
     bool compile(ModPlusCtrl* ctrl);
 
 
@@ -190,34 +185,21 @@ public slots:
 
 
     virtual bool readConnections();
+
     virtual bool readVariables(ModPlusCtrl*, bool forceRecompile=false);
+
     bool variablesRead() const;
     void reloadModel();
 
 
-protected :
+public :
 
-    //**************************************
-    // Variables
-    //**************************************
-    void addVariable(Variable*);
-
-    //**************************************
-    // Connections
-    //**************************************
-    bool readConnections(ModItem*,bool includeChildren);
-    void addConnection(ModItem*, ModItem*);
-    void addConnection(QString _aName,QString _bName);
 
 signals:
     void saved();
     void loaded();
     void modified();
     void sendInfo(Info*);
-    void componentsUpdated();
-    void modifiersUpdated();
-    void connectionsUpdated();
-    void variablesUpdated();
 };
 
 

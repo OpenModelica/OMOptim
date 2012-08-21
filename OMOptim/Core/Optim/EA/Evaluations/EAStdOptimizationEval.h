@@ -46,6 +46,7 @@
 #include "VariablesManip.h"
 #include "float.h"
 #include "Optimization.h"
+#include "moeo"
 
 /** \class EAStdOptimizationEval is a function for evaluating fitness of an individual.
           * For each individual, it :
@@ -80,7 +81,7 @@ public:
     /**
      * \brief Ctor.
      */
-    EAStdOptimizationEval(Project* project,Optimization* problem,QList<QList<ModModelPlus*> > subModels,QString tempDir
+    EAStdOptimizationEval(Project* project,Optimization* problem,QList<QList<ModelPlus*> > subModels,QString tempDir
                            ,ModItemsTree* modItemsTree)
     {
         _project = project;
@@ -116,9 +117,10 @@ public:
         if (eo.invalidObjectiveVector())
         {
             moeoRealObjectiveVector< moeoObjectiveVectorTraits > objVec;
-            QList<ModModelPlus*> models;
 
-            // get modmodelplus to simulate
+            QList<ModelPlus*> models;
+
+
             int iSubModel = -1;
             if(_subModels.size()>1)
             {
@@ -129,8 +131,9 @@ public:
             {
                 QStringList modelsNames = _problem->models();
                 for(int i=0;i<modelsNames.size();i++)
-                    models.push_back(_project->modModelPlus(modelsNames.at(i)));
+                    models.push_back(_project->modelPlus(modelsNames.at(i)));
             }
+
 
             //******************************
             // get variables
@@ -236,7 +239,7 @@ protected:
     Optimization* _problem;
     Project* _project;
     ModItemsTree* _modItemsTree;
-    QList<QList<ModModelPlus*> > _subModels;
+    QList<QList<ModelPlus*> > _subModels;
     std::vector<OneSimResult*> *_resultPoints;
     QString _tempDir;
     int _nbObj;

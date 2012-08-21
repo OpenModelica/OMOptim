@@ -8,7 +8,9 @@
 
 class OptimizationInterface : public ProblemInterface
 {
+
     Problem* createNewProblem(ProjectBase*,const QStringList ,QString problemType) ;
+
 
 
     bool saveResult(Result*);

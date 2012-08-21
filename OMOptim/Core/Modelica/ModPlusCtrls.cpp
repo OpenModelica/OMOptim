@@ -2,55 +2,68 @@
 
 #include "ModPlusOMCtrl.h"
 #include "ModPlusDymolaCtrl.h"
+#include "ModPlusOMExeCtrl.h"
+#include "ModPlusDymolaExeCtrl.h"
+#include "ModPlusBlackBoxExeCtrl.h"
 #include "Project.h"
 
-ModPlusCtrls::ModPlusCtrls(Project* project,ModModelPlus* modModelPlus)
+ModPlusCtrls:: ModPlusCtrls(Project* project,ModelPlus* modPlus)
 {
-    QString msg = "new ModPlusCtrls ["+QString::number((long)this,16)+"]";
-    qDebug(msg.toLatin1().data());
-
     _project = project;
-    _modModelPlus = modModelPlus;
-    if(_modModelPlus)
-    {
-        for(int i=0;i<ModPlusCtrl::nbTypes;i++)
-        {
-            ModPlusCtrl* newCtrl;
-            newCtrl = getNewCtrl((ModPlusCtrl::Type)i,project,modModelPlus);
-            this->insertCtrl((ModPlusCtrl::Type)i,newCtrl);
-        }
+    _modelPlus = modPlus;
 
+
+    if(_modelPlus)
+    {
+        QList<ModPlusCtrl*> compatibleCtrls = getCompatibleCtrls(_project,_modelPlus);
+
+        for(int i=0;i<compatibleCtrls.size();i++)
+            this->insertCtrl(compatibleCtrls.at(i)->type(),compatibleCtrls.at(i));
+
+        if(_modelPlus->modelType()==ModelPlus::MODELICA)
+        {
 #if DEFAULTSIMULATOR==0
         setCurrentCtrlType(ModPlusCtrl::OPENMODELICA);
 #else
         setCurrentCtrlType(ModPlusCtrl::DYMOLA);
 #endif
     }
+        if(_modelPlus->modelType()==ModelPlus::EXECUTABLE)
+        {
+            setCurrentCtrlType(ModPlusCtrl::DYMOLAEXECUTABLE);
+}
+    }
 }
 
-ModPlusCtrls::ModPlusCtrls(Project* project,ModModelPlus* modModelPlus,const QDomElement & cControlers)
+ModPlusCtrls::ModPlusCtrls(Project* project,ModelPlus* ModPlus,const QDomElement & cControlers)
 {
     QString msg = "new ModPlusCtrls ["+QString::number((long)this,16)+"]";
     qDebug(msg.toLatin1().data());
 
     _project = project;
-    _modModelPlus = modModelPlus;
+    _modelPlus = ModPlus;
 
-    if(_modModelPlus)
+    if(_modelPlus)
     {
-        // Create initial ones
-        for(int i=0;i<ModPlusCtrl::nbTypes;i++)
-        {
-            ModPlusCtrl* newCtrl;
-            newCtrl = getNewCtrl((ModPlusCtrl::Type)i,project,modModelPlus);
-            this->insertCtrl((ModPlusCtrl::Type)i,newCtrl);
-        }
+        QList<ModPlusCtrl*> compatibleCtrls = getCompatibleCtrls(_project,_modelPlus);
 
+        for(int i=0;i<compatibleCtrls.size();i++)
+            this->insertCtrl(compatibleCtrls.at(i)->type(),compatibleCtrls.at(i));
+
+        if(_modelPlus->modelType()==ModelPlus::MODELICA)
+        {
 #if DEFAULTSIMULATOR==0
         setCurrentCtrlType(ModPlusCtrl::OPENMODELICA);
 #else
         setCurrentCtrlType(ModPlusCtrl::DYMOLA);
 #endif
+        }
+        if(_modelPlus->modelType()==ModelPlus::EXECUTABLE)
+        {
+            setCurrentCtrlType(ModPlusCtrl::DYMOLAEXECUTABLE);
+        }
+    }
+
 
         if(!cControlers.isNull() && cControlers.tagName()==className())
         {
@@ -81,7 +94,7 @@ ModPlusCtrls::ModPlusCtrls(Project* project,ModModelPlus* modModelPlus,const QDo
             }
         }
     }
-}
+
 
 ModPlusCtrls::~ModPlusCtrls()
 {
@@ -95,7 +108,7 @@ ModPlusCtrls::~ModPlusCtrls()
 
 ModPlusCtrls* ModPlusCtrls::clone()
 {
-    ModPlusCtrls* cloned = new ModPlusCtrls(_project,_modModelPlus);
+    ModPlusCtrls* cloned = new ModPlusCtrls(_project,_modelPlus);
 
     // first remove automatically created
     for(int i=0;i<cloned->values().size();i++)
@@ -110,24 +123,50 @@ ModPlusCtrls* ModPlusCtrls::clone()
         cloned->insertCtrl(this->keys().at(i),this->value(keys().at(i))->clone());
     }
 
-
-
     cloned->_ctrlType = _ctrlType;
 
     return cloned;
 }
 
-ModPlusCtrl* ModPlusCtrls::getNewCtrl(ModPlusCtrl::Type type,Project* project,ModModelPlus* modModelPlus)
+ModPlusCtrl* ModPlusCtrls::getNewCtrl(ModPlusCtrl::Type type,Project* project,ModelPlus* modPlus)
 {
     switch(type)
     {
     case ModPlusCtrl::OPENMODELICA:
-        return new ModPlusOMCtrl(project,modModelPlus,project->moomc());
+        return new ModPlusOMCtrl(project,(ModModelPlus*)modPlus,project->moomc());
     case ModPlusCtrl::DYMOLA:
-        return new ModPlusDymolaCtrl(project,modModelPlus,project->moomc());
+        return new ModPlusDymolaCtrl(project,(ModModelPlus*)modPlus,project->moomc());
+    case ModPlusCtrl::OMEXECUTABLE:
+        return new ModPlusOMExeCtrl(project, modPlus);
+    case ModPlusCtrl::DYMOLAEXECUTABLE:
+        return new ModPlusDymolaExeCtrl(project, modPlus);
+//    case ModPlusCtrl::BLACKBOXEXECUTABLE:
+//        return new ModPlusBlackBoxExeCtrl(project, modPlus);
     default:
         return NULL;
     }
+}
+
+void ModPlusCtrls::init(ModelPlus::ModelType type, Project *project, ModelPlus *modPlus)
+{
+    //    for(int i=0;i<ModPlusCtrl::nbTypes;i++)
+    //    {
+    //        ModPlusCtrl* newCtrl;
+    //        newCtrl = getNewCtrl((ModPlusCtrl::Type)i,project,modPlus);
+    //        if(newCtrl->compatibleModels().contains(type))
+    //            this->insertCtrl((ModPlusCtrl::Type)i,newCtrl);
+    //        else
+    //            delete newCtrl;
+    //    }
+
+    //    if(type==ModelPlus::MODELICA)
+    //    {
+    //#if DEFAULTSIMULATOR==0
+    //        setCurrentCtrlType(ModPlusCtrl::OPENMODELICA);
+    //#else
+    //        setCurrentCtrlType(ModPlusCtrl::DYMOLA);
+    //#endif
+    //    }
 }
 
 QDomElement ModPlusCtrls::toXmlData(QDomDocument & doc)
@@ -192,6 +231,22 @@ void ModPlusCtrls::setCurrentCtrlType(ModPlusCtrl::Type type)
      }
      this->_ctrlType = newCtrls._ctrlType;
  }
+
+QList<ModPlusCtrl *> ModPlusCtrls::getCompatibleCtrls(Project* project, ModelPlus* modelPlus)
+{
+    QList<ModPlusCtrl *> result;
+    for(int i=0;i<ModPlusCtrl::nbTypes;i++)
+    {
+        ModPlusCtrl* newCtrl;
+        newCtrl = getNewCtrl((ModPlusCtrl::Type)i,project,modelPlus);
+        if(newCtrl && newCtrl->compatibleModels().contains(modelPlus->modelType()))
+            result.push_back(newCtrl);
+        else
+            delete newCtrl;
+    }
+    result.removeAll(NULL);
+    return result;
+}
 
 void ModPlusCtrls::insertCtrl(ModPlusCtrl::Type i,ModPlusCtrl* ctrl)
 {

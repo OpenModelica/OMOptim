@@ -65,8 +65,8 @@ class PSO : public EABase
 {
 public :
         PSO();
-        PSO(Project*,Problem*,ModItemsTree*);
-        PSO(Project*,Problem*,ModItemsTree*,MOParameters*);
+        PSO(Project*,Problem*);
+        PSO(Project*,Problem*,MOParameters*);
         PSO(const PSO &);
         EABase* clone() const;
 

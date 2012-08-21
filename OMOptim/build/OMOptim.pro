@@ -135,7 +135,10 @@ DEPENDPATH += . \
 
 SOURCES += ../main.cpp
 
+
 RESOURCES += \
     ../GUI/Resources/OMOptim.qrc
 
 RC_FILE = ../GUI/Resources/rc_omoptim.rc
+
+HEADERS +=

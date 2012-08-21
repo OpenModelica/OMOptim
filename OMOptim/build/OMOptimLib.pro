@@ -58,7 +58,8 @@ INCLUDEPATH += . \
               ../Core/Optim/EA/SPEA2 \
               ../Core/Optim/EA/SPEA2Adaptative \
               ../Core/Optim/EA/SA1 \
-              ../../OMOptimBasis/ \
+              ../Core/Optim/EA/PSO \
+               ../../OMOptimBasis \
                 ../../OMOptimBasis/FileData \
                 ../../OMOptimBasis/GUI \
                 ../../OMOptimBasis/GUI/Tools \
@@ -108,7 +109,8 @@ DEPENDPATH += . \
               ../Core/Optim/EA/SPEA2 \
               ../Core/Optim/EA/SPEA2Adaptative \
               ../Core/Optim/EA/SA1 \
-              ../../OMOptimBasis/ \
+              ../Core/Optim/EA/PSO \
+               ../../OMOptimBasis \
                 ../../OMOptimBasis/FileData \
                 ../../OMOptimBasis/GUI \
                 ../../OMOptimBasis/GUI/Tools \
@@ -184,6 +186,7 @@ HEADERS += ../config.h \
            ../GUI/Widgets/WidgetSelPointScan.h \
            ../GUI/Widgets/WidgetTableRecVar.h \
            ../GUI/Widgets/WidgetToolBar.h \
+           ../GUI/Widgets/widgetloadexemodel.h \
            ../Core/Optim/EA/AlgoParameter.h \
            ../Core/Optim/EA/EABase.h \
            ../Core/Optim/EA/OptimAlgo.h \
@@ -214,9 +217,15 @@ HEADERS += ../config.h \
            ../Core/Optim/EA/SPEA2Adaptative/SPEA2Adapt.h \
            ../Core/Optim/EA/SPEA2Adaptative/SPEA2AdaptInitBounded.h \
            ../Core/Optim/EA/SPEA2Adaptative/SPEA2AdaptMutation.h \
+           #../Core/Optim/EA/PSO/PSO.h \
+           #../Core/Optim/EA/PSO/PSOAlgo.h \
+           #../Core/Optim/EA/PSO/PSOBreed.h \
            ../Core/Optim/EA/EA \
            ../Core/OMC/OMCHelper.h \
            ../Core/OMC/StringHandler.h \
+           #../Core/Optim/EA/PSO/updateGbest.h \
+           #../Core/Optim/EA/PSO/updatePbest.h \
+           #../Core/Optim/EA/PSO/updateVelocity.h \
         ../GUI/Widgets/WidgetMooPointsList.h \
         ../GUI/Widgets/WidgetProjectInfos.h \
     ../GUI/Widgets/WidgetOptimActions.h \
@@ -224,6 +233,7 @@ HEADERS += ../config.h \
     ../Core/Optim/EA/NSGA2/NSGA2Parameters.h \
     ../Core/Optim/EA/SPEA2/SPEA2Parameters.h \
     ../Core/Optim/EA/SPEA2Adaptative/SPEA2AdaptParameters.h \
+    #../Core/Optim/EA/PSO/PSOParameters.h \
     ../GUI/Tabs/TabOMC.h \
     ../GUI/Tabs/TabOneSim.h \
     ../GUI/Tabs/TabOptimization.h \
@@ -256,8 +266,16 @@ HEADERS += ../config.h \
     ../GUI/Widgets/WidgetModelsList.h \
     ../Core/OMOptimSettings.h \
     ../Core/Dymola/DymolaParameters.h \
-    ../Core/OpenModelica/OpenModelicaParameters.h
-
+    ../Core/OpenModelica/OpenModelicaParameters.h \
+    ../Core/ModExePlus.h \
+    ../Core/ModelPlus.h \
+    ../Core/ExeModel.h \
+    ../Core/ModPlusExeCtrl.h \
+    ../Core/Tools/ModPlusOMExeCtrl.h \
+    ../Core/ModPlusDymolaExeCtrl.h \
+    ../Core/PlugInterface.h \
+    ../Core/ModPlusBlackBoxExeCtrl.h
+    #../Core/ModPlusTherExeCtrl.h
 
 FORMS += ../GUI/MainWindow.ui \
          ../GUI/Dialogs/AboutOMOptim.ui \
@@ -286,7 +304,8 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Tabs/TabOptimization.ui \
     ../GUI/Tabs/TabOMC.ui \
     ../GUI/Widgets/WidgetResultInfos.ui \
-    ../GUI/Widgets/WidgetModelsList.ui
+    ../GUI/Widgets/WidgetModelsList.ui \
+    ../GUI/Widgets/widgetloadexemodel.ui
 
 SOURCES += ../Core/OptObjective.cpp \
            ../Core/ParetoDominance.cpp \
@@ -352,6 +371,7 @@ SOURCES += ../Core/OptObjective.cpp \
            ../GUI/Widgets/WidgetSelPointScan.cpp \
            ../GUI/Widgets/WidgetTableRecVar.cpp \
            ../GUI/Widgets/WidgetToolBar.cpp \
+           ../GUI/Widgets/widgetloadexemodel.cpp\
            ../Core/Optim/EA/AlgoParameter.cpp \
            ../Core/Optim/EA/EABase.cpp \
            ../Core/Optim/EA/OptimAlgo.cpp \
@@ -368,6 +388,7 @@ SOURCES += ../Core/OptObjective.cpp \
             ../GUI/Widgets/WidgetProjectInfos.cpp \
             ../GUI/Widgets/WidgetOptimActions.cpp \
             ../Core/Optim/EA/SA1/SA1.cpp \
+             ../Core/Optim/EA/PSO/PSO.cpp \
         ../Core/OptObjectives.cpp \
     ../Core/Modelica/ModPlusCtrls.cpp \
     ../GUI/Widgets/WidgetCtrlParameters.cpp \
@@ -380,5 +401,13 @@ SOURCES += ../Core/OptObjective.cpp \
      ../../SimulationRuntime/c/util/read_matlab4.c \
     ../Core/OMOptimSettings.cpp \
      ../GUI/Widgets/WidgetModelsList.cpp \
-    ../Core/Optim/EA/OptimAlgosList.cpp
+         ../Core/Optim/EA/OptimAlgosList.cpp \
+    ../Core/ModPlusExeCtrl.cpp \
+    ../Core/ModExePlus.cpp \
+    ../Core/ModelPlus.cpp \
+    ../Core/ExeModel.cpp \
+    ../Core/Tools/ModPlusOMExeCtrl.cpp \
+    ../Core/ModPlusDymolaExeCtrl.cpp \
+    ../Core/ModPlusBlackBoxExeCtrl.cpp
+    #../Core/ModPlusTherExeCtrl.cpp
 

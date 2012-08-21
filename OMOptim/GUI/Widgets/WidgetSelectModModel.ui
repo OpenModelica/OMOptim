@@ -14,7 +14,7 @@
    <string>Select a model</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="2" column="0">
     <layout class="QGridLayout" name="layoutTableVar">
      <item row="1" column="2">
       <widget class="QPushButton" name="pushValidate">
@@ -31,13 +31,23 @@
       </widget>
      </item>
      <item row="0" column="0" colspan="4">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QTreeView" name="treeView"/>
+      <layout class="QHBoxLayout" name="horizontalLayout"/>
        </item>
       </layout>
      </item>
-    </layout>
+   <item row="1" column="0">
+    <widget class="QTreeView" name="treeView">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Model Tree</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

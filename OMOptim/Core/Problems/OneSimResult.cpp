@@ -52,12 +52,13 @@ OneSimResult::OneSimResult(void)
     _filesToCopy.push_back(QFileInfo("dsin.txt"));
 }
 
-OneSimResult::OneSimResult(Project* project, ModModelPlus* modelPlus, const OneSimulation &problem)
+OneSimResult::OneSimResult(Project* project, ModelPlus* modPlus, const OneSimulation &problem)
     :Result((ProjectBase*)project,(const Problem&)problem)
 {
 
     _omProject = project;
-    _modModelPlus = modelPlus;
+    _ModelPlus = modPlus;
+
 
     _inputVariables = new Variables(true);
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
@@ -70,7 +71,7 @@ OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const
     :Result((ProjectBase*)project,(const Problem&)problem)
 {
 
-    _modModelPlus = problem.modModelPlus();
+    _ModelPlus = problem.modelPlus();
     _omProject = project;
 
     ok = (domResult.tagName()==OneSimResult::className());
@@ -81,6 +82,7 @@ OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const
 
     // input variables
     _inputVariables = new Variables(true);
+
 
     //FinalVariables
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points

@@ -45,13 +45,15 @@
 #include "ModPlusCtrls.h"
 
 
+
 Optimization::Optimization(Project* project,QStringList models)
     :Problem((ProjectBase*)project)
+
 {
+
     _omProject = project;
-
-
     _name="Optimization";
+
     _optimizedVariables = new OptVariables(true);
     _overwritedVariables = new Variables(true);
     _scannedVariables = new ScannedVariables(true);
@@ -73,6 +75,7 @@ Optimization::Optimization(const Optimization &optim)
     :Problem(optim)
 {
     _omProject = optim._omProject;
+
     _optimizedVariables = optim._optimizedVariables->clone();
     _scannedVariables = optim._scannedVariables->clone();
     _overwritedVariables = optim._overwritedVariables->clone();
@@ -117,7 +120,7 @@ Optimization::~Optimization()
   * @param ok : is set to true if evaluation is successful, to false otherwise.
   */
 
-MOOptVector *Optimization::evaluate(QList<ModModelPlus*> models, Variables *optimVariables, ScannedVariables *scannedVariables, bool &ok)
+MOOptVector *Optimization::evaluate(QList<ModelPlus*> models, Variables *optimVariables, ScannedVariables *scannedVariables, bool &ok)
 {
     ok = true;
     bool useScan = (scannedVariables->size()>0);
@@ -131,7 +134,7 @@ MOOptVector *Optimization::evaluate(QList<ModModelPlus*> models, Variables *opti
             /************************************
             Creating a new OneSimulation
             ************************************/
-            QString modelName = models.at(iM)->modModelName();
+            QString modelName = models.at(iM)->modelName();
             OneSimulation *oneSim = new OneSimulation(_omProject,models.at(iM));
             oneSim->_filesToCopy = this->_filesToCopy;
             oneSim->setCtrls(*this->ctrls(modelName));
@@ -192,6 +195,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     :Problem((ProjectBase*)project)
 {
     // initialization
+
     _omProject = project;
 
     // look for modmodelplus
@@ -207,7 +211,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         if(!domInfos.attribute("model").isEmpty())
         {
             QString modelName = domInfos.attribute("model");
-            ModModelPlus* model = project->modModelPlus(modelName);
+            ModelPlus* model = project->modelPlus(modelName);
 
             // read corresponding controlers
             QDomElement domCtrls = domProblem.firstChildElement(ModPlusCtrls::className());
@@ -223,7 +227,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         while(!domModel.isNull())
         {
             QString modelName = domModel.attribute("name");
-            ModModelPlus* model = project->modModelPlus(modelName);
+            ModelPlus* model = project->modelPlus(modelName);
 
             // read corresponding controlers
             QDomElement domCtrls = domModel.firstChildElement(ModPlusCtrls::className());
@@ -237,7 +241,6 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         }
 
     }
-
 
     //initialize default(otherwise seg fault in destructor)
     _optimizedVariables = new OptVariables(true);
@@ -427,10 +430,12 @@ Result* Optimization::launch(ProblemConfig config)
 
 #ifdef USEBLOCKSUB
     //create different dymosim executable for blocksubstitutions
+
     QList<ModModelPlus*> subModels;
     QList<BlockSubstitutions*> subBlocks;
     createSubExecs(subModels,subBlocks);
     algo->setSubModels(subModels,subBlocks);
+
 #endif
 
     OptimResult* result = dynamic_cast<OptimResult*>(algo->launch(_project->tempPath()));
@@ -443,7 +448,8 @@ Result* Optimization::launch(ProblemConfig config)
 
 
 
-void Optimization::createSubExecs(QList<QList<ModModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks)
+
+void Optimization::createSubExecs(QList<QList<ModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks)
 {
 
     subModels.clear();
@@ -481,16 +487,16 @@ void Optimization::createSubExecs(QList<QList<ModModelPlus*> > & subModels, QLis
     }
 
 
+
     QStringList models = mapModel.values();
     models.removeDuplicates();
-
-
 
     // storing genuine mo file paths
     QStringList oldMoFilePaths;
     for(int iM=0;iM<models.size();iM++)
     {
-        oldMoFilePaths.push_back(_omProject->modModelPlus(models.at(iM))->moFilePath());
+        ModModelPlus* modModelPlus = dynamic_cast<ModModelPlus*>(_omProject->modelPlus(models.at(iM)));
+        oldMoFilePaths.push_back(modModelPlus->moFilePath());
     }
 
 
@@ -517,6 +523,7 @@ void Optimization::createSubExecs(QList<QList<ModModelPlus*> > & subModels, QLis
 
         // create folder
         QString newName = "case_"+QString::number(iCase);
+
         QString newFolder = saveFolder()+ QDir::separator() + "SubModels" + QDir::separator() + newName;
         QDir dir(saveFolder());
         dir.mkpath(newFolder);
@@ -527,7 +534,7 @@ void Optimization::createSubExecs(QList<QList<ModModelPlus*> > & subModels, QLis
         // and create corresponding modmodelplus
         QStringList newMoPaths;
         QStringList newMmoPaths;
-        QMap<QString,ModModelPlus*> newModModels;
+        QMap<QString,ModelPlus*> newModModels;
         for(int iM=0;iM<oldMoFilePaths.size();iM++)
         {
             QFileInfo oldMoFileInfo(oldMoFilePaths.at(iM));
@@ -569,8 +576,8 @@ void Optimization::createSubExecs(QList<QList<ModModelPlus*> > & subModels, QLis
                 BlockSubstitution* blockSub = _blockSubstitutions->find(replacedComp,replacingComp);
                 if(blockSub)
                 {
-                    ModModelPlus* corrNewModModelPlus = newModModels.value(blockSub->_model);
-                    oneChange =  corrNewModModelPlus->applyBlockSub(blockSub,true) || oneChange ;
+                    ModelPlus* corrNewModModelPlus = newModModels.value(blockSub->_model);
+                    oneChange =  ((ModModelPlus*) corrNewModModelPlus)->applyBlockSub(blockSub,true) || oneChange ;
                     curSubBlocks->push_back(blockSub);
                     changes.insert(blockSub->_model,true);
                 }
@@ -581,8 +588,8 @@ void Optimization::createSubExecs(QList<QList<ModModelPlus*> > & subModels, QLis
         bool compilationOk = true;
         for(int iM=0;iM<modelsToCompile.size();iM++)
         {
-            ModModelPlus* modelPlus = newModModels.value(modelsToCompile.at(iM));
-            compilationOk = modelPlus->compile(ctrl(modelsToCompile.at(iM))) && compilationOk;
+            ModelPlus* modelPlus =  newModModels.value(modelsToCompile.at(iM));
+            compilationOk = ((ModModelPlus*) modelPlus)->compile(ctrl(modelsToCompile.at(iM))) && compilationOk;
         }
 
         if(compilationOk)
@@ -619,6 +626,7 @@ OptimAlgos *Optimization::algos() const
 }
 
 QStringList Optimization::models() const
+
 {
     return _models;
 }
@@ -632,7 +640,7 @@ bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
         // create and add controlers
         _models.push_back(modelName);
         if(ctrls==NULL)
-            _ctrls.insert(modelName,new ModPlusCtrls(_omProject,_omProject->modModelPlus(modelName)));
+            _ctrls.insert(modelName,new ModPlusCtrls(_omProject,_omProject->modelPlus(modelName)));
         else
             _ctrls.insert(modelName,ctrls);
 
@@ -713,6 +721,7 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     QDomElement cInfos = doc.createElement("Infos");
     cProblem.appendChild(cInfos);
     cInfos.setAttribute("name", name());
+
 
     QDomElement cModels = doc.createElement("Models");
     QString curModel;

@@ -80,6 +80,7 @@ public:
     //ModItem popup menus
     static QMenu* newModItemPopupMenu(Project*,const QPoint &,ModItem*);
     static void addModModelActions(QMenu*,Project*,const QPoint &,ModModel*);
+    static void addModelicaActions(QMenu*,Project*,const QPoint &,ModItem*);
     static void addCommonActions(QMenu*,Project*,const QPoint &,ModItem*);
 
 

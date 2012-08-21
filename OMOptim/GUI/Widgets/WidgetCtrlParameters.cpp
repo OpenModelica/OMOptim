@@ -43,18 +43,23 @@
 
 #include "ModModelPlus.h"
 
+
 WidgetCtrlParameters::WidgetCtrlParameters(Project* project, QString model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent)
+
     : QWidget(parent)
 {
     _project= project;
     _layout = new QGridLayout(this);
     _isResult = isResult;
 
+
     QMap<QString,ModPlusCtrls *> tmpCtrls;
+
     tmpCtrls.insert(model,ctrls);
 
     update(tmpCtrls);
 }
+
 
 WidgetCtrlParameters::WidgetCtrlParameters(Project* project, QMap<QString,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent)
     : QWidget(parent)
@@ -65,9 +70,13 @@ WidgetCtrlParameters::WidgetCtrlParameters(Project* project, QMap<QString,ModPlu
     update(ctrls);
 }
 
+
 void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
+
 {
+
     QStringList models = ctrlsMap.keys();
+
 
     // delete old widgets
     for(int i=0;i<_widgetsCreated.size();i++)
@@ -88,7 +97,9 @@ void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
     _parametersPbs.clear();
     _compilePbs.clear();
 
+
     QString curmodel;
+
     ModPlusCtrls *curCtrls;
     int iRow;
     for(int i=0;i<models.size();i++)
@@ -121,7 +132,9 @@ void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
         newCb->setEnabled(!_isResult);
         _comboBoxs.insert(curmodel,newCb);
         iRow = _layout->rowCount()+1;
+
         QLabel *newLabel = new QLabel(curmodel,this);
+
         _layout->addWidget(newLabel,iRow,0);
         _layout->addWidget(newCb,iRow,1);
 
@@ -130,13 +143,12 @@ void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
         _layout->addWidget(newParamPb,iRow,2);
         _parametersPbs.insert(curmodel,newParamPb);
 
-        QPushButton* newCompilePb = new QPushButton("Compile",this);
-        _layout->addWidget(newCompilePb,iRow,3);
-        _compilePbs.insert(curmodel,newCompilePb);
+
+
 
         connect(newCb, SIGNAL(currentIndexChanged(int)),this, SLOT(changedCtrl()));
         connect(newParamPb, SIGNAL(clicked()),this,SLOT(openCtrlParameters()));
-        connect(newCompilePb, SIGNAL(clicked()),this,SLOT(compile()));
+
 
         // horizontal spacer
         //        QSpacerItem* spacer = new QSpacerItem(10,10,QSizePolicy::Expanding,QSizePolicy::Ignored);
@@ -145,7 +157,17 @@ void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
         _widgetsCreated.push_back(newLabel);
         _widgetsCreated.push_back(newCb);
         _widgetsCreated.push_back(newParamPb);
+
+
+        QPushButton* newCompilePb;
+        if(_project->modelPlus(curmodel)->modelType() == ModelPlus::MODELICA)
+        {
+            newCompilePb = new QPushButton("Compile",this);
+            _layout->addWidget(newCompilePb,iRow,3);
+            _compilePbs.insert(curmodel,newCompilePb);
+            connect(newCompilePb, SIGNAL(clicked()),this,SLOT(compile()));
         _widgetsCreated.push_back(newCompilePb);
+        }
         //_widgetsCreated.push_back(spacer);
     }
 }
@@ -165,8 +187,8 @@ void WidgetCtrlParameters::changedCtrl()
 
     if(cb)
     {
-
         QString model = _comboBoxs.key(cb);
+
         ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
 
         if(modelCtrls)
@@ -187,6 +209,7 @@ void WidgetCtrlParameters::openCtrlParameters()
     {
 
         QString model = _parametersPbs.key(pb);
+
         ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
 
         if(modelCtrls)
@@ -206,14 +229,16 @@ void WidgetCtrlParameters::compile()
     if(pb)
     {
 
+
         QString model = _compilePbs.key(pb);
         ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
 
-        ModModelPlus* modelPlus = _project->modModelPlus(model);
+
+        ModelPlus* modelPlus = _project->modelPlus(model);
 
         if(modelCtrls)
         {
-            bool compileOk = modelPlus->compile(modelCtrls->currentCtrl());
+            bool compileOk = ((ModModelPlus*)modelPlus)->compile(modelCtrls->currentCtrl());
 
             // if compiled success, read variables
             if(compileOk)

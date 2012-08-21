@@ -98,6 +98,7 @@ public slots :
     void saveProject();
     void loadProject();
     void loadProject(QString);
+    void loadCases();
     void loadPlugins();
     void newOMCShell();
     void OMCClear();
@@ -107,6 +108,7 @@ public slots :
     void onProjectAboutToBeReset();
     void loadMoFile();
     void loadModelicaLibrary();
+    void loadExecutableModel();
     void refreshModelTree();
     void refreshModelTreeView();
 

@@ -312,7 +312,7 @@ QString ModItem::filePath()
         parent = parent->parent();
     }
 
-    if(file.fileName().isEmpty())
+    if(file.fileName().isEmpty() && _moomc)
     {
         file = _moomc->getFileOfClass(name());
     }

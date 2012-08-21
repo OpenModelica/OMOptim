@@ -95,19 +95,19 @@ PSO::PSO():EABase()
         setDefaultParameters();
 }
 
-PSO::PSO(Project* _project,Problem* _problem,ModItemsTree* _modClassTree)
+PSO::PSO(Project* _project,Problem* _problem)
 :EABase(_project,_problem)
 {
         setDefaultParameters();
-};
+}
 
 
-PSO::PSO(Project* _project,Problem* _problem,ModItemsTree* _modClassTree,MOParameters* parameters)
+PSO::PSO(Project* _project,Problem* _problem,MOParameters* parameters)
 :EABase(_project,_problem)
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
-};
+}
 
 PSO::PSO(const PSO & ea):EABase(ea)
 {
@@ -169,7 +169,7 @@ Result* PSO::launch(QString tempDir)
         OMEAProgress* omEAProgress = new OMEAProgress();
         connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
         connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
-        int totalEval = _parameters->value(PSOParameters::MAXITERATIONS,50).toInt();
+        int totalEval = _parameters->value(PSOParameters::str(PSOParameters::MAXITERATIONS),50).toInt();
 
         /************************************
         FITNESS EVALUATION
@@ -211,8 +211,8 @@ Result* PSO::launch(QString tempDir)
         ************************************/
         eoPop<EOStd> pop;
         bool loadFailed=false;
-        bool useStartFile = _parameters->value(PSOParameters::USESTARTFILE,false).toBool();
-        QString reloadFilePath = _parameters->value(PSOParameters::STARTFILEPATH).toString();
+        bool useStartFile = _parameters->value(PSOParameters::str(PSOParameters::USESTARTFILE),false).toBool();
+        QString reloadFilePath = _parameters->value(PSOParameters::str(PSOParameters::STARTFILEPATH)).toString();
 
         if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
         {
@@ -243,7 +243,7 @@ Result* PSO::launch(QString tempDir)
                 pop = state.takeOwnership(eoPop<EOStd>());
         }
 
-        int populationSize = _parameters->value(PSOParameters::POPULATIONSIZE,20).toInt();
+        int populationSize = _parameters->value(PSOParameters::str(PSOParameters::POPULATIONSIZE),20).toInt();
         if(pop.size() < populationSize)
         {
                 pop.append(populationSize,*init);

@@ -55,26 +55,29 @@
 #include "ModModelPlus.h"
 #include "ProblemConfig.h"
 
-OneSimulation::OneSimulation(Project* project,ModModelPlus* modModelPlus)
+
+OneSimulation::OneSimulation(Project* project, ModelPlus* ModPlus)
     :Problem((ProjectBase*)project)
 {
 
-    _modModelPlus = modModelPlus;
+    _ModelPlus = ModPlus;
     _name="One Simulation";
     _omProject = project;
+
 
     _overwritedVariables = new Variables(true);
     _scannedVariables = new ScannedVariables(true);
 
+
     // ctrls
-    _ctrls = new ModPlusCtrls(project,modModelPlus);
+    _ctrls = new ModPlusCtrls(project,ModPlus);
 }
 
 OneSimulation::OneSimulation(const OneSimulation &oneSim)
     :Problem(oneSim)
 {
     _omProject = oneSim._omProject;
-    _modModelPlus = oneSim._modModelPlus;
+    _ModelPlus = oneSim._ModelPlus;
     _neededFiles = oneSim._neededFiles;
     _filesToCopy = oneSim._filesToCopy;
 
@@ -88,8 +91,10 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     :Problem((ProjectBase*)project)
 {
     _omProject = project;
+
+
     InfoSender::instance()->debug("New onesim");
-    // look for modmodelplus
+    // look for modelPlus
     ok = (domProblem.tagName()==OneSimulation::className());
     ok = ok && !domProblem.isNull();
 
@@ -97,22 +102,27 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     QString modelName = domInfos.attribute("model");
 
     // Find model
-    ModModel* modModel = ((Project*)_project)->findModModel(modelName);
+    ModItem* modModel = ((Project*)_project)->findModModel(modelName);
     if(modModel == NULL)
     {
         InfoSender::instance()->sendWarning("Unable to find model "+modelName);
         ok = false;
     }
 
-    _modModelPlus = project->modModelPlus(modelName);
-    if(!_modModelPlus)
+    _ModelPlus = project->modelPlus(modelName);
+    if(!_ModelPlus)
+    {
         ok = false;
+        // create vector to avoid segfault when deleted
+        _overwritedVariables = new Variables(true);
+        _scannedVariables = new ScannedVariables(true);
+        _ctrls = new ModPlusCtrls(project,_ModelPlus);
+    }
     else
     {
         // finishing initialization
         _overwritedVariables = new Variables(true);
         _scannedVariables = new ScannedVariables(true);
-
         // Infos
         this->setName(domInfos.attribute("name", "" ));
 
@@ -137,7 +147,7 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
 
         // Controler type
         QDomElement cControlers = domProblem.firstChildElement("Controlers");
-        _ctrls = new ModPlusCtrls(project,_modModelPlus,cControlers);
+        _ctrls = new ModPlusCtrls(project,_ModelPlus,cControlers);
     }
 }
 
@@ -166,13 +176,18 @@ bool OneSimulation::checkBeforeComp(QString & error)
 Result* OneSimulation::launch(ProblemConfig config)
 {
     // Creating a variables instance containing updated variables
-    //MOVector<Variable> inputVariables(*modModelPlus->variables());
+    //MOVector<Variable> inputVariables(*modelPlus->variables());
     //inputVariables.replaceIn(overwritedVariables);
     Variables updatedVariables(*_overwritedVariables);
 
-    OneSimResult* result = new OneSimResult(_omProject,_modModelPlus,*this);
+    OneSimResult* result = new OneSimResult(_omProject,_ModelPlus,*this);
     result->setName(this->name()+" result");
 
+    // check if has modependencies (only for modmodelplus)
+    QFileInfoList moDeps;
+    ModModelPlus* modModelPlus = dynamic_cast<ModModelPlus*>(_ModelPlus);
+    if(modModelPlus)
+        moDeps.append(modModelPlus->moDependencies());
 
     // loop indexes on scannVariables
     QList<int> indexes,maxIndexes;
@@ -199,7 +214,7 @@ Result* OneSimulation::launch(ProblemConfig config)
         // Simulate
         curVariables.clear();
         curSimSuccess = ctrl()->simulate(_project->tempPath(), &updatedVariables, &curVariables,
-                                         _modModelPlus->neededFiles(),_modModelPlus->moDependencies());
+                                         _ModelPlus->neededFiles(),moDeps);
         allSimSuccess = allSimSuccess && curSimSuccess;
 
         if(allSimSuccess)
@@ -270,7 +285,7 @@ QDomElement OneSimulation::toXmlData(QDomDocument & doc)
     QDomElement cInfos = doc.createElement("Infos");
     cProblem.appendChild(cInfos);
     cInfos.setAttribute("name",name());
-    cInfos.setAttribute("model", _modModelPlus->modModelName());
+    cInfos.setAttribute("model", _ModelPlus->modelName());
 
     // overwrited variables
     QDomElement cOverVariables = _overwritedVariables->toXmlData(doc,"OverwritedVariables");
@@ -296,14 +311,14 @@ QDomElement OneSimulation::toXmlData(QDomDocument & doc)
     return cProblem;
 }
 
-ModModelPlus* OneSimulation::modModelPlus() const
+ModelPlus* OneSimulation::modelPlus() const
 {
-    return _modModelPlus;
+    return _ModelPlus;
 }
 
 QString OneSimulation::model() const
 {
-    return _modModelPlus->modModelName();
+    return _ModelPlus->modelName();
 }
 
 ModPlusCtrl* OneSimulation::ctrl()

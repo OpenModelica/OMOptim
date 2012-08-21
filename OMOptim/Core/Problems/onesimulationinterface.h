@@ -8,6 +8,7 @@
 
 class OneSimulationInterface : public ProblemInterface
 {
+
 public :
 
     virtual Problem* createNewProblem(ProjectBase*,const QStringList ,QString problemType);

@@ -153,7 +153,7 @@ bool BlockSubstitution::init(Project * project, QString model,QString orgCompone
     _orgComponent = orgComponent;
     _subComponent = subComponent;
 
-    ModelicaConnections* connections = project->modModelPlus(_model)->connections();
+    ModelicaConnections* connections = ((ModModelPlus*) project->modelPlus(_model))->connections();
 
     ModItem* orgElement = project->modItemsTree()->findInDescendants(_orgComponent);
     if(orgElement==NULL)

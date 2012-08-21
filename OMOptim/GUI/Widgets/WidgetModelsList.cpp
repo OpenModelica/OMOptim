@@ -96,7 +96,7 @@ void WidgetModelsList::addModels()
 
     if(widget->exec()==QDialog::Accepted)
     {
-        QList<ModModel*> models = widget->_selectedModels;
+        QList<ModItem*> models = widget->_selectedModels;
         for(int i=0;i<models.size();i++)
             modelsList.push_back(models.at(i)->name());
 

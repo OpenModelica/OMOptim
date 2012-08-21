@@ -68,23 +68,20 @@ QMenu* OMOptimGuiTools::newModItemPopupMenu(Project* project, const QPoint & iPo
         addModModelActions(menu,project,iPoint,(ModModel*)selectedClass);
     default :
             NULL;
-}
+    }
+
+    if(selectedClass->getClassRestr()!=Modelica::EXECUTABLE)
+    {
+        addModelicaActions(menu,project,iPoint,(ModModel*)selectedClass);
+    }
 
     addCommonActions(menu,project,iPoint,selectedClass);
 
     return menu;
 }
 
-void OMOptimGuiTools::addCommonActions(QMenu* menu,Project* project, const QPoint & iPoint,ModItem* selectedModItem)
+void OMOptimGuiTools::addModelicaActions(QMenu* menu,Project* project, const QPoint & iPoint,ModItem* selectedModItem)
 {
-    //Open folder
-    QAction *openFolderAct = new QAction("Open folder",menu);
-    connect(openFolderAct,SIGNAL(triggered()),selectedModItem,SLOT(openMoFolder()));
-    QIcon icon;
-    icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/Folder")), QIcon::Normal, QIcon::Off);
-    openFolderAct->setIcon(icon);
-    menu->addAction(openFolderAct);
-
     // Reload mo file
     QAction *reload = new QAction("Reload .mo file",menu);
     reload->setData(selectedModItem->filePath());
@@ -101,6 +98,17 @@ void OMOptimGuiTools::addCommonActions(QMenu* menu,Project* project, const QPoin
     QAction *edit = new QAction("Open .mo file",menu);
     connect(edit,SIGNAL(triggered()),selectedModItem,SLOT(openInEditor()));
     menu->addAction(edit);
+}
+
+void OMOptimGuiTools::addCommonActions(QMenu* menu,Project* project, const QPoint & iPoint,ModItem* selectedModItem)
+{
+    //Open folder
+    QAction *openFolderAct = new QAction("Open folder",menu);
+    connect(openFolderAct,SIGNAL(triggered()),selectedModItem,SLOT(openMoFolder()));
+    QIcon icon;
+    icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/Folder")), QIcon::Normal, QIcon::Off);
+    openFolderAct->setIcon(icon);
+    menu->addAction(openFolderAct);
 }
 
 void OMOptimGuiTools::consolidateModelsPath(QString projectFile, QWidget *mainWindow)
@@ -189,7 +197,7 @@ void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir project
 void OMOptimGuiTools::addModModelActions(QMenu* menu,Project* project, const QPoint & iPoint,ModModel* selectedModel)
 {
 
-    ModModelPlus* selectedModModelPlus = project->modModelPlus(selectedModel->name());
+    ModelPlus* selectedModModelPlus = project->modelPlus(selectedModel->name());
 
 //    //Compile
 //    QAction *compileModel = new QAction("Recompile model",menu);

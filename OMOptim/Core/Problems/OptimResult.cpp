@@ -62,14 +62,21 @@ OptimResult::OptimResult():Result()
     _curScan = -1;
 }
 
+
+
 OptimResult::OptimResult(Project* project, const Optimization & problem)
     :Result((ProjectBase*)project,problem)
+
 {
+
+    _omProject = project;
     _models = problem.models();
+
 
     _recomputedVariables = new MOOptVector(true,true,true);
     _optObjectivesResults = new MOOptVector(true,false,true); //objectives are constant for one scan
     _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
+
 
     // files to copy
     _filesToCopy.push_back(QFileInfo("iteration*.sav"));
@@ -87,9 +94,11 @@ OptimResult::OptimResult(Project* project, const Optimization & problem)
 OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok)
     :Result((ProjectBase*)project,(const Problem&)problem)
 {
+
     ok = true;
     _models = problem.models();
     this->setSaveFolder(resultDir.absolutePath());
+
 
 
     _recomputedVariables = new MOOptVector(true,true,true);
@@ -154,22 +163,27 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
             number.remove(QRegExp("[\\D]*"));
             domBlock.setTagName("BlockSubstitutions");
 
+
             this->_subBlocks.push_back(new BlockSubstitutions(project,domBlock));
+
         }
         domBlock = domBlock.nextSiblingElement();
     }
 
     // Filling and Sizing recomputed variables (without values)
-    ModModelPlus* curModel;
+
+    ModelPlus* curModel;
     for(int iM=0;iM<_models.size();iM++)
     {
-        curModel = omProject()->modModelPlus(_models.at(iM));
+        curModel = omProject()->modelPlus(_models.at(iM));
 
         if(curModel->variables()->items.isEmpty() && curModel->isCompiled(problem.ctrl(_models.at(iM))))
             curModel->readVariables(problem.ctrl(_models.at(iM)));
 
         for (int i=0;i<curModel->variables()->size();i++)
+
         {
+
             this->recomputedVariables()->addItem(new VariableResult(*curModel->variables()->at(i)));
         }
     }
@@ -581,7 +595,7 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
                 //Creating a new OneSimulation problem based on same model
                 //and specifying overwrited variables from optimized variable values
                 //*************************************************************
-                ModModelPlus* modelPlus = omProject()->modModelPlus(problem->models().at(iM));
+                ModelPlus* modelPlus = omProject()->modelPlus(problem->models().at(iM));
                 OneSimulation *oneSim = new OneSimulation(omProject(),modelPlus);
                 oneSim->setCtrls(*problem->ctrls(problem->models().at(iM)));
                 Variable* overVar;

@@ -50,8 +50,10 @@
 #include "BlockSubs/BlockSubstitutions.h"
 #include "CSV.h"
 #include "ProblemConfig.h"
+
 #include "EA/OptimAlgo.h"
 #include "Project.h"
+
 
 class Save;
 class Optimization;
@@ -64,7 +66,9 @@ class OptimResult : public Result
 public:
 
     OptimResult();
+
     OptimResult(Project*,const Optimization &);
+
     OptimResult(Project*,const QDomElement & domResult,const Optimization & problem,QDir resultDir,bool &ok);
     OptimResult(const OptimResult &_res);
     virtual ~OptimResult(void);
@@ -123,6 +127,7 @@ protected:
     int _curPoint;
     int _curScan;
 
+    Project* _omProject;
     MOOptVector *_optVariablesResults;
     MOOptVector *_optObjectivesResults;
     MOOptVector *_recomputedVariables;
@@ -133,7 +138,9 @@ protected:
 
 
     //Model
+
     QStringList _models;
+
 };
 
 

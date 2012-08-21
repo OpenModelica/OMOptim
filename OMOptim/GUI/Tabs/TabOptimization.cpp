@@ -80,7 +80,9 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
         _widgetFilesList->setInfos("Select here files needed for simulation to perform. Those would be copied in temporary directory along with simulation executable.");
         addDockWidget("Files",_widgetFilesList,_widgetSelectOptVars);
 
+
         _widgetCtrl = new WidgetCtrlParameters(_project,_problem->ctrls(),false,this);
+
         addDockWidget("Simulator",_widgetCtrl,_widgetSelectOptVars);
 
         _widgetModels = new WidgetModelsList(_project,_problem,this);
