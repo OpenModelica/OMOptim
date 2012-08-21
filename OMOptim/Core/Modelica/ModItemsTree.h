@@ -43,7 +43,7 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
-#include "exemodel.h"
+#include "ExeModel.h"
 #include "ModItem.h"
 #include "ModLoader.h"
 #include "MOomc.h"
