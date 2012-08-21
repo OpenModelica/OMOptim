@@ -399,20 +399,34 @@ void ProjectBase::addNewProblem(ProblemInterface* interface, QStringList modelsL
 
 void ProjectBase::addOMCase(QString filePath)
 {
-    OMCase* newCase = Load::newOMCase(filePath,this);
-
-    Problem* problem = dynamic_cast<Problem*>(newCase);
-    if(problem)
-        addProblem(problem);
-    else
+    // do not reload if already loaded
+    if(!casesFiles().contains(QFileInfo(filePath)))
     {
-        Result* result = dynamic_cast<Result*>(newCase);
-        if(result)
-            addResult(result);
+        OMCase* newCase = Load::newOMCase(filePath,this);
+
+        Problem* problem = dynamic_cast<Problem*>(newCase);
+        if(problem)
+            addProblem(problem);
+        else
+        {
+            Result* result = dynamic_cast<Result*>(newCase);
+            if(result)
+                addResult(result);
+        }
     }
 }
 
 
+void ProjectBase::addOMCases(QDir folder)
+{
+    QString caseExtension = "mpb";
+
+    QFileInfoList omCasesFiles = LowTools::findFiles(folder,caseExtension);
+
+    for(int i=0;i<omCasesFiles.size();i++)
+        addOMCase(omCasesFiles.at(i).absoluteFilePath());
+
+}
 
 void ProjectBase::addProblem(Problem *problem)
 {
@@ -700,5 +714,21 @@ bool ProjectBase::renameResult(Result* result,QString newName)
 QMap<QString,QString> ProjectBase::pluginsLoaded()
 {
     return _pluginsLoaded;
+}
+
+/**
+  * Returns list of files of problems and results.
+  */
+QFileInfoList ProjectBase::casesFiles()
+{
+    QFileInfoList result;
+
+    for(int i=0;i<_problems->size();i++)
+        result.push_back(_problems->at(i)->entireSavePath());
+
+    for(int i=0;i<_results->size();i++)
+        result.push_back(_results->at(i)->entireSavePath());
+
+    return result;
 }
 

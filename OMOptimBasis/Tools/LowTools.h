@@ -76,6 +76,8 @@ public:
     static void copyDirContents(QString org, QString dest);
     static void copyFilesInFolder(QFileInfoList files, QDir folder);
 
+    static QFileInfoList findFiles(QDir folder,QString extension);
+
 
     // list management
     static QStringList getDuplicates(const QStringList & list);

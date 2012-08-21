@@ -129,6 +129,7 @@ protected:
     void addResult(Result *);
     void addProblem(Problem *);
     void addOMCase(QString filePath);
+    void addOMCases(QDir folder);
     void launchProblem(Problem*);
     void launchProblems(QList<Problem*>);
     void removeResult(Result*);
@@ -155,6 +156,7 @@ protected:
 
     Problems* problems(){return _problems;}
     Results* results(){return _results;}
+    QFileInfoList casesFiles();
 
 
     //****************************

@@ -152,6 +152,37 @@ void LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
     }
 }
 
+/**
+  * Will look in folder and subfolders for all files with extension indicated.
+  *
+  *
+  */
+QFileInfoList LowTools::findFiles(QDir folder, QString extension)
+{
+    QStringList fileType;
+    fileType<< "*."+extension;
+
+    QFileInfoList result;
+    QStringList more;
+    QStringList::Iterator it;
+
+    more = folder.entryList(fileType,QDir::Files );
+    for ( int i=0;i<more.size();i++)
+        result.push_back(QFileInfo(folder,more.at(i)));
+
+    // reg exp in next line excludes . and .. dirs (and .* actually)
+    more = folder.entryList( QDir::Dirs ).filter(QRegExp( "[^.]" ) );
+    QString subDirPath;
+    for ( int i=0;i<more.size();i++)
+    {
+        subDirPath = folder.absolutePath()+QDir::separator()+more.at(i);
+        result.append(LowTools::findFiles(QDir(subDirPath),extension));
+    }
+
+    return result;
+}
+
+
 void LowTools::copyDir(QString org,QString dest)
 {
     InfoSender::instance()->debug("Copy dir "+org +" to "+dest);
@@ -213,12 +244,12 @@ void LowTools::removeDuplicates(QVector<double> &vector)
 
 void LowTools::removeDuplicates(QStringList &list)
 {
-   LowTools::removeDuplicates<QString>(list);
+    LowTools::removeDuplicates<QString>(list);
 }
 
 void LowTools::removeDuplicates(QFileInfoList &list)
 {
-   LowTools::removeDuplicates<QFileInfo>(list);
+    LowTools::removeDuplicates<QFileInfo>(list);
 }
 
 void LowTools::removeWhiteSpaceStrings(QStringList &list)
