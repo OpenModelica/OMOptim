@@ -2,7 +2,7 @@
 #define UPDATEPBEST_H
 
 #include "eoPop.h"
-#include "Comparator/moeoParetoObjectiveVectorComparator.h"
+#include "comparator/moeoParetoObjectiveVectorComparator.h"
 #include <utils/eoRNG.h>
 
 
