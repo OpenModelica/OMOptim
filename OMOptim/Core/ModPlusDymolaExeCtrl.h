@@ -3,7 +3,7 @@
 
 
 
-#include "QProcess.h"
+#include <QProcess>
 #include "ModPlusExeCtrl.h"
 
 
