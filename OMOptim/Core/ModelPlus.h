@@ -85,6 +85,7 @@ public:
     QFileInfoList neededFiles();
     QFileInfoList neededFolders();
     virtual bool isCompiled(ModPlusCtrl* ctrl) =0;
+    virtual bool compile(ModPlusCtrl* ctrl) =0;
     QDir mmoFolder();
 
     virtual QFileInfo mmoFilePath();

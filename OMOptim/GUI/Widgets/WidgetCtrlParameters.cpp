@@ -99,8 +99,8 @@ void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
 
 
     QString curmodel;
-
     ModPlusCtrls *curCtrls;
+
     int iRow;
     for(int i=0;i<models.size();i++)
     {

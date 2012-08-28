@@ -50,7 +50,6 @@ Optimization::Optimization(Project* project,QStringList models)
     :Problem((ProjectBase*)project)
 
 {
-
     _omProject = project;
     _name="Optimization";
 
@@ -66,7 +65,9 @@ Optimization::Optimization(Project* project,QStringList models)
     // models and ctrls
     for(int i=0;i<models.size();i++)
     {
-        this->addModel(models.at(i));
+        // add only if model exists
+        if(project->modItemsTree()->findItem(models.at(i)))
+            this->addModel(models.at(i));
     }
 
 }
@@ -211,14 +212,17 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         if(!domInfos.attribute("model").isEmpty())
         {
             QString modelName = domInfos.attribute("model");
-            ModelPlus* model = project->modelPlus(modelName);
+            ModelPlus* modelPlus = project->modelPlus(modelName);
 
-            // read corresponding controlers
-            QDomElement domCtrls = domProblem.firstChildElement(ModPlusCtrls::className());
-            ModPlusCtrls* ctrls = new ModPlusCtrls(project,model,domCtrls);
+            if(modelPlus)
+            {
+                // read corresponding controlers
+                QDomElement domCtrls = domProblem.firstChildElement(ModPlusCtrls::className());
+                ModPlusCtrls* ctrls = new ModPlusCtrls(project,modelPlus,domCtrls);
 
-            // add model
-            this->addModel(domInfos.attribute("model"));
+                // add model
+                this->addModel(domInfos.attribute("model"));
+            }
         }
 
         // new format
@@ -227,14 +231,18 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         while(!domModel.isNull())
         {
             QString modelName = domModel.attribute("name");
-            ModelPlus* model = project->modelPlus(modelName);
+            ModelPlus* modelPlus = project->modelPlus(modelName);
 
-            // read corresponding controlers
-            QDomElement domCtrls = domModel.firstChildElement(ModPlusCtrls::className());
-            ModPlusCtrls* ctrls = new ModPlusCtrls(project,model,domCtrls);
+            if(modelPlus) // add it only if found in project
+                          // otherwise, may lead to segfaults
+            {
+                // read corresponding controlers
+                QDomElement domCtrls = domModel.firstChildElement(ModPlusCtrls::className());
+                ModPlusCtrls* ctrls = new ModPlusCtrls(project,modelPlus,domCtrls);
 
-            // add model and controlers
-            this->addModel(modelName,ctrls);
+                // add model and controlers
+                this->addModel(modelName,ctrls);
+            }
 
 
             domModel = domModel.nextSiblingElement("Model");

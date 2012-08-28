@@ -59,8 +59,12 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     _allModelsVars = new Variables(true);
     for(int i=0;i<_problem->models().size();i++)
     {
-        Variables* modelVars = _project->modelPlus(_problem->models().at(i))->variables();
-        connect(modelVars,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(refreshAllModelsVars()));
+        ModelPlus* modelPlus =  _project->modelPlus(_problem->models().at(i));
+        if(modelPlus)
+        {
+            Variables* modelVars = modelPlus->variables();
+            connect(modelVars,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(refreshAllModelsVars()));
+        }
     }
 
     // create permanent vars vector
@@ -161,7 +165,7 @@ void WidgetSelectOptVars::addOptVariables()
         selVar=_allModelsVars->at(curSourceIndex.row());
 
         alreadyIn = _problem->optimizedVariables()->alreadyIn(selVar->name());
-//        if ((!alreadyIn && !selVar->output()))
+        //        if ((!alreadyIn && !selVar->output()))
         if (!alreadyIn)
         {
             optVarProv = new OptVariable(*selVar);
@@ -206,7 +210,7 @@ void WidgetSelectOptVars::addScannedVariables()
         selVar=_allModelsVars->at(curSourceIndex.row());
 
         alreadyIn = _problem->scannedVariables()->alreadyIn(selVar->name());
-//        if (!alreadyIn && !selVar->output())
+        //        if (!alreadyIn && !selVar->output())
         if (!alreadyIn)
         {
             scannedVarProv = new ScannedVariable(*selVar);
@@ -248,7 +252,7 @@ void WidgetSelectOptVars::addOverVariables()
         curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
         selVar=_allModelsVars->at(curSourceIndex.row());
         alreadyIn = _problem->overwritedVariables()->alreadyIn(selVar->name());
-//        if (!alreadyIn && !selVar->output())
+        //        if (!alreadyIn && !selVar->output())
         if (!alreadyIn)
         {
             varProv = new Variable(*selVar);
@@ -400,7 +404,7 @@ void WidgetSelectOptVars::readVariables()
             ((ModModelPlus *)curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)),shouldForceRecompile);
         }
         if(curModelPlus->modelType() == ModelPlus::EXECUTABLE)
-         ((ModExePlus *) curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)));
+            ((ModExePlus *) curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)));
     }
 
     refreshAllModelsVars();
@@ -412,11 +416,18 @@ void WidgetSelectOptVars::readVariables()
 void WidgetSelectOptVars::refreshAllModelsVars()
 {
     _allModelsVars->clear();
-
+    ModelPlus* curModelPlus;
+    Variables* curVariables;
     for(int i=0;i<_problem->models().size();i++)
     {
-        Variables* modelVars = _project->modelPlus(_problem->models().at(i))->variables();
-        _allModelsVars->addItems(modelVars,true);
+        curModelPlus = _project->modelPlus(_problem->models().at(i));
+        if(curModelPlus)
+        {
+            if(!curModelPlus->isCompiled(_problem->ctrl(_problem->models().at(i))))
+                curModelPlus->compile(_problem->ctrl(_problem->models().at(i)));
+            curVariables = curModelPlus->variables();
+            _allModelsVars->addItems(curVariables,true);
+        }
     }
 
     _allModelsVars->addItems(_permanentVars,true);
@@ -435,20 +446,20 @@ void WidgetSelectOptVars::setShownColumns()
     for(int i=0;i<_tableVariables->horizontalHeader()->count();i++)
         _tableVariables->setColumnHidden(i,!varsColsToShow.contains(i));
 
-//    QList<int> optColsToHide;
-//    optColsToHide << OptVariable::DESCRIPTION;
-//    for(int i=0;i<optColsToHide.size();i++)
-//        _tableOptimizedVars->setColumnHidden(optColsToHide.at(i),true);
+    //    QList<int> optColsToHide;
+    //    optColsToHide << OptVariable::DESCRIPTION;
+    //    for(int i=0;i<optColsToHide.size();i++)
+    //        _tableOptimizedVars->setColumnHidden(optColsToHide.at(i),true);
 
-//    QList<int> scannedColsToHide;
-//    scannedColsToHide << ScannedVariable::DESCRIPTION;
-//    for(int i=0;i<scannedColsToHide.size();i++)
-//        _tableScannedVars->setColumnHidden(scannedColsToHide.at(i),true);
+    //    QList<int> scannedColsToHide;
+    //    scannedColsToHide << ScannedVariable::DESCRIPTION;
+    //    for(int i=0;i<scannedColsToHide.size();i++)
+    //        _tableScannedVars->setColumnHidden(scannedColsToHide.at(i),true);
 
-//    QList<int> objColsToHide;
-//    objColsToHide << OptObjective::DESCRIPTION;
-//    for(int i=0;i<objColsToHide.size();i++)
-//        _tableObjectives->setColumnHidden(objColsToHide.at(i),true);
+    //    QList<int> objColsToHide;
+    //    objColsToHide << OptObjective::DESCRIPTION;
+    //    for(int i=0;i<objColsToHide.size();i++)
+    //        _tableObjectives->setColumnHidden(objColsToHide.at(i),true);
 
 }
 
