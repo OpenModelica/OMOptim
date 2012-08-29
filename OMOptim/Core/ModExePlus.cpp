@@ -223,8 +223,8 @@ bool ModExePlus::variablesRead() const
 //bool ModExePlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
 //{
 //    // delete org connections
-//    bool deleteOk = _moomc->deleteConnections(blockSub->_orgPorts,blockSub->_orgConnectedComps,modModelName());
-//    QString modelName = modModelName();
+//    bool deleteOk = _moomc->deleteConnections(blockSub->_orgPorts,blockSub->_orgConnectedComps,modelName());
+//    QString modelName = modelName();
 //    QString shortOrg = blockSub->_orgComponent;
 //    shortOrg = shortOrg.remove(modelName+".");
 //    QString shortSub = blockSub->_subComponent;
@@ -259,10 +259,10 @@ bool ModExePlus::variablesRead() const
 //        QString newCompName = blockSub->_orgComponent;
 //        //keep same name will avoid problem if objective or optimized variables are in component
 
-//        _moomc->addComponent(newCompName,blockSub->_subComponent,modModelName(),annotation);
+//        _moomc->addComponent(newCompName,blockSub->_subComponent,modelName(),annotation);
 
 //        // specify modifiers equal to orgComponent
-//        _moomc->setComponentModifiers(newCompName,modModelName(),modifiersNames,modifiersValues);
+//        _moomc->setComponentModifiers(newCompName,modelName(),modifiersNames,modifiersValues);
 
 //        // connect it
 //        QStringList newCompPorts;
@@ -274,7 +274,7 @@ bool ModExePlus::variablesRead() const
 //        _moomc->addConnections(newCompPorts,blockSub->_subConnectedComps);
 //    }
 
-//    _moomc->save(modModelName());
+//    _moomc->save(modelName());
 
 //    return true;
 //}

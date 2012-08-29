@@ -106,7 +106,6 @@ public:
     // Get / Set functions
     //*************************
 
-    void setModModelName(QString);
     void addMoDependency(const QFileInfo &);
     void addMoDependencies(const QFileInfoList &);
     void setMoDependencies(const QStringList &);
@@ -122,7 +121,6 @@ public:
     QFileInfo mmoFilePath();
     QString moFilePath();
     QString mmoFileName();
-    QString modModelName();
 
     //*************************
     // Read functions

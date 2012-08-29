@@ -102,7 +102,7 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     QString modelName = domInfos.attribute("model");
 
     // Find model
-    ModItem* modModel = ((Project*)_project)->findModModel(modelName);
+    ModItem* modModel = ((Project*)_project)->findModItem(modelName);
     if(modModel == NULL)
     {
         InfoSender::instance()->sendWarning("Unable to find model "+modelName);

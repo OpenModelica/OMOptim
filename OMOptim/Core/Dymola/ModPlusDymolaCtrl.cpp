@@ -230,7 +230,7 @@ bool ModPlusDymolaCtrl::compile(const QFileInfoList & moDependencies)
     moDeps.removeAll(_project->moomc()->getFileOfClass("Modelica"));
 
     // compile
-    bool success = Dymola::compile(_modModelPlus->moFilePath(),_modModelPlus->modModelName(),
+    bool success = Dymola::compile(_modModelPlus->moFilePath(),_modModelPlus->modelName(),
                                     _ModelPlus->mmoFolder(),logFilePath,moDeps,_modModelPlus->neededFiles());
 
     // Inform

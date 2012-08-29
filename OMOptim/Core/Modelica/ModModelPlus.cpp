@@ -120,7 +120,7 @@ QFileInfo ModModelPlus::mmoFilePath()
 
 QString ModModelPlus::moFilePath()
 {
-    ModItem* modItem = _project->findModModel(_modelName);
+    ModItem* modItem = _project->findModItem(_modelName);
     if(!modItem)
     {
         InfoSender::instance()->debug("Can't find model "+_modelName);
@@ -354,11 +354,6 @@ void ModModelPlus::openNeededFilesDlg()
 }
 
 
-QString ModModelPlus::modModelName()
-{
-    return _modelName;
-}
-
 //vector<ModModelPlusicaModifier*>* MOomc::getComponentModifiers(QString componentName,ModItem* component)
 //{
 //
@@ -389,12 +384,11 @@ QString ModModelPlus::modModelName()
 bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
 {
     // delete org connections
-    bool deleteOk = _moomc->deleteConnections(blockSub->_orgPorts,blockSub->_orgConnectedComps,modModelName());
-    QString modelName = modModelName();
+    bool deleteOk = _moomc->deleteConnections(blockSub->_orgPorts,blockSub->_orgConnectedComps,modelName());
     QString shortOrg = blockSub->_orgComponent;
-    shortOrg = shortOrg.remove(modelName+".");
+    shortOrg = shortOrg.remove(modelName()+".");
     QString shortSub = blockSub->_subComponent;
-    shortSub = shortSub.remove(modelName+".");
+    shortSub = shortSub.remove(modelName()+".");
     ModItem* orgClass = _project->modItemsTree()->findInDescendants(blockSub->_orgComponent,modModel());
     if(!orgClass)
     {
@@ -416,7 +410,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
         QStringList modifiersNames = _moomc->getComponentModifierNames(blockSub->_orgComponent);
         QStringList modifiersValues;
         for(int i=0;i<modifiersNames.size();i++)
-            modifiersValues.push_back(_moomc->getComponentModifierValue(modelName,shortOrg,modifiersNames.at(i)));
+            modifiersValues.push_back(_moomc->getComponentModifierValue(modelName(),shortOrg,modifiersNames.at(i)));
 
         // delete org component
         _moomc->deleteComponent(blockSub->_orgComponent);
@@ -425,10 +419,10 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
         QString newCompName = blockSub->_orgComponent;
         //keep same name will avoid problem if objective or optimized variables are in component
 
-        _moomc->addComponent(newCompName,blockSub->_subComponent,modModelName(),annotation);
+        _moomc->addComponent(newCompName,blockSub->_subComponent,modelName(),annotation);
 
         // specify modifiers equal to orgComponent
-        _moomc->setComponentModifiers(newCompName,modModelName(),modifiersNames,modifiersValues);
+        _moomc->setComponentModifiers(newCompName,modelName(),modifiersNames,modifiersValues);
 
         // connect it
         QStringList newCompPorts;
@@ -440,7 +434,7 @@ bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
         _moomc->addConnections(newCompPorts,blockSub->_subConnectedComps);
     }
 
-    _moomc->save(modModelName());
+    _moomc->save(modelName());
 
     return true;
 }

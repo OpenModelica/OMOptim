@@ -123,7 +123,7 @@ private:
     ModModel* curModModel();
     ModelPlus *curModelPlus();
     void setCurModItem(ModItem*);
-    ModItem *findModModel(QString name);
+    ModItem *findModItem(QString name);
     QList<ModelPlus*> allModelPlus();
     void addModelPlus(ModelPlus*);
 

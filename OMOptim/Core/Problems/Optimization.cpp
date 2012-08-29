@@ -120,7 +120,6 @@ Optimization::~Optimization()
   * Returns a vector of final variables.
   * @param ok : is set to true if evaluation is successful, to false otherwise.
   */
-
 MOOptVector *Optimization::evaluate(QList<ModelPlus*> models, Variables *optimVariables, ScannedVariables *scannedVariables, bool &ok)
 {
     ok = true;

@@ -83,7 +83,7 @@ void WidgetLoadExeModel::validate()
         ok = false;
         msg+= "Model name is empty. \n";
     }
-    if(_project->findModModel(name()))
+    if(_project->findModItem(name()))
     {
         ok = false;
         msg+= "A similar named model already exists in project. \n";

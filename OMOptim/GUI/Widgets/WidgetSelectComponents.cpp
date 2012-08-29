@@ -95,7 +95,7 @@ void WidgetSelectComponents::addReplacedComponent()
 
 //    if(!alreadyReplaced.contains(replacedCompName))
 //    {
-//        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus()->modModelName(),replacedCompName,QString(),true,ok);
+//        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus()->modelName(),replacedCompName,QString(),true,ok);
 
 //        if(ok)
 //            _problem->blockSubstitutions()->add(newBlockSub);
@@ -123,7 +123,7 @@ void WidgetSelectComponents::addReplacingComponent()
 
 //        // look for an existing but empty block
 //        bool ok;
-//        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus()->modModelName(),
+//        BlockSubstitution *newBlockSub = new BlockSubstitution(_project,_problem->modModelPlus()->modelName(),
 //                                                               replacedCompNames.at(0),replacingCompName,true,ok);
 
 //        if(!ok)

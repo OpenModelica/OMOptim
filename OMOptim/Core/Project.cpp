@@ -395,7 +395,7 @@ ModModel* Project::curModModel()
 //        return (ModModel*)modModel;
 //}
 
-ModItem* Project::findModModel(QString modelName)
+ModItem* Project::findModItem(QString modelName)
 {
     ModItem* modModel = _modItemsTree->findInDescendants(modelName);
 
