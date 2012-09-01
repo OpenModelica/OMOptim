@@ -52,12 +52,15 @@ ModPlusCtrl::ModPlusCtrl(Project* project,ModelPlus* ModPlus,MOomc* moomc)
     _ModelPlus = ModPlus;
     _moomc = moomc;
 
-    // _parameters are not created here; it will be in inheriting classes
 
+    // _parameters are not created here; it will be in inheriting classes
+    _parameters = NULL;
 }
 
 ModPlusCtrl::~ModPlusCtrl(void)
 {
+    if(_parameters)
+        delete _parameters;
 }
 
 

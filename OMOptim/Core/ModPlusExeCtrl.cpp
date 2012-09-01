@@ -23,18 +23,9 @@ ModPlusExeCtrl::ModPlusExeCtrl(Project* project,ModelPlus *modExePlus)
         _initFile = "";
         _exeFile  = "";
     }
-//#ifdef WIN32
-//    _exeFile = _ModelPlus->modelName()+".exe";
-//#else
-//    _exeFile = _ModelPlus->modelName();
-//#endif
 
     _copyAllMoOfFolder = true;
 
-    _parameters = new MOParameters();
-//   setDefaultParameters() ;
-
-    connect(_parameters,SIGNAL(modified()),this,SIGNAL(modified()));
 }
 
 ModPlusExeCtrl::~ModPlusExeCtrl(void)

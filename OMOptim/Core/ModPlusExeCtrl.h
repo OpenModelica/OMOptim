@@ -16,7 +16,7 @@ public:
 
 
     ModPlusExeCtrl(Project* project,ModelPlus* model);
-    ~ModPlusExeCtrl(void);
+    virtual ~ModPlusExeCtrl(void);
 
     virtual ModPlusCtrl::Type type() const = 0;
     QString name();

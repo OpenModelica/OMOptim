@@ -4,8 +4,8 @@
 #include <neighborhood/moIndexNeighborhood.h>
 #include <neighborhood/moRndNeighborhood.h>
 #include <utils/eoRNG.h>
-#include <eoRealBounds.h>
-#include <eoIntBounds.h>
+#include <utils/eoRealBounds.h>
+#include <utils/eoIntBounds.h>
 
 
 /**

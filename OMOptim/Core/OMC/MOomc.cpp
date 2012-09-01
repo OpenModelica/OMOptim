@@ -1006,9 +1006,9 @@ QStringList MOomc::getDependenciesPaths(QString fileName,bool commentImportPaths
     if(!moFile.open(QIODevice::ReadOnly))
         return QStringList();
 
-    QTextStream *ts = new QTextStream(&moFile);
-    QString text = ts->readAll();
-    ts->reset();
+    QTextStream ts(&moFile);
+    QString text = ts.readAll();
+    ts.reset();
     moFile.close();
 
     QStringList lines = text.split("\n");
@@ -1041,10 +1041,10 @@ QStringList MOomc::getDependenciesPaths(QString fileName,bool commentImportPaths
     if(commentImportPaths && importFiles.size()>0)
     {
         bool openOk = moFile.open(QIODevice::WriteOnly);
-        ts = new QTextStream(&moFile);
+        QTextStream ts2(&moFile);
 
         QString newText = lines.join("\n");
-        *ts << newText;
+        ts2 << newText;
         moFile.close();
     }
 
@@ -1191,6 +1191,8 @@ void MOomc::clear()
 {
     if(isStarted())
         evalCommand("clear()");
+
+    initTempDirectory();
 }
 
 
@@ -1211,6 +1213,7 @@ void MOomc::exit()
 
     //emit emitQuit();
 }
+
 
 
 
@@ -1244,33 +1247,44 @@ bool MOomc::startServer()
 #else // UNIX environment
         char *user = getenv("USER");
         if (!user) { user = "nobody"; }
-        objectRefFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(*(new QString(user))).append(".objid.").append(this->mName).append(fileIdentifier));
+        objectRefFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(QString(user)).append(".objid.").append(this->mName).append(fileIdentifier));
 #endif
 
         if (objectRefFile.exists())
             objectRefFile.remove();
 
         mObjectRefFile = objectRefFile.fileName();
+
+
+        // read the locale
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, "openmodelica", "omedit");
+        QLocale settingsLocale = settings.value("language").toLocale();
         // Start the omc.exe
         QStringList parameters;
-        parameters << QString("+c=").append(this->mName).append(fileIdentifier) << QString("+d=interactiveCorba");
-
+        parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba") << QString("+locale=").append(settingsLocale.name());
         QProcess *omcProcess = new QProcess();
-        omcProcess->start( omcPath, parameters );
-
+        QFile omcOutputFile;
+    #ifdef WIN32 // Win32
+        omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
+    #else // UNIX environment
+        omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(*(new QString(user))).append(".omc.output.").append(mName));
+    #endif
+        omcProcess->setProcessChannelMode(QProcess::MergedChannels);
+        omcProcess->setStandardOutputFile(omcOutputFile.fileName());
+        omcProcess->start(omcPath, parameters);
         // wait for the server to start.
         int ticks = 0;
         while (!objectRefFile.exists())
         {
-            SleeperThread::msleep( 1000 );
-            ticks++;
-            if (ticks > 20)
-            {
-                msg = "Unable to find " + OMCHelper::applicationName + " server, Object reference file " + mObjectRefFile + " not created.";
-                throw std::runtime_error(msg.toStdString().c_str());
-                return false;
-            }
+          SleeperThread::msleep(1000);
+          ticks++;
+          if (ticks > 20)
+          {
+            msg = "Unable to find " + OMCHelper::applicationName + " server, Object reference file " + mObjectRefFile + " not created.";
+            throw std::runtime_error(msg.toStdString());
+          }
         }
+
         // ORB initialization.
         int argc = 2;
         static const char *argv[] = { "-ORBgiopMaxMsgSize", "10485760" };
@@ -1304,99 +1318,30 @@ bool MOomc::startServer()
 
     evalCommand("getInstallationDirectoryPath()");
     OMCHelper::OpenModelicaHome = StringHandler::removeFirstLastQuotes(getResult());
-    QDir dir;
-    if (!dir.exists(OMCHelper::tmpPath))
-    {
-        if (!LowTools::mkdir(OMCHelper::tmpPath,false))
-        {
-            InfoSender::instance()->send(Info( QString("Failed to create temp dir ").append(OMCHelper::tmpPath),ListInfo::ERROR2));
-            return false;
-        }
-    }
 
-    // mCommunicator = &OmcCommunicator::getInstance();
+    initTempDirectory();
 
-    // set the temp directory.
-    changeDirectory(OMCHelper::tmpPath);
     // set the OpenModelicaLibrary variable.
     evalCommand("getModelicaPath()");
     OMCHelper::OpenModelicaLibrary = StringHandler::removeFirstLastQuotes(getResult());
     return true;
-
-
-    //QString msg;
-
-    //isStarted = (delegate_!=0);
-
-    //if(!isStarted)
-    //{
-    //    InfoSender::instance()->send( Info("Starting OMC...",ListInfo::NORMAL2));
-    //    try
-    //    {
-    //        delegate_ = new IAEX::OmcInteractiveEnvironment();
-    //        isStarted = true;
-
-    //        // get version no
-    //        QString getVersionStr = "getVersion()";
-    //        delegate_->evalExpression( getVersionStr );
-    //        omc_version_ = delegate_->result();
-    //        omc_version_.remove( "\"" );
-
-    //        msg = "OMC " + omc_version_ + " now started.";
-    //        InfoSender::instance()->send( Info(msg,ListInfo::NORMAL2));
-
-    //    }
-    //    catch( exception &e )
-    //    {
-    //        msg = e.what();
-    //        InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
-
-    //        if( !IAEX::OmcInteractiveEnvironment::startOMC() )
-    //        {
-    //            msg= "Unable to start OMC.";
-    //            InfoSender::instance()->send( Info(msg,ListInfo::ERROR2));
-    //            isStarted = false;
-    //        }
-    //        else
-    //        {
-    //            int i=0;
-    //            int nMax = 10;
-    //            while(!isStarted && (i<nMax))
-    //            {
-    //                // wait before trying to reconnect,
-    //                // give OMC time to start up
-    //                msg = "Unable to connect to OMC Server. Trying to reconnect (";
-    //                msg += QString::number(i+1) + "/" + QString::number(nMax) + ") ...";
-    //                InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
-
-    //                SleeperThread::msleep( 1000 );
-
-    //                try
-    //                {
-    //                    delegate_ = new IAEX::OmcInteractiveEnvironment();
-    //                    isStarted = true;
-    //
-    //                    // get version no
-    //                    delegate_->evalExpression( QString("getVersion()") );
-    //                    omc_version_ = delegate_->result();
-    //                    omc_version_.remove( "\"" );
-    //                    msg = "OMC " + omc_version_ + " now started.";
-    //                    InfoSender::instance()->send( Info(msg,ListInfo::NORMAL2));
-    //                }
-    //                catch( exception &e )
-    //                {
-    //                    msg = e.what();
-    //                    InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
-    //                    i++;
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
-
-    //return isStarted;
 }
 
+void MOomc::initTempDirectory()
+{
+    // set the temp directory.
+    QString tmpPath = evalCommand("getTempDirectoryPath()");
+    tmpPath += "/OpenModelica/OMOptim/";
+    tmpPath.remove("\"");
+    QString cdResult;
+    if (!QDir().exists(tmpPath))
+    {
+      if (LowTools::mkdir(tmpPath,false))
+        cdResult = changeDirectory(tmpPath);
+    }
+    else
+      cdResult = changeDirectory(tmpPath);
+}
 
 void MOomc::stopServer()
 {
@@ -1443,6 +1388,14 @@ QString MOomc::changeDirectory(QString directory)
 QString MOomc::getWorkingDirectory()
 {
     evalCommand("cd()");
+    QString path = getResult();
+    path = path.remove("\"");
+    return path;
+}
+
+QString MOomc::getTempDirectory()
+{
+    evalCommand("getTempDirectoryPath()");
     QString path = getResult();
     path = path.remove("\"");
     return path;

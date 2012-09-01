@@ -8,12 +8,14 @@ CONFIG += warn_off
 CONFIG(debug, debug|release){
     DEFINES+=DEBUG
     # ADD LINK TO OMOPTIM LIB
-    LIBS += -L. -lOMOptimd
+    LIBS += -L../bin -lOMOptimd
 
     TARGET = $$join(TARGET,,,d)
 }else{
-    LIBS += -L. -lOMOptim
+    LIBS += -L../bin -lOMOptim
 }
+
+
 
 win32 {
     # Version numbering (independent from OpenModelica)
@@ -29,9 +31,12 @@ win32 {
     include(OMOptim.config)
 }
 
-win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += ../bin/libOMOptimd.a
-else:win32:CONFIG(release, debug|release): PRE_TARGETDEPS += ../bin/libOMOptim.a
+unix:CONFIG(debug, debug|release): PRE_TARGETDEPS += ../bin/libOMOptimd.a
+else:unix:CONFIG(release, debug|release): PRE_TARGETDEPS += ../bin/libOMOptim.a
 
+
+DESTDIR = ../bin
+DEPENDPATH += ../bin
 
 INCLUDEPATH += . \
               .. \

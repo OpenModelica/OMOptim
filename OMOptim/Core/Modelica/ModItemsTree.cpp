@@ -88,8 +88,8 @@ void ModItemsTree::readFromOMCWThread(ModItem* parent,int depthMax,  QString dir
 {
 
     // load the models icon
-    ModItemsLoader *modItemsLoader = new ModItemsLoader(this,parent,depthMax,direction,curDepth);
-    modItemsLoader->run();
+    ModItemsLoader modItemsLoader(this,parent,depthMax,direction,curDepth);
+    modItemsLoader.run();
 // still not working properly on all platforms
 //    while (modItemsLoader->isRunning())
 //    {
@@ -1052,8 +1052,8 @@ ModItemsLoader::ModItemsLoader(ModItemsTree* modItemsTree,ModItem* parent,int de
 
     connect(this, SIGNAL(readFromOmc(ModItem*,int,QString,int)),
             _modItemsTree, SLOT(readFromOmc(ModItem*,int, QString,int)));
-    connect(this, SIGNAL(started()), this, SLOT(hasStarted()));
-    connect(this, SIGNAL(finished()), this, SLOT(hasFinished()));
+//    connect(this, SIGNAL(started()), this, SLOT(hasStarted()));
+//    connect(this, SIGNAL(finished()), this, SLOT(hasFinished()));
 }
 
 

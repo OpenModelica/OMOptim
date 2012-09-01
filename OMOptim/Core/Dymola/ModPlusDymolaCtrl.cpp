@@ -80,6 +80,7 @@ ModPlusCtrl* ModPlusDymolaCtrl::clone()
     cloned->_dsresFile = _dsresFile;
     cloned->_dsfinalFile = _dsfinalFile;
     cloned->_copyAllMoOfFolder = _copyAllMoOfFolder;
+    delete cloned->_parameters;
     cloned->_parameters = _parameters->clone();
 
     return cloned;
@@ -306,12 +307,12 @@ bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,M
 
         removeOk = tempDir.remove(fileToCopyInfo.fileName());
         InfoSender::instance()->debug("Removing in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-        if(!removeOk)
-        {
-            QFile::setPermissions(fileToCopyInfo.absoluteFilePath(),fileToCopyInfo.permissions() | QFile::WriteUser);
-            removeOk = tempDir.remove(fileToCopyInfo.fileName());
-            InfoSender::instance()->debug("Removing in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-        }
+//        if(!removeOk)
+//        {
+//            QFile::setPermissions(fileToCopyInfo.absoluteFilePath(),fileToCopyInfo.permissions() | QFile::WriteUser);
+//            removeOk = tempDir.remove(fileToCopyInfo.fileName());
+//            InfoSender::instance()->debug("Removing in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
+//        }
 
         fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
     }

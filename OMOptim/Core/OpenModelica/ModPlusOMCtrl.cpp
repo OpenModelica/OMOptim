@@ -79,6 +79,8 @@ ModPlusCtrl* ModPlusOMCtrl::clone()
     cloned->_initFileXml = _initFileXml;
     cloned->_exeFile = _exeFile;
     cloned->_copyAllMoOfFolder = _copyAllMoOfFolder;
+
+    delete cloned->_parameters;
     cloned->_parameters = _parameters->clone();
     cloned->_modModelPlus = _modModelPlus;
 
@@ -268,12 +270,12 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
         fileToCopyInfo = allFilesToCopy.at(i);
         removeOk = tempFolder.remove(fileToCopyInfo.fileName());
         InfoSender::instance()->debug("Removing in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-        if(!removeOk)
-        {
-            QFile::setPermissions(fileToCopyInfo.absoluteFilePath(),fileToCopyInfo.permissions() | QFile::WriteUser);
-            removeOk = tempFolder.remove(fileToCopyInfo.fileName());
-            InfoSender::instance()->debug("Removing in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-        }
+//        if(!removeOk)
+//        {
+//            QFile::setPermissions(fileToCopyInfo.absoluteFilePath(),fileToCopyInfo.permissions() | QFile::WriteUser);
+//            removeOk = tempFolder.remove(fileToCopyInfo.fileName());
+//            InfoSender::instance()->debug("Removing in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
+//        }
 
         copyOk = QFile::copy(allFilesToCopy.at(i).absoluteFilePath(),tempFolder.filePath(fileToCopyInfo.fileName()));
         //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));

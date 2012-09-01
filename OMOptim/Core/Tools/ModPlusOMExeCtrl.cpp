@@ -10,7 +10,8 @@
 ModPlusOMExeCtrl::ModPlusOMExeCtrl(Project* project,ModelPlus* model)
     :ModPlusExeCtrl(project, model)
 {
-    setDefaultParameters();
+    _parameters = new MOParameters();
+    OpenModelicaParameters::setDefaultParameters(_parameters);
 }
 
 
@@ -70,11 +71,7 @@ QString ModPlusOMExeCtrl::resCsvFile()
     return resFile +"_res.csv";
 }
 
-void ModPlusOMExeCtrl::setDefaultParameters()
-{
-    _parameters = new MOParameters();
-    OpenModelicaParameters::setDefaultParameters(_parameters);
-}
+
 
 ModPlusCtrl::Type ModPlusOMExeCtrl::type() const
 {

@@ -26,7 +26,6 @@ public:
     QString resMatFile();
     QString resCsvFile();
     ModPlusCtrl::Type type() const;
-    void setDefaultParameters();
 
     virtual bool readInitialVariables(MOVector<Variable> *,bool forcerecompile, QString initFile="");
 

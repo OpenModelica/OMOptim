@@ -14,9 +14,6 @@ DEFINES += __x86__ \
     QWT_DLL
 
 ### FOLDERS, INCLUDES
-DESTDIR = ../bin
-DEPENDPATH += ../bin
-
 
 CONFIG(debug, debug|release){
     UI_DIR = debug/generatedfiles/ui

@@ -44,7 +44,7 @@
 #include <string>
 
 #include "eoObject.h"
-#include "eoFileMonitor.h"
+#include "utils/eoFileMonitor.h"
 #include "MyEoGnuplot.h"
 
 

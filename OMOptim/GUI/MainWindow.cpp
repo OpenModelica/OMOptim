@@ -211,7 +211,7 @@ void MainWindow::clearLog()
 
 void MainWindow::displayInfo(Info i)
 {
-    if(i.infoMsg.isEmpty())
+    if(i.infoMsg.isEmpty() && i.infoType!=ListInfo::TASK)
         return ;
 
     QTextCharFormat infoFormat;
@@ -507,9 +507,6 @@ void MainWindow::connectProject()
     //*********************************
     // Signals for model
     //*********************************
-    connect(_project,SIGNAL(connectionsUpdated()),this,SLOT(onConnectionsUpdated()));
-    connect(_project,SIGNAL(componentsUpdated()),this,SLOT(onComponentsUpdated()));
-    connect(_project,SIGNAL(modifiersUpdated()),this,SLOT(onModifiersUpdated()));
     connect(&_project->_mofilesWatcher,SIGNAL(fileChanged(const QString&)),this,SLOT(onMoFileChanged(const QString&)));
     connect(_project,SIGNAL(modItemsTreeRefreshed()),this,SLOT(refreshModelTreeView()));
 

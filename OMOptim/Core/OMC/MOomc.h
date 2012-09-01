@@ -161,6 +161,8 @@ public :
     QString runScript(QString);
     QString changeDirectory(QString directory);
     QString getWorkingDirectory();
+    QString getTempDirectory();
+    void initTempDirectory();
     QString getResult();
     bool isStarted();
 
@@ -178,6 +180,8 @@ public :
     QString loadFileWThread(QString filePath);
 
     //OmcCommunicator* getCommunicator();
+
+
 
 
 public slots :

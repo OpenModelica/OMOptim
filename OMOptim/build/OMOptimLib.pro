@@ -19,6 +19,9 @@ win32 {
     include(../build/OMOptim.config)
 }
 
+DESTDIR = ../bin
+DEPENDPATH += ../bin
+
 INCLUDEPATH += . \
               .. \
               ../../ \

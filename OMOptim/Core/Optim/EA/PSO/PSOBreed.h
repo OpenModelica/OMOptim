@@ -1,8 +1,8 @@
 #ifndef PSOBREED_H
 #define PSOBREED_H
 #include "eoBreed.h"
-#include "eoIntBounds.h"
-#include "eoRealBounds.h"
+#include "utils/eoIntBounds.h"
+#include "utils/eoRealBounds.h"
 
 
 

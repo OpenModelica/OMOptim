@@ -85,7 +85,7 @@ class ModPlusCtrl :public QObject
         static const int nbTypes = 4;
 
         ModPlusCtrl(Project*,ModelPlus* ModPlus,MOomc* moomc);
-        ~ModPlusCtrl(void);
+        virtual ~ModPlusCtrl(void);
         virtual ModPlusCtrl* clone()=0;
 
         // Variables functions

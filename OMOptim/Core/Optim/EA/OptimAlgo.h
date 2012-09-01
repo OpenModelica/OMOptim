@@ -80,9 +80,8 @@ public:
     virtual void setDefaultParameters() = 0;
     virtual void onQuickEndAsked(){}
 
-
-
-
+signals:
+    void modified();
 
 protected :
     Project* _project;

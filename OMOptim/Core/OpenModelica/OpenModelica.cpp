@@ -81,23 +81,24 @@ bool OpenModelica::compile(MOomc *_omc,QFileInfo moFile,QString modelToConsider,
     }
 
     // Create working dir
-    QDir workDir(OMCHelper::tmpPath);
+    QString tmpPath = _omc->getWorkingDirectory();
+    QDir workDir(tmpPath);
     if(workDir.exists())
-        LowTools::removeDirContents(OMCHelper::tmpPath);
+        LowTools::removeDirContents(tmpPath);
     else
     {
         QDir dir;
-        dir.mkpath(OMCHelper::tmpPath);
+        dir.mkpath(tmpPath);
     }
 
     // Copy file and folder
     LowTools::copyFilesInFolder(neededFiles,workDir.absolutePath());
 
-    _omc->changeDirectory(OMCHelper::tmpPath);
+    _omc->changeDirectory(tmpPath);
     _omc->buildModel(modelToConsider);
 
 
-    LowTools::copyDir(OMCHelper::tmpPath,storeFolder.absolutePath());
+    LowTools::copyDir(tmpPath,storeFolder.absolutePath());
 
 
 #ifdef WIN32
@@ -317,10 +318,11 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
 //        {
 //            InfoSender::instance()->debug("Seg fault while freeing reader");
 //        }
-
+        delete msg;
         return false;
     }
 
+    delete msg;
     //Read in timevector
     double stopTime =  omc_matlab4_stopTime(&reader);
 

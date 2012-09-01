@@ -111,6 +111,11 @@ Project::~Project()
     {
         delete _problemsInterfaces.uniqueInterfaces().at(i);
     }
+
+    QList<ModelPlus*> allModelPlus = _mapModelPlus.values();
+    for(int i=0;i<allModelPlus.size();i++)
+        delete allModelPlus.at(i);
+
     _problemsInterfaces.clear();
 
 }

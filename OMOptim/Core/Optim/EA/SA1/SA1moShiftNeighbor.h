@@ -2,8 +2,8 @@
 #define SA1MOSHIFTNEIGHBOR_H
 
 #include <neighborhood/moIndexNeighbor.h>
-#include <eoRealBounds.h>
-#include <eoIntBounds.h>
+#include <utils/eoRealBounds.h>
+#include <utils/eoIntBounds.h>
 #include <algorithm>    // swap_ranges
 #include <es/eoReal.h>
 #include <utils/eoRNG.h>

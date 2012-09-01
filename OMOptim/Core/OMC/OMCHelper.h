@@ -49,7 +49,6 @@ public:
     static QString omcServerName;
     static QString omFileTypes;
     static QString omFileOpenText;
-    static QString tmpPath;
     static QString settingsFileName;
     static QString documentationBaseUrl;
     static QString readOnly;

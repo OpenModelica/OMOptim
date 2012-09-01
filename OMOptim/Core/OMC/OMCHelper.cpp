@@ -43,13 +43,6 @@ QString OMCHelper::OpenModelicaLibrary = QString();
 QString OMCHelper::omcServerName = "OMOptim";
 QString OMCHelper::omFileTypes = "*.mo";
 QString OMCHelper::omFileOpenText = "Modelica Files (*.mo)";
-#ifdef WIN32
-QString OMCHelper::tmpPath = QDir(QString(getenv("OPENMODELICAHOME")).append(QString("/tmp/OMOptim"))).absolutePath();
-#else
-// Linux users don't have write access to /usr/tmp/OMEdit
-// Don't randomize the path as then it becomes annoying to remove all dirs
-QString OMCHelper::tmpPath = QString("/tmp/OMEdit");
-#endif
 QString OMCHelper::settingsFileName = QString("OMOptim-Settings.xml");
 QString OMCHelper::documentationBaseUrl = QString("/Modelica/Images/");
 QString OMCHelper::readOnly = QString("Read-Only");
