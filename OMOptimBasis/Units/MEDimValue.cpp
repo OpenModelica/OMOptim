@@ -156,6 +156,8 @@ MEDimValue & MEDimValue::operator=(const MEDimValue &b)
     _value = b._value;
     _unit = b._unit;
     _isValid = b._isValid;
+
+	return *this;
 }
 
 bool MEDimValue::operator<(const MEDimValue &b) const

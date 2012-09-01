@@ -44,6 +44,8 @@ bool ProblemInterface::saveProblem(Problem* problem)
     }
 
     problem->setIsSaved(true);
+
+	return true;
 }
 
 bool ProblemInterface::saveResult(Result* result)
@@ -94,6 +96,8 @@ bool ProblemInterface::saveResult(Result* result)
     }
 
     result->setIsSaved(true);
+
+	return true;
 }
 
 void ProblemInterface::initParameters()
