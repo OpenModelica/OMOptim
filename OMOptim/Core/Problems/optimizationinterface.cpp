@@ -25,6 +25,7 @@ Problem* OptimizationInterface::createNewProblem(ProjectBase* projectBase,const 
         else
             return new Optimization(project,modelsList);
     }
+
 }
 
 

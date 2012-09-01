@@ -205,14 +205,16 @@ bool OpenModelica::getInputVariablesFromXmlFile(MOomc *omc,const QDomDocument & 
     QDomNodeList listScalarVars = xModelVars.elementsByTagName("ScalarVariable");
 
     bool ok;
+    bool allok = true;
     for(int i=0;i<listScalarVars.size();i++)
     {
         Variable* newVar = variableFromFmi(listScalarVars.at(i).toElement(),modModelName,ok);
         if(ok)
             variables->addItem(newVar);
+        allok = allok && ok;
     }
 
-
+    return allok;
 }
 
 Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modelName,  bool & ok)
