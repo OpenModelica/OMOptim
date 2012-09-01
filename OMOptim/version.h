@@ -7,7 +7,7 @@ namespace Version
 {
  static const int MAJOR = 0;
  static const int MINOR = 9;
- static const int REVISION = 12651;
+ static const int REVISION = 12757;
  
  
  static QString version()

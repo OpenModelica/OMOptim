@@ -50,9 +50,6 @@
 #define HAVE_QAPPLICATION_H
 #define HAVE_QSOCKETNOTIFIER_H
 
-#if defined MYLEAK
-#include "Vld/Vld.h"
-#endif
 
 #include <omniORB4/CORBA.h>
 CORBA::ORB_var orb;

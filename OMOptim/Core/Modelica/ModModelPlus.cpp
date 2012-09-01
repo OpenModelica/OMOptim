@@ -68,7 +68,7 @@ ModModelPlus::ModModelPlus( Project* project,QString modelName)
 }
 
 ModModelPlus::ModModelPlus(Project *project, const QDomElement &domRoot)
-:ModelPlus(project,domRoot)
+    :ModelPlus(project,domRoot)
 {
     // .mo dependencies
     QDomElement cMoDeps = domRoot.firstChildElement("moDependencies");
@@ -76,7 +76,9 @@ ModModelPlus::ModModelPlus(Project *project, const QDomElement &domRoot)
     for (int nof=0;nof<strMoDeps.size();nof++)
     {
         this->addMoDependency(QFileInfo(strMoDeps.at(nof)));
-}
+    }
+
+     _connections = new ModelicaConnections(_project->modItemsTree());
 }
 
 ModModelPlus::~ModModelPlus()
@@ -269,10 +271,10 @@ bool ModModelPlus::readVariables(ModPlusCtrl* ctrl, bool forceRecompile)
 
 }
 
- bool ModModelPlus::variablesRead() const
- {
-     return _variablesRead;
- }
+bool ModModelPlus::variablesRead() const
+{
+    return _variablesRead;
+}
 
 bool ModModelPlus::readConnections(ModItem* element,bool includeChildren)
 {

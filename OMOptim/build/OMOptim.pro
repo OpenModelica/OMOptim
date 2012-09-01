@@ -31,8 +31,8 @@ win32 {
     include(OMOptim.config)
 }
 
-unix:CONFIG(debug, debug|release): PRE_TARGETDEPS += ../bin/libOMOptimd.a
-else:unix:CONFIG(release, debug|release): PRE_TARGETDEPS += ../bin/libOMOptim.a
+CONFIG(debug, debug|release): PRE_TARGETDEPS += ../bin/libOMOptimd.a
+else:CONFIG(release, debug|release): PRE_TARGETDEPS += ../bin/libOMOptim.a
 
 
 DESTDIR = ../bin

@@ -130,8 +130,6 @@ HEADERS += ../config.h \
            ../Core/Project.h \
            ../Core/VariablesManip.h \
            ../GUI/MainWindow.h \
-           ../Vld/vld.h \
-           ../Vld/vldapi.h \
            ../Core/Dymola/Dymola.h \
            ../Core/Dymola/ModPlusDymolaCtrl.h \
            ../Core/FileData/CSV.h \

@@ -41,6 +41,8 @@ bool OptimizationInterface::saveResult(Result* result)
     QString allVarsfrontFileName = optimResult->_allVarsFrontFileName;
     optimResult->exportFrontCSV(dir.absoluteFilePath(optVarsfrontFileName), false);
     optimResult->exportFrontCSV(dir.absoluteFilePath(allVarsfrontFileName), true);
+
+	return true;
 }
 
 QWidget* OptimizationInterface::createProblemTab(Problem * problem,QWidget* parent)

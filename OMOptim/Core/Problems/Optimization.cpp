@@ -65,9 +65,7 @@ Optimization::Optimization(Project* project,QStringList models)
     // models and ctrls
     for(int i=0;i<models.size();i++)
     {
-        // add only if model exists
-        if(project->modItemsTree()->findItem(models.at(i)))
-            this->addModel(models.at(i));
+        this->addModel(models.at(i));
     }
 
 }
@@ -642,7 +640,7 @@ bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
 {
     if(_models.contains(modelName)&&(ctrls==NULL))
         return false;
-    else
+    else if (_omProject->findModItem(modelName))
     {
         // create and add controlers
         _models.push_back(modelName);
