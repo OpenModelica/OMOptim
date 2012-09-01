@@ -42,7 +42,7 @@ bool OptimizationInterface::saveResult(Result* result)
     optimResult->exportFrontCSV(dir.absoluteFilePath(optVarsfrontFileName), false);
     optimResult->exportFrontCSV(dir.absoluteFilePath(allVarsfrontFileName), true);
 
-	return true;
+    return true;
 }
 
 QWidget* OptimizationInterface::createProblemTab(Problem * problem,QWidget* parent)
@@ -133,4 +133,5 @@ Result* OptimizationInterface::loadResult(QFileInfo saveFile,const QDomElement &
 
     return result;
 }
+
 

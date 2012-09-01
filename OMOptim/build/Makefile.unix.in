@@ -3,7 +3,7 @@
 top_dir=../../
 NAME=OMOptim
 LIBNAME=OMOptimLib
-DEST=.
+DEST=../bin
 EXE=@EXE@
 QMAKE=@QMAKE@
 
