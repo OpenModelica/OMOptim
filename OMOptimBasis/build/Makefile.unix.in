@@ -7,7 +7,7 @@ EXE=@EXE@
 QMAKE=@QMAKE@
 
 install: build
-	cp libOMOptimBasis.a $(top_dir)/build/lib/
+	cp ../bin/libOMOptimBasis.a $(top_dir)/build/lib/
 
 always:
 
