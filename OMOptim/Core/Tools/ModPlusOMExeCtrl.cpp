@@ -112,7 +112,7 @@ bool ModPlusOMExeCtrl::simulate(QDir tempFolder, MOVector<Variable> *inputVars, 
     outputVars->clear();
 
     // Create tempDir
-    LowTools::mkdir(tempFolder.absolutePath(),false);
+    LowTools::mkpath(tempFolder.absolutePath(),false);
 
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QFileInfoList allFilesToCopy;

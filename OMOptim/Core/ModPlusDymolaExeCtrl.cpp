@@ -59,7 +59,7 @@ bool ModPlusDymolaExeCtrl::simulate(QDir tempDir, MOVector<Variable> *updatedVar
     outputVars->clear();
 
     // Create tempDir
-    LowTools::mkdir(tempDir.absolutePath(),true);
+    LowTools::mkpath(tempDir.absolutePath(),true);
 
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QFileInfoList allFilesToCopy;

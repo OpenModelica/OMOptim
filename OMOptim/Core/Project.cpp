@@ -305,7 +305,7 @@ bool Project::loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo 
     save(false);
     //Store the model
     //    QDir modPlusdir(modModelPlusFolder()+QDir::separator()+name);
-    //    LowTools::mkdir(modPlusdir.absolutePath(),true);
+    //    LowTools::mkpath(modPlusdir.absolutePath(),true);
     //    QFile::copy(exeFileInfo.absoluteFilePath(), modPlusdir.absoluteFilePath(exeFileInfo.fileName()) );
     //    QFile::copy(inputFileInfo.absoluteFilePath(), modPlusdir.absoluteFilePath(inputFileInfo.fileName()) );
 
@@ -498,9 +498,9 @@ ModelPlus* Project::newModelPlus(QString modelName)
     // Store it
     // create folder
     QDir allModPlusdir(modelPlusFolder());
-    LowTools::mkdir(allModPlusdir.absolutePath(),false);
+    LowTools::mkpath(allModPlusdir.absolutePath(),false);
     QDir modPlusdir(allModPlusdir.absolutePath()+QDir::separator()+modelName);
-    LowTools::mkdir(modPlusdir.absolutePath(),true);
+    LowTools::mkpath(modPlusdir.absolutePath(),true);
 
     // update modelplus with its path
     QString newMmoFilePath = modPlusdir.absolutePath() + QDir::separator() + modelName + ".mmo";

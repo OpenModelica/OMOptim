@@ -339,7 +339,8 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
     for (int i = 0; i < reader.nall; i++)
     {
         newVar = new Variable();
-        newVar->setName(QString(reader.allInfo[i].name));
+        QString name(reader.allInfo[i].name);
+        newVar->setName(name);
         newVar->setModel(_modelName);
 
 

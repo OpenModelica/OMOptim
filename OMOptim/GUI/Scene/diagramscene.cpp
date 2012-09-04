@@ -158,7 +158,7 @@
 
      if (item->toPlainText().isEmpty()) {
          removeItem(item);
-         item->deleteLater();
+         delete item;
      }
  }
 

@@ -673,7 +673,7 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
                     //Saving results into csv file
                     //*****************************
                     //update scan folders
-                    LowTools::mkdir(pointSaveFolder,true);
+                    LowTools::mkpath(pointSaveFolder,true);
                     QFile file(pointSaveFolder+QDir::separator()+"resultVar.csv");
                     file.open(QIODevice::WriteOnly);
                     QTextStream ts( &file );

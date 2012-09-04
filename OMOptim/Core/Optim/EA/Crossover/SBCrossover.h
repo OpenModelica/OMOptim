@@ -69,7 +69,6 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     // !! need to be studied and adapted to specific problems
     bool oneHasChanged = false;
 
-    int iVar;
     double childValueA, childValueB;
     double parValueA, parValueB;
     double beta;
@@ -127,12 +126,12 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     //********************************
     for(int iVar=0;iVar<_eoA.boolVars.size();iVar++)
     {
-        iVar = LowTools::round(rng.random(_eoA.boolVars.size()-1));
-        bool valB =_eoB.boolVars.at(iVar);
-        bool valA =_eoA.boolVars.at(iVar);
+        int iBool = LowTools::round(rng.random(_eoA.boolVars.size()-1));
+        bool valB =_eoB.boolVars.at(iBool);
+        bool valA =_eoA.boolVars.at(iBool);
 
-        _eoA.boolVars.at(iVar)=valB;
-        _eoB.boolVars.at(iVar)=valA;
+        _eoA.boolVars.at(iBool)=valB;
+        _eoB.boolVars.at(iBool)=valA;
 
         oneHasChanged = true;
     }

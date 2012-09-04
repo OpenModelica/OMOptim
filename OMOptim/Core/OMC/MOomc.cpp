@@ -1333,7 +1333,7 @@ void MOomc::initTempDirectory()
     QString cdResult;
     if (!QDir().exists(tmpPath))
     {
-      if (LowTools::mkdir(tmpPath,false))
+      if (LowTools::mkpath(tmpPath,false))
         cdResult = changeDirectory(tmpPath);
     }
     else

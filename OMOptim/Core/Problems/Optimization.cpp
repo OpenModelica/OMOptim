@@ -428,7 +428,7 @@ Result* Optimization::launch(ProblemConfig config)
 {
 
     // first create temp dir
-    LowTools::mkdir(_project->tempPath(),false);
+    LowTools::mkpath(_project->tempPath(),false);
 
 
     EABase* algo = ((EABase*)getCurAlgo());

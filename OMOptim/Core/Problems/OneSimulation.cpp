@@ -249,10 +249,13 @@ Result* OneSimulation::launch(ProblemConfig config)
             }
         }
 
+
         indexes = LowTools::nextIndex(indexes,maxIndexes);
         iScan++;
     }
     while(!indexes.isEmpty() && allSimSuccess);
+
+    curVariables.clear();
 
     result->setSuccess(allSimSuccess);
 

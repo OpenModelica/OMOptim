@@ -120,7 +120,7 @@ bool ModPlusBlackBoxExeCtrl::simulate(QDir tempDir, MOVector<Variable> * inputVa
 
 //    // Create tempDir
 //    if(!tempDir.exists())
-//    LowTools::mkdir(tempDir.absolutePath(),false);
+//    LowTools::mkpath(tempDir.absolutePath(),false);
 
 //    /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
 //    QFileInfoList allFilesToCopy;

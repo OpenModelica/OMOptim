@@ -63,7 +63,7 @@ class OneSimResult : public Result
 
 public:
     OneSimResult(void);
-        OneSimResult(Project* project, ModelPlus* modModelPlus, const OneSimulation & problem);
+    OneSimResult(Project* project, ModelPlus* modModelPlus, const OneSimulation & problem);
     OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok);
     virtual ~OneSimResult(void);
 
@@ -83,12 +83,12 @@ protected :
     //******************
     // Attributes
     //******************
-     Project* _omProject; /// same adress than _project but casted to Project* instead of ProjectBase*
+    Project* _omProject; /// same adress than _project but casted to Project* instead of ProjectBase*
     Variables *_inputVariables;
     MOOptVector *_finalVariables;
 
     //Model
-        ModelPlus* _ModelPlus;
+    ModelPlus* _ModelPlus;
 
 
 signals:
