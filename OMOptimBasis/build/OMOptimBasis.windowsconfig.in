@@ -18,27 +18,6 @@ DEFINES += __x86__ \
     _MBCS \
     QWT_DLL
 
-CONFIG(debug, debug|release){
-    LIBS += -L$$(QWTHOME)/lib \
-    -lqwtd5
 
-DESTDIR = ../bin
-UI_DIR = debug/generatedfiles/ui
-MOC_DIR = debug/generatedfiles/moc
-RCC_DIR = debug/generatedfiles/rcc
-
-    INCLUDEPATH  += debug/generatedfiles/ui
-
-}else {
-    LIBS += -L$$QWTHOME/lib \
-			-lqwt5
-
-DESTDIR = ../bin
-UI_DIR = release/generatedfiles/ui
-MOC_DIR = release/generatedfiles/moc
-RCC_DIR = release/generatedfiles/rcc
-
-INCLUDEPATH  += release/generatedfiles/ui
-}
 
 INCLUDEPATH += $$QWTHOME/include

@@ -159,7 +159,7 @@ void OMCase::store(QString destFolder, QString tempDir)
     //    else
     //    {
     //        LowTools::removeDir(_saveFolder);
-    //        dir.mkdir(_saveFolder);
+    //        dir.mkpath(_saveFolder);
     //    }
 
     //copy needed path from old place to new one

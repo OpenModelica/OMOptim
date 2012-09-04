@@ -6,6 +6,29 @@ include(../vars.pri)
 
 QT +=  core gui xml
 
+CONFIG(debug, debug|release){
+    LIBS += -L$$(QWTHOME)/lib \
+    -lqwtd5
+
+    DESTDIR = ../bin
+    UI_DIR = debug/generatedfiles/ui
+    OBJECTS_DIR = debug/generatedfiles
+    MOC_DIR = debug/generatedfiles/moc
+    RCC_DIR = debug/generatedfiles/rcc
+    INCLUDEPATH  += debug/generatedfiles/ui
+
+}else {
+    LIBS += -L$$(QWTHOME)/lib \
+                        -lqwt5
+    DESTDIR = ../bin
+    UI_DIR = release/generatedfiles/ui
+    OBJECTS_DIR = release/generatedfiles
+    MOC_DIR = release/generatedfiles/moc
+    RCC_DIR = release/generatedfiles/rcc
+    INCLUDEPATH  += release/generatedfiles/ui
+}
+
+
 win32 {
     include(OMOptimBasis.windowsconfig.in)
 }else {

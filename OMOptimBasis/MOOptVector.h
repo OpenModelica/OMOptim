@@ -52,7 +52,9 @@ class MOOptVector : public MOVector<VariableResult>
 
 public:
 
+
     MOOptVector(bool ownner,bool useScan, bool usePoints);
+
 
     QVariant data(const QModelIndex &index, int role) const;
     //void addItem(VariableResult*);

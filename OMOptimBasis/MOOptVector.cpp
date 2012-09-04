@@ -59,6 +59,8 @@ MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints)
 
 
 
+
+
 int MOOptVector::nbPoints()
 {
     if(items.size()==0)

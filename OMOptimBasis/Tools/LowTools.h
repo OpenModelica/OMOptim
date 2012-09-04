@@ -70,7 +70,7 @@ public:
 
     static bool removeDir(QString);
     static void copyDir(QString,QString);
-    static bool mkdir(QString,bool eraseExisting);
+    static bool mkpath(QString,bool eraseExisting);
 
     static bool removeDirContents(QString folder);
     static void copyDirContents(QString org, QString dest);

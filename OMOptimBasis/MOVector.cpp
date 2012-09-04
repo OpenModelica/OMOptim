@@ -10,7 +10,7 @@ MOVector<ItemClass>::MOVector(bool owner) : QAbstractTableModel()
 
 
 template<class ItemClass>
-MOVector<ItemClass>::MOVector(const MOVector & copied)
+MOVector<ItemClass>::MOVector(const MOVector<ItemClass> & copied)
 {
     *this = copied;
 }

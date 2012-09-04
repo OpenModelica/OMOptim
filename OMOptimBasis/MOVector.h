@@ -67,7 +67,7 @@ public:
 
 
     MOVector(bool owner);
-    MOVector(const MOVector &);
+    MOVector(const MOVector<ItemClass> &);
     MOVector<ItemClass>& operator=(const MOVector<ItemClass> &copied);
     MOVector(QString savedData,bool owner);
     MOVector(QDomElement & domList,bool owner);

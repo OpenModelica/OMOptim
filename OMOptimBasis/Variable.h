@@ -40,7 +40,7 @@
 #if !defined(_VARIABLE_H)
 #define _VARIABLE_H
 
-#include <vector>
+#include <QtCore/QVector>
 #include <QtCore/QObject>
 #include <QtCore/QAbstractTableModel>
 #include <QtCore/QTextStream>
@@ -185,8 +185,8 @@ public:
     static const int nbFields = 6;
 
 private:
-    std::vector<std::vector<double> > _finalValues;
-    std::vector<std::vector<bool> > _computedPoints;
+    QVector<QVector<double> > _finalValues;
+    QVector<QVector<bool> > _computedPoints;
 
 public :
     //Overwrited functions
@@ -194,19 +194,19 @@ public :
 
 
     //Added functions
-    std::vector<double> finalValues(int iScan) const;
+    QVector<double> finalValues(int iScan) const;
     bool isComputedPoint(int iScan,int iPoint) const;
     int nbPoints() const;
     int nbScans() const;
     double finalValue(int iScan, int iPoint) const;
-    std::vector<double> finalValuesAtPoint(int iPoint);
-    std::vector<double> finalValuesAtScan(int iScan);
-    void setFinalValuesAtScan(int iScan, const std::vector<double> &);
-    void setFinalValuesAtPoint(int iPoint,const std::vector<double> &);
+    QVector<double> finalValuesAtPoint(int iPoint);
+    QVector<double> finalValuesAtScan(int iScan);
+    void setFinalValuesAtScan(int iScan, const QVector<double> &);
+    void setFinalValuesAtPoint(int iPoint,const QVector<double> &);
     void setFinalValueAtPoint(int iPoint,double );
     void setFinalValue(int iScan, int iPoint,double,bool computed = true);
 //    void appendFinalValue(double, int iScan);
-//    void appendScanValues(std::vector<double> _values,std::vector<bool> _computedPoints);
+//    void appendScanValues(QVector<double> _values,QVector<bool> _computedPoints);
 //    void appendScanValue(double _value,bool _computedPoint);
     void clearFinalValues();
     void clearFinalValuesAtIpoint(int iPoint);

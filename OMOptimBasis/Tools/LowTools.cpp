@@ -61,7 +61,7 @@ bool LowTools::removeDirContents(QString folder)
     for (int indf=0;indf<files.size();indf++)
     {
         QFile provFile(files.at(indf).absoluteFilePath());
-        provFile.setPermissions(provFile.permissions() | QFile::WriteUser);
+        // provFile.setPermissions(provFile.permissions() | QFile::WriteUser);
         allRemoved = dir.remove(provFile.fileName()) && allRemoved;
     }
 
@@ -135,8 +135,6 @@ void LowTools::copyDirContents(QString org,QString dest)
     }
 }
 
-
-
 void LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
 {
     if(!folder.exists())
@@ -195,22 +193,22 @@ void LowTools::copyDir(QString org,QString dest)
     copyDirContents(org,dest);
 }
 
-bool LowTools::mkdir(QString dirPath,bool eraseExisting)
+bool LowTools::mkpath(QString dirPath,bool eraseExisting)
 {
     bool ok;
 
     QDir tempDir(dirPath);
     QFile tempDirFile(dirPath);
-    tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
+    //tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
 
     if(tempDir.exists()&&eraseExisting)
         LowTools::removeDir(dirPath);
 
-    tempDir.mkdir(dirPath);
-    tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
-
-    ok = tempDir.exists() && tempDirFile.isWritable()
-            && (tempDir.entryList(QDir::NoDotAndDotDot).isEmpty() || !eraseExisting);
+    bool mkOk = QDir().mkpath(dirPath);
+    tempDir.refresh();
+    //tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
+    ok = tempDir.exists();
+    ok = ok && (tempDir.entryList(QDir::NoDotAndDotDot).isEmpty() || !eraseExisting);
 
     return ok;
 }

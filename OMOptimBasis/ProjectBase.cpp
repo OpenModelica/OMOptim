@@ -277,7 +277,7 @@ void ProjectBase::setFilePath(QString filePath)
     //create models folder
     QFileInfo fileInfo(_filePath);
     QString modelsDir = fileInfo.dir().absolutePath()+QDir::separator()+"Models";
-    LowTools::mkdir(modelsDir,false);
+    LowTools::mkpath(modelsDir,false);
 
     emit projectChanged();
 }
@@ -460,7 +460,7 @@ bool ProjectBase::checkConfiguration()
 
 bool ProjectBase::createTempDir()
 {
-    return LowTools::mkdir(tempPath(),true);
+    return LowTools::mkpath(tempPath(),true);
 }
 
 
