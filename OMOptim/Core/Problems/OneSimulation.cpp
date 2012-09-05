@@ -71,6 +71,8 @@ OneSimulation::OneSimulation(Project* project, ModelPlus* ModPlus)
 
     // ctrls
     _ctrls = new ModPlusCtrls(project,ModPlus);
+
+    qDebug(QString("New OneSimulation").toLatin1().data());
 }
 
 OneSimulation::OneSimulation(const OneSimulation &oneSim)
@@ -85,6 +87,8 @@ OneSimulation::OneSimulation(const OneSimulation &oneSim)
     _scannedVariables = oneSim._scannedVariables->clone();
 
     _ctrls = oneSim._ctrls->clone();
+
+    qDebug(QString("New OneSimulation").toLatin1().data());
 }
 
 OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
@@ -92,8 +96,6 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
 {
     _omProject = project;
 
-
-    InfoSender::instance()->debug("New onesim");
     // look for modelPlus
     ok = (domProblem.tagName()==OneSimulation::className());
     ok = ok && !domProblem.isNull();
@@ -149,6 +151,8 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
         QDomElement cControlers = domProblem.firstChildElement("Controlers");
         _ctrls = new ModPlusCtrls(project,_ModelPlus,cControlers);
     }
+
+    qDebug(QString("New OneSimulation").toLatin1().data());
 }
 
 Problem* OneSimulation::clone() const
@@ -160,10 +164,11 @@ Problem* OneSimulation::clone() const
 
 OneSimulation::~OneSimulation(void)
 {
-    InfoSender::instance()->debug("Delete onesim");
     delete _overwritedVariables;
     delete _scannedVariables;
     delete _ctrls;
+
+    qDebug(QString("Remove OneSimulation").toLatin1().data());
 }
 
 
@@ -176,8 +181,6 @@ bool OneSimulation::checkBeforeComp(QString & error)
 Result* OneSimulation::launch(ProblemConfig config)
 {
     // Creating a variables instance containing updated variables
-    //MOVector<Variable> inputVariables(*modelPlus->variables());
-    //inputVariables.replaceIn(overwritedVariables);
     Variables updatedVariables(*_overwritedVariables);
 
     OneSimResult* result = new OneSimResult(_omProject,_ModelPlus,*this);
@@ -352,17 +355,3 @@ void OneSimulation::setCtrls(const ModPlusCtrls & ctrls)
     _ctrls->setFromOtherCtrls(ctrls);
 }
 
-//void OneSimulation::setCtrlType()
-//{
-//    QObject* signalSender = sender();
-//    QAction* actionSender = dynamic_cast<QAction*>(signalSender);
-
-//    if(actionSender)
-//    {
-//        bool ok;
-//        int intType = actionSender->data().toInt(&ok);
-
-//        if(ok)
-//            setCtrlType((ModPlusCtrl::Type)intType);
-//    }
-//}
