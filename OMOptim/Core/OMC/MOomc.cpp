@@ -131,7 +131,7 @@ QStringList MOomc::getClassNames(QString parentClass)
     {
         commandRes.remove("{");
         commandRes.remove("}");
-        return commandRes.split(",");
+        return commandRes.split(",",QString::SkipEmptyParts);
     }
 }
 
@@ -162,11 +162,13 @@ QStringList MOomc::getRecords(QString parentClass)
 {
     QStringList allClasses = getClassNames(parentClass);
     QStringList models;
-
+    QString fullClassName;
     for(int i=0;i<allClasses.size();i++)
     {
+        fullClassName = parentClass.isEmpty() ? allClasses.at(i) : parentClass+"."+allClasses.at(i);
+
         // check if it is a record
-        if(isRecord(parentClass+"."+allClasses.at(i)))
+        if(isRecord(fullClassName))
             models.push_back(allClasses.at(i));
     }
     return models;
@@ -177,11 +179,13 @@ QStringList MOomc::getClasses(QString parentClass)
 
     QStringList allClasses = getClassNames(parentClass);
     QStringList models;
-
+    QString fullClassName;
     for(int i=0;i<allClasses.size();i++)
     {
+        fullClassName = parentClass.isEmpty() ? allClasses.at(i) : parentClass+"."+allClasses.at(i);
+
         // check if it is a class
-        if(isClass(parentClass+"."+allClasses.at(i)))
+        if(isClass(fullClassName))
             models.push_back(allClasses.at(i));
     }
     return models;
@@ -192,11 +196,12 @@ QStringList MOomc::getModels(QString parentClass)
 
     QStringList allClasses = getClassNames(parentClass);
     QStringList models;
-
+    QString fullClassName;
     for(int i=0;i<allClasses.size();i++)
     {
+        fullClassName = parentClass.isEmpty() ? allClasses.at(i) : parentClass+"."+allClasses.at(i);
         // check if it is a model
-        if(isModel(parentClass+"."+allClasses.at(i)))
+        if(isModel(fullClassName))
             models.push_back(allClasses.at(i));
     }
     return models;
@@ -212,44 +217,42 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
     if(parentClass.contains("Modelica.Media.Interfaces")) //bug of open modelica
         return;
 
-    QString msg;
-    msg.sprintf("Reading components of class %s ",parentClass.toLatin1().data());
-    InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
-
-    commandRes= evalCommand("getComponents(" + parentClass +")");
-
-    if(commandRes.contains("error",Qt::CaseInsensitive))
+    if(!parentClass.isEmpty())
     {
-        if(!isPrimitive(parentClass))
+        QString msg;
+        msg.sprintf("Reading components of class %s ",parentClass.toLatin1().data());
+        InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
+
+        commandRes= evalCommand("getComponents(" + parentClass +")");
+
+        if(commandRes.contains("error",Qt::CaseInsensitive))
         {
-            InfoSender::instance()->send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
+            if(!isPrimitive(parentClass))
+            {
+                InfoSender::instance()->send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
+            }
+            return;
         }
-        return;
-    }
-    commandRes.remove("{}");
-    commandRes.remove("{{");
-    commandRes.remove("}}");
+        commandRes.remove("{}");
+        commandRes.remove("{{");
+        commandRes.remove("}}");
 
-    QStringList list = commandRes.split("},{");
+        QStringList list = commandRes.split("},{",QString::SkipEmptyParts);
 
-    if(list.at(0)=="")
-    {
-        list.clear();
-    }
+        QStringList strComponent;
 
-    QStringList strComponent;
-
-    for(int nc = 0; nc < list.size(); nc++)
-    {
-        strComponent = list.at(nc).split(",");
-        if(strComponent.size()>1)
+        for(int nc = 0; nc < list.size(); nc++)
         {
-            compNames.push_back(strComponent.at(1));
-            compClasses.push_back(strComponent.at(0));
-        }
-        else
-        {
-            //ERROR
+            strComponent = list.at(nc).split(",");
+            if(strComponent.size()>1)
+            {
+                compNames.push_back(strComponent.at(1));
+                compClasses.push_back(strComponent.at(0));
+            }
+            else
+            {
+                //ERROR
+            }
         }
     }
 
@@ -322,6 +325,9 @@ QMap<QString,QString> MOomc::getConnections(const QString & curModel)
 
 QStringList MOomc::getInheritedClasses(QString inheritingClass)
 {
+    if(inheritingClass.isEmpty())
+        return QStringList();
+
     // Getting number and names of inherited classes
     QString commandText = "getInheritanceCount(" + inheritingClass +")";
     QString commandRes= evalCommand(commandText);
@@ -1261,11 +1267,11 @@ bool MOomc::startServer()
         parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba");
         QProcess *omcProcess = new QProcess();
         QFile omcOutputFile;
-    #ifdef WIN32 // Win32
+#ifdef WIN32 // Win32
         omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
-    #else // UNIX environment
+#else // UNIX environment
         omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(*(new QString(user))).append(".omc.output.").append(mName));
-    #endif
+#endif
         omcProcess->setProcessChannelMode(QProcess::MergedChannels);
         omcProcess->setStandardOutputFile(omcOutputFile.fileName());
         omcProcess->start(omcPath, parameters);
@@ -1273,13 +1279,13 @@ bool MOomc::startServer()
         int ticks = 0;
         while (!objectRefFile.exists())
         {
-          SleeperThread::msleep(1000);
-          ticks++;
-          if (ticks > 20)
-          {
-            msg = "Unable to find " + OMCHelper::applicationName + " server, Object reference file " + mObjectRefFile + " not created.";
-            throw std::runtime_error(msg.toStdString());
-          }
+            SleeperThread::msleep(1000);
+            ticks++;
+            if (ticks > 20)
+            {
+                msg = "Unable to find " + OMCHelper::applicationName + " server, Object reference file " + mObjectRefFile + " not created.";
+                throw std::runtime_error(msg.toStdString());
+            }
         }
 
         // ORB initialization.
@@ -1337,7 +1343,7 @@ void MOomc::initTempDirectory()
         cdResult = changeDirectory(tmpPath);
     }
     else
-      cdResult = changeDirectory(tmpPath);
+        cdResult = changeDirectory(tmpPath);
 }
 
 void MOomc::stopServer()

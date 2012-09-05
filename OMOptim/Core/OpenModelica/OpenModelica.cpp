@@ -82,15 +82,19 @@ bool OpenModelica::compile(MOomc *_omc,QFileInfo moFile,QString modelToConsider,
 
     // Create working dir
     QString tmpPath = _omc->getWorkingDirectory();
-    QDir workDir(tmpPath);
-    if(workDir.exists())
-        LowTools::removeDirContents(tmpPath);
-    else
-    {
-        QDir dir;
-        dir.mkpath(tmpPath);
-    }
 
+    //    if(workDir.exists())
+    //        LowTools::removeDirContents(tmpPath);
+    //    else
+    //    {
+    //        QDir dir;
+    //        dir.mkpath(tmpPath);
+    //    }
+
+
+    if(!QDir(tmpPath).exists())
+        QDir().mkpath(tmpPath);
+    QDir workDir(tmpPath);
     // Copy file and folder
     LowTools::copyFilesInFolder(neededFiles,workDir.absolutePath());
 
@@ -312,14 +316,14 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
     if(0 != (msg = omc_new_matlab4_reader(fileName.toStdString().c_str(), &reader)))
     {
         InfoSender::instance()->sendError("Unable to read .mat file");
-//        try
-//        {
-//            omc_free_matlab4_reader(&reader);
-//        }
-//        catch(std::exception &e)
-//        {
-//            InfoSender::instance()->debug("Seg fault while freeing reader");
-//        }
+        //        try
+        //        {
+        //            omc_free_matlab4_reader(&reader);
+        //        }
+        //        catch(std::exception &e)
+        //        {
+        //            InfoSender::instance()->debug("Seg fault while freeing reader");
+        //        }
         delete msg;
         return false;
     }
@@ -515,19 +519,18 @@ bool OpenModelica::setInputXml(QString fileName, MOVector<Variable> *variables, 
     QFile file(fileName);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-        InfoSender::instance()->debug("setting input xml : load failed");
+        InfoSender::instance()->debug("Model input file (xml) load failed");
         return false;
     }
     else if( !doc.setContent(&file,&error) )
     {
-        InfoSender::instance()->debug("setting input xml : file corrupted");
+        InfoSender::instance()->sendError("Model input file (xml) is corrupted ! ["+error+"]");
         file.close();
         return false;
     }
 
     // updates variables
     setInputVariablesXml(doc,modelName,variables);
-
 
     // updates parameters
     if(parameters)

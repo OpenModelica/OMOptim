@@ -100,6 +100,11 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     _ui->layoutTextLog->addWidget(_textLog);
     _textLog->setOpenExternalLinks(true);
 
+    // limit the size of omc and debug log
+    _ui->textOMC->document()->setMaximumBlockCount(1000);
+    _ui->textDebug->document()->setMaximumBlockCount(1000);
+    _textLog->document()->setMaximumBlockCount(1000);
+
     //Error, msg and progress
     _widgetProgress = new WidgetProgress(this);
     _ui->layoutProgress->addWidget(_widgetProgress);

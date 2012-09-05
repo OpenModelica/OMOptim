@@ -242,22 +242,13 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     // Create tempDir
     LowTools::mkpath(tempFolder.absolutePath(),false);
 
-
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QFileInfoList allFilesToCopy;
     QDir mmoDir = QDir(_ModelPlus->mmoFolder());
     allFilesToCopy << mmoDir.filePath(_exeFile);
     allFilesToCopy.append(filesToCopy);
-    // choose init file (can take both)
-    bool txt=mmoDir.exists(_initFileTxt);
     bool xml=mmoDir.exists(_initFileXml);
-    if(txt)
-        allFilesToCopy <<  mmoDir.filePath(_initFileTxt);
-    if(xml)
-        allFilesToCopy << mmoDir.filePath(_initFileXml);
-
-    if(!txt && ! xml)
-        InfoSender::instance()->sendError("Unable to find an init file for model "+_ModelPlus->modelName());
+    allFilesToCopy << mmoDir.filePath(_initFileXml);
 
     InfoSender::instance()->debug("Start copying in temp directory : "+tempFolder.absolutePath());
     QFileInfo fileToCopyInfo;
@@ -270,13 +261,6 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
         fileToCopyInfo = allFilesToCopy.at(i);
         removeOk = tempFolder.remove(fileToCopyInfo.fileName());
         InfoSender::instance()->debug("Removing in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-//        if(!removeOk)
-//        {
-//            QFile::setPermissions(fileToCopyInfo.absoluteFilePath(),fileToCopyInfo.permissions() | QFile::WriteUser);
-//            removeOk = tempFolder.remove(fileToCopyInfo.fileName());
-//            InfoSender::instance()->debug("Removing in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-//        }
-
         copyOk = QFile::copy(allFilesToCopy.at(i).absoluteFilePath(),tempFolder.filePath(fileToCopyInfo.fileName()));
         //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
         InfoSender::instance()->debug("Copying in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
@@ -285,29 +269,18 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     }
 
 
-    // remove previous log files
+    // remove previous log / result files
     QStringList filesToRemove;
     filesToRemove << resFile();
     for(int i=0;i<filesToRemove.size();i++)
         tempFolder.remove(filesToRemove.at(i));
 
     QString tempInitFileXml = tempFolder.absoluteFilePath(_initFileXml);
-    QString tempInitFileTxt = tempFolder.absoluteFilePath(_initFileTxt);
     QString tempResFile = tempFolder.absoluteFilePath(resFile());
     QString tempExeFile = tempFolder.absoluteFilePath(_exeFile);
 
-
-    QFileInfo initXmlInfo(tempInitFileXml);
-    QFileInfo initTxtInfo(tempInitFileTxt);
-
-    // use xml or txt init file ?
-    bool useXml = initXmlInfo.exists();
-
     // Specifying new Variables values in OM input file
-    if(useXml)
-        OpenModelica::setInputXml(tempInitFileXml,inputVars,_ModelPlus->modelName(),parameters());
-    else
-        OpenModelica::setInputVariablesTxt(tempInitFileTxt,inputVars,_ModelPlus->modelName(),parameters());
+    bool setInputFileOk = OpenModelica::setInputXml(tempInitFileXml,inputVars,_ModelPlus->modelName(),parameters());
 
     // Launching openmodelica
     int maxNSec=_parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::MAXSIMTIME),-1).toInt();
