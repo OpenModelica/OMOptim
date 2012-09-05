@@ -183,6 +183,7 @@ class MOParameters : public MOVector<MOParameter>
     Q_OBJECT
 public :
     MOParameters();
+    ~MOParameters(){};
 //    QVariant value(int index,QVariant defaultValue = QVariant()) const;
     QVariant value(QString name,QVariant defaultValue = QVariant()) const;
     bool setValue(QString index,QVariant value);
