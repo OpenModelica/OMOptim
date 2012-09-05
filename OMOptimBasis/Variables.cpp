@@ -7,6 +7,10 @@ Variables::Variables(bool owner)
 {
 }
 
+Variables::~Variables()
+{
+}
+
 QVariant Variables::data(const QModelIndex &index, int role) const
 {
         return MOVector<Variable>::data(index,role);
@@ -99,6 +103,10 @@ OptVariables::OptVariables(bool owner)
 
 }
 
+OptVariables::~OptVariables()
+{
+}
+
 QVariant OptVariables::data(const QModelIndex &index, int role) const
 {
         return MOVector<OptVariable>::data(index,role);
@@ -126,6 +134,10 @@ OptVariables* OptVariables::clone() const
 
 ScannedVariables::ScannedVariables(bool owner)
     : MOVector<ScannedVariable>(owner)
+{
+}
+
+ScannedVariables::~ScannedVariables()
 {
 }
 

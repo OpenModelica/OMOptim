@@ -45,6 +45,7 @@ MOSettings* MOSettings::_instance = NULL;
 
 
 MOSettings::MOSettings(void)
+    :MOParameters()
 {
 }
 

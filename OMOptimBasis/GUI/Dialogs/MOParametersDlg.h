@@ -66,7 +66,7 @@ class MOParametersWidget : public QWidget
 
 public:
     MOParametersWidget(MOParameters *parameters, bool editable=true);
-
+    ~MOParametersWidget();
     MOParameters* localParameters(){return _localParameters;}
 
 protected :
@@ -98,6 +98,7 @@ class MOParametersDlg : public QDialog
 
 public:
     MOParametersDlg(MOParameters *parameters, bool editable=true);
+    ~MOParametersDlg();
 
 
 

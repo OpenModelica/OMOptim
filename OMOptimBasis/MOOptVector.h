@@ -54,6 +54,7 @@ public:
 
 
     MOOptVector(bool ownner,bool useScan, bool usePoints);
+    ~MOOptVector();
 
 
     QVariant data(const QModelIndex &index, int role) const;

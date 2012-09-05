@@ -418,16 +418,19 @@ MOParameters::MOParameters()
     :MOVector<MOParameter>(true)
 {
     connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
+    qDebug(QString("New MOParameters").toLatin1().data());
 }
 
-//QVariant MOParameters::value(QString index,QVariant defaultValue) const
-//{
-//    int iParam = this->findItem(index,MOParameter::NAME);
-//    if(iParam>-1)
-//        return this->at(iParam)->getFieldValue(MOParameter::VALUE);
-//    else
-//        return defaultValue;
-//}
+MOParameters::MOParameters(const MOParameters & parameters)
+    :MOVector<MOParameter>(parameters)
+{
+    qDebug(QString("New MOParameters").toLatin1().data());
+}
+
+MOParameters::~MOParameters()
+{
+    qDebug(QString("Remove MOParameters").toLatin1().data());
+}
 
 QVariant MOParameters::value(QString name,QVariant defaultValue) const
 {
@@ -459,8 +462,6 @@ QMultiMap<QString,MOParameter*> MOParameters::groupmap() const
 
     return map;
 }
-
-
 
 void MOParameters::setGroup(QString group,QStringList indexes)
 {

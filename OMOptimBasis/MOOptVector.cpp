@@ -57,6 +57,10 @@ MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints)
     connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
+MOOptVector::~MOOptVector()
+{
+}
+
 
 
 

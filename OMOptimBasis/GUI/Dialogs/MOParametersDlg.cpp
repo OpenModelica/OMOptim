@@ -125,6 +125,11 @@ MOParametersWidget::MOParametersWidget(MOParameters *parameters, bool editable)
 
 }
 
+MOParametersWidget::~MOParametersWidget()
+{
+    delete _localParameters;
+}
+
 
 QGridLayout* MOParametersWidget::buildLayoutFromParameters()
 {
@@ -417,4 +422,10 @@ MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
     buttonsWidget->setLayout(buttonsLayout);
 
     this->layout()->addWidget(buttonsWidget);
+}
+
+MOParametersDlg::~MOParametersDlg()
+{
+    delete _widget;
+    delete _orgParameters;
 }

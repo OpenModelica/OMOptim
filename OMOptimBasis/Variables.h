@@ -14,6 +14,7 @@ class Variables : public MOVector<Variable>
 {
 public:
     Variables(bool owner);
+    ~Variables();
 
     QVariant data(const QModelIndex &index, int role) const;
     Variables* clone() const;
@@ -37,6 +38,7 @@ class OptVariables : public MOVector<OptVariable>
 {
 public:
     OptVariables(bool owner);
+    ~OptVariables();
     QVariant data(const QModelIndex &index, int role) const;
     OptVariables* clone() const;
 
@@ -53,6 +55,7 @@ class ScannedVariables : public MOVector<ScannedVariable>
 {
 public:
     ScannedVariables(bool owner);
+    ~ScannedVariables();
     QVariant data(const QModelIndex &index, int role) const;
     ScannedVariables* clone() const;
 
