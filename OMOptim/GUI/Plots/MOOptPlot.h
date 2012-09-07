@@ -311,8 +311,8 @@ void MOOptPlot::refresh(int iCurve = 0)
         }
         _curve1->setData(dataX,dataY,nbPoints);
         _curve1->setItemAttribute(QwtPlotItem::AutoScale,true);
-        delete dataX;
-        delete dataY;
+        delete[] dataX;
+        delete[] dataY;
     }
 
     if((iCurve==0)||(iCurve==2))
@@ -341,8 +341,8 @@ void MOOptPlot::refresh(int iCurve = 0)
             _curve2->setData(dataX,dataY,_selectedPoints.size());
             _curve2->setItemAttribute(QwtPlotItem::AutoScale,true);
             _curve2->show();
-            delete dataX;
-            delete dataY;
+            delete[] dataX;
+            delete[] dataY;
         }
         else
         {
