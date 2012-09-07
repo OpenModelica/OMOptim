@@ -91,7 +91,7 @@ class OMCasesCombiner : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-        OMCasesCombiner(OMCases *problems,OMCases *results);
+        OMCasesCombiner(OMCases *problems,OMCases *results,QObject* parent);
         virtual ~OMCasesCombiner(void);
 
         QVariant data(const QModelIndex &index, int role) const;

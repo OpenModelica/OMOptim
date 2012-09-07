@@ -172,7 +172,8 @@ int OMCases::findItem(QString itemName)
 }
 
 /*******************************************************************/
-OMCasesCombiner::OMCasesCombiner(OMCases* problems,OMCases* results)
+OMCasesCombiner::OMCasesCombiner(OMCases* problems,OMCases* results,QObject* parent)
+    :QAbstractItemModel(parent)
 {
     _problems = problems;
     _results = results;

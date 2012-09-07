@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,13 +35,13 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 */
 
 #include "Tabs/MO2ColTab.h"
 
 MO2ColTab::MO2ColTab(QString _projectName,MOItem* _mainItem,bool _closable,QWidget *parent)
-:MOTabCplx(_projectName,_mainItem,parent)
+    :MOTabCplx(_projectName,_mainItem,parent)
 {
 
     closable = _closable;
@@ -67,23 +67,24 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
     // Widget
     QDockWidget* dockWidget = new QDockWidget(title,this);
     dockWidget->setObjectName(title);
-        dockWidget->setSizePolicy(widget->sizePolicy());
+    dockWidget->setSizePolicy(widget->sizePolicy());
 
     if(closable)
         dockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     else
         dockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-        dockWidget->setLayout(new QGridLayout(this));
+
+    dockWidget->setLayout(new QGridLayout());
     dockWidget->setWidget(widget);
     dockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
 
     //dockWidget->setStyleSheet("border-width: 1px;\n     border-style: solid;\n     border-color: gray;");
-        QMainWindow::addDockWidget(dockWidgetArea,dockWidget);
+    QMainWindow::addDockWidget(dockWidgetArea,dockWidget);
     
 
     // Tabify
-        if(tabifiedOn && mapDockWidgets.key(tabifiedOn,NULL))
-                tabifyDockWidget(mapDockWidgets.key(tabifiedOn),dockWidget);
+    if(tabifiedOn && mapDockWidgets.key(tabifiedOn,NULL))
+        tabifyDockWidget(mapDockWidgets.key(tabifiedOn),dockWidget);
 
 
     dockWidget->show();
@@ -95,7 +96,7 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
         dispTB->addAction(action);
     }
 
-        mapDockWidgets.insert(dockWidget,widget);
+    mapDockWidgets.insert(dockWidget,widget);
     bool ok = restoreDockWidget(dockWidget);
 }
 void MO2ColTab::addFixedWidget(QString title,QWidget* widget,Qt::DockWidgetArea dockArea,Qt::Orientation orientation,bool showTitle)
@@ -105,28 +106,27 @@ void MO2ColTab::addFixedWidget(QString title,QWidget* widget,Qt::DockWidgetArea 
     QDockWidget* dockWidget = new QDockWidget(title,this);
     dockWidget->setObjectName(title);
     dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        dockWidget->setLayout(new QGridLayout(this));
+    dockWidget->setLayout(new QGridLayout());
     dockWidget->setWidget(widget);
-        dockWidget->setSizePolicy(widget->sizePolicy());
+    dockWidget->setSizePolicy(widget->sizePolicy());
     
+    if(!showTitle)
+    {
+        // to hide the title bar completely must replace the default widget with a generic one
+        QWidget* titleWidget = new QWidget(dockWidget);
+        dockWidget->setTitleBarWidget( titleWidget );
+    }
 
-        if(!showTitle)
-        {
-            // to hide the title bar completely must replace the default widget with a generic one
-            QWidget* titleWidget = new QWidget(dockWidget);
-            dockWidget->setTitleBarWidget( titleWidget );
-        }
-
-        QMainWindow::addDockWidget(dockArea,dockWidget,orientation);
+    QMainWindow::addDockWidget(dockArea,dockWidget,orientation);
     widget->show();
     dockWidget->show();
-        mapDockWidgets.insert(dockWidget,widget);
+    mapDockWidgets.insert(dockWidget,widget);
     bool ok = restoreDockWidget(dockWidget);
 }
 
 void MO2ColTab::setWidgetVisible(QWidget* _widget,bool _visible)
 {
-        QDockWidget* dock = mapDockWidgets.key(_widget,NULL);
+    QDockWidget* dock = mapDockWidgets.key(_widget,NULL);
     if(dock)
         dock->setVisible(_visible);
 }

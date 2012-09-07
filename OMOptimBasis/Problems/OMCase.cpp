@@ -50,6 +50,8 @@ OMCase::OMCase(void)
 
 OMCase::OMCase(ProjectBase* project)
 {
+     QString msg = "new OMCase"+name();
+      qDebug(msg.toLatin1().data());
     _project = project;
 }
 

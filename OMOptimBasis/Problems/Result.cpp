@@ -42,6 +42,7 @@
 #include "LowTools.h"
 
 Result::Result()
+    :OMCase()
 {
     _project = NULL;
     _success = false;

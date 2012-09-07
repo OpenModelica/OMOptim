@@ -427,5 +427,4 @@ MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
 MOParametersDlg::~MOParametersDlg()
 {
     delete _widget;
-    delete _orgParameters;
 }

@@ -84,9 +84,8 @@ ProjectBase::~ProjectBase()
 
     terminateProblemsThreads();
 
-    _problems->clear();
-    _results->clear();
-
+    delete _problems;
+    delete _results;
 
     for(int i=0;i<_problemsInterfaces.uniqueInterfaces().size();i++)
     {
@@ -593,6 +592,7 @@ void ProjectBase::onProblemFinished(Problem* problem,Result* result)
     }
     _problemLaunchMutex.unlock();
     _problemsThreads.remove(problem);
+    delete problem;
 }
 
 Problem* ProjectBase::restoreProblemFromResult(int numResult)

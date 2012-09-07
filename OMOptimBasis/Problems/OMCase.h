@@ -79,7 +79,6 @@ public:
     QFileInfoList _filesToCopy; /** Files to copy in temp directory of in save directory */
     QStringList _foldersToCopy; /** Files to copy in temp directory of in save directory */
 
-
     // CTOR
     OMCase();
     OMCase(ProjectBase*);

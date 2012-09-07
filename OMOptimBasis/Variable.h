@@ -132,12 +132,8 @@ public :
 
     //Specific functions
     void setDescription(QString);
-    //void setType(int);
     void setValue(double);
     double value() const;
-    //void setMin(double);
-    //void setMax(double);
-    //void setCategory(int);
     void setDataType(VariableType);
     void setCausality(VariableCausality causality);
     QString description();
