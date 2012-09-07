@@ -38,7 +38,7 @@ private :
     void insertCtrl(ModPlusCtrl::Type,ModPlusCtrl*);
 
     static ModPlusCtrl* getNewCtrl(ModPlusCtrl::Type type,Project* project,ModelPlus* ModPlus);
-    static void init(ModelPlus::ModelType,Project* project,ModelPlus* ModPlus);
+
 
 };
 

@@ -138,6 +138,7 @@ WidgetSelectOptVars::~WidgetSelectOptVars()
 {
     delete _ui;
     delete _allModelsVars;
+    delete _permanentVars;
 }
 
 void WidgetSelectOptVars::addPermanentVars(Variables * vars)

@@ -97,10 +97,6 @@ Project::~Project()
 
     _moomc->stopServer();
 
-    _problems->clear();
-    _results->clear();
-
-
     if(_modItemsTree)
         delete _modItemsTree;
 

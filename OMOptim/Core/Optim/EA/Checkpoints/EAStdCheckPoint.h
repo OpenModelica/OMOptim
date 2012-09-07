@@ -145,7 +145,7 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
 
 
     // store the contribution of the non-dominated solutions
-    moeoContributionMetric < ObjectiveVector > * contribution = new moeoContributionMetric < ObjectiveVector >;
+    moeoContributionMetric < ObjectiveVector >  *contribution = new moeoContributionMetric < ObjectiveVector >;
     moeoBinaryMetricSavingUpdater < MOEOT > * contribution_updater = new moeoBinaryMetricSavingUpdater < MOEOT > (*contribution, _archive, contribSaveFilePath.toStdString());
     _state.storeFunctor(contribution_updater);
     checkpoint.add(*contribution_updater);

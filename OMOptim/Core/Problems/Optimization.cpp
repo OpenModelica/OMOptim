@@ -104,12 +104,13 @@ Optimization::~Optimization()
     delete _optimizedVariables;
     delete _objectives;
     delete _blockSubstitutions;
+    delete _overwritedVariables;
+    delete _scannedVariables;
 
     for(int i=0;i<_ctrls.values().size();i++)
     {
         delete _ctrls.values().at(i);
     }
-
 }
 
 /**

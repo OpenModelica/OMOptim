@@ -80,7 +80,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 
 
     // Trees
-    _casesTree = new OMCasesCombiner(_project->problems(),_project->results());
+    _casesTree = new OMCasesCombiner(_project->problems(),_project->results(),this);
     _casesTreeView = new OMCasesTreeView(_project,_casesTree,this);
     _ui->dockOMCases->setWidget(_casesTreeView);
 

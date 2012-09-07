@@ -1270,7 +1270,7 @@ bool MOomc::startServer()
 #ifdef WIN32 // Win32
         omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
 #else // UNIX environment
-        omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(*(new QString(user))).append(".omc.output.").append(mName));
+        omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(( QString(user))).append(".omc.output.").append(mName));
 #endif
         omcProcess->setProcessChannelMode(QProcess::MergedChannels);
         omcProcess->setStandardOutputFile(omcOutputFile.fileName());

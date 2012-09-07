@@ -305,6 +305,9 @@ void OptimResult::loadOptimValuesFromFrontFile(QString fileName)
             iPoint++;
         }
     }
+    delete[] objIndex;
+    delete[] optVarIndex;
+    delete[] recompVarIndex;
 }
 
 void OptimResult::updateRecomputedPointsFromFolder()

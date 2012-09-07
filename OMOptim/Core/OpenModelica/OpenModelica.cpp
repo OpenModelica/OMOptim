@@ -324,11 +324,11 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
         //        {
         //            InfoSender::instance()->debug("Seg fault while freeing reader");
         //        }
-        delete msg;
+        delete[] msg;
         return false;
     }
 
-    delete msg;
+    delete[] msg;
     //Read in timevector
     double stopTime =  omc_matlab4_stopTime(&reader);
 
