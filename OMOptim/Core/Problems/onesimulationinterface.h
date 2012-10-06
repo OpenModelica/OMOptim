@@ -3,7 +3,7 @@
 
 #include "ProblemInterface.h"
 #include "OneSimulation.h"
-
+#include "OneSimResult.h"
 
 
 class OneSimulationInterface : public ProblemInterface
@@ -19,6 +19,7 @@ public :
 
     virtual ModelNeeds modelNeeds(QString){return ONEMODEL;}
     virtual QStringList problemTypes(){return QStringList(OneSimulation::className());}
+    virtual QStringList resultTypes(){return QStringList(OneSimResult::className());}
     QString name(){return OneSimulation::className();}
     virtual Problem* loadProblem(QFileInfo saveFile,const QDomElement & domOMCase,ProjectBase *);
     virtual Result* loadResult(QFileInfo saveFile,const QDomElement & domOMCase,ProjectBase*);

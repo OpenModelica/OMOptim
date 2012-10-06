@@ -72,6 +72,8 @@ public:
 
     void actualizeGui();
 
+    QPushButton * addButton(QString text, bool before);
+
 public slots :
         void launch();
         void restoreProblem();

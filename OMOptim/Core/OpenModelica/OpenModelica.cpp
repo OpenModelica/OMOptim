@@ -95,28 +95,21 @@ bool OpenModelica::compile(MOomc *_omc,QFileInfo moFile,QString modelToConsider,
     if(!QDir(tmpPath).exists())
         QDir().mkpath(tmpPath);
     QDir workDir(tmpPath);
+
     // Copy file and folder
     LowTools::copyFilesInFolder(neededFiles,workDir.absolutePath());
 
     _omc->changeDirectory(tmpPath);
-    _omc->buildModel(modelToConsider);
 
+    QString exeFile;
+    QString initFile;
+    bool success =  _omc->buildModel(modelToConsider,exeFile,initFile);
 
-    LowTools::copyDir(tmpPath,storeFolder.absolutePath());
+    QFileInfoList filesToCopy;
+    filesToCopy << QFileInfo(exeFile) << QFileInfo(initFile);
 
-
-#ifdef WIN32
-    QString modelExeName = modelToConsider+".exe";
-#else
-    QString modelExeName = modelToConsider;
-#endif
-
-
-
-    //look if it succeed
-    bool success = QDir(storeFolder).exists(modelExeName);
+    LowTools::copyFilesInFolder(filesToCopy,storeFolder);
     return success;
-
 }
 
 void OpenModelica::getInputVariablesFromTxtFile(MOomc *_omc,QString filePath, MOVector<Variable> * variables,QString _modelName)

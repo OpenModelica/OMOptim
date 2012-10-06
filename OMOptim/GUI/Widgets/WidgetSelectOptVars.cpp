@@ -134,6 +134,15 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
 
 }
 
+/**
+  * Used only for inheriting purposes
+  */
+WidgetSelectOptVars::WidgetSelectOptVars(QWidget *parent):
+    QWidget(parent)
+{
+
+}
+
 WidgetSelectOptVars::~WidgetSelectOptVars()
 {
     delete _ui;

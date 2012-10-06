@@ -180,7 +180,7 @@ QFileInfo ModelPlus::mmoFilePath()
 
 QString ModelPlus::modelName()
 {
-    return _modelName;
+        return _modelName;
 }
 
 

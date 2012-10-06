@@ -653,7 +653,7 @@ void MainWindow::onAddedProblem(Problem* newProblem)
 void MainWindow::onAddedResult(Result* newResult)
 {
     // Creating problem tab
-    ProblemInterface* interface = _project->problemsInterfaces().interfaceOf(newResult->problem());
+    ProblemInterface* interface = _project->problemsInterfaces().interfaceOf(newResult);
 
     QTime elapsed;
     if(interface)

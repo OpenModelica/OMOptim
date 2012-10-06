@@ -50,7 +50,6 @@ Optimization::Optimization(Project* project,QStringList models)
     :Problem((ProjectBase*)project)
 
 {
-    _omProject = project;
     _name="Optimization";
 
     _optimizedVariables = new OptVariables(true);
@@ -60,21 +59,18 @@ Optimization::Optimization(Project* project,QStringList models)
     _blockSubstitutions = new BlockSubstitutions();
 
     _algos = new OptimAlgos(project,this);
-
+    _algos->setCurrentAlgo(SPEA2Adapt().name());
 
     // models and ctrls
     for(int i=0;i<models.size();i++)
     {
         this->addModel(models.at(i));
     }
-
 }
 
 Optimization::Optimization(const Optimization &optim)
     :Problem(optim)
 {
-    _omProject = optim._omProject;
-
     _optimizedVariables = optim._optimizedVariables->clone();
     _scannedVariables = optim._scannedVariables->clone();
     _overwritedVariables = optim._overwritedVariables->clone();
@@ -113,6 +109,11 @@ Optimization::~Optimization()
     }
 }
 
+Project *Optimization::omProject()
+{
+    return dynamic_cast<Project*>(_project);
+}
+
 /**
   * This function is used to evaluate a single configuration. It is called within optimization process, in fitness evaluation function.
   * @sa EAStdOptimizationEval
@@ -134,7 +135,7 @@ MOOptVector *Optimization::evaluate(QList<ModelPlus*> models, Variables *optimVa
             Creating a new OneSimulation
             ************************************/
             QString modelName = models.at(iM)->modelName();
-            OneSimulation *oneSim = new OneSimulation(_omProject,models.at(iM));
+            OneSimulation *oneSim = new OneSimulation(omProject(),models.at(iM));
             oneSim->_filesToCopy = this->_filesToCopy;
             oneSim->setCtrls(*this->ctrls(modelName));
 
@@ -194,9 +195,6 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     :Problem((ProjectBase*)project)
 {
     // initialization
-
-    _omProject = project;
-
     // look for modmodelplus
     ok = !domProblem.isNull();
     ok = ok && (domProblem.tagName()==Optimization::className());
@@ -501,11 +499,9 @@ void Optimization::createSubExecs(QList<QList<ModelPlus*> > & subModels, QList<B
     QStringList oldMoFilePaths;
     for(int iM=0;iM<models.size();iM++)
     {
-        ModModelPlus* modModelPlus = dynamic_cast<ModModelPlus*>(_omProject->modelPlus(models.at(iM)));
+        ModModelPlus* modModelPlus = dynamic_cast<ModModelPlus*>(omProject()->modelPlus(models.at(iM)));
         oldMoFilePaths.push_back(modModelPlus->moFilePath());
     }
-
-
 
     int iCase=0;
     bool oneChange;
@@ -558,10 +554,10 @@ void Optimization::createSubExecs(QList<QList<ModelPlus*> > & subModels, QList<B
 
 
             // load file (! will replace previously loaded)
-            _omProject->loadMoFile(newMoPath,false,true);
+            omProject()->loadMoFile(newMoPath,false,true);
 
             // create new modModelPlus
-            ModModelPlus* newModModelPlus = new ModModelPlus(_omProject,models.at(iM));
+            ModModelPlus* newModModelPlus = new ModModelPlus(omProject(),models.at(iM));
             newModModelPlus->setMmoFilePath(newMmoPath);
             newModModels.insert(models.at(iM),newModModelPlus);
         }
@@ -622,7 +618,7 @@ void Optimization::createSubExecs(QList<QList<ModelPlus*> > & subModels, QList<B
     if(iCase>0)
     {
         for(int i=0;i<oldMoFilePaths.size();i++)
-            _omProject->loadMoFile(oldMoFilePaths.at(i),false,true);
+            omProject()->loadMoFile(oldMoFilePaths.at(i),false,true);
     }
 }
 
@@ -641,12 +637,12 @@ bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
 {
     if(_models.contains(modelName)&&(ctrls==NULL))
         return false;
-    else if (_omProject->findModItem(modelName))
+    else if (omProject()->findModItem(modelName))
     {
         // create and add controlers
         _models.push_back(modelName);
         if(ctrls==NULL)
-            _ctrls.insert(modelName,new ModPlusCtrls(_omProject,_omProject->modelPlus(modelName)));
+            _ctrls.insert(modelName,new ModPlusCtrls(omProject(),omProject()->modelPlus(modelName)));
         else
             _ctrls.insert(modelName,ctrls);
 

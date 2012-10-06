@@ -63,6 +63,7 @@ class WidgetSelectOptVars : public QWidget {
 
 public:
     explicit WidgetSelectOptVars(Optimization *problem,bool isEditable,QWidget *parent);
+    WidgetSelectOptVars(QWidget* parent);
     virtual ~WidgetSelectOptVars();
 
 
@@ -88,7 +89,7 @@ public slots :
     void refreshAllModelsVars();
 
 
-private:
+protected:
 
     Optimization* _problem;
     Project* _project;

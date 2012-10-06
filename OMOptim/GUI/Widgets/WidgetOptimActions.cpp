@@ -117,3 +117,17 @@ void WidgetOptimActions::onShowModelAsked()
 {
 
 }
+
+QPushButton*  WidgetOptimActions::addButton(QString text,bool before)
+{
+    QPushButton* pushButton = new QPushButton(text,this);
+    pushButton->setMinimumHeight(_ui->pushLaunch->minimumHeight());
+    QHBoxLayout* layout = dynamic_cast<QHBoxLayout*>(_ui->frame->layout());
+    if(layout && before)
+    {
+        layout->insertWidget(1,pushButton);
+    }
+    else
+        _ui->frame->layout()->addWidget(pushButton);
+    return pushButton;
+}

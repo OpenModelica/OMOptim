@@ -454,8 +454,11 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
     return getFlattenedModifierValue(modelName,componentName,modifierName,flattened);
 }
 
-QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName,const QString & flattenedModel)
+QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName, QString & flattenedModel)
 {
+    if(flattenedModel.isEmpty())
+        flattenedModel = getFlattenedModel(modelName);
+
     QStringList lines = flattenedModel.split("\n");
     if(lines.size()==1)
     {
@@ -467,7 +470,7 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
     int iLine = lines.indexOf(modExp);
 
     // 1st format : Real sterilisateur.Sterilisateur.FactMin = 0.0;
-    QRegExp exp1(".*"+componentName+"."+modifierName+"[\\s|=]*([\\S|\\\\|\"]*);");
+    QRegExp exp1(".*"+componentName+"."+modifierName+"[\\s|=]*([\\S|\\\\|\"]+);");
 
     int i1 =  lines.indexOf(exp1);
 
@@ -478,13 +481,19 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
         return result;
     }
 
-
     // 2nd format with unit
     QRegExp exp2(".*"+componentName+"."+modifierName+"\\([.*]\\)[\\s|=]*(\\S*);");
     int i2 = lines.indexOf(exp2);
 
     if((i2>-1)&&exp2.capturedTexts().size()==2)
         return exp2.capturedTexts().at(1);
+
+    // 3rd format
+    QRegExp exp3(".*"+componentName+"\\(.*"+modifierName+"[\\s|=]*([\\d|\\.]*).*;");
+    int i3 = lines.indexOf(exp3);
+
+    if((i3>-1)&&exp3.capturedTexts().size()==2)
+        return exp3.capturedTexts().at(1);
 
     return QString();
 }
@@ -667,10 +676,20 @@ bool MOomc::translateModel(QString model)
     return (commandRes=="true");
 }
 
-void MOomc::buildModel(QString model)
+bool MOomc::buildModel(QString model,QString & exeFile,QString & initFile)
 {
     QString commandText = "buildModel("+model+")";
     QString commandRes= evalCommand(commandText);
+    commandRes.remove(QRegExp("[{|}|\"]"));
+
+    exeFile = commandRes.section(",",0,0);
+#ifdef WIN32
+    exeFile.append(".exe");
+#endif
+    QDir dir = QFileInfo(exeFile).absoluteDir();
+    initFile = dir.absoluteFilePath(commandRes.section(",",1,1));
+
+    return !exeFile.isEmpty();
 }
 
 
@@ -887,6 +906,16 @@ QString MOomc::evalCommand(QString command,QString &errorString)
 
         QFile::remove(mObjectRefFile);
         InfoSender::instance()->send(Info(QString("Communication with OMC server has lost ")));
+        return QString();
+    }
+    catch( omniORB::fatalException & ex)
+    {
+        cerr << "Caught omniORB2 fatalException. This is a bug in omniORB" << endl;
+        return QString();
+    }
+    catch (std::exception &ex)
+    {
+        return QString();
     }
 
     return getResult();
@@ -1339,8 +1368,8 @@ void MOomc::initTempDirectory()
     QString cdResult;
     if (!QDir().exists(tmpPath))
     {
-      if (LowTools::mkpath(tmpPath,false))
-        cdResult = changeDirectory(tmpPath);
+        if (LowTools::mkpath(tmpPath,false))
+            cdResult = changeDirectory(tmpPath);
     }
     else
         cdResult = changeDirectory(tmpPath);

@@ -3,7 +3,7 @@
 
 #include "ProblemInterface.h"
 #include "Optimization.h"
-
+#include "OptimResult.h"
 
 
 class OptimizationInterface : public ProblemInterface
@@ -20,6 +20,7 @@ class OptimizationInterface : public ProblemInterface
 
     ModelNeeds modelNeeds(QString){return SEVERALMODELS;}
     QStringList problemTypes(){return QStringList(Optimization::className());}
+    QStringList resultTypes(){return QStringList(OptimResult::className());}
     QString name(){return Optimization::className();}
 
     virtual bool hasQuickEndOption(){return true;}

@@ -60,11 +60,8 @@ class Optimization : public Problem
 {
     Q_OBJECT
 
-
-
 protected :
 
-    Project* _omProject;
     //Model
     QList<QString> _models;
     QMap<QString,ModPlusCtrls*> _ctrls;
@@ -101,7 +98,7 @@ public:
     OptVariables *optimizedVariables()const{return _optimizedVariables;}
     OptObjectives *objectives()const{return _objectives;}
     BlockSubstitutions *blockSubstitutions()const{return _blockSubstitutions;}
-
+    Project* omProject();
 
     // evaluate function
     virtual MOOptVector* evaluate(QList<ModelPlus*> models, Variables *overwritedVariables, ScannedVariables*, bool &ok);

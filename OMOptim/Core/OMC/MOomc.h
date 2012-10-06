@@ -100,7 +100,7 @@ public :
     QString getParameterValue(QString parentClass, QString parameterName);
     QStringList getInheritedClasses(QString inheritingClass);
     QStringList getComponentModifierNames(QString componentName);
-    QString getFlattenedModifierValue(const QString & modelName,const QString & shortComponentName,const QString & modifierName,const QString & flattenedModel);
+    QString getFlattenedModifierValue(const QString & modelName,const QString & shortComponentName,const QString & modifierName,QString & flattenedModel);
     QString getFlattenedModel(const QString & modelName);
     QString getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName);
     QString getComponentModifierValue(QString modelName,QString shortComponentName,QString modifierName);
@@ -148,7 +148,7 @@ public :
     Modelica::ClassRestr getClassRestriction(QString ClassName);
 
     bool translateModel(QString model);
-    void buildModel(QString model);
+    bool buildModel(QString model, QString &exeFile, QString &initFile);
 
     bool deleteComponent(QString compName);
     bool deleteClass(QString className);
