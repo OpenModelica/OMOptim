@@ -187,7 +187,7 @@ public :
     virtual ~MOParameters();
 //    QVariant value(int index,QVariant defaultValue = QVariant()) const;
     QVariant value(QString name,QVariant defaultValue = QVariant()) const;
-    bool setValue(QString index,QVariant value);
+    bool setValue(QString name,QVariant value);
     QMultiMap<QString,MOParameter*> groupmap() const;
     void setGroup(QString group,QStringList indexes);
     void setPanel(QString panel);

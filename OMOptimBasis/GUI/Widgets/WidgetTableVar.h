@@ -55,8 +55,6 @@ class WidgetTableVar : public QWidget
 {
     Q_OBJECT
 
-
-
 public:
     WidgetTableVar(MOVector<Variable> *,QWidget *parent,bool addFilter=true);
 

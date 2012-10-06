@@ -60,7 +60,8 @@ bool LowTools::removeDirContents(QString folder)
     QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
     for (int indf=0;indf<files.size();indf++)
     {
-        QFile provFile(files.at(indf).absoluteFilePath());
+        QFileInfo provFile(files.at(indf).absoluteFilePath());
+
         // provFile.setPermissions(provFile.permissions() | QFile::WriteUser);
         allRemoved = dir.remove(provFile.fileName()) && allRemoved;
     }
@@ -75,6 +76,30 @@ bool LowTools::removeDirContents(QString folder)
 
     return allRemoved;
 
+}
+
+bool LowTools::removeDirContentsExcept(QString folder,QStringList exceptExtensions)
+{
+    bool  allRemoved = true;
+
+    QDir dir = QDir(folder);
+    QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
+    for (int indf=0;indf<files.size();indf++)
+    {
+        QFileInfo provFile(files.at(indf).absoluteFilePath());
+        if(!exceptExtensions.contains(provFile.suffix()) && !exceptExtensions.contains(provFile.completeSuffix()))
+            allRemoved = dir.remove(provFile.fileName()) && allRemoved;
+    }
+
+    QStringList folders = dir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
+    QString provFolder;
+    for (int indf=0;indf<folders.size();indf++)
+    {
+        provFolder = folders[indf];
+        allRemoved = removeDir(dir.absolutePath()+QDir::separator()+provFolder) && allRemoved;
+    }
+
+    return allRemoved;
 }
 
 bool LowTools::removeDir(QString folder)
@@ -146,6 +171,8 @@ void LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
     for(int i=0;i<files.size();i++)
     {
         QFileInfo fileInfo(files.at(i));
+        if(folder.exists(fileInfo.fileName()))
+            folder.remove(fileInfo.fileName());
         QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
     }
 }

@@ -7,6 +7,7 @@
 
 class ProblemInterface;
 class Problem;
+class Result;
 
 class ProblemInterfaces :  public QMap<QString,ProblemInterface*>
 {
@@ -17,7 +18,8 @@ public :
     bool removeProblemInterface(QString problemInterfaceName);
 
     ProblemInterface* interfaceOf(Problem* problem);
-    ProblemInterface* interfaceOf(QString problemType);
+    ProblemInterface* interfaceOf(Result* result);
+    ProblemInterface* interfaceOf(QString caseType);
 
     QList<ProblemInterface*> uniqueInterfaces();
 };

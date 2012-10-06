@@ -1,5 +1,6 @@
 #include "ProblemInterfaces.h"
 #include "Problem.h"
+#include "Result.h"
 #include "ProblemInterface.h"
 
 bool ProblemInterfaces::addProblemInterface(ProblemInterface* interface)
@@ -11,6 +12,17 @@ bool ProblemInterfaces::addProblemInterface(ProblemInterface* interface)
         if(!this->contains(problemNames.at(i)))
         {
             insert(problemNames.at(i),interface);
+            //emit modified();
+            oneAdded = true;
+        }
+    }
+
+    QStringList resultNames = interface->resultTypes();
+    for(int i=0;i<resultNames.size();i++)
+    {
+        if(!this->contains(resultNames.at(i)))
+        {
+            insert(resultNames.at(i),interface);
             //emit modified();
             oneAdded = true;
         }
@@ -62,9 +74,14 @@ ProblemInterface* ProblemInterfaces::interfaceOf(Problem* problem)
     return QMap<QString,ProblemInterface*>::value(problem->getClassName(),NULL);
 }
 
-ProblemInterface* ProblemInterfaces::interfaceOf(QString problemType)
+ProblemInterface* ProblemInterfaces::interfaceOf(Result* result)
 {
-    return QMap<QString,ProblemInterface*>::value(problemType,NULL);
+    return QMap<QString,ProblemInterface*>::value(result->getClassName(),NULL);
+}
+
+ProblemInterface* ProblemInterfaces::interfaceOf(QString caseType)
+{
+    return QMap<QString,ProblemInterface*>::value(caseType,NULL);
 }
 
 QList<ProblemInterface*> ProblemInterfaces::uniqueInterfaces()

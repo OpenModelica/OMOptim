@@ -112,8 +112,6 @@ QVariant OptVariables::data(const QModelIndex &index, int role) const
         return MOVector<OptVariable>::data(index,role);
 }
 
-
-
 OptVariables* OptVariables::clone() const
 {
      // owner should always be true

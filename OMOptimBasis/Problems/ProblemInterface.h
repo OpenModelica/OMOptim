@@ -58,6 +58,7 @@ public :
       *
       */
     virtual QStringList problemTypes() = 0;
+    virtual QStringList resultTypes() = 0;
 
     /**
       * Returns the name of the ProblemInterface.

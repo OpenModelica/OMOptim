@@ -80,7 +80,7 @@ public:
     void setItems(QDomElement & domList);
     //virtual void append(const MOVector &,bool makeACopy);
     void update(const QDomElement & domList);
-
+    void setEditableFields(QList<int> indexes,bool editable=true);
     int rowCount(const QModelIndex &parent ) const;
     int columnCount(const QModelIndex &parent ) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;

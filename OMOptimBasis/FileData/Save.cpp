@@ -167,7 +167,7 @@ void Save::saveProblem(ProjectBase* project,Problem* problem)
 
 void Save::saveResult(ProjectBase* project,Result* result)
 {
-    ProblemInterface* interface = project->problemsInterfaces().interfaceOf(result->problem());
+    ProblemInterface* interface = project->problemsInterfaces().interfaceOf(result);
     if(interface)
         interface->saveResult(result);
 }

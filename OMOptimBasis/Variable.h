@@ -233,6 +233,7 @@ public :
 
 public:
     OptVariable(void);
+    OptVariable(QString name);
     OptVariable(const Variable &);
     ~OptVariable(void);
     OptVariable(const OptVariable &);

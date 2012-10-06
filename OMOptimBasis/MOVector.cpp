@@ -95,6 +95,15 @@ void MOVector<ItemClass>::update(const QDomElement & domList)
     }
 }
 
+
+template<class ItemClass>
+void MOVector<ItemClass>::setEditableFields(QList<int> indexes,bool editable)
+{
+    for(int i=0;i<items.size();i++)
+        for(int j=0;j<indexes.size();j++)
+        items[i]->setIsEditableField(indexes.at(j),editable);
+}
+
 template<class ItemClass>
 QStringList MOVector<ItemClass>::getItemNames()
 {

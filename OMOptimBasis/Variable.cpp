@@ -636,6 +636,13 @@ OptVariable::OptVariable()
     qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
+OptVariable::OptVariable(QString name)
+{
+    _editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
+    setName(name);
+    qDebug(QString("New "+getClassName()).toLatin1().data());
+}
+
 OptVariable::OptVariable(QDomElement & domEl)
 {
     QDomNamedNodeMap attributes = domEl.attributes();
