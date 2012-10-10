@@ -141,6 +141,10 @@ MO2ColTab(result->project()->name(),result,false,parent)
          // restore position
          readGUIState();
 
+//         // select first point
+//         if(result->nbPoints()>0)
+//             _widgetMooPointsList->_listPoints->setSelectedIndexes(QList<int>()<<0);
+
 }
 
 TabResOptimization::~TabResOptimization()

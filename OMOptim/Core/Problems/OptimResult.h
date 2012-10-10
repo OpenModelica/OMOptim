@@ -93,6 +93,7 @@ public:
     int curScan();
 
 
+    int nbPoints();
     void setCurPoint(int);
     int curPoint();
 

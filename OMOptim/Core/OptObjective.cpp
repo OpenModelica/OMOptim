@@ -50,6 +50,12 @@ OptObjective::OptObjective()
 }
 OptObjective::OptObjective(const Variable &var, OptObjective::Direction direction):Variable(var)
 {
+    // problem: fields doesnt have proper correspondence
+    // filledFields is not consistent after Variable(var)
+    for(int i=0;i<this->getNbFields();i++)
+        if(_filledFields.contains(i))
+            _filledFields.push_back(i);
+
     setFieldValue(OptObjective::DIRECTION,direction);
     _scanFunction = NONE;
     _editableFields.clear();
@@ -63,6 +69,7 @@ OptObjective::OptObjective(const OptObjective & obj):Variable(obj)
     _direction = obj._direction;
     _min = obj._min;
     _max = obj._max;
+    _filledFields = obj._filledFields;
 }
 
 OptObjective::OptObjective(QDomElement & domEl)

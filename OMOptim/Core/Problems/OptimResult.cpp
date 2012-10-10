@@ -335,30 +335,6 @@ void OptimResult::updateRecomputedPointsFromFolder()
             _recomputedPoints.push_back(iPoint);
 
             CSVBase::FileToVariableResult(_recomputedVariables,iPoint,pointFolder+QDir::separator()+"resultVar.csv");
-            //int iRecVar;
-            //            for(int iCurVar=0;iCurVar<pointVariables->size();iCurVar++)
-            //            {
-            //                //set value
-            //                iRecVar = _recomputedVariables->findItem(pointVariables->at(iCurVar)->getFieldValue(Variable::NAME).toString());
-            //                if(iRecVar>-1)
-            //                    _recomputedVariables->at(iRecVar)->setFinalValueAtPoint(
-            //                            pointVariables->at(iCurVar)->getFieldValue(Variable::VALUE).toDouble(),iPoint);
-            //                else
-            //                {
-            //                    // variable found in file does not exist in _recomputedVariables
-            //                    // add it
-            //                    newVariableResult =  new VariableResult(*pointVariables->at(iCurVar));
-            //                    newVariableResult->setFinalValueAtPoint(iPoint,
-            //                                                            pointVariables->at(iCurVar)->getFieldValue(Variable::VALUE).toDouble());
-            //                    _recomputedVariables->addItem(newVariableResult);
-
-            //                    // display info
-            //                    QString msg;
-            //                    msg.sprintf("Variable %s added in recomputed variables list",
-            //                                newVariableResult->getFieldValue(VariableResult::NAME).toString().utf16());
-            //                    InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
-            //                }
-            //            }
         }
     }
 }
@@ -695,5 +671,10 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
     }
 
     emit finishedRecomputingPoints(iPoints);
+}
+
+int OptimResult::nbPoints()
+{
+    return _optVariablesResults->nbPoints();
 }
 

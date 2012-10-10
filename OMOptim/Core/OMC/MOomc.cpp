@@ -650,7 +650,7 @@ QString MOomc::getComment(QString modelName, QString compName)
 
     //  {{Modelica.SIunits.Temp_K,TorcH,"ORC hot temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}},{Modelica.SIunits.Temp_K,TorcC,"ORC cold temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}}}
 
-    QRegExp rexp(".*"+compName+","+"\"\\(.*\\)\"(\\.*)");
+    QRegExp rexp(".*"+compName+","+"\"(.*)\"");
     rexp.setMinimal(true);
     if(commandRes.contains(rexp)&&rexp.capturedTexts().size()>1)
     {
