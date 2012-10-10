@@ -202,6 +202,9 @@ void CSVBase::linesToVariableResult(MOOptVector * variables, int iPoint, QString
     variables->clearAtiPoint(iPoint);
 
     QStringList lineList = lines.split("\n",QString::SkipEmptyParts);
+    if(lineList.isEmpty())
+        return;
+
     QStringList varNames;
     QStringList curScanValues;
     VariableResult *newVariableResult;

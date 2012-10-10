@@ -450,14 +450,8 @@ void VariableResult::setFinalValuesAtScan(int iScan,const QVector<double> & fina
 {
     if(iScan<finalValues.size())
     {
-        _finalValues.replace(iScan,QVector<double>(finalValues.size()));
-        _computedPoints.replace(iScan,QVector<bool>(finalValues.size()));
-        _finalValues.push_back(finalValues);
-
-        for(int i=0;i<finalValues.size();i++)
-        {
-            _computedPoints[iScan].push_back(true);
-        }
+        _finalValues.replace(iScan,finalValues);
+        _computedPoints.replace(iScan,QVector<bool>(finalValues.size(),true));
     }
     else
     {
@@ -474,7 +468,7 @@ void VariableResult::setFinalValuesAtPoint(int iPoint,const QVector<double> &val
     QVector<double> defaultValues(nbPoints(),0);
     QVector<bool> defaultComputed(nbPoints(),false);
 
-    while(values.size()>=nbScans())
+    while(values.size()>_finalValues.size())
     {
         _finalValues.push_back(defaultValues);
         _computedPoints.push_back(defaultComputed);
@@ -482,7 +476,7 @@ void VariableResult::setFinalValuesAtPoint(int iPoint,const QVector<double> &val
     // points
     for(int i=0;i<_finalValues.size();i++)
     {
-        while(iPoint>=nbPoints())
+        while(iPoint>=_finalValues.at(i).size())
         {
             _finalValues[i].push_back(0);
             _computedPoints[i].push_back(false);
@@ -510,7 +504,7 @@ void VariableResult::setFinalValue(int iScan,int iPoint,double value,bool comput
     QVector<double> defaultValues(nbPoints(),0);
     QVector<bool> defaultComputed(nbPoints(),false);
 
-    while(iScan>=nbScans())
+    while(iScan>=_finalValues.size())
     {
         _finalValues.push_back(defaultValues);
         _computedPoints.push_back(defaultComputed);
@@ -519,15 +513,21 @@ void VariableResult::setFinalValue(int iScan,int iPoint,double value,bool comput
 
     for(int i=0;i<_finalValues.size();i++)
     {
-        while(iPoint>=nbPoints())
+        while(iPoint>=_finalValues[i].size())
         {
             _finalValues[i].push_back(0);
             _computedPoints[i].push_back(false);
         }
     }
 
+    try{
     _finalValues[iScan][iPoint] = value;
     _computedPoints[iScan][iPoint] = computed;
+    }
+    catch(std::exception &e)
+    {
+        int a=2;
+    }
 }
 
 //void VariableResult::appendFinalValue(double value,int iScan)
