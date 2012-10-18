@@ -116,7 +116,6 @@ public:
     //*************************
     // Path functions
     //*************************
-
     void setmodelToConsider(QString);
     QFileInfo mmoFilePath();
     QString moFilePath();
@@ -125,7 +124,6 @@ public:
     //*************************
     // Read functions
     //*************************
-
     bool readAll(ModPlusCtrl*);
     void loadDependencies();
 
@@ -145,6 +143,7 @@ public:
     //  Main functions
     //************************
     virtual void clear();
+    virtual void uncompile();
     virtual void save();
 
 

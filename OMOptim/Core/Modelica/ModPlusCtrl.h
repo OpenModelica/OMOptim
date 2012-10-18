@@ -98,6 +98,7 @@ class ModPlusCtrl :public QObject
         // Compile function
         virtual bool isCompiled() = 0;
         virtual bool compile(const QFileInfoList & moDependencies) = 0;
+        virtual bool uncompile();
 
         // Info function
         virtual ModPlusCtrl::Type type()const = 0;

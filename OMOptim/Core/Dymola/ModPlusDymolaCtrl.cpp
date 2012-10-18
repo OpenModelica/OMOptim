@@ -266,8 +266,22 @@ bool ModPlusDymolaCtrl::isCompiled()
     return filesExist;
 }
 
+/** Uncompile model: remove compiled version.
+  * Returns true if it has been successful or if there were no compiled version.
+  */
+bool ModPlusDymolaCtrl::uncompile()
+{
+    // first remove initfile
+    QFileInfo initFile(_ModelPlus->mmoFolder(),"dsin.txt");
+    QFile::remove(initFile.absoluteFilePath());
 
+    // remove exeFile
+    QFileInfo exeFile(_ModelPlus->mmoFolder(),"dymosim.exe");
+    if(!exeFile.exists())
+        return true;
 
+    return QFile::remove(exeFile.absoluteFilePath());
+}
 
 bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QFileInfoList filesTocopy,QFileInfoList moDependencies)
 {

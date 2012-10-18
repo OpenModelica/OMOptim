@@ -180,16 +180,13 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool 
 
 bool ModPlusOMCtrl::compile(const QFileInfoList & moDeps)
 {
-
     InfoSender::sendCurrentTask("OpenModelica : Compiling model "+_ModelPlus->modelName());
-
 
     // compile
 
     QString logFile = _ModelPlus->mmoFolder().absolutePath()+_ModelPlus->modelName()+".log";
     bool success = OpenModelica::compile(_moomc,_modModelPlus->moFilePath(),_ModelPlus->modelName(),_ModelPlus->mmoFolder(),
                                          moDeps,_ModelPlus->neededFiles(),_ModelPlus->neededFolders());
-
 
     // Inform
     ListInfo::InfoNum iMsg;
@@ -220,6 +217,23 @@ bool ModPlusOMCtrl::isCompiled()
         filesExist = filesExist && file.exists();
     }
     return filesExist;
+}
+
+/** Uncompile model: remove compiled version.
+  * Returns true if it has been successful or if there were no compiled version.
+  */
+bool ModPlusOMCtrl::uncompile()
+{
+    // first remove initfile
+    QFileInfo initFile(_ModelPlus->mmoFolder(),_initFileXml);
+    QFile::remove(initFile.absoluteFilePath());
+
+    // remove exeFile
+    QFileInfo exeFile(_ModelPlus->mmoFolder(),_exeFile);
+    if(!exeFile.exists())
+        return true;
+
+    return QFile::remove(exeFile.absoluteFilePath());
 }
 
 

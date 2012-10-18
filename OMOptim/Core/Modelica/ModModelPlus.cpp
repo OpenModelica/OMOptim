@@ -51,6 +51,7 @@
 #include "BlockSubstitution.h"
 #include "SaveOMOptim.h"
 #include "ModPlusCtrl.h"
+#include "ModPlusCtrls.h"
 #include "LowTools.h"
 
 ModModelPlus::ModModelPlus( Project* project,QString modelName)
@@ -78,7 +79,7 @@ ModModelPlus::ModModelPlus(Project *project, const QDomElement &domRoot)
         this->addMoDependency(QFileInfo(strMoDeps.at(nof)));
     }
 
-     _connections = new ModelicaConnections(_project->modItemsTree());
+    _connections = new ModelicaConnections(_project->modItemsTree());
 }
 
 ModModelPlus::~ModModelPlus()
@@ -89,18 +90,30 @@ ModModelPlus::~ModModelPlus()
 /**
   * @brief Clear ModModelPlus content
   * Clear ModModelPlus content : includnig variables, connections
+  * But keeps compiled models
   */
 void ModModelPlus::clear()
 {
     ModelPlus::clear();
-
     _connectionsRead = false;
-
-    _mmoFilePath.clear();
 
     //connections
     _connections->clear();
+}
 
+/** Removes compiled models.
+  * Asks every controler to do so.
+  */
+void ModModelPlus::uncompile()
+{
+    // remove compiled executables
+    ModPlusCtrls ctrls(_project,this);
+
+    for(int i=0;i<ctrls.size();i++)
+    {
+        ModPlusCtrl* ctrl = ctrls.values().at(i);
+        ctrl->uncompile();
+    }
 }
 
 void ModModelPlus::save()

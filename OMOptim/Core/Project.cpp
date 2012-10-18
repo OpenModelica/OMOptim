@@ -176,6 +176,15 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
     bool wasThere = _mofilesWatcher.files().contains(moFilePath);
     _mofilesWatcher.removePath(moFilePath);
 
+    // clear modelplus of this file
+    // since if model has changed, compiled version may not be correct anymore.
+    QList<ModModelPlus*> modModelsConcerned = modModelPlusOfFile(moFilePath);
+    for(int i=0;i<modModelsConcerned.size();i++)
+    {
+        modModelsConcerned.at(i)->uncompile();
+        modModelsConcerned.at(i)->clear();
+    }
+
     // add to mofileloadedlist
     if(storePath && !_moFiles.contains(moFilePath))
         _moFiles.push_back(QFileInfo(moFilePath));
@@ -465,6 +474,24 @@ ModelPlus* Project::modelPlus(QString modelName)
         return corrModelPlus;
     }
 }
+
+/**
+  * @brief Returns all modModelPlus related to a moFile.
+  */
+QList<ModModelPlus*> Project::modModelPlusOfFile(QString moFile)
+{
+    QList<ModModelPlus*> result;
+    QList<ModelPlus*> allModels = allModelPlus();
+    ModModelPlus* curModel;
+    for(int i=0;i<allModels.size();i++)
+    {
+        curModel = dynamic_cast<ModModelPlus*>(allModels.at(i));
+        if(curModel && QFileInfo(curModel->moFilePath())==QFileInfo(moFile))
+            result.push_back(curModel);
+    }
+    return result;
+}
+
 
 /**
   * @brief Creates a new modelPlus for a model.

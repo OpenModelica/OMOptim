@@ -72,6 +72,7 @@ public:
     Ui::WidgetSelectOptVarsClass *_ui;
 
     void addPermanentVars(Variables*);
+    void removePermanentVars(QString model);
     void setShownColumns();
     void setDelegates();
 

@@ -126,6 +126,7 @@ private:
     ModItem *findModItem(QString name);
     QList<ModelPlus*> allModelPlus();
     void addModelPlus(ModelPlus*);
+    QList<ModModelPlus *> modModelPlusOfFile(QString moFile);
 
 
     void storeMmoFilePath(QString mmoFilePath);
@@ -171,6 +172,7 @@ private:
     //****************************
     // Slots
     //****************************
+
 public slots :
 
     void onModItemSelectionChanged(QList<ModItem*> &classes);

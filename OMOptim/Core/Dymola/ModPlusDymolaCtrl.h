@@ -52,6 +52,7 @@ public:
         // Compile function
         bool createDsin(QFileInfoList moDeps);
         bool isCompiled();
+        bool uncompile();
         bool compile(const QFileInfoList & moDependencies);
 
         // Simulate function
@@ -59,6 +60,7 @@ public:
                       QFileInfoList filesTocopy,QFileInfoList moDependencies);
         void stopSimulation();
         bool canBeStoped();
+
 
 
 private:

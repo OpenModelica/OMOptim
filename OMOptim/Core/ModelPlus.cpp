@@ -123,15 +123,13 @@ ModelPlus::~ModelPlus()
 
 /**
   * @brief Clear ModModelPlus content
-  * Clear ModModelPlus content : includnig variables, connections
+  * Clear ModelPlus content: here only variables
+  * But in inheriting classes, can clear more (e.g. connections in ModModelPlus)
   */
-
-
 void ModelPlus::clear()
 {
+    // clear variables
     _variablesRead = false;
-    _name.clear();
-
     //connections
     _variables->clear();
 }

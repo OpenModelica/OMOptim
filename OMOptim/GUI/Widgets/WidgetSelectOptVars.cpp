@@ -155,6 +155,16 @@ void WidgetSelectOptVars::addPermanentVars(Variables * vars)
     _permanentVars->addItems(vars,true);
 }
 
+void WidgetSelectOptVars::removePermanentVars(QString model)
+{
+    QList<int> toRemove;
+    for(int i=0;i<_permanentVars->size();i++)
+        if(_permanentVars->at(i)->model()==model)
+            toRemove.push_back(i);
+
+    _permanentVars->removeRows(toRemove);
+}
+
 
 
 void WidgetSelectOptVars::addOptVariables()

@@ -63,6 +63,15 @@ ModPlusCtrl::~ModPlusCtrl(void)
         delete _parameters;
 }
 
+/** Uncompile model: remove compiled version.
+  * Returns true if it has been successful or if there were no compiled version.
+  * May be used when a model is reloaded, to force compiling it again.
+  */
+bool ModPlusCtrl::uncompile()
+{
+    return true;
+}
+
 
 MOParameters* ModPlusCtrl::parameters() const
 {
