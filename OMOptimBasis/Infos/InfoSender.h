@@ -43,6 +43,54 @@
 #include "Info.h"
 #include <QTextStream>
 #include <QTime>
+#include <QAbstractItemModel>
+#include <QStringList>
+
+
+
+class Infos : public QAbstractTableModel
+{
+
+public:
+
+    enum type
+    {
+        INFO,
+        INFOWARNING,
+        INFOERROR
+    };
+
+    enum destination
+    {
+        DESTOMC,
+        DESTNORMAL,
+        DESTDEBUG
+    };
+
+    Infos(QObject* parent);
+
+    void addInfo(const QString & info,const type & infoType,const destination & infoDestination);
+    void clear();
+
+
+    int _maximumLines;
+    int _linesToRemove;
+
+
+
+
+protected:
+    QStringList _text;
+    QList<type> _type; // normal,
+    QList<int> _dest; // Destination tab: OMC, NORMAL, DEBUG
+
+    QVariant data(const QModelIndex &index, int role) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    int columnCount(const QModelIndex &parent) const;
+    int rowCount(const QModelIndex &parent) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+};
+
 
 /** InfoSender is used to send information to GUI or to console.
 It contains a single instance shared within entire project*/
@@ -68,6 +116,9 @@ public slots :
     void sendNormal(QString msg){send(Info(msg,ListInfo::NORMAL2));}
 
 
+    Infos* infosNormal(){return _infosNormal;}
+    Infos* infosOM(){return _infosOM;}
+    Infos* infosDebug(){return _infosDebug;}
 
 signals :
     void sent(Info);
@@ -79,8 +130,11 @@ private :
     QTextStream* _logStream;
     InfoSender();
     static InfoSender* _instance;
+    Infos* _infosNormal;
+    Infos* _infosOM;
+    Infos* _infosDebug;
 };
-//Q_DECLARE_METATYPE(InfoSender)
-//Q_DECLARE_INTERFACE(InfoSender,"com.OMOptim.InfoSender/1.0")
+
+
 
 #endif

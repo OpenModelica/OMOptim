@@ -59,7 +59,7 @@ public:
     
     ListInfo::InfoNum infoNum;
     QString infoMsg;
-    ListInfo::InfoType infoType;
+    ListInfo::InfoType  infoType;
 };
 Q_DECLARE_METATYPE(Info)
 

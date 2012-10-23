@@ -53,9 +53,6 @@ enum InfoType{
     OMCNORMAL2,
     OMCWARNING2,
     OMCERROR2,
-    OPTIMNORMAL,
-    OPTIMERROR,
-    OPTIMWARNING,
     INFODEBUG,
     TASK
 };
