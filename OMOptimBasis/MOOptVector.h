@@ -54,10 +54,12 @@ public:
 
 
     MOOptVector(bool ownner,bool useScan, bool usePoints);
+    MOOptVector(bool owner, bool useScan, bool usePoints, QString csv);
     ~MOOptVector();
 
 
     QVariant data(const QModelIndex &index, int role) const;
+    QString toCSV(QString separator = "\t", QList<int> listPoints = QList<int>());
     //void addItem(VariableResult*);
 
     bool isAvailablePoint(int iVar,int iScan,int iPoint) const;
@@ -81,9 +83,12 @@ public:
     double value(const QString &name,bool &ok,int iScan=0,int iPoint=0);
     void append(const MOOptVector &,bool makeACopy);
     void clearAtiPoint(int iPoint);
-    QString toCSV(int iPoint=0);
+
 
     Variables extractPoint(int iPoint);
+    void setFromCsv(QString text);
+
+
 
 protected :
     bool _useScan;
@@ -93,6 +98,8 @@ protected :
 
     int _nbScans;
     int _nbPoints;
+
+
 
 signals:
     void usePointsChanged();

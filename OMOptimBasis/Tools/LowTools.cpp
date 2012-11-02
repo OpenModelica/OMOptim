@@ -43,6 +43,7 @@
 #include <QFile>
 #include "METime.h"
 #include "MOItem.h"
+#include "InfoSender.h"
 
 LowTools::LowTools(void)
 {

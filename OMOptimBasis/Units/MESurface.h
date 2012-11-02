@@ -40,7 +40,7 @@
 #if !defined(_MESURFACE_H)
 #define _MESURFACE_H
 
-#include "InfoSender.h"
+
 #include "MEDimValue.h"
 #include <cmath>
 

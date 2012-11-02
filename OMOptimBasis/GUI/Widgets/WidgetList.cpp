@@ -39,6 +39,8 @@
 */
 
 #include "Widgets/WidgetList.h"
+#include "InfoSender.h"
+
 
 WidgetList::WidgetList(QWidget *_parent):QListWidget(_parent)
 {

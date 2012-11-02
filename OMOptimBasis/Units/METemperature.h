@@ -40,7 +40,6 @@
 #if !defined(_METEMPERATURE_H)
 #define _METEMPERATURE_H
 
-#include "InfoSender.h"
 #include "MEDimValue.h"
 #include <cmath>
 

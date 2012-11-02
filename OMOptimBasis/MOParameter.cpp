@@ -418,18 +418,18 @@ MOParameters::MOParameters()
     :MOVector<MOParameter>(true)
 {
     connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
-    qDebug(QString("New MOParameters").toLatin1().data());
+    // qDebug(QString("New MOParameters").toLatin1().data());
 }
 
 MOParameters::MOParameters(const MOParameters & parameters)
     :MOVector<MOParameter>(parameters)
 {
-    qDebug(QString("New MOParameters").toLatin1().data());
+    // qDebug(QString("New MOParameters").toLatin1().data());
 }
 
 MOParameters::~MOParameters()
 {
-    qDebug(QString("Remove MOParameters").toLatin1().data());
+    // qDebug(QString("Remove MOParameters").toLatin1().data());
 }
 
 QVariant MOParameters::value(QString name,QVariant defaultValue) const

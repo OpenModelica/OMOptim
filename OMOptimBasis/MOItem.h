@@ -50,7 +50,6 @@
 
 
 #include "Info.h"
-#include "InfoSender.h"
 #include "XMLTools.h"
 
 class ProjectBase;

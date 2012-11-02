@@ -51,6 +51,8 @@ InfoSender::InfoSender()
     _infosNormal = new Infos(this);
     _infosOM = new Infos(this);
     _infosDebug = new Infos(this);
+
+    connect(this, SIGNAL(receivedInfo(const Info&)),this, SLOT(onReceivedInfo(const Info&)));
 }
 
 void InfoSender::setLogStream(QTextStream* logStream)
@@ -86,7 +88,17 @@ InfoSender* InfoSender::instance()
     return _instance;
 }
 
-void InfoSender::send(Info info)
+void InfoSender::destroy()
+{
+    if(_instance)
+    {
+        delete _instance;
+        _instance = NULL;
+        qApp->setProperty("InfoSender",QVariant());
+    }
+}
+
+void InfoSender::send(const Info &info)
 {
 
     if(_logStream)
@@ -100,7 +112,11 @@ void InfoSender::send(Info info)
         qDebug(info.infoMsg.toLatin1().data());
 
 
+    emit receivedInfo(info);
+}
 
+void InfoSender::onReceivedInfo(const Info &info)
+{
     switch(info.infoType)
     {
     case ListInfo::OMCERROR2:
@@ -128,7 +144,7 @@ void InfoSender::send(Info info)
         break;
     }
 
-     emit sent(info);
+    emit sent(info);
 }
 
 void InfoSender::sendCurrentTask(QString msg)
@@ -148,6 +164,11 @@ Infos::Infos(QObject* parent)
     _linesToRemove = _maximumLines/10;
 }
 
+Infos::~Infos()
+{
+    clear();
+}
+
 void Infos::addInfo(const QString &info, const type &infoType, const destination &infoDestination)
 {
     if(info.isEmpty())
@@ -156,32 +177,43 @@ void Infos::addInfo(const QString &info, const type &infoType, const destination
     // if reached full size
     if(_text.size()>= _maximumLines)
     {
-        beginRemoveRows(QModelIndex(),0,_linesToRemove);
-        for(int i=0;i<_linesToRemove;i++)
-        {
-            _text.removeFirst();
-            _type.removeFirst();
-            _dest.removeFirst();
-        }
-        endRemoveRows();
+        removeRows(0,_linesToRemove,QModelIndex());
     }
 
+    // qDebug("Started adding Info");
     // add info
     beginInsertRows(QModelIndex(),_text.size(),_text.size());
     _text.push_back(info);
     _type.push_back(infoType);
     _dest.push_back(infoDestination);
     endInsertRows();
+    // qDebug("Ended adding Info");
 }
 
 int Infos::rowCount(const QModelIndex &parent) const
 {
+    //return 0;
     return _text.size();
+}
+
+bool Infos::removeRows(int position, int rows, const QModelIndex &index)
+{
+    Q_UNUSED(index);
+    beginRemoveRows(QModelIndex(), position, position+rows-1);
+
+    for (int row=0; row < rows; ++row) {
+        _text.removeAt(position);
+        _type.removeAt(position);
+        _dest.removeAt(position);
+    }
+
+    endRemoveRows();
+    return true;
 }
 
 Qt::ItemFlags Infos::flags(const QModelIndex &index) const
 {
-        return  Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return  Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 int Infos::columnCount(const QModelIndex &parent) const
@@ -205,7 +237,7 @@ QVariant Infos::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if(role==Qt::CheckStateRole)
+    if(role!=Qt::DisplayRole)
         return QVariant();
 
     if (index.row() >= _text.size())
@@ -215,8 +247,8 @@ QVariant Infos::data(const QModelIndex &index, int role) const
     if(index.column()==0)
     {
         // type
-        if(role == Qt::UserRole)
-            return _type.at(index.row());
+        //        if(role == Qt::UserRole)
+        //            return _type.at(index.row());
         if(role == Qt::DisplayRole)
         {
             switch (_type.at(index.row()))
@@ -232,7 +264,7 @@ QVariant Infos::data(const QModelIndex &index, int role) const
     }
 
     // text
-    if(index.column()==1)
+    if((index.column()==1) && (role==Qt::DisplayRole))
         return _text.at(index.row());
 
     return QVariant();

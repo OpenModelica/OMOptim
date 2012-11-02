@@ -60,13 +60,13 @@
 #include "MOVector.h"
 
 
-class MOParametersWidget : public QWidget
+class WidgetParameters : public QWidget
 {
     Q_OBJECT
 
 public:
-    MOParametersWidget(MOParameters *parameters, bool editable=true);
-    ~MOParametersWidget();
+    WidgetParameters(MOParameters *parameters, bool useDirectLink, bool editable=true);
+    ~WidgetParameters();
     MOParameters* localParameters(){return _localParameters;}
 
 protected :
@@ -77,6 +77,7 @@ protected :
     QStringList _paramNames;
     QVector<int> _paramTypes;
     bool _editable;
+    bool _useDirectLink;
 
     QGridLayout* buildLayoutFromParameters();
     void updateEnabled();
@@ -103,7 +104,7 @@ public:
 
 
 protected :
-    MOParametersWidget* _widget;
+    WidgetParameters* _widget;
     MOParameters *_orgParameters;
 
 public slots:

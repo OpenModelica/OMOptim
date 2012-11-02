@@ -45,13 +45,13 @@
 Variable::Variable(void)
 {
     _causality = UNKNOWN;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+   // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::Variable(QString name)
 {
     setName(name);
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+   // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::Variable(const Variable & var):MOItem(var)
@@ -64,7 +64,7 @@ Variable::Variable(const Variable & var):MOItem(var)
     }
     _filledFields = var._filledFields;
     _editableFields = var._editableFields;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+   // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::Variable(QDomElement & domEl)
@@ -82,12 +82,12 @@ Variable::Variable(QDomElement & domEl)
 
         MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+  //  qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::~Variable(void)
 {
-    qDebug(QString("Remove "+getClassName()).toLatin1().data());
+   // qDebug(QString("Remove "+getClassName()).toLatin1().data());
 }
 
 Variable* Variable::clone() const
@@ -341,20 +341,20 @@ VariableResult::VariableResult()
     {
         setIsEditableField(i,false);
     }
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 VariableResult::VariableResult(const VariableResult& var):Variable(var)
 {
     _finalValues = var._finalValues;
     _computedPoints = var._computedPoints;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 VariableResult::VariableResult(const Variable& var):Variable(var)
 {
     setFinalValue(0,0,_value);
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 VariableResult::VariableResult(QDomElement & domEl)
@@ -380,7 +380,7 @@ VariableResult::VariableResult(QDomElement & domEl)
     {
         CSVBase::linesToOneVariableResultValues(this,domValues.text());
     }
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable VariableResult::extractPoint(int iPoint, int iScan)
@@ -400,7 +400,7 @@ VariableResult::~VariableResult()
     for(int i=0;i<_computedPoints.size();i++)
             _computedPoints[i].clear();
 
-    qDebug(QString("Remove "+getClassName()).toLatin1().data());
+    // qDebug(QString("Remove "+getClassName()).toLatin1().data());
 }
 
 VariableResult* VariableResult::clone() const
@@ -633,14 +633,14 @@ QDomElement VariableResult::toXmlData(QDomDocument & doc)
 OptVariable::OptVariable()
 {
     _editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 OptVariable::OptVariable(QString name)
 {
     _editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
     setName(name);
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 OptVariable::OptVariable(QDomElement & domEl)
@@ -659,12 +659,12 @@ OptVariable::OptVariable(QDomElement & domEl)
         MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
     _editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 OptVariable::~OptVariable()
 {
-    qDebug(QString("Remove "+getClassName()).toLatin1().data());
+    // qDebug(QString("Remove "+getClassName()).toLatin1().data());
 }
 
 /**
@@ -694,14 +694,14 @@ OptVariable::OptVariable(const Variable & var):Variable(var)
 {
     initOptExtremum();
     _editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 OptVariable::OptVariable(const OptVariable & var):Variable(var)
 {
     _optMin = var._optMin;
     _optMax = var._optMax;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 OptVariable* OptVariable::clone() const
@@ -906,7 +906,7 @@ bool OptVariable::setFieldValue(int ifield,QVariant value)
 ScannedVariable::ScannedVariable()
 {
     _editableFields << ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 ScannedVariable::ScannedVariable(QDomElement & domEl)
@@ -926,12 +926,12 @@ ScannedVariable::ScannedVariable(QDomElement & domEl)
     }
 
     _editableFields << ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 ScannedVariable::~ScannedVariable()
 {
-    qDebug(QString("Remove "+getClassName()).toLatin1().data());
+    // qDebug(QString("Remove "+getClassName()).toLatin1().data());
 }
 
 
@@ -940,7 +940,7 @@ ScannedVariable::ScannedVariable(const ScannedVariable & var):Variable(var)
     _scanMin = var._scanMin;
     _scanMax = var._scanMax;
     _scanStep = var._scanStep;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 ScannedVariable* ScannedVariable::clone() const
@@ -954,7 +954,7 @@ ScannedVariable::ScannedVariable(const Variable & var):Variable(var)
     initScanExtremum();
 
     _editableFields << ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP ;
-    qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 /**

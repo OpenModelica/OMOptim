@@ -40,7 +40,6 @@
 #if !defined(_MEHTCOEFF_H)
 #define _MEHTCOEFF_H
 
-#include "InfoSender.h"
 #include "MEDimValue.h"
 #include <cmath>
 

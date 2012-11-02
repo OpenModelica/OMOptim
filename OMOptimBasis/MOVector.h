@@ -98,6 +98,7 @@ public:
     bool contains(ItemClass*);
     bool alreadyIn(QString);
     void replaceIn(MOVector<ItemClass> *);
+    void replaceAt(int index, ItemClass *newItem);
     void addItems(MOVector<ItemClass> *,bool makeACopy);
 
     void cloneFromOtherVector(const MOVector*);

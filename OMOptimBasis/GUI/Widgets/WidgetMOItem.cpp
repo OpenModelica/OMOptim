@@ -144,6 +144,11 @@ void WidgetMOItem::setItem(MOItem* _item)
     emit valueChanged();
 
 }
+
+void WidgetMOItem::setEditable(bool editable)
+{
+    _editable = editable;
+}
 void WidgetMOItem::changeValue(QWidget* editor, const QVariant &value)
 {
     int iF = fieldEditWidget.key(editor,-1);

@@ -119,7 +119,8 @@ void WidgetTableOptVar::exportCSV()
 
     if(!csvPath.isNull())
     {
-        QString csvText = _variables->toCSV(_variables->curPoint());
+        QString separator = "\t";
+        QString csvText = _variables->toCSV(separator,QList<int>() << _variables->curPoint());
 
         QFile frontFile(csvPath);
         if(frontFile.exists())

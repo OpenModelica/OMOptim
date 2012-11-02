@@ -52,8 +52,7 @@
 
 MOTabBase::~MOTabBase(void)
 {
-    QString msg = "deleted MOTabBase"+name;
-    qDebug(msg.toLatin1().data());
+
 }
 
 MOItem* MOTabBase::getItem()

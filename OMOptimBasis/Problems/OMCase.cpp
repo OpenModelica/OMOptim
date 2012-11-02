@@ -43,15 +43,12 @@
 
 OMCase::OMCase(void)
 {
-    QString msg = "new OMCase"+name();
-    qDebug(msg.toLatin1().data());
+
 }
 
 
 OMCase::OMCase(ProjectBase* project)
 {
-     QString msg = "new OMCase"+name();
-      qDebug(msg.toLatin1().data());
     _project = project;
 }
 
@@ -64,15 +61,11 @@ OMCase::OMCase(const OMCase &omCase)
     _filesToCopy = omCase._filesToCopy;
     _saveFolder = omCase._saveFolder;
     _saveFileName = omCase._saveFileName;
-
-    QString msg = "new OMCase"+name();
-    qDebug(msg.toLatin1().data());
 }
 
 OMCase::~OMCase(void)
 {  
-    QString msg = "deleted OMCase"+name();
-    qDebug(msg.toLatin1().data());
+
 }
 
 

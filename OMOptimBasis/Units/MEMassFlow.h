@@ -40,7 +40,6 @@
 #if !defined(_MEMASSFLOW_H)
 #define _MEMASSFLOW_H
 
-#include "InfoSender.h"
 #include "MEDimValue.h"
 #include <cmath>
 

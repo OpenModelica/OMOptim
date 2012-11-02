@@ -3,8 +3,6 @@
 
 #include <QProcess>
 #include <QString>
-#include "InfoSender.h"
-
 
 /**
   * OMProcess inherits QProcess. It allows to forward stdout information to infosender.

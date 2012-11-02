@@ -49,7 +49,6 @@
 #include <math.h>
 
 #include "SleeperThread.h"
-#include "InfoSender.h"
 
 class METime;
 class MOItem;

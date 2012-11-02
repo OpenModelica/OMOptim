@@ -40,7 +40,7 @@
 #if !defined(_METime_H)
 #define _METime_H
 
-#include "InfoSender.h"
+
 #include "MEDimValue.h"
 #include <cmath>
 

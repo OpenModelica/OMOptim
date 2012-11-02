@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 #if !defined(_INFOSENDER_H)
@@ -68,6 +68,7 @@ public:
     };
 
     Infos(QObject* parent);
+    ~Infos();
 
     void addInfo(const QString & info,const type & infoType,const destination & infoDestination);
     void clear();
@@ -79,16 +80,22 @@ public:
 
 
 
+
 protected:
     QStringList _text;
     QList<type> _type; // normal,
     QList<int> _dest; // Destination tab: OMC, NORMAL, DEBUG
 
     QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    int columnCount(const QModelIndex &parent) const;
-    int rowCount(const QModelIndex &parent) const;
+
     Qt::ItemFlags flags(const QModelIndex &index) const;
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
+
+
 };
 
 
@@ -102,6 +109,8 @@ class InfoSender : public QObject
 
 public:
     static InfoSender* instance();
+    static void destroy();
+
     void setLogStream(QTextStream* logStream);
     ~InfoSender(void);
 
@@ -109,11 +118,15 @@ public:
     static void sendCurrentTask(QString msg);
 
 public slots :
-    void send(Info);
+    void send(const Info &);
     void debug(QString msg){send(Info(msg,ListInfo::INFODEBUG));}
     void sendWarning(QString msg){send(Info(msg,ListInfo::WARNING2));}
     void sendError(QString msg){send(Info(msg,ListInfo::ERROR2));}
     void sendNormal(QString msg){send(Info(msg,ListInfo::NORMAL2));}
+
+
+    // try to go through signal/slots in order to avoid multi-threading problems
+    void onReceivedInfo(const Info&);
 
 
     Infos* infosNormal(){return _infosNormal;}
@@ -121,7 +134,8 @@ public slots :
     Infos* infosDebug(){return _infosDebug;}
 
 signals :
-    void sent(Info);
+    void receivedInfo(const Info&);
+    void sent(const Info &);
     void setCurrentTask(QString);
     void increaseTaskProgress();
     void noCurrentTask();

@@ -108,7 +108,7 @@ protected:
 
  public:
     ProjectBase();
-    ~ProjectBase();
+    virtual ~ProjectBase();
 
     virtual QString getClassName(){return "ProjectBase";}
     virtual void clear();

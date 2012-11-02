@@ -40,7 +40,6 @@
 #if !defined(_MESpecHeatCapacity_H)
 #define _MESpecHeatCapacity_H
 
-#include "InfoSender.h"
 #include "MEDimValue.h"
 #include <cmath>
 

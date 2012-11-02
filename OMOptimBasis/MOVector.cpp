@@ -101,7 +101,7 @@ void MOVector<ItemClass>::setEditableFields(QList<int> indexes,bool editable)
 {
     for(int i=0;i<items.size();i++)
         for(int j=0;j<indexes.size();j++)
-        items[i]->setIsEditableField(indexes.at(j),editable);
+            items[i]->setIsEditableField(indexes.at(j),editable);
 }
 
 template<class ItemClass>
@@ -223,7 +223,6 @@ template<class ItemClass>
 void MOVector<ItemClass>::insertItem(ItemClass* item,int index)
 {
     // Add an item pointer in Vector
-    qDebug(QString("Insert item at range :" + QString::number(index)).toLatin1().data());
     if(index>-1)
     {
         beginInsertRows(QModelIndex(),index,index);
@@ -255,7 +254,7 @@ bool MOVector<ItemClass>::removeRows(int index, int count, const QModelIndex &pa
 
     if(index<0)
     {
-       qDebug(QString("!! Tried to remove item at index "+QString::number(index)).toLatin1().data());
+        qDebug(QString("!! Tried to remove item at index "+QString::number(index)).toLatin1().data());
         return false;
     }
 
@@ -405,6 +404,14 @@ void MOVector<ItemClass>::replaceIn(MOVector<ItemClass> *overVector)
         }
     }
 }
+
+template<class ItemClass>
+void MOVector<ItemClass>::replaceAt(int index, ItemClass *newItem)
+{
+    this->removeRow(index);
+    this->insertItem(newItem,index);
+}
+
 
 template<class ItemClass>
 void MOVector<ItemClass>::addItems(MOVector<ItemClass> * newItems,bool makeACopy)

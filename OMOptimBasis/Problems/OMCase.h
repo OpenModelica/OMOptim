@@ -46,7 +46,6 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 
-#include "InfoSender.h"
 #include "MOItem.h"
 
 class ProjectBase;

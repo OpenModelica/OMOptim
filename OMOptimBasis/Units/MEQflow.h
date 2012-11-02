@@ -40,7 +40,6 @@
 #if !defined(_MEQFLOW_H)
 #define _MEQFLOW_H
 
-#include "InfoSender.h"
 #include "MEDimValue.h"
 
 class MEQflow : public MEDimValue

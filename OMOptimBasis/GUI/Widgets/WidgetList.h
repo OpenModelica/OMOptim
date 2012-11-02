@@ -43,7 +43,6 @@
 #include <QtGui/QListWidget>
 #include <QApplication>
 
-#include "InfoSender.h"
 
 class WidgetList :
     public QListWidget

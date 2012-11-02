@@ -1,4 +1,5 @@
 #include "OMProcess.h"
+#include "InfoSender.h"
 
 OMProcess::OMProcess(QObject *parent) :
     QProcess(parent)

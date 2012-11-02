@@ -87,7 +87,7 @@ Info::Info(ListInfo::InfoNum infoNum_)
     catch(std::exception &e)
     {
     }
-};
+}
 
 Info::Info(ListInfo::InfoNum infoNum_, QString strSupp)
 {

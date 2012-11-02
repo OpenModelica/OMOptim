@@ -71,6 +71,7 @@ public:
 
 public:
     void setItem(MOItem*);
+    void setEditable(bool editable);
 
 protected :
     

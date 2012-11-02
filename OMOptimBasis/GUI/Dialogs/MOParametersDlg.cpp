@@ -51,7 +51,7 @@
 #include <QApplication>
 
 
-void MOParametersWidget::onSelectFileClicked()
+void WidgetParameters::onSelectFileClicked()
 {
     QPushButton* button = dynamic_cast<QPushButton*>(sender());
 
@@ -65,7 +65,7 @@ void MOParametersWidget::onSelectFileClicked()
     }
 }
 
-void MOParametersWidget::onSelectFolderClicked()
+void WidgetParameters::onSelectFolderClicked()
 {
     QPushButton* button = dynamic_cast<QPushButton*>(sender());
 
@@ -79,7 +79,7 @@ void MOParametersWidget::onSelectFolderClicked()
     }
 }
 
-void MOParametersWidget::setDefaultValues()
+void WidgetParameters::setDefaultValues()
 {
     QVariant defaultValue;
     MOParameter* curParam;
@@ -103,8 +103,12 @@ void MOParametersWidget::setDefaultValues()
 
 
 
-
-MOParametersWidget::MOParametersWidget(MOParameters *parameters, bool editable)
+/**
+  * useDirectLink: if true, widget works directly on parameters. Otherwise,
+  * it works on a copy.
+  *
+  */
+WidgetParameters::WidgetParameters(MOParameters *parameters,bool useDirectLink, bool editable)
 {
     this->setLocale(QLocale::C);
     this->setWindowTitle("Parameters");
@@ -116,7 +120,11 @@ MOParametersWidget::MOParametersWidget(MOParameters *parameters, bool editable)
     //        QApplication::postEvent( this, new QCloseEvent() );
     //    }
 
-    _localParameters = parameters->clone();
+    _useDirectLink = useDirectLink;
+    if(_useDirectLink)
+        _localParameters = parameters;
+    else
+        _localParameters = parameters->clone();
 
     _editable = editable;
 
@@ -125,13 +133,14 @@ MOParametersWidget::MOParametersWidget(MOParameters *parameters, bool editable)
 
 }
 
-MOParametersWidget::~MOParametersWidget()
+WidgetParameters::~WidgetParameters()
 {
-    delete _localParameters;
+    if(!_useDirectLink)
+        delete _localParameters;
 }
 
 
-QGridLayout* MOParametersWidget::buildLayoutFromParameters()
+QGridLayout* WidgetParameters::buildLayoutFromParameters()
 {
     //Adding Layout
     QGridLayout *mainLayout = new QGridLayout(this);
@@ -282,7 +291,7 @@ QGridLayout* MOParametersWidget::buildLayoutFromParameters()
     return mainLayout;
 }
 
-void MOParametersWidget::onValueChanged()
+void WidgetParameters::onValueChanged()
 {
 
     QWidget* widgetChanged = dynamic_cast<QWidget*>(sender());
@@ -299,7 +308,7 @@ void MOParametersWidget::onValueChanged()
 
 
 
-void MOParametersWidget::updateEnabled()
+void WidgetParameters::updateEnabled()
 {
     MOParameter* curParam;
     QWidget* curWidget;
@@ -318,7 +327,7 @@ void MOParametersWidget::updateEnabled()
     }
 }
 
-QVariant MOParametersWidget::getValue(QWidget* curWidget)
+QVariant WidgetParameters::getValue(QWidget* curWidget)
 {
 
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
@@ -342,7 +351,7 @@ QVariant MOParametersWidget::getValue(QWidget* curWidget)
         return combo->itemData(combo->currentIndex());
 }
 
-void MOParametersWidget::setValue(QWidget* curWidget,QVariant value)
+void WidgetParameters::setValue(QWidget* curWidget,QVariant value)
 {
 
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
@@ -395,7 +404,9 @@ MOParametersDlg::MOParametersDlg(MOParameters *parameters, bool editable)
     this->setLayout(new QVBoxLayout(this));
 
     // add parameters widget
-    _widget = new MOParametersWidget(parameters,editable);
+    // no direct link : widget works on a copy. Only when clicked on Ok,
+    // parameters values are updated.
+    _widget = new WidgetParameters(parameters,false,editable);
     this->layout()->addWidget(_widget);
 
     // add buttons

@@ -80,7 +80,7 @@ ProjectBase::ProjectBase()
 
 ProjectBase::~ProjectBase()
 {
-    qDebug("deleting Project");
+    qDebug("deleting ProjectBase");
 
     terminateProblemsThreads();
 
@@ -355,8 +355,6 @@ QString ProjectBase::tempPath()
 
 QString ProjectBase::problemsFolder()
 {
-    qDebug(folder().absolutePath().toLatin1().data());
-    qDebug(folder().absoluteFilePath("Problems").toLatin1().data());
     return folder().absoluteFilePath("Problems");
 }
 

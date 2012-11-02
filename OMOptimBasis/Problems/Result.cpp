@@ -65,7 +65,10 @@ Result::Result(const Result &result)
     _project = result._project;
 
     // filled pointers
-    _problem = result._problem->clone();
+    if(result._problem)
+        _problem = result._problem->clone();
+    else
+        _problem = NULL;
 
     // information
     _success = result._success;
