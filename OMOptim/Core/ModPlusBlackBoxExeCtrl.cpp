@@ -95,6 +95,11 @@ bool ModPlusBlackBoxExeCtrl::readInitialVarsFromPluginFunc(QString filename, QSt
   return varsRead;
 }
 
+bool ModPlusBlackBoxExeCtrl::setStopTime(double time)
+{
+    return false;
+}
+
 
 void ModPlusBlackBoxExeCtrl::setInputVarsInInitFileUsingPluginFunc(QString tempInitFile, QString modelName, MOVector<Variable> *variables)
 {

@@ -72,7 +72,7 @@ OneSimulation::OneSimulation(Project* project, ModelPlus* ModPlus)
     // ctrls
     _ctrls = new ModPlusCtrls(project,ModPlus);
 
-    qDebug(QString("New OneSimulation").toLatin1().data());
+    // qDebug(QString("New OneSimulation").toLatin1().data());
 }
 
 OneSimulation::OneSimulation(const OneSimulation &oneSim)
@@ -88,7 +88,7 @@ OneSimulation::OneSimulation(const OneSimulation &oneSim)
 
     _ctrls = oneSim._ctrls->clone();
 
-    qDebug(QString("New OneSimulation").toLatin1().data());
+    // qDebug(QString("New OneSimulation").toLatin1().data());
 }
 
 OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
@@ -152,7 +152,7 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
         _ctrls = new ModPlusCtrls(project,_ModelPlus,cControlers);
     }
 
-    qDebug(QString("New OneSimulation").toLatin1().data());
+    // qDebug(QString("New OneSimulation").toLatin1().data());
 }
 
 Problem* OneSimulation::clone() const
@@ -168,7 +168,7 @@ OneSimulation::~OneSimulation(void)
     delete _scannedVariables;
     delete _ctrls;
 
-    qDebug(QString("Remove OneSimulation").toLatin1().data());
+    // qDebug(QString("Remove OneSimulation").toLatin1().data());
 }
 
 

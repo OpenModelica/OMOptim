@@ -175,8 +175,6 @@ void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
 
 WidgetCtrlParameters::~WidgetCtrlParameters()
 {
-    QString msg = "delete WidgetCtrlParameters";
-    qDebug(msg.toLatin1().data());
 }
 
 

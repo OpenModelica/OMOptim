@@ -89,6 +89,8 @@
 #include "MyEoGnuplot1DMonitor.h"
 #include "EAStdOptimizationEval.h"
 #include "EAStdResult.h"
+#include "InfoSender.h"
+
 
 NSGA2::NSGA2():EABase()
 {

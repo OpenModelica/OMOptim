@@ -25,6 +25,8 @@ public:
     bool readInitialVariables(MOVector<Variable> *initVariables,bool forceRecompile, QString dsinFile);
     bool simulate(QDir tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,QFileInfoList filesTocopy,QFileInfoList moDependencies);
 
+    bool setStopTime(double time);
+
 protected :
     QProcess _simProcess;
     QString _dsfinalFile;

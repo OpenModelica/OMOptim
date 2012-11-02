@@ -60,6 +60,7 @@ public:
                       QFileInfoList filesTocopy,QFileInfoList moDependencies);
         void stopSimulation();
         bool canBeStoped();
+        bool setStopTime(double time);
 
 
 

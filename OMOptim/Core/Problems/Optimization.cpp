@@ -43,6 +43,7 @@
 #include "CSVBase.h"
 #include "LowTools.h"
 #include "ModPlusCtrls.h"
+#include "InfoSender.h"
 
 
 
@@ -251,6 +252,10 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     _scannedVariables = new ScannedVariables(true);
     _overwritedVariables = new Variables(true);
     _objectives = new OptObjectives(true);
+
+    // Parameters
+    QDomElement domParameters = domProblem.firstChildElement("Parameters");
+    this->parameters()->setItems(domParameters);
 
     // Optimized Variables
     QDomElement domOptVars = domProblem.firstChildElement("OptimizedVariables");
@@ -738,6 +743,10 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
         cModels.appendChild(cModel);
     }
     cProblem.appendChild(cModels);
+
+    // parameters
+    QDomElement cParameters = _parameters->toXmlData(doc,"Parameters");
+    cProblem.appendChild(cParameters);
 
     // Optimized variables
     QDomElement cOptVariables = _optimizedVariables->toXmlData(doc,"OptimizedVariables");

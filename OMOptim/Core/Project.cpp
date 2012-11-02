@@ -91,8 +91,6 @@ Project::Project()
 
 Project::~Project()
 {
-    qDebug("deleting Project");
-
     terminateOmsThreads();
 
     _moomc->stopServer();

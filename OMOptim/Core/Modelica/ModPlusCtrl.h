@@ -110,6 +110,8 @@ class ModPlusCtrl :public QObject
         virtual void stopSimulation(){}
         virtual bool canBeStoped(){return false;}
 
+        virtual bool setStopTime(double time) = 0;
+
         MOParameters* parameters() const;
 
         //bool operator==(const ModPlusCtrl &) const;

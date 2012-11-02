@@ -77,7 +77,7 @@ class ModPlusOMCtrl :public ModPlusCtrl
 
         // Simulate function
         bool simulate(QDir tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QFileInfoList filesToCopy ,QFileInfoList moDependencies);
-
+        bool setStopTime(double time);
 
 private :
         QString _initFileXml;

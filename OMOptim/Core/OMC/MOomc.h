@@ -46,7 +46,7 @@
 #include <QtCore/QProcess>
 #include <QtCore/QStringList>
 
-#include "InfoSender.h"
+
 #include "omc_communication.h"
 #include "OMCHelper.h"
 #include "StringHandler.h"

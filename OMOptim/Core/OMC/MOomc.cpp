@@ -910,7 +910,12 @@ QString MOomc::evalCommand(QString command,QString &errorString)
     }
     catch( omniORB::fatalException & ex)
     {
-        cerr << "Caught omniORB2 fatalException. This is a bug in omniORB" << endl;
+        InfoSender::instance()->debug("Caught omniORB2 fatalException. This is a bug in omniORB");
+        return QString();
+    }
+    catch( CORBA::COMM_FAILURE &ex)
+    {
+        InfoSender::instance()->debug("Caught CORBA::COMM_FAILURE");
         return QString();
     }
     catch (std::exception &ex)

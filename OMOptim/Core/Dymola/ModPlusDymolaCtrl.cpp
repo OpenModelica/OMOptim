@@ -271,6 +271,9 @@ bool ModPlusDymolaCtrl::isCompiled()
   */
 bool ModPlusDymolaCtrl::uncompile()
 {
+    // Info
+    InfoSender::instance()->sendNormal("Removing compiled model : "+name());
+
     // first remove initfile
     QFileInfo initFile(_ModelPlus->mmoFolder(),"dsin.txt");
     QFile::remove(initFile.absoluteFilePath());
@@ -366,6 +369,12 @@ bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,M
     InfoSender::eraseCurrentTask();
     return readOk;
 
+}
+
+bool ModPlusDymolaCtrl::setStopTime(double time)
+{
+    _parameters->setValue(DymolaParameters::str(DymolaParameters::STOPTIME),time);
+    return true;
 }
 
 void ModPlusDymolaCtrl::stopSimulation()

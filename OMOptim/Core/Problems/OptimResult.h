@@ -78,7 +78,9 @@ public:
     virtual QDomElement toXmlData(QDomDocument &);
 
     void updateRecomputedPointsFromFolder();
-    void loadOptimValuesFromFrontFile(QString fileName);
+    void updateOptimValuesFromFrontFile(QString fileName);
+
+
 
     QString buildOptVarsFrontCSV(QString separator="\t");
     QString buildAllVarsFrontCSV(QString separator="\t");
@@ -108,7 +110,7 @@ public :
     MOOptVector *optObjectivesResults(){return _optObjectivesResults;}
     MOOptVector *recomputedVariables(){return _recomputedVariables;}
 
-    QList<int> recomputedPoints(){return _recomputedPoints;};
+    QList<int> recomputedPoints(){return _recomputedPoints;}
     void recomputePoints(QList<int> iPoints, bool forceRecompute);
 
     // index for each point of subBlocks included (in subBlocks)
@@ -123,7 +125,13 @@ public :
     Project* omProject(){return dynamic_cast<Project*>(_project);}
 
 
+
+
 protected:
+
+    void loadOptimValuesFromFrontFile(int version);
+    void loadOptimValuesFromFrontFilev0();
+    void loadOptimValuesFromFrontFilev1();
 
     int _curPoint;
     int _curScan;

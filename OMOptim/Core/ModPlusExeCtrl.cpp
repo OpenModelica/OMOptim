@@ -54,13 +54,10 @@ void ModPlusExeCtrl::setDefaultParameters()
 //    mapOutput.insert(ModPlusOMCtrl::MAT,"mat");
 //    mapOutput.insert(ModPlusOMCtrl::CSV,"csv");
 
-//    _parameters->addItem( new MOParameterListed((int)OUTPUT,"outputFormat","Output",ModPlusOMCtrl::MAT,mapOutput));
+    //    _parameters->addItem( new MOParameterListed((int)OUTPUT,"outputFormat","Output",ModPlusOMCtrl::MAT,mapOutput));
 
 }
-//ModPlusCtrl::Type ModPlusExeCtrl::type() const
-//{
-//    return ModPlusCtrl::EXECUTABLE;
-//}
+
 
 
 

@@ -484,7 +484,6 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
                         newLine = paramValue.toString() +"\t";
                         newLine += fields.at(2)+paramName;
                         allText = allText.replace(rxLine.cap(0),newLine);
-                        qDebug(newLine.toLatin1().data());
                     }
                     else
                     {

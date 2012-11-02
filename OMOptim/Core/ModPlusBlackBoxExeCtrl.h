@@ -31,6 +31,7 @@ public:
     void setInputVarsInInitFileUsingPluginFunc(QString tempInitFile, QString modelName, MOVector<Variable> *variables);
     bool simulate(QDir tempDir, MOVector<Variable> * inputVars, MOVector<Variable> * outputVars, QFileInfoList filesToCopy ,QFileInfoList moDependencies);
     bool readInitialVarsFromPluginFunc(QString filename, QString modelName,MOVector<Variable> *initVariables);
+    bool setStopTime(double time);
 
     //read output resfiles
     bool getOutputVarsUsingPluginFunc(QString fileName, MOVector<Variable> * variables, QString modelName);

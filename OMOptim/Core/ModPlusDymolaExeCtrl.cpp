@@ -47,6 +47,11 @@ ModPlusCtrl::Type ModPlusDymolaExeCtrl::type() const
 }
 
 
+bool ModPlusDymolaExeCtrl::setStopTime(double time)
+{
+    _parameters->setValue(DymolaParameters::str(DymolaParameters::STOPTIME),time);
+    return true;
+}
 
 
 bool ModPlusDymolaExeCtrl::simulate(QDir tempDir, MOVector<Variable> *updatedVars, MOVector<Variable> *outputVars, QFileInfoList filesToCopy, QFileInfoList moDependencies)

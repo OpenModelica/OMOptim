@@ -62,6 +62,7 @@
 
 #include "Variable.h"
 #include "Plots/MyQwtPlotPicker.h"
+#include "InfoSender.h"
 
 class MOOptPlot :  public QwtPlot
 {

@@ -197,6 +197,11 @@ bool ModPlusOMExeCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QS
         return OpenModelica::getFinalVariablesFromFile(resFileLocal,finalVariables,_ModelPlus->modelName());
 }
 
+bool ModPlusOMExeCtrl::setStopTime(double time)
+{
+    _parameters->setValue(OpenModelicaParameters::str(OpenModelicaParameters::STOPTIME),time);
+    return true;
+}
 bool ModPlusOMExeCtrl::start(QString exeFile,int maxnsec)
 {
 

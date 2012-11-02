@@ -224,6 +224,9 @@ bool ModPlusOMCtrl::isCompiled()
   */
 bool ModPlusOMCtrl::uncompile()
 {
+    // info
+    InfoSender::instance()->sendNormal("Removing compiled model : "+name());
+
     // first remove initfile
     QFileInfo initFile(_ModelPlus->mmoFolder(),_initFileXml);
     QFile::remove(initFile.absoluteFilePath());
@@ -313,6 +316,13 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     bool readOk = readOutputVariables(outputVars,tempResFile);
     return readOk;
 }
+
+bool ModPlusOMCtrl::setStopTime(double time)
+{
+    _parameters->setValue(OpenModelicaParameters::str(OpenModelicaParameters::STOPTIME),time);
+    return true;
+}
+
 bool ModPlusOMCtrl::createInitFile(const QFileInfoList & moDeps)
 {
     return compile(moDeps);

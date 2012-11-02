@@ -32,6 +32,8 @@ public:
     bool simulate(QDir tempFolder, MOVector<Variable> *inputVars, MOVector<Variable> *outputVars, QFileInfoList filesToCopy, QFileInfoList moDependencies);
     bool start(QString exeFile,int maxnsec);
     bool readOutputVariables(MOVector<Variable> *,QString resFile="");
+
+    bool setStopTime(double time);
 };
 
 #endif // MODPLUSOMEXECTRL_H

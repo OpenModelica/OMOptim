@@ -129,8 +129,6 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     }
 
 
-
-
     // *******************************************************************
     // Filling OptVariables Values
     // and corresponding recomputedVariables if nScans == 0
@@ -146,6 +144,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
 
     bool fillRecompValues = !useScan;
 
+
     for(int iVar=0; iVar<nbOptVar; iVar++)
     {
         curOptVar = problem->optimizedVariables()->items.at(iVar);
@@ -154,7 +153,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
         if(iCorrRecompVar<0)
         {
             QString msg;
-            msg.sprintf("Unable to find variable %s in result file",curOptVar->name().utf16());
+            msg.sprintf("Unable to find variable %s for filling result",curOptVar->name().utf16());
             InfoSender::instance()->debug(msg);
         }
         else
@@ -234,18 +233,22 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
         if(iCorrRecompVar<0)
         {
             QString msg;
-            msg.sprintf("Unable to find variable %s in result file",curObjResult->name().utf16());
+            msg.sprintf("Unable to find objective %s in in recomputed variables",curObjResult->name().utf16());
             InfoSender::instance()->debug(msg);
         }
         else
         {
+            qDebug(QString("Found recomp value of obj " + curObjResult->name()).toLatin1().data());
             for(int iPoint=0;iPoint<arch.size();iPoint++)
             {
                 curResultPoint = &arch.at(iPoint);
                 resObjVector = curResultPoint->objectiveVector();
                 result->optObjectivesResults()->items[iObj]->setFinalValue(0,iPoint,resObjVector.at(iObj),true);
                 if(fillRecompValues)
+                {
+                    qDebug(QString("Fill Recomp value of obj " + curObjResult->name()).toLatin1().data());
                     result->recomputedVariables()->items[iCorrRecompVar]->setFinalValue(0,iPoint,resObjVector.at(iObj),true);
+                }
             }
         }
     }
