@@ -47,6 +47,7 @@
 #include "float.h"
 #include "Optimization.h"
 #include "moeo"
+#include "LowTools.h"
 
 /** \class EAStdOptimizationEval is a function for evaluating fitness of an individual.
           * For each individual, it :
@@ -198,6 +199,21 @@ public:
                     objVec[iObj]=curObjResult;
 
                     iObj++;
+                }
+
+                // recover saved variables
+                QString curVarName;
+                QString curModelName;
+                VariableResult* curVarResult;
+                for(int i=0;i<_problem->savedVars()->size();i++)
+                {
+                    curVarName=_problem->savedVars()->at(i)->name(Variable::SHORT);
+                    curModelName=_problem->savedVars()->at(i)->model();
+                    curVarResult = resultVariables->findVariable(curModelName,curVarName);
+                    if(curVarResult)
+                        eo.savedVars.push_back(curVarResult->finalValue(0,0));
+                    else
+                        eo.savedVars.push_back(LowTools::nan());
                 }
             }
 

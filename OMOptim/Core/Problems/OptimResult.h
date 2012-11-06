@@ -77,7 +77,7 @@ public:
 
     virtual QDomElement toXmlData(QDomDocument &);
 
-    void updateRecomputedPointsFromFolder();
+//    void updateRecomputedPointsFromFolder();
     void updateOptimValuesFromFrontFile(QString fileName);
 
 

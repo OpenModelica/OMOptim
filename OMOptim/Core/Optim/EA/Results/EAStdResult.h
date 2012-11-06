@@ -112,7 +112,6 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
         result->optVariablesResults()->addItem(curOptVarRes);
         if(result->recomputedVariables()->findItem(curOptVarRes->name(Variable::FULL))==-1)
             result->recomputedVariables()->addItem(curOptVarRes->clone());
-
     }
 
     // define optObjectiveResult from optObjective
@@ -126,6 +125,17 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
         result->optObjectivesResults()->addItem(curOptObjRes);
         if(result->recomputedVariables()->findItem(curOptObjRes->name(Variable::FULL))==-1)
             result->recomputedVariables()->addItem(curOptObjRes->clone());
+    }
+
+    // and add savedVariables in recomputedVariables if not present
+    int nbSavedVars= problem->savedVars()->size();
+    for (int iSavVar = 0; iSavVar < nbSavedVars; iSavVar++)
+    {
+        curOptVarRes = new VariableResult(*problem->savedVars()->at(iSavVar));
+        curOptVarRes->clearFinalValues();
+        if(result->recomputedVariables()->findItem(curOptVarRes->name(Variable::FULL))==-1)
+            result->recomputedVariables()->addItem(curOptVarRes->clone());
+        delete curOptVarRes;
     }
 
 
@@ -248,6 +258,28 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
                 {
                     qDebug(QString("Fill Recomp value of obj " + curObjResult->name()).toLatin1().data());
                     result->recomputedVariables()->items[iCorrRecompVar]->setFinalValue(0,iPoint,resObjVector.at(iObj),true);
+                }
+            }
+        }
+    }
+
+    // *******************************************************************
+    // Filling from savedVar Values
+    // and corresponding recomputedVariables if nScans == 0
+    // *******************************************************************
+    Variable* curVar;
+    for(int iSavedVar=0;iSavedVar<nbSavedVars;iSavedVar++)
+    {
+        curVar = problem->savedVars()->at(iSavedVar);
+        iCorrRecompVar = result->recomputedVariables()->findItem(curVar->name());
+        if(iCorrRecompVar>-1)
+        {
+            for(int iPoint=0;iPoint<arch.size();iPoint++)
+            {
+                curResultPoint = &arch.at(iPoint);
+                if(fillRecompValues)
+                {
+                    result->recomputedVariables()->items[iCorrRecompVar]->setFinalValue(0,iPoint,curResultPoint->savedVars.at(iSavedVar),true);
                 }
             }
         }

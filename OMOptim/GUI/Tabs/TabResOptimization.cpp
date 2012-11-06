@@ -66,8 +66,8 @@
 TabResOptimization::TabResOptimization(OptimResult *result, QWidget *parent) :
 MO2ColTab(result->project()->name(),result,false,parent)
 {
-        QMainWindow::setDockNestingEnabled(true);
-        QMainWindow::setCorner(Qt::TopLeftCorner,Qt::LeftDockWidgetArea);
+//        QMainWindow::setDockNestingEnabled(true);
+//        QMainWindow::setCorner(Qt::TopLeftCorner,Qt::LeftDockWidgetArea);
         _project = dynamic_cast<Project*>(result->project());
         _result = result;
         _problem = dynamic_cast<Optimization*>(_result->problem());

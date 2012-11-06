@@ -91,13 +91,19 @@ public:
         _os << boolVars.size() << ' ' ;
         for (unsigned i=0; i<boolVars.size(); i++)
             _os << boolVars[i] << ' ' ;
+
+
+        _os << savedVars.size() << ' ' ;
+        for (unsigned i=0; i<savedVars.size(); i++)
+            _os << savedVars[i] << ' ' ;
+
         // END   Code of default output
     }
 
     void readFrom(std::istream& _is)
     {
         // START Code of input
-        unsigned doubleSize,intSize,boolSize,nbObj;
+        unsigned doubleSize,intSize,boolSize,nbObj,savedVarsSize;
         double tmpDouble;
         int tmpInt;
         bool tmpBool;
@@ -147,6 +153,14 @@ public:
             boolVars[i]=tmpBool;
         }
 
+        _is >> savedVarsSize;
+        savedVars.resize(savedVarsSize);
+        for (unsigned i=0; i<savedVarsSize; i++)
+        {
+            _is >> tmpDouble;
+            savedVars[i]=tmpDouble;
+        }
+
         // END   Code of input
     }
 
@@ -155,6 +169,8 @@ public:
     std::vector<double> doubleVars;
     std::vector<int> intVars;
     std::vector<bool> boolVars;
+    std::vector<double> savedVars; // vars that are neither optVariables nor optObjectives,
+                                    // but which we want to keep information of.
 
 };
 

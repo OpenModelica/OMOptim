@@ -55,6 +55,7 @@ Optimization::Optimization(Project* project,QStringList models)
 
     _optimizedVariables = new OptVariables(true);
     _overwritedVariables = new Variables(true);
+    _savedVars = new Variables(true);
     _scannedVariables = new ScannedVariables(true);
     _objectives = new OptObjectives(true);
     _blockSubstitutions = new BlockSubstitutions();
@@ -75,6 +76,7 @@ Optimization::Optimization(const Optimization &optim)
     _optimizedVariables = optim._optimizedVariables->clone();
     _scannedVariables = optim._scannedVariables->clone();
     _overwritedVariables = optim._overwritedVariables->clone();
+    _savedVars = optim._savedVars->clone();
     _objectives = optim._objectives->clone();
     _blockSubstitutions = optim._blockSubstitutions->clone();
 
@@ -102,6 +104,7 @@ Optimization::~Optimization()
     delete _objectives;
     delete _blockSubstitutions;
     delete _overwritedVariables;
+    delete _savedVars;
     delete _scannedVariables;
 
     for(int i=0;i<_ctrls.values().size();i++)
@@ -251,6 +254,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     _optimizedVariables = new OptVariables(true);
     _scannedVariables = new ScannedVariables(true);
     _overwritedVariables = new Variables(true);
+    _savedVars = new Variables(true);
     _objectives = new OptObjectives(true);
 
     // Parameters
@@ -274,6 +278,12 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     this->overwritedVariables()->setItems(domOverVars);
     for(int i=0;i<overwritedVariables()->size();i++)
         overwritedVariables()->at(i)->setIsEditableField(Variable::VALUE,true);
+
+    // saved Variables
+    QDomElement domSavedVars = domProblem.firstChildElement("SavedVariables");
+    this->savedVars()->setItems(domSavedVars);
+    for(int i=0;i<savedVars()->size();i++)
+        savedVars()->at(i)->setIsEditableField(Variable::VALUE,true);
 
     // Files to copy
     QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
@@ -763,6 +773,10 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     // Overwrited variables
     QDomElement cOverVars = _overwritedVariables->toXmlData(doc,"OverwritedVariables");
     cProblem.appendChild(cOverVars);
+
+    // saved vars
+    QDomElement cSavedVars = _savedVars->toXmlData(doc,"SavedVariables");
+    cProblem.appendChild(cSavedVars);
 
 
     //BlockSubstitutions

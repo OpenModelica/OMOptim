@@ -683,13 +683,21 @@ bool MOomc::buildModel(QString model,QString & exeFile,QString & initFile)
     commandRes.remove(QRegExp("[{|}|\"]"));
 
     exeFile = commandRes.section(",",0,0);
+    bool success = !exeFile.isEmpty();
+    if(!success)
+    {
+        exeFile.clear();
+        initFile.clear();
+    }
+    else
+    {
 #ifdef WIN32
-    exeFile.append(".exe");
+        exeFile.append(".exe");
 #endif
-    QDir dir = QFileInfo(exeFile).absoluteDir();
-    initFile = dir.absoluteFilePath(commandRes.section(",",1,1));
-
-    return !exeFile.isEmpty();
+        QDir dir = QFileInfo(exeFile).absoluteDir();
+        initFile = dir.absoluteFilePath(commandRes.section(",",1,1));
+    }
+    return success;
 }
 
 
@@ -1111,8 +1119,6 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
 
     if(doLoad)
     {
-        InfoSender::sendCurrentTask("Loading model "+filename);
-
         // store mo file before modifying it
         // (imports will be commented)
         QFile moFile(filename);
@@ -1441,14 +1447,12 @@ QString MOomc::getTempDirectory()
 QFileInfo MOomc::getFileOfClass(QString _className)
 {
     QString filePath = "";
-    QString res = evalCommand("getElementsInfo("+_className+")");
+    QString res = evalCommand("getClassInformation("+_className+")");
 
-    if(res!="Error")
+    if(res.compare("Error",Qt::CaseInsensitive))
     {
-        int idStart = res.indexOf("elementfile");
-        idStart = res.indexOf("\"",idStart);
-        int idEnd = res.indexOf("\"",idStart+1);
-        filePath = res.mid(idStart+1,idEnd-idStart-1);
+        filePath = res.section(",",2,2);
+        filePath.remove("\"");
     }
 
     return QFileInfo(filePath);

@@ -169,9 +169,8 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     loadOptimValuesFromFrontFile(savVersion);
 
 
-    // Filling recomputed values from folder point_ (csv)
-    this->updateRecomputedPointsFromFolder();
-
+//    // Filling recomputed values from folder point_ (csv)
+//    this->updateRecomputedPointsFromFolder();
 }
 
 void OptimResult::loadOptimValuesFromFrontFile(int version)
@@ -200,9 +199,7 @@ void OptimResult::loadOptimValuesFromFrontFilev0()
             curModel->readVariables(problem->ctrl(_models.at(iM)));
 
         for (int i=0;i<curModel->variables()->size();i++)
-
         {
-
             this->recomputedVariables()->addItem(new VariableResult(*curModel->variables()->at(i)));
         }
     }
@@ -250,17 +247,12 @@ void OptimResult::loadOptimValuesFromFrontFilev1()
 
     for (int i=0; i<this->optVariablesResults()->size(); i++)
     {
-        this->optVariablesResults()->at(i)->clearFinalValues();
+        modelName = this->optVariablesResults()->at(i)->model();
+        varName = this->optVariablesResults()->at(i)->name(Variable::SHORT);
+        corrVar = this->recomputedVariables()->findVariable(modelName,varName);
+        if(corrVar)
+            this->optVariablesResults()->replaceAt(i,corrVar->clone());
     }
-
-
-
-
-
-
-
-
-
 }
 
 
@@ -376,34 +368,33 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
     delete[] recompVarIndex;
 }
 
-void OptimResult::updateRecomputedPointsFromFolder()
-{
-    _recomputedPoints.clear();
+//void OptimResult::updateRecomputedPointsFromFolder()
+//{
+//    _recomputedPoints.clear();
 
-    // Filling final values from frontFile (csv)
-    QDir dir(this->saveFolder());
+//    // Filling final values from frontFile (csv)
+//    QDir dir(this->saveFolder());
 
-    // Looking for recomputed points
-    QString pointFolder;
+//    // Looking for recomputed points
+//    QString pointFolder;
 
-    VariableResult *newVariableResult;
-    bool curPointIsRecomputed;
-    int nbPoints = _optObjectivesResults->nbPoints();
+//    VariableResult *newVariableResult;
+//    bool curPointIsRecomputed;
+//    int nbPoints = _optObjectivesResults->nbPoints();
 
-    for(int iPoint=0;iPoint<nbPoints;iPoint++)
-    {
-        pointFolder = dir.absolutePath()+ QDir::separator()+"point_"+QString::number(iPoint);
-        curPointIsRecomputed=dir.exists(pointFolder);
+//    for(int iPoint=0;iPoint<nbPoints;iPoint++)
+//    {
+//        pointFolder = dir.absolutePath()+ QDir::separator()+"point_"+QString::number(iPoint);
+//        curPointIsRecomputed=dir.exists(pointFolder);
 
 
-        if(curPointIsRecomputed)
-        {
-            _recomputedPoints.push_back(iPoint);
-
-            CSVBase::FileToVariableResult(_recomputedVariables,iPoint,pointFolder+QDir::separator()+"resultVar.csv");
-        }
-    }
-}
+//        if(curPointIsRecomputed)
+//        {
+//            _recomputedPoints.push_back(iPoint);
+//            _recomputedVariables->updateFromCsv(_recomputedVariables,iPoint,pointFolder+QDir::separator()+"resultVar.csv");
+//        }
+//    }
+//}
 
 
 
@@ -450,55 +441,10 @@ QString OptimResult::buildAllVarsFrontCSV(QList<int> listPoints,QString separato
 QString OptimResult::buildVarsFrontCSV(MOOptVector* variables, QList<int> listPoints,QString separator)
 {
     return variables->toCSV(separator,listPoints);
-//    QString csv;
-//    int iVar,nbPoints,iPoint;
-
-//    // avoid identical columns
-//    QStringList varNames;
-
-
-//    if(variables->size()>0)
-//    {
-//        // writing names
-//        for(iVar=0;iVar<variables->size();iVar++)
-//        {
-//            csv += variables->at(iVar)->model()+"#"+variables->at(iVar)->name(Variable::SHORT);
-//            csv += separator;
-//        }
-
-//        // adding subModel index if necessary
-//        if(_subBlocks.size()>1)
-//        {
-//            csv += "subBlocksIndex";
-//            csv += separator;
-//        }
-//        csv += "\n";
-
-//        // writing values
-//        nbPoints = listPoints.size();
-
-//        for(iPoint = 0; iPoint < nbPoints; iPoint++)
-//        {
-//            for(iVar=0;iVar<variables->size();iVar++)
-//            {
-//                csv += QString::number(variables->at(iVar)->finalValue(0,listPoints.at(iPoint)));
-//                csv += separator;
-//            }
-//            // adding subModel index if necessary
-//            if(_subBlocks.size()>1)
-//            {
-//                csv += QString::number(_iSubModels.at(listPoints.at(iPoint)));
-//                csv += separator;
-//            }
-//            csv += "\n";
-//        }
-//    }
-//    return csv;
 }
 
 QDomElement OptimResult::toXmlData(QDomDocument & doc)
 {
-
     // Result element
     QDomElement cRoot = doc.createElement("OMResult");
     QDomElement cResult = doc.createElement(OptimResult::className());
@@ -700,10 +646,6 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
                                                                      curFinalVariable->finalValuesAtPoint(0));
                             this->recomputedVariables()->addItem(newVariableResult);
 
-                            QString msg;
-                            msg.sprintf("Variable %s added in recomputed variables list",
-                                        newVariableResult->name().toLatin1().data());
-                            InfoSender::instance()->debug(msg);
                         }
                         // update objective value if necessary (should'nt be the case, but if model has been changed)
                         int iObj = this->optObjectivesResults()->findItem(curFinalVariable->name());
@@ -714,16 +656,16 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
                             this->optObjectivesResults()->at(iObj)->setFinalValue(0,iPoint,objValue,objOk);
                         }
                     }
-                    //*****************************
-                    //Saving results into csv file
-                    //*****************************
-                    //update scan folders
-                    LowTools::mkpath(pointSaveFolder,true);
-                    QFile file(pointSaveFolder+QDir::separator()+"resultVar.csv");
-                    file.open(QIODevice::WriteOnly);
-                    QTextStream ts( &file );
-                    ts << CSVBase::variableResultToValueLines(this->recomputedVariables(),iPoint);
-                    file.close();
+//                    //*****************************
+//                    //Saving results into csv file
+//                    //*****************************
+//                    //update scan folders
+//                    LowTools::mkpath(pointSaveFolder,true);
+//                    QFile file(pointSaveFolder+QDir::separator()+"resultVar.csv");
+//                    file.open(QIODevice::WriteOnly);
+//                    QTextStream ts( &file );
+//                    ts << CSVBase::variableResultToValueLines(this->recomputedVariables(),iPoint);
+//                    file.close();
 
                     delete oneSimRes;
                 }

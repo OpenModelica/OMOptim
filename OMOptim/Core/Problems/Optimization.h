@@ -71,6 +71,8 @@ protected :
     ScannedVariables *_scannedVariables;
     OptVariables *_optimizedVariables;
     OptObjectives *_objectives;
+    Variables *_savedVars; // variables which we keep values from during optimization
+
     BlockSubstitutions *_blockSubstitutions;
 
     bool _useScan;
@@ -94,6 +96,7 @@ public:
 
     //Get functions
     Variables* overwritedVariables()const{return _overwritedVariables;}
+    Variables* savedVars()const{return _savedVars;}
     ScannedVariables* scannedVariables()const{return _scannedVariables;}
     OptVariables *optimizedVariables()const{return _optimizedVariables;}
     OptObjectives *objectives()const{return _objectives;}
