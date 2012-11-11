@@ -105,7 +105,7 @@ public :
       * Used for GUI or saving/load functions.
       * if DisplayInvalid = false,invalid values are replaced with "-"
       */
-    static QString listToString(const QList<DimValue> &list, int iUnit,bool displayInvalid = false)
+    static QString listToRowString(const QList<DimValue> &list, int iUnit,bool displayInvalid = false)
     {
         if(list.isEmpty())
             return QString();
@@ -133,16 +133,47 @@ public :
     }
 
     /**
+      * Convert a list of MEDimValue to a QString
+      * Used for GUI or saving/load functions.
+      * if DisplayInvalid = false,invalid values are replaced with "-"
+      */
+    static QString listToColumnString(const QList<DimValue> &list, int iUnit,bool displayInvalid = false)
+    {
+        if(list.isEmpty())
+            return QString();
+
+        QString separator = "\n";
+        QString result="";
+        bool allAreId = true; // if all are id then copy only num value
+        for(int i=0;i<list.size();i++)
+        {
+            if(!displayInvalid && !list.at(i).isValid())
+                result+="-";
+            else
+                result+=QString::number(list.at(i).value(iUnit));
+            result+=separator;
+            allAreId = allAreId && (list.at(i).value(iUnit)==list.at(0).value(iUnit));
+        }
+        if(allAreId)
+            return QString::number(list.at(0).value(iUnit));
+        else
+        {
+            result.remove(result.size()-separator.size(),separator.size());
+           // result.push_back("]");
+            return result;
+        }
+    }
+
+    /**
       * Convert a Qstring to a list of DimValue
       */
-    static QList<DimValue> stringToList(QString str,int iUnit, bool &ok)
+    static QList<DimValue> rowStringToList(QString str,int iUnit, bool &ok)
     {
         bool tmpOk;
         QList<DimValue> result;
         QString separator = ";"; // be sure to set the same in listToString function.
         str = str.remove("[");
         str = str.remove("]");
-
 
         QStringList strList = str.split(separator);
         ok = !strList.isEmpty();

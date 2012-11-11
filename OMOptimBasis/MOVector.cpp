@@ -559,6 +559,7 @@ QStringList MOVector<ItemClass>::mimeTypes () const
 {
     QStringList types;
     types << "text/plain";
+    types << "text/XML";
     return types;
 }
 
@@ -567,7 +568,8 @@ QMimeData* MOVector<ItemClass>::mimeData(const QModelIndexList &indexes) const
 {
     QMimeData *mimeData = new QMimeData();
 
-    // create xml data
+    // create xml and plain text data
+    QString csv;
     QDomDocument doc;
     MOVector<ItemClass> dragVector(false);
     for(int i=0;i<indexes.size();i++)
@@ -577,8 +579,15 @@ QMimeData* MOVector<ItemClass>::mimeData(const QModelIndexList &indexes) const
             dragVector.addItem(item);
     }
 
+    for(int i=0;i<dragVector.items.size();i++)
+    {
+        csv.push_back(dragVector.items.at(i)->toCSV());
+        csv.push_back("\n");
+    }
+
     doc.appendChild(dragVector.toXmlData(doc,"list"));
-    mimeData->setText("XML::"+doc.toString());
+    mimeData->setData("text/XML","XML::"+doc.toString().toAscii());
+    mimeData->setText(csv);
 
     return mimeData;
 }
@@ -598,7 +607,7 @@ bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
     if (!data->hasText())
         return false;
 
-    QString text = data->text();
+    QString text = data->data("text/XML");
 
     bool somethingDone = false;
 

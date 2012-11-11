@@ -85,18 +85,25 @@ void MOOptVector::setFromCsv(QString text)
 {
     clear();
 
+    updateFromCsv(text);
+}
+
+void MOOptVector::updateFromCsv(QString text)
+{
     QStringList lines = text.split("\n",QString::KeepEmptyParts);
     QStringList firstLine = lines[0].split("\t",QString::SkipEmptyParts);
     int nbCols = firstLine.size();
     QStringList curLine;
     int iPoint=0;
-    int curIndex=0;
 
     // read first column and create or not variables
     QString colName;
     QString modelName;
     QString varName;
     QRegExp varExp("^(\\S*)#(\\S*)");
+    QList<int> indexes;
+    VariableResult* curVar;
+
     for(int i=0;i<nbCols;i++)
     {
         // get var and model names
@@ -112,14 +119,20 @@ void MOOptVector::setFromCsv(QString text)
             varName = colName;
         }
 
-        VariableResult* newVarResult = new VariableResult();
-        newVarResult->setName(varName);
-        newVarResult->setModel(modelName);
-        this->addItem(newVarResult);
+        curVar = this->findVariable(modelName,varName);
+        if(!curVar)
+        {
+            curVar = new VariableResult();
+            curVar->setName(varName);
+            curVar->setModel(modelName);
+            this->addItem(curVar);
+        }
+        indexes.push_back(this->items.indexOf(curVar));
     }
 
-    bool ok;
     double value;
+    bool ok;
+    int index;
     for (int iLine = 1; iLine<lines.size(); iLine++)
     {
         curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
@@ -129,16 +142,82 @@ void MOOptVector::setFromCsv(QString text)
             for (int iCol = 0; iCol < nbCols; iCol++)
             {
                 value = curLine[iCol].toDouble(&ok);
-                if(ok)
-                    this->at(iCol)->setFinalValue(0,iPoint,value);
+                index = indexes.at(iCol);
+                if(ok && (index>-1))
+                    this->at(index)->setFinalValue(0,iPoint,value);
             }
-
-            curIndex ++;
             iPoint++;
         }
     }
 
 }
+
+void MOOptVector::updateFromCsv(QString text, int iPoint)
+{
+    //Clear variables at iPoint
+    this->clearAtiPoint(iPoint);
+
+    QStringList lines = text.split("\n",QString::KeepEmptyParts);
+    QStringList firstLine = lines[0].split("\t",QString::SkipEmptyParts);
+    int nbCols = firstLine.size();
+    QStringList curLine;
+
+    // read first column and create or not variables
+    QString colName;
+    QString modelName;
+    QString varName;
+    QRegExp varExp("^(\\S*)#(\\S*)");
+    QList<int> indexes;
+    VariableResult* curVar;
+
+    for(int i=0;i<nbCols;i++)
+    {
+        // get var and model names
+        colName = firstLine.at(i);
+        if(colName.indexOf(varExp)==0)
+        {
+            modelName =  varExp.capturedTexts().at(1);
+            varName = varExp.capturedTexts().at(2);
+        }
+        else
+        {
+            modelName.clear();
+            varName = colName;
+        }
+
+        curVar = this->findVariable(modelName,varName);
+        if(!curVar)
+        {
+            curVar = new VariableResult();
+            curVar->setName(varName);
+            curVar->setModel(modelName);
+            this->addItem(curVar);
+        }
+        indexes.push_back(this->items.indexOf(curVar));
+    }
+
+    int iScan;
+    double value;
+    int index;
+    bool ok;
+    for (int iLine = 1; iLine<lines.size(); iLine++)
+    {
+        curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
+        iScan = iLine-1;
+        if(curLine.size()==nbCols)
+        {
+            for (int iCol = 0; iCol < nbCols; iCol++)
+            {
+                value = curLine[iCol].toDouble(&ok);
+                index = indexes.at(iCol);
+                if(index>-1)
+                    this->at(index)->setFinalValue(iScan,iPoint,value);
+            }
+        }
+    }
+}
+
+
 
 
 int MOOptVector::nbPoints()
@@ -380,8 +459,10 @@ VariableResult *MOOptVector::findVariable(QString model, QString shortVarName)
 QString MOOptVector::toCSV(QString separator, QList<int> points)
 {
     QString csv;
-    int iVar,iPoint;
+    int iVar;
     double value;
+
+    QStringList scanTexts;
 
     // if points is empty, print all of them
     if(points.isEmpty())
@@ -401,24 +482,36 @@ QString MOOptVector::toCSV(QString separator, QList<int> points)
 
         csv += "\n";
 
-        // writing values
-        for(iPoint = 0; iPoint < points.size(); iPoint++)
-        {
-            for(iVar=0;iVar<this->size();iVar++)
-            {
-                if (this->at(iVar)->isComputedPoint(0,points.at(iPoint)))
-                {
-                    value = this->at(iVar)->finalValue(0,points.at(iPoint));
-                    csv += QString::number(value);
 
-                }
-                else
+        // writing values
+        for(int iScan = 0;iScan<this->nbScans();iScan++)
+        {
+            scanTexts.push_back(QString());
+            for(int iPoint = 0; iPoint < points.size(); iPoint++)
+            {
+                for(iVar=0;iVar<this->size();iVar++)
                 {
-                    csv += "-";
+                    if (this->at(iVar)->isComputedPoint(0,points.at(iPoint)))
+                    {
+                        value = this->at(iVar)->finalValue(0,points.at(iPoint));
+                        scanTexts[iScan] += QString::number(value);
+
+                    }
+                    else
+                    {
+                        scanTexts[iScan] += "-";
+                    }
+                    scanTexts[iScan] += separator;
                 }
-                csv += separator;
+                scanTexts[iScan] += "\n";
             }
-            csv += "\n";
+        }
+
+        // writing grouped by scans
+        for(int iScan = 0;iScan<this->nbScans();iScan++)
+        {
+            csv+=scanTexts[iScan];
+            csv+="\n";
         }
     }
     return csv;

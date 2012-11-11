@@ -19,8 +19,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     Variables* clone() const;
 
-    QStringList mimeTypes() const;
-    QMimeData* mimeData(const QModelIndexList &indexes) const;
+ //   QStringList mimeTypes() const;
+ //   QMimeData* mimeData(const QModelIndexList &indexes) const;
     Qt::DropActions supportedDropActions() const;
 
     Variable* findVariable(QString model,QString shortVarName); 

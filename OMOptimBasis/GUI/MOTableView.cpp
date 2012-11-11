@@ -44,6 +44,7 @@
 #include "InfoSender.h"
 #include <QDebug>
 
+
 MOTableView::MOTableView(QWidget* parent):QTableView(parent)
 {
     
@@ -55,6 +56,11 @@ MOTableView::MOTableView(QWidget* parent):QTableView(parent)
     //editable ?
     setEditable(true);
 
+    // context menu
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this,SIGNAL(customContextMenuRequested(const QPoint &)),
+            this,SLOT(contextualMenu(const QPoint &)));
+
 }
 
 MOTableView::~MOTableView()
@@ -65,10 +71,10 @@ void MOTableView::setEditable(bool editable)
 {
 
     // drag and drop
-//    this->setDragEnabled(editable);
-//    this->setAcceptDrops(editable);
-//    this->setDropIndicatorShown(editable);
-//    this->viewport()->setAcceptDrops(editable);
+    //    this->setDragEnabled(editable);
+    //    this->setAcceptDrops(editable);
+    //    this->setDropIndicatorShown(editable);
+    //    this->viewport()->setAcceptDrops(editable);
 
     if(editable)
     {
@@ -197,3 +203,37 @@ void MOTableView::startDrag(Qt::DropActions supportedActions)
     qDebug() << "MOTableView::startDrag; end";
 }
 
+
+
+void MOTableView::contextualMenu(const QPoint& point)
+{
+    QMenu *menu = new QMenu;
+    menu->addAction(QString("Copy"), this, SLOT(onCopyAsked()));
+    menu->addAction(QString("Paste"), this, SLOT(onPasteAsked()));
+
+    menu->exec(this->mapToGlobal(point));
+}
+
+
+void MOTableView::onCopyAsked()
+{
+    QModelIndexList indexList = this->selectedIndexes();
+    if(model())
+    {
+        QMimeData* mimeData = model()->mimeData(indexList);
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setMimeData(mimeData);
+    }
+}
+
+
+void MOTableView::onPasteAsked()
+{
+    const QClipboard *clipboard = QApplication::clipboard();
+    const QMimeData *mimeData = clipboard->mimeData();
+
+
+    QModelIndex index = this->currentIndex();
+
+    model()->dropMimeData(mimeData,Qt::CopyAction,0,0,index);
+}

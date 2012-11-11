@@ -87,7 +87,8 @@ public:
 
     Variables extractPoint(int iPoint);
     void setFromCsv(QString text);
-
+    void updateFromCsv(QString text);
+    void updateFromCsv(QString text, int iPoint);
 
 
 protected :

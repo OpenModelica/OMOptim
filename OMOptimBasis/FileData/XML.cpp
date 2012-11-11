@@ -50,66 +50,66 @@ XML::~XML(void)
 {
 }
 
-void XML::XMLToVariableResults(MOVector<VariableResult> &variables,QDomElement &element)
-{
-    variables.clear();
+//void XML::XMLToVariableResults(MOVector<VariableResult> &variables,QDomElement &element)
+//{
+//    variables.clear();
 
-    QDomElement e;
-    QDomNode n = element.firstChild();
+//    QDomElement e;
+//    QDomNode n = element.firstChild();
 
-    QString fieldName;
-    int iField;
+//    QString fieldName;
+//    int iField;
 
-    while( !n.isNull() )
-    {
-        e = n.toElement();
-        if( !e.isNull() && (e.tagName()=="VariableResult"))
-        {
-            VariableResult* newVar = new VariableResult();
-            QDomNamedNodeMap attributes = e.attributes();
-            for(int i=0;i<attributes.count();i++)
-            {
-                fieldName = attributes.item(i).toAttr().name();
-                iField = newVar->getFieldIndex(fieldName);
-                if(iField>-1)
-                    newVar->setFieldValue(iField,QVariant(attributes.item(i).toAttr().value()));
+//    while( !n.isNull() )
+//    {
+//        e = n.toElement();
+//        if( !e.isNull() && (e.tagName()=="VariableResult"))
+//        {
+//            VariableResult* newVar = new VariableResult();
+//            QDomNamedNodeMap attributes = e.attributes();
+//            for(int i=0;i<attributes.count();i++)
+//            {
+//                fieldName = attributes.item(i).toAttr().name();
+//                iField = newVar->getFieldIndex(fieldName);
+//                if(iField>-1)
+//                    newVar->setFieldValue(iField,QVariant(attributes.item(i).toAttr().value()));
 
-                if(!fieldName.compare("Values"))
-                {
-                    QString text = attributes.item(i).toAttr().value();
-                                        /// \todo Fill values
-                                        InfoSender::instance()->debug("XMLToVariableResults not implemented. Do not use!!");
-                }
-            }
-            variables.addItem(newVar);        
-        }
-        n = n.nextSibling();
-    }
-}
+//                if(!fieldName.compare("Values"))
+//                {
+//                    QString text = attributes.item(i).toAttr().value();
+//                                        /// \todo Fill values
+//                                        InfoSender::instance()->debug("XMLToVariableResults not implemented. Do not use!!");
+//                }
+//            }
+//            variables.addItem(newVar);
+//        }
+//        n = n.nextSibling();
+//    }
+//}
 
 
-QDomElement XML::VariableResultsToXml(MOVector<VariableResult> & vector,QDomDocument & doc,QString listTitle,QString itemTitle)
-{
-    // Root element
-    QDomElement cList = doc.createElement(listTitle);
+//QDomElement XML::VariableResultsToXml(MOVector<VariableResult> & vector,QDomDocument & doc,QString listTitle,QString itemTitle)
+//{
+//    // Root element
+//    QDomElement cList = doc.createElement(listTitle);
 
-    for(int i=0;i<vector.items.size();i++)
-    {
-        QDomElement cItem = doc.createElement(itemTitle);
-        for(int iF=0;iF<vector.items.at(i)->getNbFields();iF++)
-        {
-            if(iF!=VariableResult::VALUE)
-                cItem.setAttribute(vector.items.at(i)->getFieldName(iF),vector.items.at(i)->getFieldValue(iF).toString());
-        }
-        QDomElement _values = doc.createElement("Values");
-        QDomText _text = doc.createTextNode(CSVBase::oneVariableResultToValueLines(vector.items.at(i)));
-        _values.appendChild(_text);
-        cItem.appendChild(_values);
+//    for(int i=0;i<vector.items.size();i++)
+//    {
+//        QDomElement cItem = doc.createElement(itemTitle);
+//        for(int iF=0;iF<vector.items.at(i)->getNbFields();iF++)
+//        {
+//            if(iF!=VariableResult::VALUE)
+//                cItem.setAttribute(vector.items.at(i)->getFieldName(iF),vector.items.at(i)->getFieldValue(iF).toString());
+//        }
+//        QDomElement _values = doc.createElement("Values");
+//        QDomText _text = doc.createTextNode(CSVBase::oneVariableResultToValueLines(vector.items.at(i)));
+//        _values.appendChild(_text);
+//        cItem.appendChild(_values);
 
-        cList.appendChild(cItem);
-    }
-    return cList;
-}
+//        cList.appendChild(cItem);
+//    }
+//    return cList;
+//}
 
 void  XML::XMLToVariables(MOVector<Variable> & variables,QDomElement &element)
 {

@@ -74,11 +74,8 @@ public:
     void clear();
 
 
-    int _maximumLines;
+    int _maximumInfoLines;
     int _linesToRemove;
-
-
-
 
 
 protected:
@@ -94,6 +91,7 @@ protected:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
+     void removeLastNormalInfos(int count);
 
 
 };

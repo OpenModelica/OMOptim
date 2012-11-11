@@ -1,5 +1,5 @@
 #include "Variables.h"
-
+#include "MOItem.h"
 #include <QMimeData>
 
 Variables::Variables(bool owner)
@@ -72,28 +72,29 @@ int Variables::findVariable(QString model, QRegExp & shortVarName, int from)
 }
 
 
-QStringList Variables::mimeTypes () const
-{
-    QStringList types;
-    types << "text/plain";
-    return types;
-}
+//QStringList Variables::mimeTypes () const
+//{
+//    QStringList types;
+//    types << "text/plain";
+//    return types;
+//}
 
-QMimeData* Variables::mimeData(const QModelIndexList &indexes) const
-{
-    QMimeData *mimeData = new QMimeData();
-    QByteArray encodedData;
+//QMimeData* Variables::mimeData(const QModelIndexList &indexes) const
+//{
+//    QMimeData *mimeData = new QMimeData();
+//    QByteArray encodedData;
 
-    QDataStream stream(&encodedData, QIODevice::WriteOnly);
-    if(indexes.size()==1)
-    {
-        Variable* item = (Variable*)indexes.at(0).internalPointer();
-        mimeData->setText("Variable::"+item->name(Variable::FULL));
-    }
+//    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+//    if(indexes.size()==1)
+//    {
+//        Variable* item = (Variable*)indexes.at(0).internalPointer();
+//        mimeData->setData("text/XML",QString("Variable::"+item->name(Variable::FULL)).toAscii());
+//    }
 
-//    mimeData->setData("application/vnd.text.list", encodedData);
-    return mimeData;
-}
+//    mimeData->setText(
+////    mimeData->setData("application/vnd.text.list", encodedData);
+//    return mimeData;
+//}
 
 
 

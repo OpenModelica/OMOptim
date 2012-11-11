@@ -58,8 +58,8 @@ public:
     XML(void);
     ~XML(void);
 
-    static void XMLToVariableResults(MOVector<VariableResult> &,QDomElement &element);
-    static QDomElement VariableResultsToXml(MOVector<VariableResult> &,QDomDocument & doc,QString listTitle,QString itemTitle);
+    //static void XMLToVariableResults(MOVector<VariableResult> &,QDomElement &element);
+  //  static QDomElement VariableResultsToXml(MOVector<VariableResult> &,QDomDocument & doc,QString listTitle,QString itemTitle);
     static void XMLToVariables(MOVector<Variable> &,QDomElement &element);
 };
 

@@ -87,7 +87,19 @@ Variable::Variable(QDomElement & domEl)
 
 Variable::~Variable(void)
 {
-   // qDebug(QString("Remove "+getClassName()).toLatin1().data());
+    // qDebug(QString("Remove "+getClassName()).toLatin1().data());
+}
+
+Variable &Variable::operator =(const Variable & var)
+{
+    QVariant curValue;
+    for(int i=0;i<nbFields;i++)
+    {
+        curValue = var.getFieldValue(i);
+        setFieldValue(i,curValue);
+    }
+    _filledFields = var._filledFields;
+    _editableFields = var._editableFields;
 }
 
 Variable* Variable::clone() const
@@ -375,11 +387,11 @@ VariableResult::VariableResult(QDomElement & domEl)
             MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
 
-    QDomElement domValues = domEl.firstChildElement("Values");
-    if(!domValues.isNull())
-    {
-        CSVBase::linesToOneVariableResultValues(this,domValues.text());
-    }
+//    QDomElement domValues = domEl.firstChildElement("Values");
+//    if(!domValues.isNull())
+//    {
+//        CSVBase::linesToOneVariableResultValues(this,domValues.text());
+//    }
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
@@ -620,10 +632,10 @@ QDomElement VariableResult::toXmlData(QDomDocument & doc)
         }
     }
 
-    QDomElement values = doc.createElement("Values");
-    QDomText text = doc.createTextNode(CSVBase::oneVariableResultToValueLines(this));
-    values.appendChild(text);
-    cItem.appendChild(values);
+//    QDomElement values = doc.createElement("Values");
+//    QDomText text = doc.createTextNode(CSVBase::oneVariableResultToValueLines(this));
+//    values.appendChild(text);
+//    cItem.appendChild(values);
 
     return cItem;
 }

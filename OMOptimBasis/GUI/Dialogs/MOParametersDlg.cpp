@@ -158,13 +158,20 @@ QGridLayout* WidgetParameters::buildLayoutFromParameters()
     MOParameter* parameter;
     MOParameterListed *paramList;
     QList<MOParameter*> groupParameters;
+    QGridLayout *curLayout;
+    QGroupBox *curBox;
 
     // create group box
     for(int iG=0;iG<groups.size();iG++)
     {
         int iRow=0;
-        QGroupBox *box = new QGroupBox(groups.at(iG),this);
-        QGridLayout *boxLayout = new QGridLayout(box);
+        if(groups.size()>1)
+        {
+            curBox = new QGroupBox(groups.at(iG),this);
+            curLayout = new QGridLayout(curBox);
+        }
+        else
+            curLayout = mainLayout;
 
         groupParameters = groupmap.values(groups.at(iG));
         //sortItems<MOParameter>::applyToInt(groupParameters,MOParameter::INDEX);
@@ -179,7 +186,7 @@ QGridLayout* WidgetParameters::buildLayoutFromParameters()
             else
                 dispName = parameter->name();
 
-            boxLayout->addWidget(new QLabel(parameter->description()),iRow,0);
+            curLayout->addWidget(new QLabel(parameter->description()),iRow,0);
             //boxLayout->addWidget(new QLabel(dispName),iRow,0);
 
             int type = parameter->getFieldValue(MOParameter::TYPE).toInt();
@@ -201,7 +208,7 @@ QGridLayout* WidgetParameters::buildLayoutFromParameters()
                 newPush = new QPushButton("...",this);
                 newPush->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
                 _pathsMap.insert(newPush,((QLineEdit*)valueWidget));
-                boxLayout->addWidget(newPush,iRow,2);
+                curLayout->addWidget(newPush,iRow,2);
                 connect(newPush,SIGNAL(clicked()),this,SLOT(onSelectFileClicked()));
                 break;
             case MOParameter::FOLDERPATH :
@@ -212,7 +219,7 @@ QGridLayout* WidgetParameters::buildLayoutFromParameters()
                 newPush = new QPushButton("...",this);
                 newPush->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);
                 _pathsMap.insert(newPush,((QLineEdit*)valueWidget));
-                boxLayout->addWidget(newPush,iRow,2);
+                curLayout->addWidget(newPush,iRow,2);
                 connect(newPush,SIGNAL(clicked()),this,SLOT(onSelectFolderClicked()));
                 break;
 
@@ -267,7 +274,7 @@ QGridLayout* WidgetParameters::buildLayoutFromParameters()
 
             }
 
-            boxLayout->addWidget(valueWidget,iRow,1);
+            curLayout->addWidget(valueWidget,iRow,1);
             valueWidget->setEnabled(_editable);
 
             // store (to save data when click ok)
@@ -277,9 +284,12 @@ QGridLayout* WidgetParameters::buildLayoutFromParameters()
 
             iRow++;
         }
-        box->setLayout(boxLayout);
 
-        mainLayout->addWidget(box);
+        if(groups.size()>1)
+        {
+            curBox->setLayout(curLayout);
+            mainLayout->addWidget(curBox);
+        }
     }
 
 

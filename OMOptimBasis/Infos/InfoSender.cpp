@@ -41,6 +41,7 @@
 #include "InfoSender.h"
 #include "MOThreads.h"
 #include <QApplication>
+#include <QColor>
 
 // Global static pointer used to ensure a single instance of the class.
 InfoSender* InfoSender::_instance = NULL;
@@ -160,8 +161,8 @@ void InfoSender::eraseCurrentTask()
 Infos::Infos(QObject* parent)
     :QAbstractTableModel(parent)
 {
-    _maximumLines = 500;
-    _linesToRemove = _maximumLines/10;
+    _maximumInfoLines= 500;
+    _linesToRemove = _maximumInfoLines/10;
 }
 
 Infos::~Infos()
@@ -175,9 +176,9 @@ void Infos::addInfo(const QString &info, const type &infoType, const destination
         return;
 
     // if reached full size
-    if(_text.size()>= _maximumLines)
+    if(_type.count(INFO)>= _maximumInfoLines)
     {
-        removeRows(0,_linesToRemove,QModelIndex());
+        removeLastNormalInfos(_linesToRemove);
     }
 
     // qDebug("Started adding Info");
@@ -188,6 +189,35 @@ void Infos::addInfo(const QString &info, const type &infoType, const destination
     _dest.push_back(infoDestination);
     endInsertRows();
     // qDebug("Ended adding Info");
+}
+
+// remove the last (count) normal informations
+void Infos::removeLastNormalInfos(int count)
+{
+    int i = _text.size()-1;
+    int nbRemoved = 0;
+
+    int iLast,iFirst;
+    iLast=i;
+    iFirst = iLast+1;
+
+    while((i>=0)&&(nbRemoved+(iLast-iFirst+1)<count))
+    {
+        if(_type.at(i)==INFO)
+        {
+            iFirst = i;
+        }
+        else
+        {
+            removeRows(iFirst,iLast-iFirst+1);
+            nbRemoved+=iLast-iFirst+1;
+            iLast=i-1;
+            iFirst = iLast+1;
+        }
+        i--;
+    }
+
+    removeRows(iFirst,iLast-iFirst+1);
 }
 
 int Infos::rowCount(const QModelIndex &parent) const
@@ -237,6 +267,18 @@ QVariant Infos::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
+    if(role == Qt::BackgroundColorRole)
+    {
+        switch (_type.at(index.row()))
+        {
+        case INFOERROR :
+            return QColor("#F58989");
+        case INFOWARNING:
+            return QColor("#F5D489");
+        case INFO:
+            return QColor("#FFFFFF");
+        }
+    }
     if(role!=Qt::DisplayRole)
         return QVariant();
 

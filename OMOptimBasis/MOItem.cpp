@@ -260,6 +260,23 @@ QDomElement MOItem::toXmlData(QDomDocument & doc)
 }
 
 /**
+* Returns string with all field values
+*/
+QString MOItem::toCSV()
+{
+    QString result;
+    QString separator = "\t";
+    for(int iF=0;iF<getNbFields();iF++)
+    {
+        result.push_back(getFieldValue(iF,Qt::DisplayRole).toString());
+        result.push_back(separator);
+    }
+    if(result.size()>0)
+        result.remove(result.size()-separator.size(),separator.size());
+    return result;
+}
+
+/**
 * Returns string that should be displayed as a tooltip
 * By default, it is the name.
 */

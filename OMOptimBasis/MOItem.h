@@ -112,6 +112,7 @@ public:
     virtual bool check(QString &error);
     virtual QString toSavingString();
     virtual QDomElement toXmlData(QDomDocument & doc);
+    virtual QString toCSV();
     virtual QString getStrToolTip();
     void checkUniqueItemName( QStringList & list);
 
