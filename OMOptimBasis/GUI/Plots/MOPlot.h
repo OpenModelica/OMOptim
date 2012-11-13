@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 */
 
 #ifndef _MINPLOT_H
@@ -54,6 +54,9 @@
 #include "qpaintengine.h"
 #include "MOVector.h"
 
+#include <QMenu>
+#include <QClipboard>
+
 #include "qwt_plot_picker.h"
 #include "qwt_plot_grid.h"
 #include "qwt_plot_zoomer.h"
@@ -67,12 +70,12 @@
 
 class MOPlot : public QwtPlot
 {
-    Q_OBJECT 
+    Q_OBJECT
 public:
     inline MOPlot(void);
     inline ~MOPlot(void);
-        inline void addCurve(QwtPlotCurve *curve);
-        inline void setCurves(QList<QwtPlotCurve*> & _curves);
+    inline void addCurve(QwtPlotCurve *curve);
+    inline void setCurves(QList<QwtPlotCurve*> & _curves);
     inline int getNearestPointIndex(QwtPlotCurve *,const QwtDoublePoint &);
 
     inline void clear();
@@ -90,13 +93,11 @@ private:
     QwtPlotPicker *picker1;
 
     QwtPlotZoomer *zoomer1;
-
-        QList<QwtPlotCurve*> curves;
-
-    
+    QList<QwtPlotCurve*> curves;
+    QAction* _actionCopy;
 
     inline virtual void drawItems (QPainter *painter, const QRect &rect,
-            const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
+                                   const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
     
 
 
@@ -107,20 +108,23 @@ private:
 
 public slots:
     inline void onClicked(const QwtDoublePoint & pos);
+public slots :
+    inline void popUpMenu(const QPoint &pos);
+    inline void onCopyAsked();
 
     // Zoom
     void zoomed (const QwtDoubleRect &);
     void setEnabledZoom(bool on);
     void zoomOut();
     bool zoomIsOn();
-        void enableZoom(bool checked);
+    void enableZoom(bool checked);
 
     // Data picker
 
     void contextMenuEvent(QContextMenuEvent *);
 
 signals :
-        inline void clickedOnCurves(QwtPlotCurve *);
+    inline void clickedOnCurves(QwtPlotCurve *);
 
 
 };
@@ -157,8 +161,8 @@ MOPlot::MOPlot()
     
 
     
-        
-    // grid 
+
+    // grid
     QwtPlotGrid *grid = new QwtPlotGrid;
     grid->enableXMin(false);
     grid->enableYMin(false);
@@ -168,12 +172,20 @@ MOPlot::MOPlot()
     
     //zoom
     zoomer1 = new QwtPlotZoomer(QwtPlot::xBottom, QwtPlot::yLeft,
-            QwtPicker::DragSelection | QwtPicker::CornerToCorner, QwtPicker::AlwaysOff, canvas());
+                                QwtPicker::DragSelection | QwtPicker::CornerToCorner, QwtPicker::AlwaysOff, canvas());
     zoomer1->setRubberBandPen(QPen(Qt::black));
 
 
     connect (zoomer1,SIGNAL(zoomed (const QwtDoubleRect &)),this,SLOT(zoomed (const QwtDoubleRect &)));
     setEnabledZoom(false);
+
+    // action
+    _actionCopy = new QAction("Copy", this);
+    connect(_actionCopy,SIGNAL(triggered()),this, SLOT(onCopyAsked()));
+    _actionCopy->setShortcut(QKeySequence::Copy);
+    _actionCopy->setShortcutContext(Qt::WidgetShortcut);
+    this->addAction(_actionCopy);
+
 
 }
 
@@ -303,11 +315,11 @@ void MOPlot::addCurve(QwtPlotCurve *_curve)
 int MOPlot::getNearestPointIndex(QwtPlotCurve * curve,const QwtDoublePoint & point)
 {
 
-//    double minDist=0;
-//    double curDist=0;
+    //    double minDist=0;
+    //    double curDist=0;
 
-//    int xPos = transform(QwtPlot::xBottom,point.x());
-//    int yPos = transform(QwtPlot::yLeft,point.y());
+    //    int xPos = transform(QwtPlot::xBottom,point.x());
+    //    int yPos = transform(QwtPlot::yLeft,point.y());
 
     int indexMin = -1;
 
@@ -336,19 +348,19 @@ void MOPlot::onClicked(const QwtDoublePoint & pos)
 }
 
 void MOPlot::drawItems (QPainter *painter, const QRect &rect,
-                           const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
+                        const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
 {
     painter->save();
 
     const QwtPlotItemList& itmList = itemList();
     for ( QwtPlotItemIterator it = itmList.begin();
-        it != itmList.end(); ++it )
+          it != itmList.end(); ++it )
     {
         QwtPlotItem *item = *it;
         if ( item && item->isVisible() )
         {
             if ( !(pfilter.options() & QwtPlotPrintFilter::PrintGrid)
-                && item->rtti() == QwtPlotItem::Rtti_PlotGrid )
+                 && item->rtti() == QwtPlotItem::Rtti_PlotGrid )
             {
                 continue;
             }
@@ -357,15 +369,58 @@ void MOPlot::drawItems (QPainter *painter, const QRect &rect,
             painter->setRenderHint(QPainter::Antialiasing,true);
 #endif
 
-            item->draw(painter, 
-                map[item->xAxis()], map[item->yAxis()],
-                rect);
+            item->draw(painter,
+                       map[item->xAxis()], map[item->yAxis()],
+                       rect);
         }
     }
 
     painter->restore();
 }
 
+
+
+void MOPlot::popUpMenu(const QPoint &pos)
+{
+    QMenu *menu = new QMenu;
+    menu->addAction(QString("Copy"), this, SLOT(onCopyAsked()), QKeySequence::Copy);
+
+    menu->exec(this->mapToGlobal(pos));
+
+}
+
+void MOPlot::onCopyAsked()
+{
+    QImage image;
+    // Print the plot to an image
+    print( image );
+
+    // Set the clilpboard image
+    QClipboard * clipboard =
+            QApplication::clipboard();
+    clipboard->setImage(image);
+
+
+    // create text
+    QString csv;
+    QwtPlotCurve* curve;
+    QString separator = "\t";
+    for(int i=0;i<curves.size();i++)
+    {
+        curve = curves.at(i);
+        QString yTitle = this->axisTitle(QwtPlot::yLeft).text();
+        QString xTitle = this->axisTitle(QwtPlot::xBottom).text();
+        csv+= xTitle + separator + yTitle + "\n";
+        for(int j=0;j<curve->data().size();j++)
+        {
+            curve->data().size();
+            csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
+        }
+
+        csv+= "\n \n";
+    }
+    clipboard->setText(csv);
+}
 
 
 #endif

@@ -57,9 +57,21 @@ MOTableView::MOTableView(QWidget* parent):QTableView(parent)
     setEditable(true);
 
     // context menu
+    _actionCopy = new QAction("Copy", this);
+    connect(_actionCopy,SIGNAL(triggered()),this, SLOT(onCopyAsked()));
+    _actionCopy->setShortcut(QKeySequence::Copy);
+    _actionCopy->setShortcutContext(Qt::WidgetShortcut);
+    this->addAction(_actionCopy);
+    _actionPaste = new QAction("Paste", this);
+    connect(_actionPaste,SIGNAL(triggered()),this, SLOT(onPasteAsked()));
+    _actionPaste->setShortcut(QKeySequence::Paste);
+    _actionPaste->setShortcutContext(Qt::WidgetShortcut);
+    this->addAction(_actionPaste);
+
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this,SIGNAL(customContextMenuRequested(const QPoint &)),
             this,SLOT(contextualMenu(const QPoint &)));
+
 
 }
 
@@ -208,9 +220,8 @@ void MOTableView::startDrag(Qt::DropActions supportedActions)
 void MOTableView::contextualMenu(const QPoint& point)
 {
     QMenu *menu = new QMenu;
-    menu->addAction(QString("Copy"), this, SLOT(onCopyAsked()));
-    menu->addAction(QString("Paste"), this, SLOT(onPasteAsked()));
-
+    menu->addAction(_actionCopy);
+    menu->addAction(_actionPaste);
     menu->exec(this->mapToGlobal(point));
 }
 

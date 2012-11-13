@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 */
 
 #include "Tools/GuiTools.h"
@@ -43,6 +43,7 @@
 #include "MyTreeView.h"
 #include "ProjectBase.h"
 #include "Result.h"
+#include <QFrame>
 
 
 
@@ -58,19 +59,19 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
         tableView->resizeColumnsToContents();
         tableView->resizeRowsToContents();
 
-//        // set maximum height
-//        int count = model->rowCount(QModelIndex());
-//        int h=0;
-//        for (int i = 0; i < count; i++)
-//            h += tableView->rowHeight(i);
-//        int maxH =
-//                (h +                                                      // total row height
-//                 count +                                                  // to account for the pixel(s) used in the grid
-//                 tableView->horizontalHeader()->height() +
-//                 tableView->horizontalScrollBar()->height());   // Need room for the horizontal scrollbar
+        //        // set maximum height
+        //        int count = model->rowCount(QModelIndex());
+        //        int h=0;
+        //        for (int i = 0; i < count; i++)
+        //            h += tableView->rowHeight(i);
+        //        int maxH =
+        //                (h +                                                      // total row height
+        //                 count +                                                  // to account for the pixel(s) used in the grid
+        //                 tableView->horizontalHeader()->height() +
+        //                 tableView->horizontalScrollBar()->height());   // Need room for the horizontal scrollbar
 
-//        tableView->setMaximumHeight(maxH);
-//        tableView->resize(tableView->width(),maxH);
+        //        tableView->setMaximumHeight(maxH);
+        //        tableView->resize(tableView->width(),maxH);
 
     }
 
@@ -89,7 +90,15 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
     }
 }
 
-
+ QFrame* GuiTools::buildLine(QWidget* parent)
+{
+    QFrame*line = new QFrame(parent);
+    line->setObjectName(QString::fromUtf8("line"));
+    line->setGeometry(QRect(320, 150, 118, 3));
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    return line;
+}
 
 QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *model, QAbstractItemView *view,QLineEdit* lineEdit)
 {

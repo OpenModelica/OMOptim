@@ -105,12 +105,10 @@ public :
       * Used for GUI or saving/load functions.
       * if DisplayInvalid = false,invalid values are replaced with "-"
       */
-    static QString listToRowString(const QList<DimValue> &list, int iUnit,bool displayInvalid = false)
+    static QString listToRowString(const QList<DimValue> &list, int iUnit,QString separator = ";" , bool displayInvalid = false)
     {
         if(list.isEmpty())
             return QString();
-
-        QString separator = ";";
         QString result="\[";
         bool allAreId = true; // if all are id then copy only num value
         for(int i=0;i<list.size();i++)
@@ -167,11 +165,11 @@ public :
     /**
       * Convert a Qstring to a list of DimValue
       */
-    static QList<DimValue> rowStringToList(QString str,int iUnit, bool &ok)
+    static QList<DimValue> rowStringToList(QString str,int iUnit, bool &ok,QString separator = ";")
     {
         bool tmpOk;
         QList<DimValue> result;
-        QString separator = ";"; // be sure to set the same in listToString function.
+        // be sure to set the same separator in listToString function.
         str = str.remove("[");
         str = str.remove("]");
 

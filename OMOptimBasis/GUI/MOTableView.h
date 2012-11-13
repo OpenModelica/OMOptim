@@ -74,6 +74,10 @@ public slots:
     void onPasteAsked();
     void contextualMenu(const QPoint &point);
 
+protected :
+    QAction* _actionCopy;
+    QAction* _actionPaste;
+
 };
 
 
