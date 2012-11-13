@@ -116,9 +116,9 @@ public:
     void fetchMore ( const QModelIndex & parent );
 
     // drag and drop functions
-    QStringList mimeTypes() const;
-    QMimeData* mimeData(const QModelIndexList &indexes) const;
-    Qt::DropActions supportedDropActions() const;
+ //   QStringList mimeTypes() const;
+ //   QMimeData* mimeData(const QModelIndexList &indexes) const;
+ //   Qt::DropActions supportedDropActions() const;
 
     void setShowComponent(bool);
     void emitDataChanged();

@@ -664,36 +664,6 @@ QVariant ModItemsTree::headerData(int section, Qt::Orientation orientation,
 }
 
 
-
-QStringList ModItemsTree::mimeTypes() const
-{
-    QStringList types;
-    types << "text/plain";
-    return types;
-}
-
-QMimeData* ModItemsTree::mimeData(const QModelIndexList &indexes) const
-{
-    QMimeData *mimeData = new QMimeData();
-    QByteArray encodedData;
-
-    QDataStream stream(&encodedData, QIODevice::WriteOnly);
-    if(indexes.size()==1)
-    {
-        ModItem* _modEl = (ModItem*)indexes.at(0).internalPointer();
-        mimeData->setText("MODELICA::"+_modEl->name(ModItem::FULL));
-        //        if(_modEl)
-        //        {
-        //            stream<< _modEl->name(ModItem::FULL);
-        //        }
-    }
-
-    //    mimeData->setData("application/vnd.text.list", encodedData);
-    return mimeData;
-}
-
-
-
 QModelIndex ModItemsTree::index(int row, int column, const QModelIndex &parent)
 const
 {
@@ -1034,10 +1004,10 @@ void ModItemsTree::setShowComponent(bool showComponents)
     }
 }
 
-Qt::DropActions ModItemsTree::supportedDropActions() const
-{
-    return Qt::CopyAction | Qt::MoveAction;
-}
+//Qt::DropActions ModItemsTree::supportedDropActions() const
+//{
+//    return Qt::CopyAction | Qt::MoveAction;
+//}
 
 
 

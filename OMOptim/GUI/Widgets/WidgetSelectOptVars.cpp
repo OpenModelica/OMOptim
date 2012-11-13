@@ -443,8 +443,8 @@ void WidgetSelectOptVars::refreshAllModelsVars()
         curModelPlus = _project->modelPlus(_problem->models().at(i));
         if(curModelPlus)
         {
-            if(!curModelPlus->isCompiled(_problem->ctrl(_problem->models().at(i))))
-                curModelPlus->compile(_problem->ctrl(_problem->models().at(i)));
+//            if(compileIfNeeded && !curModelPlus->isCompiled(_problem->ctrl(_problem->models().at(i))))
+//                curModelPlus->compile(_problem->ctrl(_problem->models().at(i)));
             curVariables = curModelPlus->variables();
             _allModelsVars->addItems(curVariables,true);
         }
