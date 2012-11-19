@@ -442,8 +442,18 @@ QString MOomc::getFlattenedModel(const QString & modelName)
 {
     InfoSender::instance()->sendNormal("Instantiating model "+modelName);
     QString flatcmd = "instantiateModel("+modelName+")";
-    QString flattened = evalCommand(flatcmd);
+    QString errorString;
+    QString flattened = evalCommand(flatcmd,errorString);
 
+    if(flattened=="\"\"")
+        flattened.clear();
+
+    if(!errorString.isEmpty() && !flattened.isEmpty())
+        InfoSender::instance()->sendWarning("Instantiating model warned ["+modelName+"]");
+    else  if(!errorString.isEmpty() && flattened.isEmpty())
+        InfoSender::instance()->sendError("Instantiating model failed ["+modelName+"]");
+    else
+        InfoSender::instance()->sendNormal("Instantiating model successful ["+modelName+"]");
 
     return flattened;
 }

@@ -78,14 +78,10 @@ WidgetModelsList::~WidgetModelsList()
 
 void WidgetModelsList::addModels(QStringList list)
 {
-
+    bool addedOk;
     for(int i=0;i<list.size();i++)
     {
-        if(!_problem->models().contains(list.at(i)))
-        {
-            _ui->filesList->addItem(list.at(i));
-            _problem->addModel(list.at(i));
-        }
+        _problem->addModel(list.at(i));
     }
 }
 
