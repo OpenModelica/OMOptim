@@ -1,6 +1,6 @@
-QMAKE_CC  = @CC@
-QMAKE_CXX = @CXX@
-QMAKE_LINK = @CXX@
+QMAKE_CC  = @OMOPTIM_CC@
+QMAKE_CXX = @OMOPTIM_CXX@
+QMAKE_LINK = @OMOPTIM_CXX@
 
 LIBS += @CORBALIBS@ -lqwt@with_qwt_suffix@ -lmoeo -leo -leoutils -L../../OMOptimBasis/bin -lOMOptimBasis
 INCLUDEPATH += @with_qwt@ @CORBA_QMAKE_INCLUDES@ @with_paradiseo_include@

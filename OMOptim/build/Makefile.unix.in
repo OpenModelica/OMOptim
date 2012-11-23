@@ -22,7 +22,7 @@ build: $(LIBNAME) $(NAME)
 
 Makefile: $(NAME).pro $(NAME).config
 	$(QMAKE) $< -o $@
-MakefileLib: $(LIBNAME).pro 
+MakefileLib: $(LIBNAME).pro $(NAME).config
 	$(QMAKE) $< -o $@
 Makefile.unix: Makefile.unix.in
 	(cd $(top_dir); ./config.status)
