@@ -43,8 +43,10 @@
 
 OptObjective::OptObjective()
 {
-    _editableFields.clear();
-    _editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    QList<int> editableFields;
+    editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    setEditableFields(editableFields);
+
     _scanFunction = NONE;
     initOptExtremum();
 }
@@ -58,8 +60,9 @@ OptObjective::OptObjective(const Variable &var, OptObjective::Direction directio
 
     setFieldValue(OptObjective::DIRECTION,direction);
     _scanFunction = NONE;
-    _editableFields.clear();
-    _editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    QList<int> editableFields;
+    editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    setEditableFields(editableFields);
     initOptExtremum();
 }
 
@@ -74,8 +77,9 @@ OptObjective::OptObjective(const OptObjective & obj):Variable(obj)
 
 OptObjective::OptObjective(QDomElement & domEl)
 {
-    _editableFields.clear();
-    _editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    QList<int> editableFields;
+    editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
+    setEditableFields(editableFields);
     _scanFunction = NONE;
 
     initOptExtremum();
@@ -520,7 +524,7 @@ OptObjectiveResult* OptObjectiveResult::clone() const
         newObj->setFieldValue(i,getFieldValue(i));
     }
     newObj->_filledFields = _filledFields;
-    newObj->_editableFields = _editableFields;
+    newObj->_protectedFields = _protectedFields;
 
     //copying final values
     newObj->setFinalValues(_finalValues);

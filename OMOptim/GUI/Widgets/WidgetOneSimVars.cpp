@@ -134,7 +134,7 @@ void WidgetOneSimVars::addModVariables()
         {
             // set value editable
             newVarProv = new Variable(*varProv);
-            newVarProv->setIsEditableField(Variable::VALUE,true);
+  //          newVarProv->setIsEditableField(Variable::VALUE,true);
             _problem->overwritedVariables()->addItem(newVarProv);
         }
     }

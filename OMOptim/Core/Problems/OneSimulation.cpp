@@ -144,8 +144,8 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
 
         // addOverWritedCVariables
         // make their value editable
-        for(int iV=0;iV<this->overwritedVariables()->size();iV++)
-            this->overwritedVariables()->at(iV)->setIsEditableField(Variable::VALUE,true);
+//        for(int iV=0;iV<this->overwritedVariables()->size();iV++)
+//            this->overwritedVariables()->at(iV)->setIsEditableField(Variable::VALUE,true);
 
         // Controler type
         QDomElement cControlers = domProblem.firstChildElement("Controlers");

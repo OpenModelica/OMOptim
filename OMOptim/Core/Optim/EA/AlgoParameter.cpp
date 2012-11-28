@@ -42,8 +42,7 @@
 
 
 AlgoParameter::AlgoParameter(){
-    _editableFields.clear();
-    _editableFields << AlgoParameter::VALUE;
+    setEditableFields(QList<int>()<<  AlgoParameter::VALUE);
 }
     
 AlgoParameter::AlgoParameter(const AlgoParameter & param):MOItem(param)
@@ -70,8 +69,7 @@ _description(description),_defaultValue(defaultValue),_type(type),_min(minValue)
     _filledFields.push_back(AlgoParameter::TYPE);
     _filledFields.push_back(AlgoParameter::DESCRIPTION);
 
-    _editableFields.clear();
-    _editableFields << AlgoParameter::VALUE;
+    setEditableFields(QList<int>()<<  AlgoParameter::VALUE);
 }
 
 AlgoParameter::AlgoParameter(QString savedString)
@@ -92,8 +90,7 @@ AlgoParameter::AlgoParameter(QString savedString)
         }
     }
     
-    _editableFields.clear();
-    _editableFields << AlgoParameter::VALUE;
+   setEditableFields(QList<int>()<<  AlgoParameter::VALUE);
 }
 
 AlgoParameter::AlgoParameter(QDomElement & domEl)
@@ -193,7 +190,7 @@ AlgoParameter* AlgoParameter::clone() const
         newParam->setFieldValue(i,getFieldValue(i));
     }
     newParam->_filledFields = _filledFields;
-    newParam->_editableFields = _editableFields;
+    newParam->_protectedFields = _protectedFields;
 
     return newParam;
 
