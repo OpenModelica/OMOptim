@@ -112,22 +112,34 @@ double MESurface::convert(double value,int orgUnit,int dstUnit) const
 MESurface& MESurface::operator+=(const MESurface& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
 
 MESurface& MESurface::operator-=(const MESurface& b)
 {
     setValue(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
 
 MESurface MESurface::operator-(const MESurface& b) const
 {
-    return MESurface(value(_unit) - b.value(_unit),_unit);
+    MESurface result(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
+
+    return result;
 }
 
 MESurface MESurface::operator+(const MESurface& b) const
 {
-    return MESurface(value(_unit) + b.value(_unit),_unit);
+    MESurface result(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
+
+    return result;
 }
 

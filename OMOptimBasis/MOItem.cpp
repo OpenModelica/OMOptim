@@ -50,7 +50,7 @@ MOItem::MOItem(const MOItem &item)
 {
     _name = item._name;
     _filledFields = item._filledFields;
-    _editableFields = item._editableFields;
+    _protectedFields = item._protectedFields;
 }
 
 MOItem::MOItem(QDomElement & domEl)
@@ -180,6 +180,11 @@ QString MOItem::sFieldName(int iField, int role)
     }
 }
 
+QString MOItem::getFieldDescription(int iField) const
+{
+    return "-";
+}
+
 int MOItem::getFieldIndex(QString fieldName,int role)
 {
     int index=0;
@@ -192,28 +197,41 @@ int MOItem::getFieldIndex(QString fieldName,int role)
         return -1;
 }
 
-void MOItem::setEditableFields(QList<int> _editableFields)
+void MOItem::setProtectedFields(QList<int> protectedFields)
 {
-    _editableFields = _editableFields;
+    _protectedFields = protectedFields;
 }
-void MOItem::setIsEditableField(int iField, bool isEditable)
+void MOItem::setEditableFields(QList<int> editableFields)
 {
-    if(isEditable)
+    _protectedFields.clear();
+    for(int i=0;i<getNbFields();i++)
+        if(!editableFields.contains(i))
+            _protectedFields.push_back(i);
+}
+void MOItem::setIsProtectedField(int iField, bool isProtected)
+{
+    if(isProtected)
     {
-        if(_editableFields.indexOf(iField<0))
-            _editableFields.push_back(iField);
+        if(!_protectedFields.contains(iField))
+            _protectedFields.push_back(iField);
     }
     else
     {
-        int index = _editableFields.indexOf(iField);
-        if(index>-1)
-            _editableFields.removeAt(index);
+        _protectedFields.removeAll(iField);
     }
 }
-bool MOItem::isEditableField(int iField)
+bool MOItem::isProtectedField(int iField)
 {
-    return(_editableFields.indexOf(iField)>-1);
+    return(_protectedFields.contains(iField));
 }
+
+bool MOItem::protectAllFields()
+{
+    for(int i=0;i<getNbFields();i++)
+        if(!_protectedFields.contains(i))
+            _protectedFields.push_back(i);
+}
+
 
 /**
 * Creates a string with all field values consecutively.

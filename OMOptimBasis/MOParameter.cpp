@@ -41,10 +41,10 @@
 #include "MOParameter.h"
 
 
-MOParameter::MOParameter(){
-    _editableFields.clear();
-    _editableFields << MOParameter::VALUE;
-
+MOParameter::MOParameter()
+{
+    this->protectAllFields();
+    this->setIsProtectedField(MOParameter::VALUE,false);
 }
 
 MOParameter::MOParameter(const MOParameter & param):MOItem(param)
@@ -79,8 +79,8 @@ MOParameter::MOParameter(QString name,QString description, QVariant defaultValue
     _filledFields.push_back(MOParameter::GROUP);
     _filledFields.push_back(MOParameter::PANEL);
 
-    _editableFields.clear();
-    _editableFields << MOParameter::VALUE;
+    this->protectAllFields();
+    this->setIsProtectedField(MOParameter::VALUE,false);
 }
 
 
@@ -133,9 +133,9 @@ bool MOParameter::setFieldValue(int ifield,QVariant value)
         case MAX :
             _max=value;
             break;
-//        case INDEX:
-//            _index=value.toInt();
-//            break;
+            //        case INDEX:
+            //            _index=value.toInt();
+            //            break;
         case GROUP:
             _group=value.toString();
             break;
@@ -176,8 +176,8 @@ QVariant MOParameter::getFieldValue(int ifield, int role) const
             return _type;
         case DEFAULTVALUE :
             return _defaultValue;
-//        case INDEX :
-//            return _index;
+            //        case INDEX :
+            //            return _index;
         case GROUP :
             return _group;
         case PANEL :
@@ -210,8 +210,8 @@ QString MOParameter::sFieldName(int iField, int role)
         return "Max";
     case TYPE :
         return "Type";
-//    case INDEX :
-//        return "Index";
+        //    case INDEX :
+        //        return "Index";
     case DEFAULTVALUE :
         return "DefaultValue";
     case GROUP :
@@ -246,14 +246,14 @@ QDomElement MOParameter::toXmlData(QDomDocument & doc)
     QString fieldValue;
     for(int iF=0;iF<getNbFields();iF++)
     {
-//        if(iF!=MOParameter::INDEX)
-//        {
-            fieldName = getFieldName(iF,Qt::UserRole);
-            fieldName.replace(" ",XMLTools::space());
-            fieldValue = getFieldValue(iF).toString();
-            fieldValue.replace(" ",XMLTools::space());
-            cItem.setAttribute(fieldName,fieldValue);
-//        }
+        //        if(iF!=MOParameter::INDEX)
+        //        {
+        fieldName = getFieldName(iF,Qt::UserRole);
+        fieldName.replace(" ",XMLTools::space());
+        fieldValue = getFieldValue(iF).toString();
+        fieldValue.replace(" ",XMLTools::space());
+        cItem.setAttribute(fieldName,fieldValue);
+        //        }
     }
     return cItem;
 }
@@ -282,9 +282,10 @@ void MOParameter::update(QDomElement & domEl)
     }
 }
 
-MOParameterListed::MOParameterListed(){
-    _editableFields.clear();
-    _editableFields << MOParameter::VALUE;
+MOParameterListed::MOParameterListed()
+{
+    this->protectAllFields();
+    this->setIsProtectedField(MOParameter::VALUE,false);
 }
 
 MOParameterListed::MOParameterListed(const MOParameterListed & param):MOParameter(param)
@@ -348,9 +349,9 @@ bool MOParameterListed::setFieldValue(int ifield,QVariant value)
     case DEFAULTVALUE :
         _defaultValue = value;
         break;
-//    case INDEX:
-//        _index=value.toInt();
-//        break;
+        //    case INDEX:
+        //        _index=value.toInt();
+        //        break;
     case GROUP:
         _group=value.toString();
         break;
@@ -385,8 +386,8 @@ QVariant MOParameterListed::getFieldValue(int ifield, int role) const
             return _type;
         case DEFAULTVALUE :
             return _defaultValue;
-//        case INDEX :
-//            return _index;
+            //        case INDEX :
+            //            return _index;
         case GROUP :
             return _group;
         case PANEL :

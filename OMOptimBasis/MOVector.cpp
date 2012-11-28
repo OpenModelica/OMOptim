@@ -2,21 +2,33 @@
 #include "MOVector.h"
 
 template<class ItemClass>
-MOVector<ItemClass>::MOVector(bool owner) : QAbstractTableModel()
+MOAVector<ItemClass>::MOAVector(bool owner) : QAbstractTableModel()
 {
     _owner = owner;
+}
+
+template<class ItemClass>
+MOAVector<ItemClass>::MOAVector(const QList<ItemClass *> list, bool owner, bool makeACopy)
+{
+    _owner = owner;
+
+    for(int i=0;i<list.size();i++)
+        if(makeACopy)
+            addItem(list.at(i)->clone());
+        else
+            addItem(list[i]);
 }
 
 
 
 template<class ItemClass>
-MOVector<ItemClass>::MOVector(const MOVector<ItemClass> & copied)
+MOAVector<ItemClass>::MOAVector(const MOAVector<ItemClass> & copied)
 {
     *this = copied;
 }
 
 template<class ItemClass>
-MOVector<ItemClass>& MOVector<ItemClass>::operator=(const MOVector<ItemClass> &copied)
+MOAVector<ItemClass>& MOAVector<ItemClass>::operator=(const MOAVector<ItemClass> &copied)
 {
     int iv;
     for(iv=0;iv<copied.items.size();iv++)
@@ -30,74 +42,44 @@ MOVector<ItemClass>& MOVector<ItemClass>::operator=(const MOVector<ItemClass> &c
     return *this;
 }
 
-template<class ItemClass>
-MOVector<ItemClass>::MOVector(QString savedData, bool owner)
-{
+//template<class ItemClass>
+//MOAVector<ItemClass>::MOAVector(QString savedData, bool owner)
+//{
 
-    _owner = owner;
+//    _owner = owner;
 
-    QStringList lineList = savedData.split("\n");
-    QStringList fields;
-
-
-    for(int nl=0;nl<lineList.size();nl++)
-    {
-        ///QString test("#");
-
-        if(!lineList[nl].isEmpty() && (QString(lineList[nl].at(0)).compare(QString("#")))!=0)
-        {
-            items.push_back(new ItemClass(lineList[nl]));
-        }
-    }
-}
+//    QStringList lineList = savedData.split("\n");
+//    QStringList fields;
 
 
-template<class ItemClass>
-MOVector<ItemClass>::MOVector(QDomElement & domList, bool owner)
-{
-    _owner = owner;
-    setItems(domList);
-    connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
-}
+//    for(int nl=0;nl<lineList.size();nl++)
+//    {
+//        ///QString test("#");
+
+//        if(!lineList[nl].isEmpty() && (QString(lineList[nl].at(0)).compare(QString("#")))!=0)
+//        {
+//            items.push_back(new ItemClass(lineList[nl]));
+//        }
+//    }
+//}
+
+
 
 
 
 template<class ItemClass>
-MOVector<ItemClass>::~MOVector() 
+MOAVector<ItemClass>::~MOAVector()
 {
     if(_owner)
         //delete contents
         clear();
 }
 
-template<class ItemClass>
-void MOVector<ItemClass>::update(const QDomElement & domList)
-{
-    QDomNode n = domList.firstChild();
-    while( !n.isNull() )
-    {
-        QDomElement domItem = n.toElement();
-        QDomNamedNodeMap attributes = domItem.attributes();
-        QDomNode nameNode = attributes.namedItem("Name");
-        QString name = nameNode.toAttr().value().replace(XMLTools::space()," ");
 
-        int index=-1;
-        if(!nameNode.isNull())
-        {
-            index = findItem(name);
-        }
-        if(index>-1)
-            items.at(index)->update(domItem);
-        else
-            addItem(new ItemClass(domItem));
-
-        n = n.nextSibling();
-    }
-}
 
 
 template<class ItemClass>
-void MOVector<ItemClass>::setEditableFields(QList<int> indexes,bool editable)
+void MOAVector<ItemClass>::setEditableFields(QList<int> indexes,bool editable)
 {
     for(int i=0;i<items.size();i++)
         for(int j=0;j<indexes.size();j++)
@@ -105,7 +87,7 @@ void MOVector<ItemClass>::setEditableFields(QList<int> indexes,bool editable)
 }
 
 template<class ItemClass>
-QStringList MOVector<ItemClass>::getItemNames()
+QStringList MOAVector<ItemClass>::getItemNames()
 {
     QStringList _names;
     for(int i=0;i<items.size();i++)
@@ -114,42 +96,24 @@ QStringList MOVector<ItemClass>::getItemNames()
 }
 
 
-template<class ItemClass>
-void MOVector<ItemClass>::setItems(QDomElement & domList)
-{
-    clear();
-
-    QDomNode n = domList.firstChild();
-    while( !n.isNull() )
-    {
-        QDomElement domItem = n.toElement();
-        ItemClass* newItem;
-        if( !domItem.isNull() )
-        {
-            newItem = new ItemClass(domItem);
-            addItem(newItem);
-        }
-        n = n.nextSibling();
-    }
-}
 
 
 template<class ItemClass>
-int MOVector<ItemClass>::rowCount(const QModelIndex &parent ) const
+int MOAVector<ItemClass>::rowCount(const QModelIndex &parent ) const
 {
     Q_UNUSED(parent);
     return items.size();
 }
 
 template<class ItemClass>
-int MOVector<ItemClass>::columnCount(const QModelIndex &parent) const
+int MOAVector<ItemClass>::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return ItemClass::nbFields;
 }
 
 template<class ItemClass>
-QVariant MOVector<ItemClass>::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant MOAVector<ItemClass>::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if(orientation==Qt::Horizontal)
     {
@@ -162,10 +126,15 @@ QVariant MOVector<ItemClass>::headerData(int section, Qt::Orientation orientatio
 }
 
 template<class ItemClass>
-QVariant MOVector<ItemClass>::data(const QModelIndex &index, int role) const
+QVariant MOAVector<ItemClass>::data(const QModelIndex &index, int role) const
 {
+    qDebug("Entering data");
     QVariant result;
-    if (!index.isValid()) return QVariant();
+    if (!index.isValid())
+    {
+        qDebug("Leaving data");
+        return QVariant();
+    }
 
     ItemClass* curItem;
     if(index.row()<items.size() && index.column()<ItemClass::nbFields)
@@ -173,7 +142,10 @@ QVariant MOVector<ItemClass>::data(const QModelIndex &index, int role) const
         curItem = items.at(index.row());
     }
     else
-        return QVariant();
+    {
+        qDebug("Leaving data");   return QVariant();
+    }
+
     switch(role)
     {
     case Qt::DisplayRole :
@@ -185,31 +157,32 @@ QVariant MOVector<ItemClass>::data(const QModelIndex &index, int role) const
         return curItem->getStrToolTip();
         break;
     }
+    qDebug("Leaving data");
     return QVariant();
 }
 
 template<class ItemClass>
-Qt::ItemFlags MOVector<ItemClass>::flags(const QModelIndex &index) const
+Qt::ItemFlags MOAVector<ItemClass>::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = Qt::ItemIsDropEnabled ;
 
     if(!index.isValid())
         return flags;
 
-    if(items.at(index.row())->isEditableField(index.column()))
-        return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+    if(!items.at(index.row())->isProtectedField(index.column()))
+        return Qt::ItemIsEnabled| Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
     else
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
 template<class ItemClass>
-bool MOVector<ItemClass>::setData(const QModelIndex &index, const QVariant &value, int role)
+bool MOAVector<ItemClass>::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     return items[index.row()]->setFieldValue(index.column(),value);
 }
 
 template<class ItemClass>
-void MOVector<ItemClass>::addItem(ItemClass* item_)
+void MOAVector<ItemClass>::addItem(ItemClass* item_)
 {
     // Add an item pointer in Vector
     int index=items.size();
@@ -220,7 +193,7 @@ void MOVector<ItemClass>::addItem(ItemClass* item_)
 }
 
 template<class ItemClass>
-void MOVector<ItemClass>::insertItem(ItemClass* item,int index)
+void MOAVector<ItemClass>::insertItem(ItemClass* item,int index)
 {
     // Add an item pointer in Vector
     if(index>-1)
@@ -232,7 +205,7 @@ void MOVector<ItemClass>::insertItem(ItemClass* item,int index)
 }
 
 template<class ItemClass>
-bool MOVector<ItemClass>::removeRow(int index,const QModelIndex &parent)
+bool MOAVector<ItemClass>::removeRow(int index,const QModelIndex &parent)
 {
     if(index<0)
     {
@@ -249,7 +222,7 @@ bool MOVector<ItemClass>::removeRow(int index,const QModelIndex &parent)
   * It is the only one which contains beginRemoveRows and endRemoveRows calls, as data deleting.
   */
 template<class ItemClass>
-bool MOVector<ItemClass>::removeRows(int index, int count, const QModelIndex &parent)
+bool MOAVector<ItemClass>::removeRows(int index, int count, const QModelIndex &parent)
 {
 
     if(index<0)
@@ -268,6 +241,7 @@ bool MOVector<ItemClass>::removeRows(int index, int count, const QModelIndex &pa
             items.erase(items.begin()+index);
         }
         endRemoveRows();
+      // emit layoutChanged();
         return true;
     }
     else
@@ -278,7 +252,7 @@ bool MOVector<ItemClass>::removeRows(int index, int count, const QModelIndex &pa
 
 
 template<class ItemClass>
-bool MOVector<ItemClass>::removeRows(QList<int> indexes)
+bool MOAVector<ItemClass>::removeRows(QList<int> indexes)
 {
     if(indexes.size())
     {
@@ -296,7 +270,7 @@ bool MOVector<ItemClass>::removeRows(QList<int> indexes)
 
 
 template<class ItemClass>
-void MOVector<ItemClass>::removeRow(QString itemName)
+void MOAVector<ItemClass>::removeRow(QString itemName)
 {
     int index = findItem(itemName);
     if (index!=-1)
@@ -308,7 +282,7 @@ void MOVector<ItemClass>::removeRow(QString itemName)
 
 
 template<class ItemClass>
-int MOVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity caseSens) const
+int MOAVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity caseSens) const
 {
     bool found = false;
     int i=0;
@@ -332,7 +306,7 @@ int MOVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity caseSens
 }
 
 template<class ItemClass>
-int MOVector<ItemClass>::findItem(QVariant itemFieldValue, int iField) const
+int MOAVector<ItemClass>::findItem(QVariant itemFieldValue, int iField) const
 {
     bool found = false;
     int i=0;
@@ -356,13 +330,13 @@ int MOVector<ItemClass>::findItem(QVariant itemFieldValue, int iField) const
 }
 
 template<class ItemClass>
-bool MOVector<ItemClass>::contains(ItemClass* item)
+bool MOAVector<ItemClass>::contains(ItemClass* item)
 {
     return items.contains(item);
 }
 
 template<class ItemClass>
-bool MOVector<ItemClass>::alreadyIn(QString itemName)
+bool MOAVector<ItemClass>::alreadyIn(QString itemName)
 {
     int i = findItem(itemName);
     if (i==-1)
@@ -379,7 +353,7 @@ bool MOVector<ItemClass>::alreadyIn(QString itemName)
 */
 
 template<class ItemClass>
-void MOVector<ItemClass>::replaceIn(MOVector<ItemClass> *overVector)
+void MOAVector<ItemClass>::replaceIn(MOAVector<ItemClass> *overVector)
 {
     int iv,iov;
     QString curName;
@@ -406,7 +380,7 @@ void MOVector<ItemClass>::replaceIn(MOVector<ItemClass> *overVector)
 }
 
 template<class ItemClass>
-void MOVector<ItemClass>::replaceAt(int index, ItemClass *newItem)
+void MOAVector<ItemClass>::replaceAt(int index, ItemClass *newItem)
 {
     this->removeRow(index);
     this->insertItem(newItem,index);
@@ -414,7 +388,7 @@ void MOVector<ItemClass>::replaceAt(int index, ItemClass *newItem)
 
 
 template<class ItemClass>
-void MOVector<ItemClass>::addItems(MOVector<ItemClass> * newItems,bool makeACopy)
+void MOAVector<ItemClass>::addItems(MOAVector<ItemClass> * newItems,bool makeACopy)
 {
     int iov;
     QString curName;
@@ -452,7 +426,7 @@ void MOVector<ItemClass>::addItems(MOVector<ItemClass> * newItems,bool makeACopy
 
 
 template<class ItemClass>
-void MOVector<ItemClass>::cloneFromOtherVector(const MOVector *vector_)
+void MOAVector<ItemClass>::cloneFromOtherVector(const MOAVector *vector_)
 {
     clear();
     int i;
@@ -465,9 +439,9 @@ void MOVector<ItemClass>::cloneFromOtherVector(const MOVector *vector_)
 }
 
 template<class ItemClass>
-MOVector<ItemClass>* MOVector<ItemClass>::clone() const
+MOAVector<ItemClass>* MOAVector<ItemClass>::clone() const
 {
-    MOVector<ItemClass>* newVector = new MOVector<ItemClass>(_owner);
+    MOAVector<ItemClass>* newVector = new MOAVector<ItemClass>(_owner);
 
     int i;
     ItemClass* newItem;
@@ -476,13 +450,11 @@ MOVector<ItemClass>* MOVector<ItemClass>::clone() const
         newItem =items.at(i)->clone();
         newVector->addItem(newItem);
     }
-
-
     return newVector;
 }
 
 template<class ItemClass>
-void MOVector<ItemClass>::clear()
+void MOAVector<ItemClass>::clear()
 {
     this->beginResetModel();
     if(items.size()>0)
@@ -498,7 +470,7 @@ void MOVector<ItemClass>::clear()
 
 
 template<class ItemClass>
-QString MOVector<ItemClass>::toSavingString()
+QString MOAVector<ItemClass>::toSavingString()
 {
     QString saveString;
 
@@ -518,7 +490,7 @@ QString MOVector<ItemClass>::toSavingString()
 }
 
 template<class ItemClass>
-QDomElement MOVector<ItemClass>::toXmlData(QDomDocument & doc,QString listTitle)
+QDomElement MOAVector<ItemClass>::toXmlData(QDomDocument & doc,QString listTitle)
 {
     // Root element
     QDomElement cList = doc.createElement(listTitle);
@@ -534,28 +506,28 @@ QDomElement MOVector<ItemClass>::toXmlData(QDomDocument & doc,QString listTitle)
 
 
 template<class ItemClass>
-QModelIndex MOVector<ItemClass>::index(int row, int column, const QModelIndex &parent)const
+QModelIndex MOAVector<ItemClass>::index(int row, int column, const QModelIndex &parent)const
 {
     if((row>-1)&&(row < items.size()))
         return createIndex(row,column,items.at(row));
     else
-        return createIndex(row,column);
+        return QModelIndex();
 }
 
 template<class ItemClass>
-int MOVector<ItemClass>::size() const
+int MOAVector<ItemClass>::size() const
 {
     return items.size();
 }
 
 template<class ItemClass>
-ItemClass* MOVector<ItemClass>::at(int i) const
+ItemClass* MOAVector<ItemClass>::at(int i) const
 {
     return items.at(i);
 }
 
 template<class ItemClass>
-QStringList MOVector<ItemClass>::mimeTypes () const
+QStringList MOAVector<ItemClass>::mimeTypes () const
 {
     QStringList types;
     types << "text/plain";
@@ -564,14 +536,14 @@ QStringList MOVector<ItemClass>::mimeTypes () const
 }
 
 template<class ItemClass>
-QMimeData* MOVector<ItemClass>::mimeData(const QModelIndexList &indexes) const
+QMimeData* MOAVector<ItemClass>::mimeData(const QModelIndexList &indexes) const
 {
     QMimeData *mimeData = new QMimeData();
 
     // create xml and plain text data
     QString csv;
     QDomDocument doc;
-    MOVector<ItemClass> dragVector(false);
+    MOAVector<ItemClass> dragVector(false);
     for(int i=0;i<indexes.size();i++)
     {
         ItemClass* item = (ItemClass*)indexes.at(i).internalPointer();
@@ -593,9 +565,81 @@ QMimeData* MOVector<ItemClass>::mimeData(const QModelIndexList &indexes) const
 }
 
 template<class ItemClass>
-Qt::DropActions MOVector<ItemClass>::supportedDropActions() const{
+Qt::DropActions MOAVector<ItemClass>::supportedDropActions() const{
     return  Qt::MoveAction | Qt::CopyAction;
 }
+
+
+template<class ItemClass>
+void MOVector<ItemClass>::update(const QDomElement & domList)
+{
+    QDomNode n = domList.firstChild();
+    while( !n.isNull() )
+    {
+        QDomElement domItem = n.toElement();
+        QDomNamedNodeMap attributes = domItem.attributes();
+        QDomNode nameNode = attributes.namedItem("Name");
+        QString name = nameNode.toAttr().value().replace(XMLTools::space()," ");
+
+        int index=-1;
+        if(!nameNode.isNull())
+        {
+            index = this->findItem(name);
+        }
+        if(index>-1)
+            this->items.at(index)->update(domItem);
+        else
+            this->addItem(new ItemClass(domItem));
+
+        n = n.nextSibling();
+    }
+}
+
+
+template<class ItemClass>
+void MOVector<ItemClass>::setItems(QDomElement & domList)
+{
+    this->clear();
+
+    QDomNode n = domList.firstChild();
+    while( !n.isNull() )
+    {
+        QDomElement domItem = n.toElement();
+        ItemClass* newItem;
+        if( !domItem.isNull() )
+        {
+            newItem = new ItemClass(domItem);
+            addItem(newItem);
+        }
+        n = n.nextSibling();
+    }
+}
+
+template<class ItemClass>
+MOVector<ItemClass>::MOVector(bool owner):MOAVector<ItemClass>(owner)
+{
+}
+
+template<class ItemClass>
+MOVector<ItemClass>::MOVector(const QList<ItemClass *> list, bool owner, bool makeACopy)
+:MOAVector<ItemClass>(list,owner,makeACopy)
+{
+}
+
+template<class ItemClass>
+MOVector<ItemClass>::MOVector(const MOAVector<ItemClass> & b)
+:MOAVector<ItemClass>(b)
+{
+}
+
+template<class ItemClass>
+MOVector<ItemClass>::MOVector(QDomElement & domList, bool owner)
+    :MOAVector<ItemClass>(owner)
+{
+    setItems(domList);
+    connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
+}
+
 
 template<class ItemClass>
 bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
@@ -629,8 +673,21 @@ bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
         {
             insertItem(dropedVector.at(i),row);
         }
-
     }
-
     return somethingDone;
+}
+
+template<class ItemClass>
+MOVector<ItemClass>* MOVector<ItemClass>::clone() const
+{
+    MOVector<ItemClass>* newVector = new MOVector<ItemClass>(this->_owner);
+
+    int i;
+    ItemClass* newItem;
+    for(i=0;i<this->items.size();i++)
+    {
+        newItem =this->items.at(i)->clone();
+        newVector->addItem(newItem);
+    }
+    return newVector;
 }

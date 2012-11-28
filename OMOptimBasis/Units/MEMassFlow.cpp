@@ -111,24 +111,37 @@ double MEMassFlow::convert(double value,int orgUnit,int dstUnit) const
 MEMassFlow& MEMassFlow::operator+=(const MEMassFlow& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
 
 MEMassFlow& MEMassFlow::operator-=(const MEMassFlow& b)
 {
     setValue(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
 
 MEMassFlow MEMassFlow::operator-(const MEMassFlow& b) const
 {
-    return MEMassFlow(value(_unit) - b.value(_unit),_unit);
+    MEMassFlow result(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
+
+    return result;
 }
 
 MEMassFlow MEMassFlow::operator+(const MEMassFlow& b) const
 {
-    return MEMassFlow(value(_unit) + b.value(_unit),_unit);
+    MEMassFlow result(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
+
+    return result;
 }
+
 
 MEMassFlow MEMassFlow::operator*(const double& mult) const
 {

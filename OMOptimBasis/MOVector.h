@@ -53,33 +53,32 @@
 #include "InfoSender.h"
 
 
-/** MOVector :Container for MOElements (e.g. Variable, OptObjective...)
+/** MOAVector :Container for MOElements (e.g. Variable, OptObjective...)
 It uses template C++ functionality
 It is therefore needed to keep in the same file functions declarations and definitions
+MOAVector : can be used with abstract classes
+MOVector : cannot but offer more functions
 */
 
 template<class ItemClass>
-class MOVector : public QAbstractTableModel 
+class MOAVector : public QAbstractTableModel
 {
 
 public:
     QList<ItemClass*> items;
 
 
-    MOVector(bool owner);
-    MOVector(const MOVector<ItemClass> &);
-    MOVector<ItemClass>& operator=(const MOVector<ItemClass> &copied);
-    MOVector(QString savedData,bool owner);
-    MOVector(QDomElement & domList,bool owner);
+    MOAVector(bool owner);
+    MOAVector(const QList<ItemClass*> ,bool owner,bool makeACopy);
+    MOAVector(const MOAVector<ItemClass> &);
+    MOAVector<ItemClass>& operator=(const MOAVector<ItemClass> &copied);
 
-    virtual ~MOVector();
+
+    virtual ~MOAVector();
 
     QStringList getItemNames();
 
-    // void append(std::vector<ItemClass*>* toAppend);
-    void setItems(QDomElement & domList);
-    //virtual void append(const MOVector &,bool makeACopy);
-    void update(const QDomElement & domList);
+
     void setEditableFields(QList<int> indexes,bool editable=true);
     int rowCount(const QModelIndex &parent ) const;
     int columnCount(const QModelIndex &parent ) const;
@@ -97,12 +96,12 @@ public:
     int findItem(QVariant itemFieldValue,int iField) const;
     bool contains(ItemClass*);
     bool alreadyIn(QString);
-    void replaceIn(MOVector<ItemClass> *);
+    void replaceIn(MOAVector<ItemClass> *);
     void replaceAt(int index, ItemClass *newItem);
-    void addItems(MOVector<ItemClass> *,bool makeACopy);
+    void addItems(MOAVector<ItemClass> *,bool makeACopy);
 
-    void cloneFromOtherVector(const MOVector*);
-    MOVector<ItemClass>* clone() const;
+    void cloneFromOtherVector(const MOAVector*);
+    MOAVector<ItemClass>* clone() const;
     void clear();
 
     QModelIndex index(int row, int column, const QModelIndex &parent)const;
@@ -115,8 +114,7 @@ public:
     QStringList mimeTypes() const;
     QMimeData* mimeData(const QModelIndexList &indexes) const;
     Qt::DropActions supportedDropActions() const;
-    bool dropMimeData(const QMimeData *data,
-                      Qt::DropAction action, int row, int column, const QModelIndex &parent);
+
 
 
     //read and access functions
@@ -132,6 +130,28 @@ protected :
 
 };
 
+template<class ItemClass>
+class MOVector : public MOAVector<ItemClass>
+{
+public:
+    MOVector(bool owner);
+    MOVector(const QList<ItemClass*> ,bool owner,bool makeACopy);
+    MOVector(const MOAVector<ItemClass> &);
+    MOVector<ItemClass>& operator=(const MOAVector<ItemClass> &copied);
+
+    MOVector(QDomElement & domList,bool owner);
+
+public :
+    // void append(std::vector<ItemClass*>* toAppend);
+    void setItems(QDomElement & domList);
+    //virtual void append(const MOAVector &,bool makeACopy);
+    void update(const QDomElement & domList);
+    bool dropMimeData(const QMimeData *data,
+                      Qt::DropAction action, int row, int column, const QModelIndex &parent);
+
+    MOVector<ItemClass>* clone() const;
+
+};
 
 #include "MOVector.cpp"
 #endif

@@ -135,7 +135,10 @@ HEADERS += \
     ../MOVectors.h \
     ../registermetatypes.h \
     ../Units/METime.h \
-    ../GUI/Dialogs/DlgSelect.h
+    ../GUI/Dialogs/DlgSelect.h \
+    ../GUI/Widgets/WidgetMOItemsList.h \
+    ../MOItemModel.h \
+    ../GUI/MOItemViews.h
 
 SOURCES += \
     ../Variables.cpp \
@@ -202,7 +205,10 @@ SOURCES += \
     ../Problems/ProblemInterfaces.cpp \
     ../registermetatypes.cpp \
     ../Units/METime.cpp \
-    ../GUI/Dialogs/DlgSelect.cpp
+    ../GUI/Dialogs/DlgSelect.cpp \
+    ../GUI/Widgets/WidgetMOItemsList.cpp \
+    ../MOItemModel.cpp \
+    ../GUI/MOItemViews.cpp
 
 FORMS += \
     ../GUI/Widgets/WidgetFilesList.ui \
@@ -211,4 +217,5 @@ FORMS += \
     ../GUI/Tabs/TabProjectBase.ui \
     ../GUI/Widgets/WidgetProjectBaseInfos.ui \
     ../GUI/Widgets/WidgetSelectVars.ui \
-    ../GUI/Dialogs/NewProjectBaseForm.ui
+    ../GUI/Dialogs/NewProjectBaseForm.ui \
+    ../GUI/Widgets/WidgetMOItemsList.ui

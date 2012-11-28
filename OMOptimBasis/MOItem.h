@@ -102,10 +102,13 @@ public:
 
     virtual QString getFieldName(int iField,int role = Qt::DisplayRole)=0;
     static QString sFieldName(int field, int role);
+    virtual QString getFieldDescription(int iField) const;
 
-    void setEditableFields(QList<int> _editableFields);
-    void setIsEditableField(int iField, bool isEditable);
-    bool isEditableField(int);
+    void setProtectedFields(QList<int> protectedFields);
+    void setIsProtectedField(int iField, bool isProtected);
+    bool isProtectedField(int);
+    bool protectAllFields();
+    void setEditableFields(QList<int> editableFields);
 
     static const int nbFields = 1;
     virtual unsigned getNbFields()=0;
@@ -116,6 +119,8 @@ public:
     virtual QString getStrToolTip();
     void checkUniqueItemName( QStringList & list);
 
+
+
 signals:
     void sendInfo(Info);
     void deleted();
@@ -123,7 +128,7 @@ signals:
 protected :
     QString _name;
     QList<int> _filledFields; /// list of fields index that have been set
-    QList<int> _editableFields; /// list of fields that are editable by the user (e.g. through GUI)
+    QList<int> _protectedFields; /// list of fields that are protected from editing by the user (e.g. through GUI)
     
 };
 

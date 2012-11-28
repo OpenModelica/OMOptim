@@ -45,11 +45,14 @@
 Variable::Variable(void)
 {
     _causality = UNKNOWN;
+    _protectedFields << Variable::NAME << Variable::DESCRIPTION << Variable::MODEL << DATATYPE ;
    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::Variable(QString name)
 {
+    _causality = UNKNOWN;
+    _protectedFields << Variable::NAME << Variable::DESCRIPTION << Variable::MODEL << DATATYPE ;
     setName(name);
    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
@@ -62,9 +65,7 @@ Variable::Variable(const Variable & var):MOItem(var)
         curValue = var.getFieldValue(i);
         setFieldValue(i,curValue);
     }
-    _filledFields = var._filledFields;
-    _editableFields = var._editableFields;
-   // qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::Variable(QDomElement & domEl)
@@ -99,7 +100,7 @@ Variable &Variable::operator =(const Variable & var)
         setFieldValue(i,curValue);
     }
     _filledFields = var._filledFields;
-    _editableFields = var._editableFields;
+    _protectedFields = var._protectedFields;
 }
 
 Variable* Variable::clone() const
@@ -349,9 +350,9 @@ QString Variable::model() const
 
 VariableResult::VariableResult()
 {
-    for(int i=0;i<Variable::nbFields;i++)
+    for(int i=0;i<VariableResult::nbFields;i++)
     {
-        setIsEditableField(i,false);
+        setIsProtectedField(i,true);
     }
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
@@ -644,13 +645,14 @@ QDomElement VariableResult::toXmlData(QDomDocument & doc)
 
 OptVariable::OptVariable()
 {
-    _editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
+    setEditableFields(QList<int>()<< OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX);
+
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 OptVariable::OptVariable(QString name)
 {
-    _editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
+    setEditableFields(QList<int>()<< OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX);
     setName(name);
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
@@ -670,7 +672,7 @@ OptVariable::OptVariable(QDomElement & domEl)
 
         MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
-    _editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
+    setEditableFields(QList<int>()<< OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX);
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
@@ -705,7 +707,7 @@ bool OptVariable::check(QString &error)
 OptVariable::OptVariable(const Variable & var):Variable(var)
 {
     initOptExtremum();
-    _editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
+    //_editableFields << OptVariable::VALUE << OptVariable::OPTMIN << OptVariable::OPTMAX;
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
@@ -917,7 +919,8 @@ bool OptVariable::setFieldValue(int ifield,QVariant value)
 
 ScannedVariable::ScannedVariable()
 {
-    _editableFields << ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP;
+    setEditableFields(QList<int>()<<  ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP);
+    //_editableFields << ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP;
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
@@ -936,8 +939,7 @@ ScannedVariable::ScannedVariable(QDomElement & domEl)
 
         MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
-
-    _editableFields << ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP;
+    setEditableFields(QList<int>()<<  ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP);
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
@@ -965,8 +967,9 @@ ScannedVariable::ScannedVariable(const Variable & var):Variable(var)
 {
     initScanExtremum();
 
-    _editableFields << ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP ;
-    // qDebug(QString("New "+getClassName()).toLatin1().data());
+    setEditableFields(QList<int>()<<  ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP);
+
+     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 /**

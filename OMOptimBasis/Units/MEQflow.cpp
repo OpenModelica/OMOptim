@@ -111,17 +111,6 @@ double MEQflow::convert(double value,int orgUnit,int dstUnit) const
     return result;
 }
 
-MEQflow MEQflow::operator-(const MEQflow& b) const
-{
-    double resValue = value(_unit)-b.value(_unit);
-    return MEQflow(resValue,_unit);
-}
-
-MEQflow MEQflow::operator+(const MEQflow& b) const
-{
-    double resValue = value(_unit)+b.value(_unit);
-    return MEQflow(resValue,_unit);
-}
 
 MEQflow MEQflow::operator*(const double& fact) const
 {
@@ -129,15 +118,37 @@ MEQflow MEQflow::operator*(const double& fact) const
     return MEQflow(resValue,_unit);
 }
 
-
 MEQflow& MEQflow::operator+=(const MEQflow& b)
 {
-    _value += b.value(_unit);
+    setValue(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
 
 MEQflow& MEQflow::operator-=(const MEQflow& b)
 {
-    _value -= b.value(_unit);
+    setValue(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
+
+MEQflow MEQflow::operator-(const MEQflow& b) const
+{
+    MEQflow result(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
+
+    return result;
+}
+
+MEQflow MEQflow::operator+(const MEQflow& b) const
+{
+    MEQflow result(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
+
+    return result;
+}
+

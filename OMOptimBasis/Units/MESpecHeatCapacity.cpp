@@ -114,27 +114,38 @@ double MESpecHeatCapacity::convert(double value,int orgUnit,int dstUnit) const
 }
 
 
-
 MESpecHeatCapacity& MESpecHeatCapacity::operator+=(const MESpecHeatCapacity& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
 
 MESpecHeatCapacity& MESpecHeatCapacity::operator-=(const MESpecHeatCapacity& b)
 {
     setValue(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
 
 MESpecHeatCapacity MESpecHeatCapacity::operator-(const MESpecHeatCapacity& b) const
 {
-    return MESpecHeatCapacity(value(_unit) - b.value(_unit),_unit);
+    MESpecHeatCapacity result(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
+
+    return result;
 }
 
 MESpecHeatCapacity MESpecHeatCapacity::operator+(const MESpecHeatCapacity& b) const
 {
-    return MESpecHeatCapacity(value(_unit) + b.value(_unit),_unit);
+    MESpecHeatCapacity result(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
+
+    return result;
 }
 
 

@@ -119,26 +119,36 @@ double MEHTCoeff::convert(double value,int orgUnit,int dstUnit) const
 }
 
 
-
 MEHTCoeff& MEHTCoeff::operator+=(const MEHTCoeff& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
 
 MEHTCoeff& MEHTCoeff::operator-=(const MEHTCoeff& b)
 {
     setValue(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        this->invalidate();
     return *this;
 }
 
 MEHTCoeff MEHTCoeff::operator-(const MEHTCoeff& b) const
 {
-    return MEHTCoeff(value(_unit) - b.value(_unit),_unit);
+    MEHTCoeff result(value(_unit) - b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
+
+    return result;
 }
 
 MEHTCoeff MEHTCoeff::operator+(const MEHTCoeff& b) const
 {
-    return MEHTCoeff(value(_unit) + b.value(_unit),_unit);
-}
+    MEHTCoeff result(value(_unit) + b.value(_unit),_unit);
+    if(!b.isValid())
+        result.invalidate();
 
+    return result;
+}
