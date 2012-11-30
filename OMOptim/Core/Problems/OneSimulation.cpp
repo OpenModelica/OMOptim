@@ -217,7 +217,7 @@ Result* OneSimulation::launch(ProblemConfig config)
         // Simulate
         curVariables.clear();
         curSimSuccess = ctrl()->simulate(_project->tempPath(), &updatedVariables, &curVariables,
-                                         _ModelPlus->neededFiles(),moDeps);
+                                         QFileInfoList() << _ModelPlus->neededFiles() << _filesToCopy,moDeps);
         allSimSuccess = allSimSuccess && curSimSuccess;
 
         if(allSimSuccess)
