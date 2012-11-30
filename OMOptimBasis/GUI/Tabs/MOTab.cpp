@@ -55,6 +55,7 @@ MOTabSimple::~MOTabSimple(void)
 MOTabCplx::MOTabCplx(QString _projectName,MOItem* _mainItem,QWidget* _parent)
 :QMainWindow(_parent),MOTabBase(_projectName,_mainItem)
 {
+    this->setStyleSheet("QMainWindow::separator {height:0;width:0;background:black}");
 
 }
 

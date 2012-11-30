@@ -185,6 +185,11 @@ QString MOItem::getFieldDescription(int iField) const
     return "-";
 }
 
+MOItem::FieldType MOItem::getFieldType(int iField) const
+{
+    return GENERIC;
+}
+
 int MOItem::getFieldIndex(QString fieldName,int role)
 {
     int index=0;

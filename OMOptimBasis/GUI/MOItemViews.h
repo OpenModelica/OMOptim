@@ -60,8 +60,10 @@ public:
 
     void setEditable(bool editable);
 
-    void setDelegates();
+    void initDelegates();
 
+
+    void setModel(QAbstractItemModel *model);
 };
 
 

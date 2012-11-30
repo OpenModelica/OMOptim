@@ -73,11 +73,15 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+    MOItem* item()const{return _item;}
+
 
 public slots:
     void onItemDeleted();
 
 protected :
+    bool setCheckState(const QModelIndex &index, int checkState);
+
     bool _editable;
     bool _showDescription;
     MOItem* _item;

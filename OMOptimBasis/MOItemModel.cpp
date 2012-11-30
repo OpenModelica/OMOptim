@@ -101,7 +101,9 @@ QVariant MOItemModel::data(const QModelIndex &index, int role) const
     int iCol = index.column();
     int iRow = index.row();
 
-    if(role!=Qt::DisplayRole)
+    bool ok = (role==Qt::DisplayRole) ||
+            ((role == Qt::CheckStateRole)&&iCol==1&&(_item->getFieldType(index.row())==MOItem::BOOL));
+    if(!ok)
         return QVariant();
 
     if(iCol == 0)
@@ -110,6 +112,18 @@ QVariant MOItemModel::data(const QModelIndex &index, int role) const
     }
     if(iCol==1)
     {
+        if(role == Qt::CheckStateRole)
+        {
+            bool value = _item->getFieldValue(iRow,role).toBool();
+            if(value)
+                return Qt::Checked;
+            else
+                return Qt::Unchecked;
+        }
+        // avoid double display when checkbox
+        if((_item->getFieldType(index.row())==MOItem::BOOL)&&(role==Qt::DisplayRole))
+            return QVariant();
+
         return _item->getFieldValue(iRow,role);
     }
     if(iCol==2)
@@ -139,10 +153,27 @@ bool MOItemModel::setData(const QModelIndex &index, const QVariant &value, int r
             dataChanged(index,index);
         return ok;
         break;
+    case Qt::CheckStateRole :
+        return setCheckState(index,value.toInt());
+        break;
     default:
         return false;
     }
 }
+
+bool MOItemModel::setCheckState(const QModelIndex & index, int checkState)
+{
+    if(index.isValid() && _editable)
+    {
+        if((checkState == Qt::Unchecked) || (checkState == Qt::PartiallyChecked))
+            return this->setData(index,QVariant(false),Qt::EditRole);
+        else
+            return this->setData(index,QVariant(true),Qt::EditRole);
+    }
+    else
+        return false;
+}
+
 
 //QModelIndex MOItemModel::index(int row, int column, const QModelIndex &parent)
 //const
@@ -172,6 +203,9 @@ Qt::ItemFlags MOItemModel::flags(const QModelIndex &index) const
 
     if(_editable && index.column()==1 && !_item->isProtectedField(index.row()))
         _flags = _flags | Qt::ItemIsEditable;
+
+    if(_editable && (index.column()==1) &&(_item->getFieldType(index.row())==MOItem::BOOL))
+        _flags = _flags | Qt::ItemIsUserCheckable;
 
     return _flags;
 }

@@ -43,7 +43,8 @@
 #include <QDragEnterEvent>
 #include "InfoSender.h"
 #include <QDebug>
-
+#include "MOItemModel.h"
+#include "MyDelegates.h"
 
 MOItemTreeView::MOItemTreeView(QWidget* parent):QTreeView(parent)
 {    
@@ -53,6 +54,7 @@ MOItemTreeView::MOItemTreeView(QWidget* parent):QTreeView(parent)
     setRootIsDecorated(false);
     setItemsExpandable(false);
 
+    initDelegates();
     // frame
 
 }
@@ -63,21 +65,47 @@ MOItemTreeView::~MOItemTreeView()
 
 void MOItemTreeView::setEditable(bool editable)
 {
-//    if(editable)
-//    {
-//        this->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
+    //    if(editable)
+    //    {
+    //        this->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
 
-//    }
-//    else
-//    {
-//        this->setEditTriggers(QAbstractItemView::NoEditTriggers);
-//    }
+    //    }
+    //    else
+    //    {
+    //        this->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //    }
+}
+
+void MOItemTreeView::setModel ( QAbstractItemModel * model )
+{
+    QTreeView::setModel(model);
+    if(model)
+            initDelegates();
 }
 
 
-
-void MOItemTreeView::setDelegates()
+void MOItemTreeView::initDelegates()
 {
+    MOItemModel* itemModel = dynamic_cast<MOItemModel*>(model());
+    if(itemModel)
+    {
+        MOItem* item = itemModel->item();
+        if(item)
+        {
+            for(int i=0;i<item->getNbFields();i++)
+            {
+                switch(item->getFieldType(i))
+                {
+                case MOItem::BOOL :
+                    break;
+                case MOItem::DOUBLE :
+                    DoubleSpinBoxDelegate* dblDelegate = new DoubleSpinBoxDelegate(this,30);
+                    this->setItemDelegateForRow(i,dblDelegate);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 

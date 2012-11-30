@@ -66,6 +66,18 @@ class MOItem : public QObject
     Q_OBJECT
 public:
 
+    enum FieldType
+    {
+        FOLDERPATH,
+        FILEPATH,
+        STRING,
+        BOOL,
+        INT,
+        DOUBLE,
+        LIST,
+        GENERIC
+    };
+
 
     /**
     * /enum Field : list of fields of data container.
@@ -103,6 +115,7 @@ public:
     virtual QString getFieldName(int iField,int role = Qt::DisplayRole)=0;
     static QString sFieldName(int field, int role);
     virtual QString getFieldDescription(int iField) const;
+    virtual FieldType getFieldType(int iField) const;
 
     void setProtectedFields(QList<int> protectedFields);
     void setIsProtectedField(int iField, bool isProtected);

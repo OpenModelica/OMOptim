@@ -74,7 +74,7 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
     else
         dockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
 
-    dockWidget->setLayout(new QGridLayout());
+    //dockWidget->setLayout(new QGridLayout());
     dockWidget->setWidget(widget);
     dockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
 
