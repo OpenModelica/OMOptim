@@ -312,9 +312,9 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
     QStringList firstLine = lines[0].split("\t",QString::SkipEmptyParts);
     int nbCols = firstLine.size();
 
-    int *objIndex = new int[nbCols];
-    int *optVarIndex = new int[nbCols];
-    int *recompVarIndex = new int[nbCols];
+    QList<VariableResult *> objs;
+    QList<VariableResult*> *optVars;
+    QList<VariableResult*> *recompVars;
 
     bool useScan = (dynamic_cast<Optimization*>(this->problem())->nbScans()>1);
     this->recomputedVariables()->setUseScan(useScan);
@@ -322,10 +322,10 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
     // Filling index tables
     for(int i=0; i<nbCols; i++)
     {
-        objIndex[i] = this->optObjectivesResults()->findItem(firstLine.at(i));
-        optVarIndex[i] = this->optVariablesResults()->findItem(firstLine.at(i));
+        objs.push_back(this->optObjectivesResults()->findItem(firstLine.at(i)));
+        optVars->push_back(this->optVariablesResults()->findItem(firstLine.at(i)));
         if(!useScan)
-            recompVarIndex[i] = this->recomputedVariables()->findItem(firstLine.at(i));
+            recompVars->push_back(this->recomputedVariables()->findItem(firstLine.at(i)));
     }
 
     int iiSubBlock = firstLine.indexOf("subBlocksIndex");
@@ -342,17 +342,17 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
         {
             for (int iCol = 0; iCol < nbCols; iCol++)
             {
-                if (objIndex[iCol]>-1)
+                if (objs[iCol])
                 {
-                    this->optObjectivesResults()->at(objIndex[iCol])->setFinalValue(0,iPoint,curLine[iCol].toDouble());
+                    objs[iCol]->setFinalValue(0,iPoint,curLine[iCol].toDouble());
                 }
-                if (optVarIndex[iCol]>-1)
+                if (optVars->at(iCol))
                 {
-                    this->optVariablesResults()->at(optVarIndex[iCol])->setFinalValue(0,iPoint,curLine[iCol].toDouble());
+                    optVars->at(iCol)->setFinalValue(0,iPoint,curLine[iCol].toDouble());
                 }
-                if ((recompVarIndex[iCol]>-1)&&(!useScan))
+                if ((!useScan) && recompVars->at(iCol))
                 {
-                    this->recomputedVariables()->at(recompVarIndex[iCol])->setFinalValue(0,iPoint,curLine[iCol].toDouble());
+                    recompVars->at(iCol)->setFinalValue(0,iPoint,curLine[iCol].toDouble());
                 }
             }
 
@@ -363,10 +363,7 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
             iPoint++;
         }
     }
-    delete[] objIndex;
-    delete[] optVarIndex;
-    delete[] recompVarIndex;
-}
+ }
 
 //void OptimResult::updateRecomputedPointsFromFolder()
 //{
@@ -627,16 +624,15 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
                     //****************************************************
                     VariableResult* newVariableResult;
                     VariableResult* curFinalVariable;
-                    int iRecVar;
+                    VariableResult* recVar;
                     for(int iVar=0;iVar<oneSimRes->finalVariables()->size();iVar++)
                     {
                         curFinalVariable = oneSimRes->finalVariables()->at(iVar);
                         // look in recomputed variables
-                        iRecVar = this->recomputedVariables()->findItem(curFinalVariable->name());
-                        if(iRecVar>-1)
+                        recVar = this->recomputedVariables()->findItem(curFinalVariable->name());
+                        if(recVar)
                         {
-                            this->recomputedVariables()->at(iRecVar)->setFinalValuesAtPoint(iPoint,
-                                                                                            curFinalVariable->finalValuesAtPoint(0));
+                            recVar->setFinalValuesAtPoint(iPoint,curFinalVariable->finalValuesAtPoint(0));
                         }
                         else
                         {
@@ -647,13 +643,17 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
                             this->recomputedVariables()->addItem(newVariableResult);
 
                         }
-                        // update objective value if necessary (should'nt be the case, but if model has been changed)
-                        int iObj = this->optObjectivesResults()->findItem(curFinalVariable->name());
-                        if(iObj>-1)
+                        // update objective value if necessary (should'nt be the case, but if model has changed)
+                        VariableResult* objVar= this->optObjectivesResults()->findItem(curFinalVariable->name());
+                        if(objVar)
                         {
                             bool objOk=false;
-                            double objValue = VariablesManip::calculateObjValue(problem->objectives()->at(iObj),oneSimRes->finalVariables(),objOk);
-                            this->optObjectivesResults()->at(iObj)->setFinalValue(0,iPoint,objValue,objOk);
+                            OptObjective* optObj = problem->objectives()->findItem(objVar->name());
+                            if(optObj)
+                            {
+                            double objValue = VariablesManip::calculateObjValue(optObj,oneSimRes->finalVariables(),objOk);
+                            objVar->setFinalValue(0,iPoint,objValue,objOk);
+                            }
                         }
                     }
 //                    //*****************************

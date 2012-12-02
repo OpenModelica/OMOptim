@@ -136,39 +136,41 @@ void WidgetMooPlot::varSelectionChanged()
 
 
     // looking in optObjectives
-    int XVarIndex = _result->optObjectivesResults()->findItem(xVarName);
-    if (XVarIndex > -1)
+    VariableResult* XVar;
+    XVar= _result->optObjectivesResults()->findItem(xVarName);
+    if (XVar)
     {
-        XObjResult = _result->optObjectivesResults()->at(XVarIndex);
+        XObjResult = XVar;
         XType = 0;
         xfound = true;
     }
     else
     {
         //looking in optVariables
-        XVarIndex = _result->optVariablesResults()->findItem(xVarName);
-        if(XVarIndex>-1)
+        XVar = _result->optVariablesResults()->findItem(xVarName);
+        if(XVar)
         {
-            XVarResult = dynamic_cast<VariableResult*>(_result->optVariablesResults()->at(XVarIndex));
+            XVarResult = XVar;
             XType = 1;
             xfound=true;
         }
     }
 
-    int YVarIndex = _result->optObjectivesResults()->findItem(yVarName);
-    if (YVarIndex > -1)
+    VariableResult* YVar;
+    YVar = _result->optObjectivesResults()->findItem(yVarName);
+    if (YVar)
     {
-        YObjResult = _result->optObjectivesResults()->at(YVarIndex);
+        YObjResult = YVar;
         YType = 0;
         yfound = true;
     }
     else
     {
         //looking in optVariables
-        YVarIndex = _result->optVariablesResults()->findItem(yVarName);
-        if(YVarIndex>-1)
+        YVar = _result->optVariablesResults()->findItem(yVarName);
+        if(YVar)
         {
-            YVarResult = _result->optVariablesResults()->at(YVarIndex);
+            YVarResult = YVar;
             YType = 1;
             yfound = true;
         }

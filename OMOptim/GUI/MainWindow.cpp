@@ -43,6 +43,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
 {
 
     this->resize(800, 600);
+    this->setStyleSheet("QMainWindow::separator {height:0;width:0}");
 
     //************************
     // Basic initialization

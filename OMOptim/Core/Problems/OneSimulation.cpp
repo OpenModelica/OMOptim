@@ -237,13 +237,13 @@ Result* OneSimulation::launch(ProblemConfig config)
             else
             {
                 // append scan values
-                int iVar;
+                Variable *curVar;
                 for(int i=0;i<result->finalVariables()->size();i++)
                 {
-                    iVar = curVariables.findItem(result->finalVariables()->at(i)->name());
-                    if(iVar>-1)
+                    curVar = curVariables.findItem(result->finalVariables()->at(i)->name());
+                    if(curVar)
                     {
-                        curValue = curVariables.items.at(iVar)->getFieldValue(Variable::VALUE).toDouble();
+                        curValue = curVar->value();
                         result->finalVariables()->at(i)->setFinalValue(iScan,0,curValue,true);
                     }
                     else

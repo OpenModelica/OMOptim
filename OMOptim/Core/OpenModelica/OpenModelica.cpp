@@ -469,10 +469,9 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
             int iP;
             for(int i=0;i<initParameters.size();i++)
             {
-                iP = parameters->findItem(OpenModelicaParameters::str(initParameters.at(i)));
-                if(iP>-1)
+                curParam = parameters->findItem(OpenModelicaParameters::str(initParameters.at(i)));
+                if(curParam)
                 {
-                    curParam = parameters->at(iP);
                     paramName = paramIndicators.at(i);
                     paramValue = curParam->getFieldValue(MOParameter::VALUE);
                     rxLine.setPattern(sciNumRx()+"\\s*(//[\\w*|\\s*]*//|//)\\s*"+paramName);

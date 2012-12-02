@@ -283,52 +283,52 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     }
 
 
-    int iPStopTime = parameters->findItem(DymolaParameters::str(DymolaParameters::STOPTIME));
+    MOParameter* pStopTime = parameters->findItem(DymolaParameters::str(DymolaParameters::STOPTIME));
     int iLStopTime = lines.indexOf(QRegExp(".* # StopTime .*"));
-    if((iLStopTime>-1) && (iPStopTime>-1))
+    if((iLStopTime>-1) && pStopTime)
     {
         newLine =  "       "
-                +parameters->at(iPStopTime)->getFieldValue(MOParameter::VALUE).toString()
+                +pStopTime->getFieldValue(MOParameter::VALUE).toString()
                 +"                   # StopTime     Time at which integration stops";
         lines.replace(iLStopTime,newLine);
     }
 
-    int iPTolerance = parameters->findItem(DymolaParameters::str(DymolaParameters::TOLERANCE));
+    MOParameter* pTolerance = parameters->findItem(DymolaParameters::str(DymolaParameters::TOLERANCE));
     int iLTolerance = lines.indexOf(QRegExp(".*  # Tolerance .*"));
-    if((iLTolerance>-1) && (iPTolerance>-1))
+    if((iLTolerance>-1) && pTolerance)
     {
         newLine =  "       "
-                +parameters->at(iPTolerance)->getFieldValue(MOParameter::VALUE).toString()
+                +pTolerance->getFieldValue(MOParameter::VALUE).toString()
                 +"                   # nInterval    Relative precision of signals for \n                            #              simulation, linearization and trimming";
         lines.replace(iLTolerance,newLine);
     }
 
-    int iPnInterval = parameters->findItem(DymolaParameters::str(DymolaParameters::NINTERVAL));
+    MOParameter* pnInterval = parameters->findItem(DymolaParameters::str(DymolaParameters::NINTERVAL));
     int iLnInterval = lines.indexOf(QRegExp(".*  # nInterval .*"));
-    if((iLnInterval>-1) && (iPnInterval>-1))
+    if((iLnInterval>-1) && pnInterval)
     {
         newLine =  "       "
-                +parameters->at(iPnInterval)->getFieldValue(MOParameter::VALUE).toString()
+                +pnInterval->getFieldValue(MOParameter::VALUE).toString()
                 +"                   # nInterval    Number of communication intervals, if > 0";
         lines.replace(iLnInterval,newLine);
     }
 
-    int iPSolver = parameters->findItem(DymolaParameters::str(DymolaParameters::SOLVER));
+    MOParameter* pSolver = parameters->findItem(DymolaParameters::str(DymolaParameters::SOLVER));
     int iLSolver = lines.indexOf(QRegExp(".*  # Algorithm .*"));
-    if((iLSolver>-1) && (iPSolver>-1))
+    if((iLSolver>-1) && pSolver)
     {
         newLine =  "       "
-                +parameters->at(iPSolver)->getFieldValue(MOParameter::VALUE).toString()
+                +pSolver->getFieldValue(MOParameter::VALUE).toString()
                 +"                   # Algorithm    Integration algorithm as integer";
         lines.replace(iLSolver,newLine);
     }
 
-    int iFinalFile = parameters->findItem(DymolaParameters::str(DymolaParameters::FINALFILE));
+    MOParameter* pFinalFile = parameters->findItem(DymolaParameters::str(DymolaParameters::FINALFILE));
     int iLineLRes = lines.indexOf(QRegExp(".*  # lres     0/1 do not/store results .*"));
-    if((iLineLRes>-1) && (iFinalFile>-1))
+    if((iLineLRes>-1) && pFinalFile)
     {
         int lRes;
-        switch(iFinalFile)
+        switch(pFinalFile->value().toInt())
         {
         case DymolaParameters::DSFINAL :
             lRes = 0;

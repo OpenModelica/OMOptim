@@ -58,19 +58,20 @@ void VariablesManip::updateScanValues(Variables *vars, ScannedVariables *scanned
     int iv,iov;
     double curMin,curStep,curValue;
     QString curName;
+    Variable* var;
 
     for(iov=0;iov<scannedVars->size();iov++)
     {
         curName = scannedVars->at(iov)->name();
-        iv=vars->findItem(curName);
+        var=vars->findItem(curName);
 
-        if(iv!=-1)
+        if(var)
         {
             curMin = scannedVars->at(iov)->getFieldValue(ScannedVariable::SCANMIN).toDouble();
             curStep = scannedVars->at(iov)->getFieldValue(ScannedVariable::SCANSTEP).toDouble();
             curValue = curMin + iScan.at(iov) * curStep;
 
-            vars->at(iv)->setFieldValue(Variable::VALUE,curValue);
+            var->setFieldValue(Variable::VALUE,curValue);
         }
         else
         {
@@ -92,10 +93,10 @@ int VariablesManip::nbScans(ScannedVariables *scannedVars)
 
 double VariablesManip::calculateObjValue(OptObjective* optObj,MOOptVector * oneSimFinalVars,bool & ok,int iPoint)
 {
-    int iVarObj = oneSimFinalVars->findItem(optObj->name());
+    VariableResult* varObj = oneSimFinalVars->findItem(optObj->name());
     ok = false;
     double result;
-    if(iVarObj==-1)
+    if(!varObj)
     {
         InfoSender::instance()->send(Info("Could not find variable "+optObj->name()+". Setting value to 0",ListInfo::WARNING2));
         ok = false;
@@ -106,22 +107,22 @@ double VariablesManip::calculateObjValue(OptObjective* optObj,MOOptVector * oneS
         switch(optObj->scanFunction())
         {
         case OptObjective::SUM :
-            result = VariablesManip::calculateScanSum(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            result = VariablesManip::calculateScanSum(varObj,ok,iPoint);
             break;
         case OptObjective::AVERAGE :
-            result = VariablesManip::calculateScanAverage(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            result = VariablesManip::calculateScanAverage(varObj,ok,iPoint);
             break;
         case OptObjective::DEVIATION :
-            result = VariablesManip::calculateScanStandardDev(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            result = VariablesManip::calculateScanStandardDev(varObj,ok,iPoint);
             break;
         case OptObjective::MINIMUM :
-            result = VariablesManip::extractMinimum(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            result = VariablesManip::extractMinimum(varObj,ok,iPoint);
             break;
         case OptObjective::MAXIMUM :
-            result = VariablesManip::extractMaximum(oneSimFinalVars->at(iVarObj),ok,iPoint);
+            result = VariablesManip::extractMaximum(varObj,ok,iPoint);
             break;
         default :
-            result = oneSimFinalVars->at(iVarObj)->finalValue(0,iPoint);
+            result = varObj->finalValue(0,iPoint);
             ok=true;
             break;
         }
