@@ -282,27 +282,24 @@ void MOAVector<ItemClass>::removeRow(QString itemName)
 
 
 template<class ItemClass>
-int MOAVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity caseSens) const
+ItemClass* MOAVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity caseSens) const
 {
     bool found = false;
     int i=0;
     int nbItems=items.size();
     QString itemName2;
 
-    while((!found)&&(i<nbItems))
+    while(i<nbItems)
     {
         itemName2=items.at(i)->name();
-        found=(itemName.compare(itemName2,caseSens)==0);
+
+        if(itemName.compare(itemName2,caseSens)==0)
+            return items.at(i);
+
         i++;
     }
-    if(!found)
-    {
-        return -1;
-    }
-    else
-    {
-        return i-1;
-    }
+
+    return NULL;
 }
 
 template<class ItemClass>
@@ -338,11 +335,11 @@ bool MOAVector<ItemClass>::contains(ItemClass* item)
 template<class ItemClass>
 bool MOAVector<ItemClass>::alreadyIn(QString itemName)
 {
-    int i = findItem(itemName);
-    if (i==-1)
-        return false;
-    else
+    ItemClass* i = findItem(itemName);
+    if (i)
         return true;
+    else
+        return false;
 }
 
 
@@ -581,13 +578,13 @@ void MOVector<ItemClass>::update(const QDomElement & domList)
         QDomNode nameNode = attributes.namedItem("Name");
         QString name = nameNode.toAttr().value().replace(XMLTools::space()," ");
 
-        int index=-1;
+        ItemClass* item;
         if(!nameNode.isNull())
         {
-            index = this->findItem(name);
+            item = this->findItem(name);
         }
-        if(index>-1)
-            this->items.at(index)->update(domItem);
+        if(item)
+            item->update(domItem);
         else
             this->addItem(new ItemClass(domItem));
 

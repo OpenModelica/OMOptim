@@ -47,7 +47,7 @@
 
 #include "MOVector.h"
 #include "MOItem.h"
-#include "MOItemViews.h";
+#include "MOItemViews.h"
 #include "MOItemModel.h"
 
 namespace Ui {
@@ -74,7 +74,7 @@ public:
     MOItemModel *_itemModel;
 
 public slots:
-    void onIndexChanged();
+    virtual void onIndexChanged();
 
 };
 

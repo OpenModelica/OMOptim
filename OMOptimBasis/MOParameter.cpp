@@ -448,9 +448,9 @@ QVariant MOParameters::value(QString name,QVariant defaultValue) const
 
 bool MOParameters::setValue(QString name,QVariant value)
 {
-    int iParam = this->findItem(name);
-    if(iParam>-1)
-        return this->at(iParam)->setFieldValue(MOParameter::VALUE,value);
+    MOParameter* param = this->findItem(name);
+    if(param)
+        return param->setFieldValue(MOParameter::VALUE,value);
     else
         return false;
 }
@@ -466,12 +466,11 @@ QMultiMap<QString,MOParameter*> MOParameters::groupmap() const
 
 void MOParameters::setGroup(QString group,QStringList indexes)
 {
-    int iParam;
     for(int i=0;i<indexes.size();i++)
     {
-        iParam = this->findItem(indexes.at(i));
-        if(iParam>-1)
-            this->at(iParam)->setFieldValue(MOParameter::GROUP,group);
+        MOParameter *param = this->findItem(indexes.at(i));
+        if(param)
+            param->setFieldValue(MOParameter::GROUP,group);
     }
 }
 
@@ -486,12 +485,11 @@ void MOParameters::setPanel(QString panel)
 
 void MOParameters::addEnablingIndex(QStringList enabledIndexes,QString enablingIndex, QVariant enablingValue)
 {
-    int iParam;
     for(int i=0;i<enabledIndexes.size();i++)
     {
-        iParam = this->findItem(enabledIndexes.at(i));
-        if(iParam>-1)
-            this->at(iParam)->addEnablingIndex(enablingIndex,enablingValue);
+        MOParameter* param = this->findItem(enabledIndexes.at(i));
+        if(param)
+            param->addEnablingIndex(enablingIndex,enablingValue);
     }
 }
 
@@ -501,11 +499,11 @@ void MOParameters::addEnablingIndex(QStringList enabledIndexes,QString enablingI
   */
 bool MOParameters::shouldBeEnabled(QString name)
 {
-    int iParam = this->findItem(name);
-    if(iParam==-1)
+    MOParameter* param = this->findItem(name);
+    if(!param)
         return false;
 
-    QMap<QString,QVariant> enablingIndexes = this->at(iParam)->enablingIndexes();
+    QMap<QString,QVariant> enablingIndexes = param->enablingIndexes();
     bool result = true;
     int i=0;
     QString curKey;

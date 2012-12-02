@@ -340,15 +340,17 @@ MOOptVector* MOOptVector::clone() const
 }
 double MOOptVector::value(const QString &name,bool &ok,int iScan,int iPoint)
 {
-    int iVar = this->findItem(name);
-    if(iVar==-1)
+    VariableResult* var = this->findItem(name);
+    if(var)
+    {
+        ok = true;
+        return var->finalValue(iScan,iPoint);
+    }
+    else
     {
         ok = false;
         return 0;
     }
-
-    return this->at(iVar)->value();
-
 }
 
 void MOOptVector::append(const MOOptVector &vector,bool makeACopy)
