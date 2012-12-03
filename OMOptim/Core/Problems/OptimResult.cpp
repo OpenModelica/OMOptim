@@ -313,8 +313,8 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
     int nbCols = firstLine.size();
 
     QList<VariableResult *> objs;
-    QList<VariableResult*> *optVars;
-    QList<VariableResult*> *recompVars;
+    QList<VariableResult*> optVars;
+    QList<VariableResult*> recompVars;
 
     bool useScan = (dynamic_cast<Optimization*>(this->problem())->nbScans()>1);
     this->recomputedVariables()->setUseScan(useScan);
@@ -323,9 +323,9 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
     for(int i=0; i<nbCols; i++)
     {
         objs.push_back(this->optObjectivesResults()->findItem(firstLine.at(i)));
-        optVars->push_back(this->optVariablesResults()->findItem(firstLine.at(i)));
+        optVars.push_back(this->optVariablesResults()->findItem(firstLine.at(i)));
         if(!useScan)
-            recompVars->push_back(this->recomputedVariables()->findItem(firstLine.at(i)));
+            recompVars.push_back(this->recomputedVariables()->findItem(firstLine.at(i)));
     }
 
     int iiSubBlock = firstLine.indexOf("subBlocksIndex");
@@ -346,13 +346,13 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
                 {
                     objs[iCol]->setFinalValue(0,iPoint,curLine[iCol].toDouble());
                 }
-                if (optVars->at(iCol))
+                if (optVars.at(iCol))
                 {
-                    optVars->at(iCol)->setFinalValue(0,iPoint,curLine[iCol].toDouble());
+                    optVars.at(iCol)->setFinalValue(0,iPoint,curLine[iCol].toDouble());
                 }
-                if ((!useScan) && recompVars->at(iCol))
+                if ((!useScan) && recompVars.at(iCol))
                 {
-                    recompVars->at(iCol)->setFinalValue(0,iPoint,curLine[iCol].toDouble());
+                    recompVars.at(iCol)->setFinalValue(0,iPoint,curLine[iCol].toDouble());
                 }
             }
 
