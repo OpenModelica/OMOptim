@@ -50,6 +50,7 @@
 #include <QApplication>
 #include <QClipboard>
 
+#include "MOItem.h"
 
 class MOItemTreeView : public QTreeView
 {
@@ -63,7 +64,12 @@ public:
     void initDelegates();
 
 
+
+
     void setModel(QAbstractItemModel *model);
+
+protected :
+
 };
 
 

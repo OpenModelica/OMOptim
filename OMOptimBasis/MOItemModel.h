@@ -75,6 +75,8 @@ public:
 
     MOItem* item()const{return _item;}
 
+     void hideField(int);
+
 
 public slots:
     void onItemDeleted();
@@ -85,6 +87,9 @@ protected :
     bool _editable;
     bool _showDescription;
     MOItem* _item;
+
+    QList<int> _hidedFields;
+    int iField(int iRow) const;
 };
 
 

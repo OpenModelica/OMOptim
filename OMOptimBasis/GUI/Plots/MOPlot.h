@@ -411,7 +411,7 @@ void MOPlot::onCopyAsked()
         QString yTitle = this->axisTitle(QwtPlot::yLeft).text();
         QString xTitle = this->axisTitle(QwtPlot::xBottom).text();
         csv+= xTitle + separator + yTitle + "\n";
-        for(int j=0;j<curve->data().size();j++)
+        for(unsigned int j=0;j<curve->data().size();j++)
         {
             curve->data().size();
             csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";

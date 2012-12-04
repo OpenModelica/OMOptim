@@ -56,6 +56,7 @@ LowTools::~LowTools(void)
 bool LowTools::removeDirContents(QString folder)
 {
     bool  allRemoved = true;
+    bool fileRemoved;
 
     QDir dir = QDir(folder);
     QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
@@ -64,7 +65,14 @@ bool LowTools::removeDirContents(QString folder)
         QFileInfo provFile(files.at(indf).absoluteFilePath());
 
         // provFile.setPermissions(provFile.permissions() | QFile::WriteUser);
-        allRemoved = dir.remove(provFile.fileName()) && allRemoved;
+        fileRemoved = dir.remove(provFile.fileName());
+        if(!fileRemoved)
+        {
+            QFile(provFile.absoluteFilePath()).setPermissions(provFile.permissions() | QFile::WriteUser);
+            fileRemoved = dir.remove(provFile.fileName());
+        }
+
+        allRemoved = fileRemoved && allRemoved;
     }
 
     QStringList folders = dir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
@@ -234,7 +242,7 @@ bool LowTools::mkpath(QString dirPath,bool eraseExisting)
 
     bool mkOk = QDir().mkpath(dirPath);
     tempDir.refresh();
-    //tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
+    tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
     ok = tempDir.exists();
     ok = ok && (tempDir.entryList(QDir::NoDotAndDotDot).isEmpty() || !eraseExisting);
 

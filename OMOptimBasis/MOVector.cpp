@@ -128,11 +128,9 @@ QVariant MOAVector<ItemClass>::headerData(int section, Qt::Orientation orientati
 template<class ItemClass>
 QVariant MOAVector<ItemClass>::data(const QModelIndex &index, int role) const
 {
-    qDebug("Entering data");
     QVariant result;
     if (!index.isValid())
     {
-        qDebug("Leaving data");
         return QVariant();
     }
 
@@ -143,7 +141,7 @@ QVariant MOAVector<ItemClass>::data(const QModelIndex &index, int role) const
     }
     else
     {
-        qDebug("Leaving data");   return QVariant();
+        return QVariant();
     }
 
     switch(role)
@@ -157,7 +155,6 @@ QVariant MOAVector<ItemClass>::data(const QModelIndex &index, int role) const
         return curItem->getStrToolTip();
         break;
     }
-    qDebug("Leaving data");
     return QVariant();
 }
 
@@ -284,7 +281,6 @@ void MOAVector<ItemClass>::removeRow(QString itemName)
 template<class ItemClass>
 ItemClass* MOAVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity caseSens) const
 {
-    bool found = false;
     int i=0;
     int nbItems=items.size();
     QString itemName2;

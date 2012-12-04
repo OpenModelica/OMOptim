@@ -80,8 +80,9 @@ void MOItemTreeView::setModel ( QAbstractItemModel * model )
 {
     QTreeView::setModel(model);
     if(model)
-            initDelegates();
+        initDelegates();
 }
+
 
 
 void MOItemTreeView::initDelegates()
@@ -107,6 +108,8 @@ void MOItemTreeView::initDelegates()
         }
     }
 }
+
+
 
 
 
