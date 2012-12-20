@@ -88,7 +88,7 @@ void MOSettings::updateFromSavedValues()
     QString settingName;
     QString group;
     QVariant value;
-    for(int i=0;i<instance()->items.size();i++)
+    for(int i=0;i<instance()->size();i++)
     {
         group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
 
@@ -108,7 +108,7 @@ void MOSettings::save()
     QString settingName;
     QString group;
     QVariant value;
-    for(int i=0;i<instance()->items.size();i++)
+    for(int i=0;i<instance()->size();i++)
     {
         group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
 

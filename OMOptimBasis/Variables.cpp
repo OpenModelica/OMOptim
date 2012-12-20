@@ -24,9 +24,9 @@ Variables* Variables::clone() const
 
     int i;
     Variable* newItem;
-    for(i=0;i<items.size();i++)
+    for(i=0;i<_items.size();i++)
     {
-        newItem = new Variable(*items.at(i));
+        newItem = new Variable(*this->at(i));
         newVector->addItem(newItem);
     }  
 
@@ -120,9 +120,9 @@ OptVariables* OptVariables::clone() const
 
     int i;
     OptVariable* newItem;
-    for(i=0;i<items.size();i++)
+    for(i=0;i<_items.size();i++)
     {
-        newItem = new OptVariable(*items.at(i));
+        newItem = new OptVariable(*this->at(i));
         newVector->addItem(newItem);
     }
 
@@ -152,9 +152,9 @@ ScannedVariables* ScannedVariables::clone() const
 
     int i;
     ScannedVariable* newItem;
-    for(i=0;i<items.size();i++)
+    for(i=0;i<_items.size();i++)
     {
-        newItem = new ScannedVariable(*items.at(i));
+        newItem = new ScannedVariable(*this->at(i));
         newVector->addItem(newItem);
     }
 

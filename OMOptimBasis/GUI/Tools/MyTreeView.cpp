@@ -49,10 +49,13 @@ void MyTreeView::resizeColumns()
 OMCasesTreeView::OMCasesTreeView(ProjectBase* project,OMCasesCombiner* model,QWidget* mainwindow)
     :QTreeView(mainwindow)
 {
-
+    this->setFrameShape(QFrame::Box);
+    this->setFrameShadow(QFrame::Plain);
     _project = project;
     _mainWindow = mainwindow;
     _model = model;
+
+
 
     this->setModel(_model);
     this->setSelectionMode(QAbstractItemView::ExtendedSelection);

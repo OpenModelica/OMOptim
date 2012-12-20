@@ -65,7 +65,7 @@ class MOAVector : public QAbstractTableModel
 {
 
 public:
-    QList<ItemClass*> items;
+
 
 
     MOAVector(bool owner);
@@ -90,19 +90,23 @@ public:
     virtual void insertItem(ItemClass*,int);
     bool removeRow(int index,const QModelIndex &parent = QModelIndex());
     void removeRow(QString);
-    bool removeRows(int index, int count,const QModelIndex &parent = QModelIndex());
+    virtual bool removeRows(int index, int count,const QModelIndex &parent = QModelIndex());
     bool removeRows(QList<int> indexes);
     virtual ItemClass* findItem(QString,Qt::CaseSensitivity=Qt::CaseInsensitive) const;
     int findItem(QVariant itemFieldValue,int iField) const;
+    int indexOf(ItemClass*);
     bool contains(ItemClass*);
     bool alreadyIn(QString);
     void replaceIn(MOAVector<ItemClass> *);
     void replaceAt(int index, ItemClass *newItem);
     void addItems(MOAVector<ItemClass> *,bool makeACopy);
+    bool isEmpty() const;
 
     void cloneFromOtherVector(const MOAVector*);
     MOAVector<ItemClass>* clone() const;
     void clear();
+
+
 
     QModelIndex index(int row, int column, const QModelIndex &parent)const;
 
@@ -127,6 +131,12 @@ protected :
         * If yes, content will be deleted with vector, or when an item replaces another one
         */
     bool _owner;
+
+    QList<ItemClass*> _items;
+
+    // items modification direclty
+    virtual void addInItems(ItemClass *);
+    virtual void removeFromItems(int index);
 
 };
 

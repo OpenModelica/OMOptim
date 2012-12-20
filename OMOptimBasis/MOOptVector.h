@@ -91,6 +91,7 @@ public:
     void updateFromCsv(QString text, int iPoint);
 
 
+
 protected :
     bool _useScan;
     bool _usePoints;

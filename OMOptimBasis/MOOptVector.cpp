@@ -127,7 +127,7 @@ void MOOptVector::updateFromCsv(QString text)
             curVar->setModel(modelName);
             this->addItem(curVar);
         }
-        indexes.push_back(this->items.indexOf(curVar));
+        indexes.push_back(this->_items.indexOf(curVar));
     }
 
     double value;
@@ -193,7 +193,7 @@ void MOOptVector::updateFromCsv(QString text, int iPoint)
             curVar->setModel(modelName);
             this->addItem(curVar);
         }
-        indexes.push_back(this->items.indexOf(curVar));
+        indexes.push_back(this->_items.indexOf(curVar));
     }
 
     int iScan;
@@ -222,14 +222,14 @@ void MOOptVector::updateFromCsv(QString text, int iPoint)
 
 int MOOptVector::nbPoints()
 {
-    if(items.size()==0)
+    if(_items.size()==0)
         return 0;
     else
     {
         int maxNbPoints = 0;
-        for(int i=0;i<items.size();i++)
+        for(int i=0;i<_items.size();i++)
         {
-            maxNbPoints = std::max<int>(maxNbPoints,items.at(i)->nbPoints());
+            maxNbPoints = std::max<int>(maxNbPoints,_items.at(i)->nbPoints());
         }
         return maxNbPoints;
     }
@@ -237,14 +237,14 @@ int MOOptVector::nbPoints()
 
 int MOOptVector::nbScans()
 {
-    if(items.size()==0)
+    if(_items.size()==0)
         return 0;
     else
     {
         int maxNbScans = 0;
-        for(int i=0;i<items.size();i++)
+        for(int i=0;i<_items.size();i++)
         {
-            maxNbScans = std::max<int>(maxNbScans,items.at(i)->nbScans());
+            maxNbScans = std::max<int>(maxNbScans,_items.at(i)->nbScans());
         }
         return maxNbScans;
     }
@@ -289,13 +289,13 @@ QVariant MOOptVector::data(const QModelIndex &index, int role) const
             }
             else
             {
-                return items.at(index.row())->finalValue(((int)_useScan)*_curScan,((int)_usePoints)*_curPoint);
+                return _items.at(index.row())->finalValue(((int)_useScan)*_curScan,((int)_usePoints)*_curPoint);
             }
         }
         else
         {
 
-            return items.at(index.row())->getFieldValue(index.column(),role);
+            return _items.at(index.row())->getFieldValue(index.column(),role);
         }
     }
     return QVariant();
@@ -304,16 +304,16 @@ QVariant MOOptVector::data(const QModelIndex &index, int role) const
 
 bool MOOptVector::isAvailablePoint(int iVar,int iScan,int iPoint) const
 {
-    int nbPoints = items.at(iVar)->nbPoints();
-    int nbScans = items.at(iVar)->nbScans();
+    int nbPoints = _items.at(iVar)->nbPoints();
+    int nbScans = _items.at(iVar)->nbScans();
     if(
-            (iVar<0) || (iVar>=items.size())
+            (iVar<0) || (iVar>=_items.size())
             || (iPoint<0) || (iPoint>=nbPoints)
             || (iScan<0) || (iScan>=nbScans))
         return false;
     else
     {
-        bool isComputed = items.at(iVar)->isComputedPoint(iScan,iPoint);
+        bool isComputed = _items.at(iVar)->isComputedPoint(iScan,iPoint);
         return isComputed;
     }
 }
@@ -325,9 +325,9 @@ MOOptVector* MOOptVector::clone() const
 
     int i;
     VariableResult* newItem;
-    for(i=0;i<items.size();i++)
+    for(i=0;i<_items.size();i++)
     {
-        newItem = new VariableResult(*items.at(i));
+        newItem = new VariableResult(*_items.at(i));
         newVector->addItem(newItem);
     }
 
@@ -356,34 +356,34 @@ double MOOptVector::value(const QString &name,bool &ok,int iScan,int iPoint)
 void MOOptVector::append(const MOOptVector &vector,bool makeACopy)
 {
     //    int iCurItem;
-    for(int i=0;i<vector.items.size();i++)
+    for(int i=0;i<vector._items.size();i++)
     {
 
-        //        iCurItem = findItem(vector.items.at(i)->name());
+        //        iCurItem = findItem(vector._items.at(i)->name());
         //        if(iCurItem==-1)
         //        {
         if(makeACopy)
-            addItem(new VariableResult(*vector.items.at(i)));
+            addItem(new VariableResult(*vector._items.at(i)));
         else
-            addItem(vector.items.at(i));
+            addItem(vector._items.at(i));
         //        }
         //        else
         //        {
-        //            InfoSender::instance()->debug("replace item in vector (name : "+vector.items.at(i)->name()+")");
-        //            delete items.at(iCurItem);
+        //            InfoSender::instance()->debug("replace item in vector (name : "+vector._items.at(i)->name()+")");
+        //            delete _items.at(iCurItem);
         //            if(makeACopy)
-        //                items.replace(iCurItem,new VariableResult(*vector.items.at(i)));
+        //                _items.replace(iCurItem,new VariableResult(*vector._items.at(i)));
         //            else
-        //                items.replace(iCurItem,vector.items.at(i));
+        //                _items.replace(iCurItem,vector._items.at(i));
         //        }
     }
 }
 
 void MOOptVector::clearAtiPoint(int iPoint)
 {
-    for(int iVar=0;iVar<items.size();iVar++)
+    for(int iVar=0;iVar<_items.size();iVar++)
     {
-        items.at(iVar)->clearFinalValuesAtIpoint(iPoint);
+        _items.at(iVar)->clearFinalValuesAtIpoint(iPoint);
     }
 }
 
@@ -432,10 +432,10 @@ int MOOptVector::curPoint()
 void MOOptVector::addItem(VariableResult* item)
 {
     // Add an item pointer in Vector
-    int index=items.size();
+    int index=_items.size();
     insertRow(index);//,createIndex(0,0));
     beginInsertRows(QModelIndex(),index,index);
-    items.push_back(item);
+    _items.push_back(item);
     endInsertRows();
 }
 
@@ -530,9 +530,9 @@ Variables MOOptVector::extractPoint(int iPoint)
 
     Variables result(true);
 
-    for(int i=0;i<items.size();i++)
+    for(int i=0;i<_items.size();i++)
     {
-        result.addItem(new Variable(items.at(i)->extractPoint(iPoint)));
+        result.addItem(new Variable(_items.at(i)->extractPoint(iPoint)));
     }
 
     return result;

@@ -41,6 +41,7 @@
 #define MOSTYLESHEET_H
 
 #include <QtGui/QApplication>
+#include <QString>
 
 class MOStyleSheet
 {
@@ -50,6 +51,8 @@ public:
 
 
     static void initialize(QApplication*);
+    static QString launchBarStyleSheet();
+    static QString toolBarStyleSheet();
 };
 
 #endif

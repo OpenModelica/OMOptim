@@ -70,6 +70,8 @@ Variable::Variable(const Variable & var):MOItem(var)
 
 Variable::Variable(QDomElement & domEl)
 {
+     _protectedFields << Variable::NAME << Variable::DESCRIPTION << Variable::MODEL << DATATYPE ;
+
     QDomNamedNodeMap attributes = domEl.attributes();
     QString fieldName;
     QString fieldValue;

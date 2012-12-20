@@ -38,7 +38,8 @@
      @version 
 */
 
-#include "MOStyleSheet.h"
+#include "Tools/MOStyleSheet.h"
+
 
 MOStyleSheet::MOStyleSheet(void)
 {
@@ -47,14 +48,26 @@ MOStyleSheet::MOStyleSheet(void)
 MOStyleSheet::~MOStyleSheet(void)
 {
 }
-
-
-void MOStyleSheet::initialize(QApplication* _qApp)
+void MOStyleSheet::initialize(QApplication * _qApp)
 {
 
     QString toolBoxSS = "QToolBox::tab {\n      background: #B8B8B8;\n\n         border-radius: 3px;\n        color: #212A5E;\n    font: bold;\n}";
+    QString mainWindowSS = "QMainWindow::separator { width: 1px; height: 1px; }";
+    QString tabWidget = "QTabWidget{ border : 0px;}";
 
+    QString toolBar = "QToolBar{ border-style: none; border : 0px;}";
 
-    _qApp->setStyleSheet(toolBoxSS);
+    QString allSS = toolBoxSS + mainWindowSS + tabWidget + toolBar;
 
+    _qApp->setStyleSheet(allSS);
+}
+
+QString MOStyleSheet::launchBarStyleSheet()
+{
+    return "QFrame{background:qlineargradient(spread:repeat, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(65, 72, 89, 255), stop:0.466019 rgba(94, 105, 129, 255), stop:0.961165 rgba(65, 72, 89, 255));}";
+}
+
+QString MOStyleSheet::toolBarStyleSheet()
+{
+    return "QToolBar{background:qlineargradient(spread:repeat, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(94, 105, 129, 150), stop:0.466019 rgba(94, 105, 129, 255), stop:0.961165 rgba(94, 105, 129, 150));}";
 }

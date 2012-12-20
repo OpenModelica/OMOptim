@@ -58,9 +58,11 @@ MOItemModel::~MOItemModel()
 
 void MOItemModel::setMOItem(MOItem* item)
 {
-    this->disconnect(_item);
-    _item->disconnect(this);
-
+    if(_item)
+    {
+        this->disconnect(_item);
+        _item->disconnect(this);
+    }
     beginResetModel();
     _item = item;
     endResetModel();

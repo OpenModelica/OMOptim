@@ -91,7 +91,7 @@ public:
     static void resizeTableViewColumns(QTableView*);
 
 
-    static QString launchBarStyleSheet();
+
 
     static QFrame *buildLine(QWidget *parent);
 };

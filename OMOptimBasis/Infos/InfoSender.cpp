@@ -229,6 +229,12 @@ int Infos::rowCount(const QModelIndex &parent) const
 bool Infos::removeRows(int position, int rows, const QModelIndex &index)
 {
     Q_UNUSED(index);
+    if(rows == 0)
+    {
+        qDebug(QString("!! Tried to remove 0 item in InfosSender").toLatin1().data());
+        return false;
+    }
+
     beginRemoveRows(QModelIndex(), position, position+rows-1);
 
     for (int row=0; row < rows; ++row) {

@@ -152,13 +152,13 @@ void WidgetSelectVars::removeVariables()
     {
         if(_useOpt)
         {
-            int iVar = _selectedOptVariables->items.indexOf((VariableResult*)indexList.at(i).internalPointer());
+            int iVar = _selectedOptVariables->indexOf((VariableResult*)indexList.at(i).internalPointer());
             if(iVar>-1)
                 _selectedOptVariables->removeRow(iVar);
         }
         else
         {
-            int iVar = _selectedVariables->items.indexOf((Variable*)indexList.at(i).internalPointer());
+            int iVar = _selectedVariables->indexOf((Variable*)indexList.at(i).internalPointer());
             if(iVar>-1)
                 _selectedVariables->removeRow(iVar);
         }
