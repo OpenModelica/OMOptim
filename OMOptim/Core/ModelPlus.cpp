@@ -287,9 +287,9 @@ Variables* ModelPlus::variables(ModItem* element)
 //}
 
 
-bool ModelPlus::readVariables(ModPlusCtrl* ctrl, bool forceRecompile)
+bool ModelPlus::readVariables(ModPlusCtrl* ctrl, const QFileInfoList filesToCopy, bool forceRecompile)
 {
-    _variablesRead = ctrl->readInitialVariables(_variables, ctrl->type());
+    _variablesRead = ctrl->readInitialVariables(_variables,filesToCopy,forceRecompile);
     return _variablesRead;
 }
 

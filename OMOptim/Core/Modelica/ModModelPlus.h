@@ -164,10 +164,10 @@ public:
     //  Execution functions
     //************************
 
-  virtual  bool isCompiled(ModPlusCtrl* ctrl);
+    virtual  bool isCompiled(ModPlusCtrl* ctrl);
 
 public slots :
-    bool compile(ModPlusCtrl* ctrl);
+    bool compile(ModPlusCtrl* ctrl,QFileInfoList filesToCopy = QFileInfoList());
 
 
     //************************
@@ -183,7 +183,7 @@ public slots:
 
     virtual bool readConnections();
 
-    virtual bool readVariables(ModPlusCtrl*, bool forceRecompile=false);
+    virtual bool readVariables(ModPlusCtrl*, QFileInfoList filesToCopy = QFileInfoList(), bool forceRecompile=false);
 
     bool variablesRead() const;
     void reloadModel();

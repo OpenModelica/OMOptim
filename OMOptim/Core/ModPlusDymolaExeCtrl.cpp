@@ -196,11 +196,8 @@ bool ModPlusDymolaExeCtrl::readOutputVariablesDSRES(MOVector<Variable> *finalVar
 
 
 
-bool ModPlusDymolaExeCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool forceRecompile, QString dsinFile)
+bool ModPlusDymolaExeCtrl::readInitialVariables(MOVector<Variable> *initVariables, QFileInfoList filesToCopy,bool forceRecompile, QString dsinFile)
 {
-
-
-    bool authorizeRecreate=false;
     QString logFile = _ModelPlus->mmoFolder().absoluteFilePath("buildlog.txt");
     if(QFile::exists(logFile))
         QFile::remove(logFile);

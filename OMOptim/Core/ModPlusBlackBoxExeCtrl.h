@@ -27,7 +27,7 @@ public:
     PlugInterface* loadPlugInterface() const;
 
     //Variables Functions
-    virtual bool readInitialVariables(MOVector<Variable> *,bool forcerecompile, QString initFile="");
+    virtual bool readInitialVariables(MOVector<Variable> *,QFileInfoList filesToCopy, bool forcerecompile, QString initFile="");
     void setInputVarsInInitFileUsingPluginFunc(QString tempInitFile, QString modelName, MOVector<Variable> *variables);
     bool simulate(QDir tempDir, MOVector<Variable> * inputVars, MOVector<Variable> * outputVars, QFileInfoList filesToCopy ,QFileInfoList moDependencies);
     bool readInitialVarsFromPluginFunc(QString filename, QString modelName,MOVector<Variable> *initVariables);

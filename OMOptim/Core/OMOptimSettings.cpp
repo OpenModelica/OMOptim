@@ -41,7 +41,7 @@
 #include "OMOptimSettings.h"
 #include "Dymola.h"
 #include <QApplication>
-
+#include "OpenModelica.h"
 void OMOptimSettings::initialize()
 {
     QStringList names;
@@ -61,6 +61,16 @@ void OMOptimSettings::initialize()
     defaultValues << dymolaPath;
     types.push_back(MOParameter::FILEPATH);
 #endif
+
+
+    //*******************************
+    // Modelica library path
+    //*******************************
+    names << QString("modelicaLibrary");
+    groups << "Modelica";
+    descs << QString("Path of Modelica library");
+    defaultValues << OpenModelica::getLatestLibraryPath();
+    types.push_back(MOParameter::FILEPATH);
 
 
     //    //*******************************

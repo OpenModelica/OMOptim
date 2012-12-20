@@ -129,7 +129,7 @@ public :
     void loadModel(QString filename,bool force,bool &ok,QString & Error);
 
     QStringList getDependenciesPaths(QString fileName,bool commentImportPaths);
-    void loadStandardLibrary();
+    void loadStandardLibrary(QString path = QString());
 
 
     bool isConnector(QString ClassName);

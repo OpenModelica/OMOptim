@@ -719,3 +719,20 @@ QString OpenModelica::home()
     QString omHome = env.value("OpenModelicaHome");
     return omHome;
 }
+
+QString OpenModelica::getLatestLibraryPath()
+{
+     const char *omlibrary = getenv("OPENMODELICALIBRARY");
+     QString omLibraryFolder(omlibrary);
+
+     QDir omLibDir(omlibrary);
+     QStringList omLibDirs = omLibDir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
+     omLibDirs = omLibDirs.filter(QRegExp("^Modelica .*"));
+     if(omLibDirs.isEmpty())
+         return QString();
+     else
+     {
+         omLibDirs.sort();
+         return omLibDir.absoluteFilePath(omLibDirs.last()+QDir::separator()+"package.mo");
+     }
+}

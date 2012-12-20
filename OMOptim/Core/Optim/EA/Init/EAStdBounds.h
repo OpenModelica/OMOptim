@@ -70,14 +70,14 @@ public :
 
 void EAStdBounds::setBounds(Optimization *_problem, QList<QList<ModelPlus*> > subModels,std::vector<eoRealInterval> &doubleBounds, std::vector<eoIntInterval> &intBounds, int &nbDouble, int &nbInt, int &nbBool)
 {
-    int nbVar = _problem->optimizedVariables()->items.size();
+    int nbVar = _problem->optimizedVariables()->size();
     OptVariable* curVar;
     eoRealInterval* realInterval;
     eoIntInterval* intInterval;
     double min,max;
     for(int i=0; i<nbVar; i++)
     {
-        curVar = _problem->optimizedVariables()->items.at(i);
+        curVar = _problem->optimizedVariables()->at(i);
         min = curVar->optMin();
         max = curVar->optMax();
 

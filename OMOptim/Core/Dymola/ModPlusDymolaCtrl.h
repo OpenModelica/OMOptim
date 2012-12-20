@@ -43,17 +43,17 @@ public:
         bool readOutputVariables(MOVector<Variable> *,QString path);
         bool readOutputVariablesDSRES(MOVector<Variable> *,QString dsresFile);
         bool readOutputVariablesDSFINAL(MOVector<Variable> *,QString dsfinalFile);
-        bool readInitialVariables(MOVector<Variable> *,bool forceRecompile, QString dsinFile="");
+        bool readInitialVariables(MOVector<Variable> *, const QFileInfoList filesToCopy,bool forceRecompile, QString dsinFile="");
 
         // compatible models
         virtual QList<ModelPlus::ModelType> compatibleModels();
 
 
         // Compile function
-        bool createDsin(QFileInfoList moDeps);
+        bool createDsin(QFileInfoList moDeps,QFileInfoList filesToCopy);
         bool isCompiled();
         bool uncompile();
-        bool compile(const QFileInfoList & moDependencies);
+        bool compile(const QFileInfoList & moDependencies, const QFileInfoList filesToCopy);
 
         // Simulate function
         bool simulate(QDir tempDir,MOVector<Variable> * updatedVars,MOVector<Variable> * outputVars,

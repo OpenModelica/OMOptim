@@ -44,9 +44,8 @@
 #include "ModModelPlus.h"
 
 
-WidgetCtrlParameters::WidgetCtrlParameters(Project* project, QString model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent)
-
-    : QWidget(parent)
+WidgetCtrlParameters::WidgetCtrlParameters(Project* project, const QFileInfoList & filesToCopy, QString model,ModPlusCtrls * ctrls,bool isResult,QWidget *parent)
+    : QWidget(parent),_filesToCopy(filesToCopy)
 {
     _project= project;
     _layout = new QGridLayout(this);
@@ -61,8 +60,8 @@ WidgetCtrlParameters::WidgetCtrlParameters(Project* project, QString model,ModPl
 }
 
 
-WidgetCtrlParameters::WidgetCtrlParameters(Project* project, QMap<QString,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent)
-    : QWidget(parent)
+WidgetCtrlParameters::WidgetCtrlParameters(Project* project, const QFileInfoList & filesToCopy, QMap<QString,ModPlusCtrls *> ctrls,bool isResult,QWidget *parent)
+    : QWidget(parent),_filesToCopy(filesToCopy)
 {
     _project= project;
     _layout = new QGridLayout(this);
@@ -236,11 +235,11 @@ void WidgetCtrlParameters::compile()
 
         if(modelCtrls)
         {
-            bool compileOk = ((ModModelPlus*)modelPlus)->compile(modelCtrls->currentCtrl());
+            bool compileOk = ((ModModelPlus*)modelPlus)->compile(modelCtrls->currentCtrl(),_filesToCopy);
 
             // if compiled success, read variables
             if(compileOk)
-                modelPlus->readVariables(modelCtrls->currentCtrl());
+                modelPlus->readVariables(modelCtrls->currentCtrl(),_filesToCopy);
         }
     }
 }

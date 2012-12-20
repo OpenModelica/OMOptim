@@ -41,7 +41,7 @@
 
 #include "Widgets/WidgetOptimActions.h"
 #include "Tools/GuiTools.h"
-
+#include "Tools/MOStyleSheet.h"
 
 namespace Ui
 {
@@ -52,7 +52,7 @@ WidgetOptimActions::WidgetOptimActions(ProjectBase* project,Optimization *proble
     : QWidget(parent), _ui(new Ui::WidgetOptimActionsClass)
 {
     _ui->setupUi(this);
-    _ui->frame->setStyleSheet(GuiTools::launchBarStyleSheet());
+    _ui->frame->setStyleSheet(MOStyleSheet::launchBarStyleSheet());
 
 
     _problem = problem;

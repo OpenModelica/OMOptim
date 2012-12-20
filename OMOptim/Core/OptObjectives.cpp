@@ -18,9 +18,9 @@ OptObjectives* OptObjectives::clone() const
 
     int i;
     OptObjective* newItem;
-    for(i=0;i<items.size();i++)
+    for(i=0;i<this->size();i++)
     {
-        newItem = new OptObjective(*items.at(i));
+        newItem = new OptObjective(*this->at(i));
         newVector->addItem(newItem);
     }
     return newVector;

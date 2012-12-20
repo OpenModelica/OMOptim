@@ -85,7 +85,7 @@ public:
     QFileInfoList neededFiles();
     QFileInfoList neededFolders();
     virtual bool isCompiled(ModPlusCtrl* ctrl) =0;
-    virtual bool compile(ModPlusCtrl* ctrl) =0;
+    virtual bool compile(ModPlusCtrl* ctrl,QFileInfoList filesToCopy = QFileInfoList()) =0;
     QDir mmoFolder();
 
     virtual QFileInfo mmoFilePath();
@@ -109,7 +109,7 @@ public:
 
 public slots:
 
-    virtual bool readVariables(ModPlusCtrl*, bool forceRecompile=false);
+    virtual bool readVariables(ModPlusCtrl*, const QFileInfoList filesToCopy, bool forceRecompile=false);
     bool variablesRead() const;
 
 

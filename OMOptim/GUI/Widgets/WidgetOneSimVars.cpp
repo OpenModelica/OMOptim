@@ -206,5 +206,5 @@ void WidgetOneSimVars::simulate()
 void WidgetOneSimVars::readVariables()
 {
     ModelPlus* modModelPlus = _problem->modelPlus();
-    modModelPlus->readVariables(_problem->ctrl());
+    modModelPlus->readVariables(_problem->ctrl(),_problem->filesToCopy());
 }

@@ -57,7 +57,7 @@ public:
         MIN,
         MAX,
         // Scan
-        SCANFUNCTION
+        SAMPLINGFUNCTION
     };
 
     enum Direction

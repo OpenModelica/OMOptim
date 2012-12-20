@@ -81,7 +81,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
         addDockWidget("Files",_widgetFilesList,_widgetSelectOptVars);
 
 
-        _widgetCtrl = new WidgetCtrlParameters(_project,_problem->ctrls(),false,this);
+        _widgetCtrl = new WidgetCtrlParameters(_project,_problem->_filesToCopy,_problem->ctrls(),false,this);
 
         addDockWidget("Simulator",_widgetCtrl,_widgetSelectOptVars);
 

@@ -94,12 +94,12 @@ public:
         /************************************
         OBJECTIVE FUNCTIONS DEFINITION
         ************************************/
-        _nbObj = _problem->objectives()->items.size();
+        _nbObj = _problem->objectives()->size();
         OptObjective::Direction objDirection;
 
         for(unsigned int iObj=0;iObj<_nbObj;iObj++)
         {
-            objDirection = problem->objectives()->items.at(iObj)->direction();
+            objDirection = problem->objectives()->at(iObj)->direction();
             if(objDirection == OptObjective::MINIMIZE)
             {
                 _bObjectives.push_back(true);
@@ -185,14 +185,14 @@ public:
             if(evaluationOk)
             {
                 //Recover Objective values
-                int nbObj = _problem->objectives()->items.size();
+                int nbObj = _problem->objectives()->size();
                 int iObj=0;
                 double curObjResult;
                 OptObjective* curObj;
 
                 while(readingObjOk && (iObj<nbObj))
                 {
-                    curObj = _problem->objectives()->items.at(iObj);
+                    curObj = _problem->objectives()->at(iObj);
 
                     //looking for its value in resultVariables
                     curObjResult = VariablesManip::calculateObjValue(curObj,resultVariables,readingObjOk,0);

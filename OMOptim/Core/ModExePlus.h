@@ -62,7 +62,7 @@ public :
     bool isCompiled(ModPlusCtrl* ctrl);
 
 public slots :
-    bool compile(ModPlusCtrl* ctrl);
+    bool compile(ModPlusCtrl* ctrl,QFileInfoList filesToCopy = QFileInfoList());
 
 
     //************************

@@ -128,7 +128,7 @@ bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QStri
 }
 
 
-bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool forceRecompile, QString initFile)
+bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables, const QFileInfoList filesToCopy,bool forceRecompile, QString initFile)
 {
     QString initFileTxt;
     QString initFileXml;
@@ -153,7 +153,7 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool 
 
     if((!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt)&& authorizeRecreate)||forceRecompile)
     {
-        createInitFile(_modModelPlus->moDependencies());
+        createInitFile(_modModelPlus->moDependencies(),filesToCopy);
     }
 
     if(!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt))
@@ -178,7 +178,7 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables,bool 
     return true;
 }
 
-bool ModPlusOMCtrl::compile(const QFileInfoList & moDeps)
+bool ModPlusOMCtrl::compile(const QFileInfoList & moDeps, const QFileInfoList filesToCopy)
 {
     InfoSender::sendCurrentTask("OpenModelica : Compiling model "+_ModelPlus->modelName());
 
@@ -186,10 +186,10 @@ bool ModPlusOMCtrl::compile(const QFileInfoList & moDeps)
 
     QString logFile = _ModelPlus->mmoFolder().absolutePath()+_ModelPlus->modelName()+".log";
     bool success = OpenModelica::compile(_moomc,_modModelPlus->moFilePath(),_ModelPlus->modelName(),_ModelPlus->mmoFolder(),
-                                         moDeps,_ModelPlus->neededFiles(),_ModelPlus->neededFolders());
+                                         moDeps,QFileInfoList() << _ModelPlus->neededFiles() << filesToCopy,
+                                         _ModelPlus->neededFolders());
 
     // Inform
-    ListInfo::InfoNum iMsg;
     if(success)
         InfoSender::instance()->send(Info(ListInfo::MODELCOMPILATIONSUCCESS,_ModelPlus->modelName(),logFile));
     else
@@ -251,7 +251,7 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     bool compileOk = isCompiled();
     // eventually compile model
     if(!compileOk)
-        compileOk = compile(_modModelPlus->moDependencies());
+        compileOk = compile(_modModelPlus->moDependencies(),filesToCopy);
 
     if(!compileOk)
         return false; // compilation failed, useless to pursue
@@ -323,9 +323,9 @@ bool ModPlusOMCtrl::setStopTime(double time)
     return true;
 }
 
-bool ModPlusOMCtrl::createInitFile(const QFileInfoList & moDeps)
+bool ModPlusOMCtrl::createInitFile(const QFileInfoList & moDeps,const QFileInfoList filesToCopy)
 {
-    return compile(moDeps);
+    return compile(moDeps,filesToCopy);
 }
 
 

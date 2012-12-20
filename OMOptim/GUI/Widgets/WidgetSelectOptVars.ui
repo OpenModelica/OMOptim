@@ -257,7 +257,7 @@
       </widget>
       <widget class="MyGroupBox" name="groupBox_2">
        <property name="title">
-        <string>Scanned variables</string>
+        <string>Sampling variables</string>
        </property>
        <property name="checkable">
         <bool>false</bool>

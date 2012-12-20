@@ -315,8 +315,7 @@ void WidgetSelectOptVars::addOptObjectives()
     {
         curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
 
-        selVar=_allModelsVars->items[curSourceIndex.row()];
-
+        selVar=_allModelsVars->at(curSourceIndex.row());
 
         alreadyIn = _problem->objectives()->alreadyIn(selVar->name());
         if (!alreadyIn)
@@ -421,7 +420,7 @@ void WidgetSelectOptVars::readVariables()
                 shouldForceRecompile = false;
                 break;
             }
-            ((ModModelPlus *)curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)),shouldForceRecompile);
+            ((ModModelPlus *)curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)),_problem->filesToCopy(),shouldForceRecompile);
         }
         if(curModelPlus->modelType() == ModelPlus::EXECUTABLE)
             ((ModExePlus *) curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)));
@@ -510,7 +509,7 @@ void WidgetSelectOptVars::setDelegates()
            << "Maximum";
 
     GenericDelegate *scanFunctionDelegate = new GenericDelegate(values,titles,this);
-    _tableObjectives->setItemDelegateForColumn(OptObjective::SCANFUNCTION,scanFunctionDelegate);
+    _tableObjectives->setItemDelegateForColumn(OptObjective::SAMPLINGFUNCTION,scanFunctionDelegate);
 
     values.clear();
     titles.clear();

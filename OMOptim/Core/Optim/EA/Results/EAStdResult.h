@@ -84,15 +84,15 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     // ***********************************************************
     // Filling and Sizing recomputed variables (without values)
     // ***********************************************************
-    result->recomputedVariables()->items.clear();
+    result->recomputedVariables()->clear();
     result->recomputedVariables()->setUseScan(useScan);
     VariableResult *curRecompVar;
     for(int iM=0;iM<problem->models().size();iM++)
     {
         ModelPlus* modelPlus = project->modelPlus(problem->models().at(iM));
-        for (int i=0;i< modelPlus->variables()->items.size();i++)
+        for (int i=0;i< modelPlus->variables()->size();i++)
         {
-            curRecompVar = new VariableResult(*modelPlus->variables()->items.at(i));
+            curRecompVar = new VariableResult(*modelPlus->variables()->at(i));
             curRecompVar->clearFinalValues();
             result->recomputedVariables()->addItem(curRecompVar);
         }
@@ -104,10 +104,10 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     // and add in recomputedVariables if not present
     VariableResult *curOptVarRes;
 
-    int nbOptVar = problem->optimizedVariables()->items.size();
+    int nbOptVar = problem->optimizedVariables()->size();
     for (int iOptVar = 0; iOptVar < nbOptVar; iOptVar++)
     {
-        curOptVarRes = new VariableResult(*problem->optimizedVariables()->items.at(iOptVar));
+        curOptVarRes = new VariableResult(*problem->optimizedVariables()->at(iOptVar));
         curOptVarRes->clearFinalValues();
         result->optVariablesResults()->addItem(curOptVarRes);
         if(!result->recomputedVariables()->findItem(curOptVarRes->name(Variable::FULL)))
@@ -158,7 +158,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
 
     for(int iVar=0; iVar<nbOptVar; iVar++)
     {
-        curOptVar = problem->optimizedVariables()->items.at(iVar);
+        curOptVar = problem->optimizedVariables()->at(iVar);
         corrVar = result->recomputedVariables()->findItem(curOptVar->name());
 
         if(iCorrRecompVar<0)
@@ -179,19 +179,19 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
                 switch(dataType)
                 {
                 case OMREAL:
-                    result->optVariablesResults()->items[iVar]->setFinalValue(0,iPoint,
+                    result->optVariablesResults()->at(iVar)->setFinalValue(0,iPoint,
                                 curResultPoint->doubleVars.at(iDouble),true);
                     corrVar->setFinalValue(0,iPoint,
                                 curResultPoint->doubleVars.at(iDouble),true);
                     break;
                 case OMINTEGER:
-                    result->optVariablesResults()->items[iVar]->setFinalValue(0,iPoint,
+                    result->optVariablesResults()->at(iVar)->setFinalValue(0,iPoint,
                                 (double)curResultPoint->intVars.at(iInt),true);
                     corrVar->setFinalValue(0,iPoint,
                                 (double)curResultPoint->intVars.at(iInt),true);
                     break;
                 case OMBOOLEAN:
-                    result->optVariablesResults()->items[iVar]->setFinalValue(0,iPoint,
+                    result->optVariablesResults()->at(iVar)->setFinalValue(0,iPoint,
                                 (double)curResultPoint->boolVars.at(iBool),true);
                     corrVar->setFinalValue(0,iPoint,
                                 (double)curResultPoint->boolVars.at(iBool),true);
@@ -254,7 +254,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
             {
                 curResultPoint = &arch.at(iPoint);
                 resObjVector = curResultPoint->objectiveVector();
-                result->optObjectivesResults()->items[iObj]->setFinalValue(0,iPoint,resObjVector.at(iObj),true);
+                result->optObjectivesResults()->at(iObj)->setFinalValue(0,iPoint,resObjVector.at(iObj),true);
                 if(fillRecompValues)
                 {
                     qDebug(QString("Fill Recomp value of obj " + curObjResult->name()).toLatin1().data());

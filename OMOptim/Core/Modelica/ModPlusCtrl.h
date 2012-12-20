@@ -90,14 +90,14 @@ class ModPlusCtrl :public QObject
 
         // Variables functions
         virtual bool readOutputVariables(MOVector<Variable> *,QString outputfile="") = 0;
-        virtual bool readInitialVariables(MOVector<Variable> *,bool forceRecompile = false,QString initfile="") = 0;
+        virtual bool readInitialVariables(MOVector<Variable> *, const QFileInfoList filesToCopy,bool forceRecompile = false,QString initfile="") = 0;
 
         // compatible models
         virtual QList<ModelPlus::ModelType> compatibleModels() = 0;
 
         // Compile function
         virtual bool isCompiled() = 0;
-        virtual bool compile(const QFileInfoList & moDependencies) = 0;
+        virtual bool compile(const QFileInfoList & moDependencies, const QFileInfoList fileToCopy) = 0;
         virtual bool uncompile();
 
         // Info function

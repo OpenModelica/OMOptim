@@ -43,9 +43,9 @@
 
 OptObjective::OptObjective()
 {
-    QList<int> editableFields;
-    editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
-    setEditableFields(editableFields);
+    QList<int> protectedFields;
+    protectedFields << OptObjective::NAME << OptObjective::DESCRIPTION << OptObjective::MODEL;
+    setProtectedFields(protectedFields);
 
     _scanFunction = NONE;
     initOptExtremum();
@@ -60,9 +60,9 @@ OptObjective::OptObjective(const Variable &var, OptObjective::Direction directio
 
     setFieldValue(OptObjective::DIRECTION,direction);
     _scanFunction = NONE;
-    QList<int> editableFields;
-    editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
-    setEditableFields(editableFields);
+    QList<int> protectedFields;
+    protectedFields << OptObjective::NAME << OptObjective::DESCRIPTION << OptObjective::MODEL;
+    setProtectedFields(protectedFields);
     initOptExtremum();
 }
 
@@ -77,9 +77,10 @@ OptObjective::OptObjective(const OptObjective & obj):Variable(obj)
 
 OptObjective::OptObjective(QDomElement & domEl)
 {
-    QList<int> editableFields;
-    editableFields << OptObjective::DIRECTION << OptObjective::MIN << OptObjective::MAX << OptObjective::SCANFUNCTION ;
-    setEditableFields(editableFields);
+
+    QList<int> protectedFields;
+    protectedFields << OptObjective::NAME << OptObjective::DESCRIPTION << OptObjective::MODEL;
+    setProtectedFields(protectedFields);
     _scanFunction = NONE;
 
     initOptExtremum();
@@ -113,8 +114,8 @@ void OptObjective::setScanFunction(ScanFunction scanFunction)
 {
     _scanFunction = scanFunction;
 
-    if(!_filledFields.contains(OptObjective::SCANFUNCTION))
-        _filledFields.append(OptObjective::SCANFUNCTION);
+    if(!_filledFields.contains(OptObjective::SAMPLINGFUNCTION))
+        _filledFields.append(OptObjective::SAMPLINGFUNCTION);
 }
 
 void OptObjective::setDirection(Direction dir)
@@ -184,8 +185,8 @@ QString OptObjective::sFieldName(int ifield, int role)
         return "Minimum";
     case MAX :
         return "Maximum";
-    case SCANFUNCTION :
-        return "Scan Function";
+    case SAMPLINGFUNCTION :
+        return "Sampling Function";
     default :
         return "unknown field";
     }
@@ -225,7 +226,7 @@ QVariant OptObjective::getFieldValue(int ifield, int role) const
                 return "-";
             else
                 return _max;
-        case SCANFUNCTION :
+        case SAMPLINGFUNCTION :
             if(role == Qt::DisplayRole)
             {
                 switch(_scanFunction)
@@ -282,7 +283,7 @@ bool OptObjective::setFieldValue(int ifield,QVariant value)
             if(!isDouble)
                 _max = std::numeric_limits<double>::max();
             break;
-        case SCANFUNCTION :
+        case SAMPLINGFUNCTION :
             _scanFunction = (ScanFunction)value.toInt();
             break;
         }
@@ -337,7 +338,7 @@ QString OptObjectiveResult::sFieldName(int ifield, int role)
         return "Minimum";
     case MAX:
         return "Maximum";
-    case SCANFUNCTION:
+    case SAMPLINGFUNCTION:
         return "Scan Function";
     default :
         return "unknown field";
@@ -378,7 +379,7 @@ QVariant OptObjectiveResult::getFieldValue(int ifield, int role) const
                 return "-";
             else
                 return _max;
-        case SCANFUNCTION :
+        case SAMPLINGFUNCTION :
             if(role == Qt::DisplayRole)
             {
                 switch(_scanFunction)
@@ -430,7 +431,7 @@ bool OptObjectiveResult::setFieldValue(int ifield,QVariant value)
         if(!isDouble)
             _max = std::numeric_limits<double>::max();
         break;
-    case SCANFUNCTION :
+    case SAMPLINGFUNCTION :
         _scanFunction= (ScanFunction)value.toInt();
         break;
     }

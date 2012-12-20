@@ -100,6 +100,7 @@ public:
     static QString home();
 
 
+    static QString getLatestLibraryPath();
 
 private :
     static Variable* variableFromFmi(const QDomElement & ,QString modModelName, bool & ok);

@@ -1231,10 +1231,18 @@ QString MOomc::loadFileWThread(QString filePath)
     return result;
 }
 
-void MOomc::loadStandardLibrary()
+/**
+  * if path is empty, load default one
+  */
+void MOomc::loadStandardLibrary(QString path)
 {
-    evalCommand("loadModel(Modelica)");
-    evalCommand("loadModel(ModelicaServices)");
+    if(path.isEmpty())
+        evalCommand("loadModel(Modelica)");
+    else
+    {
+        loadFile(path);
+    }
+    //evalCommand("loadModel(ModelicaServices)");
 
     //    //! @todo Remove it once we have removed Media   and  and    and  and   Fluid from MSL.
     //    // just added to remove Fluid   and  and    and  and   Media Library...
@@ -1379,6 +1387,8 @@ bool MOomc::startServer()
     OMCHelper::OpenModelicaLibrary = StringHandler::removeFirstLastQuotes(getResult());
     return true;
 }
+
+
 
 void MOomc::initTempDirectory()
 {

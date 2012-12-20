@@ -27,7 +27,7 @@ public:
     QString resCsvFile();
     ModPlusCtrl::Type type() const;
 
-    virtual bool readInitialVariables(MOVector<Variable> *,bool forcerecompile, QString initFile="");
+    virtual bool readInitialVariables(MOVector<Variable> *, QFileInfoList filesToCopy,bool forcerecompile, QString initFile="");
 
     bool simulate(QDir tempFolder, MOVector<Variable> *inputVars, MOVector<Variable> *outputVars, QFileInfoList filesToCopy, QFileInfoList moDependencies);
     bool start(QString exeFile,int maxnsec);

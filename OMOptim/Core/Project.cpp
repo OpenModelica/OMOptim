@@ -275,10 +275,12 @@ void Project::unloadMoFile(QString moFilePath, bool removePath)
 */
 bool Project::loadModelicaLibrary(bool storePath, bool forceLoad)
 {
-    _moomc->loadStandardLibrary();
-    QFileInfo libPath = _moomc->getFileOfClass("Modelica");
+
+    QString libPath = MOSettings::value("modelicaLibrary").toString();
+    _moomc->loadStandardLibrary(libPath);
+    QFileInfo libPathInfo = _moomc->getFileOfClass("Modelica");
     if(storePath)
-        _moFiles.push_back(libPath);
+        _moFiles.push_back(libPathInfo);
 
     refreshAllMod();
 

@@ -61,19 +61,18 @@ class ModPlusOMCtrl :public ModPlusCtrl
 
         // Variables functions
         bool readOutputVariables(MOVector<Variable> *,QString resFile="");
-        bool readInitialVariables(MOVector<Variable> *,bool forceRecompile,QString initFile="");
+        bool readInitialVariables(MOVector<Variable> *, const QFileInfoList filesToCopy,bool forceRecompile,QString initFile="");
 
 
         // compatible models
         virtual QList<ModelPlus::ModelType> compatibleModels();
         
 
-
         // Compile function
         bool isCompiled();
-        bool compile(const QFileInfoList & moDeps);
+        bool compile(const QFileInfoList & moDeps, const QFileInfoList filesToCopy);
         bool uncompile();
-        bool createInitFile(const QFileInfoList & moDeps );
+        bool createInitFile(const QFileInfoList & moDeps, const QFileInfoList filesToCopy );
 
         // Simulate function
         bool simulate(QDir tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QFileInfoList filesToCopy ,QFileInfoList moDependencies);
@@ -84,6 +83,7 @@ private :
         QString _initFileTxt;
         QString _exeFile;
         ModModelPlus *_modModelPlus;
+
 
 
 };

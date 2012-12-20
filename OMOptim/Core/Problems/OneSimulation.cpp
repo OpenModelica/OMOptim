@@ -225,12 +225,12 @@ Result* OneSimulation::launch(ProblemConfig config)
             // Add values
             double curValue;
             //if it is first scan, finalvariables is an empy vector -> fill with curVariables
-            if(result->finalVariables()->items.isEmpty())
+            if(result->finalVariables()->isEmpty())
             {
-                for(int i=0;i<curVariables.items.size();i++)
+                for(int i=0;i<curVariables.size();i++)
                 {
-                    result->finalVariables()->addItem(new VariableResult(*curVariables.items.at(i)));
-                    curValue = curVariables.items.at(i)->getFieldValue(Variable::VALUE).toDouble();
+                    result->finalVariables()->addItem(new VariableResult(*curVariables.at(i)));
+                    curValue = curVariables.at(i)->getFieldValue(Variable::VALUE).toDouble();
                     result->finalVariables()->at(i)->setFinalValue(iScan,0,curValue,true);
                 }
             }

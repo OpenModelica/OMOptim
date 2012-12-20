@@ -96,13 +96,12 @@ MO2ColTab(result->project()->name(),result,false,parent)
         addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
 
-        _widgetCtrl = new WidgetCtrlParameters(_project,_problem->ctrls(),true,this);
-
-        addDockWidget("Simulator",_widgetCtrl,_widgetTableRecVar);
+        //_widgetCtrl = new WidgetCtrlParameters(_project,_problem->ctrls(),true,this);
+        //addDockWidget("Simulator",_widgetCtrl,_widgetTableRecVar);
 
 
         _widgetOptParameters = new WidgetOptParameters(_project,_problem,true,this);
-        addDockWidget("Parameters",_widgetOptParameters,_widgetCtrl);
+        addDockWidget("Parameters",_widgetOptParameters,_widgetTableRecVar);
 
         _widgetInfos = new WidgetResultInfos(_result,this);
         addDockWidget("Infos",_widgetInfos,_widgetOptParameters);

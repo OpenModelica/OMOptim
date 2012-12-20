@@ -250,11 +250,11 @@ bool ModModelPlus::isCompiled(ModPlusCtrl* ctrl)
     return ctrl->isCompiled();
 }
 
-bool ModModelPlus::compile(ModPlusCtrl* ctrl)
+bool ModModelPlus::compile(ModPlusCtrl* ctrl,QFileInfoList filesToCopy)
 {
     QFileInfoList modelsToLoad = moDependencies();
 
-    return ctrl->compile(modelsToLoad);
+    return ctrl->compile(modelsToLoad,filesToCopy);
 }
 
 void ModModelPlus::addConnection(ModItem* a, ModItem* b)
@@ -277,9 +277,9 @@ ModelicaConnections* ModModelPlus::connections()
     return _connections;
 }
 
-bool ModModelPlus::readVariables(ModPlusCtrl* ctrl, bool forceRecompile)
+bool ModModelPlus::readVariables(ModPlusCtrl* ctrl, QFileInfoList filesToCopy, bool forceRecompile)
 {
-    _variablesRead = ctrl->readInitialVariables(_variables,forceRecompile);
+    _variablesRead = ctrl->readInitialVariables(_variables,filesToCopy,forceRecompile);
     return _variablesRead;
 
 }

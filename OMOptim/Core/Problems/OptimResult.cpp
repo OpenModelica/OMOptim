@@ -195,8 +195,8 @@ void OptimResult::loadOptimValuesFromFrontFilev0()
     {
         curModel = omProject()->modelPlus(_models.at(iM));
 
-        if(curModel->variables()->items.isEmpty() && curModel->isCompiled(problem->ctrl(_models.at(iM))))
-            curModel->readVariables(problem->ctrl(_models.at(iM)));
+        if(curModel->variables()->isEmpty() && curModel->isCompiled(problem->ctrl(_models.at(iM))))
+            curModel->readVariables(problem->ctrl(_models.at(iM)),problem->filesToCopy());
 
         for (int i=0;i<curModel->variables()->size();i++)
         {
@@ -595,7 +595,7 @@ void OptimResult::recomputePoints(QList<int> iPoints,bool forceRecompute)
 //                        overVar->setFieldValue(iField,this->optVariablesResults()->at(iOverVar)->getFieldValue(iField));
 //                    }
                     overVar->setFieldValue(Variable::VALUE,this->optVariablesResults()->at(iOverVar)->finalValue(0,iPoint));
-                    oneSim->overwritedVariables()->items.push_back(overVar);
+                    oneSim->overwritedVariables()->addItem(overVar);
                 }
 
                 // Add scannedVariables

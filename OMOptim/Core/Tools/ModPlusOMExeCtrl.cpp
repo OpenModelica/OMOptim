@@ -78,7 +78,7 @@ ModPlusCtrl::Type ModPlusOMExeCtrl::type() const
     return ModPlusCtrl::OMEXECUTABLE;
 }
 
-bool ModPlusOMExeCtrl::readInitialVariables(MOVector<Variable> *initVariables, bool forcerecompile, QString initialFile)
+bool ModPlusOMExeCtrl::readInitialVariables(MOVector<Variable> *initVariables, QFileInfoList filesToCopy, bool forcerecompile, QString initialFile)
 {
     QString initFile;
 

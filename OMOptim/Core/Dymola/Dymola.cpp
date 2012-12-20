@@ -406,16 +406,16 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
         if(linefields.size()<8)
         {
             InfoSender::instance()->sendWarning("Cannot read variable information ["+variables->at(nv)->name()+"]. It will not be considered");
-            variables->items.removeAt(nv);
+            variables->removeRow(nv);
         }
         else
         {
-            variables->items[nv]->setValue(linefields[1].toDouble());
+            variables->at(nv)->setValue(linefields[1].toDouble());
             int dymDataType = linefields[5].toInt();
-            variables->items[nv]->setDataType(convertVariableType(dymDataType));
+            variables->at(nv)->setDataType(convertVariableType(dymDataType));
             int dymValueType = linefields[0].toInt();
             int dymCategory = linefields[4].toInt();
-            variables->items[nv]->setCausality(convertToCausality(dymValueType,dymCategory));
+            variables->at(nv)->setCausality(convertToCausality(dymValueType,dymCategory));
             nv++;
         }
         line = text->readLine();
@@ -431,7 +431,7 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     nbv=variables->size();
     while (!text->atEnd() && nv<nbv)
     {
-        variables->items[nv]->setDescription(line);
+        variables->at(nv)->setDescription(line);
         line = text->readLine();
         nv++;
     }
@@ -524,7 +524,7 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
 
     nv=0;
     while (!line.isEmpty() && nv<nbv){
-        variables->items[nv]->setDescription(line);
+        variables->at(nv)->setDescription(line);
         line = text->readLine();
         nv++;
     }

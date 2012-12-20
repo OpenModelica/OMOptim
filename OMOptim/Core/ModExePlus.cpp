@@ -189,9 +189,9 @@ bool ModExePlus::isCompiled(ModPlusCtrl* ctrl)
     return ctrl->isCompiled();
 }
 
-bool ModExePlus::compile(ModPlusCtrl* ctrl)
+bool ModExePlus::compile(ModPlusCtrl* ctrl,QFileInfoList filesToCopy)
 {
-    return ctrl->compile(QFileInfoList());
+    return ctrl->compile(QFileInfoList(),filesToCopy);
 }
 
 QFileInfo ModExePlus::exeFile()
@@ -208,7 +208,7 @@ QFileInfo ModExePlus::inputFile()
 
 bool ModExePlus::readVariables(ModPlusCtrl* ctrl, bool forceRecompile)
 {
-    _variablesRead = ctrl->readInitialVariables(_variables, forceRecompile);
+    _variablesRead = ctrl->readInitialVariables(_variables,QFileInfoList(), forceRecompile);
     return _variablesRead;
 }
 

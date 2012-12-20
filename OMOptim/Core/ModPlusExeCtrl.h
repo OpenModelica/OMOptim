@@ -23,7 +23,7 @@ public:
 
 
     // Variables functions
-    virtual bool readInitialVariables(MOVector<Variable> *,bool forcerecompile = false, QString initFile="") =0;
+    virtual bool readInitialVariables(MOVector<Variable> *, QFileInfoList filesToCopy,bool forcerecompile = false, QString initFile="") =0;
     void setInputVariablesXml(QDomDocument & doc, QString modelName, MOVector<Variable> *variables);
 //    void setInputParametersXml(QDomDocument &doc,MOParameters *parameters);
 
@@ -35,7 +35,7 @@ public:
 
     // Compile function
     bool isCompiled(){return true;}
-    bool compile(const QFileInfoList & moDeps = QFileInfoList()){return true;}
+    bool compile(const QFileInfoList & moDeps = QFileInfoList(), QFileInfoList filesToCopy = QFileInfoList()){return true;}
 
     bool createInitFile(const QStringList & moDeps = QStringList());
 
