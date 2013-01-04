@@ -41,7 +41,7 @@
 #include "Widgets/WidgetSelectVars.h"
 #include "ui_WidgetSelectVars.h"
 #include <QtGui/QErrorMessage>
-
+#include <QDebug>
 
 WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *allVariables,QWidget *parent,MOVector<Variable> *selectedVariables):
     QWidget(parent),
@@ -65,8 +65,36 @@ WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *allVariables,QWidget *par
 
     ui->listSelectedVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->listVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
-
 }
+
+WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *allVariables, QWidget *parent, QList<VariableCausality> causalities,MOVector<Variable> *selectedVariables):
+    QWidget(parent),
+    ui(new Ui::WidgetSelectVarsClass)
+{
+    ui->setupUi(this);
+
+    _useOpt = false;
+    _allVariables = allVariables;
+    if(selectedVariables)
+        _selectedVariables = selectedVariables->clone();
+    else
+        _selectedVariables = new MOVector<Variable>(false);
+
+   // variableProxyModel = GuiTools::ModelToViewWithFilter(_allVariables,ui->listVars,ui->lineVariableFilter);
+
+    variableProxyModel = new VariableSortFilter(causalities,this);
+    GuiTools::ModelToViewWithFilter(_allVariables,ui->listVars,ui->lineVariableFilter,variableProxyModel);
+
+
+    ui->listSelectedVars->setModel(_selectedVariables);
+
+    connect(ui->pushAddVar,SIGNAL(clicked()),this,SLOT(addVariables()));
+    connect(ui->pushRemoveVar,SIGNAL(clicked()),this,SLOT(removeVariables()));
+
+    ui->listSelectedVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->listVars->setSelectionMode(QAbstractItemView::ExtendedSelection);
+}
+
 
 WidgetSelectVars::WidgetSelectVars(MOOptVector *allVariables,QWidget *parent,MOOptVector* selectedVariables):
     QWidget(parent),
@@ -121,7 +149,11 @@ void WidgetSelectVars::addVariables()
         {
             VariableResult *newVar;
             optVarSelected=_allOptVariables->at(curSourceIndex.row());
+            qDebug() << optVarSelected;
+            qDebug() << curProxyIndex.internalPointer();
+            qDebug() << curSourceIndex.internalPointer();
             alreadyIn = _selectedOptVariables->alreadyIn(optVarSelected->name());
+
 
             if (!alreadyIn)
             {
@@ -134,6 +166,10 @@ void WidgetSelectVars::addVariables()
             Variable *newVar;
             varSelected=_allVariables->at(curSourceIndex.row());
             alreadyIn = _selectedVariables->alreadyIn(varSelected->name());
+
+            qDebug() << varSelected;
+            qDebug() << curProxyIndex.internalPointer();
+            qDebug() << curSourceIndex.internalPointer();
 
             if (!alreadyIn)
             {
@@ -174,3 +210,4 @@ MOOptVector* WidgetSelectVars::getSelectedOptVars()
 {
     return _selectedOptVariables;
 }
+

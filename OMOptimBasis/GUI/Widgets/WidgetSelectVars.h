@@ -60,6 +60,7 @@ class WidgetSelectVars : public QWidget {
 
 
 public:
+    explicit WidgetSelectVars(MOVector<Variable> *allVariables,QWidget *parent,QList<VariableCausality> causalities,MOVector<Variable> *selectedVariables);
     explicit WidgetSelectVars(MOVector<Variable> *allVariables,QWidget *parent,MOVector<Variable> *selectedVariables);
     explicit WidgetSelectVars(MOOptVector *allVariables,QWidget *parent,MOOptVector *selectedVariables);
     virtual ~WidgetSelectVars();

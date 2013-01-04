@@ -60,6 +60,8 @@
 #include <QSortFilterProxyModel>
 #include <QGroupBox>
 
+#include "VariableType.h"
+
 class ProjectBase;
 class Result;
 class Problem;
@@ -73,7 +75,8 @@ public:
 
 
 
-    static QSortFilterProxyModel * ModelToViewWithFilter(QAbstractItemModel *, QAbstractItemView *,QLineEdit*);
+    static QSortFilterProxyModel * ModelToViewWithFilter(QAbstractItemModel *, QAbstractItemView *,QLineEdit*,
+                                                         QSortFilterProxyModel *proxyModel = NULL);
     static void ModelToView(QAbstractItemModel *, QAbstractItemView *);
 
 
@@ -96,6 +99,16 @@ public:
     static QFrame *buildLine(QWidget *parent);
 };
 
+class VariableSortFilter : public QSortFilterProxyModel
+{
+public :
+    VariableSortFilter(QObject * parent = 0);
+    VariableSortFilter(QList<VariableCausality> causalities,QObject * parent = 0);
+
+protected:
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+    QList<VariableCausality> _causalities;
+};
 
 class KeyPressFilter : public QObject
 {

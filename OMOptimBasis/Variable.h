@@ -138,6 +138,7 @@ public :
     double value() const;
     void setDataType(VariableType);
     void setCausality(VariableCausality causality);
+    VariableCausality causality();
     QString description();
     virtual QString name(Variable::NameFormat = Variable::FULL) const;
     virtual QString getStrToolTip();

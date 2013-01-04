@@ -70,6 +70,36 @@ DlgSelectVars::DlgSelectVars(MOVector<Variable>* variables,MOVector<Variable>* a
     connect(pushOk,SIGNAL(clicked()),this,SLOT(pushedOk()));
     connect(pushCancel,SIGNAL(clicked()),this,SLOT(pushedCancel()));
 }
+
+DlgSelectVars::DlgSelectVars(MOVector<Variable> * variables, QList<VariableCausality> causalities,MOVector<Variable>* alreadySelected)
+{
+    _useOpt = false;
+    _variables = variables;
+
+    if(alreadySelected)
+        _selectedVars=alreadySelected;
+    else
+        _selectedVars=new MOVector<Variable>(false);
+
+    QGridLayout* allLayout = new QGridLayout(this);
+    QGridLayout* varLayout = new QGridLayout(this);
+
+    widgetSelectVars = new WidgetSelectVars(_variables,this,causalities,_selectedVars);
+    varLayout->addWidget(widgetSelectVars);
+
+    pushOk = new QPushButton("Ok",this);
+    pushCancel = new QPushButton("Cancel",this);
+
+    allLayout->addLayout(varLayout,0,0,1,3);
+    allLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum),1,0);
+    allLayout->addWidget(pushCancel,1,1,1,1);
+    allLayout->addWidget(pushOk,1,2,1,1);
+    this->setLayout(allLayout);
+
+    connect(pushOk,SIGNAL(clicked()),this,SLOT(pushedOk()));
+    connect(pushCancel,SIGNAL(clicked()),this,SLOT(pushedCancel()));
+}
+
 DlgSelectVars::DlgSelectVars(MOOptVector* variables,MOOptVector* alreadySelected)
 {
     _useOpt = true;
@@ -125,11 +155,22 @@ MOVector<Variable>* DlgSelectVars::getSelectedVars(MOVector<Variable>* allVariab
         return alreadySelected;
 }
 
+MOVector<Variable> *DlgSelectVars::getSelectedVars(MOVector<Variable> * allVariables,
+                                                   QList<VariableCausality> causalities,
+                                                   MOVector<Variable>* alreadySelected)
+{
+    DlgSelectVars dlg(allVariables,causalities,alreadySelected);
+    if(dlg.exec()==QDialog::Accepted)
+        return dlg._selectedVars;
+    else
+        return alreadySelected;
+}
+
 MOOptVector* DlgSelectVars::getSelectedOptVars(MOOptVector * allOptVariables,MOOptVector *alreadySelected)
 {
     DlgSelectVars dlg(allOptVariables,alreadySelected);
     if(dlg.exec()==QDialog::Accepted)
         return dlg._selectedOptVars;
     else
-        return NULL;
+        return alreadySelected;
 }

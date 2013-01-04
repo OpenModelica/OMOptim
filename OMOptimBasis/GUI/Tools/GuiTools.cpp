@@ -44,7 +44,7 @@
 #include "ProjectBase.h"
 #include "Result.h"
 #include <QFrame>
-
+#include "Variable.h"
 
 
 void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
@@ -100,11 +100,12 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
     return line;
 }
 
-QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *model, QAbstractItemView *view,QLineEdit* lineEdit)
+QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *model, QAbstractItemView *view,QLineEdit* lineEdit,QSortFilterProxyModel *proxyModel)
 {
-
     view->reset();
-    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel((QObject*)lineEdit);
+    if(!proxyModel)
+        proxyModel = new QSortFilterProxyModel((QObject*)lineEdit);
+
     proxyModel->setSourceModel(model);
     view->setModel(proxyModel);
     //view->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
@@ -134,8 +135,8 @@ QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *mode
             proxyModel,SLOT(setFilterWildcard(const QString&)),Qt::AutoConnection);
 
     return proxyModel;
-
 }
+
 
 
 QMenu* GuiTools::createResultPopupMenu(ProjectBase* project, QWidget* mainWindow, const QPoint & iPoint,Result* selectedResult,int numResult)
@@ -359,5 +360,34 @@ void GuiTools::resizeTableViewColumns(QTableView* tableView)
             tableView->setColumnWidth(i,curColWidth*fact);
         }
     }
+}
+
+VariableSortFilter::VariableSortFilter(QObject *parent)
+    :QSortFilterProxyModel(parent)
+{
+    _causalities << UNKNOWN << INPUT << OUTPUT;
+}
+
+VariableSortFilter::VariableSortFilter(QList<VariableCausality> causalities, QObject *parent)
+:QSortFilterProxyModel(parent)
+{
+    _causalities = causalities;
+}
+
+bool VariableSortFilter::filterAcceptsRow(int sourceRow, const
+QModelIndex &sourceParent) const
+{
+
+    QModelIndex index = this->sourceModel()->index(sourceRow, 0, sourceParent);
+    MOItem *item = static_cast<MOItem*>(index.internalPointer());
+    Variable* variable = dynamic_cast<Variable*>(item);
+
+    if(variable)
+    {
+        if(!_causalities.contains(variable->causality()))
+            return false;
+    }
+
+    return QSortFilterProxyModel::filterAcceptsRow(sourceRow,sourceParent);
 }
 

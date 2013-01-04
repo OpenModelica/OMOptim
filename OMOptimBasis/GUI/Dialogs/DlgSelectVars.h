@@ -62,10 +62,14 @@ class DlgSelectVars : public QDialog
 
 public:
         DlgSelectVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected = NULL);
+        DlgSelectVars(MOVector<Variable>* variables,QList<VariableCausality> causalities,MOVector<Variable>* alreadySelected = NULL);
         DlgSelectVars(MOOptVector *,MOOptVector *alreadySelected = NULL);
+
 
     
         static MOVector<Variable>* getSelectedVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected=NULL);
+        static MOVector<Variable>* getSelectedVars(MOVector<Variable>*,QList<VariableCausality> causalities,MOVector<Variable>* alreadySelected=NULL);
+
         static MOOptVector* getSelectedOptVars(MOOptVector *,MOOptVector *_alreadySelected = NULL);
 
 

@@ -162,6 +162,11 @@ void Variable::setCausality(VariableCausality causality)
     _causality = causality;
 }
 
+VariableCausality Variable::causality()
+{
+    return _causality;
+}
+
 
 QVariant Variable::getFieldValue(int ifield, int role) const
 {
