@@ -264,10 +264,12 @@ Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modelName
 VariableCausality OpenModelica::varCausality(const QDomElement & el)
 {
     QString variability = el.attribute("variability");
-    if(variability.compare("parameter"))
+    QString causality = el.attribute("causality");
+
+    if(!variability.compare("parameter") || !causality.compare("input") )
         return INPUT;
     else
-        return UNKNOWN;
+        return OUTPUT;
 }
 
 bool OpenModelica::getFinalVariablesFromFile(QString fileName_, MOVector<Variable> *variables,QString _modelName)

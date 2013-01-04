@@ -346,6 +346,7 @@ QStringList MOomc::getInheritedClasses(QString inheritingClass)
             inheritedClasses << commandRes;
         }
     }
+    inheritedClasses.removeAll(inheritingClass); // sometimes, a class appears as inheriting itself
     return inheritedClasses;
 }
 
