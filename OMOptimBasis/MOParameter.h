@@ -88,7 +88,7 @@ public:
     MOParameter(QDomElement & domEl);
     virtual ~MOParameter(void);
 
-    virtual QString getClassName(){return "MOParameter";};
+    virtual QString getClassName() const {return "MOParameter";};
 
     static const int nbFields = 9;
     virtual unsigned getNbFields(){return nbFields;};
@@ -160,7 +160,7 @@ public:
     ~MOParameterListed(void);
     virtual MOParameterListed* clone() const;
 
-    virtual QString getClassName(){return "MOParameterListed";};
+    virtual QString getClassName() const {return "MOParameterListed";};
 
     static const int nbFields = 9;
     virtual unsigned getNbFields(){return nbFields;};
@@ -185,7 +185,6 @@ public :
     MOParameters();
     MOParameters(const MOParameters & );
     virtual ~MOParameters();
-//    QVariant value(int index,QVariant defaultValue = QVariant()) const;
     QVariant value(QString name,QVariant defaultValue = QVariant()) const;
     bool setValue(QString name,QVariant value);
     QMultiMap<QString,MOParameter*> groupmap() const;
@@ -199,6 +198,9 @@ public :
 
 signals :
     void modified();
+
+private :
+    QVariant value(int ,QVariant defaultValue = QVariant()) const;
 
 };
 

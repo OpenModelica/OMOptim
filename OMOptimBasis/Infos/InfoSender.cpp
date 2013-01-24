@@ -178,7 +178,7 @@ void Infos::addInfo(const QString &info, const type &infoType, const destination
     // if reached full size
     if(_type.count(INFO)>= _maximumInfoLines)
     {
-        removeLastNormalInfos(_linesToRemove);
+        removeFirstNormalInfos(_linesToRemove);
     }
 
     // qDebug("Started adding Info");
@@ -191,33 +191,44 @@ void Infos::addInfo(const QString &info, const type &infoType, const destination
     // qDebug("Ended adding Info");
 }
 
-// remove the last (count) normal informations
-void Infos::removeLastNormalInfos(int count)
+// remove the first (count) normal informations
+void Infos::removeFirstNormalInfos(int count)
 {
-    int i = _text.size()-1;
+    int i = 0;
     int nbRemoved = 0;
 
     int iLast,iFirst;
-    iLast=i;
-    iFirst = iLast+1;
+    iLast=-1;
+    iFirst = 0;
 
-    while((i>=0)&&(nbRemoved+(iLast-iFirst+1)<count))
+    while((i<_text.size())&&(nbRemoved+(iLast-iFirst+1)<count))
     {
         if(_type.at(i)==INFO)
         {
-            iFirst = i;
+            iLast = i;
         }
         else
         {
-            removeRows(iFirst,iLast-iFirst+1);
-            nbRemoved+=iLast-iFirst+1;
-            iLast=i-1;
-            iFirst = iLast+1;
+            if(iLast>=iFirst)
+            {
+                removeRows(iFirst,iLast-iFirst+1);
+                nbRemoved+=iLast-iFirst+1;
+
+                // go back
+                i -= iLast-iFirst;
+                iFirst = i;
+                iLast = -1;
+            }
+            else
+            {
+                iFirst = i+1;
+            }
         }
-        i--;
+        i++;
     }
 
-    removeRows(iFirst,iLast-iFirst+1);
+    if(iLast>=iFirst)
+        removeRows(iFirst,iLast-iFirst+1);
 }
 
 int Infos::rowCount(const QModelIndex &parent) const

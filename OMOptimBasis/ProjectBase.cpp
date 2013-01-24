@@ -590,7 +590,9 @@ void ProjectBase::onProblemFinished(Problem* problem,Result* result)
     }
     _problemLaunchMutex.unlock();
     _problemsThreads.remove(problem);
-    delete problem;
+
+    /// @todo check whether it is really deleted
+    problem->deleteLater();
 }
 
 Problem* ProjectBase::restoreProblemFromResult(int numResult)

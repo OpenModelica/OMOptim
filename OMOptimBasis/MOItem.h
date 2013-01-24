@@ -99,7 +99,7 @@ public:
     // Constructor from saved string
     MOItem(QString,ProjectBase*);
     
-    virtual QString getClassName()=0;
+    virtual QString getClassName() const =0;
     
     //Name
     virtual void setName(QString);

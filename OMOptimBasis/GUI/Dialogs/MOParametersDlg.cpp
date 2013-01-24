@@ -174,9 +174,10 @@ QGridLayout* WidgetParameters::buildLayoutFromParameters()
             curLayout = mainLayout;
 
         groupParameters = groupmap.values(groups.at(iG));
-        //sortItems<MOParameter>::applyToInt(groupParameters,MOParameter::INDEX);
 
-        for(int iP=0;iP<groupParameters.size();iP++)
+        // to reproduce parameters order, start from the end
+        // it seems MultiMap behaves like a pile
+        for(int iP=groupParameters.size()-1;iP>=0;iP--)
         {
             parameter = groupParameters.at(iP);
             // add setting

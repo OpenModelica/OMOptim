@@ -109,8 +109,9 @@ QVariant MOItemModel::data(const QModelIndex &index, int role) const
     int iCol = index.column();
     int field = iField(index.row());
 
-    bool ok = (role==Qt::DisplayRole) ||
-            ((role == Qt::CheckStateRole)&&iCol==1&&(_item->getFieldType(field)==MOItem::BOOL));
+    bool ok = (role==Qt::DisplayRole)
+            ||(role==Qt::EditRole)
+            || ((role == Qt::CheckStateRole)&&iCol==1&&(_item->getFieldType(field)==MOItem::BOOL));
     if(!ok)
         return QVariant();
 
@@ -226,7 +227,7 @@ Qt::ItemFlags MOItemModel::flags(const QModelIndex &index) const
     Qt::ItemFlags _flags;
     int field = iField(index.row());
 
-    _flags = QAbstractItemModel::flags(index)| Qt::ItemIsSelectable ;
+    _flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable ;
 
     if(_editable && index.column()==1 && !_item->isProtectedField(field))
         _flags = _flags | Qt::ItemIsEditable;

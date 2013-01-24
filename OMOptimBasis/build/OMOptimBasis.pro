@@ -138,7 +138,8 @@ HEADERS += \
     ../GUI/Dialogs/DlgSelect.h \
     ../GUI/Widgets/WidgetMOItemsList.h \
     ../MOItemModel.h \
-    ../GUI/MOItemViews.h
+    ../GUI/MOItemViews.h \
+    ../Units/MEGeneric.h
 
 SOURCES += \
     ../Variables.cpp \
@@ -208,7 +209,8 @@ SOURCES += \
     ../GUI/Dialogs/DlgSelect.cpp \
     ../GUI/Widgets/WidgetMOItemsList.cpp \
     ../MOItemModel.cpp \
-    ../GUI/MOItemViews.cpp
+    ../GUI/MOItemViews.cpp \
+    ../Units/MEGeneric.cpp
 
 FORMS += \
     ../GUI/Widgets/WidgetFilesList.ui \

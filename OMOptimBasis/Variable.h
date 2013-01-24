@@ -115,7 +115,7 @@ public:
 
     virtual Variable* clone() const;
 
-    virtual QString getClassName(){return "Variable";};
+    virtual QString getClassName() const {return "Variable";};
 
 public :
 
@@ -179,7 +179,7 @@ public:
     ~VariableResult(void);
 
     VariableResult* clone() const;
-    virtual QString getClassName(){return "VariableResult";};
+    virtual QString getClassName() const {return "VariableResult";};
 
 
     static const int nbFields = 6;
@@ -244,7 +244,7 @@ public:
     OptVariable(QDomElement &);
     OptVariable* clone() const;
     OptVariable & operator=(const OptVariable &);
-    virtual QString getClassName(){return "OptVariable";};
+    virtual QString getClassName() const {return "OptVariable";};
 
 
 public :
@@ -297,7 +297,7 @@ public:
     ScannedVariable(QDomElement &);
     ~ScannedVariable(void);
     ScannedVariable* clone() const;
-    virtual QString getClassName(){return "ScannedVariable";};
+    virtual QString getClassName() const {return "ScannedVariable";};
 
 public :
     //Overwrited functions

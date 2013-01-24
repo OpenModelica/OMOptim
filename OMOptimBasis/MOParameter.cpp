@@ -541,3 +541,12 @@ bool MOParameters::operator==(const MOParameters& b)const
     }
     return equals;
 }
+
+/**
+  * This function is just used to prevent from calling MOParameters:value
+  * with an index instead of string.
+  * Compiling will fail if there is any call with int or index.
+  */
+QVariant MOParameters::value(int, QVariant defaultValue) const
+{
+}

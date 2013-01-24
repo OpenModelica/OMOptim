@@ -169,12 +169,19 @@ void LowTools::copyDirContents(QString org,QString dest)
     }
 }
 
-void LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
+bool LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
 {
+    bool allCopyOk = true;
+    bool tmpBool;
     if(!folder.exists())
     {
         QDir tmpDir;
-        tmpDir.mkpath(folder.absolutePath());
+        tmpBool = tmpDir.mkpath(folder.absolutePath());
+        if(!tmpBool)
+        {
+            SleeperThread::msleep(1000);
+            tmpDir.mkpath(folder.absolutePath());
+        }
     }
 
     for(int i=0;i<files.size();i++)
@@ -182,8 +189,15 @@ void LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
         QFileInfo fileInfo(files.at(i));
         if(folder.exists(fileInfo.fileName()))
             folder.remove(fileInfo.fileName());
-        QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
+        tmpBool = QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
+        if(!tmpBool)
+        {
+            SleeperThread::msleep(1000);
+            tmpBool = QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
+        }
+        allCopyOk = allCopyOk && tmpBool;
     }
+    return allCopyOk;
 }
 
 /**

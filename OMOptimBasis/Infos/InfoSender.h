@@ -91,7 +91,7 @@ protected:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
-     void removeLastNormalInfos(int count);
+     void removeFirstNormalInfos(int count);
 
 
 };

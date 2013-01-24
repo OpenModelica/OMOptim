@@ -38,6 +38,7 @@
 
   */
 #include "Problems.h"
+#include <QDebug>
 
 Problems::Problems(QString _name)
     :OMCases(_name)
@@ -52,5 +53,5 @@ Problem* Problems::at(int i)
 
 Problems::~Problems(void)
 {
-
+    qDebug() << "Delete problems";
 }

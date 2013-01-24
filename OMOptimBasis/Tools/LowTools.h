@@ -74,7 +74,7 @@ public:
     static bool removeDirContents(QString folder);
     static bool removeDirContentsExcept(QString folder, QStringList exceptExtensions);
     static void copyDirContents(QString org, QString dest);
-    static void copyFilesInFolder(QFileInfoList files, QDir folder);
+    static bool copyFilesInFolder(QFileInfoList files, QDir folder);
 
     static QFileInfoList findFiles(QDir folder,QString extension);
 

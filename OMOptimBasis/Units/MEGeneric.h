@@ -1,4 +1,4 @@
-// $Id: METime.h 9551 2011-07-28 16:56:59Z hubert.thieriot $
+// $Id: MEGeneric.h 9551 2011-07-28 16:56:59Z hubert.thieriot $
 /**
  * This file is part of OpenModelica.
  *
@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file METime.h
+        @file MEGeneric.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
@@ -37,24 +37,24 @@
         @version
 
   */
-#if !defined(_METime_H)
-#define _METime_H
+#if !defined(_MEGeneric_H)
+#define _MEGeneric_H
 
 
 #include "MEDimValue.h"
 #include <cmath>
 
-class METime : public MEDimValue
+class MEGeneric : public MEDimValue
 {
 public:
-    METime();
-    METime(double value,int unit); // better not to have default value for unit : forbid unwished conversion from double.
-    METime(const METime&);
-    ~METime();
+    MEGeneric();
+    MEGeneric(double value,int unit); // better not to have default value for unit : forbid unwished conversion from double.
+    MEGeneric(const MEGeneric&);
+    ~MEGeneric();
 
     enum Units
     {
-        SEC
+        UNITBASE
     };
 
     QString unit(int iUnit)  const;
@@ -62,22 +62,14 @@ public:
     unsigned nbUnits() const;
     double convert(double value,int orgUnit,int dstUnit) const;
 
-    METime& operator+=(const METime&);
-    METime& operator-=(const METime&);
-    METime operator-(const METime&) const;
-    METime operator+(const METime&) const;
+    MEGeneric& operator+=(const MEGeneric&);
+    MEGeneric& operator-=(const MEGeneric&);
+    MEGeneric operator-(const MEGeneric&) const;
+    MEGeneric operator+(const MEGeneric&) const;
 
 };
 
 
-class METimes : public QList<METime>
-{
-public :
-    METime time(int iP, bool &ok, QString &msg) const;
-    int iPeriod(const METime & time) const;
-    METimes& operator=(const QList<METime> &);
-
-};
 
 
 

@@ -86,7 +86,7 @@ public:
     // MO Item overwriting
     virtual QString getFieldName(int iField,int iRole);
     virtual unsigned getNbFields();
-    virtual QString getClassName(){return "Problem";}
+    virtual QString getClassName() const {return "Problem";}
 
 
     // Stop functions

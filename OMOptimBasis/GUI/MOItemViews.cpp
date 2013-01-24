@@ -45,6 +45,7 @@
 #include <QDebug>
 #include "MOItemModel.h"
 #include "MyDelegates.h"
+#include "Tools/GuiTools.h"
 
 MOItemTreeView::MOItemTreeView(QWidget* parent):QTreeView(parent)
 {    
@@ -53,9 +54,15 @@ MOItemTreeView::MOItemTreeView(QWidget* parent):QTreeView(parent)
     setAlternatingRowColors(true);
     setRootIsDecorated(false);
     setItemsExpandable(false);
+    setSortingEnabled(true);
 
     initDelegates();
+
+
     // frame
+
+    this->setSelectionBehavior(QAbstractItemView::SelectRows);
+    this->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 }
 
@@ -65,22 +72,25 @@ MOItemTreeView::~MOItemTreeView()
 
 void MOItemTreeView::setEditable(bool editable)
 {
-    //    if(editable)
-    //    {
-    //        this->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
-
-    //    }
-    //    else
-    //    {
-    //        this->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    //    }
+    if(editable)
+    {
+        this->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
+    }
+    else
+    {
+        this->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    }
 }
 
 void MOItemTreeView::setModel ( QAbstractItemModel * model )
 {
+
     QTreeView::setModel(model);
     if(model)
+    {
         initDelegates();
+        connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),this,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
+    }
 }
 
 
@@ -100,7 +110,7 @@ void MOItemTreeView::initDelegates()
                 case MOItem::BOOL :
                     break;
                 case MOItem::DOUBLE :
-                    DoubleSpinBoxDelegate* dblDelegate = new DoubleSpinBoxDelegate(this,30);
+                    DoubleSpinBoxDelegate* dblDelegate = new DoubleSpinBoxDelegate(this,10);
                     this->setItemDelegateForRow(i,dblDelegate);
                     break;
                 }

@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 */
 
 #if !defined(_MYDELEGATES_H)
@@ -63,15 +63,15 @@ public:
     GenericDelegate(QList<int>,QStringList,QObject *parent = 0);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-        const QModelIndex &index) const;
+                          const QModelIndex &index) const;
 
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
     void setModelData(QWidget *editor, QAbstractItemModel *model,
-        const QModelIndex &index) const;
+                      const QModelIndex &index) const;
 
 
-    private slots:
-        void emitCommitData();
+private slots:
+    void emitCommitData();
 
 private:
     QList<int> values;
@@ -146,24 +146,13 @@ private:
 class DoubleSpinBoxDelegate : public QStyledItemDelegate
 {
 public :
-    DoubleSpinBoxDelegate(QObject *parent,int decimals, double min=-std::numeric_limits<double>::max(), double max=std::numeric_limits<double>::max())
-    : QStyledItemDelegate(parent),_min(min),_max(max),_decimals(decimals)
-    {
-
-    }
+    DoubleSpinBoxDelegate(QObject *parent,int decimals, double min=-std::numeric_limits<double>::max(),
+                          double max=std::numeric_limits<double>::max());
 
     QWidget *createEditor(QWidget *parent,
-                                                 const QStyleOptionViewItem &/* option */,
-                                                 const QModelIndex &/* index */) const
-    {
-        QScienceSpinBox *editor = new QScienceSpinBox(parent);
-
-        editor->setMinimum(_min);
-        editor->setMaximum(_max);
-        editor->setDecimals(_decimals);
-
-        return editor;
-    }
+                          const QStyleOptionViewItem &/* option */,
+                          const QModelIndex &/* index */) const
+    ;
 
     double _min;
     double _max;

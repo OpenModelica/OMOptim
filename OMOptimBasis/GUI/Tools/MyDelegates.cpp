@@ -206,4 +206,22 @@ void GenericDelegate::emitCommitData()
 //   emit closeEditor(editor);
 //}
 
+DoubleSpinBoxDelegate::DoubleSpinBoxDelegate(QObject *parent,int decimals, double min, double max)
+: QStyledItemDelegate(parent),_min(min),_max(max),_decimals(decimals)
+{
+
+}
+
+QWidget *DoubleSpinBoxDelegate::createEditor(QWidget *parent,
+                                             const QStyleOptionViewItem &/* option */,
+                                             const QModelIndex &/* index */) const
+{
+    QScienceSpinBox *editor = new QScienceSpinBox(parent);
+
+    editor->setMinimum(_min);
+    editor->setMaximum(_max);
+    editor->setDecimals(_decimals);
+
+    return editor;
+}
 
