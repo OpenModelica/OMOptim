@@ -50,7 +50,7 @@ public:
     ~ModComponent(void);
         virtual ModItem* clone() const;
 
-    virtual QString getClassName(){return "ModComponent";};
+    virtual QString getClassName() const {return "ModComponent";};
     
     virtual Modelica::ClassRestr getClassRestr(){return Modelica::COMPONENT;};
 

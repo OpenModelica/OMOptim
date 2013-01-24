@@ -55,7 +55,7 @@ public:
     ModelicaModifier(void);
     ModelicaModifier(QString _componentName,QString _modifierName,QString _value,QString _description,ModItem* _component);
     ~ModelicaModifier(void);
-    QString getClassName(){return "ModelicaModifier";};
+    QString getClassName() const {return "ModelicaModifier";};
 
 public :
 

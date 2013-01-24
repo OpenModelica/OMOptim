@@ -123,6 +123,7 @@ void TabOptimization::actualizeGui()
 void TabOptimization::onModelsChanged()
 {
     _widgetCtrl->update(_problem->ctrls());
+    _widgetModels->refreshList();
 }
 
 

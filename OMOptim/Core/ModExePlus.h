@@ -20,7 +20,7 @@ public :
     ModExePlus(Project*,const QDomElement & );
     virtual ~ModExePlus();
 
-    virtual QString getClassName(){return ModExePlus::className();}
+    virtual QString getClassName() const {return ModExePlus::className();}
     static QString className(){return "ModExePlus";}
 
     // model type

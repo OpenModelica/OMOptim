@@ -81,7 +81,7 @@ public:
     OptObjective(const OptObjective &);
     OptObjective(QDomElement &);
     ~OptObjective(void);
-    virtual QString getClassName(){return "OptObjective";};
+    virtual QString getClassName() const {return "OptObjective";};
 
 
     void initOptExtremum();
@@ -126,7 +126,7 @@ public:
     OptObjectiveResult();
     OptObjectiveResult(const OptObjective &);
     OptObjectiveResult(QDomElement &);
-    virtual QString getClassName(){return "OptObjectiveResult";};
+    virtual QString getClassName() const {return "OptObjectiveResult";};
 
 
     static QString sFieldName(int field, int role);

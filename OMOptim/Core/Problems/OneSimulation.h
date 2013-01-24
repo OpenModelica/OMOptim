@@ -71,7 +71,7 @@ public:
     virtual ~OneSimulation(void);
 
     static QString className(){return "OneSimulation";};
-    virtual QString getClassName(){return OneSimulation::className();};
+    virtual QString getClassName() const {return OneSimulation::className();};
 
 
     ModPlusCtrl* ctrl();

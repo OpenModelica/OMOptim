@@ -545,10 +545,12 @@ ModelPlus* Project::newModelPlus(QString modelName)
   */
 void Project::save(bool saveAllOMCases)
 {
+    InfoSender::instance()->sendCurrentTask("Saving project...");
     SaveOMOptim::saveProject(this,saveAllOMCases);
 
     setSaved(true);
     emit projectChanged();
+    InfoSender::instance()->eraseCurrentTask();
 }
 
 /** @brief Save project and result given as parameter.

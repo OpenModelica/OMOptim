@@ -83,7 +83,7 @@ public :
 public:
     ModItem(MOomc*);
     ModItem(MOomc*,ModItem* _parent,QString _name,QFileInfo filePath=QFileInfo());
-    virtual QString getClassName(){return "ModItem";};
+    virtual QString getClassName() const {return "ModItem";};
 
     virtual ModItem* clone() const;
     //virtual ModItem* cloneStructure(QString newName); // clone all fields excepted connections and variables
@@ -143,6 +143,8 @@ public:
     bool childrenReaden();
     void setChildrenReaden(bool);
     int indexInParent();
+
+    bool containsItemOfClass(QString className) const;
 
     ModItem* child(int row) const;
     ModItem* compChild(int row) const;

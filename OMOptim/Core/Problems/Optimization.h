@@ -91,7 +91,7 @@ public:
     virtual ~Optimization(void);
 
     static QString className(){return "Optimization";}
-    virtual QString getClassName(){return Optimization::className();}
+    virtual QString getClassName() const {return Optimization::className();}
     virtual bool hasQuickEndOption(){return true;}
 
     //Get functions

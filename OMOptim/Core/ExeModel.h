@@ -15,7 +15,7 @@ private:
 public:
     ExeModel(QString name,QString exeFilePath, QString inputFilePath);
     Modelica::ClassRestr getClassRestr(){return Modelica::EXECUTABLE;}
-    virtual QString getClassName(){return "ExeModel";}
+    virtual QString getClassName() const {return "ExeModel";}
     virtual QString getStrToolTip();
 
     QFileInfo inputFile(){return _inputFile;}

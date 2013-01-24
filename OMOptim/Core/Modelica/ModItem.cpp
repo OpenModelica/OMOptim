@@ -301,6 +301,21 @@ int ModItem::indexInParent()
         return iC;
 }
 
+bool ModItem::containsItemOfClass(QString className) const
+{
+    if(this->getClassName()==className)
+        return true;
+
+    bool found = false;
+    int i=0;
+    while(!found && i<childCount())
+    {
+        found = child(i)->containsItemOfClass(className);
+        i++;
+    }
+    return found;
+}
+
 
 QString ModItem::filePath()
 {

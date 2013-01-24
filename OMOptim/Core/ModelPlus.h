@@ -59,7 +59,7 @@ public:
 
     virtual ~ModelPlus();
 
-    virtual QString getClassName(){return ModelPlus::className();}
+    virtual QString getClassName() const {return ModelPlus::className();}
     static QString className(){return "ModelPlus";}
 
     // model type

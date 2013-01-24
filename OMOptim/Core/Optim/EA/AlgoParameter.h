@@ -72,7 +72,7 @@ public:
     AlgoParameter(QDomElement & domEl);
     ~AlgoParameter(void);
 
-    virtual QString getClassName(){return "AlgoParameter";};
+    virtual QString getClassName() const {return "AlgoParameter";};
 
     static const int nbFields = 7;
     virtual unsigned getNbFields(){return nbFields;};

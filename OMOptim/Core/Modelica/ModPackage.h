@@ -55,7 +55,7 @@ public:
     ModPackage(MOomc*,ModItem* parent,QString name,QFileInfo file=QFileInfo());
     ~ModPackage(void);
     virtual ModItem* clone() const;
-    virtual QString getClassName(){return "ModPackage";}
+    virtual QString getClassName() const {return "ModPackage";}
     virtual Modelica::ClassRestr getClassRestr(){return Modelica::PACKAGE;}
 
 };

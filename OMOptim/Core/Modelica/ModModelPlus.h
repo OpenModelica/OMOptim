@@ -96,7 +96,7 @@ public:
     ModModelPlus(Project* project,const QDomElement & );
     ~ModModelPlus();
 
-    virtual QString getClassName(){return ModModelPlus::className();};
+    virtual QString getClassName() const {return ModModelPlus::className();};
     static QString className(){return "ModModelPlus";};
 
     // model type

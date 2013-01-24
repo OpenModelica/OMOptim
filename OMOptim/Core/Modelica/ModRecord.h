@@ -49,7 +49,7 @@ public:
     ModRecord(MOomc*,ModItem* _parent,QString _name,QFileInfo filePath=QFileInfo());
     ~ModRecord(void);
     virtual ModItem* clone() const;
-    virtual QString getClassName(){return "ModRecord";};
+    virtual QString getClassName() const {return "ModRecord";};
 
 
     virtual Modelica::ClassRestr getClassRestr(){return Modelica::RECORD;};

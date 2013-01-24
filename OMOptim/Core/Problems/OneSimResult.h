@@ -68,7 +68,7 @@ public:
     virtual ~OneSimResult(void);
 
     static QString className(){return "OneSimResult";};
-    virtual QString getClassName(){return OneSimResult::className();};
+    virtual QString getClassName() const {return OneSimResult::className();};
 
     MOVector<Variable> *inputVariables(){return _inputVariables;};
     MOOptVector *finalVariables(){return _finalVariables;};

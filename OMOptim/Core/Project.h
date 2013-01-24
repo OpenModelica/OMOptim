@@ -100,7 +100,7 @@ private:
  public:
     explicit Project();
     ~Project();
-    QString getClassName(){return "Project";};
+    QString getClassName() const {return "Project";};
 
     void clear();
     QString getFieldName(int iField,int role);

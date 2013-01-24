@@ -73,7 +73,7 @@ public:
     OptimResult(const OptimResult &_res);
     virtual ~OptimResult(void);
     static QString className(){return "OptimResult";}
-    virtual QString getClassName(){return OptimResult::className();}
+    virtual QString getClassName() const {return OptimResult::className();}
 
     virtual QDomElement toXmlData(QDomDocument &);
 

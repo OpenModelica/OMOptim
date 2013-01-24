@@ -78,7 +78,6 @@ WidgetModelsList::~WidgetModelsList()
 
 void WidgetModelsList::addModels(QStringList list)
 {
-    bool addedOk;
     for(int i=0;i<list.size();i++)
     {
         _problem->addModel(list.at(i));
