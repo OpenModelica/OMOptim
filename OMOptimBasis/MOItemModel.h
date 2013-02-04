@@ -77,6 +77,8 @@ public:
 
      void hideField(int);
 
+     void setEditable(bool editable);
+
 
 public slots:
     void onItemDeleted();

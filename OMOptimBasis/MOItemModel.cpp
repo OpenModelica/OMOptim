@@ -68,7 +68,7 @@ void MOItemModel::setMOItem(MOItem* item)
     endResetModel();
 
     if(_item)
-        connect(_item,SIGNAL(deleted()),this,SLOT(onItemDeleted()));
+        connect(_item,SIGNAL(destroyed()),this,SLOT(onItemDeleted()));
 }
 
 void MOItemModel::setShowDescription(bool show)
@@ -88,6 +88,11 @@ void MOItemModel::hideField(int field)
 {
     if(!_hidedFields.contains(field))
         _hidedFields.push_back(field);
+}
+
+void MOItemModel::setEditable(bool editable)
+{
+    _editable = editable;
 }
 
 void MOItemModel::onItemDeleted()

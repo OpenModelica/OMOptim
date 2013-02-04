@@ -120,10 +120,12 @@ void ProblemThread::onFinished()
 {
     emit finished(_problem,_result);
 }
-void ProblemThread::onStopAsked()
+void ProblemThread::stop()
 {
-    terminate();
-    onFinished();
+    if(_problem)
+        _problem->stop();
+//    terminate();
+//    onFinished();
 }
 
 

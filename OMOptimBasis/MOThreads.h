@@ -72,7 +72,7 @@ private:
 
 
 public slots :
-    void onStopAsked();
+    void stop();
     void onFinished();
 signals :
     void finished(Problem*,Result*);

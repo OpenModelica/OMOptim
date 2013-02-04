@@ -93,7 +93,7 @@ public:
     virtual bool canBeStoped(){return false;}/// does the problem resolution can be stoped at any time
     virtual bool hasQuickEndOption(){return false;}/// does the problem resolution can be shortened at any time
 
-    virtual void stop(){};
+
 
     // Infos
     static QString infos();
@@ -134,6 +134,8 @@ public:
     // Get functions
     MOParameters* parameters(){return _parameters;}
 
+public slots :
+        virtual void stop(){};
 
 signals:
     void newProgress(float);

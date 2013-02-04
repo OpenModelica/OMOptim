@@ -80,8 +80,6 @@ ProjectBase::ProjectBase()
 
 ProjectBase::~ProjectBase()
 {
-    qDebug("deleting ProjectBase");
-
     terminateProblemsThreads();
 
     delete _problems;
@@ -257,14 +255,19 @@ bool ProjectBase::unloadPlugins()
 
 void ProjectBase::terminateProblemsThreads()
 {
+
     QList<MOThreads::ProblemThread *> allLaunchedThreads = _problemsThreads.values();
 
     for(int i=0;i<allLaunchedThreads.size();i++)
     {
         QString msg ="Stopping thread "+allLaunchedThreads.at(i)->_name;
-        qDebug(msg.toLatin1().data());
-        InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
-        allLaunchedThreads.at(i)->terminate();
+        InfoSender::instance()->sendCurrentTask(msg);
+        //allLaunchedThreads.at(i)->terminate();
+        //allLaunchedThreads.at(i)->exit(-1);
+        allLaunchedThreads.at(i)->stop();
+        allLaunchedThreads.at(i)->wait();
+        qDebug("finished Thread");
+        InfoSender::instance()->eraseCurrentTask();
     }
 }
 
@@ -583,6 +586,9 @@ void ProjectBase::onProblemFinished(Problem* problem,Result* result)
             HighTools::checkUniqueResultName(this,result,_results);
 
             result->store(QString(resultsFolder()+QDir::separator()+result->name()),tempPath());
+
+            // test
+            result->moveToThread(QApplication::instance()->thread());
 
             addResult(result);
             save(result);

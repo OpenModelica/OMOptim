@@ -136,9 +136,8 @@ public:
 
 signals:
     void sendInfo(Info);
-    void deleted();
 
-protected :
+protected:
     QString _name;
     QList<int> _filledFields; /// list of fields index that have been set
     QList<int> _protectedFields; /// list of fields that are protected from editing by the user (e.g. through GUI)
