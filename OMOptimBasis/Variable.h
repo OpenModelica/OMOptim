@@ -269,6 +269,12 @@ protected :
 
 };
 
+/**
+  * Variable used to do sampling computations :
+  * A variable will take successively several values,
+  * between  ScanMin and ScanMax with ScanStep increase.
+  * @warning ScannedVariable is sometimes called SamplingVariable
+  */
 class ScannedVariable : public Variable
 {
 public :

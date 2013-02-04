@@ -52,6 +52,23 @@ HighTools::~HighTools(void)
 
 
 
+QString HighTools::getUniqueName(QString baseName,QStringList brothers)
+{
+    QString result;
+    int suffix;
+
+    result=baseName;
+    suffix=2;
+    while(brothers.contains(result))
+    {
+        result=baseName+QString::number(suffix);
+        suffix++;
+    }
+
+    return result;
+}
+
+
 
 
 void HighTools::checkUniqueProblemName(ProjectBase* project_,Problem *problem_,OMCases *problems_)

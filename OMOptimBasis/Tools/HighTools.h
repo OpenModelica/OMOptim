@@ -64,6 +64,7 @@ public:
 
     static void checkUniqueProblemName(ProjectBase*,Problem *,OMCases *);
     static void checkUniqueResultName(ProjectBase*, Result *,OMCases *);
+    static QString getUniqueName(QString baseName, QStringList brothers);
 };
 
 

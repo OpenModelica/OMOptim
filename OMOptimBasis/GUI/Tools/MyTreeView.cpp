@@ -50,7 +50,7 @@ OMCasesTreeView::OMCasesTreeView(ProjectBase* project,OMCasesCombiner* model,QWi
     :QTreeView(mainwindow)
 {
     this->setFrameShape(QFrame::Box);
-    this->setFrameShadow(QFrame::Plain);
+    this->setFrameShadow(QFrame::Raised);
     _project = project;
     _mainWindow = mainwindow;
     _model = model;

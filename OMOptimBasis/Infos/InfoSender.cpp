@@ -233,8 +233,10 @@ void Infos::removeFirstNormalInfos(int count)
 
 int Infos::rowCount(const QModelIndex &parent) const
 {
-    //return 0;
-    return _text.size();
+    if(!parent.isValid())
+        return _text.size();
+    else
+        return 0;
 }
 
 bool Infos::removeRows(int position, int rows, const QModelIndex &index)
