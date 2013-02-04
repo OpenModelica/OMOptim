@@ -119,14 +119,12 @@ protected:
     */
     void initGnuPlot();
 
-    /** The stats might be unknown in Ctor */
-    bool firstTime;
 
+public:
     /** Communication with gnuplot OK */
-    FILE *gnuplotPipe;
-    bool pipeOpen;
+    static FILE *gnuplotPipe;
+    static bool pipeOpen;
 
-    QProcess gnuPlotProcess;
 
     /** Internal counter for gnuplot windows */
     static unsigned numWindow;

@@ -141,7 +141,8 @@ public:
 
 
 public slots :
-    void onQuickEndAsked();
+    void quickEnd();
+    virtual void stop();
 
 signals :
     void addedModel(QString);

@@ -166,7 +166,7 @@ private:
     //****************************
     // Misc
     //****************************
-    void terminateOmsThreads();
+    void terminateOms();
     bool checkConfiguration();
 
     //****************************

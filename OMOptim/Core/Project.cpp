@@ -91,7 +91,8 @@ Project::Project()
 
 Project::~Project()
 {
-    terminateOmsThreads();
+    terminateOms();
+    terminateProblemsThreads(); // should be done before deleting modelPlus
 
     _moomc->stopServer();
 
@@ -138,7 +139,6 @@ void Project::clear()
     _mapModelPlus.clear();
 
     // OMC
-    terminateOmsThreads();
     _moomc->clear();
 
 
@@ -583,7 +583,6 @@ void Project::save(Problem* problem)
   */
 bool Project::load(QString loadPath)
 {
-    terminateOmsThreads();
     bool configOk = checkConfiguration();
     bool loaded = false;
 
@@ -631,7 +630,7 @@ bool Project::checkConfiguration()
 /**
   * @brief All threads using OMC are terminated.
   */
-void Project::terminateOmsThreads()
+void Project::terminateOms()
 {
     if(_moomc!=NULL)
     {
@@ -643,6 +642,7 @@ void Project::terminateOmsThreads()
             _moomc->getThreads().at(i)->terminate();
         }
     }
+    _moomc->stopServer();
 }
 
 

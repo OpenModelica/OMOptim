@@ -440,10 +440,8 @@ bool Optimization::checkBeforeComp(QString & error)
 */
 Result* Optimization::launch(ProblemConfig config)
 {
-
     // first create temp dir
     LowTools::mkpath(_project->tempPath(),false);
-
 
     EABase* algo = ((EABase*)getCurAlgo());
 
@@ -830,13 +828,18 @@ void Optimization::setCurAlgo(QString curAlgoName)
 /**
   * This function allows to finish Optimization the soonest but getting intermediary results.
   * e.g. in population algorithms, it stops at the end of the current generation. This allows
-  * to keep results (thus differs from ProblemThread::onStopAsked() )
+  * to keep results (thus differs from Optimization::stop() )
   */
-void Optimization::onQuickEndAsked()
+void Optimization::quickEnd()
 {
-    getCurAlgo()->onQuickEndAsked();
+    getCurAlgo()->quickEnd();
 }
 
+
+void Optimization::stop()
+{
+    getCurAlgo()->stop();
+}
 
 
 

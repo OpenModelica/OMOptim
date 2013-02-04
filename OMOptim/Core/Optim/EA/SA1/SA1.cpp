@@ -274,7 +274,7 @@ Result* SA1::launch(QString tempDir)
              *
              * ========================================================= */
     moeoEvalFunc < EOStd > *plainEval;
-    plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modItemsTree);
+    plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,_modItemsTree,&_quickEnd);
 
     OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
     state.storeFunctor(eval);
@@ -313,7 +313,7 @@ Result* SA1::launch(QString tempDir)
                 STOPPING CRITERIA
                 ************************************/
 
-    //                MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_stop);
+    //                MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_quickEnd);
     //                state.storeFunctor(evalCont);
 
 
@@ -392,6 +392,9 @@ Result* SA1::launch(QString tempDir)
     ///************************************
     //GETTING RESULT FROM FINAL ARCHIVE
     //************************************/
+    if(!_keepResults) // if stop has been called
+        return NULL;
+
     Result* result = buildResult(arch);
 
 

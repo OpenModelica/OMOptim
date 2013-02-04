@@ -937,8 +937,9 @@ QString MOomc::evalCommand(QString command,QString &errorString)
         InfoSender::instance()->debug("Caught CORBA::COMM_FAILURE");
         return QString();
     }
-    catch (std::exception &ex)
+    catch (...)
     {
+        InfoSender::instance()->debug("Caught exception");
         return QString();
     }
 

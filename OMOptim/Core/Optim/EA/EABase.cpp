@@ -54,7 +54,8 @@ EABase::EABase(Project* project,Problem* problem)
     _project = project;
     _problem = problem;
     _modItemsTree = project->modItemsTree();
-    _stop = false;
+    _quickEnd = false;
+    _keepResults = true;
 }
 
 EABase::EABase(const EABase & eaBase)
@@ -64,7 +65,8 @@ EABase::EABase(const EABase & eaBase)
     _subModels = eaBase._subModels;
     _subBlocks = eaBase._subBlocks;
     _index = eaBase._index;
-    _stop = eaBase._stop;
+    _quickEnd = eaBase._quickEnd;
+    _keepResults = eaBase._keepResults;
 }
 
 EABase::~EABase(void)
@@ -83,7 +85,13 @@ void EABase::setSubModels(QList<QList<ModelPlus*> > subModels,QList<BlockSubstit
     }
 }
 
-void EABase::onQuickEndAsked()
+void EABase::quickEnd()
 {
-    _stop = true;
+    _quickEnd = true;
+}
+
+void EABase::stop()
+{
+    _quickEnd = true;
+    _keepResults = false;
 }

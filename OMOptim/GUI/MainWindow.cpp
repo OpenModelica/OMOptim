@@ -588,7 +588,7 @@ void MainWindow::enableOMCaseTab(QModelIndex index)
 
 void MainWindow::quit()
 {
-    _project->terminateOmsThreads();
+    _project->terminateOms();
 
     if(!_project->isSaved() && _project->isDefined())
     {

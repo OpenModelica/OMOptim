@@ -169,7 +169,7 @@ void WidgetProgress::onPushedQuickEnd()
 
     if(optim)
     {
-        optim->onQuickEndAsked();
+        optim->quickEnd();
     }
 }
 

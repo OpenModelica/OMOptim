@@ -184,7 +184,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
     ************************************/
     moeoEvalFunc < EOAdapt > *plainEval;
     plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
-                                                   _modItemsTree);
+                                                   _modItemsTree,&_quickEnd);
 
     OMEAEvalFuncCounter<EOAdapt>* eval = new OMEAEvalFuncCounter<EOAdapt> (* plainEval,&OMEAProgress,nTotalEvals);
 
@@ -279,7 +279,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
     /************************************
  STOPPING CRITERIA
  ************************************/
-    MyEAEvalContinue<EOAdapt> *evalCont = new MyEAEvalContinue<EOAdapt>(*eval,nTotalEvals,&_stop);
+    MyEAEvalContinue<EOAdapt> *evalCont = new MyEAEvalContinue<EOAdapt>(*eval,nTotalEvals,&_quickEnd);
     //state.storeFunctor(evalCont);
 
     /************************************
@@ -336,6 +336,9 @@ Result* SPEA2Adapt::launch(QString tempDir)
     ///************************************
     //GETTING RESULT FROM FINAL ARCHIVE
     //************************************/
+    if(!_keepResults) // if stop has been called
+        return NULL;
+
     Result* result = buildResult(arch);
 
 

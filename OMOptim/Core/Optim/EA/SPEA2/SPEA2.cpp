@@ -188,7 +188,7 @@ Result* SPEA2::launch(QString tempDir)
     ************************************/
     moeoEvalFunc < EOStd > *plainEval;
     plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,
-                                                 _modItemsTree);
+                                                 _modItemsTree,&_quickEnd);
 
     OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
     state.storeFunctor(eval);
@@ -272,13 +272,11 @@ Result* SPEA2::launch(QString tempDir)
     ************************************/
     moeoUnboundedArchive<EOStd> arch;
 
-
     /************************************
      STOPPING CRITERIA
      ************************************/
-    MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_stop);
+    MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_quickEnd);
     state.storeFunctor(evalCont);
-
 
     /************************************
     OUTPUT
@@ -299,11 +297,11 @@ Result* SPEA2::launch(QString tempDir)
     ///************************************
     //GETTING RESULT FROM FINAL ARCHIVE
     //************************************/
+    if(!_keepResults) // if stop has been called
+        return NULL;
+
     Result* result = buildResult(arch);
-
-
     return result;
-
 }
 
 /**

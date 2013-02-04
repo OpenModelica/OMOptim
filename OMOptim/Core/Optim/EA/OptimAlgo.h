@@ -78,7 +78,8 @@ public:
     * Set parameters that should be defined
     */
     virtual void setDefaultParameters() = 0;
-    virtual void onQuickEndAsked(){}
+    virtual void quickEnd(){}
+    virtual void stop(){}
 
 signals:
     void modified();

@@ -76,6 +76,7 @@ public:
         _subModels = EAStdOptimizationEval._subModels;
         _nbObj = EAStdOptimizationEval._nbObj;
         _bObjectives = EAStdOptimizationEval._bObjectives;
+        _stop = EAStdOptimizationEval._stop;
     }
 
 
@@ -83,13 +84,14 @@ public:
      * \brief Ctor.
      */
     EAStdOptimizationEval(Project* project,Optimization* problem,QList<QList<ModelPlus*> > subModels,QString tempDir
-                           ,ModItemsTree* modItemsTree)
+                           ,ModItemsTree* modItemsTree,bool *stop)
     {
         _project = project;
         _problem = problem;
         _modItemsTree = modItemsTree;
         _tempDir = tempDir;
         _subModels = subModels;
+        _stop = stop;
 
         /************************************
         OBJECTIVE FUNCTIONS DEFINITION
@@ -115,7 +117,13 @@ public:
 
     void operator () (EOT & eo)
     {
-        if (eo.invalidObjectiveVector())
+        if(*_stop)
+        {
+            eo.objectiveVector(worstObjVec());
+            return;
+        }
+
+        if ( eo.invalidObjectiveVector())
         {
             moeoRealObjectiveVector< moeoObjectiveVectorTraits > objVec;
 
@@ -260,5 +268,6 @@ protected:
     QString _tempDir;
     int _nbObj;
     std::vector<bool> _bObjectives;
+    bool *_stop;
 };
 #endif

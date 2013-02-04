@@ -86,10 +86,12 @@ protected:
 
     // solve mixing pointdep-pointindep in bounds
     QVector<QVector<int> > _index;
-    bool _stop;
+    bool _quickEnd; // force end but keeps results
+    bool _keepResults; // at  the end, keep results (is set to false only when stop() is called)
 
 public slots:
-    void onQuickEndAsked();
+    void quickEnd();
+    void stop();
 
 };
 

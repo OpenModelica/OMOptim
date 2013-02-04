@@ -73,7 +73,6 @@ ModItem* ModItem::clone() const
 
 ModItem::~ModItem(void)
 {
-    emit deleted();
     clearDescendants();
 }
 

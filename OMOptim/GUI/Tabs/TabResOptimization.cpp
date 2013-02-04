@@ -77,9 +77,9 @@ MO2ColTab(result->project()->name(),result,false,parent)
         _widgetTableRecVar = new WidgetTableRecVar(_result,this);
 
         // set size policy
-        _widgetMooPointsList->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
-        _widgetMooPlot->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
-        _widgetTableRecVar->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
+//        _widgetMooPointsList->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
+//        _widgetMooPlot->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
+//        _widgetTableRecVar->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
 
         addDockWidget("Plot",_widgetMooPlot,NULL,Qt::RightDockWidgetArea);
 #ifdef USEBLOCKSUB
@@ -138,7 +138,7 @@ MO2ColTab(result->project()->name(),result,false,parent)
          mapDockWidgets.key(_widgetMooPlot)->raise();
 
          // restore position
-         readGUIState();
+     //    readGUIState();
 
 //         // select first point
 //         if(result->nbPoints()>0)
