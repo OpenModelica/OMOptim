@@ -5,6 +5,7 @@ QWTHOME = "$$(OMDEV)/lib/qwt-5.2.1-mingw"
 
 
 QMAKE_LFLAGS += -enable-auto-import
+QMAKE_CXXFLAGS_WARN_OFF += -Wunused-parameter
 
 DEFINES += __x86__ \
     __NT__ \

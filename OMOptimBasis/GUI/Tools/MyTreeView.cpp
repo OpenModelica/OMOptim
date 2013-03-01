@@ -62,8 +62,10 @@ OMCasesTreeView::OMCasesTreeView(ProjectBase* project,OMCasesCombiner* model,QWi
     this->setHeaderHidden(true);
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->header()->setResizeMode(QHeaderView::Stretch);
+    this->expandAll();
     connect (this,SIGNAL(customContextMenuRequested(const QPoint &)),
              this,SLOT(onRightClicked(const QPoint &)));
+
 
 }
 

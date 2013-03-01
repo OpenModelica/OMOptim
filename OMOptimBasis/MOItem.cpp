@@ -243,7 +243,7 @@ bool MOItem::protectAllFields()
 QString MOItem::toSavingString()
 {
     QString savingString;
-    for(int iF=0;iF<nbFields;iF++)
+    for(int iF=0;iF<getNbFields();iF++)
     {
         savingString += getFieldValue(iF).toString() + "\t";
     }
