@@ -250,5 +250,6 @@ void WidgetMooPlot::updateCombos()
 void WidgetMooPlot::setShownPoints(QList<int> _list)
 {
     _plot1->setShownPoints(_list);
+
 }
 

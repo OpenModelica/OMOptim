@@ -263,6 +263,15 @@ void MOOptPlot::setSelectionPoints(QList<int>  selectedPoints)
 void MOOptPlot::setShownPoints(QList<int>  shownPoints)
 {
     _shownPoints = shownPoints;
+    // remove selected that are not shown anymore
+    int i=0;
+    while(i<_selectedPoints.size())
+    {
+        if(!_shownPoints.contains(_selectedPoints.at(i)))
+            _selectedPoints.removeAt(i);
+        else
+            i++;
+    }
     refresh(0);
 }
 

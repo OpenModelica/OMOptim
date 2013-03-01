@@ -1,5 +1,6 @@
 ### PREPROCESSOR and FLAGS
 QMAKE_LFLAGS += -enable-auto-import
+QMAKE_CXXFLAGS_WARN_OFF += -Wunused-parameter
 
 DEFINES += __x86__ \
     __NT__ \

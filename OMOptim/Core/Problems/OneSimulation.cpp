@@ -61,7 +61,10 @@ OneSimulation::OneSimulation(Project* project, ModelPlus* ModPlus)
 {
 
     _ModelPlus = ModPlus;
-    _name="One Simulation";
+    if(!ModPlus)
+        _name="One Simulation";
+    else
+        _name = "Simulation "+ModPlus->modelName().section(".",-1);
     _omProject = project;
 
 

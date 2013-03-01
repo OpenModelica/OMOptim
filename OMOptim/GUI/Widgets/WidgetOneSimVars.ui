@@ -31,7 +31,7 @@
      <property name="handleWidth">
       <number>3</number>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget1">
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout">
@@ -59,7 +59,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QTableView" name="tableVariables">
+        <widget class="MOTableView" name="tableVariables">
          <property name="font">
           <font>
            <pointsize>7</pointsize>
@@ -84,7 +84,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="1">
         <widget class="QLabel" name="label_2">
@@ -154,7 +154,7 @@
         </spacer>
        </item>
        <item row="1" column="1" rowspan="2" colspan="4">
-        <widget class="QTableView" name="tableOverwritedVariables">
+        <widget class="MOTableView" name="tableOverwritedVariables">
          <property name="font">
           <font>
            <pointsize>7</pointsize>
@@ -242,7 +242,7 @@
         </spacer>
        </item>
        <item row="4" column="1" rowspan="2" colspan="4">
-        <widget class="QTableView" name="tableScannedVariables">
+        <widget class="MOTableView" name="tableScannedVariables">
          <property name="frameShape">
           <enum>QFrame::Box</enum>
          </property>
@@ -319,6 +319,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MOTableView</class>
+   <extends>QTableView</extends>
+   <header>MOTableView.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../GUI/Resources/CERESGui.qrc"/>
  </resources>

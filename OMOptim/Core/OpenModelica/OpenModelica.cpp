@@ -722,19 +722,30 @@ QString OpenModelica::home()
     return omHome;
 }
 
-QString OpenModelica::getLatestLibraryPath()
+/**
+  * Tries to find library path corresponding to version set as parameter.
+  * If not found return newest library path.
+  */
+QString OpenModelica::getLibraryPath(QString version)
 {
-     const char *omlibrary = getenv("OPENMODELICALIBRARY");
-     QString omLibraryFolder(omlibrary);
+    const char *omlibrary = getenv("OPENMODELICALIBRARY");
+    QString omLibraryFolder(omlibrary);
 
-     QDir omLibDir(omlibrary);
-     QStringList omLibDirs = omLibDir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
-     omLibDirs = omLibDirs.filter(QRegExp("^Modelica .*"));
-     if(omLibDirs.isEmpty())
-         return QString();
-     else
-     {
-         omLibDirs.sort();
-         return omLibDir.absoluteFilePath(omLibDirs.last()+QDir::separator()+"package.mo");
-     }
+    QDir omLibDir(omlibrary);
+    QStringList omLibDirs = omLibDir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
+    omLibDirs = omLibDirs.filter(QRegExp("^Modelica .*"));
+    if(omLibDirs.isEmpty())
+        return QString();
+    else
+    {
+        int iVersion = omLibDirs.indexOf("Modelica "+version);
+        if(iVersion>-1)
+            return omLibDir.absoluteFilePath(omLibDirs.at(iVersion)+QDir::separator()+"package.mo");
+
+        else
+        {
+            omLibDirs.sort();
+            return omLibDir.absoluteFilePath(omLibDirs.last()+QDir::separator()+"package.mo");
+        }
+    }
 }

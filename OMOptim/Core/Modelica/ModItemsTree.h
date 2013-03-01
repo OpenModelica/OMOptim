@@ -114,6 +114,7 @@ public:
     QIcon getModelicaNodeIcon(ModItem* ModItem) const;
     bool canFetchMore ( const QModelIndex & parent ) const;
     void fetchMore ( const QModelIndex & parent );
+    QMimeData* mimeData(const QModelIndexList &indexes) const;
 
     // drag and drop functions
  //   QStringList mimeTypes() const;

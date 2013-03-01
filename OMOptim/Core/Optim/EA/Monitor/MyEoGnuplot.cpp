@@ -54,13 +54,16 @@
 #include <stdio.h>
 #endif
 
-unsigned MyEoGnuplot::numWindow=0;
+//unsigned MyEoGnuplot::numWindow=0;
 
-FILE *MyEoGnuplot::gnuplotPipe=0;
-bool MyEoGnuplot::pipeOpen=false;
+//FILE *MyEoGnuplot::gnuplotPipe=0;
+//bool MyEoGnuplot::pipeOpen=false;
 
 MyEoGnuplot::MyEoGnuplot()
 {
+    pipeOpen = false;
+    gnuplotPipe = 0;
+
     initGnuPlot();
 }
 
@@ -79,7 +82,6 @@ void MyEoGnuplot::gnuplotCommand(const QString & _command)
         fprintf(gnuplotPipe, cmd.toAscii().data());
         fflush(gnuplotPipe);
     }
-
 }
 
 
@@ -95,6 +97,7 @@ void MyEoGnuplot::initGnuPlot()
     {
         if(!pipeOpen)
         {
+
             QString pgnuplotFilePath = MOSettings::value("pgnuplotEXE").toString();
             QString command("\""+pgnuplotFilePath +"\" -persist");
             command.replace("/","\\");

@@ -179,10 +179,9 @@ public :
 
     QString loadFileWThread(QString filePath);
 
-    //OmcCommunicator* getCommunicator();
 
-
-
+     bool initCommandLineOptions();
+     bool clearCommandLineOptions();
 
 public slots :
     QStringList loadFiles(const QStringList & filePath);

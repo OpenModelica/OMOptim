@@ -62,6 +62,8 @@ WidgetOneSimVars::WidgetOneSimVars(ProjectBase *project,OneSimulation *problem, 
     _project = project;
     _problem = problem;
 
+    _ui->tableVariables->setEditable(false);
+
     // fill variables' table
     ModelPlus* modModelPlus = _problem->modelPlus();
     _variables = modModelPlus->variables();

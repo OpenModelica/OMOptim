@@ -69,7 +69,7 @@ void OMOptimSettings::initialize()
     names << QString("modelicaLibrary");
     groups << "Modelica";
     descs << QString("Path of Modelica library");
-    defaultValues << OpenModelica::getLatestLibraryPath();
+    defaultValues << OpenModelica::getLibraryPath("3.1");
     types.push_back(MOParameter::FILEPATH);
 
 
@@ -114,6 +114,16 @@ void OMOptimSettings::initialize()
     defaultValues << QString();
     types.push_back(MOParameter::FILEPATH);
 
+
+
+    //*******************************
+    // OM Flag
+    //*******************************
+    names << QString("OMCCommandLineOptions");
+    groups << "Open Modelica";
+    descs << QString("OMC Command line options");
+    defaultValues << "+d=scodeInstShortcut";
+    types.push_back(MOParameter::STRING);
 
     // processing
     MOParameters* params = new MOParameters();

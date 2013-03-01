@@ -73,7 +73,9 @@ public:
         eoMonitor(),
         MyEoGnuplot()
         {_folder = folder;
-        _nbObj = nbObj;}
+        _nbObj = nbObj;
+         InfoSender::instance()->debug("Ctor Gnuplot1DMonitor");
+        }
 
     /** Destructor */
     virtual ~MyEoGnuplot1DMonitor(){}

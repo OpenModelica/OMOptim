@@ -57,6 +57,7 @@
 
 #include "MOomc.h"
 #include "OMCThreads.h"
+#include "MOSettings.h"
 
 //IAEX Headers
 #include "omcinteractiveenvironment.h"
@@ -83,6 +84,7 @@ MOomc::MOomc(QString appName,bool start)
     {
         startServer();
     }
+
 }
 
 MOomc::~MOomc()
@@ -442,6 +444,7 @@ QStringList MOomc::getComponentModifierNames(QString componentName)
 QString MOomc::getFlattenedModel(const QString & modelName)
 {
     InfoSender::instance()->sendNormal("Instantiating model "+modelName);
+    initCommandLineOptions();
     QString flatcmd = "instantiateModel("+modelName+")";
     QString errorString;
     QString flattened = evalCommand(flatcmd,errorString);
@@ -680,8 +683,24 @@ int MOomc::getConnectionNumber(QString className)
     return commandRes.toInt();
 }
 
+bool MOomc::initCommandLineOptions()
+{
+    QString value  = MOSettings::value("OMCCommandLineOptions").toString();
+    QString commandText = "setCommandLineOptions(\""+value+"\");";
+    QString commandRes= evalCommand(commandText);
+    return (commandRes=="true");
+}
+
+bool MOomc::clearCommandLineOptions()
+{
+    QString commandText = "setCommandLineOptions(\" \");";
+    QString commandRes= evalCommand(commandText);
+    return (commandRes=="true");
+}
+
 bool MOomc::translateModel(QString model)
 {
+    initCommandLineOptions();
     QString commandText = "translateModel(" + model +")";
     QString commandRes= evalCommand(commandText);
     return (commandRes=="true");
@@ -689,6 +708,7 @@ bool MOomc::translateModel(QString model)
 
 bool MOomc::buildModel(QString model,QString & exeFile,QString & initFile)
 {
+    initCommandLineOptions();
     QString commandText = "buildModel("+model+")";
     QString commandRes= evalCommand(commandText);
     commandRes.remove(QRegExp("[{|}|\"]"));

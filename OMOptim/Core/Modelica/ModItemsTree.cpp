@@ -636,6 +636,45 @@ QVariant ModItemsTree::data(const QModelIndex &index, int role) const
 }
 
 
+QMimeData* ModItemsTree::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData *mimeData = new QMimeData();
+    QString csv;
+
+    // select only first column indexes (since selection is made by row)
+    QModelIndexList rowIndexes;
+    QList<ModItem*> items;
+    for(int i=0;i<indexes.size();i++)
+    {
+        if(indexes.at(i).column()==0)
+        {
+            rowIndexes.push_back(indexes.at(i));
+            items.push_back((ModItem*)indexes.at(i).internalPointer());
+        }
+    }
+
+    // Remove children of contained parents -> avoid twice copying
+    QList<ModItem*> uniqueItems;
+    for(int i=0;i<items.size();i++)
+    {
+    //    if(!items.contains(items.at(i)->parent()) || (items.at(i)->parent()==_rootElement))
+            uniqueItems.push_back(items.at(i));
+    }
+
+    // create text data
+    for(int i=0;i<uniqueItems.size();i++)
+    {
+        ModItem* item = uniqueItems.at(i);
+        csv.push_back(item->name(ModItem::FULL)+"\n");
+    }
+    if(csv.size()>0)
+        csv.remove(csv.size()-QString("\n").size(),QString("\n").size());
+    mimeData->setText(csv);
+    mimeData->setData("application/ModItemName",csv.toAscii());
+    return mimeData;
+}
+
+
 Qt::ItemFlags ModItemsTree::flags(const QModelIndex &index) const
 {
     if(!_enabled)

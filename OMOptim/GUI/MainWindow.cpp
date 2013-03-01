@@ -644,8 +644,6 @@ void MainWindow::onAddedProblem(Problem* newProblem)
     {
         elapsed.restart();
         _tabMain->addProblemTab(newProblem,interface->createProblemTab(newProblem,this));
-        QString msg = "Creating tab "+ newProblem->name()+" took " +QString::number((double)elapsed.elapsed()/1000)+"sec";
-        InfoSender::instance()->debug(msg);
     }
 
     _tabMain->enableCaseTab(newProblem);
@@ -661,8 +659,6 @@ void MainWindow::onAddedResult(Result* newResult)
     {
         elapsed.restart();
         _tabMain->addResultTab(newResult,interface->createResultTab(newResult,this));
-        QString msg = "Creating tab "+ newResult->name()+" took " +QString::number((double)elapsed.elapsed()/1000)+"sec";
-        InfoSender::instance()->debug(msg);
     }
 
     _tabMain->enableCaseTab(newResult);

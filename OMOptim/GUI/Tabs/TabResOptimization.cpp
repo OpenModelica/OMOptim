@@ -76,11 +76,6 @@ MO2ColTab(result->project()->name(),result,false,parent)
         _widgetMooPlot = new WidgetMooPlot(_result,this);
         _widgetTableRecVar = new WidgetTableRecVar(_result,this);
 
-        // set size policy
-//        _widgetMooPointsList->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
-//        _widgetMooPlot->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
-//        _widgetTableRecVar->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Expanding);
-
         addDockWidget("Plot",_widgetMooPlot,NULL,Qt::RightDockWidgetArea);
 #ifdef USEBLOCKSUB
         _widgetBlocks = new WidgetBlocks(_project,_result,this);
