@@ -40,6 +40,7 @@
   */
 #include "Info.h"
 #include "ListInfo.h"
+#include <QRegExp>
 
 using  namespace ListInfo;
 
@@ -169,6 +170,7 @@ Info::Info(ListInfo::InfoNum infoNum_, QString strSupp1, QString strSupp2)
 
 Info::Info(QString _msg, ListInfo::InfoType _msgType)
 {
+    _msg.remove(QRegExp("\\n$"));
     infoMsg = _msg;
     infoType = _msgType;
 }
