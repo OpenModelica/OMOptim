@@ -28,8 +28,6 @@ int MyTreeView::getColHintSize(int iCol)
 
 void MyTreeView::onDataChanged(const QModelIndex & indexA,const QModelIndex & indexB)
 {
-
-    qDebug(QString("onDataChanged in treeview").toLatin1().data());
     int col1 = std::min(indexA.column(),indexB.column());
     int col2 = std::max(indexA.column(),indexB.column());
 

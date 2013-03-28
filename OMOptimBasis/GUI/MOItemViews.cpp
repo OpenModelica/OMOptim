@@ -84,12 +84,11 @@ void MOItemTreeView::setEditable(bool editable)
 
 void MOItemTreeView::setModel ( QAbstractItemModel * model )
 {
-
     QTreeView::setModel(model);
     if(model)
     {
         initDelegates();
-        connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),this,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
+        //connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),this,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
     }
 }
 
@@ -98,6 +97,7 @@ void MOItemTreeView::setModel ( QAbstractItemModel * model )
 void MOItemTreeView::initDelegates()
 {
     MOItemModel* itemModel = dynamic_cast<MOItemModel*>(model());
+    DoubleSpinBoxDelegate* dblDelegate;
     if(itemModel)
     {
         MOItem* item = itemModel->item();
@@ -110,8 +110,11 @@ void MOItemTreeView::initDelegates()
                 case MOItem::BOOL :
                     break;
                 case MOItem::DOUBLE :
-                    DoubleSpinBoxDelegate* dblDelegate = new DoubleSpinBoxDelegate(this,10);
+                    dblDelegate = new DoubleSpinBoxDelegate(this,10);
                     this->setItemDelegateForRow(i,dblDelegate);
+                    break;
+                default:
+                     this->setItemDelegateForRow(i,NULL);
                     break;
                 }
             }

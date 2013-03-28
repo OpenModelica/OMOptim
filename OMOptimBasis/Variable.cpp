@@ -46,7 +46,7 @@ Variable::Variable(void)
 {
     _causality = UNKNOWN;
     _protectedFields << Variable::NAME << Variable::DESCRIPTION << Variable::MODEL << DATATYPE ;
-   // qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::Variable(QString name)
@@ -54,7 +54,7 @@ Variable::Variable(QString name)
     _causality = UNKNOWN;
     _protectedFields << Variable::NAME << Variable::DESCRIPTION << Variable::MODEL << DATATYPE ;
     setName(name);
-   // qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::Variable(const Variable & var):MOItem(var)
@@ -70,7 +70,7 @@ Variable::Variable(const Variable & var):MOItem(var)
 
 Variable::Variable(QDomElement & domEl)
 {
-     _protectedFields << Variable::NAME << Variable::DESCRIPTION << Variable::MODEL << DATATYPE ;
+    _protectedFields << Variable::NAME << Variable::DESCRIPTION << Variable::MODEL << DATATYPE ;
 
     QDomNamedNodeMap attributes = domEl.attributes();
     QString fieldName;
@@ -85,7 +85,7 @@ Variable::Variable(QDomElement & domEl)
 
         MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
-  //  qDebug(QString("New "+getClassName()).toLatin1().data());
+    //  qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::~Variable(void)
@@ -395,11 +395,11 @@ VariableResult::VariableResult(QDomElement & domEl)
             MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
 
-//    QDomElement domValues = domEl.firstChildElement("Values");
-//    if(!domValues.isNull())
-//    {
-//        CSVBase::linesToOneVariableResultValues(this,domValues.text());
-//    }
+        QDomElement domValues = domEl.firstChildElement("Values");
+        if(!domValues.isNull())
+        {
+            this->updateValuesFromCsv(domValues.text());
+        }
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
@@ -415,10 +415,10 @@ Variable VariableResult::extractPoint(int iPoint, int iScan)
 VariableResult::~VariableResult()
 {
     for(int i=0;i<_finalValues.size();i++)
-            _finalValues[i].clear();
+        _finalValues[i].clear();
 
     for(int i=0;i<_computedPoints.size();i++)
-            _computedPoints[i].clear();
+        _computedPoints[i].clear();
 
     // qDebug(QString("Remove "+getClassName()).toLatin1().data());
 }
@@ -541,8 +541,8 @@ void VariableResult::setFinalValue(int iScan,int iPoint,double value,bool comput
     }
 
     try{
-    _finalValues[iScan][iPoint] = value;
-    _computedPoints[iScan][iPoint] = computed;
+        _finalValues[iScan][iPoint] = value;
+        _computedPoints[iScan][iPoint] = computed;
     }
     catch(std::exception &e)
     {
@@ -640,12 +640,73 @@ QDomElement VariableResult::toXmlData(QDomDocument & doc)
         }
     }
 
-//    QDomElement values = doc.createElement("Values");
-//    QDomText text = doc.createTextNode(CSVBase::oneVariableResultToValueLines(this));
-//    values.appendChild(text);
-//    cItem.appendChild(values);
+    QDomElement values = doc.createElement("Values");
+    QDomText text = doc.createTextNode(this->valuesToCSV());
+    values.appendChild(text);
+    cItem.appendChild(values);
 
     return cItem;
+}
+
+
+void VariableResult::updateValuesFromCsv(QString text)
+{
+    QStringList  scanLines = text.split("\n",QString::SkipEmptyParts);
+    QStringList curLine;
+    int iPoint=0;
+    bool ok;
+    double value;
+
+    for (int iScan = 0; iScan<scanLines.size(); iScan++)
+    {
+        curLine = scanLines[iScan].split("\t",QString::SkipEmptyParts);
+
+        for (int iCol = 0; iCol < curLine.size(); iCol++)
+        {
+            value = curLine[iCol].toDouble(&ok);
+            if(ok)
+                this->setFinalValue(iScan,iCol,value);
+        }
+        iPoint++;
+    }
+}
+
+QString VariableResult::valuesToCSV()
+{
+    QString csv;
+    double value;
+
+    QStringList scanTexts;
+
+    csv += "\n";
+
+    // writing values
+    for(int iScan = 0;iScan<this->nbScans();iScan++)
+    {
+        scanTexts.push_back(QString());
+        for(int iPoint = 0; iPoint < nbPoints(); iPoint++)
+        {
+            if (this->isComputedPoint(0,iPoint))
+            {
+                value = this->finalValue(iScan,iPoint);
+                scanTexts[iScan] += QString::number(value);
+            }
+            else
+            {
+                scanTexts[iScan] += "-";
+            }
+            scanTexts[iScan] += "\t";
+        }
+        scanTexts[iScan] += "\n";
+    }
+
+    // writing grouped by scans
+    for(int iScan = 0;iScan<this->nbScans();iScan++)
+    {
+        csv+=scanTexts[iScan];
+        csv+="\n";
+    }
+    return csv;
 }
 
 
@@ -976,7 +1037,7 @@ ScannedVariable::ScannedVariable(const Variable & var):Variable(var)
 
     setEditableFields(QList<int>()<<  ScannedVariable::VALUE << ScannedVariable::SCANMIN << ScannedVariable::SCANMAX << ScannedVariable::SCANSTEP);
 
-     // qDebug(QString("New "+getClassName()).toLatin1().data());
+    // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 /**

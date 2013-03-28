@@ -139,7 +139,8 @@ HEADERS += \
     ../GUI/Widgets/WidgetMOItemsList.h \
     ../MOItemModel.h \
     ../GUI/MOItemViews.h \
-    ../Units/MEGeneric.h
+    ../Units/MEGeneric.h \
+    ../scriptparser.h
 
 SOURCES += \
     ../Variables.cpp \
@@ -210,7 +211,8 @@ SOURCES += \
     ../GUI/Widgets/WidgetMOItemsList.cpp \
     ../MOItemModel.cpp \
     ../GUI/MOItemViews.cpp \
-    ../Units/MEGeneric.cpp
+    ../Units/MEGeneric.cpp \
+    ../scriptparser.cpp
 
 FORMS += \
     ../GUI/Widgets/WidgetFilesList.ui \

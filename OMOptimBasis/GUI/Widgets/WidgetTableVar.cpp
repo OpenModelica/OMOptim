@@ -66,6 +66,11 @@ WidgetTableVar::WidgetTableVar(MOVector<Variable> *variables,QWidget *parent,boo
     }
 }
 
+void WidgetTableVar::setEditable(bool editable)
+{
+    _tableVariables->setEditable(editable);
+}
+
 void WidgetTableVar::refresh()
 {
     _tableVariables->setModel(NULL);

@@ -133,9 +133,16 @@ void MOOptVector::updateFromCsv(QString text)
     double value;
     bool ok;
     int index;
+    int iScan=0;
     for (int iLine = 1; iLine<lines.size(); iLine++)
     {
         curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
+        if(curLine.isEmpty())
+        {
+            // start a new scan
+            iScan++;
+            iPoint = 0;
+        }
 
         if(curLine.size()==nbCols)
         {
@@ -144,7 +151,7 @@ void MOOptVector::updateFromCsv(QString text)
                 value = curLine[iCol].toDouble(&ok);
                 index = indexes.at(iCol);
                 if(ok && (index>-1))
-                    this->at(index)->setFinalValue(0,iPoint,value);
+                    this->at(index)->setFinalValue(iScan,iPoint,value);
             }
             iPoint++;
         }
@@ -493,9 +500,9 @@ QString MOOptVector::toCSV(QString separator, QList<int> points)
             {
                 for(iVar=0;iVar<this->size();iVar++)
                 {
-                    if (this->at(iVar)->isComputedPoint(0,points.at(iPoint)))
+                    if (this->at(iVar)->isComputedPoint(iScan,points.at(iPoint)))
                     {
-                        value = this->at(iVar)->finalValue(0,points.at(iPoint));
+                        value = this->at(iVar)->finalValue(iScan,points.at(iPoint));
                         scanTexts[iScan] += QString::number(value);
 
                     }

@@ -145,7 +145,8 @@ QMenu* GuiTools::createResultPopupMenu(ProjectBase* project, QWidget* mainWindow
 
     //Open folder
     QAction *openFolderAct = new QAction("Open folder",menu);
-    connect(openFolderAct,SIGNAL(triggered()),selectedResult,SLOT(openFolder()));
+    openFolderAct->setData(selectedResult->name());
+    connect(openFolderAct,SIGNAL(triggered()),project,SLOT(openOMCaseFolder()));
     QIcon icon;
     icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/folder")), QIcon::Normal, QIcon::Off);
     openFolderAct->setIcon(icon);

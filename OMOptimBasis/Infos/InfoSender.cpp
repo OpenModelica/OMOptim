@@ -56,9 +56,22 @@ InfoSender::InfoSender()
     connect(this, SIGNAL(receivedInfo(const Info&)),this, SLOT(onReceivedInfo(const Info&)));
 }
 
-void InfoSender::setLogStream(QTextStream* logStream)
+void InfoSender::setLogStream(QTextStream* logStream,QList<ListInfo::InfoType> types )
 {
     _logStream = logStream;
+
+    _logStreamInfoTypes = types;
+
+    if(_logStreamInfoTypes.isEmpty())
+    {
+        _logStreamInfoTypes  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
+                ListInfo::ERROR2<<
+                ListInfo::OMCNORMAL2<<
+                ListInfo::OMCWARNING2<<
+                ListInfo::OMCERROR2<<
+                ListInfo::INFODEBUG<<
+                ListInfo::TASK;
+    }
 }
 
 
@@ -99,10 +112,12 @@ void InfoSender::destroy()
     }
 }
 
+
+
 void InfoSender::send(const Info &info)
 {
 
-    if(_logStream)
+    if(_logStream && _logStreamInfoTypes.contains(info.infoType))
     {
         *_logStream << QTime::currentTime().toString().toAscii().data();
         *_logStream << "\t";

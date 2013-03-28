@@ -44,7 +44,7 @@
 
 bool MOPlot::zoomIsOn()
 {
-    return (zoomer1->isEnabled());
+    return (_zoomer->isEnabled());
 }
 
 void MOPlot::enableZoom(bool checked)
@@ -53,23 +53,22 @@ void MOPlot::enableZoom(bool checked)
 }
 void MOPlot::setEnabledZoom(bool on)
 {
-    
-    zoomer1->setEnabled(on);
+    _zoomer->setEnabled(on);
     if (on)
         canvas()->setCursor(QCursor(Qt::CrossCursor));
     else
         canvas()->setCursor(Qt::ArrowCursor);
 }
 
-void MOPlot::zoomOut()
-{
-    zoomer1->zoom(-1);
-}
+//void MOPlot::zoomOut()
+//{
+//    _zoomer->zoom(-1);
+//}
 
-void MOPlot::zoomed(const QwtDoubleRect &)
-{
-    //emit modifiedGraph();
-}
+//void MOPlot::zoomed(const QwtDoubleRect &)
+//{
+//    //emit modifiedGraph();
+//}
 
 void MOPlot::contextMenuEvent(QContextMenuEvent *event)
 {
@@ -77,7 +76,7 @@ void MOPlot::contextMenuEvent(QContextMenuEvent *event)
     setAxisAutoScale(QwtPlot::yLeft);
 
     replot();
-    zoomer1->setZoomBase();
+    _zoomer->setZoomBase();
     
     
 }

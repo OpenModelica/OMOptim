@@ -65,6 +65,7 @@ public:
     MOVector<Variable> *_variables;
     MOTableView *_tableVariables;
 
+    void setEditable(bool);
 public slots :
     void refresh();
 };

@@ -40,6 +40,7 @@
   */
 
 #include <QApplication>
+#include <QAction>
 
 #include "ProjectBase.h"
 #include "MOSettings.h"
@@ -397,12 +398,14 @@ void ProjectBase::addNewProblem(ProblemInterface* interface, QStringList modelsL
     }
 }
 
-void ProjectBase::addOMCase(QString filePath)
+bool ProjectBase::addOMCase(QString filePath)
 {
     // do not reload if already loaded
     if(!casesFiles().contains(QFileInfo(filePath)))
     {
         OMCase* newCase = Load::newOMCase(filePath,this);
+        if(!newCase)
+            return false;
 
         Problem* problem = dynamic_cast<Problem*>(newCase);
         if(problem)
@@ -413,6 +416,12 @@ void ProjectBase::addOMCase(QString filePath)
             if(result)
                 addResult(result);
         }
+        return true;
+    }
+    else
+    {
+        InfoSender::instance()->sendWarning(QString("OMCase already loaded. Won't be loaded a second time. [")+filePath+QString("]"));
+        return false;
     }
 }
 
@@ -464,7 +473,7 @@ bool ProjectBase::createTempDir()
 }
 
 
-void ProjectBase::launchProblem(Problem* problem)
+void ProjectBase::launchProblem(Problem* problem, bool useSeparateThread)
 {
     if(!_problemLaunchMutex.tryLock())
     {
@@ -495,11 +504,23 @@ void ProjectBase::launchProblem(Problem* problem)
         _problemsThreads.insert(launchedProblem,launchThread);
 
         // start problem
-        launchThread->start();
+        if(useSeparateThread)
+            launchThread->start();
+        else
+            launchThread->run();
     }
 }
 
-void ProjectBase::launchProblems(QList<Problem*> problems)
+void ProjectBase::launchProblem(QString problemName, bool useSeparateThread )
+{
+    Problem* problem = dynamic_cast<Problem*>(_problems->findItem(problemName));
+    if(problem)
+        launchProblem(problem,useSeparateThread);
+
+    return;
+}
+
+void ProjectBase::launchProblems(QList<Problem*> problems, bool useSeparateThread )
 {
     if(!_problemLaunchMutex.tryLock())
     {
@@ -546,7 +567,11 @@ void ProjectBase::launchProblems(QList<Problem*> problems)
 
         // start first thread
         if(threads.size()>0)
-            threads.at(0)->start();
+        {   if(useSeparateThread)
+                threads.at(0)->start();
+            else
+                threads.at(0)->run();
+        }
         else
             _problemLaunchMutex.unlock();
     }
@@ -692,11 +717,24 @@ void ProjectBase::renameCase(OMCase* curCase,QString newName)
     }
 }
 
+OMCase *ProjectBase::findOMCase(QString name)
+{
+    OMCase* omCase = _problems->findItem(name);
+    if(omCase)
+        return omCase;
+
+    omCase = _results->findItem(name);
+    if(omCase)
+        return omCase;
+
+    return NULL;
+}
+
 
 bool ProjectBase::renameProblem(Problem* problem,QString newName)
 {
     // test if name already exists
-    if(_problems->findItem(newName)>-1)
+    if(_problems->findItem(newName))
         return false;
 
     // change name
@@ -708,13 +746,25 @@ bool ProjectBase::renameProblem(Problem* problem,QString newName)
 bool ProjectBase::renameResult(Result* result,QString newName)
 {
     // test if name already exists
-    if(_results->findItem(newName)>-1)
+    if(_results->findItem(newName))
         return false;
 
     // change name
     result->rename(newName,true);
     save(result);
     return true;
+}
+
+void ProjectBase::openOMCaseFolder()
+{
+    QAction* actionSender = dynamic_cast<QAction*>(sender());
+    if(actionSender)
+    {
+        QString omCaseName = actionSender->data().toString();
+        OMCase* omCase = this->findOMCase(omCaseName);
+        if(omCase)
+            omCase->openFolder();
+    }
 }
 
 QMap<QString,QString> ProjectBase::pluginsLoaded()

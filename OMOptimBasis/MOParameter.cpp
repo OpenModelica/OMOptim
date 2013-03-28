@@ -435,9 +435,9 @@ MOParameters::~MOParameters()
 
 QVariant MOParameters::value(QString name,QVariant defaultValue) const
 {
-    int iParam = this->findItem(name,MOParameter::NAME);
-    if(iParam>-1)
-        return this->at(iParam)->getFieldValue(MOParameter::VALUE);
+    MOParameter* param = this->findItem(name,MOParameter::NAME);
+    if(param)
+        return param->getFieldValue(MOParameter::VALUE);
     else
     {
         QString msg = "MOParameters : did not find parameter :"+name;

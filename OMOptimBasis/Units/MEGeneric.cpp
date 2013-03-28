@@ -52,6 +52,11 @@ MEDimValue(value,unit,true)
 {
 }
 
+//MEGeneric::MEGeneric(double value):
+//    MEDimValue(value,0,true)
+//{
+//}
+
 MEGeneric::MEGeneric(const MEGeneric& temp):
 MEDimValue(temp._value,temp._unit,temp.isValid())
 {

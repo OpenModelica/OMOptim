@@ -212,7 +212,8 @@ public :
     void clearFinalValuesAtIpoint(int iPoint);
 
     virtual QDomElement toXmlData(QDomDocument & doc);
-
+    QString valuesToCSV();
+    void updateValuesFromCsv(QString text);
 };
 
 class OptVariable : public Variable

@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 
+     @version
 
   */
 #if !defined(_OMCASES_H)
@@ -52,35 +52,35 @@
 class OMCases : public QAbstractItemModel
 {
 public:
-        OMCases(QString name="Problems");
-        virtual ~OMCases(void);
+    OMCases(QString name="Problems");
+    virtual ~OMCases(void);
 
 
-        QVector<OMCase*> items;
+    QVector<OMCase*> items;
 
     
-        void clear();
+    void clear();
 
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant headerData(int section, Qt::Orientation orientation,
-        int role = Qt::DisplayRole) const;
+                        int role = Qt::DisplayRole) const;
     QModelIndex index(int row, int column,
-        const QModelIndex &parent = QModelIndex()) const;
+                      const QModelIndex &parent = QModelIndex()) const;
     QModelIndex parent(const QModelIndex &index) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
-        void addCase(OMCase*);
+    void addCase(OMCase*);
     bool removeRow(int row,const QModelIndex &parent = QModelIndex());
-    int findItem(QString);
-        bool contains(OMCase* item){return items.contains(item);}
+    OMCase *findItem(QString);
+    bool contains(OMCase* item){return items.contains(item);}
 
-        OMCase* at(int i) const {return items.at(i);}
-        int size() const{return items.size();}
+    OMCase* at(int i) const {return items.at(i);}
+    int size() const{return items.size();}
 
 
 private :
-        QString name;
+    QString name;
 };
 
 
@@ -91,47 +91,47 @@ class OMCasesCombiner : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-        OMCasesCombiner(OMCases *problems,OMCases *results,QObject* parent);
-        virtual ~OMCasesCombiner(void);
+    OMCasesCombiner(OMCases *problems,OMCases *results,QObject* parent);
+    virtual ~OMCasesCombiner(void);
 
-        QVariant data(const QModelIndex &index, int role) const;
-        Qt::ItemFlags flags(const QModelIndex &index) const;
-        QVariant headerData(int section, Qt::Orientation orientation,
-                int role = Qt::DisplayRole) const;
-        QModelIndex index(int row, int column,
-                const QModelIndex &parent = QModelIndex()) const;
-        QModelIndex parent(const QModelIndex &index) const;
-        int rowCount(const QModelIndex &parent = QModelIndex()) const;
-        int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const;
+    QModelIndex index(int row, int column,
+                      const QModelIndex &parent = QModelIndex()) const;
+    QModelIndex parent(const QModelIndex &index) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-        OMCase* item(const QModelIndex &);
+    OMCase* item(const QModelIndex &);
 
 public slots :
-        void rowsAboutToBeInsertedPb( const QModelIndex & parent, int start, int end ) ;
-        void rowsAboutToBeRemovedPb( const QModelIndex & parent, int start, int end );
-        void rowsInsertedPb( const QModelIndex & parent, int start, int end );
-        void rowsRemovedPb( const QModelIndex & parent, int start, int end );
-        void dataChangedPb( const QModelIndex & topLeft, const QModelIndex & bottomRight )    ;
-        void rowsAboutToBeInsertedRes( const QModelIndex & parent, int start, int end );
-        void rowsAboutToBeRemovedRes( const QModelIndex & parent, int start, int end );
-        void rowsInsertedRes( const QModelIndex & parent, int start, int end );
-        void rowsRemovedRes( const QModelIndex & parent, int start, int end );
-        void dataChangedRes( const QModelIndex & topLeft, const QModelIndex & bottomRight );
+    void rowsAboutToBeInsertedPb( const QModelIndex & parent, int start, int end ) ;
+    void rowsAboutToBeRemovedPb( const QModelIndex & parent, int start, int end );
+    void rowsInsertedPb( const QModelIndex & parent, int start, int end );
+    void rowsRemovedPb( const QModelIndex & parent, int start, int end );
+    void dataChangedPb( const QModelIndex & topLeft, const QModelIndex & bottomRight )    ;
+    void rowsAboutToBeInsertedRes( const QModelIndex & parent, int start, int end );
+    void rowsAboutToBeRemovedRes( const QModelIndex & parent, int start, int end );
+    void rowsInsertedRes( const QModelIndex & parent, int start, int end );
+    void rowsRemovedRes( const QModelIndex & parent, int start, int end );
+    void dataChangedRes( const QModelIndex & topLeft, const QModelIndex & bottomRight );
 
 
 
 private :
-        QString _name;
-        OMCases* _problems;
-        OMCases* _results;
-        QModelIndex problemsRootIndex() const;
-        QModelIndex resultsRootIndex() const;
+    QString _name;
+    OMCases* _problems;
+    OMCases* _results;
+    QModelIndex problemsRootIndex() const;
+    QModelIndex resultsRootIndex() const;
 
-        enum node
-        {
-            PROBLEMROOT,
-            RESULTROOT
-        };
+    enum node
+    {
+        PROBLEMROOT,
+        RESULTROOT
+    };
 };
 
 

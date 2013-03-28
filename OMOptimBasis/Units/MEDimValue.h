@@ -184,11 +184,11 @@ public :
             // if field was empty, stream not in concerned period
             if(!tmpOk)
             {
+                ok = false;
                 newT.invalidate();
             }
             result.push_back(newT);
         }
-        ok = true;
         return result;
     }
 

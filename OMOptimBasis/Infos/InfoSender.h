@@ -109,7 +109,7 @@ public:
     static InfoSender* instance();
     static void destroy();
 
-    void setLogStream(QTextStream* logStream);
+    void setLogStream(QTextStream* logStream,QList<ListInfo::InfoType> types = QList<ListInfo::InfoType>());
     ~InfoSender(void);
 
     static void eraseCurrentTask();
@@ -145,6 +145,8 @@ private :
     Infos* _infosNormal;
     Infos* _infosOM;
     Infos* _infosDebug;
+
+    QList<ListInfo::InfoType> _logStreamInfoTypes;
 };
 
 

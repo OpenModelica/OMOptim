@@ -48,7 +48,8 @@ class MEGeneric : public MEDimValue
 {
 public:
     MEGeneric();
-    MEGeneric(double value,int unit); // better not to have default value for unit : forbid unwished conversion from double.
+    MEGeneric(double value,int unit=0); // better not to have default value for unit : forbid unwished conversion from double.
+    //MEGeneric(double value);
     MEGeneric(const MEGeneric&);
     ~MEGeneric();
 

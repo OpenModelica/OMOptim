@@ -91,7 +91,7 @@ public:
     virtual QString getFieldName(int iField,int iRole);
     virtual unsigned getNbFields();
 
-    Problem* problem();
+    Problem* problem() const;
     bool isSuccess();
 
     virtual void setProblem(Problem &);

@@ -148,7 +148,7 @@ bool OMCases::removeRow(int row,const QModelIndex &parent)
 }
 
 
-int OMCases::findItem(QString itemName)
+OMCase* OMCases::findItem(QString itemName)
 {
     bool found = false;
     int i=0;
@@ -163,11 +163,11 @@ int OMCases::findItem(QString itemName)
     }
     if(!found)
     {
-        return -1;
+        return NULL;
     }
     else
     {
-        return i-1;
+        return items.at(i-1);
     }
 }
 

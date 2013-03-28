@@ -78,46 +78,47 @@ public:
 
     QStringList getItemNames();
 
-
+    void setEditable(bool);
     void setEditableFields(QList<int> indexes,bool editable=true);
-    int rowCount(const QModelIndex &parent ) const;
-    int columnCount(const QModelIndex &parent ) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    virtual int rowCount(const QModelIndex &parent ) const;
+    virtual int columnCount(const QModelIndex &parent ) const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     virtual QVariant data(const QModelIndex &index, int role) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-    virtual void addItem(ItemClass*);
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    void addItem(ItemClass*);
     virtual void insertItem(ItemClass*,int);
-    bool removeRow(int index,const QModelIndex &parent = QModelIndex());
-    void removeRow(QString);
+    virtual bool removeRow(int index,const QModelIndex &parent = QModelIndex());
+    virtual void removeRow(QString);
     virtual bool removeRows(int index, int count,const QModelIndex &parent = QModelIndex());
-    bool removeRows(QList<int> indexes);
-    virtual ItemClass* findItem(QString,Qt::CaseSensitivity=Qt::CaseInsensitive) const;
-    int findItem(QVariant itemFieldValue,int iField) const;
+    virtual bool removeRows(QList<int> indexes);
+    ItemClass* findItem(QString) const;
+    ItemClass* findItem(QVariant itemFieldValue,int iField) const;
+    int indexOf(QVariant itemFieldValue,int iField) const;
     int indexOf(ItemClass*);
     bool contains(ItemClass*);
     bool alreadyIn(QString);
     void replaceIn(MOAVector<ItemClass> *);
     void replaceAt(int index, ItemClass *newItem);
     void addItems(MOAVector<ItemClass> *,bool makeACopy);
-    bool isEmpty() const;
+    virtual bool isEmpty() const;
 
     void cloneFromOtherVector(const MOAVector*);
     MOAVector<ItemClass>* clone() const;
-    void clear();
+    virtual void clear();
 
 
 
-    QModelIndex index(int row, int column, const QModelIndex &parent)const;
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent)const;
 
     // save and load functions
     virtual QString toSavingString();
     virtual QDomElement toXmlData(QDomDocument & doc,QString listTitle);
 
     // drag and drop functions
-    QStringList mimeTypes() const;
-    QMimeData* mimeData(const QModelIndexList &indexes) const;
-    Qt::DropActions supportedDropActions() const;
+    virtual QStringList mimeTypes() const;
+    virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
+    virtual Qt::DropActions supportedDropActions() const;
 
 
 
@@ -133,6 +134,7 @@ protected :
     bool _owner;
 
     QList<ItemClass*> _items;
+    bool _editable; // overal editable propriety
 
     // items modification direclty
     virtual void addInItems(ItemClass *);
@@ -153,9 +155,9 @@ public:
 
 public :
     // void append(std::vector<ItemClass*>* toAppend);
-    void setItems(QDomElement & domList);
+    virtual void setItems(QDomElement & domList);
     //virtual void append(const MOAVector &,bool makeACopy);
-    void update(const QDomElement & domList);
+    virtual void update(const QDomElement & domList);
     bool dropMimeData(const QMimeData *data,
                       Qt::DropAction action, int row, int column, const QModelIndex &parent);
 

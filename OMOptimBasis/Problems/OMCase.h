@@ -97,7 +97,7 @@ public:
     QString saveFileName();
     QString entireSavePath();
     QFileInfoList filesToCopy(){return _filesToCopy;};
-    ProjectBase* project(){return _project;};
+    ProjectBase* project()const{return _project;} ;
 
 
     // Set functions

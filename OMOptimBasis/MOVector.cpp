@@ -5,6 +5,7 @@ template<class ItemClass>
 MOAVector<ItemClass>::MOAVector(bool owner) : QAbstractTableModel()
 {
     _owner = owner;
+    _editable = true;
 }
 
 template<class ItemClass>
@@ -17,6 +18,8 @@ MOAVector<ItemClass>::MOAVector(const QList<ItemClass *> list, bool owner, bool 
             addItem(list.at(i)->clone());
         else
             addItem(list[i]);
+
+    _editable = true;
 }
 
 
@@ -25,6 +28,7 @@ template<class ItemClass>
 MOAVector<ItemClass>::MOAVector(const MOAVector<ItemClass> & copied)
 {
     *this = copied;
+    _editable = copied._editable;
 }
 
 template<class ItemClass>
@@ -38,6 +42,7 @@ MOAVector<ItemClass>& MOAVector<ItemClass>::operator=(const MOAVector<ItemClass>
     }
 
     _owner = true; // indeed, should be true every time !!!
+    _editable = copied._editable;
 
     return *this;
 }
@@ -75,7 +80,11 @@ MOAVector<ItemClass>::~MOAVector()
         clear();
 }
 
-
+template<class ItemClass>
+void MOAVector<ItemClass>::setEditable(bool editable)
+{
+    _editable = editable;
+}
 
 
 template<class ItemClass>
@@ -166,7 +175,9 @@ Qt::ItemFlags MOAVector<ItemClass>::flags(const QModelIndex &index) const
     if(!index.isValid())
         return flags;
 
-    if(!_items.at(index.row())->isProtectedField(index.column()))
+    bool itemIsEditable =  _editable && !(_items.at(index.row())->isProtectedField(index.column()));
+
+    if(itemIsEditable)
         return Qt::ItemIsEnabled| Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
     else
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
@@ -275,7 +286,8 @@ bool MOAVector<ItemClass>::removeRows(QList<int> indexes)
 template<class ItemClass>
 void MOAVector<ItemClass>::removeRow(QString itemName)
 {
-    int index = findItem(itemName);
+    ItemClass* item = findItem(itemName);
+    int index = indexOf(item);
     if (index!=-1)
     {
         removeRow(index);
@@ -285,7 +297,7 @@ void MOAVector<ItemClass>::removeRow(QString itemName)
 
 
 template<class ItemClass>
-ItemClass* MOAVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity caseSens) const
+ItemClass* MOAVector<ItemClass>::findItem(QString itemName) const
 {
     int i=0;
     int nbItems=_items.size();
@@ -295,7 +307,7 @@ ItemClass* MOAVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity 
     {
         itemName2=_items.at(i)->name();
 
-        if(itemName.compare(itemName2,caseSens)==0)
+        if(itemName.compare(itemName2)==0)
             return _items.at(i);
 
         i++;
@@ -305,7 +317,21 @@ ItemClass* MOAVector<ItemClass>::findItem(QString itemName, Qt::CaseSensitivity 
 }
 
 template<class ItemClass>
-int MOAVector<ItemClass>::findItem(QVariant itemFieldValue, int iField) const
+ItemClass* MOAVector<ItemClass>::findItem(QVariant itemFieldValue, int iField) const
+{
+    int i = indexOf(itemFieldValue,iField);
+    if(i==-1)
+    {
+        return NULL;
+    }
+    else
+    {
+        return this->at(i);
+    }
+}
+
+template<class ItemClass>
+int MOAVector<ItemClass>::indexOf(QVariant itemFieldValue, int iField) const
 {
     bool found = false;
     int i=0;
@@ -432,8 +458,6 @@ void MOAVector<ItemClass>::addItems(MOAVector<ItemClass> * newItems,bool makeACo
             addItem(newItems->at(iov));
         //        }
     }
-
-
 }
 
 
@@ -520,6 +544,9 @@ QDomElement MOAVector<ItemClass>::toXmlData(QDomDocument & doc,QString listTitle
 template<class ItemClass>
 QModelIndex MOAVector<ItemClass>::index(int row, int column, const QModelIndex &parent)const
 {
+    if(column>=this->columnCount(QModelIndex()))
+        return QModelIndex();
+
     if((row>-1)&&(row < _items.size()))
         return createIndex(row,column,_items.at(row));
     else

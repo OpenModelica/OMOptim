@@ -128,15 +128,16 @@ protected:
     void addNewProblem(ProblemInterface* interface, QStringList modelsList,QString problemType);
     void addResult(Result *);
     void addProblem(Problem *);
-    void addOMCase(QString filePath);
+    bool addOMCase(QString filePath);
     void addOMCases(QDir folder);
-    void launchProblem(Problem*);
-    void launchProblems(QList<Problem*>);
+    void launchProblem(Problem*,bool useSeparateThread = true);
+    void launchProblem(QString,bool useSeparateThread = true);
+    void launchProblems(QList<Problem*>,bool useSeparateThread = true);
     void removeResult(Result*);
     void removeProblem(Problem*);
     void removeCases(QList<OMCase*>);
     void renameCase(OMCase*, QString);
-
+    OMCase* findOMCase(QString name);
 
 
     //****************************
@@ -198,6 +199,9 @@ public slots :
     // others
     bool renameResult(Result*, QString);
 
+
+    // openfolder
+    void openOMCaseFolder();
 
     //****************************
     // Signals

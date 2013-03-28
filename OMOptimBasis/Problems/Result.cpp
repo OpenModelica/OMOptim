@@ -103,7 +103,7 @@ unsigned Result::getNbFields()
     return 1;
 }
 
-Problem* Result::problem()
+Problem* Result::problem() const
 {
     return _problem;
 }
