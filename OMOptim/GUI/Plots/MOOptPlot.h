@@ -59,7 +59,8 @@
 #include <QEvent>
 #include <QApplication>
 #include <QPaintEvent>
-
+#include <QMenu>
+#include <QClipboard>
 #include "Variable.h"
 #include "Plots/MyQwtPlotPicker.h"
 #include "InfoSender.h"
@@ -99,16 +100,22 @@ private:
     QList<int> _selectedPoints;
     QList<int> _shownPoints;
 
+    QwtPlotZoomer *_zoomer;
     QwtPlotCurve *_curve1;
     QwtPlotCurve *_curve2;
     MyQwtPlotPicker *_picker1;
-    QwtPlotZoomer *_zoomer;
+
+    QAction* _actionCopy;
+    QAction* _actionRefresh;
 
 public slots:
     inline void onClicked(const QwtDoublePoint & pos);
     inline void onExtSelectionChanged(QList<int> &);
     inline void onPickerSelected(const QwtDoubleRect &rect);
     inline void onPickerAppended (const QPoint &pos);
+    inline void popUpMenu(const QPoint &pos);
+    inline void onCopyAsked();
+    inline void onRefreshAsked();
 
 signals :
     inline void selectionChanged(QList<int> &);
@@ -165,12 +172,10 @@ MOOptPlot::MOOptPlot()
     this->setCanvasBackground(background);
 
 
-
-
     // Zommer
     _zoomer = new QwtPlotZoomer(canvas());
-    _zoomer->setMousePattern(QwtEventPattern::MouseSelect1, Qt::RightButton);
-    _zoomer->setMousePattern(QwtEventPattern::MouseSelect2, Qt::MidButton);
+    _zoomer->setMousePattern(QwtEventPattern::MouseSelect1, Qt::MidButton);
+    _zoomer->setMousePattern(QwtEventPattern::MouseSelect2, Qt::NoButton);
     _zoomer->setMousePattern(QwtEventPattern::MouseSelect3, Qt::NoButton);
 
     // Picker
@@ -181,6 +186,24 @@ MOOptPlot::MOOptPlot()
     //    connect(_picker1, SIGNAL(selected(const QwtDoubleRect &rect)),this, SLOT(onPickerSelected(const QwtDoubleRect &rect)));
     //    connect(_picker1, SIGNAL(appended (const QPoint &pos)),this, SLOT(onPickerAppended(const QPoint &pos)));
 
+
+    // action
+    _actionCopy = new QAction("Copy", this);
+    connect(_actionCopy,SIGNAL(triggered()),this, SLOT(onCopyAsked()));
+    _actionCopy->setShortcut(QKeySequence::Copy);
+    _actionCopy->setShortcutContext(Qt::WidgetShortcut);
+    this->addAction(_actionCopy);
+
+    _actionRefresh = new QAction("Refresh", this);
+    connect(_actionRefresh,SIGNAL(triggered()),this, SLOT(onRefreshAsked()));
+    _actionRefresh->setShortcut(QKeySequence::Refresh);
+    _actionRefresh->setShortcutContext(Qt::WidgetShortcut);
+    this->addAction(_actionRefresh);
+
+
+    // context menu
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this,SIGNAL(customContextMenuRequested(const QPoint &  )),this,SLOT(popUpMenu(const QPoint &)));
 
     /*this->setCanvasBackground(QColor(Qt::white));
     QPalette _pal = this->palette();
@@ -517,7 +540,59 @@ void MOOptPlot::onPickerAppended (const QPoint &pos)
 }
 
 
+void MOOptPlot::popUpMenu(const QPoint &pos)
+{
+    QMenu *menu = new QMenu;
+    menu->insertAction(NULL,_actionCopy);
+    menu->insertAction(NULL,_actionRefresh);
 
+    /*
+    menu->addAction(QString("Copy"), this, SLOT(onCopyAsked()), QKeySequence::Copy);
+    menu->addAction(QString("Replot"), this, SLOT(onRefreshAsked()));*/
+    menu->exec(this->mapToGlobal(pos));
+
+}
+
+void MOOptPlot::onRefreshAsked()
+{
+    qDebug("replot");
+    replot();
+}
+
+void MOOptPlot::onCopyAsked()
+{
+    QImage image;
+    // Print the plot to an image
+    print( image );
+
+    // Set the clilpboard image
+    QClipboard * clipboard =
+            QApplication::clipboard();
+    clipboard->setImage(image);
+
+
+    // create text
+    QString csv;
+    QwtPlotCurve* curve;
+    QString separator = "\t";
+    QList<QwtPlotCurve*> curves;
+    curves << _curve1 << _curve2;
+    for(int i=0;i<curves.size();i++)
+    {
+        curve = curves.at(i);
+        QString yTitle = this->axisTitle(QwtPlot::yLeft).text();
+        QString xTitle = this->axisTitle(QwtPlot::xBottom).text();
+        csv+= xTitle + separator + yTitle + "\n";
+        for(unsigned int j=0;j<curve->data().size();j++)
+        {
+            curve->data().size();
+            csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
+        }
+
+        csv+= "\n \n";
+    }
+    clipboard->setText(csv);
+}
 
 
 

@@ -468,6 +468,41 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
     return getFlattenedModifierValue(modelName,componentName,modifierName,flattened);
 }
 
+QStringList MOomc::getFlattenedModifierVectorValue(const QString & modelName,const QString & componentName,const QString & modifierName, int size,QString & flattenedModel)
+{
+    QStringList result;
+    QString curModifier;
+    QString curValue;
+    for(int i=0;i<size;i++)
+    {
+        curModifier = modifierName+"\\["+QString::number(i+1)+"\\]";
+        curValue = getFlattenedModifierValue(modelName,componentName,curModifier,flattenedModel);
+        result.push_back(curValue);
+    }
+    return result;
+}
+
+
+QString MOomc::getFlattenedModifierUnit(const QString & modelName,const QString & componentName,const QString & modifierName, QString & flattenedModel)
+{
+    if(flattenedModel.isEmpty())
+        flattenedModel = getFlattenedModel(modelName);
+
+    QRegExp exp1(componentName+"."+modifierName+".*unit[\\s|=]*\\\\\\\"(.*)\\\\\\\"");
+    exp1.setMinimal(true);
+
+    int i1 = flattenedModel.indexOf(exp1);
+
+    if((i1>-1)&&exp1.capturedTexts().size()==2)
+    {
+        QString result = exp1.capturedTexts().at(1);
+        return result;
+    }
+    return QString();
+}
+
+
+
 QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName, QString & flattenedModel)
 {
     if(flattenedModel.isEmpty())
@@ -479,12 +514,9 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
         lines = flattenedModel.split("\\n");
     }
 
-    QRegExp modExp("[\\.]*"+componentName+"."+modifierName+"[\\.]*");
-
-    int iLine = lines.indexOf(modExp);
 
     // 1st format : Real sterilisateur.Sterilisateur.FactMin = 0.0;
-    QRegExp exp1(".*"+componentName+"."+modifierName+"[\\s|=]*([\\S|\\\\|\"]+);");
+    QRegExp exp1(".*"+componentName+"."+modifierName+"[\\s]*=[\\s]*([\\S|\\\\|\"]+);");
 
     int i1 =  lines.indexOf(exp1);
 
@@ -496,18 +528,28 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
     }
 
     // 2nd format with unit
-    QRegExp exp2(".*"+componentName+"."+modifierName+"\\([.*]\\)[\\s|=]*(\\S*);");
+    QRegExp exp2(".*"+componentName+"."+modifierName+"\\([.*]\\)[\\s]*=[\\s]*(  );");
     int i2 = lines.indexOf(exp2);
 
     if((i2>-1)&&exp2.capturedTexts().size()==2)
         return exp2.capturedTexts().at(1);
 
     // 3rd format
-    QRegExp exp3(".*"+componentName+"\\(.*"+modifierName+"[\\s|=]*([\\d|\\.]*).*;");
+    QRegExp exp3(".*"+componentName+"\\(.*"+modifierName+"[\\s]*=[\\s]*([\\d|\\.]*).*;");
     int i3 = lines.indexOf(exp3);
 
     if((i3>-1)&&exp3.capturedTexts().size()==2)
         return exp3.capturedTexts().at(1);
+
+    // 4th format : a vector
+    // e.g.   eIFactMultEquation.groups = {\"group1\", \"group2\"};
+    QRegExp exp4(".*"+componentName+"."+modifierName+"[\\s]*=[\\s]\\{(.*)\\};");
+    int i4 = lines.indexOf(exp4);
+
+    if((i4>-1)&&exp4.capturedTexts().size()==2)
+    {
+        return exp4.capturedTexts().at(1);
+    }
 
     return QString();
 }

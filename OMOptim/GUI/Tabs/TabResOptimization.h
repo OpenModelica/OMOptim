@@ -59,7 +59,7 @@
 
 class TabOptimization;
 class MO2ColTab;
-class WidgetBlocks;
+//class WidgetBlocks;
 class WidgetMooPlot;
 class WidgetMooPointsList;
 class WidgetOptTable;
@@ -70,7 +70,6 @@ class WidgetOptimActions;
 class WidgetResultInfos;
 class WidgetCtrlParameters;
 class WidgetOptParameters;
-class WidgetBlocks;
 class OptimResult;
 class Project;
 class Optimization;
@@ -90,9 +89,9 @@ public:
 
     WidgetMooPointsList* _widgetMooPointsList;
     WidgetMooPlot* _widgetMooPlot;
-#ifdef USEBLOCKSUB
-    WidgetBlocks *_widgetBlocks;
-#endif
+//#ifdef USEBLOCKSUB
+//    WidgetBlocks *_widgetBlocks;
+//#endif
     WidgetTableRecVar* _widgetTableRecVar;
     WidgetOptimActions* _widgetOptimActions;
     WidgetCtrlParameters *_widgetCtrl;

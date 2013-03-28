@@ -149,22 +149,22 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     int savVersion = domResInfos.attribute("version",0).toInt();
 
 
-    // Blocksubs
-    QDomElement domBlocks = domResult.firstChildElement("AllBlockSubstitutions");
-    QDomElement domBlock = domBlocks.firstChildElement();
-    QRegExp regExp("BlockSubstitutions[\\d]+");
+//    // Blocksubs
+//    QDomElement domBlocks = domResult.firstChildElement("AllBlockSubstitutions");
+//    QDomElement domBlock = domBlocks.firstChildElement();
+//    QRegExp regExp("BlockSubstitutions[\\d]+");
 
-    while(!domBlock.isNull())
-    {
-        if(regExp.exactMatch(domBlock.tagName()))
-        {
-            QString number = domBlock.tagName();
-            number.remove(QRegExp("[\\D]*"));
-            domBlock.setTagName("BlockSubstitutions");
-            this->_subBlocks.push_back(new BlockSubstitutions(project,domBlock));
-        }
-        domBlock = domBlock.nextSiblingElement();
-    }
+//    while(!domBlock.isNull())
+//    {
+//        if(regExp.exactMatch(domBlock.tagName()))
+//        {
+//            QString number = domBlock.tagName();
+//            number.remove(QRegExp("[\\D]*"));
+//            domBlock.setTagName("BlockSubstitutions");
+//            this->_subBlocks.push_back(new BlockSubstitutions(project,domBlock));
+//        }
+//        domBlock = domBlock.nextSiblingElement();
+//    }
 
     loadOptimValuesFromFrontFile(savVersion);
 
@@ -356,8 +356,8 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
                 }
             }
 
-            if(iiSubBlock>-1)
-                this->_iSubModels.push_back(curLine[iiSubBlock].toInt());
+//            if(iiSubBlock>-1)
+//                this->_iSubModels.push_back(curLine[iiSubBlock].toInt());
 
             curIndex ++;
             iPoint++;
@@ -457,15 +457,15 @@ QDomElement OptimResult::toXmlData(QDomDocument & doc)
     cInfos.setAttribute("version", 1);
     cResult.appendChild(cInfos);
 
-    // SubModels blocks
-    QDomElement cAllBlocks = doc.createElement("AllBlockSubstitutions");
-    for(int i=0;i<_subBlocks.size();i++)
-    {
-        QDomElement cBlocks = _subBlocks.at(i)->toXmlData(doc);
-        cBlocks.setTagName("BlockSubstitutions"+QString::number(i));
-        cAllBlocks.appendChild(cBlocks);
-    }
-    cResult.appendChild(cAllBlocks);
+//    // SubModels blocks
+//    QDomElement cAllBlocks = doc.createElement("AllBlockSubstitutions");
+//    for(int i=0;i<_subBlocks.size();i++)
+//    {
+//        QDomElement cBlocks = _subBlocks.at(i)->toXmlData(doc);
+//        cBlocks.setTagName("BlockSubstitutions"+QString::number(i));
+//        cAllBlocks.appendChild(cBlocks);
+//    }
+//    cResult.appendChild(cAllBlocks);
 
 
     // Front File (containing values on pareto curve)

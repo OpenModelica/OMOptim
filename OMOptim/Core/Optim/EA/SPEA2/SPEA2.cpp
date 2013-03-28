@@ -170,7 +170,7 @@ Result* SPEA2::launch(QString tempDir)
     int nbDouble=0,nbInt=0,nbBool=0;
     int nbObj = ((Optimization*)_problem)->objectives()->size();
 
-    EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
+    EAStdBounds::setBounds((Optimization*)_problem,/*_subModels,*/doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 
     /************************************
  PROGRESS
@@ -187,7 +187,7 @@ Result* SPEA2::launch(QString tempDir)
     FITNESS EVALUATION
     ************************************/
     moeoEvalFunc < EOStd > *plainEval;
-    plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,_subModels,tempDir,
+    plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,/*_subModels,*/tempDir,
                                                  _modItemsTree,&_quickEnd);
 
     OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
@@ -310,7 +310,7 @@ Result* SPEA2::launch(QString tempDir)
   */
 Result* SPEA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
 {
-    Result* result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,arch);
+    Result* result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem/*,_subBlocks*/,arch);
 
     return result;
 }

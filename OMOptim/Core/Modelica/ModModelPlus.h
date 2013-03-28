@@ -52,9 +52,9 @@ class Project;
 class InfoSender;
 class Variables;
 class ModModel;
-class ModelicaConnections;
+//class ModelicaConnections;
 class MOomc;
-class BlockSubstitution;
+//class BlockSubstitution;
 class ModPlusCtrl;
 class ModelicaModifier;
 class ModItem;
@@ -82,7 +82,7 @@ public :
 
 protected :
 
-    ModelicaConnections *_connections; /// List of connections between components in Modelica model
+  //  ModelicaConnections *_connections; /// List of connections between components in Modelica model
     QFileInfoList _moDependencies; /// List of .mo files needed to be loaded before simulation
     MOomc* _moomc;
 
@@ -131,12 +131,12 @@ public:
     //************************
     //  Connections
     //************************
-    ModelicaConnections* connections();
+ //   ModelicaConnections* connections();
 
     //************************
     // Block substitutions
     //************************
-    bool applyBlockSub(BlockSubstitution *_blockSub,bool compile);
+//    bool applyBlockSub(BlockSubstitution *_blockSub,bool compile);
 
 
     //************************
@@ -155,9 +155,9 @@ public:
     //**************************************
     // Connections
     //**************************************
-    bool readConnections(ModItem*,bool includeChildren);
-    void addConnection(ModItem*, ModItem*);
-    void addConnection(QString _aName,QString _bName);
+//    bool readConnections(ModItem*,bool includeChildren);
+//    void addConnection(ModItem*, ModItem*);
+//    void addConnection(QString _aName,QString _bName);
 
 
     //************************
@@ -181,7 +181,7 @@ public slots:
     void openNeededFilesDlg();
 
 
-    virtual bool readConnections();
+  //  virtual bool readConnections();
 
     virtual bool readVariables(ModPlusCtrl*, QFileInfoList filesToCopy = QFileInfoList(), bool forceRecompile=false);
 

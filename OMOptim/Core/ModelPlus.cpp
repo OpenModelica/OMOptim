@@ -3,13 +3,13 @@
 #include "MOVector.h"
 #include "MOomc.h"
 #include "Info.h"
-#include "ModelicaConnections.h"
+//#include "ModelicaConnections.h"
 #include "ModelicaModifier.h"
-#include "BlockSubs/BlockSubstitution.h"
+//#include "BlockSubs/BlockSubstitution.h"
 #include "MOSettings.h"
 #include "ModModel.h"
 #include "InfoSender.h"
-
+#include "ModItemsTree.h"
 
 #include "Variable.h"
 #include "Variables.h"

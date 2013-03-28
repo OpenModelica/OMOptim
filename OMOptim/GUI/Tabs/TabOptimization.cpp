@@ -50,12 +50,12 @@
 #include "Project.h"
 #include "Widgets/WidgetOptParameters.h"
 #include "Widgets/WidgetSelectOptVars.h"
-#include "Widgets/WidgetSelectComponents.h"
+//#include "Widgets/WidgetSelectComponents.h"
 #include "Widgets/WidgetFilesList.h"
 #include "Widgets/WidgetOptimActions.h"
 #include "Widgets/WidgetCtrlParameters.h"
 #include "Widgets/WidgetModelsList.h"
-#include "BlockSubstituteConnDlg.h"
+//#include "BlockSubstituteConnDlg.h"
 #include "Tools/GuiTools.h"
 
 
@@ -68,10 +68,10 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
         _widgetSelectOptVars = new WidgetSelectOptVars(_problem,true,this);
         addDockWidget("Variables",_widgetSelectOptVars);
 
-#ifdef USEBLOCKSUB
-        _widgetSelectComponents = new WidgetSelectComponents(_project,_problem,false,this);
-        addDockWidget("Components",_widgetSelectComponents,_widgetSelectOptVars);
-#endif
+//#ifdef USEBLOCKSUB
+//        _widgetSelectComponents = new WidgetSelectComponents(_project,_problem,false,this);
+//        addDockWidget("Components",_widgetSelectComponents,_widgetSelectOptVars);
+//#endif
 
         _widgetOptParameters = new WidgetOptParameters(_project,_problem,false,this);
         addDockWidget("Parameters",_widgetOptParameters,_widgetSelectOptVars);
@@ -115,9 +115,9 @@ void TabOptimization::actualizeGui()
         _widgetOptParameters->actualizeGui();
         _widgetSelectOptVars->actualizeGui();
 
-#ifdef USEBLOCKSUB
-        _widgetSelectComponents->actualizeGui();
-#endif
+//#ifdef USEBLOCKSUB
+//        _widgetSelectComponents->actualizeGui();
+//#endif
 }
 
 void TabOptimization::onModelsChanged()

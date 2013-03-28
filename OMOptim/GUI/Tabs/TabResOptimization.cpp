@@ -49,7 +49,7 @@
 #include "Plots/MOOptPlot.h"
 #include "OptimResult.h"
 #include "Tabs/MO2ColTab.h"
-#include "Widgets/WidgetBlocks.h"
+//#include "Widgets/WidgetBlocks.h"
 #include "Widgets/WidgetMooPlot.h"
 #include "Widgets/WidgetMooPointsList.h"
 #include "Widgets/WidgetOptTable.h"
@@ -77,11 +77,11 @@ MO2ColTab(result->project()->name(),result,false,parent)
         _widgetTableRecVar = new WidgetTableRecVar(_result,this);
 
         addDockWidget("Plot",_widgetMooPlot,NULL,Qt::RightDockWidgetArea);
-#ifdef USEBLOCKSUB
-        _widgetBlocks = new WidgetBlocks(_project,_result,this);
-        if(_problem->blockSubstitutions()->size()>0)
-            addDockWidget("Blocks",_widgetBlocks,_widgetMooPlot,Qt::RightDockWidgetArea);
-#endif
+//#ifdef USEBLOCKSUB
+//        _widgetBlocks = new WidgetBlocks(_project,_result,this);
+//        if(_problem->blockSubstitutions()->size()>0)
+//            addDockWidget("Blocks",_widgetBlocks,_widgetMooPlot,Qt::RightDockWidgetArea);
+//#endif
         addDockWidget("Variables",_widgetTableRecVar,_widgetMooPlot,Qt::RightDockWidgetArea);
 
         addFixedWidget("Points",_widgetMooPointsList,Qt::LeftDockWidgetArea,Qt::Horizontal,false);

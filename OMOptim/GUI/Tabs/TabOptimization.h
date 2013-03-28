@@ -47,7 +47,7 @@ class Project;
 class Optimization;
 class WidgetOptParameters;
 class WidgetSelectOptVars;
-class WidgetSelectComponents;
+//class WidgetSelectComponents;
 class WidgetFilesList;
 class WidgetOptimActions;
 class WidgetCtrlParameters;
@@ -67,7 +67,7 @@ public:
 
     WidgetOptParameters *_widgetOptParameters;
     WidgetSelectOptVars *_widgetSelectOptVars;
-    WidgetSelectComponents *_widgetSelectComponents;
+  //  WidgetSelectComponents *_widgetSelectComponents;
     WidgetFilesList *_widgetFilesList;
     WidgetOptimActions *_widgetOptimActions;
     WidgetCtrlParameters *_widgetCtrl;

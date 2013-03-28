@@ -44,14 +44,11 @@
 
 OneSimResult::OneSimResult(void)
 {
-    InfoSender::instance()->debug("New onesimres");
     _inputVariables = new Variables(true);
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
 
     // files to copy
     _filesToCopy.push_back(QFileInfo("dsin.txt"));
-
-    qDebug(QString("New OneSimResult").toLatin1().data());
 }
 
 OneSimResult::OneSimResult(Project* project, ModelPlus* modPlus, const OneSimulation &problem)
@@ -67,8 +64,6 @@ OneSimResult::OneSimResult(Project* project, ModelPlus* modPlus, const OneSimula
 
     // files to copy
     _filesToCopy.push_back(QFileInfo("dsin.txt"));
-
-    qDebug(QString("New OneSimResult").toLatin1().data());
 }
 
 OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok)
@@ -87,22 +82,16 @@ OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const
     // input variables
     _inputVariables = new Variables(true);
 
-
     //FinalVariables
     _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
     QDomElement domFinalVars = domResult.firstChildElement("FinalVariables");
     this->finalVariables()->setItems(domFinalVars);
-
-    qDebug(QString("New OneSimResult").toLatin1().data());
 }
 
 OneSimResult::~OneSimResult(void)
 {
-    InfoSender::instance()->debug("Delete onesimres");
     delete _inputVariables;
     delete _finalVariables;
-
-    qDebug(QString("Remove OneSimResult").toLatin1().data());
 }
 
 QDomElement OneSimResult::toXmlData(QDomDocument & doc)

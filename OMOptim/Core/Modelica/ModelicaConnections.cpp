@@ -341,7 +341,6 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
 
 bool ModelicaConnections::portIsInElement(QString portName,QString elementName)
 {
-
     return portName.contains(QRegExp("^"+elementName+"[$|\\.]"));
 }
 

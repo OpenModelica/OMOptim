@@ -171,7 +171,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
         if (!fileinfo.exists())
             InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
         else
-            _project->loadModelPlus(modelMmoFilePaths.at(i));
+            _project->loadModelPlus(modelMmoFilePaths.at(i),true); // and remove compiled executables of modelica models
     }
 
     //**************************************
@@ -189,14 +189,10 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     //**************************************
     // Reading problems
     //**************************************
-    QTime loadTime;
     QString msg;
     for(int i=0;i<problemsPaths.size();i++)
     {
-        loadTime.restart();
         _project->addOMCase(problemsPaths.at(i));
-        msg = "Loaded problem "+ problemsPaths.at(i)+" took " +QString::number((double)loadTime.elapsed()/1000)+"sec";
-        InfoSender::instance()->debug(msg);
     }
 
     //**************************************
@@ -204,10 +200,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     //**************************************
     for(int i=0;i<resultsPaths.size();i++)
     {
-        loadTime.restart();
         _project->addOMCase(resultsPaths.at(i));
-        msg = "Loaded result "+ resultsPaths.at(i)+" took " +QString::number((double)loadTime.elapsed()/1000)+"sec";
-        InfoSender::instance()->debug(msg);
     }
 
     _project->setIsDefined(true);
@@ -215,7 +208,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     return true;
 }
 
-bool LoadOMOptim::loadModelPlus(Project* project,QString mmoFilePath)
+QString LoadOMOptim::loadModelPlus(Project* project,QString mmoFilePath)
 {
     InfoSender::instance()->send( Info(ListInfo::LOADINGMODEL,mmoFilePath));
 
@@ -225,14 +218,14 @@ bool LoadOMOptim::loadModelPlus(Project* project,QString mmoFilePath)
     if( !file.open( QIODevice::ReadOnly ) )
     {
         InfoSender::instance()->send( Info(ListInfo::MODELFILENOTEXISTS,mmoFilePath));
-        return false;
+        return QString();
     }
     QString error;
     if( !doc.setContent( &file,&error ) )
     {
         file.close();
         InfoSender::instance()->send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
-        return false;
+        return QString();
     }
     file.close();
 
@@ -244,7 +237,7 @@ bool LoadOMOptim::loadModelPlus(Project* project,QString mmoFilePath)
     {
         // error : should be impossible
         // but since old version
-        return false;
+        return QString();
     }
     else if(root.tagName()==ModExePlus::className())
     {
@@ -264,10 +257,10 @@ bool LoadOMOptim::loadModelPlus(Project* project,QString mmoFilePath)
     {
         newModelPlus->setMmoFilePath(mmoFilePath);
         project->addModelPlus(newModelPlus);
-        return true;
+        return newModelPlus->name();
     }
     else
-        return false;
+        return QString();
 }
 
 QStringList LoadOMOptim::getModelsPath(QString projectFilePath)

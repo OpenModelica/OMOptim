@@ -44,6 +44,7 @@
 #include "Optimization.h"
 #include "Project.h"
 #include "ModExePlus.h"
+#include "ModModelPlus.h"
 
 WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,QWidget *parent):
     QWidget(parent),
@@ -153,6 +154,11 @@ WidgetSelectOptVars::~WidgetSelectOptVars()
 void WidgetSelectOptVars::addPermanentVars(Variables * vars)
 {
     _permanentVars->addItems(vars,true);
+}
+
+void WidgetSelectOptVars::addPermanentVar(const Variable & var)
+{
+    _permanentVars->addItem(var.clone());
 }
 
 void WidgetSelectOptVars::removePermanentVars(QString model)

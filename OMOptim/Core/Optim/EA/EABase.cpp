@@ -62,8 +62,8 @@ EABase::EABase(const EABase & eaBase)
     :OptimAlgo(eaBase)
 {
     _modItemsTree = eaBase._modItemsTree;
-    _subModels = eaBase._subModels;
-    _subBlocks = eaBase._subBlocks;
+ //   _subModels = eaBase._subModels;
+  //  _subBlocks = eaBase._subBlocks;
     _index = eaBase._index;
     _quickEnd = eaBase._quickEnd;
     _keepResults = eaBase._keepResults;
@@ -74,16 +74,16 @@ EABase::~EABase(void)
 
 }
 
-void EABase::setSubModels(QList<QList<ModelPlus*> > subModels,QList<BlockSubstitutions*> subBlocks)
-{
-    _subModels = subModels;
-    _subBlocks = subBlocks;
+//void EABase::setSubModels(QList<QList<ModelPlus*> > subModels,QList<BlockSubstitutions*> subBlocks)
+//{
+//    _subModels = subModels;
+//    _subBlocks = subBlocks;
 
-    if(_subModels.size()>1)
-    {
-        _useSubModels = true;
-    }
-}
+//    if(_subModels.size()>1)
+//    {
+//        _useSubModels = true;
+//    }
+//}
 
 void EABase::quickEnd()
 {

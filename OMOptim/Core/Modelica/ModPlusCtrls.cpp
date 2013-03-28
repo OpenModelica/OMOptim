@@ -32,15 +32,10 @@ ModPlusCtrls:: ModPlusCtrls(Project* project,ModelPlus* modPlus)
             setCurrentCtrlType(ModPlusCtrl::DYMOLAEXECUTABLE);
         }
     }
-
-    qDebug(QString("New ModPlusCtrls").toLatin1().data());
 }
 
 ModPlusCtrls::ModPlusCtrls(Project* project,ModelPlus* ModPlus,const QDomElement & cControlers)
 {
-   qDebug(QString("New ModPlusCtrls").toLatin1().data());
-
-
     _project = project;
     _modelPlus = ModPlus;
 
@@ -103,7 +98,6 @@ ModPlusCtrls::~ModPlusCtrls()
     {
         delete values().at(i);
     }
-    qDebug(QString("Remove ModPlusCtrls").toLatin1().data());
 }
 
 ModPlusCtrls* ModPlusCtrls::clone()

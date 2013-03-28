@@ -44,7 +44,7 @@
 #include "OMOptimSettings.h"
 #include "MOStyleSheet.h"
 #include "version.h"
-
+#include "registermetatypes.h"
 #include "config.h"
 
 #define HAVE_QAPPLICATION_H
@@ -65,7 +65,8 @@ int main(int argc, char *argv[])
 
     // Register Info as a metaType
     // Needed for Info communication between threads
-    int a = qRegisterMetaType<Info>();
+    // register meta types for connect signals/slots
+    RegisterMetaTypes::init();
 
 
     // Application
@@ -115,15 +116,6 @@ int main(int argc, char *argv[])
         pluginsNames.removeAll("..");
         for(int i=0;i<pluginsNames.size();i++)
             project->loadPlugin(pluginsDir.filePath(pluginsNames.at(i)),false,true);
-    }
-
-
-    //load file
-    if(argc>1)
-    {
-        QString fileName(argv[1]);
-        fileName = fileName.remove("\"");
-        project->load(fileName);
     }
 
     try

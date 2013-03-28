@@ -47,7 +47,7 @@
 #include "OneSimulation.h"
 #include "OneSimResult.h"
 #include <QtXml/QDomDocument>
-#include "BlockSubs/BlockSubstitutions.h"
+//#include "BlockSubs/BlockSubstitutions.h"
 #include "CSV.h"
 #include "ProblemConfig.h"
 
@@ -114,9 +114,9 @@ public :
     void recomputePoints(QList<int> iPoints, bool forceRecompute);
 
     // index for each point of subBlocks included (in subBlocks)
-    QList<int> _iSubModels;
+  //  QList<int> _iSubModels;
     // different model configurations (using different BlockSubs)
-    QList<BlockSubstitutions*> _subBlocks;
+  //  QList<BlockSubstitutions*> _subBlocks;
 
     //save informations
     QString _optVarsFrontFileName;

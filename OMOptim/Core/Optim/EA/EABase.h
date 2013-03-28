@@ -49,7 +49,7 @@
 class Project;
 class Problem;
 class Result;
-class BlockSubstitutions;
+//class BlockSubstitutions;
 class ModModelPlus;
 class ModItemsTree;
 class ModelPlus;
@@ -72,17 +72,17 @@ public:
     //virtual Result* launch(QString tempDir) = 0;
 
 
-    // subModels (for Optimization problems)
-    bool _useSubModels;
-    void setSubModels(QList<QList<ModelPlus *> >,QList<BlockSubstitutions*>);
+//    // subModels (for Optimization problems)
+//    bool _useSubModels;
+//    void setSubModels(QList<QList<ModelPlus *> >,QList<BlockSubstitutions*>);
 
 protected:
 
     ModItemsTree* _modItemsTree;
 
     // for Optimization problems
-    QList<QList<ModelPlus*> > _subModels;
-    QList<BlockSubstitutions*> _subBlocks;
+//    QList<QList<ModelPlus*> > _subModels;
+//    QList<BlockSubstitutions*> _subBlocks;
 
     // solve mixing pointdep-pointindep in bounds
     QVector<QVector<int> > _index;

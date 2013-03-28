@@ -59,12 +59,12 @@
 template<class EOT> class EAStdResult
 {
 public :
-    inline static OptimResult* buildOptimResult(Project*,Optimization* ,QList<BlockSubstitutions*>,
+    inline static OptimResult* buildOptimResult(Project*,Optimization* ,/*QList<BlockSubstitutions*>,*/
                                                 moeoUnboundedArchive<EOT> & arch);
 };
 
 template<class EOT>
-OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* problem,QList<BlockSubstitutions*> subBlocks,
+OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* problem,/*QList<BlockSubstitutions*> subBlocks,*/
                                                 moeoUnboundedArchive<EOT> & arch)
 {
     if(arch.size()==0)
@@ -74,7 +74,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     OptimResult *result = new OptimResult(project,*problem);
 
     result->setName(problem->name()+" result");
-    result->_subBlocks = subBlocks;
+  //  result->_subBlocks = subBlocks;
 
     int nbScans = VariablesManip::nbScans(problem->scannedVariables());
     bool useScan = (nbScans>1);
@@ -97,8 +97,6 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
             result->recomputedVariables()->addItem(curRecompVar);
         }
     }
-
-
 
     // define optVariableResult from optVariables
     // and add in recomputedVariables if not present
@@ -218,17 +216,17 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
 
 
 
-    // *******************************************************************
-    // Storing subModelChosen for each point
-    // *******************************************************************
-    if(subBlocks.size()>0)
-    {
-        for(int i=0;i<arch.size();i++)
-        {
-            curResultPoint = &arch.at(i);
-            result->_iSubModels.push_back(curResultPoint->intVars.at(curResultPoint->intVars.size()-1));
-        }
-    }
+//    // *******************************************************************
+//    // Storing subModelChosen for each point
+//    // *******************************************************************
+//    if(subBlocks.size()>0)
+//    {
+//        for(int i=0;i<arch.size();i++)
+//        {
+//            curResultPoint = &arch.at(i);
+//            result->_iSubModels.push_back(curResultPoint->intVars.at(curResultPoint->intVars.size()-1));
+//        }
+//    }
 
     // *******************************************************************
     // Filling OptObjectives Values

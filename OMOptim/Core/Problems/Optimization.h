@@ -49,8 +49,8 @@
 #include "OptimResult.h"
 #include "ProblemConfig.h"
 
-#include "BlockSubs/BlockSubstitution.h"
-#include "BlockSubs/BlockSubstitutions.h"
+//#include "BlockSubs/BlockSubstitution.h"
+//#include "BlockSubs/BlockSubstitutions.h"
 #include "OptObjectives.h"
 #include "ModelPlus.h"
 
@@ -73,7 +73,7 @@ protected :
     OptObjectives *_objectives;
     Variables *_savedVars; // variables which we keep values from during optimization
 
-    BlockSubstitutions *_blockSubstitutions;
+  //  BlockSubstitutions *_blockSubstitutions;
 
     bool _useScan;
 
@@ -96,11 +96,11 @@ public:
 
     //Get functions
     Variables* overwritedVariables()const{return _overwritedVariables;}
-    Variables* savedVars()const{return _savedVars;}
+    Variables* savedVars()const;
     ScannedVariables* scannedVariables()const{return _scannedVariables;}
     OptVariables *optimizedVariables()const{return _optimizedVariables;}
     OptObjectives *objectives()const{return _objectives;}
-    BlockSubstitutions *blockSubstitutions()const{return _blockSubstitutions;}
+    //BlockSubstitutions *blockSubstitutions()const{return _blockSubstitutions;}
     Project* omProject();
 
     // evaluate function
@@ -121,7 +121,7 @@ public:
 
     //specific functions
 
-    void createSubExecs(QList<QList<ModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks);
+   // void createSubExecs(QList<QList<ModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks);
 
 
     //algo functions

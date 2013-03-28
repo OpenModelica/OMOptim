@@ -117,7 +117,7 @@ private:
     void loadExeFiles(QStringList exeModelNames, QStringList exeFilePaths, QStringList inputFilePaths, bool forceLoad= true);
     bool loadModelicaLibrary(bool storePath=true, bool forceLoad = true);
     bool loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo inputFileInfo);
-    void loadModelPlus(QString mmoFilePath);
+    void loadModelPlus(QString mmoFilePath, bool uncompile);
     ModelPlus *modelPlus(QString modelName);
     ModelPlus* newModelPlus(QString modelName);
     ModModel* curModModel();

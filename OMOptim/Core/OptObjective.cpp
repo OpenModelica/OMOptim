@@ -104,6 +104,11 @@ OptObjective::~OptObjective(void)
 {
 }
 
+OptObjective *OptObjective::clone() const
+{
+    return new OptObjective(*this);
+}
+
 void OptObjective::initOptExtremum()
 {
     _min= -std::numeric_limits<double>::max();

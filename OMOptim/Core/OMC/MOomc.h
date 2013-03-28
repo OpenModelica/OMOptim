@@ -101,8 +101,11 @@ public :
     QStringList getInheritedClasses(QString inheritingClass);
     QStringList getComponentModifierNames(QString componentName);
     QString getFlattenedModifierValue(const QString & modelName,const QString & shortComponentName,const QString & modifierName,QString & flattenedModel);
+    QString getFlattenedModifierUnit(const QString & modelName,const QString & shortComponentName,const QString & modifierName,QString & flattenedModel);
+
     QString getFlattenedModel(const QString & modelName);
     QString getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName);
+    QStringList getFlattenedModifierVectorValue(const QString &modelName, const QString &componentName, const QString &modifierName, int size, QString &flattenedModel);
     QString getComponentModifierValue(QString modelName,QString shortComponentName,QString modifierName);
     bool setComponentModifiers(QString compName,QString model, QStringList modNames,QStringList modValues);
 
@@ -182,6 +185,7 @@ public :
 
      bool initCommandLineOptions();
      bool clearCommandLineOptions();
+
 
 public slots :
     QStringList loadFiles(const QStringList & filePath);

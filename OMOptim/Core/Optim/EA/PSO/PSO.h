@@ -87,7 +87,7 @@ private :
 Result* PSO::buildResult(moeoUnboundedArchive<EOStd> & arch)
 {
         Result* result;
-            result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,
+            result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,/*_subBlocks,*/
                         arch);
 
         return result;

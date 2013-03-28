@@ -27,8 +27,7 @@
  *
  * See the full OSMC Public License conditions for more details.
  *
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
+ * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
   @file Optimization.cpp
   @brief Comments for file documentation.
@@ -58,7 +57,7 @@ Optimization::Optimization(Project* project,QStringList models)
     _savedVars = new Variables(true);
     _scannedVariables = new ScannedVariables(true);
     _objectives = new OptObjectives(true);
-    _blockSubstitutions = new BlockSubstitutions();
+  //  _blockSubstitutions = new BlockSubstitutions();
 
     _algos = new OptimAlgos(project,this);
     _algos->setCurrentAlgo(SPEA2Adapt().name());
@@ -78,7 +77,7 @@ Optimization::Optimization(const Optimization &optim)
     _overwritedVariables = optim._overwritedVariables->clone();
     _savedVars = optim._savedVars->clone();
     _objectives = optim._objectives->clone();
-    _blockSubstitutions = optim._blockSubstitutions->clone();
+ //   _blockSubstitutions = optim._blockSubstitutions->clone();
 
     QString curModel;
     for(int i=0;i<optim._models.size();i++)
@@ -102,7 +101,7 @@ Optimization::~Optimization()
 
     delete _optimizedVariables;
     delete _objectives;
-    delete _blockSubstitutions;
+ //   delete _blockSubstitutions;
     delete _overwritedVariables;
     delete _savedVars;
     delete _scannedVariables;
@@ -111,6 +110,11 @@ Optimization::~Optimization()
     {
         delete _ctrls.values().at(i);
     }
+}
+
+Variables *Optimization::savedVars() const
+{
+    return _savedVars;
 }
 
 Project *Optimization::omProject()
@@ -292,9 +296,9 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     for(int i=0;i<strList.size();i++)
         this->_filesToCopy.push_back(QFileInfo(strList.at(i)));
 
-    // BlockSubstitutions
-    QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
-    _blockSubstitutions = new BlockSubstitutions(project,domBlockSubs);
+//    // BlockSubstitutions
+//    QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
+//    _blockSubstitutions = new BlockSubstitutions(project,domBlockSubs);
 
     // Algos
     QDomElement cAlgos = domProblem.firstChildElement(OptimAlgos::className());
@@ -381,7 +385,7 @@ bool Optimization::checkBeforeComp(QString & error)
     }
 
     // check number of optimized variables and objectives
-    if((_optimizedVariables->size()==0) && (_blockSubstitutions->size()==0))
+    if((_optimizedVariables->size()==0) /*&& (_blockSubstitutions->size()==0)*/)
     {
         ok = false;
         curError = "Should specify at least one optimized variable";
@@ -466,174 +470,174 @@ Result* Optimization::launch(ProblemConfig config)
 
 
 
-void Optimization::createSubExecs(QList<QList<ModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks)
-{
+//void Optimization::createSubExecs(QList<QList<ModelPlus*> > & subModels, QList<BlockSubstitutions*> & subBlocks)
+//{
 
-    subModels.clear();
-    subBlocks.clear();
+//    subModels.clear();
+//    subBlocks.clear();
 
-    QMultiMap<QString,QString> map; // <orgComponent,subcomponent>
-    QMap<QString,QString> mapModel; //<orgComponent,model>
-    // fill map
-    for(int i=0; i < _blockSubstitutions->getSize();i++)
-    {
-        BlockSubstitution *curBlockSub = _blockSubstitutions->getAt(i);
-        if(!curBlockSub->_subComponent.isEmpty())
-        {
-            map.insert(curBlockSub->_orgComponent,curBlockSub->_subComponent);
-            mapModel.insert(curBlockSub->_orgComponent,curBlockSub->_model);
-        }
-    }
+//    QMultiMap<QString,QString> map; // <orgComponent,subcomponent>
+//    QMap<QString,QString> mapModel; //<orgComponent,model>
+//    // fill map
+//    for(int i=0; i < _blockSubstitutions->getSize();i++)
+//    {
+//        BlockSubstitution *curBlockSub = _blockSubstitutions->getAt(i);
+//        if(!curBlockSub->_subComponent.isEmpty())
+//        {
+//            map.insert(curBlockSub->_orgComponent,curBlockSub->_subComponent);
+//            mapModel.insert(curBlockSub->_orgComponent,curBlockSub->_model);
+//        }
+//    }
 
-    int nbOrgs = map.uniqueKeys().size();
-    //adding non-moving cases for each orgComponent
-    for(int i = 0; i<nbOrgs; i ++)
-    {
-        map.insert(map.uniqueKeys().at(i),map.uniqueKeys().at(i));
-    }
-
-
-    //build first index and maximum index
-    QList<int> index, maxIndex;
-    nbOrgs = map.uniqueKeys().size();
-    for(int i = 0; i<nbOrgs; i ++)
-    {
-        index.push_back(0);
-        QList<QString> subs = map.values(map.uniqueKeys().at(i));
-        maxIndex.push_back(subs.size()-1);
-    }
+//    int nbOrgs = map.uniqueKeys().size();
+//    //adding non-moving cases for each orgComponent
+//    for(int i = 0; i<nbOrgs; i ++)
+//    {
+//        map.insert(map.uniqueKeys().at(i),map.uniqueKeys().at(i));
+//    }
 
 
-
-    QStringList models = mapModel.values();
-    models.removeDuplicates();
-
-    // storing genuine mo file paths
-    QStringList oldMoFilePaths;
-    for(int iM=0;iM<models.size();iM++)
-    {
-        ModModelPlus* modModelPlus = dynamic_cast<ModModelPlus*>(omProject()->modelPlus(models.at(iM)));
-        oldMoFilePaths.push_back(modModelPlus->moFilePath());
-    }
-
-    int iCase=0;
-    bool oneChange;
-    while(!index.isEmpty())
-    {
+//    //build first index and maximum index
+//    QList<int> index, maxIndex;
+//    nbOrgs = map.uniqueKeys().size();
+//    for(int i = 0; i<nbOrgs; i ++)
+//    {
+//        index.push_back(0);
+//        QList<QString> subs = map.values(map.uniqueKeys().at(i));
+//        maxIndex.push_back(subs.size()-1);
+//    }
 
 
-        // Display case (for debug)
-        QString msg = "CASE " + QString::number(iCase) + "\n";
-        for(int i=0; i < index.size(); i++)
-        {
-            msg += map.uniqueKeys().at(i);
-            msg += " -> ";
-            msg += map.values(map.uniqueKeys().at(i)).at(index.at(i));
-            msg+=",";
-        }
-        msg.remove(msg.size()-1,1);
-        msg +="\n \n";
-        InfoSender::instance()->debug(msg);
+
+//    QStringList models = mapModel.values();
+//    models.removeDuplicates();
+
+//    // storing genuine mo file paths
+//    QStringList oldMoFilePaths;
+//    for(int iM=0;iM<models.size();iM++)
+//    {
+//        ModModelPlus* modModelPlus = dynamic_cast<ModModelPlus*>(omProject()->modelPlus(models.at(iM)));
+//        oldMoFilePaths.push_back(modModelPlus->moFilePath());
+//    }
+
+//    int iCase=0;
+//    bool oneChange;
+//    while(!index.isEmpty())
+//    {
 
 
-        // create folder
-        QString newName = "case_"+QString::number(iCase);
-
-        QString newFolder = saveFolder()+ QDir::separator() + "SubModels" + QDir::separator() + newName;
-        QDir dir(saveFolder());
-        dir.mkpath(newFolder);
-        QDir newDir(newFolder);
-
-
-        // clone mo files and load them
-        // and create corresponding modmodelplus
-        QStringList newMoPaths;
-        QStringList newMmoPaths;
-        QMap<QString,ModelPlus*> newModModels;
-        for(int iM=0;iM<oldMoFilePaths.size();iM++)
-        {
-            QFileInfo oldMoFileInfo(oldMoFilePaths.at(iM));
-            QFile oldMoFile(oldMoFilePaths.at(iM));
-
-            QString newMoPath = newDir.filePath(oldMoFileInfo.fileName());
-            QString newMmoPath = newMoPath;
-            newMmoPath = newMmoPath.replace(".mo",".mmo");
-
-            newDir.remove(newMoPath);
-            oldMoFile.copy(newMoPath);
-
-            newMoPaths.append(newMoPath);
-            newMmoPaths.append(newMmoPath);
+//        // Display case (for debug)
+//        QString msg = "CASE " + QString::number(iCase) + "\n";
+//        for(int i=0; i < index.size(); i++)
+//        {
+//            msg += map.uniqueKeys().at(i);
+//            msg += " -> ";
+//            msg += map.values(map.uniqueKeys().at(i)).at(index.at(i));
+//            msg+=",";
+//        }
+//        msg.remove(msg.size()-1,1);
+//        msg +="\n \n";
+//        InfoSender::instance()->debug(msg);
 
 
-            // load file (! will replace previously loaded)
-            omProject()->loadMoFile(newMoPath,false,true);
+//        // create folder
+//        QString newName = "case_"+QString::number(iCase);
 
-            // create new modModelPlus
-            ModModelPlus* newModModelPlus = new ModModelPlus(omProject(),models.at(iM));
-            newModModelPlus->setMmoFilePath(newMmoPath);
-            newModModels.insert(models.at(iM),newModModelPlus);
-        }
-
-
-        // apply blocksubs
-        BlockSubstitutions *curSubBlocks = new BlockSubstitutions();
-
-        QMap<QString,bool> changes; // <model,hasChanged>
-        changes.clear();
-        for(int i=0; i<index.size();i++)
-        {
-            QString replacedComp = map.uniqueKeys().at(i);
-            QString replacingComp = map.values(map.uniqueKeys().at(i)).at(index.at(i));
-
-            if(replacedComp != replacingComp)
-            {
-                BlockSubstitution* blockSub = _blockSubstitutions->find(replacedComp,replacingComp);
-                if(blockSub)
-                {
-                    ModelPlus* corrNewModModelPlus = newModModels.value(blockSub->_model);
-                    oneChange =  ((ModModelPlus*) corrNewModModelPlus)->applyBlockSub(blockSub,true) || oneChange ;
-                    curSubBlocks->push_back(blockSub);
-                    changes.insert(blockSub->_model,true);
-                }
-            }
-        }
-
-        QStringList modelsToCompile = changes.keys(true);// those which have been modified
-        bool compilationOk = true;
-        for(int iM=0;iM<modelsToCompile.size();iM++)
-        {
-            ModelPlus* modelPlus =  newModModels.value(modelsToCompile.at(iM));
-            compilationOk = ((ModModelPlus*) modelPlus)->compile(ctrl(modelsToCompile.at(iM))) && compilationOk;
-        }
-
-        if(compilationOk)
-        {
-
-            // store subModel and subBlocks
-            subModels.push_back(newModModels.values());
-            subBlocks.push_back(curSubBlocks);
-            _foldersToCopy << newFolder;
-
-            InfoSender::instance()->send( Info(ListInfo::SUBMODELADDED,newName));
-        }
-        else
-        {
-            InfoSender::instance()->send( Info(ListInfo::SUBMODELNOTADDED,newName));
-        }
+//        QString newFolder = saveFolder()+ QDir::separator() + "SubModels" + QDir::separator() + newName;
+//        QDir dir(saveFolder());
+//        dir.mkpath(newFolder);
+//        QDir newDir(newFolder);
 
 
-        iCase++;
-        index = LowTools::nextIndex(index,maxIndex);
-    }
+//        // clone mo files and load them
+//        // and create corresponding modmodelplus
+//        QStringList newMoPaths;
+//        QStringList newMmoPaths;
+//        QMap<QString,ModelPlus*> newModModels;
+//        for(int iM=0;iM<oldMoFilePaths.size();iM++)
+//        {
+//            QFileInfo oldMoFileInfo(oldMoFilePaths.at(iM));
+//            QFile oldMoFile(oldMoFilePaths.at(iM));
 
-    // reload genuine mo file
-    if(iCase>0)
-    {
-        for(int i=0;i<oldMoFilePaths.size();i++)
-            omProject()->loadMoFile(oldMoFilePaths.at(i),false,true);
-    }
-}
+//            QString newMoPath = newDir.filePath(oldMoFileInfo.fileName());
+//            QString newMmoPath = newMoPath;
+//            newMmoPath = newMmoPath.replace(".mo",".mmo");
+
+//            newDir.remove(newMoPath);
+//            oldMoFile.copy(newMoPath);
+
+//            newMoPaths.append(newMoPath);
+//            newMmoPaths.append(newMmoPath);
+
+
+//            // load file (! will replace previously loaded)
+//            omProject()->loadMoFile(newMoPath,false,true);
+
+//            // create new modModelPlus
+//            ModModelPlus* newModModelPlus = new ModModelPlus(omProject(),models.at(iM));
+//            newModModelPlus->setMmoFilePath(newMmoPath);
+//            newModModels.insert(models.at(iM),newModModelPlus);
+//        }
+
+
+//        // apply blocksubs
+//        BlockSubstitutions *curSubBlocks = new BlockSubstitutions();
+
+//        QMap<QString,bool> changes; // <model,hasChanged>
+//        changes.clear();
+//        for(int i=0; i<index.size();i++)
+//        {
+//            QString replacedComp = map.uniqueKeys().at(i);
+//            QString replacingComp = map.values(map.uniqueKeys().at(i)).at(index.at(i));
+
+//            if(replacedComp != replacingComp)
+//            {
+//                BlockSubstitution* blockSub = _blockSubstitutions->find(replacedComp,replacingComp);
+//                if(blockSub)
+//                {
+//                    ModelPlus* corrNewModModelPlus = newModModels.value(blockSub->_model);
+//                    oneChange =  ((ModModelPlus*) corrNewModModelPlus)->applyBlockSub(blockSub,true) || oneChange ;
+//                    curSubBlocks->push_back(blockSub);
+//                    changes.insert(blockSub->_model,true);
+//                }
+//            }
+//        }
+
+//        QStringList modelsToCompile = changes.keys(true);// those which have been modified
+//        bool compilationOk = true;
+//        for(int iM=0;iM<modelsToCompile.size();iM++)
+//        {
+//            ModelPlus* modelPlus =  newModModels.value(modelsToCompile.at(iM));
+//            compilationOk = ((ModModelPlus*) modelPlus)->compile(ctrl(modelsToCompile.at(iM))) && compilationOk;
+//        }
+
+//        if(compilationOk)
+//        {
+
+//            // store subModel and subBlocks
+//            subModels.push_back(newModModels.values());
+//            subBlocks.push_back(curSubBlocks);
+//            _foldersToCopy << newFolder;
+
+//            InfoSender::instance()->send( Info(ListInfo::SUBMODELADDED,newName));
+//        }
+//        else
+//        {
+//            InfoSender::instance()->send( Info(ListInfo::SUBMODELNOTADDED,newName));
+//        }
+
+
+//        iCase++;
+//        index = LowTools::nextIndex(index,maxIndex);
+//    }
+
+//    // reload genuine mo file
+//    if(iCase>0)
+//    {
+//        for(int i=0;i<oldMoFilePaths.size();i++)
+//            omProject()->loadMoFile(oldMoFilePaths.at(i),false,true);
+//    }
+//}
 
 OptimAlgos *Optimization::algos() const
 {
@@ -682,35 +686,35 @@ bool Optimization::removeModel(QString model)
     _ctrls.remove(model);
 
     // remove optimized variables
-    int varToRemove = _optimizedVariables->findItem(model,OptVariable::MODEL);
+    int varToRemove = _optimizedVariables->indexOf(model,OptVariable::MODEL);
     while(varToRemove>-1)
     {
         _optimizedVariables->removeRow(varToRemove);
-        varToRemove = _optimizedVariables->findItem(model,OptVariable::MODEL);
+        varToRemove = _optimizedVariables->indexOf(model,OptVariable::MODEL);
     }
 
     // removed scanned variables
-    varToRemove = _scannedVariables->findItem(model,ScannedVariable::MODEL);
+    varToRemove = _scannedVariables->indexOf(model,ScannedVariable::MODEL);
     while(varToRemove>-1)
     {
         _scannedVariables->removeRow(varToRemove);
-        varToRemove = _scannedVariables->findItem(model,ScannedVariable::MODEL);
+        varToRemove = _scannedVariables->indexOf(model,ScannedVariable::MODEL);
     }
 
     // removed overwrited variables
-    varToRemove = _overwritedVariables->findItem(model,Variable::MODEL);
+    varToRemove = _overwritedVariables->indexOf(model,Variable::MODEL);
     while(varToRemove>-1)
     {
         _overwritedVariables->removeRow(varToRemove);
-        varToRemove = _overwritedVariables->findItem(model,Variable::MODEL);
+        varToRemove = _overwritedVariables->indexOf(model,Variable::MODEL);
     }
 
     // removed objectives
-    varToRemove = _objectives->findItem(model,OptObjective::MODEL);
+    varToRemove = _objectives->indexOf(model,OptObjective::MODEL);
     while(varToRemove>-1)
     {
         _objectives->removeRow(varToRemove);
-        varToRemove = _objectives->findItem(model,OptObjective::MODEL);
+        varToRemove = _objectives->indexOf(model,OptObjective::MODEL);
     }
 
     emit removedModel(model);
@@ -777,9 +781,9 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     cProblem.appendChild(cSavedVars);
 
 
-    //BlockSubstitutions
-    QDomElement cBlocks = _blockSubstitutions->toXmlData(doc);
-    cProblem.appendChild(cBlocks);
+//    //BlockSubstitutions
+//    QDomElement cBlocks = _blockSubstitutions->toXmlData(doc);
+//    cProblem.appendChild(cBlocks);
 
     // Files to copy
     QDomElement cFilesToCopy = doc.createElement("FilesToCopy");

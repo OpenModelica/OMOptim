@@ -162,7 +162,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
     int nbObj = ((Optimization*)_problem)->objectives()->size();
 
 
-    EAStdBounds::setBounds((Optimization*)_problem,_subModels,doubleBounds,intBounds,nbDouble,nbInt,nbBool);
+    EAStdBounds::setBounds((Optimization*)_problem,/*_subModels,*/doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 
 
     /************************************
@@ -183,7 +183,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
     FITNESS EVALUATION
     ************************************/
     moeoEvalFunc < EOAdapt > *plainEval;
-    plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,_subModels,tempDir,
+    plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,/*_subModels,*/tempDir,
                                                    _modItemsTree,&_quickEnd);
 
     OMEAEvalFuncCounter<EOAdapt>* eval = new OMEAEvalFuncCounter<EOAdapt> (* plainEval,&OMEAProgress,nTotalEvals);

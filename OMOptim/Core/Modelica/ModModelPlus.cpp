@@ -47,13 +47,13 @@
 #include "Dialogs/DlgSelectFiles.h"
 #include "ModelicaModifier.h"
 #include "Variables.h"
-#include "ModelicaConnections.h"
-#include "BlockSubstitution.h"
+//#include "ModelicaConnections.h"
+//#include "BlockSubstitution.h"
 #include "SaveOMOptim.h"
 #include "ModPlusCtrl.h"
 #include "ModPlusCtrls.h"
 #include "LowTools.h"
-
+#include "MOomc.h"
 ModModelPlus::ModModelPlus( Project* project,QString modelName)
     :ModelPlus(project,modelName)
 {
@@ -63,9 +63,9 @@ ModModelPlus::ModModelPlus( Project* project,QString modelName)
 
     _variables = new Variables(true);
 
-    _connections = new ModelicaConnections(_project->modItemsTree());
+ //   _connections = new ModelicaConnections(_project->modItemsTree());
 
-    _connectionsRead = false;
+  //  _connectionsRead = false;
 }
 
 ModModelPlus::ModModelPlus(Project *project, const QDomElement &domRoot)
@@ -79,12 +79,12 @@ ModModelPlus::ModModelPlus(Project *project, const QDomElement &domRoot)
         this->addMoDependency(QFileInfo(strMoDeps.at(nof)));
     }
 
-    _connections = new ModelicaConnections(_project->modItemsTree());
+ //   _connections = new ModelicaConnections(_project->modItemsTree());
 }
 
 ModModelPlus::~ModModelPlus()
 {
-    delete _connections;
+ //   delete _connections;
 }
 
 /**
@@ -95,10 +95,10 @@ ModModelPlus::~ModModelPlus()
 void ModModelPlus::clear()
 {
     ModelPlus::clear();
-    _connectionsRead = false;
+    //_connectionsRead = false;
 
     //connections
-    _connections->clear();
+ //   _connections->clear();
 }
 
 /** Removes compiled models.
@@ -216,7 +216,7 @@ bool ModModelPlus::readAll(ModPlusCtrl *ctrl)
     bool connOk = false;
 
     varOk = readVariables(ctrl);
-    connOk = readConnections();
+    //connOk = readConnections();
 
     return varOk && connOk;
 }
@@ -257,25 +257,25 @@ bool ModModelPlus::compile(ModPlusCtrl* ctrl,QFileInfoList filesToCopy)
     return ctrl->compile(modelsToLoad,filesToCopy);
 }
 
-void ModModelPlus::addConnection(ModItem* a, ModItem* b)
-{
-    ModelicaConnection* newConnection = new ModelicaConnection(a->name(ModItem::FULL),b->name(ModItem::FULL));
-    _connections->addItem(newConnection);
-}
+//void ModModelPlus::addConnection(ModItem* a, ModItem* b)
+//{
+//    ModelicaConnection* newConnection = new ModelicaConnection(a->name(ModItem::FULL),b->name(ModItem::FULL));
+//    _connections->addItem(newConnection);
+//}
 
-void ModModelPlus::addConnection(QString aName,QString bName)
-{
-    ModelicaConnection* newConnection = new ModelicaConnection(aName,bName);
-    _connections->addItem(newConnection);
-}
+//void ModModelPlus::addConnection(QString aName,QString bName)
+//{
+//    ModelicaConnection* newConnection = new ModelicaConnection(aName,bName);
+//    _connections->addItem(newConnection);
+//}
 
-ModelicaConnections* ModModelPlus::connections()
-{
-    if(!_connectionsRead)
-        readConnections();
+//ModelicaConnections* ModModelPlus::connections()
+//{
+//    if(!_connectionsRead)
+//        readConnections();
 
-    return _connections;
-}
+//    return _connections;
+//}
 
 bool ModModelPlus::readVariables(ModPlusCtrl* ctrl, QFileInfoList filesToCopy, bool forceRecompile)
 {
@@ -289,57 +289,57 @@ bool ModModelPlus::variablesRead() const
     return _variablesRead;
 }
 
-bool ModModelPlus::readConnections(ModItem* element,bool includeChildren)
-{
-    if(!element)
-        return false;
+//bool ModModelPlus::readConnections(ModItem* element,bool includeChildren)
+//{
+//    if(!element)
+//        return false;
 
-    QString className = ((ModComponent*)element)->getModClassName();
-    QString name = element->name(ModItem::FULL);
+//    QString className = ((ModComponent*)element)->getModClassName();
+//    QString name = element->name(ModItem::FULL);
 
-    QStringList aNames, bNames;
-    QString aName,bName;
+//    QStringList aNames, bNames;
+//    QString aName,bName;
 
-    QMap<QString,QString> conns = _moomc->getConnections(className);
+//    QMap<QString,QString> conns = _moomc->getConnections(className);
 
-    for(int i=0;i<conns.keys().size();i++)
-    {
-        aName = _name+"."+conns.keys().at(i);
-        bName = _name+"."+conns.value(conns.keys().at(i));
-        addConnection(aName,bName);
-    }
+//    for(int i=0;i<conns.keys().size();i++)
+//    {
+//        aName = _name+"."+conns.keys().at(i);
+//        bName = _name+"."+conns.value(conns.keys().at(i));
+//        addConnection(aName,bName);
+//    }
 
-    if(includeChildren)
-    {
-        // call it for all children packages
-        int nbChildren = element->packageChildCount();
-        for(int iChild = 0; iChild<nbChildren; iChild++)
-            readConnections(element->packageChild(iChild),true);
+//    if(includeChildren)
+//    {
+//        // call it for all children packages
+//        int nbChildren = element->packageChildCount();
+//        for(int iChild = 0; iChild<nbChildren; iChild++)
+//            readConnections(element->packageChild(iChild),true);
 
-        // call it for all children models
-        nbChildren = element->modelChildCount();
-        for(int iChild = 0; iChild<nbChildren; iChild++)
-            readConnections(element->modelChild(iChild),true);
+//        // call it for all children models
+//        nbChildren = element->modelChildCount();
+//        for(int iChild = 0; iChild<nbChildren; iChild++)
+//            readConnections(element->modelChild(iChild),true);
 
 
-        // call it for all children components
-        nbChildren = element->compChildCount();
-        for(int iChild = 0; iChild<nbChildren; iChild++)
-            readConnections(element->compChild(iChild),true);
-    }
-    return true;
-}
+//        // call it for all children components
+//        nbChildren = element->compChildCount();
+//        for(int iChild = 0; iChild<nbChildren; iChild++)
+//            readConnections(element->compChild(iChild),true);
+//    }
+//    return true;
+//}
 
-bool ModModelPlus::readConnections()
-{
-    _connections->clear();
+//bool ModModelPlus::readConnections()
+//{
+//    _connections->clear();
 
-    sendInfo (new Info(ListInfo::BEGINREADINGCONNECTIONS));
-    _connectionsRead = readConnections(modModel(),true);
-    sendInfo (new Info(ListInfo::READCONNECTIONSSUCCESS));
+//    sendInfo (new Info(ListInfo::BEGINREADINGCONNECTIONS));
+//    _connectionsRead = readConnections(modModel(),true);
+//    sendInfo (new Info(ListInfo::READCONNECTIONSSUCCESS));
 
-    return _connectionsRead;
-}
+//    return _connectionsRead;
+//}
 
 void ModModelPlus::openMoFolder()
 {
@@ -396,62 +396,62 @@ void ModModelPlus::openNeededFilesDlg()
 
 
 
-bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
-{
-    // delete org connections
-    bool deleteOk = _moomc->deleteConnections(blockSub->_orgPorts,blockSub->_orgConnectedComps,modelName());
-    QString shortOrg = blockSub->_orgComponent;
-    shortOrg = shortOrg.remove(modelName()+".");
-    QString shortSub = blockSub->_subComponent;
-    shortSub = shortSub.remove(modelName()+".");
-    ModItem* orgClass = _project->modItemsTree()->findInDescendants(blockSub->_orgComponent,modModel());
-    if(!orgClass)
-    {
-        QString msg;
-        msg.sprintf("Could not apply component substitution : component %s not found",
-                    blockSub->_orgComponent.utf16());
-        InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
-        return false;
-    }
+//bool ModModelPlus::applyBlockSub(BlockSubstitution *blockSub,bool compile)
+//{
+//    // delete org connections
+//    bool deleteOk = _moomc->deleteConnections(blockSub->_orgPorts,blockSub->_orgConnectedComps,modelName());
+//    QString shortOrg = blockSub->_orgComponent;
+//    shortOrg = shortOrg.remove(modelName()+".");
+//    QString shortSub = blockSub->_subComponent;
+//    shortSub = shortSub.remove(modelName()+".");
+//    ModItem* orgClass = _project->modItemsTree()->findInDescendants(blockSub->_orgComponent,modModel());
+//    if(!orgClass)
+//    {
+//        QString msg;
+//        msg.sprintf("Could not apply component substitution : component %s not found",
+//                    blockSub->_orgComponent.utf16());
+//        InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
+//        return false;
+//    }
 
-    ModComponent* orgComp = NULL;
-    if(orgClass->getClassRestr()==Modelica::COMPONENT)
-        orgComp = (ModComponent*)orgClass;
+//    ModComponent* orgComp = NULL;
+//    if(orgClass->getClassRestr()==Modelica::COMPONENT)
+//        orgComp = (ModComponent*)orgClass;
 
-    if(orgComp)
-    {
-        // first save annotation and modifiers
-        QString annotation;// = _moomc->getAnnotation(blockSub->_orgComponent,blockSub->_model);
-        QStringList modifiersNames = _moomc->getComponentModifierNames(blockSub->_orgComponent);
-        QStringList modifiersValues;
-        for(int i=0;i<modifiersNames.size();i++)
-            modifiersValues.push_back(_moomc->getComponentModifierValue(modelName(),shortOrg,modifiersNames.at(i)));
+//    if(orgComp)
+//    {
+//        // first save annotation and modifiers
+//        QString annotation;// = _moomc->getAnnotation(blockSub->_orgComponent,blockSub->_model);
+//        QStringList modifiersNames = _moomc->getComponentModifierNames(blockSub->_orgComponent);
+//        QStringList modifiersValues;
+//        for(int i=0;i<modifiersNames.size();i++)
+//            modifiersValues.push_back(_moomc->getComponentModifierValue(modelName(),shortOrg,modifiersNames.at(i)));
 
-        // delete org component
-        _moomc->deleteComponent(blockSub->_orgComponent);
+//        // delete org component
+//        _moomc->deleteComponent(blockSub->_orgComponent);
 
-        // create new component
-        QString newCompName = blockSub->_orgComponent;
-        //keep same name will avoid problem if objective or optimized variables are in component
+//        // create new component
+//        QString newCompName = blockSub->_orgComponent;
+//        //keep same name will avoid problem if objective or optimized variables are in component
 
-        _moomc->addComponent(newCompName,blockSub->_subComponent,modelName(),annotation);
+//        _moomc->addComponent(newCompName,blockSub->_subComponent,modelName(),annotation);
 
-        // specify modifiers equal to orgComponent
-        _moomc->setComponentModifiers(newCompName,modelName(),modifiersNames,modifiersValues);
+//        // specify modifiers equal to orgComponent
+//        _moomc->setComponentModifiers(newCompName,modelName(),modifiersNames,modifiersValues);
 
-        // connect it
-        QStringList newCompPorts;
-        for(int i=0;i<blockSub->_subPorts.size();i++)
-        {
-            newCompPorts.push_back(newCompName + "." + blockSub->_subPorts.at(i).section(".",-1,-1));
-        }
+//        // connect it
+//        QStringList newCompPorts;
+//        for(int i=0;i<blockSub->_subPorts.size();i++)
+//        {
+//            newCompPorts.push_back(newCompName + "." + blockSub->_subPorts.at(i).section(".",-1,-1));
+//        }
 
-        _moomc->addConnections(newCompPorts,blockSub->_subConnectedComps);
-    }
+//        _moomc->addConnections(newCompPorts,blockSub->_subConnectedComps);
+//    }
 
-    _moomc->save(modelName());
+//    _moomc->save(modelName());
 
-    return true;
-}
+//    return true;
+//}
 
 

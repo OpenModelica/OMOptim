@@ -84,6 +84,8 @@ public:
     virtual QString getClassName() const {return "OptObjective";};
 
 
+    OptObjective* clone() const;
+
     void initOptExtremum();
 
     void setDirection(Direction);

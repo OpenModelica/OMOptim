@@ -48,7 +48,7 @@ INCLUDEPATH += . \
               ../Core/Optim \
               ../Core/Optim/EA \
               ../Core/Optim/MILP \
-              ../Core/Problems/BlockSubs \
+         #     ../Core/Problems/BlockSubs \
               ../Core/Optim/EA/Checkpoints \
               ../Core/Optim/EA/Chromosome \
               ../Core/Optim/EA/Crossover \
@@ -99,7 +99,7 @@ DEPENDPATH += . \
               ../Core/Optim \
               ../Core/Optim/EA \
               ../Core/Optim/MILP \
-              ../Core/Problems/BlockSubs \
+      #        ../Core/Problems/BlockSubs \
               ../Core/Optim/EA/Checkpoints \
               ../Core/Optim/EA/Chromosome \
               ../Core/Optim/EA/Crossover \
@@ -140,7 +140,7 @@ HEADERS += ../config.h \
            ../Core/Modelica/ModComponent.h \
            ../Core/Modelica/Modelica.h \
            ../Core/Modelica/ModelicaConnection.h \
-           ../Core/Modelica/ModelicaConnections.h \
+        #   ../Core/Modelica/ModelicaConnections.h \
            ../Core/Modelica/ModelicaModifier.h \
            ../Core/Modelica/ModExecution.h \
            ../Core/Modelica/ModModel.h \
@@ -164,24 +164,24 @@ HEADERS += ../config.h \
            ../Core/Tools/reportingHook.h \
            ../Core/Tools/vqtconvert.h \
            ../GUI/Dialogs/AboutOMOptim.h \
-           ../GUI/Dialogs/BlockSubstituteConnDlg.h \
+        #   ../GUI/Dialogs/BlockSubstituteConnDlg.h \
            ../GUI/Dialogs/HelpDlg.h \
            ../GUI/Dialogs/newprojectform.h \
            ../GUI/Plots/MOOptPlot.h \
            ../GUI/Scene/arrow.h \
-           ../GUI/Scene/BlockDrawItem.h \
-           ../GUI/Scene/BlockSubsScene.h \
+        #   ../GUI/Scene/BlockDrawItem.h \
+        #   ../GUI/Scene/BlockSubsScene.h \
            ../GUI/Scene/diagramitem.h \
            ../GUI/Scene/diagramscene.h \
            ../GUI/Scene/diagramtextitem.h \
-           ../GUI/Widgets/WidgetBlocks.h \
+          # ../GUI/Widgets/WidgetBlocks.h \
            ../GUI/Widgets/WidgetCalculateMooPoints.h \
            ../GUI/Widgets/WidgetMooPlot.h \
            ../GUI/Widgets/WidgetOneSimVars.h \
            ../GUI/Widgets/WidgetOptParameters.h \
            ../GUI/Widgets/WidgetOptTable.h \
            ../GUI/Widgets/WidgetProgress.h \
-           ../GUI/Widgets/WidgetSelectComponents.h \
+#           ../GUI/Widgets/WidgetSelectComponents.h \
            ../GUI/Widgets/WidgetSelectModModel.h \
            ../GUI/Widgets/WidgetSelectOptVars.h \
            ../GUI/Widgets/WidgetSelPointScan.h \
@@ -195,8 +195,8 @@ HEADERS += ../config.h \
            ../Core/Optim/EA/OMEAEvalFuncCounter.h \
            ../Core/Optim/EA/OMEAProgress.h \
            ../Core/Optim/EA/OptimAlgosList.h \
-           ../Core/Problems/BlockSubs/BlockSubstitution.h \
-           ../Core/Problems/BlockSubs/BlockSubstitutions.h \
+#           ../Core/Problems/BlockSubs/BlockSubstitution.h \
+#           ../Core/Problems/BlockSubs/BlockSubstitutions.h \
            ../Core/Optim/EA/Checkpoints/EAStdCheckPoint.h \
            ../Core/Optim/EA/Checkpoints/EAUpdaterDispObjGUI.h \
            ../Core/Optim/EA/Chromosome/EOAdapt.h \
@@ -275,23 +275,24 @@ HEADERS += ../config.h \
     ../Core/Tools/ModPlusOMExeCtrl.h \
     ../Core/ModPlusDymolaExeCtrl.h \
     ../Core/PlugInterface.h \
-    ../Core/ModPlusBlackBoxExeCtrl.h
+    ../Core/ModPlusBlackBoxExeCtrl.h \
+    ../scriptparseromoptim.h
     #../Core/ModPlusTherExeCtrl.h
 
 FORMS += ../GUI/MainWindow.ui \
          ../GUI/Dialogs/AboutOMOptim.ui \
-         ../GUI/Dialogs/BlockSubstituteConnDlg.ui \
+        # ../GUI/Dialogs/BlockSubstituteConnDlg.ui \
          ../GUI/Dialogs/HelpDlg.ui \
          ../GUI/Dialogs/newprojectform.ui \
          ../GUI/Dialogs/OtherDlg.ui \
-         ../GUI/Widgets/WidgetBlocks.ui \
+      #   ../GUI/Widgets/WidgetBlocks.ui \
          ../GUI/Widgets/WidgetCalculateMooPoints.ui \
          ../GUI/Widgets/WidgetMooPlot.ui \
          ../GUI/Widgets/WidgetOneSimVars.ui \
          ../GUI/Widgets/WidgetOptParameters.ui \
          ../GUI/Widgets/WidgetOptTable.ui \
          ../GUI/Widgets/WidgetProgress.ui \
-         ../GUI/Widgets/WidgetSelectComponents.ui \
+#         ../GUI/Widgets/WidgetSelectComponents.ui \
          ../GUI/Widgets/WidgetSelectModModel.ui \
          ../GUI/Widgets/WidgetSelectOptVars.ui \
          ../GUI/Widgets/WidgetSelPointScan.ui \
@@ -321,7 +322,7 @@ SOURCES += ../Core/OptObjective.cpp \
            ../Core/Modelica/ModItemsTree.cpp \
            ../Core/Modelica/ModComponent.cpp \
            ../Core/Modelica/ModelicaConnection.cpp \
-           ../Core/Modelica/ModelicaConnections.cpp \
+    #       ../Core/Modelica/ModelicaConnections.cpp \
            ../Core/Modelica/ModelicaModifier.cpp \
            ../Core/Modelica/ModExecution.cpp \
            ../Core/Modelica/ModModel.cpp \
@@ -343,13 +344,13 @@ SOURCES += ../Core/OptObjective.cpp \
            ../Core/Tools/reportingHook.cpp \
            ../Core/Tools/vqtconvert.cpp \
            ../GUI/Dialogs/AboutOMOptim.cpp \
-           ../GUI/Dialogs/BlockSubstituteConnDlg.cpp \
+          # ../GUI/Dialogs/BlockSubstituteConnDlg.cpp \
            ../GUI/Dialogs/HelpDlg.cpp \
            ../GUI/Dialogs/newprojectform.cpp \
            ../GUI/Plots/MOPlot.cpp \
            ../GUI/Scene/arrow.cpp \
-           ../GUI/Scene/BlockDrawItem.cpp \
-           ../GUI/Scene/BlockSubsScene.cpp \
+         #  ../GUI/Scene/BlockDrawItem.cpp \
+          # ../GUI/Scene/BlockSubsScene.cpp \
            ../GUI/Scene/diagramitem.cpp \
            ../GUI/Scene/diagramscene.cpp \
            ../GUI/Scene/diagramtextitem.cpp \
@@ -359,14 +360,14 @@ SOURCES += ../Core/OptObjective.cpp \
            ../GUI/Tabs/TabProject.cpp \
            ../GUI/Tabs/TabResOneSim.cpp \
            ../GUI/Tabs/TabResOptimization.cpp \
-           ../GUI/Widgets/WidgetBlocks.cpp \
+       #    ../GUI/Widgets/WidgetBlocks.cpp \
            ../GUI/Widgets/WidgetCalculateMooPoints.cpp \
            ../GUI/Widgets/WidgetMooPlot.cpp \
            ../GUI/Widgets/WidgetOneSimVars.cpp \
            ../GUI/Widgets/WidgetOptParameters.cpp \
            ../GUI/Widgets/WidgetOptTable.cpp \
            ../GUI/Widgets/WidgetProgress.cpp \
-           ../GUI/Widgets/WidgetSelectComponents.cpp \
+#           ../GUI/Widgets/WidgetSelectComponents.cpp \
            ../GUI/Widgets/WidgetSelectModModel.cpp \
            ../GUI/Widgets/WidgetSelectOptVars.cpp \
            ../GUI/Widgets/WidgetSelPointScan.cpp \
@@ -376,8 +377,8 @@ SOURCES += ../Core/OptObjective.cpp \
            ../Core/Optim/EA/AlgoParameter.cpp \
            ../Core/Optim/EA/EABase.cpp \
            ../Core/Optim/EA/OptimAlgo.cpp \
-           ../Core/Problems/BlockSubs/BlockSubstitution.cpp \
-           ../Core/Problems/BlockSubs/BlockSubstitutions.cpp \
+#           ../Core/Problems/BlockSubs/BlockSubstitution.cpp \
+#           ../Core/Problems/BlockSubs/BlockSubstitutions.cpp \
            ../Core/Optim/EA/Monitor/MyEoGnuplot.cpp \
            ../Core/Optim/EA/Monitor/MyEoGnuplot1DMonitor.cpp \
            ../Core/Optim/EA/NSGA2/NSGA2.cpp \
@@ -409,6 +410,7 @@ SOURCES += ../Core/OptObjective.cpp \
     ../Core/ExeModel.cpp \
     ../Core/Tools/ModPlusOMExeCtrl.cpp \
     ../Core/ModPlusDymolaExeCtrl.cpp \
-    ../Core/ModPlusBlackBoxExeCtrl.cpp
+    ../Core/ModPlusBlackBoxExeCtrl.cpp \
+    ../scriptparseromoptim.cpp
     #../Core/ModPlusTherExeCtrl.cpp
 

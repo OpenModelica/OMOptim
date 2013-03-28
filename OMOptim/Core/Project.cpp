@@ -324,11 +324,19 @@ bool Project::loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo 
 /**
 * \brief load a ModModelPlus defined by a filePath. It will be loaded only if refers to an existing model in current workspace.
 * \param mmoFilePath full file path of .mmo
+* \param uncompile : delete compiled version or not.
 */
-void Project::loadModelPlus(QString mmoFilePath)
+void Project::loadModelPlus(QString mmoFilePath, bool uncompile)
 {
-    LoadOMOptim::loadModelPlus(this,mmoFilePath);
+    QString modelName = LoadOMOptim::loadModelPlus(this,mmoFilePath);
     storeMmoFilePath(mmoFilePath);
+
+    if(uncompile)
+    {
+        ModModelPlus* modelPlus = dynamic_cast<ModModelPlus*>(this->modelPlus(modelName));
+        if(modelPlus)
+            modelPlus->uncompile();
+    }
 
     emit projectChanged();
 }

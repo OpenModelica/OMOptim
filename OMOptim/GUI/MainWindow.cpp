@@ -987,13 +987,18 @@ void MainWindow::showModItem(ModItem* modClass)
 
 void MainWindow::onMoFileChanged(const QString &moFile)
 {
-    QMessageBox msgbox(QMessageBox::Question,"Reload .mo file","Model file has been modified. Do you want to realod it ? \n"+moFile,
+    // first remove from watcher to avoid multiple asking
+    _project->_mofilesWatcher.removePath(moFile);
+
+    QMessageBox msgbox(QMessageBox::Question,"Reload .mo file","Model file has been modified. Do you want to reload it ? \n"+moFile,
                        QMessageBox::No|QMessageBox::Yes,this);
     if(msgbox.exec()==QMessageBox::Yes)
     {
         _project->loadMoFile(moFile,true,true);
         refreshModelTreeView();
     }
+    // restore watcher
+    _project->_mofilesWatcher.addPath(moFile);
 }
 
 void MainWindow::loadMoFile()

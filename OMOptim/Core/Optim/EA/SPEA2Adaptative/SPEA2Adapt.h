@@ -93,7 +93,7 @@ private :
 Result* SPEA2Adapt::buildResult(moeoUnboundedArchive<EOAdapt> & arch)
 {
         Result* result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,
-                                                                         _subBlocks,arch);
+                                                                         /*_subBlocks,*/arch);
 
     return result;
 }

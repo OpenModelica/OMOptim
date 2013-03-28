@@ -51,7 +51,7 @@ class EAStdBounds
 {
 public :
     inline static void setBounds(Optimization*,
-                                 QList<QList<ModelPlus*> > subModels,
+                                // QList<QList<ModelPlus*> > subModels,
                                  std::vector<eoRealInterval> &doubleBounds,
                                  std::vector<eoIntInterval> &intBounds,
                                  int &nbDouble,int &nbInt,int &nbBool);
@@ -68,7 +68,7 @@ public :
 
 
 
-void EAStdBounds::setBounds(Optimization *_problem, QList<QList<ModelPlus*> > subModels,std::vector<eoRealInterval> &doubleBounds, std::vector<eoIntInterval> &intBounds, int &nbDouble, int &nbInt, int &nbBool)
+void EAStdBounds::setBounds(Optimization *_problem, /*QList<QList<ModelPlus*> > subModels,*/std::vector<eoRealInterval> &doubleBounds, std::vector<eoIntInterval> &intBounds, int &nbDouble, int &nbInt, int &nbBool)
 {
     int nbVar = _problem->optimizedVariables()->size();
     OptVariable* curVar;
@@ -101,13 +101,13 @@ void EAStdBounds::setBounds(Optimization *_problem, QList<QList<ModelPlus*> > su
         }
     }
 
-    //Adding int variable corresponding to subModelSelection
-    if(subModels.size()>1)
-    {
-        intInterval = new eoIntInterval((int)0,subModels.size()-1);
-        intBounds.push_back(*intInterval);
-        nbInt++;
-    }
+//    //Adding int variable corresponding to subModelSelection
+//    if(subModels.size()>1)
+//    {
+//        intInterval = new eoIntInterval((int)0,subModels.size()-1);
+//        intBounds.push_back(*intInterval);
+//        nbInt++;
+//    }
 }
 
 

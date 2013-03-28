@@ -84,7 +84,7 @@ private :
 
 Result* SA1::buildResult(moeoUnboundedArchive<EOStd> & arch)
 {
-        Result* result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,_subBlocks,arch);
+        Result* result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,/*_subBlocks,*/arch);
 
         return result;
 }

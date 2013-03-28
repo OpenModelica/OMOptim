@@ -73,7 +73,7 @@ public:
         _project = EAStdOptimizationEval._project;
         _modItemsTree = EAStdOptimizationEval._modItemsTree;
         _tempDir = EAStdOptimizationEval._tempDir;
-        _subModels = EAStdOptimizationEval._subModels;
+      //  _subModels = EAStdOptimizationEval._subModels;
         _nbObj = EAStdOptimizationEval._nbObj;
         _bObjectives = EAStdOptimizationEval._bObjectives;
         _stop = EAStdOptimizationEval._stop;
@@ -83,14 +83,14 @@ public:
     /**
      * \brief Ctor.
      */
-    EAStdOptimizationEval(Project* project,Optimization* problem,QList<QList<ModelPlus*> > subModels,QString tempDir
+    EAStdOptimizationEval(Project* project,Optimization* problem/*,QList<QList<ModelPlus*> > subModels*/,QString tempDir
                            ,ModItemsTree* modItemsTree,bool *stop)
     {
         _project = project;
         _problem = problem;
         _modItemsTree = modItemsTree;
         _tempDir = tempDir;
-        _subModels = subModels;
+     //   _subModels = subModels;
         _stop = stop;
 
         /************************************
@@ -130,18 +130,18 @@ public:
             QList<ModelPlus*> models;
 
 
-            int iSubModel = -1;
-            if(_subModels.size()>1)
-            {
-                iSubModel = eo.intVars.at(eo.intVars.size()-1);
-                models = _subModels.at(iSubModel);
-            }
-            else
-            {
+//            int iSubModel = -1;
+//            if(_subModels.size()>1)
+//            {
+//                iSubModel = eo.intVars.at(eo.intVars.size()-1);
+//                models = _subModels.at(iSubModel);
+//            }
+//            else
+//            {
                 QStringList modelsNames = _problem->models();
                 for(int i=0;i<modelsNames.size();i++)
                     models.push_back(_project->modelPlus(modelsNames.at(i)));
-            }
+//            }
 
 
             //******************************
@@ -210,6 +210,9 @@ public:
                 }
 
                 // recover saved variables
+                // first delete those ( may contain old values from previous generations)
+                eo.savedVars.clear();
+
                 QString curVarName;
                 QString curModelName;
                 VariableResult* curVarResult;
@@ -263,7 +266,7 @@ protected:
     Optimization* _problem;
     Project* _project;
     ModItemsTree* _modItemsTree;
-    QList<QList<ModelPlus*> > _subModels;
+ //   QList<QList<ModelPlus*> > _subModels;
     std::vector<OneSimResult*> *_resultPoints;
     QString _tempDir;
     int _nbObj;
