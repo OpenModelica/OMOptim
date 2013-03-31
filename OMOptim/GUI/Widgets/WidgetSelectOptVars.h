@@ -83,8 +83,8 @@ public slots :
     void deleteOptVariables();
     void addOptObjectives();
     void deleteOptObjectives();
-    void addScannedVariables();
-    void deleteScannedVariables();
+    void addSamplingVariables();
+    void deleteSamplingVariables();
     void addOverVariables();
     void deleteOverVariables();
     void readVariables();
@@ -92,6 +92,8 @@ public slots :
 
 
 protected:
+
+    void initToolBar();
 
     Optimization* _problem;
     Project* _project;
@@ -102,15 +104,20 @@ protected:
     QSortFilterProxyModel *_variableProxyModel;
     QSortFilterProxyModel *_optVariableProxyModel;
     QSortFilterProxyModel *_objectiveProxyModel;
-    QSortFilterProxyModel *_scannedProxyModel;
+    QSortFilterProxyModel *_samplingProxyModel;
     QSortFilterProxyModel *_overVarsProxyModel;
 
     MOTableView *_tableVariables;
     MOTableView *_tableOptimizedVars;
-    MOTableView *_tableScannedVars;
+    MOTableView *_tableSamplingVars;
     MOTableView *_tableOverVars;
     MOTableView *_tableObjectives;
 
+    QAction* _actionReadVariables;
+    QAction* _actionShowSampling;
+    QAction* _actionShowParameters;
+    QAction* _actionShowObjectives;
+    QAction* _actionShowOptimized;
 
 
 

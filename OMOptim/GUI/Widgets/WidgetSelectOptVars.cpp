@@ -43,8 +43,10 @@
 #include <QtGui/QErrorMessage>
 #include "Optimization.h"
 #include "Project.h"
+#include "MOStyleSheet.h"
 #include "ModExePlus.h"
 #include "ModModelPlus.h"
+#include <QToolBar>
 
 WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,QWidget *parent):
     QWidget(parent),
@@ -73,20 +75,20 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
 
     // create tables
     _tableVariables = new MOTableView(this);
-    _tableScannedVars = new MOTableView(this);
+    _tableSamplingVars = new MOTableView(this);
     _tableOptimizedVars = new MOTableView(this);
     _tableObjectives = new MOTableView(this);
     _tableOverVars = new MOTableView(this);
 
     _tableVariables->setSelectionBehavior(QAbstractItemView::SelectRows);
     _tableVariables->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    _tableScannedVars->setSelectionBehavior(QAbstractItemView::SelectRows);
+    _tableSamplingVars->setSelectionBehavior(QAbstractItemView::SelectRows);
     _tableOptimizedVars->setSelectionBehavior(QAbstractItemView::SelectRows);
     _tableObjectives->setSelectionBehavior(QAbstractItemView::SelectRows);
     _tableOverVars->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     _ui->layoutObjectives->addWidget(_tableObjectives);
-    _ui->layoutScannedVars->addWidget(_tableScannedVars);
+    _ui->layoutSamplingVars->addWidget(_tableSamplingVars);
     _ui->layoutOptimizedVars->addWidget(_tableOptimizedVars);
     _ui->layoutTableVariables->addWidget(_tableVariables);
     _ui->layoutOvervars->addWidget(_tableOverVars);
@@ -99,8 +101,8 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     _variableProxyModel = GuiTools::ModelToViewWithFilter(_allModelsVars,
                                                           _tableVariables,_ui->lineVariableFilter);
 
-    _scannedProxyModel = GuiTools::ModelToViewWithFilter(_problem->scannedVariables(),
-                                                         _tableScannedVars,NULL);
+    _samplingProxyModel = GuiTools::ModelToViewWithFilter(_problem->scannedVariables(),
+                                                         _tableSamplingVars,NULL);
 
     _objectiveProxyModel = GuiTools::ModelToViewWithFilter(_problem->objectives(),
                                                            _tableObjectives,NULL);
@@ -113,22 +115,21 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     setShownColumns();
     setDelegates();
     refreshAllModelsVars();
+    initToolBar();
 
     //buttons
     connect(_ui->pushAddVariables, SIGNAL(clicked()), this, SLOT(addOptVariables()));
     connect(_ui->pushRemoveVariables, SIGNAL(clicked()), this, SLOT(deleteOptVariables()));
     connect(_ui->pushAddObjectives, SIGNAL(clicked()), this, SLOT(addOptObjectives()));
     connect(_ui->pushRemoveObjectives, SIGNAL(clicked()), this, SLOT(deleteOptObjectives()));
-    connect(_ui->pushAddScanned, SIGNAL(clicked()), this, SLOT(addScannedVariables()));
-    connect(_ui->pushRemoveScanned, SIGNAL(clicked()), this, SLOT(deleteScannedVariables()));
+    connect(_ui->pushAddSampling, SIGNAL(clicked()), this, SLOT(addSamplingVariables()));
+    connect(_ui->pushRemoveSampling, SIGNAL(clicked()), this, SLOT(deleteSamplingVariables()));
     connect(_ui->pushAddParam, SIGNAL(clicked()), this, SLOT(addOverVariables()));
     connect(_ui->pushRemoveParam, SIGNAL(clicked()), this, SLOT(deleteOverVariables()));
 
-    connect(_ui->pushReadVariables,SIGNAL(clicked()),this,SLOT(readVariables()));
-
 
     //size tables' columns
-    _tableScannedVars->resizeColumnsToContents();
+    _tableSamplingVars->resizeColumnsToContents();
     _tableOptimizedVars->resizeColumnsToContents();
     _tableObjectives->resizeColumnsToContents();
     _tableVariables->resizeColumnsToContents();
@@ -149,6 +150,51 @@ WidgetSelectOptVars::~WidgetSelectOptVars()
     delete _ui;
     delete _allModelsVars;
     delete _permanentVars;
+}
+
+void WidgetSelectOptVars::initToolBar()
+{
+    // create a toolbar
+    _actionReadVariables = new QAction( QIcon(":/Refresh"),"Read variables",this);
+    connect(_actionReadVariables,SIGNAL(triggered()),this,SLOT(readVariables()));
+
+
+
+
+    _actionShowParameters = new QAction( "Parameters",this);
+    connect(_actionShowParameters,SIGNAL(toggled(bool)),_ui->groupParameters,SLOT(setShown(bool)));
+    _actionShowParameters->setCheckable(true);
+    _actionShowParameters->setChecked(true);
+
+    _actionShowObjectives = new QAction( "Objectives",this);
+    connect(_actionShowObjectives,SIGNAL(toggled(bool)),_ui->groupObjectives,SLOT(setShown(bool)));
+    _actionShowObjectives->setCheckable(true);
+    _actionShowObjectives->setChecked(true);
+
+    _actionShowOptimized = new QAction( "Optimized",this);
+    connect(_actionShowOptimized,SIGNAL(toggled(bool)),_ui->groupOptimized,SLOT(setShown(bool)));
+    _actionShowOptimized->setCheckable(true);
+    _actionShowOptimized->setChecked(true);
+
+    _actionShowSampling = new QAction( "Sampling variables",this);
+    connect(_actionShowSampling,SIGNAL(toggled(bool)),_ui->groupSampling,SLOT(setShown(bool)));
+    _actionShowSampling->setCheckable(true);
+    _actionShowSampling->setChecked(true);
+
+    QToolBar* toolBar = new QToolBar(this);
+    this->setStyleSheet("QToolButton { color:white;} QToolButton:checked {background-color: gray; color : white;border-color: palette(highlight)}");
+    toolBar->setStyleSheet(MOStyleSheet::toolBarStyleSheet());
+
+    toolBar->addAction(_actionReadVariables);
+    toolBar->addSeparator();
+    toolBar->addAction(_actionShowParameters);
+    toolBar->addAction(_actionShowObjectives);
+    toolBar->addAction(_actionShowOptimized);
+     toolBar->addAction(_actionShowSampling);
+    _ui->layoutToolBar->addWidget(toolBar);
+    toolBar->setProperty("frameShape",QFrame::NoFrame);
+
+
 }
 
 void WidgetSelectOptVars::addPermanentVars(Variables * vars)
@@ -219,7 +265,7 @@ void WidgetSelectOptVars::deleteOptVariables()
 
 }
 
-void WidgetSelectOptVars::addScannedVariables()
+void WidgetSelectOptVars::addSamplingVariables()
 {
     QModelIndexList proxyIndexes = _tableVariables->selectionModel()->selectedRows();
     QModelIndex curProxyIndex;
@@ -244,23 +290,23 @@ void WidgetSelectOptVars::addScannedVariables()
         }
     }
 
-    _tableScannedVars->resizeColumnsToContents();
+    _tableSamplingVars->resizeColumnsToContents();
 }
 
-void WidgetSelectOptVars::deleteScannedVariables()
+void WidgetSelectOptVars::deleteSamplingVariables()
 {
-    QModelIndexList indexList = _tableScannedVars->selectionModel()->selectedRows();
+    QModelIndexList indexList = _tableSamplingVars->selectionModel()->selectedRows();
     QModelIndex curSourceIndex;
 
     QList<int> rows;
     for(int i=0;i<indexList.size();i++)
     {
-        curSourceIndex = _scannedProxyModel->mapToSource(indexList.at(i));
+        curSourceIndex = _samplingProxyModel->mapToSource(indexList.at(i));
         rows.push_back(curSourceIndex.row());
     }
     _problem->scannedVariables()->removeRows(rows);
 
-    _tableScannedVars->resizeColumnsToContents();
+    _tableSamplingVars->resizeColumnsToContents();
 }
 
 void WidgetSelectOptVars::addOverVariables()
@@ -357,8 +403,8 @@ void WidgetSelectOptVars::actualizeGui()
 {
     // list of widgets to hide when problem is solved
     QWidgetList unsolvedWidgets;
-    unsolvedWidgets << _ui->pushAddObjectives << _ui->pushAddVariables << _ui->pushAddScanned;
-    unsolvedWidgets << _ui->pushRemoveObjectives << _ui->pushRemoveVariables << _ui->pushRemoveScanned;
+    unsolvedWidgets << _ui->pushAddObjectives << _ui->pushAddVariables << _ui->pushAddSampling;
+    unsolvedWidgets << _ui->pushRemoveObjectives << _ui->pushRemoveVariables << _ui->pushRemoveSampling;
 
     // list of widgets to hide when problem is unsolved
     QWidgetList solvedWidgets;
@@ -479,7 +525,7 @@ void WidgetSelectOptVars::setShownColumns()
     //    QList<int> scannedColsToHide;
     //    scannedColsToHide << ScannedVariable::DESCRIPTION;
     //    for(int i=0;i<scannedColsToHide.size();i++)
-    //        _tableScannedVars->setColumnHidden(scannedColsToHide.at(i),true);
+    //        _tableSamplingVars->setColumnHidden(scannedColsToHide.at(i),true);
 
     //    QList<int> objColsToHide;
     //    objColsToHide << OptObjective::DESCRIPTION;
@@ -539,8 +585,8 @@ void WidgetSelectOptVars::setDelegates()
     DoubleSpinBoxDelegate* maxScanDelegate = new DoubleSpinBoxDelegate(this,30);
     DoubleSpinBoxDelegate* valueScanDelegate = new DoubleSpinBoxDelegate(this,30);
     DoubleSpinBoxDelegate* stepScanDelegate = new DoubleSpinBoxDelegate(this,30);
-    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::SCANMIN,minScanDelegate);
-    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::SCANMAX,maxScanDelegate);
-    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::VALUE,valueScanDelegate);
-    _tableScannedVars->setItemDelegateForColumn(ScannedVariable::SCANSTEP,stepScanDelegate);
+    _tableSamplingVars->setItemDelegateForColumn(ScannedVariable::SCANMIN,minScanDelegate);
+    _tableSamplingVars->setItemDelegateForColumn(ScannedVariable::SCANMAX,maxScanDelegate);
+    _tableSamplingVars->setItemDelegateForColumn(ScannedVariable::VALUE,valueScanDelegate);
+    _tableSamplingVars->setItemDelegateForColumn(ScannedVariable::SCANSTEP,stepScanDelegate);
 }

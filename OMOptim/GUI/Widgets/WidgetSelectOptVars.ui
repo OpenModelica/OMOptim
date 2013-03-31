@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>992</width>
-    <height>670</height>
+    <width>717</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,6 +18,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
+    <layout class="QGridLayout" name="layoutToolBar"/>
+   </item>
+   <item row="1" column="0">
     <widget class="QSplitter" name="splitter_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -34,42 +37,25 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Model variables</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushReadVariables">
+          <widget class="Line" name="line">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="minimumSize">
-            <size>
-             <width>25</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Refresh</string>
-           </property>
-           <property name="text">
-            <string>Read variables</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../../GUI/Resources/CERESGui.qrc">
-             <normaloff>:/Refresh</normaloff>:/Refresh</iconset>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="Line" name="line">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -127,7 +113,7 @@
       <property name="childrenCollapsible">
        <bool>false</bool>
       </property>
-      <widget class="MyGroupBox" name="groupBox">
+      <widget class="MyGroupBox" name="groupOptimized">
        <property name="title">
         <string>Optimized variables</string>
        </property>
@@ -135,8 +121,20 @@
         <bool>false</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_8">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
          <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="horizontalSpacing">
+         <number>3</number>
         </property>
         <item row="0" column="4" rowspan="5">
          <layout class="QVBoxLayout" name="layoutOptimizedVars">
@@ -144,47 +142,6 @@
            <number>0</number>
           </property>
          </layout>
-        </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="pushAddVariables">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>25</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>200</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="baseSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
-            <normaloff>:/Add</normaloff>:/Add</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>10</width>
-            <height>10</height>
-           </size>
-          </property>
-         </widget>
         </item>
         <item row="0" column="0">
          <spacer name="verticalSpacer_2">
@@ -199,34 +156,42 @@
           </property>
          </spacer>
         </item>
-        <item row="2" column="0">
-         <widget class="QPushButton" name="pushRemoveVariables">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+        <item row="1" column="0">
+         <widget class="QToolButton" name="pushAddVariables">
           <property name="minimumSize">
            <size>
-            <width>25</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>25</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="baseSize">
-           <size>
-            <width>0</width>
+            <width>20</width>
             <height>20</height>
            </size>
           </property>
           <property name="text">
-           <string/>
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
+            <normaloff>:/Add</normaloff>:/Add</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>12</width>
+            <height>12</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QToolButton" name="pushRemoveVariables">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>...</string>
           </property>
           <property name="icon">
            <iconset resource="../../../GUI/Resources/CERESGui.qrc">
@@ -234,13 +199,16 @@
           </property>
           <property name="iconSize">
            <size>
-            <width>10</width>
-            <height>10</height>
+            <width>12</width>
+            <height>12</height>
            </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
-        <item row="3" column="0" rowspan="2">
+        <item row="3" column="0">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -255,7 +223,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="MyGroupBox" name="groupBox_2">
+      <widget class="MyGroupBox" name="groupSampling">
        <property name="title">
         <string>Sampling variables</string>
        </property>
@@ -263,11 +231,23 @@
         <bool>false</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_9">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
          <number>0</number>
         </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="horizontalSpacing">
+         <number>3</number>
+        </property>
         <item row="0" column="1" rowspan="5">
-         <layout class="QVBoxLayout" name="layoutScannedVars"/>
+         <layout class="QVBoxLayout" name="layoutSamplingVars"/>
         </item>
         <item row="0" column="0">
          <spacer name="verticalSpacer_4">
@@ -282,76 +262,6 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="pushAddScanned">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>25</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="baseSize">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
-            <normaloff>:/Add</normaloff>:/Add</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>10</width>
-            <height>10</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QPushButton" name="pushRemoveScanned">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>25</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="baseSize">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
-            <normaloff>:/Delete</normaloff>:/Delete</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>10</width>
-            <height>10</height>
-           </size>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <spacer name="verticalSpacer_3">
           <property name="orientation">
@@ -365,9 +275,61 @@
           </property>
          </spacer>
         </item>
+        <item row="1" column="0">
+         <widget class="QToolButton" name="pushAddSampling">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
+            <normaloff>:/Add</normaloff>:/Add</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>12</width>
+            <height>12</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QToolButton" name="pushRemoveSampling">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
+            <normaloff>:/Delete</normaloff>:/Delete</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>12</width>
+            <height>12</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
-      <widget class="MyGroupBox" name="groupBox_4">
+      <widget class="MyGroupBox" name="groupParameters">
        <property name="title">
         <string>Parameters</string>
        </property>
@@ -375,8 +337,20 @@
         <bool>false</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_10">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
          <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="horizontalSpacing">
+         <number>3</number>
         </property>
         <item row="0" column="1" rowspan="5">
          <layout class="QGridLayout" name="layoutOvervars"/>
@@ -394,52 +368,6 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="pushAddParam">
-          <property name="maximumSize">
-           <size>
-            <width>25</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
-            <normaloff>:/Add</normaloff>:/Add</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>10</width>
-            <height>10</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QPushButton" name="pushRemoveParam">
-          <property name="maximumSize">
-           <size>
-            <width>25</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
-            <normaloff>:/Delete</normaloff>:/Delete</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>10</width>
-            <height>10</height>
-           </size>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <spacer name="verticalSpacer_10">
           <property name="orientation">
@@ -453,38 +381,16 @@
           </property>
          </spacer>
         </item>
-       </layout>
-      </widget>
-      <widget class="MyGroupBox" name="groupBox_3">
-       <property name="title">
-        <string>Objectives</string>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <layout class="QGridLayout" name="gridLayout">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item row="0" column="1" rowspan="5">
-         <layout class="QVBoxLayout" name="layoutObjectives"/>
-        </item>
         <item row="1" column="0">
-         <widget class="QPushButton" name="pushAddObjectives">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+         <widget class="QToolButton" name="pushAddParam">
           <property name="minimumSize">
            <size>
-            <width>25</width>
-            <height>25</height>
+            <width>20</width>
+            <height>20</height>
            </size>
           </property>
           <property name="text">
-           <string/>
+           <string>...</string>
           </property>
           <property name="icon">
            <iconset resource="../../../GUI/Resources/CERESGui.qrc">
@@ -492,11 +398,68 @@
           </property>
           <property name="iconSize">
            <size>
-            <width>10</width>
-            <height>10</height>
+            <width>12</width>
+            <height>12</height>
            </size>
           </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
          </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QToolButton" name="pushRemoveParam">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
+            <normaloff>:/Delete</normaloff>:/Delete</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>12</width>
+            <height>12</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="MyGroupBox" name="groupObjectives">
+       <property name="title">
+        <string>Objectives</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="horizontalSpacing">
+         <number>3</number>
+        </property>
+        <item row="0" column="1" rowspan="4">
+         <layout class="QVBoxLayout" name="layoutObjectives"/>
         </item>
         <item row="0" column="0">
          <spacer name="verticalSpacer_5">
@@ -512,35 +475,6 @@
          </spacer>
         </item>
         <item row="3" column="0">
-         <widget class="QPushButton" name="pushRemoveObjectives">
-          <property name="minimumSize">
-           <size>
-            <width>25</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>2000</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
-            <normaloff>:/Delete</normaloff>:/Delete</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>10</width>
-            <height>10</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
          <spacer name="verticalSpacer_6">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -552,6 +486,58 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="1" column="0">
+         <widget class="QToolButton" name="pushAddObjectives">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
+            <normaloff>:/Add</normaloff>:/Add</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>12</width>
+            <height>12</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QToolButton" name="pushRemoveObjectives">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../GUI/Resources/CERESGui.qrc">
+            <normaloff>:/Delete</normaloff>:/Delete</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>12</width>
+            <height>12</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

@@ -443,7 +443,7 @@ QStringList MOomc::getComponentModifierNames(QString componentName)
 
 QString MOomc::getFlattenedModel(const QString & modelName)
 {
-    InfoSender::instance()->sendNormal("Instantiating model "+modelName);
+    InfoSender::instance()->sendCurrentTask("Instantiating model "+modelName);
     initCommandLineOptions();
     QString flatcmd = "instantiateModel("+modelName+")";
     QString errorString;
