@@ -117,8 +117,8 @@ public:
     void emitModified();
 
     // Parent
-    ModItem* parent();
-    void setParent(ModItem *);
+    ModItem* parentItem();
+    void setParentItem(ModItem *);
 
     // Local information
     QString name(ModItem::NameFormat = ModItem::FULL);

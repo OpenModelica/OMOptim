@@ -68,12 +68,12 @@ OneSimulation::OneSimulation(Project* project, ModelPlus* ModPlus)
     _omProject = project;
 
 
-    _overwritedVariables = new Variables(true);
-    _scannedVariables = new ScannedVariables(true);
+    _overwritedVariables = new Variables(true,this);
+    _scannedVariables = new ScannedVariables(true,this);
 
 
     // ctrls
-    _ctrls = new ModPlusCtrls(project,ModPlus);
+    _ctrls = new ModPlusCtrls(project,ModPlus,this);
 
     // qDebug(QString("New OneSimulation").toLatin1().data());
 }
@@ -119,15 +119,15 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     {
         ok = false;
         // create vector to avoid segfault when deleted
-        _overwritedVariables = new Variables(true);
-        _scannedVariables = new ScannedVariables(true);
-        _ctrls = new ModPlusCtrls(project,_ModelPlus);
+        _overwritedVariables = new Variables(true,this);
+        _scannedVariables = new ScannedVariables(true,this);
+        _ctrls = new ModPlusCtrls(project,_ModelPlus,this);
     }
     else
     {
         // finishing initialization
-        _overwritedVariables = new Variables(true);
-        _scannedVariables = new ScannedVariables(true);
+        _overwritedVariables = new Variables(true,this);
+        _scannedVariables = new ScannedVariables(true,this);
         // Infos
         this->setName(domInfos.attribute("name", "" ));
 
@@ -152,7 +152,7 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
 
         // Controler type
         QDomElement cControlers = domProblem.firstChildElement("Controlers");
-        _ctrls = new ModPlusCtrls(project,_ModelPlus,cControlers);
+        _ctrls = new ModPlusCtrls(project,_ModelPlus,cControlers,this);
     }
 
     // qDebug(QString("New OneSimulation").toLatin1().data());

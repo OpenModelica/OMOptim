@@ -65,11 +65,13 @@ public:
     SaveOMOptim(void);
     ~SaveOMOptim(void);
 
+    static QDomDocument ProjectToXml(Project*);
     
     static void saveProject(Project*,bool saveAllCases=true);
-    static void saveModelPlus(ModelPlus* modelPlus);
+    static void saveModelPlus(Project *project, ModelPlus *modelPlus);
     static bool setModelsPath(QString projectFilePath,QStringList modelsPaths);
 
+  //  static void saveExternalProject(Project *project, QDir exportFolder);
 };
 
 

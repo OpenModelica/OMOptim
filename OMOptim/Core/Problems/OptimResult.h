@@ -65,7 +65,7 @@ class OptimResult : public Result
     Q_OBJECT
 public:
 
-    OptimResult();
+    OptimResult(Project *project);
 
     OptimResult(Project*,const Optimization &);
 

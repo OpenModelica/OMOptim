@@ -83,7 +83,7 @@
 ModelPlus::ModelPlus( Project* project,QString modelName)
 {
     _project = project;
-    _variables = new Variables(true);
+    _variables = new Variables(true,this);
     _variablesRead = false;
     _name = modelName;
     _modelName = modelName;
@@ -107,7 +107,7 @@ ModelPlus::ModelPlus(Project *project, const QDomElement &domRoot)
 
     // Variables
     QDomElement cVariables = domRoot.firstChildElement( "Variables" );
-    _variables = new Variables(true);
+    _variables = new Variables(true,this);
     _variables->update(cVariables);
 
 
@@ -172,8 +172,9 @@ ModModel* ModelPlus::modModel()
 
 QFileInfo ModelPlus::mmoFilePath()
 {
-    return _mmoFilePath;
+    return _project->folder().absoluteFilePath(_relMmoFilePath);
 }
+
 
 
 QString ModelPlus::modelName()
@@ -202,7 +203,7 @@ QFileInfoList ModelPlus::neededFolders()
 
 QDir ModelPlus::mmoFolder()
 {
-    QFileInfo fileInfo(_mmoFilePath);
+    QFileInfo fileInfo(mmoFilePath());
     return fileInfo.dir();
 }
 
@@ -300,5 +301,5 @@ bool ModelPlus::variablesRead() const
 
 void ModelPlus::setMmoFilePath(QString filePath)
 {
-    _mmoFilePath = filePath;
+    _relMmoFilePath = _project->folder().relativeFilePath(filePath);
 }

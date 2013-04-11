@@ -59,7 +59,7 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     _isEditable = isEditable;
 
     // concatenate model variables
-    _allModelsVars = new Variables(true);
+    _allModelsVars = new Variables(true,this);
     for(int i=0;i<_problem->models().size();i++)
     {
         ModelPlus* modelPlus =  _project->modelPlus(_problem->models().at(i));
@@ -71,7 +71,7 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     }
 
     // create permanent vars vector
-    _permanentVars = new Variables(true);
+    _permanentVars = new Variables(true,this);
 
     // create tables
     _tableVariables = new MOTableView(this);

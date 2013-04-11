@@ -15,7 +15,7 @@ class ModModelPlus;
 class OptObjectives : public MOVector<OptObjective>
 {
 public:
-    OptObjectives(bool owner);
+    OptObjectives(bool owner,QObject* parent);
 
     QVariant data(const QModelIndex &index, int role) const;
 

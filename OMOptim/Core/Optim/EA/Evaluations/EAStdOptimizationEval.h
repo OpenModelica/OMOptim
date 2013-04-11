@@ -147,7 +147,7 @@ public:
             //******************************
             // get variables
             //******************************
-            Variables* overwritedVariables = new Variables(true);
+            Variables* overwritedVariables = new Variables(true,NULL);
             Variable *curVar;
             int iDouble = 0;
             int iBool = 0;

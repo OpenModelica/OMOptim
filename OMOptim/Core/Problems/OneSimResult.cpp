@@ -41,11 +41,13 @@
 #include "OneSimResult.h"
 #include "OneSimulation.h"
 #include "ModModelPlus.h"
+#include "Project.h"
 
-OneSimResult::OneSimResult(void)
+OneSimResult::OneSimResult(Project* project)
+    :Result(project)
 {
-    _inputVariables = new Variables(true);
-    _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
+    _inputVariables = new Variables(true,this);
+    _finalVariables = new MOOptVector(true,true,false,this); //can have several scans but not several points
 
     // files to copy
     _filesToCopy.push_back(QFileInfo("dsin.txt"));
@@ -59,8 +61,8 @@ OneSimResult::OneSimResult(Project* project, ModelPlus* modPlus, const OneSimula
     _ModelPlus = modPlus;
 
 
-    _inputVariables = new Variables(true);
-    _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
+    _inputVariables = new Variables(true,this);
+    _finalVariables = new MOOptVector(true,true,false,this); //can have several scans but not several points
 
     // files to copy
     _filesToCopy.push_back(QFileInfo("dsin.txt"));
@@ -80,10 +82,10 @@ OneSimResult::OneSimResult(Project* project, const QDomElement & domResult,const
     this->setName(domResInfos.attribute("name", "" ));
 
     // input variables
-    _inputVariables = new Variables(true);
+    _inputVariables = new Variables(true,this);
 
     //FinalVariables
-    _finalVariables = new MOOptVector(true,true,false); //can have several scans but not several points
+    _finalVariables = new MOOptVector(true,true,false,this); //can have several scans but not several points
     QDomElement domFinalVars = domResult.firstChildElement("FinalVariables");
     this->finalVariables()->setItems(domFinalVars);
 }

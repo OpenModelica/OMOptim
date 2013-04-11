@@ -7,7 +7,8 @@
 #include "ModPlusBlackBoxExeCtrl.h"
 #include "Project.h"
 
-ModPlusCtrls:: ModPlusCtrls(Project* project,ModelPlus* modPlus)
+ModPlusCtrls:: ModPlusCtrls(Project* project,ModelPlus* modPlus,QObject* parent):
+QObject(parent)
 {
     _project = project;
     _modelPlus = modPlus;
@@ -34,10 +35,12 @@ ModPlusCtrls:: ModPlusCtrls(Project* project,ModelPlus* modPlus)
     }
 }
 
-ModPlusCtrls::ModPlusCtrls(Project* project,ModelPlus* ModPlus,const QDomElement & cControlers)
+ModPlusCtrls::ModPlusCtrls(Project* project,ModelPlus* ModPlus,const QDomElement & cControlers,QObject* parent)
+    :QObject(parent)
 {
     _project = project;
     _modelPlus = ModPlus;
+
 
     if(_modelPlus)
     {
@@ -102,7 +105,7 @@ ModPlusCtrls::~ModPlusCtrls()
 
 ModPlusCtrls* ModPlusCtrls::clone()
 {
-    ModPlusCtrls* cloned = new ModPlusCtrls(_project,_modelPlus);
+    ModPlusCtrls* cloned = new ModPlusCtrls(_project,_modelPlus,NULL);
 
     // first remove automatically created
     for(int i=0;i<cloned->values().size();i++)

@@ -96,6 +96,7 @@ private:
     ModItemsTree* _modItemsTree;
     QMap<QString,ModelPlus*> _mapModelPlus; //<modmodelName,modmodelplus>
 
+    void setMoFiles(QFileInfoList moFiles);
 
  public:
     explicit Project();
@@ -136,7 +137,6 @@ private:
 
 
 
-
     //****************************
     // Get/Set functions
     //****************************
@@ -159,6 +159,7 @@ private:
     // Save/ Load functions
     //****************************
     void save(bool saveAllOMCases);
+    void exportProjectFolder(QDir externalFolder);
     void save(Problem*);
     void save(Result*);
     bool load(QString);
@@ -172,6 +173,7 @@ private:
     //****************************
     // Slots
     //****************************
+
 
 public slots :
 
@@ -194,10 +196,6 @@ signals:
     void modItemsTreeRefreshed(); /// when want to refresh tree view
 
     void modsUpdated();
-
-
-
-
 };
 
 

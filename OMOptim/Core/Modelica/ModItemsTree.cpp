@@ -759,13 +759,13 @@ QModelIndex ModItemsTree::parent(const QModelIndex &index) const
         return QModelIndex();
 
     ModItem *parentElement  = NULL;
-    parentElement = childElement->parent();
+    parentElement = childElement->parentItem();
 
     if (parentElement == _rootElement)
         return QModelIndex();
 
     ModItem *grandParentElement = NULL;
-    grandParentElement = parentElement->parent();
+    grandParentElement = parentElement->parentItem();
 
     int iC = grandParentElement->children().indexOf(parentElement);
 
@@ -882,7 +882,7 @@ ModModel* ModItemsTree::modelOf(ModItem* item)
     if(item->getClassRestr()==Modelica::MODEL)
         return dynamic_cast<ModModel*>(item);
     else
-        return dynamic_cast<ModModel*>(modelOf(item->parent()));
+        return dynamic_cast<ModModel*>(modelOf(item->parentItem()));
 }
 
 

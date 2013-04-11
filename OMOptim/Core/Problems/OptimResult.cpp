@@ -45,11 +45,11 @@
 #include "VariablesManip.h"
 #include "LowTools.h"
 
-OptimResult::OptimResult():Result()
+OptimResult::OptimResult(Project* project):Result(project)
 {
-    _recomputedVariables = new MOOptVector(true,true,true);
-    _optObjectivesResults = new MOOptVector(true,false,true); //objectives are constant for one scan
-    _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
+    _recomputedVariables = new MOOptVector(true,true,true,this);
+    _optObjectivesResults = new MOOptVector(true,false,true,this); //objectives are constant for one scan
+    _optVariablesResults= new MOOptVector(true,false,true,this); //optimized parameters are constant for one scan
 
     // files to copy
     _filesToCopy.push_back(QFileInfo("iteration*.sav"));
@@ -73,9 +73,9 @@ OptimResult::OptimResult(Project* project, const Optimization & problem)
     _models = problem.models();
 
 
-    _recomputedVariables = new MOOptVector(true,true,true);
-    _optObjectivesResults = new MOOptVector(true,false,true); //objectives are constant for one scan
-    _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
+    _recomputedVariables = new MOOptVector(true,true,true,this);
+    _optObjectivesResults = new MOOptVector(true,false,true,this); //objectives are constant for one scan
+    _optVariablesResults= new MOOptVector(true,false,true,this); //optimized parameters are constant for one scan
 
 
     // files to copy
@@ -88,6 +88,7 @@ OptimResult::OptimResult(Project* project, const Optimization & problem)
     _curScan = -1;
 
     _algo = problem.getCurAlgo()->clone();
+//    _algo->setParent(this);
 
 }
 
@@ -99,9 +100,9 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     _models = problem.models();
     this->setSaveFolder(resultDir.absolutePath());
 
-    _recomputedVariables = new MOOptVector(true,true,true);
-    _optObjectivesResults = new MOOptVector(true,false,true); //objectives are constant for one scan
-    _optVariablesResults= new MOOptVector(true,false,true); //optimized parameters are constant for one scan
+    _recomputedVariables = new MOOptVector(true,true,true,this);
+    _optObjectivesResults = new MOOptVector(true,false,true,this); //objectives are constant for one scan
+    _optVariablesResults= new MOOptVector(true,false,true,this); //optimized parameters are constant for one scan
     _algo = NULL;
 
     if(domResult.isNull() || (domResult.tagName()!=OptimResult::className()))
@@ -120,6 +121,7 @@ OptimResult::OptimResult(Project* project,const QDomElement & domResult,const Op
     _curScan = -1;
 
     _algo = problem.getCurAlgo()->clone();
+//    _algo->setParent(this);
 
     setSuccess(true);
 
@@ -406,7 +408,7 @@ QString OptimResult::buildOptVarsFrontCSV(QString separator)
         listPoints.push_back(i);
 
     // concatenate variables concerned
-    MOOptVector variables(false,true,true);
+    MOOptVector variables(false,true,true,this);
 
     variables.append(*_optObjectivesResults,false);
     variables.append(*_optVariablesResults,false);

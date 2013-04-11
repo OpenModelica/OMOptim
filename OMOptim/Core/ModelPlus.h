@@ -49,7 +49,7 @@ protected :
     QStringList _otherFiles;
     QString _infos;
 
-    QString _mmoFilePath; /// File path of file where all informations are stored
+    QString _relMmoFilePath; /// relative file path of file where all informations are stored
 
 
 public:

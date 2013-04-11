@@ -180,7 +180,7 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables, cons
 
 bool ModPlusOMCtrl::compile(const QFileInfoList & moDeps, const QFileInfoList filesToCopy)
 {
-    InfoSender::sendCurrentTask("OpenModelica : Compiling model "+_ModelPlus->modelName());
+    InfoSender::sendCurrentTask("Open Modelica : Compiling model "+_ModelPlus->modelName());
 
     // compile
 
@@ -229,14 +229,14 @@ bool ModPlusOMCtrl::uncompile()
 
     // first remove initfile
     QFileInfo initFile(_ModelPlus->mmoFolder(),_initFileXml);
-    QFile::remove(initFile.absoluteFilePath());
+    LowTools::removeFile(initFile.absoluteFilePath());
 
     // remove exeFile
     QFileInfo exeFile(_ModelPlus->mmoFolder(),_exeFile);
     if(!exeFile.exists())
         return true;
 
-    return QFile::remove(exeFile.absoluteFilePath());
+    return LowTools::removeFile(exeFile.absoluteFilePath());
 }
 
 

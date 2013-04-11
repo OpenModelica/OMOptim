@@ -32,6 +32,7 @@
 #include "OptimAlgo.h"
 #include "MOParameter.h"
 #include "OptimAlgosList.h"
+#include "Problem.h"
 
 OptimAlgo::OptimAlgo(void)
 {
@@ -55,6 +56,7 @@ OptimAlgo::OptimAlgo(const OptimAlgo & algo)
 void OptimAlgo::setProblem(Problem* problem)
 {
     _problem = problem;
+    //setParent(problem);
 }
 
 QDomElement OptimAlgo::toXmlData(QDomDocument &doc)
@@ -70,6 +72,7 @@ QDomElement OptimAlgo::toXmlData(QDomDocument &doc)
 }
 
 OptimAlgos::OptimAlgos(Project* project,Problem* problem)
+    :QObject(problem)
 {
 
     _project = project;
@@ -88,6 +91,7 @@ OptimAlgos::OptimAlgos(Project* project,Problem* problem)
 }
 
 OptimAlgos::OptimAlgos(Project* project,Problem* problem,const QDomElement & cAlgos)
+ :QObject(problem)
 {
     _project = project;
     _problem = problem;
@@ -141,6 +145,7 @@ OptimAlgos::~OptimAlgos()
 OptimAlgos* OptimAlgos::clone()
 {
     OptimAlgos* cloned = new OptimAlgos(_project,_problem);
+    cloned->setParent(NULL);
 
     // first remove automatically created
     for(int i=0;i<cloned->values().size();i++)
@@ -167,6 +172,7 @@ void OptimAlgos::setProblem(Problem * problem)
     {
         values().at(i)->setProblem(problem);
     }
+//    setParent(problem);
 }
 
 

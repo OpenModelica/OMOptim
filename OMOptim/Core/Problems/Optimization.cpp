@@ -52,11 +52,11 @@ Optimization::Optimization(Project* project,QStringList models)
 {
     _name="Optimization";
 
-    _optimizedVariables = new OptVariables(true);
-    _overwritedVariables = new Variables(true);
-    _savedVars = new Variables(true);
-    _scannedVariables = new ScannedVariables(true);
-    _objectives = new OptObjectives(true);
+    _optimizedVariables = new OptVariables(true,this);
+    _overwritedVariables = new Variables(true,this);
+    _savedVars = new Variables(true,this);
+    _scannedVariables = new ScannedVariables(true,this);
+    _objectives = new OptObjectives(true,this);
   //  _blockSubstitutions = new BlockSubstitutions();
 
     _algos = new OptimAlgos(project,this);
@@ -73,21 +73,29 @@ Optimization::Optimization(const Optimization &optim)
     :Problem(optim)
 {
     _optimizedVariables = optim._optimizedVariables->clone();
+//    _optimizedVariables->setParent(this);
     _scannedVariables = optim._scannedVariables->clone();
+//    _scannedVariables->setParent(this);
     _overwritedVariables = optim._overwritedVariables->clone();
+//    _overwritedVariables->setParent(this);
     _savedVars = optim._savedVars->clone();
+//    _savedVars->setParent(this);
     _objectives = optim._objectives->clone();
+//    _objectives->setParent(this);
  //   _blockSubstitutions = optim._blockSubstitutions->clone();
 
     QString curModel;
+    ModPlusCtrls* newCtrls;
     for(int i=0;i<optim._models.size();i++)
     {
         curModel = optim._models.at(i);
-        this->addModel(curModel,optim._ctrls.value(curModel)->clone());
+        newCtrls = optim._ctrls.value(curModel)->clone();
+//        newCtrls->setParent(this);
+        this->addModel(curModel,newCtrls);
     }
 
     _algos = optim._algos->clone();
-    _algos->setProblem(this);
+    _algos->setProblem(this); // includes setParent function
 }
 
 Problem* Optimization::clone() const
@@ -133,7 +141,7 @@ MOOptVector *Optimization::evaluate(QList<ModelPlus*> models, Variables *optimVa
     ok = true;
     bool useScan = (scannedVariables->size()>0);
     bool usePoints = false;
-    MOOptVector* resultVariables = new MOOptVector(true,useScan,usePoints);
+    MOOptVector* resultVariables = new MOOptVector(true,useScan,usePoints,NULL);
 
     for(int iM=0;iM<models.size();iM++)
     {
@@ -212,22 +220,22 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         QDomElement  domInfos = domProblem.firstChildElement("Infos");
         this->setName(domInfos.attribute("name", "" ));
 
-        // compatibility with older saving format (one model, saved in Infos node)
-        if(!domInfos.attribute("model").isEmpty())
-        {
-            QString modelName = domInfos.attribute("model");
-            ModelPlus* modelPlus = project->modelPlus(modelName);
+//        // compatibility with older saving format (one model, saved in Infos node)
+//        if(!domInfos.attribute("model").isEmpty())
+//        {
+//            QString modelName = domInfos.attribute("model");
+//            ModelPlus* modelPlus = project->modelPlus(modelName);
 
-            if(modelPlus)
-            {
-                // read corresponding controlers
-                QDomElement domCtrls = domProblem.firstChildElement(ModPlusCtrls::className());
-                ModPlusCtrls* ctrls = new ModPlusCtrls(project,modelPlus,domCtrls);
+//            if(modelPlus)
+//            {
+//                // read corresponding controlers
+//                QDomElement domCtrls = domProblem.firstChildElement(ModPlusCtrls::className());
+//                ModPlusCtrls* ctrls = new ModPlusCtrls(project,modelPlus,domCtrls,this);
 
-                // add model
-                this->addModel(domInfos.attribute("model"));
-            }
-        }
+//                // add model
+//                this->addModel(domInfos.attribute("model"));
+//            }
+//        }
 
         // new format
         QDomElement domModels = domProblem.firstChildElement("Models");
@@ -242,7 +250,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
             {
                 // read corresponding controlers
                 QDomElement domCtrls = domModel.firstChildElement(ModPlusCtrls::className());
-                ModPlusCtrls* ctrls = new ModPlusCtrls(project,modelPlus,domCtrls);
+                ModPlusCtrls* ctrls = new ModPlusCtrls(project,modelPlus,domCtrls,this);
 
                 // add model and controlers
                 this->addModel(modelName,ctrls);
@@ -255,11 +263,11 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     }
 
     //initialize default(otherwise seg fault in destructor)
-    _optimizedVariables = new OptVariables(true);
-    _scannedVariables = new ScannedVariables(true);
-    _overwritedVariables = new Variables(true);
-    _savedVars = new Variables(true);
-    _objectives = new OptObjectives(true);
+    _optimizedVariables = new OptVariables(true,this);
+    _scannedVariables = new ScannedVariables(true,this);
+    _overwritedVariables = new Variables(true,this);
+    _savedVars = new Variables(true,this);
+    _objectives = new OptObjectives(true,this);
 
     // Parameters
     QDomElement domParameters = domProblem.firstChildElement("Parameters");
@@ -659,7 +667,7 @@ bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
         // create and add controlers
         _models.push_back(modelName);
         if(ctrls==NULL)
-            _ctrls.insert(modelName,new ModPlusCtrls(omProject(),omProject()->modelPlus(modelName)));
+            _ctrls.insert(modelName,new ModPlusCtrls(omProject(),omProject()->modelPlus(modelName),this));
         else
             _ctrls.insert(modelName,ctrls);
 

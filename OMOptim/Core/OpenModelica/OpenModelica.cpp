@@ -301,7 +301,7 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
 
     ModelicaMatReader reader;
     ModelicaMatVariable_t *var;
-    const char* msg = new char[20];
+    const char* msg;
     double value;
     bool varOk;
     int status ;
@@ -310,20 +310,15 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
     //Read in mat file
     if(0 != (msg = omc_new_matlab4_reader(fileName.toStdString().c_str(), &reader)))
     {
-        InfoSender::instance()->sendError("Unable to read .mat file");
-        //        try
-        //        {
-        //            omc_free_matlab4_reader(&reader);
-        //        }
-        //        catch(std::exception &e)
-        //        {
-        //            InfoSender::instance()->debug("Seg fault while freeing reader");
-        //        }
+        InfoSender::instance()->sendError("Unable to read .mat file: "+QString(msg));
+
+#ifdef WIN32 // don't know why sigabrt on linux. Should look for.
         delete[] msg;
+#endif
         return false;
     }
 
-    delete[] msg;
+   // delete[] msg;
     //Read in timevector
     double stopTime =  omc_matlab4_stopTime(&reader);
 

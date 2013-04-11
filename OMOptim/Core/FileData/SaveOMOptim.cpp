@@ -62,6 +62,127 @@
 void SaveOMOptim::saveProject(Project* project,bool saveAllCases)
 {
 
+    QDomDocument doc = ProjectToXml(project);
+
+    //Writing in .min file
+    QFile file(project->filePath());
+    QFileInfo fileInfo(project->filePath());
+    QDir dir = fileInfo.absoluteDir();
+    dir.mkpath(dir.absolutePath());
+
+
+    if(file.exists())
+    {
+        file.remove();
+    }
+    file.open(QIODevice::WriteOnly);
+    QTextStream ts( &file );
+    ts << doc.toString();
+    file.close();
+
+
+    if(saveAllCases)
+    {
+        // Saving results
+        Result* curResult;
+        for (int nr=0;nr<project->results()->size();nr++)
+        {
+            curResult = project->results()->at(nr);
+            Save::saveResult(project,curResult);
+
+        }
+
+        // Saving problems
+        Problem* curProblem;
+        for (int nr=0;nr<project->problems()->size();nr++)
+        {
+            curProblem = project->problems()->at(nr);
+            Save::saveProblem(project,curProblem);
+        }
+    }
+
+    // Saving ModModelPlus
+    QList<ModelPlus*> allModelPlus = project->allModelPlus();
+    for (int m=0;m<allModelPlus.size();m++)
+    {
+        SaveOMOptim::saveModelPlus(project,allModelPlus.at(m));
+    }
+}
+
+
+//void SaveOMOptim::saveExternalProject(Project* project, QDir exportFolder)
+//{
+//    Project* externalProject = new GhostProject();
+
+
+//    QDomDocument doc = ProjectToXml(project);
+//    QDomElement root = doc.documentElement();
+
+//    // Mo files
+//    QString tmpPath;
+//    QString newMoFileName;
+//    QDomElement domMoFiles = root.firstChildElement("MoFiles");
+//    QDomElement newDomMoFiles = doc.createElement("MoFiles");
+
+//    QDomNodeList listMoFiles = domMoFiles.elementsByTagName("MoFile");
+//    for(int i=0;i<listMoFiles.size();i++)
+//    {
+//        tmpPath = listMoFiles.at(i).toElement().attribute("path", "" );
+//        QFileInfo modelFileInfo(tmpPath);
+//        if(!modelFileInfo.isRelative())
+//        {
+//            // get new paths
+//            newMoFileName = modelFileInfo.fileName();
+//            int i=2;
+//            while(exportFolder.entryList().contains(newMoFileName))
+//            {
+
+//                newMoFileName = modelFileInfo.baseName()+
+//                        QString::number(i)+"."+modelFileInfo.completeSuffix();
+//                i++;
+//            }
+
+//            // copy file
+//            QFile::copy(modelFileInfo.absoluteFilePath(),exportFolder.absoluteFilePath(newMoFileName));
+
+//            // change xml
+//            QDomElement cNewMoFile = doc.createElement("MoFile");
+//            cNewMoFile.setAttribute("path",newMoFileName);
+//            newDomMoFiles.appendChild(cNewMoFile);
+//        }
+//        else
+//        {
+//            QDomElement cNewMoFile = doc.createElement("MoFile");
+//            cNewMoFile.setAttribute("path",tmpPath);
+//            newDomMoFiles.appendChild(cNewMoFile);
+//        }
+//    }
+//    doc.removeChild(domMoFiles);
+//    doc.appendChild(newDomMoFiles);
+
+
+//    //Writing in .min file
+//    QFileInfo fileInfo(project->filePath());
+//    QFile newProjectFile(exportFolder.absoluteFilePath(fileInfo.fileName()));
+
+//    exportFolder.mkpath(exportFolder.absolutePath());
+
+
+//    if(newProjectFile.exists())
+//    {
+//        newProjectFile.remove();
+//    }
+//    newProjectFile.open(QIODevice::WriteOnly);
+//    QTextStream ts( &newProjectFile );
+//    ts << doc.toString();
+//    newProjectFile.close();
+
+//    // copy problems and result files
+
+//}
+
+QDomDocument SaveOMOptim::ProjectToXml(Project * project)
+{
     // MO file
     QDomDocument doc("MOProjectXML");
     QDomElement root = doc.createElement( "MOProject" );
@@ -77,14 +198,20 @@ void SaveOMOptim::saveProject(Project* project,bool saveAllCases)
     QString relPath;
 
     // Mo files
+    bool useRelativePath;
     QFileInfoList moFilesPath = project->moFiles();
     if(moFilesPath.size()>0)
     {
         QDomElement cMoFiles = doc.createElement("MoFiles");
         for(int i=0;i<moFilesPath.size();i++)
         {
+            // if mo file is in project folder, use relative path
+            useRelativePath = (moFilesPath.at(i).absoluteFilePath().indexOf(projectDir.absolutePath())==0);
             QDomElement cMoFile = doc.createElement("MoFile");
-            cMoFile.setAttribute("path",moFilesPath.at(i).absoluteFilePath());
+            if(useRelativePath)
+                cMoFile.setAttribute("path",projectDir.relativeFilePath(moFilesPath.at(i).absoluteFilePath()));
+            else
+                cMoFile.setAttribute("path",moFilesPath.at(i).absoluteFilePath());
             cMoFiles.appendChild(cMoFile);
         }
         root.appendChild(cMoFiles);
@@ -99,7 +226,8 @@ void SaveOMOptim::saveProject(Project* project,bool saveAllCases)
         for(int i=0;i<mmoFilesPath.size();i++)
         {
             QDomElement cMmoFile = doc.createElement("MmoFile");
-            relPath = projectDir.relativeFilePath(mmoFilesPath.at(i).absoluteFilePath());
+            relPath = projectDir.relativeFilePath(mmoFilesPath.at(i).filePath());
+            qDebug(mmoFilesPath.at(i).filePath().toLatin1());
             cMmoFile.setAttribute("path",relPath);
             cMmoFiles.appendChild(cMmoFile);
         }
@@ -149,53 +277,12 @@ void SaveOMOptim::saveProject(Project* project,bool saveAllCases)
         root.appendChild(cResults);
     }
 
-    //Writing in .min file
-    QFile file(project->filePath());
-    QFileInfo fileInfo(project->filePath());
-    QDir dir = fileInfo.absoluteDir();
-    dir.mkpath(dir.absolutePath());
-
-
-    if(file.exists())
-    {
-        file.remove();
-    }
-    file.open(QIODevice::WriteOnly);
-    QTextStream ts( &file );
-    ts << doc.toString();
-    file.close();
-
-
-    if(saveAllCases)
-    {
-        // Saving results
-        Result* curResult;
-        for (int nr=0;nr<project->results()->size();nr++)
-        {
-            curResult = project->results()->at(nr);
-            Save::saveResult(project,curResult);
-
-        }
-
-        // Saving problems
-        Problem* curProblem;
-        for (int nr=0;nr<project->problems()->size();nr++)
-        {
-            curProblem = project->problems()->at(nr);
-            Save::saveProblem(project,curProblem);
-        }
-    }
-
-    // Saving ModModelPlus
-    QList<ModelPlus*> allModelPlus = project->allModelPlus();
-    for (int m=0;m<allModelPlus.size();m++)
-    {
-        SaveOMOptim::saveModelPlus(allModelPlus.at(m));
-    }
+    return doc;
 }
 
 
-void SaveOMOptim::saveModelPlus(ModelPlus* modelPlus)
+
+void SaveOMOptim::saveModelPlus(Project* project,ModelPlus* modelPlus)
 {
     // MO file
     QDomDocument doc("MOModelXML");
@@ -203,8 +290,10 @@ void SaveOMOptim::saveModelPlus(ModelPlus* modelPlus)
     doc.appendChild(domModel);
 
     //Writing in MO file
-    QFile file(modelPlus->mmoFilePath().absoluteFilePath());
-    QFileInfo fileInfo(modelPlus->mmoFilePath());
+    QString relMmoFilePath = modelPlus->mmoFilePath().filePath();
+    QString mmoFilePath = project->folder().absoluteFilePath(relMmoFilePath);
+    QFile file(mmoFilePath);
+    QFileInfo fileInfo(mmoFilePath);
     QDir dir = fileInfo.absoluteDir();
     dir.mkpath(dir.absolutePath());
 

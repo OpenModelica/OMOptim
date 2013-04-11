@@ -163,7 +163,7 @@ bool ModPlusDymolaCtrl::readInitialVariables(MOVector<Variable> *initVariables, 
     bool authorizeRecreate=false;
     QString logFile = _ModelPlus->mmoFolder().absoluteFilePath("buildlog.txt");
     if(QFile::exists(logFile))
-        QFile::remove(logFile);
+        LowTools::removeFile(logFile);
 
     if(dsinFile.isEmpty())
     {

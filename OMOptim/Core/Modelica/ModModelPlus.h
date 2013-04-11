@@ -94,7 +94,7 @@ public:
 
     ModModelPlus(Project* project,QString modModelName);
     ModModelPlus(Project* project,const QDomElement & );
-    ~ModModelPlus();
+    virtual ~ModModelPlus();
 
     virtual QString getClassName() const {return ModModelPlus::className();};
     static QString className(){return "ModModelPlus";};
@@ -117,7 +117,7 @@ public:
     // Path functions
     //*************************
     void setmodelToConsider(QString);
-    QFileInfo mmoFilePath();
+
     QString moFilePath();
     QString mmoFileName();
 

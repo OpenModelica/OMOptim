@@ -62,7 +62,7 @@ class OneSimResult : public Result
     Q_OBJECT
 
 public:
-    OneSimResult(void);
+    OneSimResult(Project* project);
     OneSimResult(Project* project, ModelPlus* modModelPlus, const OneSimulation & problem);
     OneSimResult(Project* project, const QDomElement & domResult,const OneSimulation &problem, bool &ok);
     virtual ~OneSimResult(void);

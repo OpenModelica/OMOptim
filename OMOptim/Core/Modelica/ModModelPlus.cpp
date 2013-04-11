@@ -61,7 +61,7 @@ ModModelPlus::ModModelPlus( Project* project,QString modelName)
     _moomc = _project->moomc();
 
 
-    _variables = new Variables(true);
+//    _variables = new Variables(true,this);
 
  //   _connections = new ModelicaConnections(_project->modItemsTree());
 
@@ -107,7 +107,7 @@ void ModModelPlus::clear()
 void ModModelPlus::uncompile()
 {
     // remove compiled executables
-    ModPlusCtrls ctrls(_project,this);
+    ModPlusCtrls ctrls(_project,this,NULL);
 
     for(int i=0;i<ctrls.size();i++)
     {
@@ -118,7 +118,7 @@ void ModModelPlus::uncompile()
 
 void ModModelPlus::save()
 {
-    SaveOMOptim::saveModelPlus(this);
+    SaveOMOptim::saveModelPlus(_project,this);
     emit saved();
 }
 
@@ -128,10 +128,6 @@ void ModModelPlus::reloadModel()
 }
 
 
-QFileInfo ModModelPlus::mmoFilePath()
-{
-    return QFileInfo(_mmoFilePath);
-}
 
 QString ModModelPlus::moFilePath()
 {
@@ -150,8 +146,7 @@ QString ModModelPlus::moFilePath()
 
 QString ModModelPlus::mmoFileName()
 {
-    QFileInfo fileInfo(_mmoFilePath);
-    return fileInfo.fileName();
+    return mmoFilePath().fileName();
 }
 
 

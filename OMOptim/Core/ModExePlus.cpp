@@ -99,8 +99,6 @@ void ModExePlus::clear()
 {
     ModelPlus::clear();
 
-    _mmoFilePath.clear();
-
     //connections
     //  _connections->clear();
     //  _modifiers->clear();

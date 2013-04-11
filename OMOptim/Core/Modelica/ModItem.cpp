@@ -126,7 +126,7 @@ QString ModItem::sFieldName(int iField, int role)
     }
 }
 
-ModItem* ModItem::parent()
+ModItem* ModItem::parentItem()
 {
     return _parent;
 }
@@ -284,13 +284,13 @@ int ModItem::indexInParent()
 
 
     //looking for row number of child in parent
-    int nbBrothers = parent()->childCount();
+    int nbBrothers = parentItem()->childCount();
     bool found = false;
     int iC=0;
 
     while(!found && iC<nbBrothers)
     {
-        found = (parent()->child(iC)==this);
+        found = (parentItem()->child(iC)==this);
         if(!found)
             iC++;
     }
@@ -323,7 +323,7 @@ QString ModItem::filePath()
     while(file.fileName().isEmpty()&&(parent!=NULL))
     {
         file = parent->_file;
-        parent = parent->parent();
+        parent = parent->parentItem();
     }
 
     if(file.fileName().isEmpty() && _moomc)
@@ -375,7 +375,7 @@ void ModItem::emitModified()
 int ModItem::depth()
 {
     QString fullName=_name;
-    ModItem *curParent = parent();
+    ModItem *curParent = parentItem();
 
     if(curParent==NULL)
         return  0;
@@ -418,7 +418,7 @@ bool ModItem::addChild(ModItem *child)
     bool ok=false;
     if(child)
     {
-        child->setParent(this);
+        child->setParentItem(this);
         _children.push_back(child);
         ok = true;
         emit addedChild(child);
@@ -431,7 +431,7 @@ bool ModItem::addChild(ModItem *child)
 }
 
 
-void ModItem::setParent(ModItem *parent)
+void ModItem::setParentItem(ModItem *parent)
 {
     if(_parent != parent)
     {

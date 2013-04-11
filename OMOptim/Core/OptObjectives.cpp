@@ -2,8 +2,8 @@
 
 #include "ModModelPlus.h"
 
-OptObjectives::OptObjectives(bool owner)
-    :MOVector<OptObjective>(owner)
+OptObjectives::OptObjectives(bool owner, QObject *parent)
+    :MOVector<OptObjective>(owner,parent)
 {
 }
 
@@ -14,7 +14,7 @@ QVariant OptObjectives::data(const QModelIndex &index, int role) const
 
 OptObjectives* OptObjectives::clone() const
 {
-    OptObjectives* newVector = new OptObjectives(true);
+    OptObjectives* newVector = new OptObjectives(true,NULL);
 
     int i;
     OptObjective* newItem;

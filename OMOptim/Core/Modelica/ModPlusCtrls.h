@@ -9,8 +9,8 @@ class ModPlusCtrls :public QObject, public QMap<ModPlusCtrl::Type,ModPlusCtrl*>
     Q_OBJECT
 
 public :
-    ModPlusCtrls(Project* project,ModelPlus* ModPlus);
-    ModPlusCtrls(Project* project,ModelPlus* ModPlus,const QDomElement &);
+    ModPlusCtrls(Project* project,ModelPlus* ModPlus,QObject* parent);
+    ModPlusCtrls(Project* project,ModelPlus* ModPlus,const QDomElement &,QObject* parent);
     virtual ~ModPlusCtrls();
 
     static QString className(){return "Controlers";};

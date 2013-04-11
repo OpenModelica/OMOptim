@@ -346,7 +346,7 @@ void Project::loadModelPlus(QString mmoFilePath, bool uncompile)
 */
 void Project::storeMmoFilePath(QString mmoFilePath)
 {
-    QString path = QFileInfo(mmoFilePath).absoluteFilePath();
+    QString path = this->folder().relativeFilePath(mmoFilePath);
 
     if(!_mmoFiles.contains(path))
     {
@@ -545,7 +545,7 @@ ModelPlus* Project::newModelPlus(QString modelName)
     modelPlus->setMmoFilePath(newMmoFilePath);
 
     // save it
-    SaveOMOptim::saveModelPlus(modelPlus);
+    SaveOMOptim::saveModelPlus(this,modelPlus);
 
     emit projectChanged();
     return modelPlus;
@@ -563,6 +563,50 @@ void Project::save(bool saveAllOMCases)
     setSaved(true);
     emit projectChanged();
     InfoSender::instance()->eraseCurrentTask();
+}
+
+void Project::exportProjectFolder(QDir externalFolder)
+{
+    // only if folder is empty
+    if(externalFolder.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs).isEmpty())
+    {
+        QFileInfo orgPathInfo(this->filePath());
+
+        this->setFilePath(externalFolder.absoluteFilePath(orgPathInfo.fileName()));
+
+        // copy mo files
+        QFileInfoList orgMoFiles = this->moFiles();
+        QFileInfoList newMoFiles;
+        QFileInfo orgMoFile;
+        QString newMoFileName;
+        for(int i=0;i<orgMoFiles.size();i++)
+        {
+            orgMoFile = orgMoFiles.at(i);
+            newMoFileName = orgMoFile.fileName();
+            if(newMoFileName != "package.mo")
+            {
+                // get new paths
+                int i=2;
+                while(externalFolder.entryList().contains(newMoFileName))
+                {
+
+                    newMoFileName = orgMoFile.baseName()+
+                            QString::number(i)+"."+orgMoFile.completeSuffix();
+                    i++;
+                }
+                QFile::copy(orgMoFile.absoluteFilePath(),externalFolder.absoluteFilePath(newMoFileName));
+                newMoFiles.push_back(QFileInfo(externalFolder,newMoFileName));
+            }
+        }
+
+        // change mo filepaths
+        this->setMoFiles(newMoFiles);
+        this->save(true);
+
+        // restore
+        this->setMoFiles(orgMoFiles);
+        this->setFilePath(orgPathInfo.absoluteFilePath());
+    }
 }
 
 /** @brief Save project and result given as parameter.
@@ -666,6 +710,15 @@ QFileInfoList Project::moFiles()
 QFileInfoList Project::mmoFiles()
 {
     return _mmoFiles;
+}
+
+/**
+  * Careful : does not load moFiles, neither changed paths of loaded modelPlus.
+  * So far, only used to export project folder
+  */
+void Project::setMoFiles(QFileInfoList moFiles)
+{
+    _moFiles = moFiles;
 }
 
 //QFileInfoList Project::exeFiles()
