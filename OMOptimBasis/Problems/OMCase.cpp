@@ -40,14 +40,16 @@
   */
 #include "OMCase.h"
 #include "LowTools.h"
+#include "ProjectBase.h"
 
-OMCase::OMCase(void)
-{
+//OMCase::OMCase(void)
+//{
 
-}
+//}
 
 
 OMCase::OMCase(ProjectBase* project)
+    :MOItem(project)
 {
     _project = project;
 }
@@ -56,10 +58,10 @@ OMCase::OMCase(const OMCase &omCase)
 {
     _name = omCase._name;
     _project = omCase._project;
-
+ //   this->setParent(_project);
 
     _filesToCopy = omCase._filesToCopy;
-    _saveFolder = omCase._saveFolder;
+    _relSaveFolder = omCase._relSaveFolder;
     _saveFileName = omCase._saveFileName;
 }
 
@@ -95,7 +97,8 @@ void OMCase::setProject(ProjectBase* project)
 
 void OMCase::setSaveFolder(QString saveFolder)
 {
-    _saveFolder=saveFolder;
+    QDir projectDir = _project->folder();
+   _relSaveFolder = projectDir.relativeFilePath(saveFolder);
 }
 
 void OMCase::setEntireSavePath(QString savePath)
@@ -107,7 +110,7 @@ void OMCase::setEntireSavePath(QString savePath)
 
 QString OMCase::saveFolder()
 {
-    return _saveFolder;
+    return _project->folder().absoluteFilePath(_relSaveFolder);
 }
 
 QString OMCase::saveFileName()
@@ -117,12 +120,12 @@ QString OMCase::saveFileName()
 
 QString OMCase::entireSavePath()
 {
-    return _saveFolder + QDir::separator() + _saveFileName;
+    return _project->folder().absoluteFilePath(_relSaveFolder + QDir::separator() + _saveFileName);
 }
 
 void OMCase::openFolder()
 {
-    LowTools::openFolder(_saveFolder);
+    LowTools::openFolder(saveFolder());
 }
 
 void OMCase::modified()
@@ -137,24 +140,23 @@ void OMCase::modified()
 */
 void OMCase::store(QString destFolder, QString tempDir)
 {
-
     // update save paths
     setSaveFolder(destFolder);
     setDefaultSaveFileName();
 
-    QString savePath = _saveFolder + QDir::separator() + _saveFileName;
+    QString savePath = _relSaveFolder + QDir::separator() + _saveFileName;
 
 
-    QDir dir = QDir(_saveFolder);
+    QDir dir = QDir(_relSaveFolder);
 
     if (!dir.exists())
     {
-        dir.mkpath(_saveFolder);
+        dir.mkpath(_relSaveFolder);
     }
     //    else
     //    {
-    //        LowTools::removeDir(_saveFolder);
-    //        dir.mkpath(_saveFolder);
+    //        LowTools::removeDir(_relSaveFolder);
+    //        dir.mkpath(_relSaveFolder);
     //    }
 
     //copy needed path from old place to new one
@@ -167,7 +169,7 @@ void OMCase::store(QString destFolder, QString tempDir)
         QStringList fileNames = tmpDir.entryList();
         for(int i=0;i<fileNames.size();i++)
         {
-            QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_saveFolder + QDir::separator() + fileNames.at(i));
+            QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_relSaveFolder + QDir::separator() + fileNames.at(i));
         }
 
         for(int i=0;i<_filesToCopy.size();i++)
@@ -177,7 +179,7 @@ void OMCase::store(QString destFolder, QString tempDir)
             else
                 fileToCopy= _filesToCopy.at(i).absoluteFilePath();
 
-            QFile::copy(fileToCopy,_saveFolder + QDir::separator() + _filesToCopy.at(i).fileName());
+            QFile::copy(fileToCopy,_relSaveFolder + QDir::separator() + _filesToCopy.at(i).fileName());
         }
     }
 

@@ -89,7 +89,7 @@ public:
     };
 
     // Constructor and destructor
-    MOItem(void);
+    MOItem(QObject* parent =NULL);
     MOItem(const MOItem &);
     MOItem(QDomElement & domEl);
 

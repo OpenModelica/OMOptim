@@ -41,10 +41,9 @@
 #include "Result.h"
 #include "LowTools.h"
 
-Result::Result()
-    :OMCase()
+Result::Result(ProjectBase * project)
+    :OMCase(project)
 {
-    _project = NULL;
     _success = false;
     _problem = NULL;
 }

@@ -55,8 +55,8 @@ void OMCases::clear()
     beginResetModel();
     for(int i=0;i<items.size();i++)
     {
-        items.at(i)->dumpObjectInfo();
-        items.at(i)->dumpObjectTree();
+//        items.at(i)->dumpObjectInfo();
+//        items.at(i)->dumpObjectTree();
         delete items.at(i);
     }
     items.clear();
@@ -133,8 +133,8 @@ bool OMCases::removeRow(int row,const QModelIndex &parent)
     if((row>=0) &&(row<items.size()))
     {
         beginRemoveRows(parent,row,row);
-        items.at(row)->dumpObjectInfo();
-        items.at(row)->dumpObjectTree();
+//        items.at(row)->dumpObjectInfo();
+//        items.at(row)->dumpObjectTree();
         delete items.at(row);
         items.remove(row);
         endRemoveRows();

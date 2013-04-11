@@ -71,6 +71,7 @@ public:
     static void copyDir(QString,QString);
     static bool mkpath(QString,bool eraseExisting);
 
+    static bool removeFile(QString filePath);
     static bool removeDirContents(QString folder);
     static bool removeDirContentsExcept(QString folder, QStringList exceptExtensions);
     static void copyDirContents(QString org, QString dest);
@@ -101,6 +102,7 @@ public:
     static double nan();
 
     static double gaussRandom(double average,double dev);
+
 
 
 };

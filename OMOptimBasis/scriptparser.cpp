@@ -79,7 +79,16 @@ bool ScriptParserOMOptimBasis::launchFunction(QString function, QStringList args
         return _projectBase->load(args.at(0));
     }
 
+    if(!function.compare("saveProject",Qt::CaseInsensitive))
+    {
+        foundFunction = true;
+        // arg is project file path
+        if(args.size()!=0)
+            return false;
 
+        _projectBase->save(true);
+        return true;
+    }
 
     if(!function.compare("addProblem",Qt::CaseInsensitive))
     {
@@ -100,6 +109,18 @@ bool ScriptParserOMOptimBasis::launchFunction(QString function, QStringList args
             return false;
 
         _projectBase->launchProblem(args.at(0),false);
+        // do not use multithreading while scripting
+        return true;
+    }
+
+    if(!function.compare("removeAllResults",Qt::CaseInsensitive))
+    {
+        foundFunction = true;
+        // arg is mpb file path
+        if(args.size()!=0)
+            return false;
+
+        _projectBase->removeAllResults();
         // do not use multithreading while scripting
         return true;
     }

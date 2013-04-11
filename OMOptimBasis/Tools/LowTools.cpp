@@ -53,6 +53,22 @@ LowTools::~LowTools(void)
 {
 }
 
+bool LowTools::removeFile(QString filePath)
+{
+    if(!QFile::exists(filePath))
+        return true;
+
+    bool removeOk = QFile::remove(filePath);
+
+    if(!removeOk)
+    {
+        QFileInfo fileInfo(filePath);
+        QFile(filePath).setPermissions(fileInfo.permissions() | QFile::WriteUser);
+        removeOk = QFile::remove(filePath);
+    }
+    return removeOk;
+}
+
 bool LowTools::removeDirContents(QString folder)
 {
     bool  allRemoved = true;

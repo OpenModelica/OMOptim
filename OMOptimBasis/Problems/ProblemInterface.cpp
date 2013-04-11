@@ -81,7 +81,7 @@ bool ProblemInterface::saveResult(Result* result)
     if(!result->saveFileName().isEmpty())
     {
         QFile file(result->entireSavePath());
-        QFileInfo fileInfo(problem->entireSavePath());
+        QFileInfo fileInfo(result->entireSavePath());
         QDir dir = fileInfo.absoluteDir();
         dir.mkpath(dir.absolutePath());
 

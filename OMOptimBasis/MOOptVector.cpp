@@ -41,8 +41,8 @@
 #include "MOOptVector.h"
 #include "Variables.h"
 
-MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints)
-    :MOVector<VariableResult>(owner)
+MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints,QObject* parent)
+    :MOVector<VariableResult>(owner,parent)
 {
     _useScan = useScan;
     _usePoints = usePoints;
@@ -57,8 +57,8 @@ MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints)
     connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
-MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints, QString csv)
-    :MOVector<VariableResult>(owner)
+MOOptVector::MOOptVector(bool owner,bool useScan, bool usePoints, QString csv,QObject* parent)
+    :MOVector<VariableResult>(owner,parent)
 {
     _useScan = useScan;
     _usePoints = usePoints;
@@ -327,8 +327,7 @@ bool MOOptVector::isAvailablePoint(int iVar,int iScan,int iPoint) const
 
 MOOptVector* MOOptVector::clone() const
 {
-
-    MOOptVector* newVector = new MOOptVector(_owner,_useScan,_usePoints);
+    MOOptVector* newVector = new MOOptVector(_owner,_useScan,_usePoints,NULL);
 
     int i;
     VariableResult* newItem;
@@ -534,8 +533,7 @@ QString MOOptVector::toCSV(QString separator, QList<int> points)
   */
 Variables MOOptVector::extractPoint(int iPoint)
 {
-
-    Variables result(true);
+    Variables result(true,NULL);
 
     for(int i=0;i<_items.size();i++)
     {

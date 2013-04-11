@@ -147,8 +147,8 @@ void MOMainTab::removeTab(int index)
         ((QTabWidget*)this)->removeTab(index);
 
         // delete widget
-        tabWidget->dumpObjectInfo();
-        tabWidget->dumpObjectTree();
+//        tabWidget->dumpObjectInfo();
+//        tabWidget->dumpObjectTree();
         delete tabWidget; // if deleteLater, should keep OMCase alive !!
     }
 }

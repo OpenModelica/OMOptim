@@ -667,14 +667,17 @@ void MOVector<ItemClass>::setItems(QDomElement & domList)
 }
 
 template<class ItemClass>
-MOVector<ItemClass>::MOVector(bool owner):MOAVector<ItemClass>(owner)
+MOVector<ItemClass>::MOVector(bool owner, QObject *parent):
+    MOAVector<ItemClass>(owner)
 {
+    this->setParent(parent);
 }
 
 template<class ItemClass>
-MOVector<ItemClass>::MOVector(const QList<ItemClass *> list, bool owner, bool makeACopy)
+MOVector<ItemClass>::MOVector(const QList<ItemClass *> list, bool owner, bool makeACopy, QObject *parent)
 :MOAVector<ItemClass>(list,owner,makeACopy)
 {
+    this->setParent(parent);
 }
 
 template<class ItemClass>

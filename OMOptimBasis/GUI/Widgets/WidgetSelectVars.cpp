@@ -107,7 +107,7 @@ WidgetSelectVars::WidgetSelectVars(MOOptVector *allVariables,QWidget *parent,MOO
     if(selectedVariables)
         _selectedOptVariables = selectedVariables->clone();
     else
-        _selectedOptVariables = new MOOptVector(false,true,true);
+        _selectedOptVariables = new MOOptVector(false,true,true,this);
 
 
     variableProxyModel = GuiTools::ModelToViewWithFilter(_allOptVariables,ui->listVars,ui->lineVariableFilter);

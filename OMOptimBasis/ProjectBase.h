@@ -133,7 +133,8 @@ protected:
     void launchProblem(Problem*,bool useSeparateThread = true);
     void launchProblem(QString,bool useSeparateThread = true);
     void launchProblems(QList<Problem*>,bool useSeparateThread = true);
-    void removeResult(Result*);
+    void removeResult(OMCase *, bool saveProject = true);
+    void removeAllResults();
     void removeProblem(Problem*);
     void removeCases(QList<OMCase*>);
     void renameCase(OMCase*, QString);

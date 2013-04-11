@@ -42,7 +42,8 @@
 
 
 // Constructor and destructor
-MOItem::MOItem(void)
+MOItem::MOItem(QObject* parent)
+   // :QObject(parent) // creates a lot of problems cause of threads. To fix...
 {
 }
 

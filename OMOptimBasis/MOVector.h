@@ -146,8 +146,8 @@ template<class ItemClass>
 class MOVector : public MOAVector<ItemClass>
 {
 public:
-    MOVector(bool owner);
-    MOVector(const QList<ItemClass*> ,bool owner,bool makeACopy);
+    MOVector(bool owner,QObject* parent);
+    MOVector(const QList<ItemClass*> ,bool owner,bool makeACopy, QObject *parent);
     MOVector(const MOAVector<ItemClass> &);
     MOVector<ItemClass>& operator=(const MOAVector<ItemClass> &copied);
 

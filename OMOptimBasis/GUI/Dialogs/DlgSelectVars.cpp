@@ -107,7 +107,7 @@ DlgSelectVars::DlgSelectVars(MOOptVector* variables,MOOptVector* alreadySelected
     if(alreadySelected)
         _selectedOptVars=alreadySelected;
     else
-        _selectedOptVars=new MOOptVector(false,true,true);
+        _selectedOptVars=new MOOptVector(false,true,true,this);
 
 
     QGridLayout* allLayout = new QGridLayout(this);

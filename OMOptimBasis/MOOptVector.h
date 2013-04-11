@@ -53,8 +53,8 @@ class MOOptVector : public MOVector<VariableResult>
 public:
 
 
-    MOOptVector(bool ownner,bool useScan, bool usePoints);
-    MOOptVector(bool owner, bool useScan, bool usePoints, QString csv);
+    MOOptVector(bool ownner,bool useScan, bool usePoints,QObject* parent);
+    MOOptVector(bool owner, bool useScan, bool usePoints, QString csv,QObject* parent);
     ~MOOptVector();
 
 

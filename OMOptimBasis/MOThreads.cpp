@@ -39,6 +39,9 @@
 
   */
 #include "MOThreads.h"
+#include <QApplication>
+#include "ProjectBase.h"
+
 
 namespace MOThreads
 {
@@ -102,6 +105,9 @@ void ProblemThread::run()
             int nSec = _launchDate.secsTo(QDateTime::currentDateTime());
             _result->_duration = QTime(0,0,0,0);
             _result->_duration = _result->_duration.addSecs(nSec);
+
+            // important: result restored to main thread
+            _result->moveToThread(QApplication::instance()->thread());
         }
     }
 }

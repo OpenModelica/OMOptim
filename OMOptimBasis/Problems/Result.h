@@ -78,7 +78,7 @@ protected :
 
 
 public:
-    Result();
+    Result(ProjectBase*);
     Result(ProjectBase*,const Problem &);
     Result(const Result &r);
     virtual ~Result(void);

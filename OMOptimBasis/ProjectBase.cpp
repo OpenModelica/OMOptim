@@ -599,6 +599,7 @@ void ProjectBase::onProblemFinished(Problem* problem,Result* result)
         {
             QString msg = "Problem "+ problem->getClassName()+ " has failed";
             InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
+            delete result;
         }
         else
         {
@@ -611,10 +612,7 @@ void ProjectBase::onProblemFinished(Problem* problem,Result* result)
             HighTools::checkUniqueResultName(this,result,_results);
 
             result->store(QString(resultsFolder()+QDir::separator()+result->name()),tempPath());
-
-            // test
-            result->moveToThread(QApplication::instance()->thread());
-
+           // result->setParent(this);
             addResult(result);
             save(result);
         }
@@ -642,13 +640,14 @@ Problem* ProjectBase::restoreProblemFromResult(Result* result)
 }
 
 
-void ProjectBase::removeResult(Result* result)
+void ProjectBase::removeResult(OMCase* result,bool saveProject )
 {
     int num = results()->items.indexOf(result);
     if(num>-1)
     {
+
         // result to be removed
-        emit beforeRemoveResult(result);
+        emit beforeRemoveResult(dynamic_cast<Result*>(result));
 
         // remove folder and data
         QDir folder(result->saveFolder());
@@ -657,8 +656,17 @@ void ProjectBase::removeResult(Result* result)
 
         _results->removeRow(num);
 
-        save(false);
+        if(saveProject)
+            save(false);
     }
+}
+
+void ProjectBase::removeAllResults()
+{
+    for(int i=0;i<results()->size();i++)
+        removeResult(results()->items[i],false); // avoid multiple saving
+
+    save(false);
 }
 
 

@@ -2,9 +2,10 @@
 #include "MOItem.h"
 #include <QMimeData>
 
-Variables::Variables(bool owner)
+Variables::Variables(bool owner, QObject *parent)
     :MOVector<Variable>(owner)
 {
+//    this->setParent(parent);
 }
 
 Variables::~Variables()
@@ -20,7 +21,7 @@ QVariant Variables::data(const QModelIndex &index, int role) const
 Variables* Variables::clone() const
 {
     // owner should always be true
-    Variables* newVector = new Variables(true);
+    Variables* newVector = new Variables(true,NULL);
 
     int i;
     Variable* newItem;
@@ -98,8 +99,8 @@ int Variables::findVariable(QString model, QRegExp & shortVarName, int from)
 
 
 
-OptVariables::OptVariables(bool owner)
-    :MOVector<OptVariable>(owner)
+OptVariables::OptVariables(bool owner,QObject* parent)
+    :MOVector<OptVariable>(owner,parent)
 {
 
 }
@@ -116,7 +117,7 @@ QVariant OptVariables::data(const QModelIndex &index, int role) const
 OptVariables* OptVariables::clone() const
 {
      // owner should always be true
-    OptVariables* newVector = new OptVariables(true);
+    OptVariables* newVector = new OptVariables(true,NULL);
 
     int i;
     OptVariable* newItem;
@@ -131,8 +132,8 @@ OptVariables* OptVariables::clone() const
 
 
 
-ScannedVariables::ScannedVariables(bool owner)
-    : MOVector<ScannedVariable>(owner)
+ScannedVariables::ScannedVariables(bool owner, QObject *parent)
+    : MOVector<ScannedVariable>(owner,parent)
 {
 }
 
@@ -148,7 +149,7 @@ QVariant ScannedVariables::data(const QModelIndex &index, int role) const
 ScannedVariables* ScannedVariables::clone() const
 {
      // owner should always be true
-    ScannedVariables* newVector = new ScannedVariables(true);
+    ScannedVariables* newVector = new ScannedVariables(true,NULL);
 
     int i;
     ScannedVariable* newItem;

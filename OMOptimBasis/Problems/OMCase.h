@@ -67,11 +67,10 @@ protected :
     ProjectBase* _project;
 
     // Files informations
-    QString _saveFolder;
+    QString _relSaveFolder; // relative path compared to project one
     QString _saveFileName;
     QStringList _neededFiles; /** Needed files for simulation */
     bool _isSaved; /// defines whether project has been modified since last save
-
 
 
 public:
@@ -79,7 +78,7 @@ public:
     QStringList _foldersToCopy; /** Files to copy in temp directory of in save directory */
 
     // CTOR
-    OMCase();
+   // OMCase();
     OMCase(ProjectBase*);
     OMCase(const OMCase & s);
     virtual ~OMCase(void);
@@ -96,9 +95,8 @@ public:
     QString saveFolder();
     QString saveFileName();
     QString entireSavePath();
-    QFileInfoList filesToCopy(){return _filesToCopy;};
-    ProjectBase* project()const{return _project;} ;
-
+    QFileInfoList filesToCopy(){return _filesToCopy;}
+    ProjectBase* project()const{return _project;}
 
     // Set functions
     void setName(QString);
