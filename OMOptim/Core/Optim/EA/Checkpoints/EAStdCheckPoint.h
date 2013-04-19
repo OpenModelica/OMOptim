@@ -161,7 +161,7 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
 
     // Monitors
     bool useGnuplot = MOSettings::value("useGnuplot",false).toBool();
-    if(useGnuplot && nbObj>1)
+    if(useGnuplot /*&& nbObj>1*/)
     {
         MyEoGnuplot1DMonitor *gnuplotMonitor = new MyEoGnuplot1DMonitor(QDir(tempDir),nbObj,false);
         checkpoint.add(*gnuplotMonitor);

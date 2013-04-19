@@ -104,7 +104,7 @@ public:
     virtual bool setFieldValue(int ifield, QVariant value_);
 
     static const int nbFields = 7;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
 
 
     double min(){return _min;};

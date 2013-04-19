@@ -120,7 +120,7 @@ QString Project::getFieldName(int iField, int role)
     return "name";
 }
 
-unsigned Project::getNbFields()
+unsigned Project::getNbFields() const
 {
     return 1;
 }
@@ -570,39 +570,63 @@ void Project::exportProjectFolder(QDir externalFolder)
     // only if folder is empty
     if(externalFolder.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs).isEmpty())
     {
+        QFileInfoList orgMoFiles = this->moFiles();
+
         QFileInfo orgPathInfo(this->filePath());
 
         this->setFilePath(externalFolder.absoluteFilePath(orgPathInfo.fileName()));
 
-        // copy mo files
-        QFileInfoList orgMoFiles = this->moFiles();
-        QFileInfoList newMoFiles;
-        QFileInfo orgMoFile;
-        QString newMoFileName;
-        for(int i=0;i<orgMoFiles.size();i++)
-        {
-            orgMoFile = orgMoFiles.at(i);
-            newMoFileName = orgMoFile.fileName();
-            if(newMoFileName != "package.mo")
-            {
-                // get new paths
-                int i=2;
-                while(externalFolder.entryList().contains(newMoFileName))
-                {
+        //        // copy mo files
+        //        QFileInfoList orgMoFiles = this->moFiles();
+        //        QFileInfoList newMoFiles;
+        //        QFileInfo orgMoFile;
+        //        QString newMoFileName;
+        //        for(int i=0;i<orgMoFiles.size();i++)
+        //        {
+        //            orgMoFile = orgMoFiles.at(i);
+        //            newMoFileName = orgMoFile.fileName();
+        //            if(newMoFileName != "package.mo")
+        //            {
+        //                // get new paths
+        //                int i=2;
+        //                while(externalFolder.entryList().contains(newMoFileName))
+        //                {
 
-                    newMoFileName = orgMoFile.baseName()+
-                            QString::number(i)+"."+orgMoFile.completeSuffix();
-                    i++;
-                }
-                QFile::copy(orgMoFile.absoluteFilePath(),externalFolder.absoluteFilePath(newMoFileName));
-                newMoFiles.push_back(QFileInfo(externalFolder,newMoFileName));
-            }
-        }
+        //                    newMoFileName = orgMoFile.baseName()+
+        //                            QString::number(i)+"."+orgMoFile.completeSuffix();
+        //                    i++;
+        //                }
+        //                QFile::copy(orgMoFile.absoluteFilePath(),externalFolder.absoluteFilePath(newMoFileName));
+        //                newMoFiles.push_back(QFileInfo(externalFolder,newMoFileName));
+        //            }
+        //        }
+
+        //        // change mo filepaths
+        //        this->setMoFiles(newMoFiles);
+        //        this->save(true);
+
+        // create mo file with all content
+        QString moTxt = _moomc->getWholeText();
+        moTxt.replace("\\\\","\\");
+        moTxt.replace("\\\"","\"");
+
+        QString moFilePath = externalFolder.absoluteFilePath("Models.mo");
+        QFile file(moFilePath);
+        QFileInfo moFileInfo(moFilePath);
+
+        file.open(QIODevice::WriteOnly);
+
+        moTxt.remove(QRegExp("^\""));
+        moTxt.remove(QRegExp("\"$"));
+        QTextStream ts( &file );
+        ts << moTxt.toLocal8Bit();
+        file.close();
 
         // change mo filepaths
+        QFileInfoList newMoFiles;
+        newMoFiles << moFileInfo;
         this->setMoFiles(newMoFiles);
         this->save(true);
-
         // restore
         this->setMoFiles(orgMoFiles);
         this->setFilePath(orgPathInfo.absoluteFilePath());

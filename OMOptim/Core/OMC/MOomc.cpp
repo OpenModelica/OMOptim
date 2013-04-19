@@ -137,6 +137,12 @@ QStringList MOomc::getClassNames(QString parentClass)
     }
 }
 
+QString MOomc::getWholeText()
+{
+    QString result = evalCommand("list()");
+    return result;
+}
+
 
 
 QStringList MOomc::getPackages(QString parentClass)
@@ -272,6 +278,34 @@ QString MOomc::getParameterValue(QString parentClass, QString parameterName)
         return QString();
     else
         return commandRes;
+}
+
+double MOomc::getParameterDoubleValue(QString parentClass, QString parameterName,double defaultValue)
+{
+    QString commandRes= evalCommand("getParameterValue(" + parentClass +","+ parameterName+")");
+    if(commandRes=="Error" || commandRes.isEmpty())
+        return defaultValue;
+
+    bool isDouble;
+    int i=0; // to avoid infinite loop (if for whatever reason, incorrect case is catched by error boolean)
+
+    double result = commandRes.toDouble(&isDouble);
+    bool error;
+
+    while(!isDouble && (i<100) &&!error)
+    {
+        parentClass = commandRes.section(".",0,-2);
+        parameterName= commandRes.section(".",-1,-1);
+        commandRes = evalCommand("getParameterValue(" + parentClass +","+ parameterName+")");
+        error = (commandRes=="Error" || commandRes.isEmpty());
+        result = commandRes.toDouble(&isDouble);
+        i++;
+    }
+    if(isDouble)
+        return result;
+    else
+        return defaultValue;
+
 }
 
 QStringList MOomc::getParameterNames(QString parentClass,bool includeInherited)

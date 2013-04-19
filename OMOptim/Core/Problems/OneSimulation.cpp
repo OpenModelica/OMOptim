@@ -263,6 +263,8 @@ Result* OneSimulation::launch(ProblemConfig config)
 
     curVariables.clear();
 
+    qDebug(result->finalVariables()->toCSV().toLatin1().data());
+
     result->setSuccess(allSimSuccess);
 
     return result;

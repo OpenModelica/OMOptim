@@ -77,7 +77,7 @@ public :
 
 
     static const int nbFields = 4;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
 
 
     enum Field

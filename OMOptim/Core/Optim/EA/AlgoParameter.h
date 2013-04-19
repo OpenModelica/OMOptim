@@ -75,7 +75,7 @@ public:
     virtual QString getClassName() const {return "AlgoParameter";};
 
     static const int nbFields = 7;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
 
 
     bool setFieldValue(int ,QVariant );

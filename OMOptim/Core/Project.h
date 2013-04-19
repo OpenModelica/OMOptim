@@ -105,7 +105,7 @@ private:
 
     void clear();
     QString getFieldName(int iField,int role);
-    unsigned getNbFields();
+    unsigned getNbFields() const;
 
 
 

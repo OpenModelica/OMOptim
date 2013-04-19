@@ -72,7 +72,7 @@ public:
 
 
     static const int nbFields = 3;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
 
 
 

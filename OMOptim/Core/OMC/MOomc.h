@@ -89,6 +89,7 @@ public :
     QStringList getThreadsNames();
 
     //Modelica functions
+    QString getWholeText();
     QStringList getClassNames(QString parentClass = "");
     QStringList getPackages(QString parentClass);
     QStringList getClasses(QString parentClass);
@@ -98,6 +99,7 @@ public :
 
     QStringList getParameterNames(QString parentClass, bool includeInherited=false);
     QString getParameterValue(QString parentClass, QString parameterName);
+    double getParameterDoubleValue(QString parentClass, QString parameterName, double defaultValue=0);
     QStringList getInheritedClasses(QString inheritingClass);
     QStringList getComponentModifierNames(QString componentName);
     QString getFlattenedModifierValue(const QString & modelName,const QString & shortComponentName,const QString & modifierName,QString & flattenedModel);
@@ -185,6 +187,7 @@ public :
 
      bool initCommandLineOptions();
      bool clearCommandLineOptions();
+
 
 
 public slots :

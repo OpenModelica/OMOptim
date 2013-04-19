@@ -69,7 +69,7 @@ public:
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModComponent::sFieldName(i,role);};
 
     static const int nbFields = 3;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
     virtual QString getStrToolTip();
 
 protected :

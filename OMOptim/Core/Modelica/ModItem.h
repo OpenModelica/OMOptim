@@ -105,7 +105,7 @@ public:
     };
     
     static const int nbFields = 2;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
     
     // General functions
     virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
