@@ -285,7 +285,7 @@ QDomElement MOItem::toXmlData(QDomDocument & doc)
 /**
 * Returns string with all field values
 */
-QString MOItem::toCSV()
+QString MOItem::toCSV() const
 {
     QString result;
     QString separator = "\t";

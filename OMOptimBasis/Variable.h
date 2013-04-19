@@ -130,7 +130,7 @@ public :
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return Variable::sFieldName(i,role);};
 
     static const int nbFields = 6;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
 
     //Specific functions
     void setDescription(QString);
@@ -256,7 +256,7 @@ public :
     static QString sFieldName(int field, int role);
     virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptVariable::sFieldName(i,role);};
     static const int nbFields = 8;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
 
     void initOptExtremum();
 
@@ -316,7 +316,7 @@ public :
 
 
     static const int nbFields = 9;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
 
 
     void initScanExtremum();

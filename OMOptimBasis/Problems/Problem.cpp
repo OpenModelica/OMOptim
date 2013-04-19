@@ -80,7 +80,7 @@ QString Problem::getFieldName(int field,int role)
 {
     return "name";
 }
-unsigned Problem::getNbFields()
+unsigned Problem::getNbFields() const
 {
     return 1;
 }

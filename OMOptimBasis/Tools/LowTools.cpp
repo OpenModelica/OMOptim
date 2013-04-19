@@ -191,13 +191,7 @@ bool LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
     bool tmpBool;
     if(!folder.exists())
     {
-        QDir tmpDir;
-        tmpBool = tmpDir.mkpath(folder.absolutePath());
-        if(!tmpBool)
-        {
-            SleeperThread::msleep(1000);
-            tmpDir.mkpath(folder.absolutePath());
-        }
+        LowTools::mkpath(folder.absolutePath(),false);
     }
 
     for(int i=0;i<files.size();i++)

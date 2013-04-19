@@ -89,7 +89,7 @@ public:
 
 
     virtual QString getFieldName(int iField,int iRole);
-    virtual unsigned getNbFields();
+    virtual unsigned getNbFields() const;
 
     Problem* problem() const;
     bool isSuccess();

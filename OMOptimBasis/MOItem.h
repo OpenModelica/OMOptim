@@ -124,11 +124,11 @@ public:
     void setEditableFields(QList<int> editableFields);
 
     static const int nbFields = 1;
-    virtual unsigned getNbFields()=0;
+    virtual unsigned getNbFields() const=0;
     virtual bool check(QString &error);
     virtual QString toSavingString();
     virtual QDomElement toXmlData(QDomDocument & doc);
-    virtual QString toCSV();
+    virtual QString toCSV() const;
     virtual QString getStrToolTip();
     void checkUniqueItemName( QStringList & list);
 

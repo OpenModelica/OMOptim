@@ -152,3 +152,8 @@ MEQflow MEQflow::operator+(const MEQflow& b) const
     return result;
 }
 
+double MEQflow::operator/(const MEQflow& b) const
+{
+    double result = value(_unit) / b.value(_unit);
+    return result;
+}

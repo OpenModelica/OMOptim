@@ -91,7 +91,7 @@ public:
     virtual QString getClassName() const {return "MOParameter";};
 
     static const int nbFields = 9;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
 
 
     virtual bool setFieldValue(int iField,QVariant _value);
@@ -163,7 +163,7 @@ public:
     virtual QString getClassName() const {return "MOParameterListed";};
 
     static const int nbFields = 9;
-    virtual unsigned getNbFields(){return nbFields;};
+    virtual unsigned getNbFields( ) const {return nbFields;};
 
 
     bool setFieldValue(int iField,QVariant _value);

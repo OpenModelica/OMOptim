@@ -113,7 +113,7 @@ protected:
     virtual QString getClassName() const {return "ProjectBase";}
     virtual void clear();
     virtual QString getFieldName(int iField,int role);
-    virtual unsigned getNbFields();
+    virtual unsigned getNbFields() const ;
 
     virtual bool isSaved();
     virtual void setSaved(bool);

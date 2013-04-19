@@ -99,7 +99,7 @@ QString ProjectBase::getFieldName(int iField, int role)
     return "name";
 }
 
-unsigned ProjectBase::getNbFields()
+unsigned ProjectBase::getNbFields() const
 {
     return 1;
 }

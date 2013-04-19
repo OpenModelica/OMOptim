@@ -97,7 +97,7 @@ QString Result::getFieldName(int field,int role)
 {
     return "name";
 }
-unsigned Result::getNbFields()
+unsigned Result::getNbFields() const
 {
     return 1;
 }
