@@ -34,7 +34,7 @@
     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
     Company : CEP - ARMINES (France)
     http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #if !defined(_PROBLEM_H)
@@ -100,34 +100,34 @@ public:
 
     // Execution
     /**
-  * Launch problem resolution.
+        * Launch problem resolution.
     * This function should be reimplemented for each kind of problem.
     */
     virtual Result* launch(ProblemConfig config) = 0;
 
     /**
-  * Precomputation function : should be launched at beginning
-  * of launch function
-  */
+        * Precomputation function : should be launched at beginning
+        * of launch function
+        */
     //virtual void precompute();
     /**
-  * Check if problem parameters, and inputs are correct.
-  * For example, check if min<max.
-  * pure virtual functions : all classes inheriting Problem should have a check function.
-  * @param error : contains list of errors detected.
-  */
+        * Check if problem parameters, and inputs are correct.
+        * For example, check if min<max.
+        * pure virtual functions : all classes inheriting Problem should have a check function.
+        * @param error : contains list of errors detected.
+        */
     virtual bool checkBeforeComp(QString & error) = 0;
 
     // Managment functions
     /**
-  * Save problem information in XML form.
+        * Save problem information in XML form.
     */
     virtual QDomElement toXmlData(QDomDocument & doc) = 0;
     /**
-  * Store problem files in destFolder. Is called when a problem resolution is finished.
-  * @param destFolder destination folder path.
-  * @param tempDir dir from where problem files are copied
-  */
+        * Store problem files in destFolder. Is called when a problem resolution is finished.
+        * @param destFolder destination folder path.
+        * @param tempDir dir from where problem files are copied
+        */
     virtual void store(QString destFolder, QString tempDir);
     void setDefaultSaveFileName();
 
@@ -135,7 +135,7 @@ public:
     MOParameters* parameters(){return _parameters;}
 
 public slots :
-  virtual void stop(){};
+        virtual void stop(){};
 
 signals:
     void newProgress(float);

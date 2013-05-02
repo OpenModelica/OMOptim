@@ -38,12 +38,12 @@ public:
      * @param _coolingSchedule the cooling schedule
      */
     SA1explorer(Neighborhood& _neighborhood, moEval<Neighbor>& _eval, SA1moSolNeighborComparator<Neighbor>& _solNeighborComparator, moCoolingSchedule<EOT>& _coolingSchedule) : moNeighborhoodExplorer<Neighbor>(_neighborhood, _eval), solNeighborComparator(_solNeighborComparator), coolingSchedule(_coolingSchedule) {
-  isAccept = false;
+        isAccept = false;
 
-  if (!neighborhood.isRandom()) {
-      std::cout << "moSAexplorer::Warning -> the neighborhood used is not random" << std::endl;
-  }
-  iter =0; //for debugging issues: it's the number of iterations
+        if (!neighborhood.isRandom()) {
+            std::cout << "moSAexplorer::Warning -> the neighborhood used is not random" << std::endl;
+        }
+        iter =0; //for debugging issues: it's the number of iterations
     }
 
     /**
@@ -57,10 +57,10 @@ public:
      * @param _solution the solution
      */
     virtual void initParam(EOT & _solution) {
-  temperature = coolingSchedule.init(_solution);
-  isAccept = true;
-  fitnessAssignement(_solution);
-  arch(_solution);
+        temperature = coolingSchedule.init(_solution);
+        isAccept = true;
+        fitnessAssignement(_solution);
+        arch(_solution);
     };
 
     /**
@@ -68,7 +68,7 @@ public:
      * @param _solution unused solution
      */
     virtual void updateParam(EOT & _solution) {
-  coolingSchedule.update(temperature);
+        coolingSchedule.update(temperature);
     };
 
     /**
@@ -82,18 +82,18 @@ public:
      * @param _solution the solution
      */
     virtual void operator()(EOT & _solution) {
-  //Test if _solution has a Neighbor
-  if (neighborhood.hasNeighbor(_solution)) {
-      //init on the first neighbor: supposed to be random solution in the neighborhood
-      neighborhood.init(_solution, current);
+        //Test if _solution has a Neighbor
+        if (neighborhood.hasNeighbor(_solution)) {
+            //init on the first neighbor: supposed to be random solution in the neighborhood
+            neighborhood.init(_solution, current);
 
-      //eval the _solution moved with the neighbor and stock the result in the neighbor
-      eval(_solution, current);
-  }
-  else {
-      //if _solution hasn't neighbor,
-      isAccept=false;
-  }
+            //eval the _solution moved with the neighbor and stock the result in the neighbor
+            eval(_solution, current);
+        }
+        else {
+            //if _solution hasn't neighbor,
+            isAccept=false;
+        }
     };
 
     /**
@@ -102,7 +102,7 @@ public:
      * @return true if the criteria from the cooling schedule is true
      */
     virtual bool isContinue(EOT & _solution) {
-  return coolingSchedule(temperature);
+        return coolingSchedule(temperature);
     };
 
     /**
@@ -110,8 +110,8 @@ public:
      * @param _solution the solution to move
      */
     virtual void move(EOT & _solution) {
-  //move the solution
-  _solution = current.getTmp();
+        //move the solution
+        _solution = current.getTmp();
     };
 
     /**
@@ -120,40 +120,40 @@ public:
      * @return true if better neighbor or rnd < exp(delta f / T)
      */
     virtual bool accept(EOT & _solution) {
-  double alpha=0.0;
-  double fit1, fit2;
+        double alpha=0.0;
+        double fit1, fit2;
 
-  iter++;
-  if (neighborhood.hasNeighbor(_solution))
-  {
+        iter++;
+        if (neighborhood.hasNeighbor(_solution))
+        {
 
-      if(arch(current.getTmp()))
-      {
-          isAccept = true;
-          fitnessAssignement(current.getTmp());
-      }
-      else
-      {
-      if (paretoComparator(_solution.objectiveVector(), current.objectiveVector()))
-      {
-          isAccept = true;
-          fitnessAssignement(current.getTmp());
-      }
-      else
-      {
+            if(arch(current.getTmp()))
+            {
+                isAccept = true;
+                fitnessAssignement(current.getTmp());
+            }
+            else
+            {
+            if (paretoComparator(_solution.objectiveVector(), current.objectiveVector()))
+            {
+                isAccept = true;
+                fitnessAssignement(current.getTmp());
+            }
+            else
+            {
 
-          fitnessAssignement(current.getTmp());
-          fit1=(double) current.fitness();
-          fit2=(double)_solution.fitness();
-          if (fit1 < fit2) // this is a maximization
-              alpha = exp((fit1 - fit2) / temperature );
-          else // this is a minimization
-              alpha = exp((fit2 - fit1) / temperature );
-          isAccept = (rng.uniform() < alpha) ;
-      }
-     }
-  }
-  return isAccept;
+                fitnessAssignement(current.getTmp());
+                fit1=(double) current.fitness();
+                fit2=(double)_solution.fitness();
+                if (fit1 < fit2) // this is a maximization
+                    alpha = exp((fit1 - fit2) / temperature );
+                else // this is a minimization
+                    alpha = exp((fit2 - fit1) / temperature );
+                isAccept = (rng.uniform() < alpha) ;
+            }
+           }
+        }
+        return isAccept;
     };
 
 
@@ -164,7 +164,7 @@ public:
      * @return the temperature
      */
     double getTemperature() {
-  return temperature;
+        return temperature;
     }
 
 

@@ -47,12 +47,12 @@
 class Problems : public OMCases
 {    
 public:
-  Problems(QString name="Problems");
-  virtual ~Problems(void);
+        Problems(QString name="Problems");
+        virtual ~Problems(void);
 
-  Problem* at(int i);
+        Problem* at(int i);
 private :
-  QString name;
+        QString name;
 };
 
 

@@ -24,7 +24,7 @@ class EAUpdaterDispObjGUI : public eoUpdater, public QObject
      * @param _arch local archive
      */
     EAUpdaterDispObjGUI (moeoArchive<MOEOT> & _arch) :
-  arch(_arch), counter(0)
+        arch(_arch), counter(0)
     {
     }
 
@@ -34,35 +34,35 @@ class EAUpdaterDispObjGUI : public eoUpdater, public QObject
      */
     void operator()()
     {
-  QString msg = "Current vector [double params, int params, bool params, objectives]\n";
-  for (unsigned int i = 0; i < arch.size (); i++)
-  {
-      // add double parameters
-      for(int j=0;j<arch.at(i).doubleVars.size();j++)
-      {
-          msg+=QString::number(arch.at(i).doubleVars.at(j))+="\t";
-      }
+        QString msg = "Current vector [double params, int params, bool params, objectives]\n";
+        for (unsigned int i = 0; i < arch.size (); i++)
+        {
+            // add double parameters
+            for(int j=0;j<arch.at(i).doubleVars.size();j++)
+            {
+                msg+=QString::number(arch.at(i).doubleVars.at(j))+="\t";
+            }
 
-      // add int parameters
-      for(int j=0;j<arch.at(i).intVars.size();j++)
-      {
-          msg+=QString::number(arch.at(i).intVars.at(j))+="\t";
-      }
+            // add int parameters
+            for(int j=0;j<arch.at(i).intVars.size();j++)
+            {
+                msg+=QString::number(arch.at(i).intVars.at(j))+="\t";
+            }
 
-      // add bool parameters
-      for(int j=0;j<arch.at(i).boolVars.size();j++)
-      {
-          msg+=QVariant(arch.at(i).boolVars.at(j)).toString()+="\t";
-      }
+            // add bool parameters
+            for(int j=0;j<arch.at(i).boolVars.size();j++)
+            {
+                msg+=QVariant(arch.at(i).boolVars.at(j)).toString()+="\t";
+            }
 
-      // add objectives
-      for(int j=0;j<arch.at(i).objectiveVector().size();j++)
-      {
-          msg+=QString::number(arch.at(i).objectiveVector().at(j))+="\t";
-      }
-      msg +="\n";
-  }
-  InfoSender::instance()->send(Info(msg));
+            // add objectives
+            for(int j=0;j<arch.at(i).objectiveVector().size();j++)
+            {
+                msg+=QString::number(arch.at(i).objectiveVector().at(j))+="\t";
+            }
+            msg +="\n";
+        }
+        InfoSender::instance()->send(Info(msg));
     }
 
   private:
@@ -91,9 +91,9 @@ class EAUpdaterDispObjGUIOneSol : public eoUpdater, public QObject
      * @param _arch local archive
      */
     EAUpdaterDispObjGUIOneSol (MOEOT & _sol) :
-  sol(_sol), counter(0)
+        sol(_sol), counter(0)
     {
-  }
+        }
 
 
     /**
@@ -101,15 +101,15 @@ class EAUpdaterDispObjGUIOneSol : public eoUpdater, public QObject
      */
     void operator()()
     {
-  QString msg = "Current gen. objective vector :";
+        QString msg = "Current gen. objective vector :";
 
-  for(int j=0;j<sol.objectiveVector().size();j++)
-  {
-      msg+=QString::number(sol.objectiveVector().at(j))+="\t";
-  }
-  msg +="\n";
+        for(int j=0;j<sol.objectiveVector().size();j++)
+        {
+            msg+=QString::number(sol.objectiveVector().at(j))+="\t";
+        }
+        msg +="\n";
 
-  InfoSender::instance()->send(Info(msg));
+        InfoSender::instance()->send(Info(msg));
     }
 
 private:

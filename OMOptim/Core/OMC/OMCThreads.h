@@ -50,23 +50,23 @@ class MOomc;
 namespace MOThreads
 {
 
-  class OMCModelLoader : public QThread
-  {
-      Q_OBJECT
-  public:
-      OMCModelLoader(QString filePath,MOomc* omc);
-      QString _filePath;
-      QString _result;
+        class OMCModelLoader : public QThread
+        {
+            Q_OBJECT
+        public:
+            OMCModelLoader(QString filePath,MOomc* omc);
+            QString _filePath;
+            QString _result;
 
-  public slots :
-      void onLoadedFile(QString filePath,QString result);
+        public slots :
+            void onLoadedFile(QString filePath,QString result);
 
-  public :
-      void run();
-  signals:
-      void loadFile(QString filePath);
+        public :
+            void run();
+        signals:
+            void loadFile(QString filePath);
 
-  };
+        };
 } //namespace
 
 #endif

@@ -50,9 +50,9 @@ QString ModPlusOMExeCtrl::resFile()
     QString model_name = _ModelPlus->modelName();
     model_name.truncate(model_name.size() -4);
     if(useMat())
-  return model_name +"_res.mat";
+        return model_name +"_res.mat";
     else
-  return model_name +"_res.csv";
+        return model_name +"_res.csv";
 }
 
 
@@ -85,18 +85,18 @@ bool ModPlusOMExeCtrl::readInitialVariables(MOVector<Variable> *initVariables, Q
     ModItem* item = _ModelPlus->getProject()->modItemsTree()->findItem(_ModelPlus->name());
     ExeModel* exeMod = dynamic_cast<ExeModel*> (item);
     if( ! exeMod )
-  return false;
+        return false;
     else
     {
-  initFile = exeMod->inputFile().absoluteFilePath();
-  if(initFile.isEmpty() || !QFile::exists(initFile))
-      return false;
-  else
-  {
-      initVariables->clear();
-      getInputVariablesFromXmlFile(initFile, _ModelPlus->modelName(), initVariables);
-      return true;
-  }
+        initFile = exeMod->inputFile().absoluteFilePath();
+        if(initFile.isEmpty() || !QFile::exists(initFile))
+            return false;
+        else
+        {
+            initVariables->clear();
+            getInputVariablesFromXmlFile(initFile, _ModelPlus->modelName(), initVariables);
+            return true;
+        }
     }
 }
 
@@ -122,9 +122,9 @@ bool ModPlusOMExeCtrl::simulate(QDir tempFolder, MOVector<Variable> *inputVars, 
     bool initFile =(_initFile != "");
 
     if(initFile)
-  allFilesToCopy << _initFile;
+        allFilesToCopy << _initFile;
     else
-  InfoSender::instance()->sendError("Unable to find an init file for model "+_ModelPlus->modelName());
+        InfoSender::instance()->sendError("Unable to find an init file for model "+_ModelPlus->modelName());
 
     InfoSender::instance()->debug("Start copying in temp directory : "+tempFolder.absolutePath());
     QFileInfo fileToCopyInfo;
@@ -132,14 +132,14 @@ bool ModPlusOMExeCtrl::simulate(QDir tempFolder, MOVector<Variable> *inputVars, 
     bool copyOk;
     for(int i=0; i< allFilesToCopy.size();i++)
     {
-  //fileToCopy.setFileName(allFilesToCopy.at(i));
-  fileToCopyInfo = allFilesToCopy.at(i);
-  tempFolder.remove(fileToCopyInfo.fileName());
-  copyOk = QFile::copy(allFilesToCopy.at(i).absoluteFilePath(),tempFolder.filePath(fileToCopyInfo.fileName()));
-  //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
-  InfoSender::instance()->debug("Copying in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
-  if(!copyOk)
-      InfoSender::instance()->sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
+        //fileToCopy.setFileName(allFilesToCopy.at(i));
+        fileToCopyInfo = allFilesToCopy.at(i);
+        tempFolder.remove(fileToCopyInfo.fileName());
+        copyOk = QFile::copy(allFilesToCopy.at(i).absoluteFilePath(),tempFolder.filePath(fileToCopyInfo.fileName()));
+        //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
+        InfoSender::instance()->debug("Copying in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
+        if(!copyOk)
+            InfoSender::instance()->sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
     }
 
 
@@ -147,7 +147,7 @@ bool ModPlusOMExeCtrl::simulate(QDir tempFolder, MOVector<Variable> *inputVars, 
     QStringList filesToRemove;
     filesToRemove << resMatFile() << resCsvFile();
     for(int i=0;i<filesToRemove.size();i++)
-  tempFolder.remove(filesToRemove.at(i));
+        tempFolder.remove(filesToRemove.at(i));
 
     QString tempInitFile = tempFolder.absoluteFilePath(QFileInfo(_initFile).fileName());
     QString tempMatResFile = tempFolder.absoluteFilePath(resMatFile());
@@ -170,16 +170,16 @@ bool ModPlusOMExeCtrl::simulate(QDir tempFolder, MOVector<Variable> *inputVars, 
 
     if(QFile::exists(tempMatResFile))
     {
-  bool readOk = readOutputVariables(outputVars,tempMatResFile);
-  return readOk;
+        bool readOk = readOutputVariables(outputVars,tempMatResFile);
+        return readOk;
     }
     else if(QFile::exists(tempCsvResFile))
     {
-  bool readOk = readOutputVariables(outputVars,tempCsvResFile);
-  return readOk;
+        bool readOk = readOutputVariables(outputVars,tempCsvResFile);
+        return readOk;
     }
      else
-  return false;
+        return false;
 
 }
 
@@ -189,12 +189,12 @@ bool ModPlusOMExeCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QS
     InfoSender::instance()->send(Info("Reading final variables in "+resFileLocal,ListInfo::NORMAL2));
 
 //    if(resFileLocal.isEmpty())
-//  resFileLocal = resFile();
+//        resFileLocal = resFile();
 
     if(resMatFile()== QFileInfo(resFileLocal).fileName())
-  return OpenModelica::getFinalVariablesFromMatFile(resFileLocal,finalVariables,_ModelPlus->modelName());
+        return OpenModelica::getFinalVariablesFromMatFile(resFileLocal,finalVariables,_ModelPlus->modelName());
     else
-  return OpenModelica::getFinalVariablesFromFile(resFileLocal,finalVariables,_ModelPlus->modelName());
+        return OpenModelica::getFinalVariablesFromFile(resFileLocal,finalVariables,_ModelPlus->modelName());
 }
 
 bool ModPlusOMExeCtrl::setStopTime(double time)
@@ -235,15 +235,15 @@ bool ModPlusOMExeCtrl::start(QString exeFile,int maxnsec)
 
     int nmsec;
     if(maxnsec==-1)
-  nmsec = -1;
+        nmsec = -1;
     else
-  nmsec = maxnsec*1000;
+        nmsec = maxnsec*1000;
     bool ok = simProcess.waitForFinished(nmsec);
     if(!ok)
     {
-  QString msg("CreateProcess failed (%d).");
-  InfoSender::instance()->debug(msg);
-  return false;
+        QString msg("CreateProcess failed (%d).");
+        InfoSender::instance()->debug(msg);
+        return false;
     }
     QString output(simProcess.readAllStandardOutput());
     InfoSender::instance()->send(Info(output,ListInfo::OMCNORMAL2));

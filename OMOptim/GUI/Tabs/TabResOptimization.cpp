@@ -66,78 +66,78 @@
 TabResOptimization::TabResOptimization(OptimResult *result, QWidget *parent) :
 MO2ColTab(result->project()->name(),result,false,parent)
 {
-//  QMainWindow::setDockNestingEnabled(true);
-//  QMainWindow::setCorner(Qt::TopLeftCorner,Qt::LeftDockWidgetArea);
-  _project = dynamic_cast<Project*>(result->project());
-  _result = result;
-  _problem = dynamic_cast<Optimization*>(_result->problem());
+//        QMainWindow::setDockNestingEnabled(true);
+//        QMainWindow::setCorner(Qt::TopLeftCorner,Qt::LeftDockWidgetArea);
+        _project = dynamic_cast<Project*>(result->project());
+        _result = result;
+        _problem = dynamic_cast<Optimization*>(_result->problem());
 
-  _widgetMooPointsList = new WidgetMooPointsList(_result,this);
-  _widgetMooPlot = new WidgetMooPlot(_result,this);
-  _widgetTableRecVar = new WidgetTableRecVar(_result,this);
+        _widgetMooPointsList = new WidgetMooPointsList(_result,this);
+        _widgetMooPlot = new WidgetMooPlot(_result,this);
+        _widgetTableRecVar = new WidgetTableRecVar(_result,this);
 
-  addDockWidget("Plot",_widgetMooPlot,NULL,Qt::RightDockWidgetArea);
+        addDockWidget("Plot",_widgetMooPlot,NULL,Qt::RightDockWidgetArea);
 //#ifdef USEBLOCKSUB
-//  _widgetBlocks = new WidgetBlocks(_project,_result,this);
-//  if(_problem->blockSubstitutions()->size()>0)
-//      addDockWidget("Blocks",_widgetBlocks,_widgetMooPlot,Qt::RightDockWidgetArea);
+//        _widgetBlocks = new WidgetBlocks(_project,_result,this);
+//        if(_problem->blockSubstitutions()->size()>0)
+//            addDockWidget("Blocks",_widgetBlocks,_widgetMooPlot,Qt::RightDockWidgetArea);
 //#endif
-  addDockWidget("Variables",_widgetTableRecVar,_widgetMooPlot,Qt::RightDockWidgetArea);
+        addDockWidget("Variables",_widgetTableRecVar,_widgetMooPlot,Qt::RightDockWidgetArea);
 
-  addFixedWidget("Points",_widgetMooPointsList,Qt::LeftDockWidgetArea,Qt::Horizontal,false);
+        addFixedWidget("Points",_widgetMooPointsList,Qt::LeftDockWidgetArea,Qt::Horizontal,false);
     
 
-  _widgetOptimActions = new WidgetOptimActions(_project,_problem,true,_result,this);
-  addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
+        _widgetOptimActions = new WidgetOptimActions(_project,_problem,true,_result,this);
+        addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
 
-  //_widgetCtrl = new WidgetCtrlParameters(_project,_problem->ctrls(),true,this);
-  //addDockWidget("Simulator",_widgetCtrl,_widgetTableRecVar);
+        //_widgetCtrl = new WidgetCtrlParameters(_project,_problem->ctrls(),true,this);
+        //addDockWidget("Simulator",_widgetCtrl,_widgetTableRecVar);
 
 
-  _widgetOptParameters = new WidgetOptParameters(_project,_problem,true,this);
-  addDockWidget("Parameters",_widgetOptParameters,_widgetTableRecVar);
+        _widgetOptParameters = new WidgetOptParameters(_project,_problem,true,this);
+        addDockWidget("Parameters",_widgetOptParameters,_widgetTableRecVar);
 
-  _widgetInfos = new WidgetResultInfos(_result,this);
-  addDockWidget("Infos",_widgetInfos,_widgetOptParameters);
-
-
-  // connect signals for selection changed
-  connect(_widgetMooPlot,SIGNAL(selectionChanged(QList<int> &)),
-          _widgetMooPointsList,SLOT(onExtSelectionChanged(QList<int>&)));
-  connect(_widgetMooPlot,SIGNAL(selectionChanged(QList<int>&)),
-          _widgetTableRecVar,SLOT(onExtSelectionChanged(QList<int>&)));
-
-  connect(_widgetMooPointsList,SIGNAL(selectionChanged(QList<int>&)),
-          _widgetTableRecVar,SLOT(onExtSelectionChanged(QList<int>&)));
-  connect(_widgetMooPointsList,SIGNAL(selectionChanged(QList<int>&)),
-          _widgetMooPlot,SLOT(onExtSelectionChanged(QList<int>&)));
-
-  // signal for recomputation
-  connect(_widgetMooPointsList,SIGNAL(pointsRecomputed()),
-          _widgetTableRecVar,SLOT(onPointsRecomputed()));
+        _widgetInfos = new WidgetResultInfos(_result,this);
+        addDockWidget("Infos",_widgetInfos,_widgetOptParameters);
 
 
-  // connect signals for shown points changed
-  connect(_widgetMooPointsList,SIGNAL(shownPointsChanged(QList<int>&)),
-          _widgetMooPlot,SLOT(onExtShownPointsChanged(QList<int>&)));
+        // connect signals for selection changed
+        connect(_widgetMooPlot,SIGNAL(selectionChanged(QList<int> &)),
+                _widgetMooPointsList,SLOT(onExtSelectionChanged(QList<int>&)));
+        connect(_widgetMooPlot,SIGNAL(selectionChanged(QList<int>&)),
+                _widgetTableRecVar,SLOT(onExtSelectionChanged(QList<int>&)));
 
-  // connect signals for cur scan changed
-  connect(_result,SIGNAL(curScanChanged(int)),_widgetTableRecVar,SLOT(onCurScanChanged(int )));
+        connect(_widgetMooPointsList,SIGNAL(selectionChanged(QList<int>&)),
+                _widgetTableRecVar,SLOT(onExtSelectionChanged(QList<int>&)));
+        connect(_widgetMooPointsList,SIGNAL(selectionChanged(QList<int>&)),
+                _widgetMooPlot,SLOT(onExtSelectionChanged(QList<int>&)));
 
-  // refresh shown points
-   _widgetMooPointsList->setOnlyPareto(_widgetMooPointsList->_ui->pushPareto->isChecked());
+        // signal for recomputation
+        connect(_widgetMooPointsList,SIGNAL(pointsRecomputed()),
+                _widgetTableRecVar,SLOT(onPointsRecomputed()));
 
-  // raise pareto
-   _widgetMooPlot->raise();
-   mapDockWidgets.key(_widgetMooPlot)->raise();
 
-   // restore position
+        // connect signals for shown points changed
+        connect(_widgetMooPointsList,SIGNAL(shownPointsChanged(QList<int>&)),
+                _widgetMooPlot,SLOT(onExtShownPointsChanged(QList<int>&)));
+
+        // connect signals for cur scan changed
+        connect(_result,SIGNAL(curScanChanged(int)),_widgetTableRecVar,SLOT(onCurScanChanged(int )));
+
+        // refresh shown points
+         _widgetMooPointsList->setOnlyPareto(_widgetMooPointsList->_ui->pushPareto->isChecked());
+
+        // raise pareto
+         _widgetMooPlot->raise();
+         mapDockWidgets.key(_widgetMooPlot)->raise();
+
+         // restore position
      //    readGUIState();
 
-//   // select first point
-//   if(result->nbPoints()>0)
-//       _widgetMooPointsList->_listPoints->setSelectedIndexes(QList<int>()<<0);
+//         // select first point
+//         if(result->nbPoints()>0)
+//             _widgetMooPointsList->_listPoints->setSelectedIndexes(QList<int>()<<0);
 
 }
 

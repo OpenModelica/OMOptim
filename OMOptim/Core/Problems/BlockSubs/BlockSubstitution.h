@@ -24,8 +24,8 @@ class BlockSubstitution
 public:
 
     BlockSubstitution(Project* project,QString model, QString orgComponent, QString subComponent,
-                QStringList orgPorts,QList<QStringList> orgConnectedComps,
-                QStringList subPorts,QList<QStringList> subConnectedComps);
+                      QStringList orgPorts,QList<QStringList> orgConnectedComps,
+                      QStringList subPorts,QList<QStringList> subConnectedComps);
 
     BlockSubstitution(Project*,QString model,QString orgComponent,QString subComponent,bool doAutoConnect, bool &ok);
     BlockSubstitution(Project*,QDomElement domEl,bool &ok);

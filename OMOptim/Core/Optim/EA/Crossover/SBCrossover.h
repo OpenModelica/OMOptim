@@ -65,7 +65,7 @@ public:
 
 virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     
-  // for double, int and bool, both eos are modified, new values are taken between two old values
+        // for double, int and bool, both eos are modified, new values are taken between two old values
     // !! need to be studied and adapted to specific problems
     bool oneHasChanged = false;
 
@@ -74,28 +74,28 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     double beta;
     double eta=1;
     double u;
-  
+        
     //********************************
     // Crossover on double variables 
     //********************************
     for(int iVar=0;iVar<_eoA.doubleVars.size();iVar++)
     {
-  u = rng.random(1);
-  if(u>0.5)
-      beta= pow(2*u,1/(eta+1));
-  else
-      beta = pow(1/(2*(1-u)),1/(eta+1));
+        u = rng.random(1);
+        if(u>0.5)
+            beta= pow(2*u,1/(eta+1));
+        else
+            beta = pow(1/(2*(1-u)),1/(eta+1));
 
-  parValueA = _eoA.doubleVars.at(iVar);
-  parValueB = _eoB.doubleVars.at(iVar);
+        parValueA = _eoA.doubleVars.at(iVar);
+        parValueB = _eoB.doubleVars.at(iVar);
 
-  childValueA = 0.5*((1+beta)*parValueA + (1-beta)*parValueB);
-  childValueB = 0.5*((1-beta)*parValueA + (1+beta)*parValueB);
+        childValueA = 0.5*((1+beta)*parValueA + (1-beta)*parValueB);
+        childValueB = 0.5*((1-beta)*parValueA + (1+beta)*parValueB);
 
-  _eoA.doubleVars.at(iVar) = childValueA;
-  _eoB.doubleVars.at(iVar) = childValueB;
+        _eoA.doubleVars.at(iVar) = childValueA;
+        _eoB.doubleVars.at(iVar) = childValueB;
 
-  oneHasChanged = true;
+        oneHasChanged = true;
     }
     
     //********************************
@@ -103,22 +103,22 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     //********************************
     for(int iVar=0;iVar<_eoA.intVars.size();iVar++)
     {
-  u = rng.random(1);
-  if(u>0.5)
-      beta= pow(2*u,1/(eta+1));
-  else
-      beta = pow(1/(2*(1-u)),1/(eta+1));
+        u = rng.random(1);
+        if(u>0.5)
+            beta= pow(2*u,1/(eta+1));
+        else
+            beta = pow(1/(2*(1-u)),1/(eta+1));
 
-  parValueA = (double)_eoA.intVars.at(iVar);
-  parValueB = (double)_eoB.intVars.at(iVar);
+        parValueA = (double)_eoA.intVars.at(iVar);
+        parValueB = (double)_eoB.intVars.at(iVar);
 
-  childValueA = 0.5*((1+beta)*parValueA + (1-beta)*parValueB);
-  childValueB = 0.5*((1-beta)*parValueA + (1+beta)*parValueB);
-  
-  _eoA.intVars.at(iVar) = LowTools::round(childValueA);
-  _eoB.intVars.at(iVar) = LowTools::round(childValueB);
+        childValueA = 0.5*((1+beta)*parValueA + (1-beta)*parValueB);
+        childValueB = 0.5*((1-beta)*parValueA + (1+beta)*parValueB);
+        
+        _eoA.intVars.at(iVar) = LowTools::round(childValueA);
+        _eoB.intVars.at(iVar) = LowTools::round(childValueB);
 
-  oneHasChanged = true;
+        oneHasChanged = true;
     }
 
     //********************************
@@ -126,21 +126,21 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     //********************************
     for(int iVar=0;iVar<_eoA.boolVars.size();iVar++)
     {
-  int iBool = LowTools::round(rng.random(_eoA.boolVars.size()-1));
-  bool valB =_eoB.boolVars.at(iBool);
-  bool valA =_eoA.boolVars.at(iBool);
+        int iBool = LowTools::round(rng.random(_eoA.boolVars.size()-1));
+        bool valB =_eoB.boolVars.at(iBool);
+        bool valA =_eoA.boolVars.at(iBool);
 
-  _eoA.boolVars.at(iBool)=valB;
-  _eoB.boolVars.at(iBool)=valA;
+        _eoA.boolVars.at(iBool)=valB;
+        _eoB.boolVars.at(iBool)=valA;
 
-  oneHasChanged = true;
+        oneHasChanged = true;
     }
     
     return oneHasChanged;
 }
 private :
 
-  MOParameters *parameters;
+        MOParameters *parameters;
 };
 
 #endif

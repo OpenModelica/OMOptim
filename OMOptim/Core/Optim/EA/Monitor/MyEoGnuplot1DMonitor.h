@@ -70,12 +70,12 @@ public:
 
     /** Constructor */
     MyEoGnuplot1DMonitor(QDir folder, int nbObj,bool _top=false) :
-  eoMonitor(),
-  MyEoGnuplot()
-  {_folder = folder;
-  _nbObj = nbObj;
-   InfoSender::instance()->debug("Ctor Gnuplot1DMonitor");
-  }
+        eoMonitor(),
+        MyEoGnuplot()
+        {_folder = folder;
+        _nbObj = nbObj;
+         InfoSender::instance()->debug("Ctor Gnuplot1DMonitor");
+        }
 
     /** Destructor */
     virtual ~MyEoGnuplot1DMonitor(){}
@@ -87,7 +87,7 @@ public:
 
     /** Class name */
     virtual std::string className() const
-  { return "MyEoGnuplot1DMonitor"; }
+        { return "MyEoGnuplot1DMonitor"; }
 
 private :
     QDir _folder;

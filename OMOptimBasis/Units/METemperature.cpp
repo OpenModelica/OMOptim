@@ -65,17 +65,17 @@ QString METemperature::unit(int iUnit) const
     switch(iUnit)
     {
     case K :
-  return "K";
+        return "K";
     case C :
-  return "C";
+        return "C";
     default :
-  return "-";
+        return "-";
     }
 }
 
 QString METemperature::unit() const
 {
-  return unit(_unit);
+        return unit(_unit);
 }
 
 unsigned METemperature::nbUnits() const
@@ -90,20 +90,20 @@ double METemperature::convert(double value,int orgUnit,int dstUnit) const
     switch(orgUnit)
     {
     case C :
-  result=result+273.15;
-  break;
+        result=result+273.15;
+        break;
     default :
-  break;
+        break;
     }
 
     // convert to dstUnit
     switch(dstUnit)
     {
     case C :
-  result=result-273.15;
-  break;
+        result=result-273.15;
+        break;
     default :
-  break;
+        break;
     }
     return result;
 }

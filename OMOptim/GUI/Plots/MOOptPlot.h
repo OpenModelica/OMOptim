@@ -87,7 +87,7 @@ public:
 
 
     inline virtual void drawItems (QPainter *painter, const QRect &rect,
-                             const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
+                                   const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
     inline void drawFrame(QPainter *p, const QRect& rect);
     inline virtual void paintEvent(QPaintEvent *e);
 
@@ -233,22 +233,22 @@ void MOOptPlot::setSelectionPoint(int selectedPoint, bool add)
 {
     if(add)
     {
-  if(!_selectedPoints.contains(selectedPoint))
-  {
-      _selectedPoints.push_back(selectedPoint);
-      refresh(2);
-  }
+        if(!_selectedPoints.contains(selectedPoint))
+        {
+            _selectedPoints.push_back(selectedPoint);
+            refresh(2);
+        }
     }
     else
     {
-  if((_selectedPoints.size()!=1)||(selectedPoint != _selectedPoints.at(0)))
-  {
-      _selectedPoints.clear();
-      if(selectedPoint!=-1)
-          _selectedPoints.push_back(selectedPoint);
+        if((_selectedPoints.size()!=1)||(selectedPoint != _selectedPoints.at(0)))
+        {
+            _selectedPoints.clear();
+            if(selectedPoint!=-1)
+                _selectedPoints.push_back(selectedPoint);
 
-      refresh(2);
-  }
+            refresh(2);
+        }
     }
 }
 
@@ -256,20 +256,20 @@ void MOOptPlot::setShownPoint(int shownPoint, bool add)
 {
     if(add)
     {
-  if(!_shownPoints.contains(shownPoint))
-  {
-      _shownPoints.push_back(shownPoint);
-      refresh(2);
-  }
+        if(!_shownPoints.contains(shownPoint))
+        {
+            _shownPoints.push_back(shownPoint);
+            refresh(2);
+        }
     }
     else
     {
-  if((_shownPoints.size()!=1)||(shownPoint != _shownPoints.at(0)))
-  {
-      _shownPoints.clear();
-      _shownPoints.push_back(shownPoint);
-      refresh(2);
-  }
+        if((_shownPoints.size()!=1)||(shownPoint != _shownPoints.at(0)))
+        {
+            _shownPoints.clear();
+            _shownPoints.push_back(shownPoint);
+            refresh(2);
+        }
     }
 }
 
@@ -278,8 +278,8 @@ void MOOptPlot::setSelectionPoints(QList<int>  selectedPoints)
 {
     if(_selectedPoints != selectedPoints)
     {
-  _selectedPoints = selectedPoints;
-  refresh(2);
+        _selectedPoints = selectedPoints;
+        refresh(2);
     }
 }
 
@@ -290,10 +290,10 @@ void MOOptPlot::setShownPoints(QList<int>  shownPoints)
     int i=0;
     while(i<_selectedPoints.size())
     {
-  if(!_shownPoints.contains(_selectedPoints.at(i)))
-      _selectedPoints.removeAt(i);
-  else
-      i++;
+        if(!_shownPoints.contains(_selectedPoints.at(i)))
+            _selectedPoints.removeAt(i);
+        else
+            i++;
     }
     refresh(0);
 }
@@ -320,71 +320,71 @@ void MOOptPlot::refresh(int iCurve = 0)
 
     if((iCurve==0)||(iCurve==1))
     {
-  //Plot _curve1
-  int nbPoints = _shownPoints.size();
+        //Plot _curve1
+        int nbPoints = _shownPoints.size();
 
-  dataX = new double[nbPoints];
-  dataY = new double[nbPoints];
+        dataX = new double[nbPoints];
+        dataY = new double[nbPoints];
 
-  for (int i=0;i<nbPoints;i++)
-  {
-      iPoint = _shownPoints.at(i);
-      if(iPoint<std::min(_xData.size(),_yData.size()))
-      {
-          dataX[i]=_xData.at(_shownPoints.at(i));
-          dataY[i]=_yData.at(_shownPoints.at(i));
-      }
-      else
-      {
-          QString msg;
-          msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
-                      iPoint,std::min(_xData.size(),_yData.size()));
-          InfoSender::instance()->debug(msg);
-      }
-  }
-  _curve1->setData(dataX,dataY,nbPoints);
-  _curve1->setItemAttribute(QwtPlotItem::AutoScale,true);
-  delete[] dataX;
-  delete[] dataY;
+        for (int i=0;i<nbPoints;i++)
+        {
+            iPoint = _shownPoints.at(i);
+            if(iPoint<std::min(_xData.size(),_yData.size()))
+            {
+                dataX[i]=_xData.at(_shownPoints.at(i));
+                dataY[i]=_yData.at(_shownPoints.at(i));
+            }
+            else
+            {
+                QString msg;
+                msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
+                            iPoint,std::min(_xData.size(),_yData.size()));
+                InfoSender::instance()->debug(msg);
+            }
+        }
+        _curve1->setData(dataX,dataY,nbPoints);
+        _curve1->setItemAttribute(QwtPlotItem::AutoScale,true);
+        delete[] dataX;
+        delete[] dataY;
     }
 
     if((iCurve==0)||(iCurve==2))
     {
-  if(_selectedPoints.size()>0)
-  {
-      dataX = new double[_selectedPoints.size()];
-      dataY = new double[_selectedPoints.size()];
+        if(_selectedPoints.size()>0)
+        {
+            dataX = new double[_selectedPoints.size()];
+            dataY = new double[_selectedPoints.size()];
 
-      for(int i=0;i<_selectedPoints.size();i++)
-      {
-          iPoint = _selectedPoints.at(i);
-          if(iPoint<std::min(_xData.size(),_yData.size()))
-          {
-              dataX[i]=_xData.at(_selectedPoints.at(i));
-              dataY[i]=_yData.at(_selectedPoints.at(i));
-          }
-          else
-          {
-              QString msg;
-              msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
-                          iPoint,std::min(_xData.size(),_yData.size()));
-              InfoSender::instance()->debug(msg);
-          }
-      }
-      _curve2->setData(dataX,dataY,_selectedPoints.size());
-      _curve2->setItemAttribute(QwtPlotItem::AutoScale,true);
-      _curve2->show();
-      delete[] dataX;
-      delete[] dataY;
-  }
-  else
-  {
-      _curve2->hide();
-  }
+            for(int i=0;i<_selectedPoints.size();i++)
+            {
+                iPoint = _selectedPoints.at(i);
+                if(iPoint<std::min(_xData.size(),_yData.size()))
+                {
+                    dataX[i]=_xData.at(_selectedPoints.at(i));
+                    dataY[i]=_yData.at(_selectedPoints.at(i));
+                }
+                else
+                {
+                    QString msg;
+                    msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
+                                iPoint,std::min(_xData.size(),_yData.size()));
+                    InfoSender::instance()->debug(msg);
+                }
+            }
+            _curve2->setData(dataX,dataY,_selectedPoints.size());
+            _curve2->setItemAttribute(QwtPlotItem::AutoScale,true);
+            _curve2->show();
+            delete[] dataX;
+            delete[] dataY;
+        }
+        else
+        {
+            _curve2->hide();
+        }
     }
     replot();
     if((iCurve==0)||(iCurve==1))
-  _zoomer->setZoomBase();
+        _zoomer->setZoomBase();
 
 }
 
@@ -403,19 +403,19 @@ void MOOptPlot::setXYVar(OptVarObjResultX* varX,OptVarObjResultY* varY)
     int nbPoints = _xData.size();
     while(index<_shownPoints.size())
     {
-  if(_shownPoints.at(index)>=nbPoints)
-      _shownPoints.removeAt(index);
-  else
-      index++;
+        if(_shownPoints.at(index)>=nbPoints)
+            _shownPoints.removeAt(index);
+        else
+            index++;
     }
 
     index=0;
     while(index<_selectedPoints.size())
     {
-  if(_selectedPoints.at(index)>=nbPoints)
-      _selectedPoints.removeAt(index);
-  else
-      index++;
+        if(_selectedPoints.at(index)>=nbPoints)
+            _selectedPoints.removeAt(index);
+        else
+            index++;
     }
 
 
@@ -438,15 +438,15 @@ int MOOptPlot::getNearestPointIndex(QwtPlotCurve * curve,const QwtDoublePoint & 
 
     for(int iShown=0;iShown<_shownPoints.size();iShown++)
     {
-  xPointPos = transform(QwtPlot::xBottom,_xData.at(_shownPoints.at(iShown)));
-  yPointPos = transform(QwtPlot::yLeft,_yData.at(_shownPoints.at(iShown)));
+        xPointPos = transform(QwtPlot::xBottom,_xData.at(_shownPoints.at(iShown)));
+        yPointPos = transform(QwtPlot::yLeft,_yData.at(_shownPoints.at(iShown)));
 
-  curDist = sqrt(pow((double)(yPointPos-yPos),2)+pow((double)(xPointPos-xPos),2));
-  if((curDist<minDist)|| (iShown==0))
-  {
-      indexMin = _shownPoints.at(iShown);
-      minDist = curDist;
-  }
+        curDist = sqrt(pow((double)(yPointPos-yPos),2)+pow((double)(xPointPos-xPos),2));
+        if((curDist<minDist)|| (iShown==0))
+        {
+            indexMin = _shownPoints.at(iShown);
+            minDist = curDist;
+        }
     }
     return indexMin;
 }
@@ -465,32 +465,32 @@ void MOOptPlot::onClicked(const QwtDoublePoint & pos)
     emit selectionChanged(list);
 }
 void MOOptPlot::drawItems (QPainter *painter, const QRect &rect,
-                     const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
+                           const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
 {
 
     painter->save();
 
     const QwtPlotItemList& itmList = itemList();
     for ( QwtPlotItemIterator it = itmList.begin();
-    it != itmList.end(); ++it )
+          it != itmList.end(); ++it )
     {
-  QwtPlotItem *item = *it;
-  if ( item && item->isVisible() )
-  {
-      if ( !(pfilter.options() & QwtPlotPrintFilter::PrintGrid)
-           && item->rtti() == QwtPlotItem::Rtti_PlotGrid )
-      {
-          continue;
-      }
+        QwtPlotItem *item = *it;
+        if ( item && item->isVisible() )
+        {
+            if ( !(pfilter.options() & QwtPlotPrintFilter::PrintGrid)
+                 && item->rtti() == QwtPlotItem::Rtti_PlotGrid )
+            {
+                continue;
+            }
 
 #if QT_VERSION >= 0x040000
-      painter->setRenderHint(QPainter::Antialiasing,true);
+            painter->setRenderHint(QPainter::Antialiasing,true);
 #endif
 
-      item->draw(painter,
-                 map[item->xAxis()], map[item->yAxis()],
-                 rect);
-  }
+            item->draw(painter,
+                       map[item->xAxis()], map[item->yAxis()],
+                       rect);
+        }
     }
 
     painter->restore();
@@ -521,7 +521,7 @@ void MOOptPlot::onExtSelectionChanged(QList<int> & newSel)
 {
     if(_selectedPoints != newSel)
     {
-  setSelectionPoints(newSel);
+        setSelectionPoints(newSel);
     }
 }
 
@@ -567,7 +567,7 @@ void MOOptPlot::onCopyAsked()
 
     // Set the clilpboard image
     QClipboard * clipboard =
-      QApplication::clipboard();
+            QApplication::clipboard();
     clipboard->setImage(image);
 
 
@@ -579,17 +579,17 @@ void MOOptPlot::onCopyAsked()
     curves << _curve1 << _curve2;
     for(int i=0;i<curves.size();i++)
     {
-  curve = curves.at(i);
-  QString yTitle = this->axisTitle(QwtPlot::yLeft).text();
-  QString xTitle = this->axisTitle(QwtPlot::xBottom).text();
-  csv+= xTitle + separator + yTitle + "\n";
-  for(unsigned int j=0;j<curve->data().size();j++)
-  {
-      curve->data().size();
-      csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
-  }
+        curve = curves.at(i);
+        QString yTitle = this->axisTitle(QwtPlot::yLeft).text();
+        QString xTitle = this->axisTitle(QwtPlot::xBottom).text();
+        csv+= xTitle + separator + yTitle + "\n";
+        for(unsigned int j=0;j<curve->data().size();j++)
+        {
+            curve->data().size();
+            csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
+        }
 
-  csv+= "\n \n";
+        csv+= "\n \n";
     }
     clipboard->setText(csv);
 }

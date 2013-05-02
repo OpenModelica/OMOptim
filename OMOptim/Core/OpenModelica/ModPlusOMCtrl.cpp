@@ -106,9 +106,9 @@ bool ModPlusOMCtrl::useMat()
 QString ModPlusOMCtrl::resFile()
 {
     if(useMat())
-  return _ModelPlus->modelName()+"_res.mat";
+        return _ModelPlus->modelName()+"_res.mat";
     else
-  return _ModelPlus->modelName()+"_res.csv";
+        return _ModelPlus->modelName()+"_res.csv";
 }
 
 // Parameters
@@ -119,12 +119,12 @@ bool ModPlusOMCtrl::readOutputVariables(MOVector<Variable> *finalVariables,QStri
     InfoSender::instance()->send(Info("Reading final variables in "+resFileLocal,ListInfo::NORMAL2));
 
     if(resFileLocal.isEmpty())
-  resFileLocal = resFile();
+        resFileLocal = resFile();
 
     if(useMat())
-  return OpenModelica::getFinalVariablesFromMatFile(resFileLocal,finalVariables,_ModelPlus->modelName());
+        return OpenModelica::getFinalVariablesFromMatFile(resFileLocal,finalVariables,_ModelPlus->modelName());
     else
-  return OpenModelica::getFinalVariablesFromFile(resFileLocal,finalVariables,_ModelPlus->modelName());
+        return OpenModelica::getFinalVariablesFromFile(resFileLocal,finalVariables,_ModelPlus->modelName());
 }
 
 
@@ -136,43 +136,43 @@ bool ModPlusOMCtrl::readInitialVariables(MOVector<Variable> *initVariables, cons
     bool authorizeRecreate=false;
     if(initFile.isEmpty())
     {
-  authorizeRecreate=true;
-  initFileTxt = _ModelPlus->mmoFolder().absoluteFilePath(_initFileTxt);
-  initFileXml = _ModelPlus->mmoFolder().absoluteFilePath(_initFileXml);
+        authorizeRecreate=true;
+        initFileTxt = _ModelPlus->mmoFolder().absoluteFilePath(_initFileTxt);
+        initFileXml = _ModelPlus->mmoFolder().absoluteFilePath(_initFileXml);
     }
     else
     {
-  if(initFile.right(3)=="xml")
-      initFileXml = initFile;
+        if(initFile.right(3)=="xml")
+            initFileXml = initFile;
 
-  if(initFile.right(3)=="txt")
-      initFileTxt = initFile;
+        if(initFile.right(3)=="txt")
+            initFileTxt = initFile;
     }
 
     initVariables->clear();
 
     if((!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt)&& authorizeRecreate)||forceRecompile)
     {
-  createInitFile(_modModelPlus->moDependencies(),filesToCopy);
+        createInitFile(_modModelPlus->moDependencies(),filesToCopy);
     }
 
     if(!QFile::exists(initFileXml)&& !QFile::exists(initFileTxt))
     {
-  return false;
+        return false;
     }
     else
     {
-  if(QFile::exists(initFileXml))
-  {
-      OpenModelica::getInputVariablesFromXmlFile(_moomc,initFileXml,_ModelPlus->modelName(),initVariables);
-      InfoSender::instance()->send(Info("Reading initial variables in "+initFileXml,ListInfo::NORMAL2));
-  }
-  else if(QFile::exists(initFileTxt))
-  {
-      OpenModelica::getInputVariablesFromTxtFile(_moomc,initFileTxt,initVariables,_ModelPlus->modelName());
-      InfoSender::instance()->send(Info("Reading initial variables in "+initFileTxt,ListInfo::NORMAL2));
-  }
-  return true;
+        if(QFile::exists(initFileXml))
+        {
+            OpenModelica::getInputVariablesFromXmlFile(_moomc,initFileXml,_ModelPlus->modelName(),initVariables);
+            InfoSender::instance()->send(Info("Reading initial variables in "+initFileXml,ListInfo::NORMAL2));
+        }
+        else if(QFile::exists(initFileTxt))
+        {
+            OpenModelica::getInputVariablesFromTxtFile(_moomc,initFileTxt,initVariables,_ModelPlus->modelName());
+            InfoSender::instance()->send(Info("Reading initial variables in "+initFileTxt,ListInfo::NORMAL2));
+        }
+        return true;
     }
 
     return true;
@@ -186,14 +186,14 @@ bool ModPlusOMCtrl::compile(const QFileInfoList & moDeps, const QFileInfoList fi
 
     QString logFile = _ModelPlus->mmoFolder().absolutePath()+_ModelPlus->modelName()+".log";
     bool success = OpenModelica::compile(_moomc,_modModelPlus->moFilePath(),_ModelPlus->modelName(),_ModelPlus->mmoFolder(),
-                                   moDeps,QFileInfoList() << _ModelPlus->neededFiles() << filesToCopy,
-                                   _ModelPlus->neededFolders());
+                                         moDeps,QFileInfoList() << _ModelPlus->neededFiles() << filesToCopy,
+                                         _ModelPlus->neededFolders());
 
     // Inform
     if(success)
-  InfoSender::instance()->send(Info(ListInfo::MODELCOMPILATIONSUCCESS,_ModelPlus->modelName(),logFile));
+        InfoSender::instance()->send(Info(ListInfo::MODELCOMPILATIONSUCCESS,_ModelPlus->modelName(),logFile));
     else
-  InfoSender::instance()->send(Info("Model "+_ModelPlus->modelName()+" failed to compile. See OMC log tab for details.",ListInfo::ERROR2));
+        InfoSender::instance()->send(Info("Model "+_ModelPlus->modelName()+" failed to compile. See OMC log tab for details.",ListInfo::ERROR2));
 
     InfoSender::instance()->eraseCurrentTask();
 
@@ -212,9 +212,9 @@ bool ModPlusOMCtrl::isCompiled()
 
     for(int i=0;i<filesNeeded.size();i++)
     {
-  filePath = _ModelPlus->mmoFolder().absoluteFilePath(filesNeeded.at(i));
-  file.setFileName(filePath);
-  filesExist = filesExist && file.exists();
+        filePath = _ModelPlus->mmoFolder().absoluteFilePath(filesNeeded.at(i));
+        file.setFileName(filePath);
+        filesExist = filesExist && file.exists();
     }
     return filesExist;
 }
@@ -234,7 +234,7 @@ bool ModPlusOMCtrl::uncompile()
     // remove exeFile
     QFileInfo exeFile(_ModelPlus->mmoFolder(),_exeFile);
     if(!exeFile.exists())
-  return true;
+        return true;
 
     return LowTools::removeFile(exeFile.absoluteFilePath());
 }
@@ -251,10 +251,10 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     bool compileOk = isCompiled();
     // eventually compile model
     if(!compileOk)
-  compileOk = compile(_modModelPlus->moDependencies(),filesToCopy);
+        compileOk = compile(_modModelPlus->moDependencies(),filesToCopy);
 
     if(!compileOk)
-  return false; // compilation failed, useless to pursue
+        return false; // compilation failed, useless to pursue
 
     // Create tempDir
     LowTools::mkpath(tempFolder.absolutePath(),false);
@@ -274,15 +274,15 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     bool removeOk;
     for(int i=0; i< allFilesToCopy.size();i++)
     {
-  //fileToCopy.setFileName(allFilesToCopy.at(i));
-  fileToCopyInfo = allFilesToCopy.at(i);
-  removeOk = tempFolder.remove(fileToCopyInfo.fileName());
-  InfoSender::instance()->debug("Removing in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-  copyOk = QFile::copy(allFilesToCopy.at(i).absoluteFilePath(),tempFolder.filePath(fileToCopyInfo.fileName()));
-  //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
-  InfoSender::instance()->debug("Copying in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
-  if(!copyOk)
-      InfoSender::instance()->sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
+        //fileToCopy.setFileName(allFilesToCopy.at(i));
+        fileToCopyInfo = allFilesToCopy.at(i);
+        removeOk = tempFolder.remove(fileToCopyInfo.fileName());
+        InfoSender::instance()->debug("Removing in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
+        copyOk = QFile::copy(allFilesToCopy.at(i).absoluteFilePath(),tempFolder.filePath(fileToCopyInfo.fileName()));
+        //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
+        InfoSender::instance()->debug("Copying in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
+        if(!copyOk)
+            InfoSender::instance()->sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
     }
 
 
@@ -290,7 +290,7 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     QStringList filesToRemove;
     filesToRemove << resFile();
     for(int i=0;i<filesToRemove.size();i++)
-  tempFolder.remove(filesToRemove.at(i));
+        tempFolder.remove(filesToRemove.at(i));
 
     QString tempInitFileXml = tempFolder.absoluteFilePath(_initFileXml);
     QString tempResFile = tempFolder.absoluteFilePath(resFile());
@@ -311,7 +311,7 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     bool success=QFile::exists(tempResFile);
 
     if(!success)
-  return false;
+        return false;
 
     bool readOk = readOutputVariables(outputVars,tempResFile);
     return readOk;

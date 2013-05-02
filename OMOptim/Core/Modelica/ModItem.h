@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file ModItem.h
+        @file ModItem.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
@@ -93,15 +93,15 @@ public:
     // Data fields and management
     enum Field
     {
-  NAME,
-  FILEPATH
+        NAME,
+        FILEPATH
     };
 
     enum NameFormat
     {
-  SHORT,
-  WITHOUTROOT,
-  FULL
+        SHORT,
+        WITHOUTROOT,
+        FULL
     };
     
     static const int nbFields = 2;

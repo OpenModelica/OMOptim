@@ -29,8 +29,8 @@ class ModelPlus : public MOItem
 public :
     enum ModelType
     {
-  MODELICA,
-  EXECUTABLE
+        MODELICA,
+        EXECUTABLE
     };
     //******************
     // Attributes

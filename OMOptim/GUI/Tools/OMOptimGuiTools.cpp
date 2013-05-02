@@ -65,14 +65,14 @@ QMenu* OMOptimGuiTools::newModItemPopupMenu(Project* project, const QPoint & iPo
     switch(selectedClass->getClassRestr())
     {
     case Modelica::MODEL :
-  addModModelActions(menu,project,iPoint,(ModModel*)selectedClass);
+        addModModelActions(menu,project,iPoint,(ModModel*)selectedClass);
     default :
-      NULL;
+            NULL;
     }
 
     if(selectedClass->getClassRestr()!=Modelica::EXECUTABLE)
     {
-  addModelicaActions(menu,project,iPoint,(ModModel*)selectedClass);
+        addModelicaActions(menu,project,iPoint,(ModModel*)selectedClass);
     }
 
     addCommonActions(menu,project,iPoint,selectedClass);
@@ -123,7 +123,7 @@ void OMOptimGuiTools::consolidateModelsPath(QString projectFile, QWidget *mainWi
 
     // save file
     if(models!=oldModels)
-  SaveOMOptim::setModelsPath(projectFile,models);
+        SaveOMOptim::setModelsPath(projectFile,models);
 }
 
 void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir projectFolder,QWidget* mainWindow)
@@ -138,56 +138,56 @@ void OMOptimGuiTools::consolidateModelsPath(QStringList &modelsPath,QDir project
 
     for(int i=0;i<modelsPath.size();i++)
     {
-  oldModelPath = modelsPath.at(i);
-  newModelPath = oldModelPath;
+        oldModelPath = modelsPath.at(i);
+        newModelPath = oldModelPath;
 
-  QFileInfo oldModelFI(oldModelPath);
+        QFileInfo oldModelFI(oldModelPath);
 
-  // first try absolute path
-  exist=oldModelFI.exists();
+        // first try absolute path
+        exist=oldModelFI.exists();
 
-  // try relative path (path=test.mo)
-  exist= exist || projectFolder.exists(oldModelPath);
+        // try relative path (path=test.mo)
+        exist= exist || projectFolder.exists(oldModelPath);
 
-  // look for a similar name in current folder (path=inexistingfolder/test.mo -> projectFolder/test.mo)
-  if(!exist)
-  {
-      if(projectFolder.exists(oldModelFI.completeBaseName()))
-      {
-          newModelPath = oldModelFI.completeBaseName(); // change name
-          exist = true;
-      }
-  }
+        // look for a similar name in current folder (path=inexistingfolder/test.mo -> projectFolder/test.mo)
+        if(!exist)
+        {
+            if(projectFolder.exists(oldModelFI.completeBaseName()))
+            {
+                newModelPath = oldModelFI.completeBaseName(); // change name
+                exist = true;
+            }
+        }
 
-  if(!exist)
-  {
-      QMessageBox msgBox;
-      msgBox.setText("Model file could not be found :"+oldModelPath+"\n");
-      msgBox.setInformativeText("Do you want to set another path for it ?");
-      msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
-      msgBox.setDefaultButton(QMessageBox::Yes);
-      int ret = msgBox.exec();
-      switch (ret)
-      {
-      case QMessageBox::Yes:
-          newModelPath = QFileDialog::getOpenFileName(
-                      mainWindow,
-                      "MO - Select .mo file",
-                      projectFolder.absolutePath()+QDir::separator()+oldModelPath,
-                      "Modelica file (*.mo)" );
+        if(!exist)
+        {
+            QMessageBox msgBox;
+            msgBox.setText("Model file could not be found :"+oldModelPath+"\n");
+            msgBox.setInformativeText("Do you want to set another path for it ?");
+            msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+            switch (ret)
+            {
+            case QMessageBox::Yes:
+                newModelPath = QFileDialog::getOpenFileName(
+                            mainWindow,
+                            "MO - Select .mo file",
+                            projectFolder.absolutePath()+QDir::separator()+oldModelPath,
+                            "Modelica file (*.mo)" );
 
-          break;
-      case QMessageBox::No:
-          newModelPath = oldModelPath;
-          break;
-      default:
-          // should never be reached
-          break;
-      }
-  }
+                break;
+            case QMessageBox::No:
+                newModelPath = oldModelPath;
+                break;
+            default:
+                // should never be reached
+                break;
+            }
+        }
 
-  // update values
-  newPaths.push_back(newModelPath);
+        // update values
+        newPaths.push_back(newModelPath);
     }
 
     newPaths.removeDuplicates();
@@ -250,15 +250,15 @@ void OMOptimGuiTools::addModModelActions(QMenu* menu,Project* project, const QPo
 //    QList<ModPlusCtrl*> ctrls = selectedModModelPlus->ctrls()->values();
 //    for(int i=0;i<ctrls.size();i++)
 //    {
-//  curCtrl = ctrls.at(i);
-//  curType = selectedModModelPlus->ctrls()->key(curCtrl);
-//  QAction* simAction = simulator->addAction(curCtrl->name());
-//  simAction->setCheckable(true);
-//  simAction->setChecked(selectedModModelPlus->ctrlType()==curType);
-//  simAction->setData((int)curType);
-//  menu->addAction(simAction);
-//  connect(simAction,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlType()));
-//  simulator->addAction(simAction);
+//        curCtrl = ctrls.at(i);
+//        curType = selectedModModelPlus->ctrls()->key(curCtrl);
+//        QAction* simAction = simulator->addAction(curCtrl->name());
+//        simAction->setCheckable(true);
+//        simAction->setChecked(selectedModModelPlus->ctrlType()==curType);
+//        simAction->setData((int)curType);
+//        menu->addAction(simAction);
+//        connect(simAction,SIGNAL(triggered()),selectedModModelPlus,SLOT(setCtrlType()));
+//        simulator->addAction(simAction);
 //    }
 //    menu->addSeparator()->setText("");
 

@@ -60,8 +60,8 @@ WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,
     OptimAlgo* curOptimAlgo;
     for(int i=0;i<_problem->algos()->values().size();i++)
     {
-  curOptimAlgo = _problem->algos()->values().at(i);
-  _ui->comboAlgo->addItem(curOptimAlgo->name(),curOptimAlgo->name());
+        curOptimAlgo = _problem->algos()->values().at(i);
+        _ui->comboAlgo->addItem(curOptimAlgo->name(),curOptimAlgo->name());
     }
 
     QString curAlgoName = _problem->algos()->currentAlgoName();
@@ -104,8 +104,8 @@ void WidgetOptParameters::openAlgoParameters()
 {
     if(_problem->getCurAlgo())
     {
-  MOParametersDlg dlg(_problem->getCurAlgo()->parameters(),!_isResult);
-  dlg.exec();
+        MOParametersDlg dlg(_problem->getCurAlgo()->parameters(),!_isResult);
+        dlg.exec();
     }
 }
 
@@ -113,31 +113,31 @@ void WidgetOptParameters::openAlgoParameters()
 
 //void WidgetOptParameters::restoreProblem()
 //{
-//  int iSolved = _project->results()->findItem(_problem->name());
+//        int iSolved = _project->results()->findItem(_problem->name());
 
 //    if(iSolved>-1)
-//          _project->restoreProblemFromResult(iSolved);
+//                _project->restoreProblemFromResult(iSolved);
 //}
 
 //void WidgetOptParameters::pursueMoo()
 //{
 
 //    QString filename = QFileDialog::getOpenFileName(
-//  this,
-//  "MO - Choose start file",
-//  _problem->saveFolder(),
-//  "Iterations files (iteration.*);;All files (*.*)" );
+//        this,
+//        "MO - Choose start file",
+//        _problem->saveFolder(),
+//        "Iterations files (iteration.*);;All files (*.*)" );
 
 //    if(!filename.isEmpty())
 //    {
 
-//          int iSolved = _project->results()->findItem(_problem->name());
-//  if(iSolved>-1)
-//  {
-//                  Optimization* newPb = (Optimization*)_project->restoreProblemFromResult(iSolved);
-//      ((EAConfig*)newPb->getCurAlgoConfig())->setReloadFilePath(filename);
-//      ((EAConfig*)newPb->getCurAlgoConfig())->setUseStartFile(true);
-//  }
+//                int iSolved = _project->results()->findItem(_problem->name());
+//        if(iSolved>-1)
+//        {
+//                        Optimization* newPb = (Optimization*)_project->restoreProblemFromResult(iSolved);
+//            ((EAConfig*)newPb->getCurAlgoConfig())->setReloadFilePath(filename);
+//            ((EAConfig*)newPb->getCurAlgoConfig())->setUseStartFile(true);
+//        }
 //    }
 //}
 
@@ -158,26 +158,26 @@ void WidgetOptParameters::actualizeGui()
     // if problem is solved
     if(_isResult)
     {
-  for(int i=0; i < unsolvedWidgets.size(); i++)
-      unsolvedWidgets.at(i)->hide();
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->hide();
 
-  for(int i=0; i < solvedWidgets.size(); i++)
-      solvedWidgets.at(i)->show();
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->show();
 
-  // combo algo
-  _ui->comboAlgo->setEnabled(false);
+        // combo algo
+        _ui->comboAlgo->setEnabled(false);
 
     }
     else
     {
-  for(int i=0; i < unsolvedWidgets.size(); i++)
-      unsolvedWidgets.at(i)->show();
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->show();
 
-  for(int i=0; i < solvedWidgets.size(); i++)
-      solvedWidgets.at(i)->hide();
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->hide();
 
-  // combo algo
-  _ui->comboAlgo->setEnabled(true);
+        // combo algo
+        _ui->comboAlgo->setEnabled(true);
 
     }
     QString curAlgoName = _problem->algos()->currentAlgoName();

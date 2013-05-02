@@ -111,25 +111,25 @@ int main(int argc, char *argv[])
     QDir pluginsDir = QDir(QApplication::applicationDirPath()+QDir::separator()+"Plugins");
     if(pluginsDir.exists())
     {
-  QStringList pluginsNames = pluginsDir.entryList();
-  pluginsNames.removeAll(".");
-  pluginsNames.removeAll("..");
-  for(int i=0;i<pluginsNames.size();i++)
-      project->loadPlugin(pluginsDir.filePath(pluginsNames.at(i)),false,true);
+        QStringList pluginsNames = pluginsDir.entryList();
+        pluginsNames.removeAll(".");
+        pluginsNames.removeAll("..");
+        for(int i=0;i<pluginsNames.size();i++)
+            project->loadPlugin(pluginsDir.filePath(pluginsNames.at(i)),false,true);
     }
 
     try
     {
-  app->exec();
+        app->exec();
     }
     catch(std::exception &e)
     {
-  QString msg(e.what());
-  InfoSender::instance()->debug(msg);
-  //#ifdef _DEBUG
-  logStream.flush();
-  logFile.close();
-  //#endif
+        QString msg(e.what());
+        InfoSender::instance()->debug(msg);
+        //#ifdef _DEBUG
+        logStream.flush();
+        logFile.close();
+        //#endif
     }
 
     logFile.close();

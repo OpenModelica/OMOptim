@@ -90,13 +90,13 @@ protected :
     void changeValue(QWidget*,const QVariant &);
 
     public slots:
-  void onValueChanged(const QString &);
-  void onLineEditValueChanged();
-  void onCheckChanged(int state);
-  void actualizeValues();
+        void onValueChanged(const QString &);
+        void onLineEditValueChanged();
+        void onCheckChanged(int state);
+        void actualizeValues();
 
 signals :
-  void valueChanged();
+        void valueChanged();
 };
 
 #endif 

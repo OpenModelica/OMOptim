@@ -30,7 +30,7 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
-  @file OMCases.cpp
+        @file OMCases.cpp
   @brief Comments for file documentation.
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
@@ -55,9 +55,9 @@ void OMCases::clear()
     beginResetModel();
     for(int i=0;i<items.size();i++)
     {
-//  items.at(i)->dumpObjectInfo();
-//  items.at(i)->dumpObjectTree();
-  delete items.at(i);
+//        items.at(i)->dumpObjectInfo();
+//        items.at(i)->dumpObjectTree();
+        delete items.at(i);
     }
     items.clear();
     endResetModel();
@@ -71,10 +71,10 @@ int OMCases::columnCount(const QModelIndex &parent) const
 QVariant OMCases::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
-  return QVariant();
+        return QVariant();
 
     if (role != Qt::DisplayRole)
-  return QVariant();
+        return QVariant();
 
     OMCase *omCase = items.at(index.row());
 
@@ -84,16 +84,16 @@ QVariant OMCases::data(const QModelIndex &index, int role) const
 Qt::ItemFlags OMCases::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-  return Qt::ItemIsEnabled;
+        return Qt::ItemIsEnabled;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 QVariant OMCases::headerData(int section, Qt::Orientation orientation,
-                       int role) const
+                             int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-  return name;
+        return name;
 
     return QVariant();
 }
@@ -114,9 +114,9 @@ int OMCases::rowCount(const QModelIndex &parent) const
 {
     
     if (!parent.isValid())
-  return items.size();
+        return items.size();
     else
-  return 0;
+        return 0;
 }
 
 void OMCases::addCase(OMCase* omCase)
@@ -132,18 +132,18 @@ bool OMCases::removeRow(int row,const QModelIndex &parent)
 {
     if((row>=0) &&(row<items.size()))
     {
-  beginRemoveRows(parent,row,row);
-//  items.at(row)->dumpObjectInfo();
-//  items.at(row)->dumpObjectTree();
-  delete items.at(row);
-  items.remove(row);
-  endRemoveRows();
+        beginRemoveRows(parent,row,row);
+//        items.at(row)->dumpObjectInfo();
+//        items.at(row)->dumpObjectTree();
+        delete items.at(row);
+        items.remove(row);
+        endRemoveRows();
 
-  return true;
+        return true;
     }
     else
     {
-  return false;
+        return false;
     }
 }
 
@@ -157,17 +157,17 @@ OMCase* OMCases::findItem(QString itemName)
 
     while((!found)&&(i<nbItems))
     {
-  itemName2=items.at(i)->name();
-  found=(itemName==itemName2);
-  i++;
+        itemName2=items.at(i)->name();
+        found=(itemName==itemName2);
+        i++;
     }
     if(!found)
     {
-  return NULL;
+        return NULL;
     }
     else
     {
-  return items.at(i-1);
+        return items.at(i-1);
     }
 }
 
@@ -200,20 +200,20 @@ OMCasesCombiner::~OMCasesCombiner(void)
 OMCase* OMCasesCombiner::item(const QModelIndex & index)
 {
     if (!index.isValid() || ! index.parent().isValid())
-  return NULL;
+        return NULL;
 
 
     int row = index.row();
     // if parent is problem
     if(index.parent().data()=="Problems")
     {
-  if(row<_problems->rowCount())
-      return _problems->at(row);
+        if(row<_problems->rowCount())
+            return _problems->at(row);
     }
     if(index.parent().data()=="Results")
     {
-  if(row<_results->rowCount())
-      return _results->at(row);
+        if(row<_results->rowCount())
+            return _results->at(row);
     }
 
     return NULL;
@@ -227,35 +227,35 @@ int OMCasesCombiner::columnCount(const QModelIndex &parent) const
 QVariant OMCasesCombiner::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
-  return QVariant();
+        return QVariant();
 
     if (role != Qt::DisplayRole)
-  return QVariant();
+        return QVariant();
 
     // Problems or Result
     if(!index.parent().isValid())
     {
-  if(index.row()==0)
-      return "Problems";
-  if(index.row()==1)
-      return "Results";
+        if(index.row()==0)
+            return "Problems";
+        if(index.row()==1)
+            return "Results";
     }
 
     // get parent
     if(index.parent().isValid())
     {
-  int row = index.row();
-  // if parent is problem
-  if(index.parent().data()=="Problems")
-  {
-      if(row<_problems->rowCount())
-          return _problems->at(row)->name();
-  }
-  if(index.parent().data()=="Results")
-  {
-      if(row<_results->rowCount())
-          return _results->at(row)->name();
-  }
+        int row = index.row();
+        // if parent is problem
+        if(index.parent().data()=="Problems")
+        {
+            if(row<_problems->rowCount())
+                return _problems->at(row)->name();
+        }
+        if(index.parent().data()=="Results")
+        {
+            if(row<_results->rowCount())
+                return _results->at(row)->name();
+        }
     }
 
     return QVariant();
@@ -264,13 +264,13 @@ QVariant OMCasesCombiner::data(const QModelIndex &index, int role) const
 Qt::ItemFlags OMCasesCombiner::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-  return Qt::ItemIsEnabled;
+        return Qt::ItemIsEnabled;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 QVariant OMCasesCombiner::headerData(int section, Qt::Orientation orientation,
-                               int role) const
+                                     int role) const
 {
     return QVariant();
 }
@@ -279,30 +279,30 @@ QModelIndex OMCasesCombiner::index(int row, int column, const QModelIndex &paren
 const
 {
     if(!hasIndex(row,column,parent))
-  return QModelIndex();
+        return QModelIndex();
 
 
     if (!parent.isValid())
     {
-  if(row==0)
-      return problemsRootIndex();
-  else if(row==1)
-      return resultsRootIndex();
-  else
-      return QModelIndex();
+        if(row==0)
+            return problemsRootIndex();
+        else if(row==1)
+            return resultsRootIndex();
+        else
+            return QModelIndex();
     }
     else
     {
-  if((parent.internalPointer() == _problems) && (row < _problems->rowCount()))
-  {
-      return createIndex(row, column,_problems->at(row));
-  }
-  else if((parent.internalPointer()== _results) && (row < _results->rowCount()))
-  {
-      return createIndex(row, column,_results->at(row));
-  }
-  else
-      return QModelIndex();
+        if((parent.internalPointer() == _problems) && (row < _problems->rowCount()))
+        {
+            return createIndex(row, column,_problems->at(row));
+        }
+        else if((parent.internalPointer()== _results) && (row < _results->rowCount()))
+        {
+            return createIndex(row, column,_results->at(row));
+        }
+        else
+            return QModelIndex();
     }
 
 }
@@ -320,18 +320,18 @@ QModelIndex OMCasesCombiner::resultsRootIndex() const
 QModelIndex OMCasesCombiner::parent(const QModelIndex &index) const
 {
     if (!index.isValid())
-  return QModelIndex();
+        return QModelIndex();
 
     void *data = index.internalPointer();
 
     if((data==_problems)||(data==_results))
-  return QModelIndex();
+        return QModelIndex();
     else
     {
-  if(_problems->contains((OMCase*)data))
-      return problemsRootIndex();
-  else if(_results->contains((OMCase*)data))
-      return resultsRootIndex();
+        if(_problems->contains((OMCase*)data))
+            return problemsRootIndex();
+        else if(_results->contains((OMCase*)data))
+            return resultsRootIndex();
     }
 
     return QModelIndex();
@@ -340,15 +340,15 @@ QModelIndex OMCasesCombiner::parent(const QModelIndex &index) const
 int OMCasesCombiner::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-  return 2;
+        return 2;
     else
     {
-  if(parent.internalPointer()==_problems)
-      return _problems->rowCount();
-  else if(parent.internalPointer()==_results)
-      return _results->rowCount();
-  else
-      return 0;
+        if(parent.internalPointer()==_problems)
+            return _problems->rowCount();
+        else if(parent.internalPointer()==_results)
+            return _results->rowCount();
+        else
+            return 0;
     }
 }
 

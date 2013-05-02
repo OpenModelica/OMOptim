@@ -62,9 +62,9 @@ public:
     ~Save(void);
 
 
-  static void saveProject(ProjectBase*,bool saveAllCases=true);
-  static void saveProblem(ProjectBase* ,Problem*);
-  static void saveResult(ProjectBase* ,Result*);
+        static void saveProject(ProjectBase*,bool saveAllCases=true);
+        static void saveProblem(ProjectBase* ,Problem*);
+        static void saveResult(ProjectBase* ,Result*);
 
 
 

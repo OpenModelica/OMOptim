@@ -68,14 +68,14 @@ public:
 
     enum FieldType
     {
-  FOLDERPATH,
-  FILEPATH,
-  STRING,
-  BOOL,
-  INT,
-  DOUBLE,
-  LIST,
-  GENERIC
+        FOLDERPATH,
+        FILEPATH,
+        STRING,
+        BOOL,
+        INT,
+        DOUBLE,
+        LIST,
+        GENERIC
     };
 
 
@@ -85,7 +85,7 @@ public:
     **/
     enum Field
     {
-  NAME
+        NAME
     };
 
     // Constructor and destructor

@@ -51,15 +51,15 @@ WidgetFilesList::WidgetFilesList(QFileInfoList & filesList,QWidget *parent,QStri
     _filter = filter;
 
     for(int i=0;i<_filesList.size();i++)
-  _ui->filesList->addItem(_filesList.at(i).absoluteFilePath());
+        _ui->filesList->addItem(_filesList.at(i).absoluteFilePath());
 
     setInfos(infos);
 
     _editable = editable;
     if(!editable)
     {
-  _ui->pushAddFiles->hide();
-  _ui->pushRemoveFiles->hide();
+        _ui->pushAddFiles->hide();
+        _ui->pushRemoveFiles->hide();
     }
 
     connect(_ui->pushAddFiles,SIGNAL(clicked()),this,SLOT(addFiles()));
@@ -80,10 +80,10 @@ void WidgetFilesList::addFiles()
     QString lastMoFolder = settings.value("LastMoFolder").toString();
 
     QStringList fileNames = QFileDialog::getOpenFileNames(
-      this,
-      "Files to copy for simulation",
-      lastMoFolder,
-      _filter );
+            this,
+            "Files to copy for simulation",
+            lastMoFolder,
+            _filter );
 
     addFiles(fileNames);
 }
@@ -92,11 +92,11 @@ void WidgetFilesList::addFiles  (QStringList list)
 {
     for(int i=0;i<list.size();i++)
     {
-  if(!_filesList.contains(list.at(i)))
-  {
-      _ui->filesList->addItem(list.at(i));
-      _filesList.push_back(list.at(i));
-  }
+        if(!_filesList.contains(list.at(i)))
+        {
+            _ui->filesList->addItem(list.at(i));
+            _filesList.push_back(list.at(i));
+        }
     }
 }
 
@@ -104,25 +104,25 @@ void WidgetFilesList::setInfos(const QString &infos)
 {
     _ui->labelInfos->setText(infos);
     if(infos.isEmpty())
-  _ui->labelInfos->hide();
+        _ui->labelInfos->hide();
     else
-  _ui->labelInfos->show();
+        _ui->labelInfos->show();
 }
 
 void WidgetFilesList::removeFiles()
 {
-  QList<QListWidgetItem*> itemsList = _ui->filesList->selectedItems();
-  int iFile;
-  for(int i=0;i<itemsList.size();i++)
+        QList<QListWidgetItem*> itemsList = _ui->filesList->selectedItems();
+        int iFile;
+        for(int i=0;i<itemsList.size();i++)
     {
-          iFile = _filesList.indexOf(itemsList.at(i)->text());
-          if(iFile>-1)
-          {
-              _filesList.removeAt(iFile);
-          }
+                iFile = _filesList.indexOf(itemsList.at(i)->text());
+                if(iFile>-1)
+                {
+                    _filesList.removeAt(iFile);
+                }
     }
-  //remove from listWidget
-  qDeleteAll(itemsList);
+        //remove from listWidget
+        qDeleteAll(itemsList);
 }
 
 

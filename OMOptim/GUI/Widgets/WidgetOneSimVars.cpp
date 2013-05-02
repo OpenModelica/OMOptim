@@ -76,13 +76,13 @@ WidgetOneSimVars::WidgetOneSimVars(ProjectBase *project,OneSimulation *problem, 
     QList<int> varsColsToHide;
     //varsColsToHide << Variable::MIN<< Variable::MAX<< Variable::TYPE<< Variable::CATEGORY<< Variable::DATATYPE;
     for(int i=0;i<varsColsToHide.size();i++)
-  _ui->tableVariables->setColumnHidden(varsColsToHide.at(i),true);
+        _ui->tableVariables->setColumnHidden(varsColsToHide.at(i),true);
     _ui->tableVariables->resizeColumnsToContents();
 
     QList<int> scannedColsToHide;
     //scannedColsToHide << ScannedVariable::VALUE<< ScannedVariable::MIN<< ScannedVariable::MAX<< ScannedVariable::TYPE<< ScannedVariable::CATEGORY<< ScannedVariable::DATATYPE;
     for(int i=0;i<scannedColsToHide.size();i++)
-  _ui->tableScannedVariables->setColumnHidden(scannedColsToHide.at(i),true);
+        _ui->tableScannedVariables->setColumnHidden(scannedColsToHide.at(i),true);
 
     _ui->tableScannedVariables->resizeColumnsToContents();
 
@@ -126,19 +126,19 @@ void WidgetOneSimVars::addModVariables()
 
     foreach(curProxyIndex, proxyIndexes)   // loop through
     {
-  curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-  varProv = _variables->at(curSourceIndex.row());
+        curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+        varProv = _variables->at(curSourceIndex.row());
 
-  alreadyIn = _problem->overwritedVariables()->alreadyIn(varProv->name());
-//  if (!alreadyIn && !varProv->output())
-  if (!alreadyIn)
+        alreadyIn = _problem->overwritedVariables()->alreadyIn(varProv->name());
+//        if (!alreadyIn && !varProv->output())
+        if (!alreadyIn)
 
-  {
-      // set value editable
-      newVarProv = new Variable(*varProv);
-  //    newVarProv->setIsEditableField(Variable::VALUE,true);
-      _problem->overwritedVariables()->addItem(newVarProv);
-  }
+        {
+            // set value editable
+            newVarProv = new Variable(*varProv);
+  //          newVarProv->setIsEditableField(Variable::VALUE,true);
+            _problem->overwritedVariables()->addItem(newVarProv);
+        }
     }
 }
 
@@ -150,8 +150,8 @@ void WidgetOneSimVars::deleteModVariables()
     QList<int> rows;
     for(int i=0;i<indexList.size();i++)
     {
-  curSourceIndex = _overVariableProxyModel->mapToSource(indexList.at(i));
-  rows.push_back(curSourceIndex.row());
+        curSourceIndex = _overVariableProxyModel->mapToSource(indexList.at(i));
+        rows.push_back(curSourceIndex.row());
     }
     _problem->overwritedVariables()->removeRows(rows);
 }
@@ -169,17 +169,17 @@ void WidgetOneSimVars::addScannedVariables()
 
     foreach(curProxyIndex, proxyIndexes)   // loop through
     {
-  curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-  varProv = _variables->at(curSourceIndex.row());
+        curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+        varProv = _variables->at(curSourceIndex.row());
 
-  alreadyIn = _problem->scannedVariables()->alreadyIn(varProv->name());
+        alreadyIn = _problem->scannedVariables()->alreadyIn(varProv->name());
 
-  //        if (!alreadyIn && !varProv->output())
-  if (!alreadyIn)
-  {
-      newVarProv = new ScannedVariable(*varProv);
-      _problem->scannedVariables()->addItem(newVarProv);
-  }
+        //        if (!alreadyIn && !varProv->output())
+        if (!alreadyIn)
+        {
+            newVarProv = new ScannedVariable(*varProv);
+            _problem->scannedVariables()->addItem(newVarProv);
+        }
     }
 }
 
@@ -191,8 +191,8 @@ void WidgetOneSimVars::deleteScannedVariables()
     QList<int> rows;
     for(int i=0;i<indexList.size();i++)
     {
-  curSourceIndex = _scannedVariableProxyModel->mapToSource(indexList.at(i));
-  rows.push_back(curSourceIndex.row());
+        curSourceIndex = _scannedVariableProxyModel->mapToSource(indexList.at(i));
+        rows.push_back(curSourceIndex.row());
     }
     _problem->scannedVariables()->removeRows(rows);
 }

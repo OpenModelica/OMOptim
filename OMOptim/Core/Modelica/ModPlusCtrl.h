@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file ModPlusCtrl.h
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version
+        @file ModPlusCtrl.h
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version
 
   */
 #ifndef _MODPLUSCTRL_H
@@ -70,65 +70,65 @@ class ModPlusCtrl :public QObject
     *  Currently, two inheriting classes exist : ModPlusOMCtrl working with OpenModelica and ModPlusDymolaCtrl working with Dymola.
     */
 
-  public:
+        public:
 
 
 
-  enum Type
-  {
-          OPENMODELICA,
-          DYMOLA,
-          OMEXECUTABLE,
-          DYMOLAEXECUTABLE,
-          BLACKBOXEXECUTABLE
-  };
-  static const int nbTypes = 4;
+        enum Type
+        {
+                OPENMODELICA,
+                DYMOLA,
+                OMEXECUTABLE,
+                DYMOLAEXECUTABLE,
+                BLACKBOXEXECUTABLE
+        };
+        static const int nbTypes = 4;
 
-  ModPlusCtrl(Project*,ModelPlus* ModPlus,MOomc* moomc);
-  virtual ~ModPlusCtrl(void);
-  virtual ModPlusCtrl* clone()=0;
+        ModPlusCtrl(Project*,ModelPlus* ModPlus,MOomc* moomc);
+        virtual ~ModPlusCtrl(void);
+        virtual ModPlusCtrl* clone()=0;
 
-  // Variables functions
-  virtual bool readOutputVariables(MOVector<Variable> *,QString outputfile="") = 0;
-  virtual bool readInitialVariables(MOVector<Variable> *, const QFileInfoList filesToCopy,bool forceRecompile = false,QString initfile="") = 0;
+        // Variables functions
+        virtual bool readOutputVariables(MOVector<Variable> *,QString outputfile="") = 0;
+        virtual bool readInitialVariables(MOVector<Variable> *, const QFileInfoList filesToCopy,bool forceRecompile = false,QString initfile="") = 0;
 
-  // compatible models
-  virtual QList<ModelPlus::ModelType> compatibleModels() = 0;
+        // compatible models
+        virtual QList<ModelPlus::ModelType> compatibleModels() = 0;
 
-  // Compile function
-  virtual bool isCompiled() = 0;
-  virtual bool compile(const QFileInfoList & moDependencies, const QFileInfoList fileToCopy) = 0;
-  virtual bool uncompile();
+        // Compile function
+        virtual bool isCompiled() = 0;
+        virtual bool compile(const QFileInfoList & moDependencies, const QFileInfoList fileToCopy) = 0;
+        virtual bool uncompile();
 
-  // Info function
-  virtual ModPlusCtrl::Type type()const = 0;
-  virtual QString name() = 0;
+        // Info function
+        virtual ModPlusCtrl::Type type()const = 0;
+        virtual QString name() = 0;
 
-  // Simulate function
-  virtual bool simulate(QDir tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,
-                        QFileInfoList filesToCopy ,QFileInfoList moDependencies) = 0;
-  virtual void stopSimulation(){}
-  virtual bool canBeStoped(){return false;}
+        // Simulate function
+        virtual bool simulate(QDir tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,
+                              QFileInfoList filesToCopy ,QFileInfoList moDependencies) = 0;
+        virtual void stopSimulation(){}
+        virtual bool canBeStoped(){return false;}
 
-  virtual bool setStopTime(double time) = 0;
+        virtual bool setStopTime(double time) = 0;
 
-  MOParameters* parameters() const;
+        MOParameters* parameters() const;
 
-  //bool operator==(const ModPlusCtrl &) const;
+        //bool operator==(const ModPlusCtrl &) const;
 
-  friend bool operator==(const ModPlusCtrl & a,const ModPlusCtrl & b);
+        friend bool operator==(const ModPlusCtrl & a,const ModPlusCtrl & b);
 
 
 protected:
-  ModelPlus* _ModelPlus;
-  bool _copyAllMoOfFolder;
-  MOParameters *_parameters;
-  MOomc* _moomc;
-  Project* _project;
+        ModelPlus* _ModelPlus;
+        bool _copyAllMoOfFolder;
+        MOParameters *_parameters;
+        MOomc* _moomc;
+        Project* _project;
 
 
 signals :
-  void modified();
+        void modified();
 
 };
 

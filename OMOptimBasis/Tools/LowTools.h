@@ -113,12 +113,12 @@ void LowTools::removeDuplicates(QList<T> &list)
     int j;
     for(int i=0;i<list.size();i++)
     {
-  j=list.indexOf(list.at(i),i+1);
-  while(j>i)
-  {
-      list.removeAt(j);
-      j=list.indexOf(list.at(i),i+1);
-  }
+        j=list.indexOf(list.at(i),i+1);
+        while(j>i)
+        {
+            list.removeAt(j);
+            j=list.indexOf(list.at(i),i+1);
+        }
     }
 }
 
@@ -128,16 +128,16 @@ void LowTools::removeDuplicates(QList<T> &list)
 //public :
 //    static void apply(QList<T> &list)
 //    {
-//  int j;
-//  for(int i=0;i<list.size();i++)
-//  {
-//      j=list.indexOf(list.at(i),i+1);
-//      while(j>i)
-//      {
-//          list.removeAt(j);
-//          j=list.indexOf(list.at(i),i+1);
-//      }
-//  }
+//        int j;
+//        for(int i=0;i<list.size();i++)
+//        {
+//            j=list.indexOf(list.at(i),i+1);
+//            while(j>i)
+//            {
+//                list.removeAt(j);
+//                j=list.indexOf(list.at(i),i+1);
+//            }
+//        }
 //    }
 //};
 

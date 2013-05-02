@@ -47,7 +47,7 @@ class ProblemConfig
 public:
     ProblemConfig();
 //    ProblemConfig(QString _tempDir);
-  ProblemConfig(bool _refill);
+        ProblemConfig(bool _refill);
     ~ProblemConfig(void);
 
 

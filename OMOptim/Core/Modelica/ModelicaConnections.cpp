@@ -56,7 +56,7 @@ ModelicaConnections::~ModelicaConnections(void)
 //{
 //    for(int i=0;i<items.size();i++)
 //    {
-//  delete items.at(i);
+//        delete items.at(i);
 //    }
 //}
 //
@@ -79,20 +79,20 @@ ModelicaConnections::~ModelicaConnections(void)
 // QVariant ModelicaConnections::data(const QModelIndex &index, int role) const
 // {
 //     if (!index.isValid())
-//   return QVariant();
+//         return QVariant();
 //
 //     if (role != Qt::DisplayRole)
-//   return QVariant();
+//         return QVariant();
 //
 //     ModelicaConnection *connect = items.at(index.row());
 //
 //     if(index.column()==0)
 //     {
-//   return connect->getA()->name(Modelica::DYMOLA);
+//         return connect->getA()->name(Modelica::DYMOLA);
 //     }
 //     if(index.column()==1)
 //     {
-//   return connect->getB()->name(Modelica::DYMOLA);
+//         return connect->getB()->name(Modelica::DYMOLA);
 //     }
 //     return QVariant();
 // }
@@ -100,7 +100,7 @@ ModelicaConnections::~ModelicaConnections(void)
 // Qt::ItemFlags ModelicaConnections::flags(const QModelIndex &index) const
 // {
 //     if (!index.isValid())
-//   return Qt::ItemIsEnabled;
+//         return Qt::ItemIsEnabled;
 //
 //     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 // }
@@ -109,15 +109,15 @@ ModelicaConnections::~ModelicaConnections(void)
 // {
 //     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
 //     {
-//   switch(section)
-//   {
-//   case 0:
-//       return "A Name";
-//   case 1:
-//       return "B Name";
-//   default :
-//       return "Unknown field";
-//   }
+//         switch(section)
+//         {
+//         case 0:
+//             return "A Name";
+//         case 1:
+//             return "B Name";
+//         default :
+//             return "Unknown field";
+//         }
 //     }
 //
 //     return QVariant();
@@ -125,7 +125,7 @@ ModelicaConnections::~ModelicaConnections(void)
 //
 // QModelIndex ModelicaConnections::index(int row, int column, const QModelIndex &parent)const
 // {
-//   return createIndex(row, column);
+//         return createIndex(row, column);
 // }
 //
 // QModelIndex ModelicaConnections::parent(const QModelIndex &index) const
@@ -136,7 +136,7 @@ ModelicaConnections::~ModelicaConnections(void)
 //
 // int ModelicaConnections::rowCount(const QModelIndex &parent) const
 // {  
-//   return items.size();
+//         return items.size();
 // }
 //
 
@@ -149,34 +149,34 @@ ModelicaConnections* ModelicaConnections::filter(ModItem* element,bool includeCh
 
     for(int i=0;i<this->size();i++)
     {
-  curConn = this->at(i);
-  a = curConn->getA();
-  b = curConn->getB();
+        curConn = this->at(i);
+        a = curConn->getA();
+        b = curConn->getB();
 
-  if((QString::compare(elName,a,Qt::CaseInsensitive)==0)
-          ||(QString::compare(elName,b,Qt::CaseInsensitive)==0))
-      elConn->addItem(curConn);
-  else
-  {
-      if(includeChildren)
-      {
-          //bool aIsInChildren = (_modItemsTree->findInDescendants(a,element)!=NULL);
-          bool aIsInChildren = portIsInElement(a,elName);
+        if((QString::compare(elName,a,Qt::CaseInsensitive)==0)
+                ||(QString::compare(elName,b,Qt::CaseInsensitive)==0))
+            elConn->addItem(curConn);
+        else
+        {
+            if(includeChildren)
+            {
+                //bool aIsInChildren = (_modItemsTree->findInDescendants(a,element)!=NULL);
+                bool aIsInChildren = portIsInElement(a,elName);
 
-          if(acceptInternal && aIsInChildren)
-              elConn->addItem(curConn);
-          else
-          {
-              //bool bIsInChildren = (_modItemsTree->findInDescendants(b,element)!=NULL);
-              bool bIsInChildren = portIsInElement(b,elName);
-              bool isConcerned = (aIsInChildren || bIsInChildren);
-              bool isInternal = (aIsInChildren && bIsInChildren);
+                if(acceptInternal && aIsInChildren)
+                    elConn->addItem(curConn);
+                else
+                {
+                    //bool bIsInChildren = (_modItemsTree->findInDescendants(b,element)!=NULL);
+                    bool bIsInChildren = portIsInElement(b,elName);
+                    bool isConcerned = (aIsInChildren || bIsInChildren);
+                    bool isInternal = (aIsInChildren && bIsInChildren);
 
-              if(isConcerned && !(isInternal&&!acceptInternal))
-                  elConn->addItem(curConn);
-          }
-      }
-  }
+                    if(isConcerned && !(isInternal&&!acceptInternal))
+                        elConn->addItem(curConn);
+                }
+            }
+        }
     }
     return elConn;
 }
@@ -192,23 +192,23 @@ ModelicaConnections* ModelicaConnections::filter(ModItem* element,bool includeCh
 //    QString aName,bName;
 //    for(int i=0;i<elConn->size();i++)
 //    {
-//  aName = elConn->at(i)->getA();
-//  aModItem = modLoader->findInDescendants(element,aName);
-//  
-//  bName = elConn->at(i)->getB();
-//  bModItem = modLoader->findInDescendants(element,bName);
-//  
+//        aName = elConn->at(i)->getA();
+//        aModItem = modLoader->findInDescendants(element,aName);
+//        
+//        bName = elConn->at(i)->getB();
+//        bModItem = modLoader->findInDescendants(element,bName);
+//        
 //
-//  if(aModItem)
-//  {
-//      _ports.push_back(aModItem);
-//      _outsideComps.push_back(bModItem);
-//  }
-//  else
-//  {
-//      _ports.push_back(bModItem);
-//      _outsideComps.push_back(aModItem);
-//  }
+//        if(aModItem)
+//        {
+//            _ports.push_back(aModItem);
+//            _outsideComps.push_back(bModItem);
+//        }
+//        else
+//        {
+//            _ports.push_back(bModItem);
+//            _outsideComps.push_back(aModItem);
+//        }
 //    }
 //}
 
@@ -224,23 +224,23 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
 
     for(int i=0;i<elConn->size();i++)
     {
-  aName = elConn->at(i)->getA();
-  bool aIsInside = portIsInElement(aName,element->name(ModItem::FULL));
+        aName = elConn->at(i)->getA();
+        bool aIsInside = portIsInElement(aName,element->name(ModItem::FULL));
 
-  bName = elConn->at(i)->getB();
-  bool bIsInside = portIsInElement(bName,element->name(ModItem::FULL));
+        bName = elConn->at(i)->getB();
+        bool bIsInside = portIsInElement(bName,element->name(ModItem::FULL));
 
-  if(aIsInside && ! bIsInside)
-  {
-      ports.push_back(aName);
-      outsideComps.push_back(bName);
-  }
+        if(aIsInside && ! bIsInside)
+        {
+            ports.push_back(aName);
+            outsideComps.push_back(bName);
+        }
 
-  if(!aIsInside && bIsInside)
-  {
-      ports.push_back(bName);
-      outsideComps.push_back(aName);
-  }
+        if(!aIsInside && bIsInside)
+        {
+            ports.push_back(bName);
+            outsideComps.push_back(aName);
+        }
     }
 }
 
@@ -254,14 +254,14 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
     QMultiMap<QString,QString> map;
     for(int i=0;i<listPorts.size();i++)
     {
-  map.insert(listPorts.at(i),listOutsideComps.at(i));
+        map.insert(listPorts.at(i),listOutsideComps.at(i));
     }
 
     uniquePorts = map.uniqueKeys();
     outsideComps.clear();
     for(int i=0;i<uniquePorts.size();i++)
     {
-  outsideComps.push_back(map.values(uniquePorts.at(i)));
+        outsideComps.push_back(map.values(uniquePorts.at(i)));
     }
 }
 
@@ -277,17 +277,17 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
 //    // looking for connections from itself
 //    for(int iConn=0;iConn<elConns->size();iConn++)
 //    {
-//  aName = elConns->at(iConn)->getA();
-//  bName = elConns->at(iConn)->getB();
+//        aName = elConns->at(iConn)->getA();
+//        bName = elConns->at(iConn)->getB();
 
 
-//  aModItem = _modItemsTree->findInDescendants(aName,element);
-//  bModItem = _modItemsTree->findInDescendants(bName,element);
+//        aModItem = _modItemsTree->findInDescendants(aName,element);
+//        bModItem = _modItemsTree->findInDescendants(bName,element);
 
-//  if(aModItem)
-//      connectedComps.push_back(bModItem);
-//  else
-//      connectedComps.push_back(aModItem);
+//        if(aModItem)
+//            connectedComps.push_back(bModItem);
+//        else
+//            connectedComps.push_back(aModItem);
 //    }
 //    return connectedComps;
 //}
@@ -298,7 +298,7 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
 //    QStringList names;
 //    for(int i=0;i<connectedComps.size();i++)
 //    {
-//  names.push_back(connectedComps.at(i)->name(format));
+//        names.push_back(connectedComps.at(i)->name(format));
 //    }
 //    return names;
 //}
@@ -315,14 +315,14 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
 //    // looking for connections from itself
 //    for(int iConn=0;iConn<elConns->size();iConn++)
 //    {
-//  aName = elConns->at(iConn)->getA();
-//  bName = elConns->at(iConn)->getB();
-//  aModItem = _modItemsTree->findInDescendants(aName,element);
-//  bModItem = _modItemsTree->findInDescendants(bName,element);
-//  if(aModItem)
-//      connectedComps.push_back(aModItem);
-//  else
-//      connectedComps.push_back(bModItem);
+//        aName = elConns->at(iConn)->getA();
+//        bName = elConns->at(iConn)->getB();
+//        aModItem = _modItemsTree->findInDescendants(aName,element);
+//        bModItem = _modItemsTree->findInDescendants(bName,element);
+//        if(aModItem)
+//            connectedComps.push_back(aModItem);
+//        else
+//            connectedComps.push_back(bModItem);
 //    }
 //    return connectedComps;
 
@@ -334,7 +334,7 @@ void ModelicaConnections::getOutside(ModItem* element,bool includeChildren,QStri
 //    QStringList names;
 //    for(int i=0;i<connectedComps.size();i++)
 //    {
-//  names.push_back(connectedComps.at(i)->name(format));
+//        names.push_back(connectedComps.at(i)->name(format));
 //    }
 //    return names;
 //}

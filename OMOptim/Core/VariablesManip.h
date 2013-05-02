@@ -63,8 +63,8 @@ public:
     static double calculateScanSum(VariableResult* var,bool &ok, int iPoint = 0);
     static double calculateScanAverage(VariableResult* var,bool &ok, int iPoint = 0);
     static double calculateScanStandardDev(VariableResult* var,bool &ok, int iPoint = 0);
-  static double extractMinimum(VariableResult* var,bool &ok, int iPoint = 0);
-  static double extractMaximum(VariableResult* var,bool &ok, int iPoint = 0);
+        static double extractMinimum(VariableResult* var,bool &ok, int iPoint = 0);
+        static double extractMaximum(VariableResult* var,bool &ok, int iPoint = 0);
 
 };
 

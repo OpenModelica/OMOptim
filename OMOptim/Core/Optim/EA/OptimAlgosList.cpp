@@ -12,17 +12,17 @@ OptimAlgo* OptimAlgosList::getNewAlgo(Project* project,Problem* problem,OptimAlg
     switch(iAlgo)
     {
     case OptimAlgosList::iNSGA2:
-  return new NSGA2(project,problem);
+        return new NSGA2(project,problem);
     case OptimAlgosList::iSPEA2:
-  return new SPEA2(project,problem);
+        return new SPEA2(project,problem);
     case OptimAlgosList::iSPEA2Adapt:
-  return new SPEA2Adapt(project,problem);
+        return new SPEA2Adapt(project,problem);
     case OptimAlgosList::iSA1:
-  return new SA1(project,problem);
+        return new SA1(project,problem);
     case OptimAlgosList::iPSO:
-  return new PSO(project,problem);
+        return new PSO(project,problem);
     default:
-  //Problem
-  return NULL;
+        //Problem
+        return NULL;
     }
 }

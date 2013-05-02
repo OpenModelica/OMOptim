@@ -61,7 +61,7 @@ ModItem* ModRecord::clone() const
 
     for(int i=0;i<children().size();i++)
     {
-  newModRecord->addChild(child(i)->clone());
+        newModRecord->addChild(child(i)->clone());
     }
     return newModRecord;
 }

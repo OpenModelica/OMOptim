@@ -29,12 +29,12 @@
  *
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
-  @file MEHTCoeff.h
+        @file MEHTCoeff.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #if !defined(_MEHTCOEFF_H)
@@ -46,27 +46,27 @@
 class MEHTCoeff : public MEDimValue
 {
 public:
-  MEHTCoeff();
-  MEHTCoeff(double value,int unit);
-  MEHTCoeff(const MEHTCoeff&);
-  ~MEHTCoeff();
+        MEHTCoeff();
+        MEHTCoeff(double value,int unit);
+        MEHTCoeff(const MEHTCoeff&);
+        ~MEHTCoeff();
 
     enum Units
     {
-      W_M2_K,
-      KW_M2_K,
-      MW_M2_K
+            W_M2_K,
+            KW_M2_K,
+            MW_M2_K
     };
 
     QString unit(int iUnit)  const;
-  QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
+        QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
     unsigned nbUnits() const;
     double convert(double value,int orgUnit,int dstUnit) const;
 
-  MEHTCoeff& operator+=(const MEHTCoeff&);
-  MEHTCoeff& operator-=(const MEHTCoeff&);
-  MEHTCoeff operator-(const MEHTCoeff&) const;
-  MEHTCoeff operator+(const MEHTCoeff&) const;
+        MEHTCoeff& operator+=(const MEHTCoeff&);
+        MEHTCoeff& operator-=(const MEHTCoeff&);
+        MEHTCoeff operator-(const MEHTCoeff&) const;
+        MEHTCoeff operator+(const MEHTCoeff&) const;
 
 };
 

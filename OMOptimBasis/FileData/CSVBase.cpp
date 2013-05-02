@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file CSV.cpp
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version
+        @file CSV.cpp
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version
 
   */
 #include "CSVBase.h"
@@ -48,83 +48,83 @@
 
 QString CSVBase::space()
 {
-  return "___";
+        return "___";
 }
 
 QString CSVBase::variablesToLines(MOVector<Variable> * variables)
 {
-  QString text = "";
-  Variable *curVar;
+        QString text = "";
+        Variable *curVar;
 
-  for (int i=0;i<variables->size();i++)
-  {
-          curVar=variables->at(i);
+        for (int i=0;i<variables->size();i++)
+        {
+                curVar=variables->at(i);
 
-          //Variable fields
-          text += ("#VAR");
+                //Variable fields
+                text += ("#VAR");
 
-          for (int nf=0;nf<Variable::nbFields;nf++)
-          {
-                  text += "\t";
-                  text += curVar->getFieldValue(nf).toString();
-          }
-          text += "\n";
-  }
-  return text;
+                for (int nf=0;nf<Variable::nbFields;nf++)
+                {
+                        text += "\t";
+                        text += curVar->getFieldValue(nf).toString();
+                }
+                text += "\n";
+        }
+        return text;
 }
 
 void CSVBase::LinesToVariables(MOVector<Variable>* variables, QString lines)
 {
-  //Clear variables
-  variables->clear();
+        //Clear variables
+        variables->clear();
 
-  QStringList lineList = lines.split("\n");
-  QStringList fields;
-  Variable *newVariable;
-  for(int nl=0;nl<lineList.size();nl++)
-  {
-          if(!lineList[nl].isEmpty())
-          {
+        QStringList lineList = lines.split("\n");
+        QStringList fields;
+        Variable *newVariable;
+        for(int nl=0;nl<lineList.size();nl++)
+        {
+                if(!lineList[nl].isEmpty())
+                {
 
-                  fields = lineList[nl].split("\t");
+                        fields = lineList[nl].split("\t");
 
-                  //Treating only lines begininng with #VAR
-                  //left(4) is used to avoid space problems
-                  if(fields[0].left(4)=="#VAR")
-                  {
-                          newVariable = new Variable();
-                          for (int nf=0;nf<Variable::nbFields;nf++)
-                          {
-                                  newVariable->setFieldValue(nf,QVariant(fields[nf+1]));
-                          }
-                          variables->addItem(newVariable);
-                  }
-          }
-  }
+                        //Treating only lines begininng with #VAR
+                        //left(4) is used to avoid space problems
+                        if(fields[0].left(4)=="#VAR")
+                        {
+                                newVariable = new Variable();
+                                for (int nf=0;nf<Variable::nbFields;nf++)
+                                {
+                                        newVariable->setFieldValue(nf,QVariant(fields[nf+1]));
+                                }
+                                variables->addItem(newVariable);
+                        }
+                }
+        }
 }
 
 
 
 QString CSVBase::scannedVariablesToLines(MOVector<ScannedVariable> * scannedVariables)
 {
-  QString text = "";
-  ScannedVariable *curVar;
+        QString text = "";
+        ScannedVariable *curVar;
 
-  for (int i=0;i<scannedVariables->size();i++)
-  {
-          curVar=scannedVariables->at(i);
+        for (int i=0;i<scannedVariables->size();i++)
+        {
+                curVar=scannedVariables->at(i);
 
-          //Variable fields
-          text += ("#SCANVAR");
+                //Variable fields
+                text += ("#SCANVAR");
 
-          for (int nf=0;nf<ScannedVariable::nbFields;nf++)
-          {
-                  text += "\t";
-                  text += curVar->getFieldValue(nf).toString();
-          }
-          text += "\n";
-  }
-  return text;
+                for (int nf=0;nf<ScannedVariable::nbFields;nf++)
+                {
+                        text += "\t";
+                        text += curVar->getFieldValue(nf).toString();
+                }
+                text += "\n";
+        }
+        return text;
 }
 
 
@@ -132,32 +132,32 @@ QString CSVBase::scannedVariablesToLines(MOVector<ScannedVariable> * scannedVari
 
 void CSVBase::LinesToScannedVariables(MOVector<ScannedVariable>* scannedVariables, QString lines)
 {
-  //Clear variables
-  scannedVariables->clear();
+        //Clear variables
+        scannedVariables->clear();
 
-  QStringList lineList = lines.split("\n");
-  QStringList fields;
-  ScannedVariable *newScannedVariable;
-  for(int nl=0;nl<lineList.size();nl++)
-  {
-          if(!lineList[nl].isEmpty())
-          {
+        QStringList lineList = lines.split("\n");
+        QStringList fields;
+        ScannedVariable *newScannedVariable;
+        for(int nl=0;nl<lineList.size();nl++)
+        {
+                if(!lineList[nl].isEmpty())
+                {
 
-                  fields = lineList[nl].split("\t");
+                        fields = lineList[nl].split("\t");
 
-                  //Treating only lines begininng with #VAR
-                  //left(4) is used to avoid space problems
-                  if(fields[0].left(8)=="#SCANVAR")
-                  {
-                          newScannedVariable = new ScannedVariable();
-                          for (int nf=0;nf<ScannedVariable::nbFields;nf++)
-                          {
-                                  newScannedVariable->setFieldValue(nf,QVariant(fields[nf+1]));
-                          }
-                          scannedVariables->addItem(newScannedVariable);
-                  }
-          }
-  }
+                        //Treating only lines begininng with #VAR
+                        //left(4) is used to avoid space problems
+                        if(fields[0].left(8)=="#SCANVAR")
+                        {
+                                newScannedVariable = new ScannedVariable();
+                                for (int nf=0;nf<ScannedVariable::nbFields;nf++)
+                                {
+                                        newScannedVariable->setFieldValue(nf,QVariant(fields[nf+1]));
+                                }
+                                scannedVariables->addItem(newScannedVariable);
+                        }
+                }
+        }
 }
 
 
@@ -165,16 +165,16 @@ void CSVBase::LinesToScannedVariables(MOVector<ScannedVariable>* scannedVariable
 
 void CSVBase::FileToVariables(MOVector<Variable>* variables, QString fileName)
 {
-  QFile frontFile(fileName);
-  if(!frontFile.exists())
-  {
-          /// \todo ERROR
-  }
-  frontFile.open(QIODevice::ReadOnly);
-  QTextStream tsfront( &frontFile );
-  QString text = tsfront.readAll();
-  frontFile.close();
-  LinesToVariables(variables, text);
+        QFile frontFile(fileName);
+        if(!frontFile.exists())
+        {
+                /// \todo ERROR
+        }
+        frontFile.open(QIODevice::ReadOnly);
+        QTextStream tsfront( &frontFile );
+        QString text = tsfront.readAll();
+        frontFile.close();
+        LinesToVariables(variables, text);
 
 }
 

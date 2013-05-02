@@ -59,10 +59,10 @@ WidgetTableVar::WidgetTableVar(MOVector<Variable> *variables,QWidget *parent,boo
     _allLayout->addWidget(_tableVariables,1,0);
     if(addFilter)
     {
-  QLineEdit *newLine = new QLineEdit(this);
-  _allLayout->addWidget(newLine,0,0);
-  GuiTools::ModelToViewWithFilter(_variables,_tableVariables,newLine);
-  GuiTools::minimizeTableSize(_tableVariables);
+        QLineEdit *newLine = new QLineEdit(this);
+        _allLayout->addWidget(newLine,0,0);
+        GuiTools::ModelToViewWithFilter(_variables,_tableVariables,newLine);
+        GuiTools::minimizeTableSize(_tableVariables);
     }
 }
 
@@ -94,10 +94,10 @@ WidgetTableOptVar::WidgetTableOptVar(MOOptVector *variables,QWidget *parent, boo
 
     if(addFilter)
     {
-  QLineEdit *newLine = new QLineEdit(this);
-  _allLayout->addWidget(newLine,0,0);
-  GuiTools::ModelToViewWithFilter(_variables,_tableVariables,newLine);
-  GuiTools::minimizeTableSize(_tableVariables);
+        QLineEdit *newLine = new QLineEdit(this);
+        _allLayout->addWidget(newLine,0,0);
+        GuiTools::ModelToViewWithFilter(_variables,_tableVariables,newLine);
+        GuiTools::minimizeTableSize(_tableVariables);
     }
 
     QPushButton* pushExport = new QPushButton("Export...",this);
@@ -117,24 +117,24 @@ void WidgetTableOptVar::exportCSV()
 {
     // get file name
     QString csvPath = QFileDialog::getSaveFileName(
-          this,
-          "MO - Export variables",
-          QString::null,
-          "CSV file (*.csv)" );
+                this,
+                "MO - Export variables",
+                QString::null,
+                "CSV file (*.csv)" );
 
     if(!csvPath.isNull())
     {
-  QString separator = "\t";
-  QString csvText = _variables->toCSV(separator,QList<int>() << _variables->curPoint());
+        QString separator = "\t";
+        QString csvText = _variables->toCSV(separator,QList<int>() << _variables->curPoint());
 
-  QFile frontFile(csvPath);
-  if(frontFile.exists())
-      frontFile.remove();
+        QFile frontFile(csvPath);
+        if(frontFile.exists())
+            frontFile.remove();
 
-  frontFile.open(QIODevice::WriteOnly);
-  QTextStream tsfront( &frontFile );
-  tsfront << csvText;
-  frontFile.close();
+        frontFile.open(QIODevice::WriteOnly);
+        QTextStream tsfront( &frontFile );
+        tsfront << csvText;
+        frontFile.close();
     }
 }
 

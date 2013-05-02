@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #include "Problem.h"
@@ -48,19 +48,19 @@
 Problem::Problem(ProjectBase* project)
     :OMCase(project)
 {
-  _parameters = new MOParameters();
+        _parameters = new MOParameters();
 }
 
 Problem::Problem(QDomElement domProblem,ProjectBase* project,bool &ok)
     :OMCase(project)
 {
-  _parameters = new MOParameters();
+        _parameters = new MOParameters();
 }
 
 Problem::Problem(const Problem &problem)
 :OMCase(problem)
 {
-  _parameters = new  MOParameters(*problem._parameters);
+        _parameters = new  MOParameters(*problem._parameters);
 }
 
 Problem::~Problem(void)
@@ -71,9 +71,9 @@ Problem::~Problem(void)
 void Problem::setDefaultSaveFileName()
 {
     if(_name.isEmpty())
-  _saveFileName= "problem.mpb";
+        _saveFileName= "problem.mpb";
     else
-  _saveFileName = _name + ".mpb";
+        _saveFileName = _name + ".mpb";
 }
 
 QString Problem::getFieldName(int field,int role)

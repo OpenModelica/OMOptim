@@ -47,12 +47,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file ModModelPlus.cpp
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version
+        @file ModModelPlus.cpp
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version
 
   */
 
@@ -179,7 +179,7 @@ QFileInfo ModelPlus::mmoFilePath()
 
 QString ModelPlus::modelName()
 {
-  return _modelName;
+        return _modelName;
 }
 
 
@@ -223,7 +223,7 @@ void ModelPlus::addVariable(Variable* var)
 Variables * ModelPlus::variables()
 {
     //    if(!_variablesRead && readIfNot)
-    //  readVariables();
+    //        readVariables();
 
     return _variables;
 }
@@ -265,11 +265,11 @@ Variables* ModelPlus::variables(ModItem* element)
 
     for(int i=0;i<_variables->size();i++)
     {
-  curVar = _variables->at(i);
-  curElName = curVar->name().section(".",0,-2);
+        curVar = _variables->at(i);
+        curElName = curVar->name().section(".",0,-2);
 
-  if(QString::compare(curElName,elName,Qt::CaseInsensitive)==0)
-      elVars->addItem(curVar);
+        if(QString::compare(curElName,elName,Qt::CaseInsensitive)==0)
+            elVars->addItem(curVar);
     }
     return elVars;
 }

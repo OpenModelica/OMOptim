@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #include "METime.h"
@@ -65,16 +65,16 @@ QString METime::unit(int iUnit) const
 {
     switch(iUnit)
     {
-  case SEC :
-          return "s";
+        case SEC :
+                return "s";
     default :
-  return "-";
+        return "-";
     }
 }
 
 QString METime::unit() const
 {
-  return unit(_unit);
+        return unit(_unit);
 }
 
 unsigned METime::nbUnits() const
@@ -85,24 +85,24 @@ unsigned METime::nbUnits() const
 double METime::convert(double value,int orgUnit,int dstUnit) const
 {
     double result=value;
-  // convert to m2
+        // convert to m2
     switch(orgUnit)
     {
-//  case CM2 :
-//          result=result/1E4;
-//  break;
+//        case CM2 :
+//                result=result/1E4;
+//        break;
     default :
-  break;
+        break;
     }
 
     // convert to dstUnit
     switch(dstUnit)
     {
-//  case CM2 :
-//          result=result*1E4;
-//  break;
+//        case CM2 :
+//                result=result*1E4;
+//        break;
     default :
-  break;
+        break;
     }
     return result;
 }
@@ -134,27 +134,27 @@ METime METimes::time(int iP, bool & ok, QString & msg) const
 {
     if((iP<0)||(iP>=this->size()))
     {
-  ok = false;
-  msg = "Unvalid period index ("+QString::number(iP)+") : ";
-  msg+=" \n EIItem has only "+QString::number(this->size())+" periods";
-  return METime();
+        ok = false;
+        msg = "Unvalid period index ("+QString::number(iP)+") : ";
+        msg+=" \n EIItem has only "+QString::number(this->size())+" periods";
+        return METime();
     }
     else
     {
-  ok = true;
-  msg.clear();
-  return this->at(iP);
+        ok = true;
+        msg.clear();
+        return this->at(iP);
     }
 }
 
 int METimes::iPeriod(const METime & time) const
 {
     if(this->isEmpty() || time<this->at(0))
-  return -1;
+        return -1;
 
     int i=0;
     while((i<this->size()-1)&&(time>=this->at(i+1)))
-  i++;
+        i++;
     return i;
 }
 
@@ -162,6 +162,6 @@ METimes &METimes::operator =(const QList<METime> & times)
 {
     this->clear();
     for(int i=0;i<times.size();i++)
-  this->push_back(times.at(i));
+        this->push_back(times.at(i));
 }
 

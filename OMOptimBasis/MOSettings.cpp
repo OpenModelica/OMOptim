@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file MOSettings.cpp
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version
+        @file MOSettings.cpp
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version
 
   */
 #include "MOSettings.h"
@@ -60,15 +60,15 @@ MOSettings* MOSettings::instance()
     // A correct way would be to build an OMOptim shared lib, that exe and plugin would share
     if(!_instance)
     {
-  if(qApp->property("MOSettings").isValid())
-  {
-      _instance = dynamic_cast<MOSettings*>(qApp->property("MOSettings").value<QObject*>());
-  }
-  else
-  {
-      _instance = new MOSettings();
-      qApp->setProperty("MOSettings",qVariantFromValue(qobject_cast<QObject*>(_instance)));
-  }
+        if(qApp->property("MOSettings").isValid())
+        {
+            _instance = dynamic_cast<MOSettings*>(qApp->property("MOSettings").value<QObject*>());
+        }
+        else
+        {
+            _instance = new MOSettings();
+            qApp->setProperty("MOSettings",qVariantFromValue(qobject_cast<QObject*>(_instance)));
+        }
     }
     return _instance;
 }
@@ -78,7 +78,7 @@ void MOSettings::initialize(bool preferDefault)
 {
     setFromDefaultValues();
     if(!preferDefault)
-  updateFromSavedValues();
+        updateFromSavedValues();
     save();
 }
 
@@ -90,15 +90,15 @@ void MOSettings::updateFromSavedValues()
     QVariant value;
     for(int i=0;i<instance()->size();i++)
     {
-  group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
+        group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
 
-  settingName = instance()->at(i)->name();
-  if(!group.isEmpty())
-      settingName = group+"/"+settingName;
+        settingName = instance()->at(i)->name();
+        if(!group.isEmpty())
+            settingName = group+"/"+settingName;
 
-  value = globalSettings.value(settingName,QVariant());
-  if(!value.isNull())
-      instance()->at(i)->setFieldValue(MOParameter::VALUE,value);
+        value = globalSettings.value(settingName,QVariant());
+        if(!value.isNull())
+            instance()->at(i)->setFieldValue(MOParameter::VALUE,value);
     }
 }
 
@@ -110,14 +110,14 @@ void MOSettings::save()
     QVariant value;
     for(int i=0;i<instance()->size();i++)
     {
-  group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
+        group = instance()->at(i)->getFieldValue(MOParameter::GROUP).toString();
 
-  settingName = instance()->at(i)->name();
-  if(!group.isEmpty())
-      settingName = group+"/"+settingName;
+        settingName = instance()->at(i)->name();
+        if(!group.isEmpty())
+            settingName = group+"/"+settingName;
 
-  value = instance()->at(i)->value();
-  globalSettings.setValue(settingName,value);
+        value = instance()->at(i)->value();
+        globalSettings.setValue(settingName,value);
     }
 }
 
@@ -137,17 +137,17 @@ void MOSettings::setFromDefaultValues()
 
     for(int i=0; i<names.size();i++)
     {
-      // update
-      param = new MOParameter(names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
-      param->setFieldValue(MOParameter::GROUP,groups.at(i));
-      instance()->addItem(param);
+            // update
+            param = new MOParameter(names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
+            param->setFieldValue(MOParameter::GROUP,groups.at(i));
+            instance()->addItem(param);
     }
 }
 
 void MOSettings::addParameters(MOParameters* addedParams, QString tabName)
 {
     for(int i=0;i<addedParams->size();i++)
-  instance()->addItem(addedParams->at(i));
+        instance()->addItem(addedParams->at(i));
 
     updateFromSavedValues();
 }

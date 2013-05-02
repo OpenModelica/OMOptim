@@ -74,11 +74,11 @@ void MOItemTreeView::setEditable(bool editable)
 {
     if(editable)
     {
-  this->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
+        this->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
     }
     else
     {
-  this->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        this->setEditTriggers(QAbstractItemView::NoEditTriggers);
     }
 }
 
@@ -87,8 +87,8 @@ void MOItemTreeView::setModel ( QAbstractItemModel * model )
     QTreeView::setModel(model);
     if(model)
     {
-  initDelegates();
-  //connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),this,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
+        initDelegates();
+        //connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),this,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
     }
 }
 
@@ -100,25 +100,25 @@ void MOItemTreeView::initDelegates()
     DoubleSpinBoxDelegate* dblDelegate;
     if(itemModel)
     {
-  MOItem* item = itemModel->item();
-  if(item)
-  {
-      for(int i=0;i<item->getNbFields();i++)
-      {
-          switch(item->getFieldType(i))
-          {
-          case MOItem::BOOL :
-              break;
-          case MOItem::DOUBLE :
-              dblDelegate = new DoubleSpinBoxDelegate(this,10);
-              this->setItemDelegateForRow(i,dblDelegate);
-              break;
-          default:
-               this->setItemDelegateForRow(i,NULL);
-              break;
-          }
-      }
-  }
+        MOItem* item = itemModel->item();
+        if(item)
+        {
+            for(int i=0;i<item->getNbFields();i++)
+            {
+                switch(item->getFieldType(i))
+                {
+                case MOItem::BOOL :
+                    break;
+                case MOItem::DOUBLE :
+                    dblDelegate = new DoubleSpinBoxDelegate(this,10);
+                    this->setItemDelegateForRow(i,dblDelegate);
+                    break;
+                default:
+                     this->setItemDelegateForRow(i,NULL);
+                    break;
+                }
+            }
+        }
     }
 }
 

@@ -40,10 +40,10 @@ int reportingHook(int reportType, char* userMessage, int* retVal)
     if(strstr(userMessage, ".cpp") == NULL)
     {
       if(debugMsgPartsCount++ < numFollowupDebugMsgParts)
-  // give it back to _CrtDbgReport() to be printed to the console
-  return FALSE;
+        // give it back to _CrtDbgReport() to be printed to the console
+        return FALSE;
       else
-  return TRUE;  // ignore it
+        return TRUE;  // ignore it
     } else
     {
       debugMsgPartsCount = 0;

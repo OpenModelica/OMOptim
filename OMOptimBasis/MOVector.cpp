@@ -14,10 +14,10 @@ MOAVector<ItemClass>::MOAVector(const QList<ItemClass *> list, bool owner, bool 
     _owner = owner;
 
     for(int i=0;i<list.size();i++)
-  if(makeACopy)
-      addItem(list.at(i)->clone());
-  else
-      addItem(list[i]);
+        if(makeACopy)
+            addItem(list.at(i)->clone());
+        else
+            addItem(list[i]);
 
     _editable = true;
 }
@@ -37,8 +37,8 @@ MOAVector<ItemClass>& MOAVector<ItemClass>::operator=(const MOAVector<ItemClass>
     int iv;
     for(iv=0;iv<copied._items.size();iv++)
     {
-  //addItem(new ItemClass(*test_._items.at(iv)));
-  addItem(copied._items.at(iv)->clone());
+        //addItem(new ItemClass(*test_._items.at(iv)));
+        addItem(copied._items.at(iv)->clone());
     }
 
     _owner = true; // indeed, should be true every time !!!
@@ -59,12 +59,12 @@ MOAVector<ItemClass>& MOAVector<ItemClass>::operator=(const MOAVector<ItemClass>
 
 //    for(int nl=0;nl<lineList.size();nl++)
 //    {
-//  ///QString test("#");
+//        ///QString test("#");
 
-//  if(!lineList[nl].isEmpty() && (QString(lineList[nl].at(0)).compare(QString("#")))!=0)
-//  {
-//      _items.push_back(new ItemClass(lineList[nl]));
-//  }
+//        if(!lineList[nl].isEmpty() && (QString(lineList[nl].at(0)).compare(QString("#")))!=0)
+//        {
+//            _items.push_back(new ItemClass(lineList[nl]));
+//        }
 //    }
 //}
 
@@ -76,8 +76,8 @@ template<class ItemClass>
 MOAVector<ItemClass>::~MOAVector()
 {
     if(_owner)
-  //delete contents
-  clear();
+        //delete contents
+        clear();
 }
 
 template<class ItemClass>
@@ -91,8 +91,8 @@ template<class ItemClass>
 void MOAVector<ItemClass>::setEditableFields(QList<int> indexes,bool editable)
 {
     for(int i=0;i<_items.size();i++)
-  for(int j=0;j<indexes.size();j++)
-      _items[i]->setIsEditableField(indexes.at(j),editable);
+        for(int j=0;j<indexes.size();j++)
+            _items[i]->setIsEditableField(indexes.at(j),editable);
 }
 
 template<class ItemClass>
@@ -100,7 +100,7 @@ QStringList MOAVector<ItemClass>::getItemNames()
 {
     QStringList _names;
     for(int i=0;i<_items.size();i++)
-  _names.push_back(_items.at(i)->name());
+        _names.push_back(_items.at(i)->name());
     return _names;
 }
 
@@ -126,10 +126,10 @@ QVariant MOAVector<ItemClass>::headerData(int section, Qt::Orientation orientati
 {
     if(orientation==Qt::Horizontal)
     {
-  if (role == Qt::DisplayRole)
-  {
-      return ItemClass::sFieldName(section,role);
-  }
+        if (role == Qt::DisplayRole)
+        {
+            return ItemClass::sFieldName(section,role);
+        }
     }
     return QAbstractItemModel::headerData(section, orientation, role);
 }
@@ -140,29 +140,29 @@ QVariant MOAVector<ItemClass>::data(const QModelIndex &index, int role) const
     QVariant result;
     if (!index.isValid())
     {
-  return QVariant();
+        return QVariant();
     }
 
     ItemClass* curItem;
     if(index.row()<_items.size() && index.column()<ItemClass::nbFields)
     {
-  curItem = _items.at(index.row());
+        curItem = _items.at(index.row());
     }
     else
     {
-  return QVariant();
+        return QVariant();
     }
 
     switch(role)
     {
     case Qt::DisplayRole :
     case Qt::EditRole :
-  result = _items.at(index.row())->getFieldValue(index.column(),role);
-  return result;
-  break;
+        result = _items.at(index.row())->getFieldValue(index.column(),role);
+        return result;
+        break;
     case Qt::ToolTipRole :
-  return curItem->getStrToolTip();
-  break;
+        return curItem->getStrToolTip();
+        break;
     }
     return QVariant();
 }
@@ -173,14 +173,14 @@ Qt::ItemFlags MOAVector<ItemClass>::flags(const QModelIndex &index) const
     Qt::ItemFlags flags = Qt::ItemIsDropEnabled ;
 
     if(!index.isValid())
-  return flags;
+        return flags;
 
     bool itemIsEditable =  _editable && !(_items.at(index.row())->isProtectedField(index.column()));
 
     if(itemIsEditable)
-  return Qt::ItemIsEnabled| Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+        return Qt::ItemIsEnabled| Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
     else
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
 template<class ItemClass>
@@ -206,9 +206,9 @@ void MOAVector<ItemClass>::insertItem(ItemClass* item,int index)
     // Add an item pointer in Vector
     if(index>-1)
     {
-  beginInsertRows(QModelIndex(),index,index);
-  _items.insert(index,item);
-  endInsertRows();
+        beginInsertRows(QModelIndex(),index,index);
+        _items.insert(index,item);
+        endInsertRows();
     }
 }
 
@@ -217,8 +217,8 @@ bool MOAVector<ItemClass>::removeRow(int index,const QModelIndex &parent)
 {
     if(index<0)
     {
-  qDebug(QString("!! Tried to remove item at index "+QString::number(index)).toLatin1().data());
-  return false;
+        qDebug(QString("!! Tried to remove item at index "+QString::number(index)).toLatin1().data());
+        return false;
     }
 
     return removeRows(index,1,parent);
@@ -235,32 +235,32 @@ bool MOAVector<ItemClass>::removeRows(int index, int count, const QModelIndex &p
 
     if(index<0)
     {
-  qDebug(QString("!! Tried to remove item at index "+QString::number(index)).toLatin1().data());
-  return false;
+        qDebug(QString("!! Tried to remove item at index "+QString::number(index)).toLatin1().data());
+        return false;
     }
 
     if(count == 0)
     {
-  qDebug(QString("!! Tried to remove 0 item in MOVector").toLatin1().data());
-  return false;
+        qDebug(QString("!! Tried to remove 0 item in MOVector").toLatin1().data());
+        return false;
     }
 
     if(_items.size()>=index+count)
     {
-  beginRemoveRows(QModelIndex(),index,index+count-1);
-  for(int i=0;i<count;i++)
-  {
-      if(_owner)
-          delete _items.at(index);
-      this->removeFromItems(index);
-  }
-  endRemoveRows();
+        beginRemoveRows(QModelIndex(),index,index+count-1);
+        for(int i=0;i<count;i++)
+        {
+            if(_owner)
+                delete _items.at(index);
+            this->removeFromItems(index);
+        }
+        endRemoveRows();
       // emit layoutChanged();
-  return true;
+        return true;
     }
     else
     {
-  return false;
+        return false;
     }
 }
 
@@ -270,14 +270,14 @@ bool MOAVector<ItemClass>::removeRows(QList<int> indexes)
 {
     if(indexes.size())
     {
-  qSort(indexes.begin(),indexes.end());
+        qSort(indexes.begin(),indexes.end());
 
-  // start by the end in order not to be affected
-  for(int i=indexes.size()-1;i>=0;i--)
-  {
-      removeRow(indexes.at(i));
-  }
-  return true;
+        // start by the end in order not to be affected
+        for(int i=indexes.size()-1;i>=0;i--)
+        {
+            removeRow(indexes.at(i));
+        }
+        return true;
     }
     return false;
 }
@@ -290,7 +290,7 @@ void MOAVector<ItemClass>::removeRow(QString itemName)
     int index = indexOf(item);
     if (index!=-1)
     {
-  removeRow(index);
+        removeRow(index);
     }
 }
 
@@ -305,12 +305,12 @@ ItemClass* MOAVector<ItemClass>::findItem(QString itemName) const
 
     while(i<nbItems)
     {
-  itemName2=_items.at(i)->name();
+        itemName2=_items.at(i)->name();
 
-  if(itemName.compare(itemName2)==0)
-      return _items.at(i);
+        if(itemName.compare(itemName2)==0)
+            return _items.at(i);
 
-  i++;
+        i++;
     }
 
     return NULL;
@@ -322,11 +322,11 @@ ItemClass* MOAVector<ItemClass>::findItem(QVariant itemFieldValue, int iField) c
     int i = indexOf(itemFieldValue,iField);
     if(i==-1)
     {
-  return NULL;
+        return NULL;
     }
     else
     {
-  return this->at(i);
+        return this->at(i);
     }
 }
 
@@ -340,17 +340,17 @@ int MOAVector<ItemClass>::indexOf(QVariant itemFieldValue, int iField) const
 
     while((!found)&&(i<nbItems))
     {
-  curFieldValue=_items.at(i)->getFieldValue(iField);
-  found=(itemFieldValue == curFieldValue);
-  i++;
+        curFieldValue=_items.at(i)->getFieldValue(iField);
+        found=(itemFieldValue == curFieldValue);
+        i++;
     }
     if(!found)
     {
-  return -1;
+        return -1;
     }
     else
     {
-  return i-1;
+        return i-1;
     }
 }
 
@@ -378,9 +378,9 @@ bool MOAVector<ItemClass>::alreadyIn(QString itemName)
 {
     ItemClass* i = findItem(itemName);
     if (i)
-  return true;
+        return true;
     else
-  return false;
+        return false;
 }
 
 
@@ -398,22 +398,22 @@ void MOAVector<ItemClass>::replaceIn(MOAVector<ItemClass> *overVector)
 
     for(iov=0;iov<overVector->size();iov++)
     {
-  curName = overVector->at(iov)->name();
-  iv=findItem(curName);
+        curName = overVector->at(iov)->name();
+        iv=findItem(curName);
 
-  if(iv!=-1)
-  {
-      if(_owner)
-          delete _items.at(iv);
-      _items.erase(_items.begin()+iv,_items.begin()+iv+1);
-      _items.insert(_items.begin()+iv,overVector->at(iov));
-  }
-  else
-  {
-      QString msg;
-      msg.sprintf("Variable %s not found in vector. Could not replace.",curName.utf16());
-      InfoSender::instance()->debug(msg);
-  }
+        if(iv!=-1)
+        {
+            if(_owner)
+                delete _items.at(iv);
+            _items.erase(_items.begin()+iv,_items.begin()+iv+1);
+            _items.insert(_items.begin()+iv,overVector->at(iov));
+        }
+        else
+        {
+            QString msg;
+            msg.sprintf("Variable %s not found in vector. Could not replace.",curName.utf16());
+            InfoSender::instance()->debug(msg);
+        }
     }
 }
 
@@ -433,30 +433,30 @@ void MOAVector<ItemClass>::addItems(MOAVector<ItemClass> * newItems,bool makeACo
 
     for(iov=0;iov<newItems->size();iov++)
     {
-  curName = newItems->at(iov)->name();
-  //        if(replaceIfPresent)
-  //        {
-  //            iv=findItem(curName);
+        curName = newItems->at(iov)->name();
+        //        if(replaceIfPresent)
+        //        {
+        //            iv=findItem(curName);
 
-  //            if(iv!=-1)
-  //            {
-  //                if(_owner)
-  //                    delete _items.at(iv);
-  //                _items.erase(_items.begin()+iv,_items.begin()+iv+1);
-  //                _items.insert(_items.begin()+iv,newItems->at(iov));
-  //            }
-  //            else
-  //            {
-  //                 addItem(newItems->at(iov));
-  //            }
-  //        }
-  //        else
-  //        {
-  if(makeACopy)
-      addItem(newItems->at(iov)->clone());
-  else
-      addItem(newItems->at(iov));
-  //        }
+        //            if(iv!=-1)
+        //            {
+        //                if(_owner)
+        //                    delete _items.at(iv);
+        //                _items.erase(_items.begin()+iv,_items.begin()+iv+1);
+        //                _items.insert(_items.begin()+iv,newItems->at(iov));
+        //            }
+        //            else
+        //            {
+        //                 addItem(newItems->at(iov));
+        //            }
+        //        }
+        //        else
+        //        {
+        if(makeACopy)
+            addItem(newItems->at(iov)->clone());
+        else
+            addItem(newItems->at(iov));
+        //        }
     }
 }
 
@@ -469,8 +469,8 @@ void MOAVector<ItemClass>::cloneFromOtherVector(const MOAVector *vector_)
     ItemClass* newItem;
     for(i=0;i<vector_->size();i++)
     {
-  newItem = vector_->at(i)->clone();
-  addItem(newItem);
+        newItem = vector_->at(i)->clone();
+        addItem(newItem);
     }
 }
 
@@ -483,8 +483,8 @@ MOAVector<ItemClass>* MOAVector<ItemClass>::clone() const
     ItemClass* newItem;
     for(i=0;i<_items.size();i++)
     {
-  newItem =_items.at(i)->clone();
-  newVector->addItem(newItem);
+        newItem =_items.at(i)->clone();
+        newVector->addItem(newItem);
     }
     return newVector;
 }
@@ -495,9 +495,9 @@ void MOAVector<ItemClass>::clear()
     this->beginResetModel();
     if(_items.size()>0)
     {
-  beginRemoveRows(QModelIndex(),0,_items.size()-1);
-  removeRows(0,_items.size());
-  endRemoveRows();
+        beginRemoveRows(QModelIndex(),0,_items.size()-1);
+        removeRows(0,_items.size());
+        endRemoveRows();
     }
     this->endResetModel();
 }
@@ -513,14 +513,14 @@ QString MOAVector<ItemClass>::toSavingString()
     // print field names
     saveString += "\n#";
     for(int iF=0; iF<ItemClass::nbFields; iF++)
-  saveString += ItemClass::sFieldName(iF,Qt::UserRole) + "\t ";
+        saveString += ItemClass::sFieldName(iF,Qt::UserRole) + "\t ";
 
     saveString += "\n";
     // print item values
     for(int i=0; i<_items.size();i++)
     {
-  saveString += _items.at(i)->toSavingString();
-  saveString += "\n";
+        saveString += _items.at(i)->toSavingString();
+        saveString += "\n";
     }
     return saveString;
 }
@@ -533,8 +533,8 @@ QDomElement MOAVector<ItemClass>::toXmlData(QDomDocument & doc,QString listTitle
 
     for(int i=0;i<_items.size();i++)
     {
-  QDomElement cItem = _items.at(i)->toXmlData(doc);
-  cList.appendChild(cItem);
+        QDomElement cItem = _items.at(i)->toXmlData(doc);
+        cList.appendChild(cItem);
     }
     return cList;
 }
@@ -545,12 +545,12 @@ template<class ItemClass>
 QModelIndex MOAVector<ItemClass>::index(int row, int column, const QModelIndex &parent)const
 {
     if(column>=this->columnCount(QModelIndex()))
-  return QModelIndex();
+        return QModelIndex();
 
     if((row>-1)&&(row < _items.size()))
-  return createIndex(row,column,_items.at(row));
+        return createIndex(row,column,_items.at(row));
     else
-  return QModelIndex();
+        return QModelIndex();
 }
 
 template<class ItemClass>
@@ -597,15 +597,15 @@ QMimeData* MOAVector<ItemClass>::mimeData(const QModelIndexList &indexes) const
     MOAVector<ItemClass> dragVector(false);
     for(int i=0;i<indexes.size();i++)
     {
-  ItemClass* item = (ItemClass*)indexes.at(i).internalPointer();
-  if(!dragVector.contains(item))
-      dragVector.addItem(item);
+        ItemClass* item = (ItemClass*)indexes.at(i).internalPointer();
+        if(!dragVector.contains(item))
+            dragVector.addItem(item);
     }
 
     for(int i=0;i<dragVector._items.size();i++)
     {
-  csv.push_back(dragVector._items.at(i)->toCSV());
-  csv.push_back("\n");
+        csv.push_back(dragVector._items.at(i)->toCSV());
+        csv.push_back("\n");
     }
 
     doc.appendChild(dragVector.toXmlData(doc,"list"));
@@ -627,22 +627,22 @@ void MOVector<ItemClass>::update(const QDomElement & domList)
     QDomNode n = domList.firstChild();
     while( !n.isNull() )
     {
-  QDomElement domItem = n.toElement();
-  QDomNamedNodeMap attributes = domItem.attributes();
-  QDomNode nameNode = attributes.namedItem("Name");
-  QString name = nameNode.toAttr().value().replace(XMLTools::space()," ");
+        QDomElement domItem = n.toElement();
+        QDomNamedNodeMap attributes = domItem.attributes();
+        QDomNode nameNode = attributes.namedItem("Name");
+        QString name = nameNode.toAttr().value().replace(XMLTools::space()," ");
 
-  ItemClass* item;
-  if(!nameNode.isNull())
-  {
-      item = this->findItem(name);
-  }
-  if(item)
-      item->update(domItem);
-  else
-      this->addItem(new ItemClass(domItem));
+        ItemClass* item;
+        if(!nameNode.isNull())
+        {
+            item = this->findItem(name);
+        }
+        if(item)
+            item->update(domItem);
+        else
+            this->addItem(new ItemClass(domItem));
 
-  n = n.nextSibling();
+        n = n.nextSibling();
     }
 }
 
@@ -655,14 +655,14 @@ void MOVector<ItemClass>::setItems(QDomElement & domList)
     QDomNode n = domList.firstChild();
     while( !n.isNull() )
     {
-  QDomElement domItem = n.toElement();
-  ItemClass* newItem;
-  if( !domItem.isNull() )
-  {
-      newItem = new ItemClass(domItem);
-      addItem(newItem);
-  }
-  n = n.nextSibling();
+        QDomElement domItem = n.toElement();
+        ItemClass* newItem;
+        if( !domItem.isNull() )
+        {
+            newItem = new ItemClass(domItem);
+            addItem(newItem);
+        }
+        n = n.nextSibling();
     }
 }
 
@@ -697,13 +697,13 @@ MOVector<ItemClass>::MOVector(QDomElement & domList, bool owner)
 
 template<class ItemClass>
 bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
-                                 Qt::DropAction action, int row, int column, const QModelIndex &parent)
+                                       Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
     if (action == Qt::IgnoreAction)
-  return true;
+        return true;
 
     if (!data->hasText())
-  return false;
+        return false;
 
     QString text = data->data("text/XML");
 
@@ -711,22 +711,22 @@ bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
 
     if(text.indexOf("XML::")==0)
     {
-  somethingDone = true;
+        somethingDone = true;
 
-  // look for item
-  QString xmlContent = text.remove(QRegExp("^XML::"));
-  qDebug(QString("Drop :"+xmlContent).toLatin1().data());
-  QDomDocument doc;
-  doc.setContent(xmlContent);
+        // look for item
+        QString xmlContent = text.remove(QRegExp("^XML::"));
+        qDebug(QString("Drop :"+xmlContent).toLatin1().data());
+        QDomDocument doc;
+        doc.setContent(xmlContent);
 
-  // create _items from xml
-  QDomElement el = doc.firstChildElement("list");
-  MOVector<ItemClass> dropedVector(el,false);
-  qDebug(QString("droped vector size :"+QString::number(dropedVector.size())).toLatin1().data());
-  for(int i=0;i<dropedVector.size();i++)
-  {
-      insertItem(dropedVector.at(i),row);
-  }
+        // create _items from xml
+        QDomElement el = doc.firstChildElement("list");
+        MOVector<ItemClass> dropedVector(el,false);
+        qDebug(QString("droped vector size :"+QString::number(dropedVector.size())).toLatin1().data());
+        for(int i=0;i<dropedVector.size();i++)
+        {
+            insertItem(dropedVector.at(i),row);
+        }
     }
     return somethingDone;
 }
@@ -740,8 +740,8 @@ MOVector<ItemClass>* MOVector<ItemClass>::clone() const
     ItemClass* newItem;
     for(i=0;i<this->_items.size();i++)
     {
-  newItem =this->_items.at(i)->clone();
-  newVector->addItem(newItem);
+        newItem =this->_items.at(i)->clone();
+        newVector->addItem(newItem);
     }
     return newVector;
 }

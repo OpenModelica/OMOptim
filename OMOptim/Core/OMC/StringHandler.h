@@ -44,7 +44,7 @@ public:
     ~StringHandler();
     enum IconType {ICON, DIAGRAM, MODELICATEXT};
     enum ModelicaClasses {MODEL, CLASS, CONNECTOR, RECORD, BLOCK, FUNCTION, PACKAGE, PRIMITIVE, TYPE, PARAMETER,
-                    CONSTANT, PROTECTED};
+                          CONSTANT, PROTECTED};
     static QString getModelicaClassType(int type);
     static QString getViewType(int type);
     static QString removeFirstLastCurlBrackets(QString value);

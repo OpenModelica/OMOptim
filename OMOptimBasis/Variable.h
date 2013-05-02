@@ -58,50 +58,50 @@ class Variable : public MOItem
 public :
     /*enum Type
     {
-  SPECIAL_CASE = -2,
-  FIXED = -1,
-  FREE = 0,
-  DESIRED = 1
+        SPECIAL_CASE = -2,
+        FIXED = -1,
+        FREE = 0,
+        DESIRED = 1
     };*/
 
     enum Field
     {
-  //Modelica fields
-  NAME,
-  MODEL,
-  VALUE,
-  DESCRIPTION,
-  /*MIN,
-  MAX,
-  TYPE,
-  CATEGORY,*/
-  DATATYPE,
-  CAUSALITY
+        //Modelica fields
+        NAME,
+        MODEL,
+        VALUE,
+        DESCRIPTION,
+        /*MIN,
+        MAX,
+        TYPE,
+        CATEGORY,*/
+        DATATYPE,
+        CAUSALITY
     };
 
 
     /*enum Category
     {
-  PARAMETER = 1,
-  STATE = 2,
-  STATE_DERIVATIVE = 3,
-  OUTPUT = 4,
-  INPUT = 5,
-  AUXILIARY_VARIABLE = 6
+        PARAMETER = 1,
+        STATE = 2,
+        STATE_DERIVATIVE = 3,
+        OUTPUT = 4,
+        INPUT = 5,
+        AUXILIARY_VARIABLE = 6
     };*/
 
 
 
     enum MOVarType
     {
-  NORMAL ,
-  OPTIMIZED
+        NORMAL ,
+        OPTIMIZED
     };
 
     enum NameFormat
     {
-  SHORT,
-  FULL
+        SHORT,
+        FULL
     };
 
 public:
@@ -222,18 +222,18 @@ public :
 
     enum Field
     {
-  NAME,
-  MODEL,
-  VALUE,
-  DESCRIPTION,
-  /*MIN,
-  MAX,
-  TYPE,
-  CATEGORY,*/
-  DATATYPE,
-  CAUSALITY,
-  OPTMIN,
-  OPTMAX
+        NAME,
+        MODEL,
+        VALUE,
+        DESCRIPTION,
+        /*MIN,
+        MAX,
+        TYPE,
+        CATEGORY,*/
+        DATATYPE,
+        CAUSALITY,
+        OPTMIN,
+        OPTMAX
     };
 
 public:
@@ -282,19 +282,19 @@ public :
 
     enum Field
     {
-  NAME,
-  MODEL,
-  VALUE,
-  DESCRIPTION,
-  /*MIN,
-  MAX,
-  TYPE,
-  CATEGORY,*/
-  DATATYPE,
-  CAUSALITY,
-  SCANMIN,
-  SCANMAX,
-  SCANSTEP
+        NAME,
+        MODEL,
+        VALUE,
+        DESCRIPTION,
+        /*MIN,
+        MAX,
+        TYPE,
+        CATEGORY,*/
+        DATATYPE,
+        CAUSALITY,
+        SCANMIN,
+        SCANMAX,
+        SCANSTEP
     };
 
 public:

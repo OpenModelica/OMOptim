@@ -27,30 +27,30 @@ public:
      * @param _sol the solution to move
      */
     virtual void move(EOT & _sol) {
-  unsigned int tmp ;
-  int  size=_sol.doubleVars.size()+ _sol.intVars.size()+_sol.boolVars.size();
-  int rndNbr = (int) (size*rng.uniform());
-  if(rndNbr == size)
-      rndNbr--;
+        unsigned int tmp ;
+        int  size=_sol.doubleVars.size()+ _sol.intVars.size()+_sol.boolVars.size();
+        int rndNbr = (int) (size*rng.uniform());
+        if(rndNbr == size)
+            rndNbr--;
 
-  if(rndNbr <= _sol.doubleVars.size()-1)
-      _sol.doubleVars[rndNbr] = _doubleBounds[rndNbr].minimum()+ (_doubleBounds[rndNbr].maximum() - _doubleBounds[rndNbr].minimum())*rng.uniform();
+        if(rndNbr <= _sol.doubleVars.size()-1)
+            _sol.doubleVars[rndNbr] = _doubleBounds[rndNbr].minimum()+ (_doubleBounds[rndNbr].maximum() - _doubleBounds[rndNbr].minimum())*rng.uniform();
 
-  else if(rndNbr <= (_sol.doubleVars.size() + _sol.intVars.size())-1)
-  {
-      int i = rndNbr - _sol.doubleVars.size();
-      _sol.intVars[i] = _intBounds[i].minimum()+ LowTools::round((_intBounds[i].maximum() - _intBounds[i].minimum())*rng.uniform());
-  }
-  else
-  {
-      int i = rndNbr - _sol.doubleVars.size() - _sol.intVars.size();
-      _sol.boolVars[i] = !_sol.boolVars[i];
-  }
+        else if(rndNbr <= (_sol.doubleVars.size() + _sol.intVars.size())-1)
+        {
+            int i = rndNbr - _sol.doubleVars.size();
+            _sol.intVars[i] = _intBounds[i].minimum()+ LowTools::round((_intBounds[i].maximum() - _intBounds[i].minimum())*rng.uniform());
+        }
+        else
+        {
+            int i = rndNbr - _sol.doubleVars.size() - _sol.intVars.size();
+            _sol.boolVars[i] = !_sol.boolVars[i];
+        }
 
 
 
-  _sol.invalidate();
-  _tmp = _sol;
+        _sol.invalidate();
+        _tmp = _sol;
     }
 
     /**
@@ -58,51 +58,51 @@ public:
      * @param _key the key allowing to compute the two indexes for the shift
      */
     void translate(unsigned int _key) {
-  int step;
-  int val = _key;
-  int tmpSize = size * (size-1) / 2;
-  // moves from left to right
-  if (val <= tmpSize) {
-      step = size - 1;
-      first = 0;
-      while ((val - step) > 0) {
-          val = val - step;
-          step--;
-          first++;
-      }
-      second = first + val + 1;
-  }
-  // moves from right to left (equivalent moves are avoided)
-  else {  /* val > tmpSize */
-      val = val - tmpSize;
-      step = size - 2;
-      second = 0;
-      while ((val - step) > 0) {
-          val = val - step;
-          step--;
-          second++;
-      }
-      first = second + val + 1;
-  }
+        int step;
+        int val = _key;
+        int tmpSize = size * (size-1) / 2;
+        // moves from left to right
+        if (val <= tmpSize) {
+            step = size - 1;
+            first = 0;
+            while ((val - step) > 0) {
+                val = val - step;
+                step--;
+                first++;
+            }
+            second = first + val + 1;
+        }
+        // moves from right to left (equivalent moves are avoided)
+        else {  /* val > tmpSize */
+            val = val - tmpSize;
+            step = size - 2;
+            second = 0;
+            while ((val - step) > 0) {
+                val = val - step;
+                step--;
+                second++;
+            }
+            first = second + val + 1;
+        }
     }
 
     void print() {
-  std::cout << key << ": [" << first << ", " << second << "] -> " << (*this).fitness() << std::endl;
+        std::cout << key << ": [" << first << ", " << second << "] -> " << (*this).fitness() << std::endl;
     }
 
     void setDoubleBounds(std::vector<eoRealInterval>  doubleBounds)
     {
-  _doubleBounds = doubleBounds;
+        _doubleBounds = doubleBounds;
     }
 
     void setIntBounds(std::vector<eoIntInterval>  intBounds)
     {
-  _intBounds = intBounds;
+        _intBounds = intBounds;
     }
 
     void setNbBool(int nbBool)
     {
-  _nbBool = nbBool;
+        _nbBool = nbBool;
     }
 
 
@@ -120,17 +120,17 @@ public:
 
     void objectiveVector(const ObjectiveVector & obj)
     {
-  _tmp.objectiveVector(obj);
+        _tmp.objectiveVector(obj);
     }
 
     const Fitness fitness() const
     {
-  return _tmp.fitness();
+        return _tmp.fitness();
     }
 
     void fitness(const Fitness & fit)
     {
-  _tmp.fitness(fit);
+        _tmp.fitness(fit);
 
     }
 

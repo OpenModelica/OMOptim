@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #include "MEHTCoeff.h"
@@ -63,13 +63,13 @@ QString MEHTCoeff::unit(int iUnit) const
     switch(iUnit)
     {
     case W_M2_K :
-  return "W/m2.K";
+        return "W/m2.K";
     case KW_M2_K :
-  return "kW/m2.K";
+        return "kW/m2.K";
     case MW_M2_K :
-  return "MW/m2.K";
+        return "MW/m2.K";
     default :
-  return "-";
+        return "-";
     }
 }
 
@@ -90,30 +90,30 @@ double MEHTCoeff::convert(double value,int orgUnit,int dstUnit) const
     switch(orgUnit)
     {
     case W_M2_K :
-  break;
+        break;
     case KW_M2_K :
-  result = result*1E3;
-  break;
+        result = result*1E3;
+        break;
     case MW_M2_K :
-  result = result*1E6;
-  break;
+        result = result*1E6;
+        break;
     default :
-  break;
+        break;
     }
 
     // convert to dstUnit
     switch(dstUnit)
     {
     case W_M2_K :
-  break;
+        break;
     case KW_M2_K :
-  result = result/1E3;
-  break;
+        result = result/1E3;
+        break;
     case MW_M2_K :
-  result = result/1E6;
-  break;
+        result = result/1E6;
+        break;
     default :
-  break;
+        break;
     }
     return result;
 }
@@ -123,7 +123,7 @@ MEHTCoeff& MEHTCoeff::operator+=(const MEHTCoeff& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-  this->invalidate();
+        this->invalidate();
     return *this;
 }
 
@@ -131,7 +131,7 @@ MEHTCoeff& MEHTCoeff::operator-=(const MEHTCoeff& b)
 {
     setValue(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-  this->invalidate();
+        this->invalidate();
     return *this;
 }
 
@@ -139,7 +139,7 @@ MEHTCoeff MEHTCoeff::operator-(const MEHTCoeff& b) const
 {
     MEHTCoeff result(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-  result.invalidate();
+        result.invalidate();
 
     return result;
 }
@@ -148,7 +148,7 @@ MEHTCoeff MEHTCoeff::operator+(const MEHTCoeff& b) const
 {
     MEHTCoeff result(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-  result.invalidate();
+        result.invalidate();
 
     return result;
 }

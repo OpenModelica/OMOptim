@@ -128,9 +128,9 @@ public:
 
 protected :
     /**
-  * is this vector the owner of the content.
-  * If yes, content will be deleted with vector, or when an item replaces another one
-  */
+        * is this vector the owner of the content.
+        * If yes, content will be deleted with vector, or when an item replaces another one
+        */
     bool _owner;
 
     QList<ItemClass*> _items;
@@ -159,7 +159,7 @@ public :
     //virtual void append(const MOAVector &,bool makeACopy);
     virtual void update(const QDomElement & domList);
     bool dropMimeData(const QMimeData *data,
-                Qt::DropAction action, int row, int column, const QModelIndex &parent);
+                      Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
     MOVector<ItemClass>* clone() const;
 

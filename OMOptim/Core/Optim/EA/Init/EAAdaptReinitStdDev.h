@@ -27,16 +27,16 @@ class EAAdaptReinitStdDev
 public:
     static void reinitDblStdDev(eoPop<EOT> & _pop,std::vector<eoRealInterval> doubleBounds,int initPopSize)
     {
-  EOT _eo;
-  for(int iPop=0;iPop<_pop.size();iPop++)
-  {
-      _eo = _pop[iPop];
-      for(unsigned j=0;j<_eo.dblStdDev.size();j++)
-      {
-          //_eo.dblStdDev.at(i) = 0.013; // Hinterding, Self-Adaptive Genetic Algorithm
-          _eo.dblStdDev.at(j)= doubleBounds.at(j).range()/(sqrt((double)12)*initPopSize);
-      }
-  }
+        EOT _eo;
+        for(int iPop=0;iPop<_pop.size();iPop++)
+        {
+            _eo = _pop[iPop];
+            for(unsigned j=0;j<_eo.dblStdDev.size();j++)
+            {
+                //_eo.dblStdDev.at(i) = 0.013; // Hinterding, Self-Adaptive Genetic Algorithm
+                _eo.dblStdDev.at(j)= doubleBounds.at(j).range()/(sqrt((double)12)*initPopSize);
+            }
+        }
     }
 };
 

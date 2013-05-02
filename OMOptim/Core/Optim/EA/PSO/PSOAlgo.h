@@ -32,12 +32,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file NSGA2Algo.h
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version 0.9
+        @file NSGA2Algo.h
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version 0.9
 
   */
 
@@ -63,101 +63,101 @@ public:
 
      //  typedef typename MOEOT::ObjectiveVector ObjectiveVector;
 
-  PSOAlgo(eoContinue < MOEOT > & _continuator, eoEvalFunc < MOEOT > & _eval, eoQuadOp < MOEOT > & _crossover,eoMonOp < MOEOT > & _mutation):
-      defaultGenContinuator(0), continuator(_continuator), eval(_eval), defaultPopEval(_eval), popEval(defaultPopEval), select (2), selectMany(select,0.0),
-      selectTransform(defaultSelect, defaultTransform),  defaultSGAGenOp(_crossover, 1, _mutation, 1), genBreed (select, defaultSGAGenOp), breed (genBreed),
-      replace (fitnessAssignment, diversityAssignment)
+        PSOAlgo(eoContinue < MOEOT > & _continuator, eoEvalFunc < MOEOT > & _eval, eoQuadOp < MOEOT > & _crossover,eoMonOp < MOEOT > & _mutation):
+            defaultGenContinuator(0), continuator(_continuator), eval(_eval), defaultPopEval(_eval), popEval(defaultPopEval), select (2), selectMany(select,0.0),
+            selectTransform(defaultSelect, defaultTransform),  defaultSGAGenOp(_crossover, 1, _mutation, 1), genBreed (select, defaultSGAGenOp), breed (genBreed),
+            replace (fitnessAssignment, diversityAssignment)
     {}
 
 
 void operator () (eoPop < MOEOT > &_pop, MOParameters *_parameters, moeoUnboundedArchive<MOEOT>& arch, const int & nbDouble,const int & nbInt, const int & nbBool,
-                    const std::vector<eoRealInterval> & doubleBounds, const std::vector<eoIntInterval> & intBounds)
+                          const std::vector<eoRealInterval> & doubleBounds, const std::vector<eoIntInterval> & intBounds)
     {
       //  eoPop < MOEOT > offspring, empty_pop;
 
     double inertia = _parameters->value(PSOParameters::str(PSOParameters::INERTIA),1.0).toDouble();
-  double alpha   = _parameters->value(PSOParameters::str(PSOParameters::LEARNINGFACTORALPHA),2.0).toDouble();
-  double betta   = _parameters->value(PSOParameters::str(PSOParameters::LEARNINGFACTORBETTA),2.0).toDouble();
+        double alpha   = _parameters->value(PSOParameters::str(PSOParameters::LEARNINGFACTORALPHA),2.0).toDouble();
+        double betta   = _parameters->value(PSOParameters::str(PSOParameters::LEARNINGFACTORBETTA),2.0).toDouble();
 
 
-  eoPop <MOEOT> pbest; // best particle points
-  MOEOT gbest; // global best point
-  std::vector <MOEOT> velocity;
+        eoPop <MOEOT> pbest; // best particle points
+        MOEOT gbest; // global best point
+        std::vector <MOEOT> velocity;
 
-  popEval (_pop, _pop);  // a first eval of _pop
+        popEval (_pop, _pop);  // a first eval of _pop
 
-  // evaluate fitness and diversity
-   fitnessAssignment(_pop);
-   diversityAssignment(_pop);
+        // evaluate fitness and diversity
+         fitnessAssignment(_pop);
+         diversityAssignment(_pop);
 
        // initialisation of particle best point
-  for(int i=0; i< _pop.size(); i++)
-  {
-      pbest.push_back(_pop[i]);
-//      pbest[i].doubleVars = _pop[i].doubleVars;
-//      pbest[i].intVars    = _pop[i].intVars;
-//      pbest[i].boolVars   = _pop[i].boolVars;
-//      pbest[i].objectiveVector(_pop[i].objectiveVector());
-  }
+        for(int i=0; i< _pop.size(); i++)
+        {
+            pbest.push_back(_pop[i]);
+//            pbest[i].doubleVars = _pop[i].doubleVars;
+//            pbest[i].intVars    = _pop[i].intVars;
+//            pbest[i].boolVars   = _pop[i].boolVars;
+//            pbest[i].objectiveVector(_pop[i].objectiveVector());
+        }
 
 
-  // Archive initialisation
-  arch(_pop);
+        // Archive initialisation
+        arch(_pop);
 
-  // initialisation of the global best point
-  gbest.doubleVars = arch[0].doubleVars;
-  gbest.intVars    = arch[0].intVars;
-  gbest.boolVars   = arch[0].boolVars;
-  gbest.objectiveVector(arch[0].objectiveVector());
-
-
-  // velocity initialisation to zero
-
-  velocity.resize(_pop.size());
-
-  for(int i=0; i< _pop.size(); i++ )
-  {
-      for(int j=0; j<nbDouble; j++)
-          (velocity[i].doubleVars).push_back(0);
-      for(int j=0; j<nbInt; j++)
-          (velocity[i].intVars).push_back(0);
-      for(int j=0; j<nbBool; j++)
-          (velocity[i].boolVars).push_back(0);
-  }
+        // initialisation of the global best point
+        gbest.doubleVars = arch[0].doubleVars;
+        gbest.intVars    = arch[0].intVars;
+        gbest.boolVars   = arch[0].boolVars;
+        gbest.objectiveVector(arch[0].objectiveVector());
 
 
-  do
-  {
-      // generate offspring, worths are recalculated if necessary
-     // psobreed (_pop, _pop);
-      psobreed (_pop, pbest, gbest, velocity, nbDouble, nbInt, nbBool, doubleBounds, intBounds);
-      // eval of offspring
+        // velocity initialisation to zero
 
-      popEval (pbest, _pop);
-      fitnessAssignment (_pop);
-      diversityAssignment (_pop);
-   //   arch(_pop);
-      updatePbest(pbest, _pop, paretoComp);
-      updateGbest(gbest, arch);
-      updateVelocity(velocity, _pop, pbest, gbest, inertia, alpha, betta);
-      // after replace, the new pop is in _pop. Worths are recalculated if necessary
+        velocity.resize(_pop.size());
+
+        for(int i=0; i< _pop.size(); i++ )
+        {
+            for(int j=0; j<nbDouble; j++)
+                (velocity[i].doubleVars).push_back(0);
+            for(int j=0; j<nbInt; j++)
+                (velocity[i].intVars).push_back(0);
+            for(int j=0; j<nbBool; j++)
+                (velocity[i].boolVars).push_back(0);
+        }
+
+
+        do
+        {
+            // generate offspring, worths are recalculated if necessary
+           // psobreed (_pop, _pop);
+            psobreed (_pop, pbest, gbest, velocity, nbDouble, nbInt, nbBool, doubleBounds, intBounds);
+            // eval of offspring
+
+            popEval (pbest, _pop);
+            fitnessAssignment (_pop);
+            diversityAssignment (_pop);
+         //   arch(_pop);
+            updatePbest(pbest, _pop, paretoComp);
+            updateGbest(gbest, arch);
+            updateVelocity(velocity, _pop, pbest, gbest, inertia, alpha, betta);
+            // after replace, the new pop is in _pop. Worths are recalculated if necessary
       //      replace (_pop, offspring);
 
 
-//  popEval (empty_pop, _pop);  // a first eval of _pop
-//  // evaluate fitness and diversity
-//  fitnessAssignment(_pop);
-//  diversityAssignment(_pop);
-//  do
-//  {
-//      // generate offspring, worths are recalculated if necessary
-//      breed (_pop, offspring);
-//      // eval of offspring
-//      popEval (_pop, offspring);
-//      // after replace, the new pop is in _pop. Worths are recalculated if necessary
-//      replace (_pop, offspring);
-  }
-  while (continuator (_pop));
+//        popEval (empty_pop, _pop);  // a first eval of _pop
+//        // evaluate fitness and diversity
+//        fitnessAssignment(_pop);
+//        diversityAssignment(_pop);
+//        do
+//        {
+//            // generate offspring, worths are recalculated if necessary
+//            breed (_pop, offspring);
+//            // eval of offspring
+//            popEval (_pop, offspring);
+//            // after replace, the new pop is in _pop. Worths are recalculated if necessary
+//            replace (_pop, offspring);
+        }
+        while (continuator (_pop));
     }
 
 
@@ -179,7 +179,7 @@ protected:
     class DummyEval : public eoEvalFunc < MOEOT >
     {
     public:
-  void operator()(MOEOT &) {}
+        void operator()(MOEOT &) {}
     }
     defaultEval;
     /** evaluation function */
@@ -192,7 +192,7 @@ protected:
     class DummySelect : public eoSelect < MOEOT >
     {
     public :
-  void operator()(const eoPop<MOEOT>&, eoPop<MOEOT>&) {}
+        void operator()(const eoPop<MOEOT>&, eoPop<MOEOT>&) {}
     }
     defaultSelect;
     /** binary tournament selection */
@@ -211,7 +211,7 @@ protected:
     class DummyTransform : public eoTransform < MOEOT >
     {
     public :
-  void operator()(eoPop<MOEOT>&) {}
+        void operator()(eoPop<MOEOT>&) {}
     }
     defaultTransform;
     /** general breeder */

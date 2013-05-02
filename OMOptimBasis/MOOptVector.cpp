@@ -106,28 +106,28 @@ void MOOptVector::updateFromCsv(QString text)
 
     for(int i=0;i<nbCols;i++)
     {
-  // get var and model names
-  colName = firstLine.at(i);
-  if(colName.indexOf(varExp)==0)
-  {
-      modelName =  varExp.capturedTexts().at(1);
-      varName = varExp.capturedTexts().at(2);
-  }
-  else
-  {
-      modelName.clear();
-      varName = colName;
-  }
+        // get var and model names
+        colName = firstLine.at(i);
+        if(colName.indexOf(varExp)==0)
+        {
+            modelName =  varExp.capturedTexts().at(1);
+            varName = varExp.capturedTexts().at(2);
+        }
+        else
+        {
+            modelName.clear();
+            varName = colName;
+        }
 
-  curVar = this->findVariable(modelName,varName);
-  if(!curVar)
-  {
-      curVar = new VariableResult();
-      curVar->setName(varName);
-      curVar->setModel(modelName);
-      this->addItem(curVar);
-  }
-  indexes.push_back(this->_items.indexOf(curVar));
+        curVar = this->findVariable(modelName,varName);
+        if(!curVar)
+        {
+            curVar = new VariableResult();
+            curVar->setName(varName);
+            curVar->setModel(modelName);
+            this->addItem(curVar);
+        }
+        indexes.push_back(this->_items.indexOf(curVar));
     }
 
     double value;
@@ -136,25 +136,25 @@ void MOOptVector::updateFromCsv(QString text)
     int iScan=0;
     for (int iLine = 1; iLine<lines.size(); iLine++)
     {
-  curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
-  if(curLine.isEmpty())
-  {
-      // start a new scan
-      iScan++;
-      iPoint = 0;
-  }
+        curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
+        if(curLine.isEmpty())
+        {
+            // start a new scan
+            iScan++;
+            iPoint = 0;
+        }
 
-  if(curLine.size()==nbCols)
-  {
-      for (int iCol = 0; iCol < nbCols; iCol++)
-      {
-          value = curLine[iCol].toDouble(&ok);
-          index = indexes.at(iCol);
-          if(ok && (index>-1))
-              this->at(index)->setFinalValue(iScan,iPoint,value);
-      }
-      iPoint++;
-  }
+        if(curLine.size()==nbCols)
+        {
+            for (int iCol = 0; iCol < nbCols; iCol++)
+            {
+                value = curLine[iCol].toDouble(&ok);
+                index = indexes.at(iCol);
+                if(ok && (index>-1))
+                    this->at(index)->setFinalValue(iScan,iPoint,value);
+            }
+            iPoint++;
+        }
     }
 
 }
@@ -179,28 +179,28 @@ void MOOptVector::updateFromCsv(QString text, int iPoint)
 
     for(int i=0;i<nbCols;i++)
     {
-  // get var and model names
-  colName = firstLine.at(i);
-  if(colName.indexOf(varExp)==0)
-  {
-      modelName =  varExp.capturedTexts().at(1);
-      varName = varExp.capturedTexts().at(2);
-  }
-  else
-  {
-      modelName.clear();
-      varName = colName;
-  }
+        // get var and model names
+        colName = firstLine.at(i);
+        if(colName.indexOf(varExp)==0)
+        {
+            modelName =  varExp.capturedTexts().at(1);
+            varName = varExp.capturedTexts().at(2);
+        }
+        else
+        {
+            modelName.clear();
+            varName = colName;
+        }
 
-  curVar = this->findVariable(modelName,varName);
-  if(!curVar)
-  {
-      curVar = new VariableResult();
-      curVar->setName(varName);
-      curVar->setModel(modelName);
-      this->addItem(curVar);
-  }
-  indexes.push_back(this->_items.indexOf(curVar));
+        curVar = this->findVariable(modelName,varName);
+        if(!curVar)
+        {
+            curVar = new VariableResult();
+            curVar->setName(varName);
+            curVar->setModel(modelName);
+            this->addItem(curVar);
+        }
+        indexes.push_back(this->_items.indexOf(curVar));
     }
 
     int iScan;
@@ -209,18 +209,18 @@ void MOOptVector::updateFromCsv(QString text, int iPoint)
     bool ok;
     for (int iLine = 1; iLine<lines.size(); iLine++)
     {
-  curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
-  iScan = iLine-1;
-  if(curLine.size()==nbCols)
-  {
-      for (int iCol = 0; iCol < nbCols; iCol++)
-      {
-          value = curLine[iCol].toDouble(&ok);
-          index = indexes.at(iCol);
-          if(index>-1)
-              this->at(index)->setFinalValue(iScan,iPoint,value);
-      }
-  }
+        curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
+        iScan = iLine-1;
+        if(curLine.size()==nbCols)
+        {
+            for (int iCol = 0; iCol < nbCols; iCol++)
+            {
+                value = curLine[iCol].toDouble(&ok);
+                index = indexes.at(iCol);
+                if(index>-1)
+                    this->at(index)->setFinalValue(iScan,iPoint,value);
+            }
+        }
     }
 }
 
@@ -230,30 +230,30 @@ void MOOptVector::updateFromCsv(QString text, int iPoint)
 int MOOptVector::nbPoints()
 {
     if(_items.size()==0)
-  return 0;
+        return 0;
     else
     {
-  int maxNbPoints = 0;
-  for(int i=0;i<_items.size();i++)
-  {
-      maxNbPoints = std::max<int>(maxNbPoints,_items.at(i)->nbPoints());
-  }
-  return maxNbPoints;
+        int maxNbPoints = 0;
+        for(int i=0;i<_items.size();i++)
+        {
+            maxNbPoints = std::max<int>(maxNbPoints,_items.at(i)->nbPoints());
+        }
+        return maxNbPoints;
     }
 }
 
 int MOOptVector::nbScans()
 {
     if(_items.size()==0)
-  return 0;
+        return 0;
     else
     {
-  int maxNbScans = 0;
-  for(int i=0;i<_items.size();i++)
-  {
-      maxNbScans = std::max<int>(maxNbScans,_items.at(i)->nbScans());
-  }
-  return maxNbScans;
+        int maxNbScans = 0;
+        for(int i=0;i<_items.size();i++)
+        {
+            maxNbScans = std::max<int>(maxNbScans,_items.at(i)->nbScans());
+        }
+        return maxNbScans;
     }
 }
 
@@ -262,9 +262,9 @@ void MOOptVector::setCurPoint(int curPoint)
 {
     if(_usePoints && (curPoint!=_curPoint))
     {
-  _curPoint = curPoint;
-  emit curScanChanged();
-  reset();
+        _curPoint = curPoint;
+        emit curScanChanged();
+        reset();
     }
 }
 
@@ -273,9 +273,9 @@ void MOOptVector::setCurScan(int curScan)
 {
     if(_useScan && (curScan!=_curScan))
     {
-  _curScan = curScan;
-  emit curScanChanged();
-  reset();
+        _curScan = curScan;
+        emit curScanChanged();
+        reset();
     }
 }
 
@@ -288,22 +288,22 @@ QVariant MOOptVector::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
 
-  if(index.column()==VariableResult::VALUE)
-  {
-      if(!isAvailablePoint(index.row(),((int)_useScan)*_curScan,((int)_usePoints)*_curPoint))  // several,none or non-calculated point selected
-      {
-          return QString("-");
-      }
-      else
-      {
-          return _items.at(index.row())->finalValue(((int)_useScan)*_curScan,((int)_usePoints)*_curPoint);
-      }
-  }
-  else
-  {
+        if(index.column()==VariableResult::VALUE)
+        {
+            if(!isAvailablePoint(index.row(),((int)_useScan)*_curScan,((int)_usePoints)*_curPoint))  // several,none or non-calculated point selected
+            {
+                return QString("-");
+            }
+            else
+            {
+                return _items.at(index.row())->finalValue(((int)_useScan)*_curScan,((int)_usePoints)*_curPoint);
+            }
+        }
+        else
+        {
 
-      return _items.at(index.row())->getFieldValue(index.column(),role);
-  }
+            return _items.at(index.row())->getFieldValue(index.column(),role);
+        }
     }
     return QVariant();
 }
@@ -314,14 +314,14 @@ bool MOOptVector::isAvailablePoint(int iVar,int iScan,int iPoint) const
     int nbPoints = _items.at(iVar)->nbPoints();
     int nbScans = _items.at(iVar)->nbScans();
     if(
-      (iVar<0) || (iVar>=_items.size())
-      || (iPoint<0) || (iPoint>=nbPoints)
-      || (iScan<0) || (iScan>=nbScans))
-  return false;
+            (iVar<0) || (iVar>=_items.size())
+            || (iPoint<0) || (iPoint>=nbPoints)
+            || (iScan<0) || (iScan>=nbScans))
+        return false;
     else
     {
-  bool isComputed = _items.at(iVar)->isComputedPoint(iScan,iPoint);
-  return isComputed;
+        bool isComputed = _items.at(iVar)->isComputedPoint(iScan,iPoint);
+        return isComputed;
     }
 }
 
@@ -333,8 +333,8 @@ MOOptVector* MOOptVector::clone() const
     VariableResult* newItem;
     for(i=0;i<_items.size();i++)
     {
-  newItem = new VariableResult(*_items.at(i));
-  newVector->addItem(newItem);
+        newItem = new VariableResult(*_items.at(i));
+        newVector->addItem(newItem);
     }
 
     newVector->_curPoint = _curPoint;
@@ -349,13 +349,13 @@ double MOOptVector::value(const QString &name,bool &ok,int iScan,int iPoint)
     VariableResult* var = this->findItem(name);
     if(var)
     {
-  ok = true;
-  return var->finalValue(iScan,iPoint);
+        ok = true;
+        return var->finalValue(iScan,iPoint);
     }
     else
     {
-  ok = false;
-  return 0;
+        ok = false;
+        return 0;
     }
 }
 
@@ -365,23 +365,23 @@ void MOOptVector::append(const MOOptVector &vector,bool makeACopy)
     for(int i=0;i<vector._items.size();i++)
     {
 
-  //        iCurItem = findItem(vector._items.at(i)->name());
-  //        if(iCurItem==-1)
-  //        {
-  if(makeACopy)
-      addItem(new VariableResult(*vector._items.at(i)));
-  else
-      addItem(vector._items.at(i));
-  //        }
-  //        else
-  //        {
-  //            InfoSender::instance()->debug("replace item in vector (name : "+vector._items.at(i)->name()+")");
-  //            delete _items.at(iCurItem);
-  //            if(makeACopy)
-  //                _items.replace(iCurItem,new VariableResult(*vector._items.at(i)));
-  //            else
-  //                _items.replace(iCurItem,vector._items.at(i));
-  //        }
+        //        iCurItem = findItem(vector._items.at(i)->name());
+        //        if(iCurItem==-1)
+        //        {
+        if(makeACopy)
+            addItem(new VariableResult(*vector._items.at(i)));
+        else
+            addItem(vector._items.at(i));
+        //        }
+        //        else
+        //        {
+        //            InfoSender::instance()->debug("replace item in vector (name : "+vector._items.at(i)->name()+")");
+        //            delete _items.at(iCurItem);
+        //            if(makeACopy)
+        //                _items.replace(iCurItem,new VariableResult(*vector._items.at(i)));
+        //            else
+        //                _items.replace(iCurItem,vector._items.at(i));
+        //        }
     }
 }
 
@@ -389,7 +389,7 @@ void MOOptVector::clearAtiPoint(int iPoint)
 {
     for(int iVar=0;iVar<_items.size();iVar++)
     {
-  _items.at(iVar)->clearFinalValuesAtIpoint(iPoint);
+        _items.at(iVar)->clearFinalValuesAtIpoint(iPoint);
     }
 }
 
@@ -397,8 +397,8 @@ void MOOptVector::setUsePoints(bool use)
 {
     if(_usePoints!=use)
     {
-  _usePoints = use;
-  emit usePointsChanged();
+        _usePoints = use;
+        emit usePointsChanged();
     }
 }
 
@@ -407,8 +407,8 @@ void MOOptVector::setUseScan(bool use)
 {
     if(_useScan!=use)
     {
-  _useScan = use;
-  emit useScanChanged();
+        _useScan = use;
+        emit useScanChanged();
     }
 }
 
@@ -451,15 +451,15 @@ VariableResult *MOOptVector::findVariable(QString model, QString shortVarName)
     bool found = 0;
     while(!found && (iVar<this->size()))
     {
-  found = ((this->at(iVar)->name(Variable::SHORT)==shortVarName) && (this->at(iVar)->model()==model));
-  if(!found)
-      iVar++;
+        found = ((this->at(iVar)->name(Variable::SHORT)==shortVarName) && (this->at(iVar)->model()==model));
+        if(!found)
+            iVar++;
 
     }
     if(found)
-  return this->at(iVar);
+        return this->at(iVar);
     else
-  return NULL;
+        return NULL;
 
 }
 
@@ -475,52 +475,52 @@ QString MOOptVector::toCSV(QString separator, QList<int> points)
     // if points is empty, print all of them
     if(points.isEmpty())
     {
-  for(int i=0;i<nbPoints();i++)
-      points.push_back(i);
+        for(int i=0;i<nbPoints();i++)
+            points.push_back(i);
     }
 
     if(this->size()>0)
     {
-  // writing names
-  for(iVar=0;iVar<this->size();iVar++)
-  {
-      csv += this->at(iVar)->model()+"#"+this->at(iVar)->name(Variable::SHORT);
-      csv += separator;
-  }
+        // writing names
+        for(iVar=0;iVar<this->size();iVar++)
+        {
+            csv += this->at(iVar)->model()+"#"+this->at(iVar)->name(Variable::SHORT);
+            csv += separator;
+        }
 
-  csv += "\n";
+        csv += "\n";
 
 
-  // writing values
-  for(int iScan = 0;iScan<this->nbScans();iScan++)
-  {
-      scanTexts.push_back(QString());
-      for(int iPoint = 0; iPoint < points.size(); iPoint++)
-      {
-          for(iVar=0;iVar<this->size();iVar++)
-          {
-              if (this->at(iVar)->isComputedPoint(iScan,points.at(iPoint)))
-              {
-                  value = this->at(iVar)->finalValue(iScan,points.at(iPoint));
-                  scanTexts[iScan] += QString::number(value);
+        // writing values
+        for(int iScan = 0;iScan<this->nbScans();iScan++)
+        {
+            scanTexts.push_back(QString());
+            for(int iPoint = 0; iPoint < points.size(); iPoint++)
+            {
+                for(iVar=0;iVar<this->size();iVar++)
+                {
+                    if (this->at(iVar)->isComputedPoint(iScan,points.at(iPoint)))
+                    {
+                        value = this->at(iVar)->finalValue(iScan,points.at(iPoint));
+                        scanTexts[iScan] += QString::number(value);
 
-              }
-              else
-              {
-                  scanTexts[iScan] += "-";
-              }
-              scanTexts[iScan] += separator;
-          }
-          scanTexts[iScan] += "\n";
-      }
-  }
+                    }
+                    else
+                    {
+                        scanTexts[iScan] += "-";
+                    }
+                    scanTexts[iScan] += separator;
+                }
+                scanTexts[iScan] += "\n";
+            }
+        }
 
-  // writing grouped by scans
-  for(int iScan = 0;iScan<this->nbScans();iScan++)
-  {
-      csv+=scanTexts[iScan];
-      csv+="\n";
-  }
+        // writing grouped by scans
+        for(int iScan = 0;iScan<this->nbScans();iScan++)
+        {
+            csv+=scanTexts[iScan];
+            csv+="\n";
+        }
     }
     return csv;
 }
@@ -537,7 +537,7 @@ Variables MOOptVector::extractPoint(int iPoint)
 
     for(int i=0;i<_items.size();i++)
     {
-  result.addItem(new Variable(_items.at(i)->extractPoint(iPoint)));
+        result.addItem(new Variable(_items.at(i)->extractPoint(iPoint)));
     }
 
     return result;

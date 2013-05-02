@@ -53,14 +53,14 @@ public:
 
     enum Field
     {
-  //Modelica fields
-  NAME,
-  VALUE,
-  DEFAULTVALUE,
-  TYPE,
-  MIN,
-  MAX,
-  DESCRIPTION
+        //Modelica fields
+        NAME,
+        VALUE,
+        DEFAULTVALUE,
+        TYPE,
+        MIN,
+        MAX,
+        DESCRIPTION
     };
 
     

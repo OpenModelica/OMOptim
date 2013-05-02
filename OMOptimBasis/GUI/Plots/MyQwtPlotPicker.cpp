@@ -53,10 +53,10 @@ MyQwtPlotPicker::~MyQwtPlotPicker(void)
 void MyQwtPlotPicker::widgetKeyPressEvent (QKeyEvent * ke)
 {
     if(ke->key()==Qt::CTRL)
-  ctrlPressed = true;
+        ctrlPressed = true;
 }
 void MyQwtPlotPicker::widgetKeyReleaseEvent (QKeyEvent * ke)
 {
     if(ke->key()==Qt::CTRL)
-  ctrlPressed = false;
+        ctrlPressed = false;
 }

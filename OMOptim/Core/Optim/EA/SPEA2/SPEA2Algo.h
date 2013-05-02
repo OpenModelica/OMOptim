@@ -81,24 +81,24 @@ class SPEA2Algo: public moeoEA < MOEOT >
 public:
 
    /**
-  * Ctor with a crossover, a mutation and their corresponding rates.
-  * @param _continuator stopping criteria
-  * @param _eval evaluation function
-  * @param _crossover crossover
-  * @param _pCross crossover probability
-  * @param _mutation mutation
-  * @param _pMut mutation probability
-  * @param _archive archive
-  * @param _k the k-ieme distance used to fixe diversity
-  * @param _nocopy boolean allow to consider copies and doublons as bad elements whose were dominated by all other MOEOT in fitness assignment.
-  */
+        * Ctor with a crossover, a mutation and their corresponding rates.
+        * @param _continuator stopping criteria
+        * @param _eval evaluation function
+        * @param _crossover crossover
+        * @param _pCross crossover probability
+        * @param _mutation mutation
+        * @param _pMut mutation probability
+        * @param _archive archive
+        * @param _k the k-ieme distance used to fixe diversity
+        * @param _nocopy boolean allow to consider copies and doublons as bad elements whose were dominated by all other MOEOT in fitness assignment.
+        */
     SPEA2Algo(eoContinue < MOEOT >& _continuator, eoEvalFunc < MOEOT > & _eval, eoQuadOp < MOEOT > & _crossover, double _pCross, eoMonOp < MOEOT > & _mutation, double _pMut, moeoArchive < MOEOT >& _archive, int _popSize, double  _rate=1.0, bool _interpret_as_rate = true, int _k=1, bool _nocopy=false) :
-      defaultGenContinuator(0), continuator(_continuator), eval(_eval), loopEval(_eval), popEval(loopEval), archive(_archive),defaultSelect(2),select(defaultSelect, defaultSelect, _archive, 0.0),
-      defaultSGAGenOp(_crossover, _pCross, _mutation, _pMut), fitnessAssignment(_archive, _nocopy),
-      genBreed(defaultSelect, defaultSGAGenOp,_rate,_interpret_as_rate),selectMany(defaultSelect,_popSize), selectTransform(selectMany, dummyTransform), breed(genBreed), diversityAssignment(dist,_archive, _k),
-      replace(fitnessAssignment,diversityAssignment)
+            defaultGenContinuator(0), continuator(_continuator), eval(_eval), loopEval(_eval), popEval(loopEval), archive(_archive),defaultSelect(2),select(defaultSelect, defaultSelect, _archive, 0.0),
+            defaultSGAGenOp(_crossover, _pCross, _mutation, _pMut), fitnessAssignment(_archive, _nocopy),
+            genBreed(defaultSelect, defaultSGAGenOp,_rate,_interpret_as_rate),selectMany(defaultSelect,_popSize), selectTransform(selectMany, dummyTransform), breed(genBreed), diversityAssignment(dist,_archive, _k),
+            replace(fitnessAssignment,diversityAssignment)
     {
-  popSize = _popSize;
+        popSize = _popSize;
     }
 
 
@@ -109,36 +109,36 @@ public:
      */
     virtual void operator () (eoPop < MOEOT > &_pop)
     {
-  eoPop < MOEOT >empty_pop, offspring;
-  popEval (empty_pop, _pop);// a first eval of _pop
-  fitnessAssignment(_pop); //a first fitness assignment of _pop
-  diversityAssignment(_pop);//a first diversity assignment of _pop
-  archive(_pop);//a first filling of archive
+        eoPop < MOEOT >empty_pop, offspring;
+        popEval (empty_pop, _pop);// a first eval of _pop
+        fitnessAssignment(_pop); //a first fitness assignment of _pop
+        diversityAssignment(_pop);//a first diversity assignment of _pop
+        archive(_pop);//a first filling of archive
 
-  // resize if _pop size > pop asked size (e.g. when load a saved file)
-  if(_pop.size()>popSize)
-  {
-      // sorts the whole population according to the comparator
-      moeoFitnessThenDiversityComparator < MOEOT > comparator;
-      std::sort(_pop.begin(), _pop.end(), comparator);
-      // finally, resize this global population
-      _pop.resize(popSize);
-  }
+        // resize if _pop size > pop asked size (e.g. when load a saved file)
+        if(_pop.size()>popSize)
+        {
+            // sorts the whole population according to the comparator
+            moeoFitnessThenDiversityComparator < MOEOT > comparator;
+            std::sort(_pop.begin(), _pop.end(), comparator);
+            // finally, resize this global population
+            _pop.resize(popSize);
+        }
 
       
-  while (continuator (_pop))
-  {
-      // generate offspring, worths are recalculated if necessary
-      breed (_pop, offspring);
-      popEval (_pop, offspring); // eval of offspring
-      // after replace, the new pop is in _pop. Worths are recalculated if necessary
-      replace (_pop, offspring); // include fitness and diversity assignments
-       
-      //fitnessAssignment(_pop); //fitness assignment of _pop
-      //diversityAssignment(_pop); //diversity assignment of _pop
-      archive(_pop); //control of archive
+        while (continuator (_pop))
+        {
+            // generate offspring, worths are recalculated if necessary
+            breed (_pop, offspring);
+            popEval (_pop, offspring); // eval of offspring
+            // after replace, the new pop is in _pop. Worths are recalculated if necessary
+            replace (_pop, offspring); // include fitness and diversity assignments
+             
+            //fitnessAssignment(_pop); //fitness assignment of _pop
+            //diversityAssignment(_pop); //diversity assignment of _pop
+            archive(_pop); //control of archive
 
-  }
+        }
     }
 
 
@@ -148,7 +148,7 @@ protected:
     class eoDummyEval : public eoEvalFunc< MOEOT >
     {
     public:
-  void operator()(MOEOT &) {}
+        void operator()(MOEOT &) {}
     }
     dummyEval;
 
@@ -156,7 +156,7 @@ protected:
     class eoDummyTransform : public eoTransform<MOEOT>
     {
     public :
-  void operator()(eoPop<MOEOT>&) {}
+        void operator()(eoPop<MOEOT>&) {}
     }
     dummyTransform;
 

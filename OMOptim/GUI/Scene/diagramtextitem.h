@@ -99,7 +99,7 @@
      DiagramTextItem(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
 
      int type() const
-   { return Type; }
+         { return Type; }
 
  signals:
      void lostFocus(DiagramTextItem *item);

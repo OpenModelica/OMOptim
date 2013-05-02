@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 
@@ -52,43 +52,43 @@ public :
 
     enum OutputReadMode
     {
-  DSFINAL,
-  DSRES
+        DSFINAL,
+        DSRES
     };
     enum DymolaSolvers{DASSL=8,EULER=11};
 
     static QString str(parameters index)
     {
-  switch(index)
-  {
-  case STOPTIME: return "stop time";
-  case TOLERANCE: return "tolerance";
-  case NINTERVAL: return "nInterval";
-  case SOLVER: return "Solver";
-  case MAXSIMTIME: return "MaxSimTime";
-  case FINALFILE: return "Final file considered";
-  }
+        switch(index)
+        {
+        case STOPTIME: return "stop time";
+        case TOLERANCE: return "tolerance";
+        case NINTERVAL: return "nInterval";
+        case SOLVER: return "Solver";
+        case MAXSIMTIME: return "MaxSimTime";
+        case FINALFILE: return "Final file considered";
+        }
     }
 
 
     static void setDefaultParameters(MOParameters *parameters)
     {
-  parameters->addItem(new MOParameter(str(STOPTIME),"Stop time",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
-  parameters->addItem(new MOParameter(str(TOLERANCE),"Tolerance",1E-4,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
-  parameters->addItem(new MOParameter(str(NINTERVAL),"nInterval",500,MOParameter::INT,0,std::numeric_limits<int>::max()));
+        parameters->addItem(new MOParameter(str(STOPTIME),"Stop time",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+        parameters->addItem(new MOParameter(str(TOLERANCE),"Tolerance",1E-4,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+        parameters->addItem(new MOParameter(str(NINTERVAL),"nInterval",500,MOParameter::INT,0,std::numeric_limits<int>::max()));
 
 
-  QMap<int,QString> mapSolvers;
-  mapSolvers.insert(DASSL,"Dassl");
-  mapSolvers.insert(EULER,"Euler");
+        QMap<int,QString> mapSolvers;
+        mapSolvers.insert(DASSL,"Dassl");
+        mapSolvers.insert(EULER,"Euler");
 
-  parameters->addItem( new MOParameterListed(str(SOLVER),"Solver",DASSL,mapSolvers));
-  parameters->addItem(new MOParameter(str(MAXSIMTIME),"Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
+        parameters->addItem( new MOParameterListed(str(SOLVER),"Solver",DASSL,mapSolvers));
+        parameters->addItem(new MOParameter(str(MAXSIMTIME),"Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
 
-  QMap<int,QString> finalFiles;
-  finalFiles.insert(DSFINAL,"dsfinal");
-  finalFiles.insert(DSRES,"dsres");
-  parameters->addItem( new MOParameterListed(str(FINALFILE),"File where variables are read (longer if dsres but all variables are within)",DSFINAL,finalFiles));
+        QMap<int,QString> finalFiles;
+        finalFiles.insert(DSFINAL,"dsfinal");
+        finalFiles.insert(DSRES,"dsres");
+        parameters->addItem( new MOParameterListed(str(FINALFILE),"File where variables are read (longer if dsres but all variables are within)",DSFINAL,finalFiles));
 
     }
 

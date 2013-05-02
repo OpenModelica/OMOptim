@@ -76,7 +76,7 @@ public:
 
 
     static QSortFilterProxyModel * ModelToViewWithFilter(QAbstractItemModel *, QAbstractItemView *,QLineEdit*,
-                                                   QSortFilterProxyModel *proxyModel = NULL);
+                                                         QSortFilterProxyModel *proxyModel = NULL);
     static void ModelToView(QAbstractItemModel *, QAbstractItemView *);
 
 
@@ -119,18 +119,18 @@ class KeyPressFilter : public QObject
 protected:
     bool eventFilter( QObject *o, QEvent *e )
     {
-  if ( e->type() == QEvent::KeyPress ) {
-      // special processing for key press
-      QKeyEvent *k = (QKeyEvent *)e;
+        if ( e->type() == QEvent::KeyPress ) {
+            // special processing for key press
+            QKeyEvent *k = (QKeyEvent *)e;
 
-      switch(k->key())
-      {
-      case Qt::Key_Delete:
-          emit deletePressed();
-      }
+            switch(k->key())
+            {
+            case Qt::Key_Delete:
+                emit deletePressed();
+            }
 
-  }
-  return false;
+        }
+        return false;
     }
 
 signals :
@@ -142,13 +142,13 @@ class MyGroupBox : public QGroupBox
     Q_OBJECT
 public :
     MyGroupBox(QWidget* parent=0)
-  :QGroupBox(parent)
+        :QGroupBox(parent)
     {
 
     }
 
     MyGroupBox(const QString &title, QWidget* parent=0)
-  :QGroupBox(title,parent)
+        :QGroupBox(title,parent)
     {
 
     }
@@ -157,10 +157,10 @@ public Q_SLOTS :
 
     void setChecked( bool checked )
     {
-  QList<QWidget *> ch = findChildren<QWidget *>();
-  for( int i = 0; i < ch.count(); i++ ) ch[i]->setVisible( checked );
-  QGroupBox::setChecked( checked );
-  setFlat( ! checked );
+        QList<QWidget *> ch = findChildren<QWidget *>();
+        for( int i = 0; i < ch.count(); i++ ) ch[i]->setVisible( checked );
+        QGroupBox::setChecked( checked );
+        setFlat( ! checked );
     }
 };
 

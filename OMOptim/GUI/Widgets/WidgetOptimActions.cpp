@@ -30,7 +30,7 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file WidgetOptimActions.cpp
+        @file WidgetOptimActions.cpp
     @brief Comments for file documentation.
     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
     Company : CEP - ARMINES (France)
@@ -91,26 +91,26 @@ void WidgetOptimActions::actualizeGui()
     // if problem is solved
     if(_isResult)
     {
-  for(int i=0; i < unsolvedWidgets.size(); i++)
-      unsolvedWidgets.at(i)->hide();
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->hide();
 
-  for(int i=0; i < solvedWidgets.size(); i++)
-      solvedWidgets.at(i)->show();
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->show();
     }
     else
     {
-  for(int i=0; i < unsolvedWidgets.size(); i++)
-      unsolvedWidgets.at(i)->show();
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->show();
 
-  for(int i=0; i < solvedWidgets.size(); i++)
-      solvedWidgets.at(i)->hide();
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->hide();
     }
 }
 
 void WidgetOptimActions::restoreProblem()
 {
     if(_isResult)
-  _project->restoreProblemFromResult(_result);
+        _project->restoreProblemFromResult(_result);
 }
 
 void WidgetOptimActions::onShowModelAsked()
@@ -125,9 +125,9 @@ QPushButton*  WidgetOptimActions::addButton(QString text,bool before)
     QHBoxLayout* layout = dynamic_cast<QHBoxLayout*>(_ui->frame->layout());
     if(layout && before)
     {
-  layout->insertWidget(1,pushButton);
+        layout->insertWidget(1,pushButton);
     }
     else
-  _ui->frame->layout()->addWidget(pushButton);
+        _ui->frame->layout()->addWidget(pushButton);
     return pushButton;
 }

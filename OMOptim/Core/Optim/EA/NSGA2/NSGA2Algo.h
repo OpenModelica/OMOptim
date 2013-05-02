@@ -51,27 +51,27 @@ public:
 
 
     NSGA2Algo(eoContinue < MOEOT > & _continuator, eoEvalFunc < MOEOT > & _eval, eoQuadOp < MOEOT > & _crossover,eoMonOp < MOEOT > & _mutation) :
-      defaultGenContinuator(0), continuator(_continuator), eval(_eval), defaultPopEval(_eval), popEval(defaultPopEval), select (2), selectMany(select,0.0), selectTransform(defaultSelect, defaultTransform), defaultSGAGenOp(_crossover, 1, _mutation, 1), genBreed (select, defaultSGAGenOp), breed (genBreed), replace (fitnessAssignment, diversityAssignment)
+            defaultGenContinuator(0), continuator(_continuator), eval(_eval), defaultPopEval(_eval), popEval(defaultPopEval), select (2), selectMany(select,0.0), selectTransform(defaultSelect, defaultTransform), defaultSGAGenOp(_crossover, 1, _mutation, 1), genBreed (select, defaultSGAGenOp), breed (genBreed), replace (fitnessAssignment, diversityAssignment)
     {}
 
 
 virtual void operator () (eoPop < MOEOT > &_pop)
     {
-  eoPop < MOEOT > offspring, empty_pop;
-  popEval (empty_pop, _pop);    // a first eval of _pop
-  // evaluate fitness and diversity
-  fitnessAssignment(_pop);
-  diversityAssignment(_pop);
-  do
-  {
-      // generate offspring, worths are recalculated if necessary
-      breed (_pop, offspring);
-      // eval of offspring
-      popEval (_pop, offspring);
-      // after replace, the new pop is in _pop. Worths are recalculated if necessary
-      replace (_pop, offspring);
-  }
-  while (continuator (_pop));
+        eoPop < MOEOT > offspring, empty_pop;
+        popEval (empty_pop, _pop);    // a first eval of _pop
+        // evaluate fitness and diversity
+        fitnessAssignment(_pop);
+        diversityAssignment(_pop);
+        do
+        {
+            // generate offspring, worths are recalculated if necessary
+            breed (_pop, offspring);
+            // eval of offspring
+            popEval (_pop, offspring);
+            // after replace, the new pop is in _pop. Worths are recalculated if necessary
+            replace (_pop, offspring);
+        }
+        while (continuator (_pop));
     }
 
 
@@ -85,7 +85,7 @@ protected:
     class DummyEval : public eoEvalFunc < MOEOT >
     {
     public:
-  void operator()(MOEOT &) {}
+        void operator()(MOEOT &) {}
     }
     defaultEval;
     /** evaluation function */
@@ -98,7 +98,7 @@ protected:
     class DummySelect : public eoSelect < MOEOT >
     {
     public :
-  void operator()(const eoPop<MOEOT>&, eoPop<MOEOT>&) {}
+        void operator()(const eoPop<MOEOT>&, eoPop<MOEOT>&) {}
     }
     defaultSelect;
     /** binary tournament selection */
@@ -117,7 +117,7 @@ protected:
     class DummyTransform : public eoTransform < MOEOT >
     {
     public :
-  void operator()(eoPop<MOEOT>&) {}
+        void operator()(eoPop<MOEOT>&) {}
     }
     defaultTransform;
     /** general breeder */

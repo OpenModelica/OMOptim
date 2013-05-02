@@ -62,46 +62,46 @@
 TabOptimization::TabOptimization(Optimization *problem, QWidget *parent) :
 MO2ColTab(problem->project()->name(),problem,false,parent)
 {
-  _project = dynamic_cast<Project*>(problem->project());
-  _problem = problem;
+        _project = dynamic_cast<Project*>(problem->project());
+        _problem = problem;
     
-  _widgetSelectOptVars = new WidgetSelectOptVars(_problem,true,this);
-  addDockWidget("Variables",_widgetSelectOptVars);
+        _widgetSelectOptVars = new WidgetSelectOptVars(_problem,true,this);
+        addDockWidget("Variables",_widgetSelectOptVars);
 
 //#ifdef USEBLOCKSUB
-//  _widgetSelectComponents = new WidgetSelectComponents(_project,_problem,false,this);
-//  addDockWidget("Components",_widgetSelectComponents,_widgetSelectOptVars);
+//        _widgetSelectComponents = new WidgetSelectComponents(_project,_problem,false,this);
+//        addDockWidget("Components",_widgetSelectComponents,_widgetSelectOptVars);
 //#endif
 
-  _widgetOptParameters = new WidgetOptParameters(_project,_problem,false,this);
-  addDockWidget("Parameters",_widgetOptParameters,_widgetSelectOptVars);
+        _widgetOptParameters = new WidgetOptParameters(_project,_problem,false,this);
+        addDockWidget("Parameters",_widgetOptParameters,_widgetSelectOptVars);
     
-  _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
-  _widgetFilesList->setInfos("Select here files needed for simulation to perform. \nThose would be copied in temporary directory along with simulation executable.");
-  addDockWidget("Files",_widgetFilesList,_widgetSelectOptVars);
+        _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
+        _widgetFilesList->setInfos("Select here files needed for simulation to perform. \nThose would be copied in temporary directory along with simulation executable.");
+        addDockWidget("Files",_widgetFilesList,_widgetSelectOptVars);
 
 
-  _widgetCtrl = new WidgetCtrlParameters(_project,_problem->_filesToCopy,_problem->ctrls(),false,this);
+        _widgetCtrl = new WidgetCtrlParameters(_project,_problem->_filesToCopy,_problem->ctrls(),false,this);
 
-  addDockWidget("Simulator",_widgetCtrl,_widgetSelectOptVars);
+        addDockWidget("Simulator",_widgetCtrl,_widgetSelectOptVars);
 
-  _widgetModels = new WidgetModelsList(_project,_problem,this);
-  addDockWidget("Models",_widgetModels,_widgetSelectOptVars);
+        _widgetModels = new WidgetModelsList(_project,_problem,this);
+        addDockWidget("Models",_widgetModels,_widgetSelectOptVars);
 
-  _widgetOptimActions = new WidgetOptimActions(_project,_problem,false,NULL,this);
-  addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
-
-
-
-  actualizeGui();
+        _widgetOptimActions = new WidgetOptimActions(_project,_problem,false,NULL,this);
+        addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
 
-  // connect fow widget ctrls to be updated
-  connect(_problem,SIGNAL(removedModel(QString)),this,SLOT(onModelsChanged()));
-  connect(_problem,SIGNAL(addedModel(QString)),this,SLOT(onModelsChanged()));
 
-  //change view to show variables
-  mapDockWidgets.key(_widgetSelectOptVars)->raise();
+        actualizeGui();
+
+
+        // connect fow widget ctrls to be updated
+        connect(_problem,SIGNAL(removedModel(QString)),this,SLOT(onModelsChanged()));
+        connect(_problem,SIGNAL(addedModel(QString)),this,SLOT(onModelsChanged()));
+
+        //change view to show variables
+        mapDockWidgets.key(_widgetSelectOptVars)->raise();
 }
 
 TabOptimization::~TabOptimization()
@@ -112,11 +112,11 @@ TabOptimization::~TabOptimization()
 
 void TabOptimization::actualizeGui()
 {
-  _widgetOptParameters->actualizeGui();
-  _widgetSelectOptVars->actualizeGui();
+        _widgetOptParameters->actualizeGui();
+        _widgetSelectOptVars->actualizeGui();
 
 //#ifdef USEBLOCKSUB
-//  _widgetSelectComponents->actualizeGui();
+//        _widgetSelectComponents->actualizeGui();
 //#endif
 }
 

@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #include "MESurface.h"
@@ -64,18 +64,18 @@ QString MESurface::unit(int iUnit) const
 {
     switch(iUnit)
     {
-  case M2 :
-          return "m2";
-  case CM2 :
-          return "cm2";
+        case M2 :
+                return "m2";
+        case CM2 :
+                return "cm2";
     default :
-  return "-";
+        return "-";
     }
 }
 
 QString MESurface::unit() const
 {
-  return unit(_unit);
+        return unit(_unit);
 }
 
 unsigned MESurface::nbUnits() const
@@ -86,24 +86,24 @@ unsigned MESurface::nbUnits() const
 double MESurface::convert(double value,int orgUnit,int dstUnit) const
 {
     double result=value;
-  // convert to m2
+        // convert to m2
     switch(orgUnit)
     {
-  case CM2 :
-          result=result/1E4;
-  break;
+        case CM2 :
+                result=result/1E4;
+        break;
     default :
-  break;
+        break;
     }
 
     // convert to dstUnit
     switch(dstUnit)
     {
-  case CM2 :
-          result=result*1E4;
-  break;
+        case CM2 :
+                result=result*1E4;
+        break;
     default :
-  break;
+        break;
     }
     return result;
 }
@@ -113,7 +113,7 @@ MESurface& MESurface::operator+=(const MESurface& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-  this->invalidate();
+        this->invalidate();
     return *this;
 }
 
@@ -121,7 +121,7 @@ MESurface& MESurface::operator-=(const MESurface& b)
 {
     setValue(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-  this->invalidate();
+        this->invalidate();
     return *this;
 }
 
@@ -129,7 +129,7 @@ MESurface MESurface::operator-(const MESurface& b) const
 {
     MESurface result(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-  result.invalidate();
+        result.invalidate();
 
     return result;
 }
@@ -138,7 +138,7 @@ MESurface MESurface::operator+(const MESurface& b) const
 {
     MESurface result(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-  result.invalidate();
+        result.invalidate();
 
     return result;
 }

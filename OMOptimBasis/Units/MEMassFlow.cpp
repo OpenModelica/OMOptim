@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #include "MEMassFlow.h"
@@ -63,18 +63,18 @@ QString MEMassFlow::unit(int iUnit) const
 {
     switch(iUnit)
     {
-  case KG_S :
-          return "kg/s";
-  case T_H :
-          return "t/h";
+        case KG_S :
+                return "kg/s";
+        case T_H :
+                return "t/h";
     default :
-  return "-";
+        return "-";
     }
 }
 
 QString MEMassFlow::unit() const
 {
-  return unit(_unit);
+        return unit(_unit);
 }
 
 unsigned MEMassFlow::nbUnits() const
@@ -85,24 +85,24 @@ unsigned MEMassFlow::nbUnits() const
 double MEMassFlow::convert(double value,int orgUnit,int dstUnit) const
 {
     double result=value;
-  // convert to kg/s
+        // convert to kg/s
     switch(orgUnit)
     {
-  case T_H :
-          result=result/3.6;
-  break;
+        case T_H :
+                result=result/3.6;
+        break;
     default :
-  break;
+        break;
     }
 
     // convert to dstUnit
     switch(dstUnit)
     {
-  case T_H :
-          result=result*3.6;
-  break;
+        case T_H :
+                result=result*3.6;
+        break;
     default :
-  break;
+        break;
     }
     return result;
 }
@@ -112,7 +112,7 @@ MEMassFlow& MEMassFlow::operator+=(const MEMassFlow& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-  this->invalidate();
+        this->invalidate();
     return *this;
 }
 
@@ -120,7 +120,7 @@ MEMassFlow& MEMassFlow::operator-=(const MEMassFlow& b)
 {
     setValue(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-  this->invalidate();
+        this->invalidate();
     return *this;
 }
 
@@ -128,7 +128,7 @@ MEMassFlow MEMassFlow::operator-(const MEMassFlow& b) const
 {
     MEMassFlow result(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-  result.invalidate();
+        result.invalidate();
 
     return result;
 }
@@ -137,7 +137,7 @@ MEMassFlow MEMassFlow::operator+(const MEMassFlow& b) const
 {
     MEMassFlow result(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-  result.invalidate();
+        result.invalidate();
 
     return result;
 }

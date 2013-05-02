@@ -48,9 +48,9 @@ MO2ColTab::MO2ColTab(QString _projectName,MOItem* _mainItem,bool _closable,QWidg
 
     if(closable)
     {
-  dispTB = new QToolBar();
-  dispTB->setOrientation(Qt::Vertical);
-  addToolBar(Qt::LeftToolBarArea,dispTB);
+        dispTB = new QToolBar();
+        dispTB->setOrientation(Qt::Vertical);
+        addToolBar(Qt::LeftToolBarArea,dispTB);
     }
 
 
@@ -71,9 +71,9 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
     dockWidget->setTitleBarWidget(new QWidget(this));
 
     if(closable)
-  dockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+        dockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     else
-  dockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+        dockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
 
     //dockWidget->setLayout(new QGridLayout());
     dockWidget->setWidget(widget);
@@ -85,7 +85,7 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
 
     // Tabify
     if(tabifiedOn && mapDockWidgets.key(tabifiedOn,NULL))
-  tabifyDockWidget(mapDockWidgets.key(tabifiedOn),dockWidget);
+        tabifyDockWidget(mapDockWidgets.key(tabifiedOn),dockWidget);
 
 
     dockWidget->show();
@@ -93,8 +93,8 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
     // QAction
     if(closable)
     {
-  QAction* action = dockWidget->toggleViewAction();
-  dispTB->addAction(action);
+        QAction* action = dockWidget->toggleViewAction();
+        dispTB->addAction(action);
     }
 
     mapDockWidgets.insert(dockWidget,widget);
@@ -113,9 +113,9 @@ void MO2ColTab::addFixedWidget(QString title,QWidget* widget,Qt::DockWidgetArea 
     
     if(!showTitle)
     {
-  // to hide the title bar completely must replace the default widget with a generic one
-  QWidget* titleWidget = new QWidget(dockWidget);
-  dockWidget->setTitleBarWidget( titleWidget );
+        // to hide the title bar completely must replace the default widget with a generic one
+        QWidget* titleWidget = new QWidget(dockWidget);
+        dockWidget->setTitleBarWidget( titleWidget );
     }
 
     QMainWindow::addDockWidget(dockArea,dockWidget,orientation);
@@ -129,5 +129,5 @@ void MO2ColTab::setWidgetVisible(QWidget* _widget,bool _visible)
 {
     QDockWidget* dock = mapDockWidgets.key(_widget,NULL);
     if(dock)
-  dock->setVisible(_visible);
+        dock->setVisible(_visible);
 }

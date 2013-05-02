@@ -120,9 +120,9 @@ public :
     //******************
     enum ModelNeeds
     {
-  NOMODEL,
-  ONEMODEL,
-  SEVERALMODELS
+        NOMODEL,
+        ONEMODEL,
+        SEVERALMODELS
     };
 
     /**

@@ -79,7 +79,7 @@ public:
     ~OpenModelica(void);
 
     static bool compile(MOomc *_omc,QFileInfo moFile,QString modelToConsider,QDir storeFolder,
-                  const QFileInfoList & moDeps, QFileInfoList neededFiles, QFileInfoList neededFolders);
+                        const QFileInfoList & moDeps, QFileInfoList neededFiles, QFileInfoList neededFolders);
     static void getInputVariablesFromTxtFile(MOomc *_omc,QString filePath, MOVector<Variable> *,QString _modelName);
     static void getInputVariablesFromTxtFile(MOomc *_omc,QTextStream *, MOVector<Variable> *,QString _modelName);
     static bool getInputVariablesFromXmlFile(MOomc *_omc,QString,QString modModelName, MOVector<Variable> *);

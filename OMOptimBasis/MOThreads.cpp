@@ -66,49 +66,49 @@ void ProblemThread::run()
     bool ok = _problem->checkBeforeComp(error);
     if(!ok)
     {
-  InfoSender::instance()->send(Info(error,ListInfo::WARNING2));
-  _result = NULL;
+        InfoSender::instance()->send(Info(error,ListInfo::WARNING2));
+        _result = NULL;
     }
     else
     {
-  emit begun(_problem);
+        emit begun(_problem);
 
-  QString msg = "Launching problem : name = "+_problem->name()+" ; type = "+_problem->getClassName();
-  InfoSender::instance()->send(Info(msg));
-  _launchDate = QDateTime::currentDateTime();
-  try
-  {
-      _result = _problem->launch(_config);
-  }
-  catch(const std::exception& e)
-  {
-      InfoSender::instance()->sendError("Error : " + QString(e.what()));
-      _result = NULL;
-  }
-  catch(char * str)
-  {
-      InfoSender::instance()->sendError("Error : " + QString(str));
-      _result = NULL;
-  }
-  catch(...)
-  {
-      InfoSender::instance()->sendError("Unknown Error ");
-      _result = NULL;
-  }
+        QString msg = "Launching problem : name = "+_problem->name()+" ; type = "+_problem->getClassName();
+        InfoSender::instance()->send(Info(msg));
+        _launchDate = QDateTime::currentDateTime();
+        try
+        {
+            _result = _problem->launch(_config);
+        }
+        catch(const std::exception& e)
+        {
+            InfoSender::instance()->sendError("Error : " + QString(e.what()));
+            _result = NULL;
+        }
+        catch(char * str)
+        {
+            InfoSender::instance()->sendError("Error : " + QString(str));
+            _result = NULL;
+        }
+        catch(...)
+        {
+            InfoSender::instance()->sendError("Unknown Error ");
+            _result = NULL;
+        }
 
 
-  if(_result)
-  {
-      // set result date and time
-      _result->_date = _launchDate;
-      // time spent (numberof days still not taken into account)
-      int nSec = _launchDate.secsTo(QDateTime::currentDateTime());
-      _result->_duration = QTime(0,0,0,0);
-      _result->_duration = _result->_duration.addSecs(nSec);
+        if(_result)
+        {
+            // set result date and time
+            _result->_date = _launchDate;
+            // time spent (numberof days still not taken into account)
+            int nSec = _launchDate.secsTo(QDateTime::currentDateTime());
+            _result->_duration = QTime(0,0,0,0);
+            _result->_duration = _result->_duration.addSecs(nSec);
 
-      // important: result restored to main thread
-      _result->moveToThread(QApplication::instance()->thread());
-  }
+            // important: result restored to main thread
+            _result->moveToThread(QApplication::instance()->thread());
+        }
     }
 }
 
@@ -129,7 +129,7 @@ void ProblemThread::onFinished()
 void ProblemThread::stop()
 {
     if(_problem)
-  _problem->stop();
+        _problem->stop();
 //    terminate();
 //    onFinished();
 }

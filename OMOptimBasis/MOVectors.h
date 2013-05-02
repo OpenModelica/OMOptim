@@ -94,15 +94,15 @@ public :
     QMimeData* mimeData(const QModelIndexList &indexes) const;
     Qt::DropActions supportedDropActions() const;
     bool dropMimeData(const QMimeData *data,
-                Qt::DropAction action, int row, int column, const QModelIndex &parent);
+                      Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
 
 
 protected :
     /**
-  * is this vector the owner of the content.
-  * If yes, content will be deleted with vector, or when an item replaces another one
-  */
+        * is this vector the owner of the content.
+        * If yes, content will be deleted with vector, or when an item replaces another one
+        */
     QList<MOVector<ItemClass>* > _items;
     void connectVector(int iPoint);
     void disconnectVector(int iPoint);
@@ -127,7 +127,7 @@ MOVectors<ItemClass>::MOVectors(const MOVectors & copied)
     int iv;
     for(iv=0;iv<copied.size();iv++)
     {
-  pushBackVector(copied.at(iv)->clone());
+        pushBackVector(copied.at(iv)->clone());
     }
 }
 
@@ -140,16 +140,16 @@ MOVectors<ItemClass>::MOVectors(QDomElement & domList)
     QDomNode n = domList.firstChild();
     while( !n.isNull() )
     {
-  QDomElement domItem = n.toElement();
-  if(domItem.tagName().contains("MOVector"))
-  {
-      int iPoint = domItem.attribute("iPoint","-1").toInt();
-      if(iPoint>-1)
-      {
-          this->setVector(new MOVector<ItemClass>(domItem,true),iPoint);
-      }
-  }
-  n = n.nextSibling();
+        QDomElement domItem = n.toElement();
+        if(domItem.tagName().contains("MOVector"))
+        {
+            int iPoint = domItem.attribute("iPoint","-1").toInt();
+            if(iPoint>-1)
+            {
+                this->setVector(new MOVector<ItemClass>(domItem,true),iPoint);
+            }
+        }
+        n = n.nextSibling();
     }
 }
 
@@ -158,8 +158,8 @@ MOVectors<ItemClass>::MOVectors(QDomElement & domList)
 template<class ItemClass>
 MOVectors<ItemClass>::~MOVectors() 
 {
-  //delete contents
-  clear();
+        //delete contents
+        clear();
 }
 
 template<class ItemClass>
@@ -167,27 +167,27 @@ void MOVectors<ItemClass>::setVector(MOVector<ItemClass>* vector, int i)
 {
     while(i>_items.size())
     {
-  pushBackVector(new MOVector<ItemClass>(true));
+        pushBackVector(new MOVector<ItemClass>(true));
     }
 
     if(iPoint()==i)
-  beginResetModel();
+        beginResetModel();
 
     if(_items.size()>i)
     {
-  // remove existing
-  // change curPoint
-  delete this->at(i);
-  _items.replace(i,vector);
-  connectVector(i);
+        // remove existing
+        // change curPoint
+        delete this->at(i);
+        _items.replace(i,vector);
+        connectVector(i);
     }
     else
     {
-  pushBackVector(vector);
+        pushBackVector(vector);
     }
 
     if(iPoint()==i)
-  endResetModel();
+        endResetModel();
 }
 
 
@@ -205,7 +205,7 @@ void MOVectors<ItemClass>::clear()
 
     for(int i=0;i<size();i++)
     {
-  delete this->at(i);
+        delete this->at(i);
     }
     _items.clear();
 }
@@ -226,9 +226,9 @@ template<class ItemClass>
 MOVector<ItemClass>* MOVectors<ItemClass>::curVector() const
 {
     if((_iPoint > -1)&&(_iPoint<size()))
-  return _items.at(_iPoint);
+        return _items.at(_iPoint);
     else
-  return NULL;
+        return NULL;
 }
 
 template<class ItemClass>
@@ -236,11 +236,11 @@ MOVector<ItemClass>* MOVectors<ItemClass>::at(int iPoint) const
 {
     if((iPoint > -1)&&(iPoint<size()))
     {
-  MOVector<ItemClass>* result = _items.at(iPoint);
-  return result;
+        MOVector<ItemClass>* result = _items.at(iPoint);
+        return result;
     }
     else
-  return NULL;
+        return NULL;
 }
 
 template<class ItemClass>
@@ -266,9 +266,9 @@ QDomElement MOVectors<ItemClass>::toXmlData(QDomDocument & doc,QString listTitle
     QString movectorName = "MOVector";
     for(int i=0;i<_items.size();i++)
     {
-  QDomElement cItem = _items.at(i)->toXmlData(doc,movectorName);
-  cItem.setAttribute("iPoint",i);
-  cList.appendChild(cItem);
+        QDomElement cItem = _items.at(i)->toXmlData(doc,movectorName);
+        cItem.setAttribute("iPoint",i);
+        cList.appendChild(cItem);
     }
     return cList;
 }
@@ -281,9 +281,9 @@ int MOVectors<ItemClass>::rowCount(const QModelIndex &parent ) const
     Q_UNUSED(parent);
 
     if(curVector())
-  return curVector()->rowCount(parent);
+        return curVector()->rowCount(parent);
     else
-  return 0;
+        return 0;
 }
 
 template<class ItemClass>
@@ -298,10 +298,10 @@ QVariant MOVectors<ItemClass>::headerData(int section, Qt::Orientation orientati
 {
     if(orientation==Qt::Horizontal)
     {
-  if (role == Qt::DisplayRole)
-  {
-      return ItemClass::sFieldName(section,role);
-  }
+        if (role == Qt::DisplayRole)
+        {
+            return ItemClass::sFieldName(section,role);
+        }
     }
     return QAbstractItemModel::headerData(section, orientation, role);
 }
@@ -310,9 +310,9 @@ template<class ItemClass>
 QVariant MOVectors<ItemClass>::data(const QModelIndex &index, int role) const
 {
     if(curVector())
-  return curVector()->data(index,role);
+        return curVector()->data(index,role);
     else
-  return QVariant();
+        return QVariant();
 
 }
 
@@ -320,63 +320,63 @@ template<class ItemClass>
 Qt::ItemFlags MOVectors<ItemClass>::flags(const QModelIndex &index) const
 {
     if(curVector())
-  return curVector()->flags(index);
+        return curVector()->flags(index);
     else
-  return Qt::NoItemFlags;
+        return Qt::NoItemFlags;
 }
 
 template<class ItemClass>
 bool MOVectors<ItemClass>::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if(curVector())
-  return curVector()->setData(index,value,role);
+        return curVector()->setData(index,value,role);
     else
-  return false;
+        return false;
 }
 
 template<class ItemClass>
 QModelIndex MOVectors<ItemClass>::index(int row, int column, const QModelIndex &parent)const
 {
     if(curVector())
-  return curVector()->index(row,column,parent);
+        return curVector()->index(row,column,parent);
     else
-  return QModelIndex();
+        return QModelIndex();
 }
 
 template<class ItemClass>
 QStringList MOVectors<ItemClass>::mimeTypes () const
 {
     if(curVector())
-  return curVector()->mimeTypes();
+        return curVector()->mimeTypes();
     else
-  return QStringList();
+        return QStringList();
 }
 
 template<class ItemClass>
 QMimeData* MOVectors<ItemClass>::mimeData(const QModelIndexList &indexes) const
 {
     if(curVector())
-  return curVector()->mimeData(indexes);
+        return curVector()->mimeData(indexes);
     else
-  return NULL;
+        return NULL;
 }
 
 template<class ItemClass>
 Qt::DropActions MOVectors<ItemClass>::supportedDropActions() const{
     if(curVector())
-  return curVector()->supportedDropActions();
+        return curVector()->supportedDropActions();
     else
-  return Qt::IgnoreAction;
+        return Qt::IgnoreAction;
 }
 
 template<class ItemClass>
 bool MOVectors<ItemClass>::dropMimeData(const QMimeData *data,
-                                  Qt::DropAction action, int row, int column, const QModelIndex &parent)
+                                        Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
     if(curVector())
-  return curVector()->dropMimeData(data,action,row,column,parent);
+        return curVector()->dropMimeData(data,action,row,column,parent);
     else
-  return false;
+        return false;
 }
 
 
@@ -389,11 +389,11 @@ void MOVectors<ItemClass>::connectVector(int iPoint)
 
     if(vector)
     {
-  connect(vector,SIGNAL(rowsAboutToBeInserted ( const QModelIndex & , int , int  )),this,SLOT(rowsAboutToBeInsertedPb( const QModelIndex & , int , int  )));
-  connect(vector,SIGNAL(rowsAboutToBeRemoved ( const QModelIndex & , int , int  )),this,SLOT(rowsAboutToBeRemovedPb( const QModelIndex & , int , int  )));
-  connect(vector,SIGNAL(rowsInserted ( const QModelIndex & , int , int  )),this,SLOT(rowsInsertedPb( const QModelIndex & , int , int  )));
-  connect(vector,SIGNAL(rowsRemoved ( const QModelIndex & , int , int  )),this,SLOT(rowsRemovedPb( const QModelIndex & , int , int  )));
-  connect(vector,SIGNAL(dataChanged ( const QModelIndex & , const QModelIndex &  )),this,SLOT(dataChangedPb ( const QModelIndex & , const QModelIndex &  )));
+        connect(vector,SIGNAL(rowsAboutToBeInserted ( const QModelIndex & , int , int  )),this,SLOT(rowsAboutToBeInsertedPb( const QModelIndex & , int , int  )));
+        connect(vector,SIGNAL(rowsAboutToBeRemoved ( const QModelIndex & , int , int  )),this,SLOT(rowsAboutToBeRemovedPb( const QModelIndex & , int , int  )));
+        connect(vector,SIGNAL(rowsInserted ( const QModelIndex & , int , int  )),this,SLOT(rowsInsertedPb( const QModelIndex & , int , int  )));
+        connect(vector,SIGNAL(rowsRemoved ( const QModelIndex & , int , int  )),this,SLOT(rowsRemovedPb( const QModelIndex & , int , int  )));
+        connect(vector,SIGNAL(dataChanged ( const QModelIndex & , const QModelIndex &  )),this,SLOT(dataChangedPb ( const QModelIndex & , const QModelIndex &  )));
     }
 }
 
@@ -403,7 +403,7 @@ void MOVectors<ItemClass>::disconnectVector(int iPoint)
     MOVector<ItemClass> *vector = at(iPoint);
 
     if(vector)
-  disconnect(vector,0,this,0);
+        disconnect(vector,0,this,0);
 }
 
 

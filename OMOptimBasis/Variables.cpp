@@ -14,7 +14,7 @@ Variables::~Variables()
 
 QVariant Variables::data(const QModelIndex &index, int role) const
 {
-  return MOVector<Variable>::data(index,role);
+        return MOVector<Variable>::data(index,role);
 }
 
 
@@ -27,8 +27,8 @@ Variables* Variables::clone() const
     Variable* newItem;
     for(i=0;i<_items.size();i++)
     {
-  newItem = new Variable(*this->at(i));
-  newVector->addItem(newItem);
+        newItem = new Variable(*this->at(i));
+        newVector->addItem(newItem);
     }  
 
     return newVector;
@@ -45,14 +45,14 @@ Variable *Variables::findVariable(QString model, QString shortVarName)
     bool found = 0;
     while(!found && (iVar<this->size()))
     {
-  found = ((this->at(iVar)->name(Variable::SHORT)==shortVarName) && (this->at(iVar)->model()==model));
-  if(!found)
-      iVar++;
+        found = ((this->at(iVar)->name(Variable::SHORT)==shortVarName) && (this->at(iVar)->model()==model));
+        if(!found)
+            iVar++;
     }
     if(found)
-  return this->at(iVar);
+        return this->at(iVar);
     else
-  return NULL;
+        return NULL;
 }
 
 int Variables::findVariable(QString model, QRegExp & shortVarName, int from)
@@ -62,14 +62,14 @@ int Variables::findVariable(QString model, QRegExp & shortVarName, int from)
     bool found = 0;
     while((!found) && (iVar<this->size()))
     {
-  found = (shortVarName.exactMatch(this->at(iVar)->name(Variable::SHORT)) && (this->at(iVar)->model()==model));
-  if(!found)
-      iVar++;
+        found = (shortVarName.exactMatch(this->at(iVar)->name(Variable::SHORT)) && (this->at(iVar)->model()==model));
+        if(!found)
+            iVar++;
     }
     if(found)
-  return iVar;
+        return iVar;
     else
-  return -1;
+        return -1;
 }
 
 
@@ -88,8 +88,8 @@ int Variables::findVariable(QString model, QRegExp & shortVarName, int from)
 //    QDataStream stream(&encodedData, QIODevice::WriteOnly);
 //    if(indexes.size()==1)
 //    {
-//  Variable* item = (Variable*)indexes.at(0).internalPointer();
-//  mimeData->setData("text/XML",QString("Variable::"+item->name(Variable::FULL)).toAscii());
+//        Variable* item = (Variable*)indexes.at(0).internalPointer();
+//        mimeData->setData("text/XML",QString("Variable::"+item->name(Variable::FULL)).toAscii());
 //    }
 
 //    mimeData->setText(
@@ -111,7 +111,7 @@ OptVariables::~OptVariables()
 
 QVariant OptVariables::data(const QModelIndex &index, int role) const
 {
-  return MOVector<OptVariable>::data(index,role);
+        return MOVector<OptVariable>::data(index,role);
 }
 
 OptVariables* OptVariables::clone() const
@@ -123,8 +123,8 @@ OptVariables* OptVariables::clone() const
     OptVariable* newItem;
     for(i=0;i<_items.size();i++)
     {
-  newItem = new OptVariable(*this->at(i));
-  newVector->addItem(newItem);
+        newItem = new OptVariable(*this->at(i));
+        newVector->addItem(newItem);
     }
 
     return newVector;
@@ -143,7 +143,7 @@ ScannedVariables::~ScannedVariables()
 
 QVariant ScannedVariables::data(const QModelIndex &index, int role) const
 {
-  return MOVector<ScannedVariable>::data(index,role);
+        return MOVector<ScannedVariable>::data(index,role);
 }
 
 ScannedVariables* ScannedVariables::clone() const
@@ -155,8 +155,8 @@ ScannedVariables* ScannedVariables::clone() const
     ScannedVariable* newItem;
     for(i=0;i<_items.size();i++)
     {
-  newItem = new ScannedVariable(*this->at(i));
-  newVector->addItem(newItem);
+        newItem = new ScannedVariable(*this->at(i));
+        newVector->addItem(newItem);
     }
 
 

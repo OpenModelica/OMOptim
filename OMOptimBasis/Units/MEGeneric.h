@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file MEGeneric.h
+        @file MEGeneric.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #if !defined(_MEGeneric_H)
@@ -55,7 +55,7 @@ public:
 
     enum Units
     {
-  UNITBASE
+        UNITBASE
     };
 
     QString unit(int iUnit)  const;

@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file Load.cpp
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version
+        @file Load.cpp
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version
 
   */
 #include "Load.h"
@@ -71,21 +71,21 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     QFile file(filePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-  InfoSender::instance()->send( Info(ListInfo::PROJECTFILENOTEXISTS,filePath));
-  return false;
+        InfoSender::instance()->send( Info(ListInfo::PROJECTFILENOTEXISTS,filePath));
+        return false;
     }
     if( !doc.setContent( &file ) )
     {
-  file.close();
-  InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
-  return false;
+        file.close();
+        InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+        return false;
     }
     file.close();
     QDomElement root = doc.documentElement();
     if( root.tagName() != "MOProject" )
     {
-  InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
-  return false;
+        InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+        return false;
     }
 
     //**************************************
@@ -101,10 +101,10 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     QDomNodeList listPlugins = domPlugins.elementsByTagName("Plugin");
     for(int i=0;i<listPlugins.size();i++)
     {
-  tmpPath = listPlugins.at(i).toElement().attribute("path", "" );
-  QFileInfo pluginFileInfo(tmpPath);
-  tmpPath = pluginFileInfo.canonicalFilePath();
-  pluginsPaths.push_back(tmpPath);
+        tmpPath = listPlugins.at(i).toElement().attribute("path", "" );
+        QFileInfo pluginFileInfo(tmpPath);
+        tmpPath = pluginFileInfo.canonicalFilePath();
+        pluginsPaths.push_back(tmpPath);
     }
 
     // Problems to load
@@ -113,9 +113,9 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     QDomNodeList listOMCases = domOMCases.elementsByTagName("Problem");
     for(int i=0;i<listOMCases.size();i++)
     {
-  tmpPath = listOMCases.at(i).toElement().attribute("path", "" );
-  QFileInfo problemFileInfo(projectDir,tmpPath);
-  problemsPaths.push_back(problemFileInfo.canonicalFilePath());
+        tmpPath = listOMCases.at(i).toElement().attribute("path", "" );
+        QFileInfo problemFileInfo(projectDir,tmpPath);
+        problemsPaths.push_back(problemFileInfo.canonicalFilePath());
     }
 
     // Results to load
@@ -124,9 +124,9 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     QDomNodeList listResults = domResults.elementsByTagName("Result");
     for(int i=0;i<listResults.size();i++)
     {
-  tmpPath = listResults.at(i).toElement().attribute("path", "" );
-  QFileInfo solvedFileInfo(projectDir,tmpPath);
-  resultsPaths.push_back(solvedFileInfo.canonicalFilePath());
+        tmpPath = listResults.at(i).toElement().attribute("path", "" );
+        QFileInfo solvedFileInfo(projectDir,tmpPath);
+        resultsPaths.push_back(solvedFileInfo.canonicalFilePath());
     }
 
     //**************************************
@@ -134,11 +134,11 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     //**************************************
     for(int i=0;i<pluginsPaths.size();i++)
     {
-  QFileInfo fileinfo = QFileInfo(pluginsPaths.at(i));
-  if (!fileinfo.exists())
-      InfoSender::instance()->sendError("Plugin file does not exist : "+pluginsPaths.at(i));
-  else
-      _project->loadPlugin(pluginsPaths.at(i));
+        QFileInfo fileinfo = QFileInfo(pluginsPaths.at(i));
+        if (!fileinfo.exists())
+            InfoSender::instance()->sendError("Plugin file does not exist : "+pluginsPaths.at(i));
+        else
+            _project->loadPlugin(pluginsPaths.at(i));
     }
 
     //**************************************
@@ -148,10 +148,10 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     QString msg;
     for(int i=0;i<problemsPaths.size();i++)
     {
-  loadTime.restart();
-  _project->addOMCase(problemsPaths.at(i));
-  msg = "Loaded problem "+ problemsPaths.at(i)+" took " +QString::number((double)loadTime.elapsed()/1000)+"sec";
-  InfoSender::instance()->debug(msg);
+        loadTime.restart();
+        _project->addOMCase(problemsPaths.at(i));
+        msg = "Loaded problem "+ problemsPaths.at(i)+" took " +QString::number((double)loadTime.elapsed()/1000)+"sec";
+        InfoSender::instance()->debug(msg);
     }
 
     //**************************************
@@ -159,10 +159,10 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     //**************************************
     for(int i=0;i<resultsPaths.size();i++)
     {
-  loadTime.restart();
-  _project->addOMCase(resultsPaths.at(i));
-  msg = "Loaded result "+ resultsPaths.at(i)+" took " +QString::number((double)loadTime.elapsed()/1000)+"sec";
-  InfoSender::instance()->debug(msg);
+        loadTime.restart();
+        _project->addOMCase(resultsPaths.at(i));
+        msg = "Loaded result "+ resultsPaths.at(i)+" took " +QString::number((double)loadTime.elapsed()/1000)+"sec";
+        InfoSender::instance()->debug(msg);
     }
 
     _project->setIsDefined(true);
@@ -179,14 +179,14 @@ OMCase* Load::newOMCase(QString filePath,ProjectBase* project)
     QFile file(filePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-  InfoSender::instance()->send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-  return NULL;
+        InfoSender::instance()->send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+        return NULL;
     }
     else if( !doc.setContent(&file,&error) )
     {
-  file.close();
-  InfoSender::instance()->send( Info(ListInfo::PROBLEMFILECORRUPTED,filePath));
-  return NULL;
+        file.close();
+        InfoSender::instance()->send( Info(ListInfo::PROBLEMFILECORRUPTED,filePath));
+        return NULL;
     }
     file.close();
 
@@ -197,7 +197,7 @@ OMCase* Load::newOMCase(QString filePath,ProjectBase* project)
     QString problemType;
     QDomElement domProblem = domCase.firstChildElement("OMProblem");
     if(!domProblem.isNull())
-  problemType = domProblem.firstChildElement().tagName();
+        problemType = domProblem.firstChildElement().tagName();
 
     // look for corresponding problem interface
     ProblemInterface* interface = project->problemsInterfaces().interfaceOf(problemType);
@@ -205,14 +205,14 @@ OMCase* Load::newOMCase(QString filePath,ProjectBase* project)
     // load
     if(interface)
     {
-  if(isAResult)
-      omCase = interface->loadResult(QFileInfo(file),domCase,project);
-  else
-      omCase = interface->loadProblem(QFileInfo(file),domCase,project);
+        if(isAResult)
+            omCase = interface->loadResult(QFileInfo(file),domCase,project);
+        else
+            omCase = interface->loadProblem(QFileInfo(file),domCase,project);
     }
     else
     {
-  InfoSender::instance()->sendError("Following problem type not managed : "+problemType+" ["+filePath+"]");
+        InfoSender::instance()->sendError("Following problem type not managed : "+problemType+" ["+filePath+"]");
     }
 
     return omCase;

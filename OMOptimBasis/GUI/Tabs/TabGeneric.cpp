@@ -56,12 +56,12 @@ void TabGeneric::setWidgets(QWidgetList widgets,QStringList titles)
 
     for(int i=0;i<_widgetsTitles.size();i++)
     {
-  _ui->mainLayout->addWidget(_widgets.at(i));
-  _ui->comboDisp->addItem(_widgetsTitles.at(i),i);
+        _ui->mainLayout->addWidget(_widgets.at(i));
+        _ui->comboDisp->addItem(_widgetsTitles.at(i),i);
     }
 
     connect(_ui->comboDisp,SIGNAL(activated(int)),
-  this,SLOT(updateView(int)));
+        this,SLOT(updateView(int)));
 
 }
 
@@ -76,9 +76,9 @@ void TabGeneric::updateView(int view)
     
     for(int i=0;i<_widgets.size();i++)
     {
-  if(i==index)
-      _widgets.at(i)->show();
-  else
-      _widgets.at(i)->hide();
+        if(i==index)
+            _widgets.at(i)->show();
+        else
+            _widgets.at(i)->hide();
     }
 }

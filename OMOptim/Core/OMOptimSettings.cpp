@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file OMOptimSettings.cpp
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version
+        @file OMOptimSettings.cpp
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version
 
   */
 #include "OMOptimSettings.h"
@@ -78,7 +78,7 @@ void OMOptimSettings::initialize()
     //    //*******************************
     //    names << QString("stopOMCwhenQuit");
     //    descs << QString("Automatically end OMC when quitting");
-    //  defaultValues << true;
+    //        defaultValues << true;
     //    types.push_back(BOOL);
 
     //*******************************
@@ -131,10 +131,10 @@ void OMOptimSettings::initialize()
 
     for(int i=0; i<names.size();i++)
     {
-      // update
-      param = new MOParameter(names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
-      param->setFieldValue(MOParameter::GROUP,groups.at(i));
-      params->addItem(param);
+            // update
+            param = new MOParameter(names.at(i),descs.at(i),defaultValues.at(i),types.at(i));
+            param->setFieldValue(MOParameter::GROUP,groups.at(i));
+            params->addItem(param);
     }
 
     MOSettings::instance()->addParameters(params,QApplication::applicationName());

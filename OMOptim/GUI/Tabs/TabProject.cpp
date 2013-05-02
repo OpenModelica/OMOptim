@@ -55,13 +55,13 @@ MOTabSimple(project_->name(),project_),ui(new Ui::TabProject_Class)
 
     project = project_;
     // View widgets
-  widgetInfos = new WidgetProjectInfos(project,recentProjActions,this);
-  ui->myLayout->addWidget(widgetInfos);
+        widgetInfos = new WidgetProjectInfos(project,recentProjActions,this);
+        ui->myLayout->addWidget(widgetInfos);
 
-  widgetInfos->show();
+        widgetInfos->show();
 
-  connect(widgetInfos,SIGNAL(newProject()),this,SIGNAL(newProject()));
-  connect(widgetInfos,SIGNAL(loadProject()),this,SIGNAL(loadProject()));
+        connect(widgetInfos,SIGNAL(newProject()),this,SIGNAL(newProject()));
+        connect(widgetInfos,SIGNAL(loadProject()),this,SIGNAL(loadProject()));
 
 }
 
@@ -73,5 +73,5 @@ TabProject::~TabProject()
 
 void TabProject::actualizeGuiFromProject()
 {
-  widgetInfos->actualizeGuiFromProject();
+        widgetInfos->actualizeGuiFromProject();
 }

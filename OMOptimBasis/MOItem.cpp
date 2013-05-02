@@ -62,12 +62,12 @@ MOItem::MOItem(QDomElement & domEl)
 
     for(int i=0;i<attributes.count();i++)
     {
-  fieldName = attributes.item(i).toAttr().name();
-  fieldName.replace(XMLTools::space()," ");
-  fieldValue = attributes.item(i).toAttr().value();
-  fieldValue.replace(XMLTools::space()," ");
+        fieldName = attributes.item(i).toAttr().name();
+        fieldName.replace(XMLTools::space()," ");
+        fieldValue = attributes.item(i).toAttr().value();
+        fieldValue.replace(XMLTools::space()," ");
 
-  setFieldValue(fieldName,QVariant(fieldValue));
+        setFieldValue(fieldName,QVariant(fieldValue));
     }
 }
 
@@ -83,12 +83,12 @@ void MOItem::update(QDomElement & domEl)
 
     for(int i=0;i<attributes.count();i++)
     {
-  fieldName = attributes.item(i).toAttr().name();
-  fieldName.replace(XMLTools::space()," ");
-  fieldValue = attributes.item(i).toAttr().value();
-  fieldValue.replace(XMLTools::space()," ");
+        fieldName = attributes.item(i).toAttr().name();
+        fieldName.replace(XMLTools::space()," ");
+        fieldValue = attributes.item(i).toAttr().value();
+        fieldValue.replace(XMLTools::space()," ");
 
-  setFieldValue(fieldName,QVariant(fieldValue));
+        setFieldValue(fieldName,QVariant(fieldValue));
     }
 }
 
@@ -99,14 +99,14 @@ MOItem::MOItem(QString savedString,ProjectBase *project)
     QStringList fields = savedString.split(" ",QString::SkipEmptyParts);
     if(fields.size()!=nbFields)
     {
-  emit sendInfo( Info(ListInfo::PROBLEMREADINGLINE,savedString));
+        emit sendInfo( Info(ListInfo::PROBLEMREADINGLINE,savedString));
     }
     else
     {
-  for(int iF=0;iF<fields.size();iF++)
-  {
-      setFieldValue(iF,QVariant(fields.at(iF)));
-  }
+        for(int iF=0;iF<fields.size();iF++)
+        {
+            setFieldValue(iF,QVariant(fields.at(iF)));
+        }
     }
 }
 
@@ -116,7 +116,7 @@ void MOItem::setName(QString name)
     _name = name;
 
     if(!_filledFields.contains(MOItem::NAME))
-  _filledFields.push_back(MOItem::NAME);
+        _filledFields.push_back(MOItem::NAME);
 }
 
 QString MOItem::name() const
@@ -128,31 +128,31 @@ QString MOItem::name() const
 QVariant MOItem::getFieldValue(int ifield, int role) const
 {
     if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-  return QString("-");
+        return QString("-");
     else
     {
-  switch (ifield)
-  {
-  case NAME :
-      return name();
-  default :
-      return "unknown field";
-  }
+        switch (ifield)
+        {
+        case NAME :
+            return name();
+        default :
+            return "unknown field";
+        }
     }
 }
 
 bool MOItem::setFieldValue(int iField, QVariant value)
 {
     if(!_filledFields.contains(iField))
-  _filledFields.push_back(iField);
+        _filledFields.push_back(iField);
 
     switch (iField)
     {
     case NAME :
-  _name=value.toString();
-  return true;
+        _name=value.toString();
+        return true;
     default :
-  return false;
+        return false;
     }
 
 }
@@ -162,11 +162,11 @@ bool MOItem::setFieldValue(QString field, QVariant value)
     int i = getFieldIndex(field,Qt::UserRole);
     if(i>-1)
     {
-  setFieldValue(i,value);
-  return true;
+        setFieldValue(i,value);
+        return true;
     }
     else
-  return false;
+        return false;
 }
 
 QString MOItem::sFieldName(int iField, int role)
@@ -174,9 +174,9 @@ QString MOItem::sFieldName(int iField, int role)
     switch (iField)
     {
     case NAME :
-  return "Name";
+        return "Name";
     default :
-  return "unknown field";
+        return "unknown field";
     }
 }
 
@@ -194,12 +194,12 @@ int MOItem::getFieldIndex(QString fieldName,int role)
 {
     int index=0;
     while((index<this->getNbFields()) && (this->getFieldName(index,role)!=fieldName))
-  index++;
+        index++;
 
     if(index<getNbFields())
-  return index;
+        return index;
     else
-  return -1;
+        return -1;
 }
 
 void MOItem::setProtectedFields(QList<int> protectedFields)
@@ -210,19 +210,19 @@ void MOItem::setEditableFields(QList<int> editableFields)
 {
     _protectedFields.clear();
     for(int i=0;i<getNbFields();i++)
-  if(!editableFields.contains(i))
-      _protectedFields.push_back(i);
+        if(!editableFields.contains(i))
+            _protectedFields.push_back(i);
 }
 void MOItem::setIsProtectedField(int iField, bool isProtected)
 {
     if(isProtected)
     {
-  if(!_protectedFields.contains(iField))
-      _protectedFields.push_back(iField);
+        if(!_protectedFields.contains(iField))
+            _protectedFields.push_back(iField);
     }
     else
     {
-  _protectedFields.removeAll(iField);
+        _protectedFields.removeAll(iField);
     }
 }
 bool MOItem::isProtectedField(int iField)
@@ -233,8 +233,8 @@ bool MOItem::isProtectedField(int iField)
 bool MOItem::protectAllFields()
 {
     for(int i=0;i<getNbFields();i++)
-  if(!_protectedFields.contains(i))
-      _protectedFields.push_back(i);
+        if(!_protectedFields.contains(i))
+            _protectedFields.push_back(i);
 }
 
 
@@ -246,7 +246,7 @@ QString MOItem::toSavingString()
     QString savingString;
     for(int iF=0;iF<getNbFields();iF++)
     {
-  savingString += getFieldValue(iF).toString() + "\t";
+        savingString += getFieldValue(iF).toString() + "\t";
     }
     return savingString;
 }
@@ -273,11 +273,11 @@ QDomElement MOItem::toXmlData(QDomDocument & doc)
     QString fieldValue;
     for(int iF=0;iF<getNbFields();iF++)
     {
-  fieldName = getFieldName(iF,Qt::UserRole);
-  fieldName.replace(" ",XMLTools::space());
-  fieldValue = getFieldValue(iF).toString();
-  fieldValue.replace(" ",XMLTools::space());
-  cItem.setAttribute(fieldName,fieldValue);
+        fieldName = getFieldName(iF,Qt::UserRole);
+        fieldName.replace(" ",XMLTools::space());
+        fieldValue = getFieldValue(iF).toString();
+        fieldValue.replace(" ",XMLTools::space());
+        cItem.setAttribute(fieldName,fieldValue);
     }
     return cItem;
 }
@@ -291,11 +291,11 @@ QString MOItem::toCSV() const
     QString separator = "\t";
     for(int iF=0;iF<getNbFields();iF++)
     {
-  result.push_back(getFieldValue(iF,Qt::DisplayRole).toString());
-  result.push_back(separator);
+        result.push_back(getFieldValue(iF,Qt::DisplayRole).toString());
+        result.push_back(separator);
     }
     if(result.size()>0)
-  result.remove(result.size()-separator.size(),separator.size());
+        result.remove(result.size()-separator.size(),separator.size());
     return result;
 }
 
@@ -325,23 +325,23 @@ void MOItem::checkUniqueItemName( QStringList & list)
     iSuffix=2;
     while(!titleIsUnique)
     {
-  i=0;
-  titleIsFound=false;
-  while(i<list.size() && !titleIsFound)
-  {
-      if (title==list.at(i))
-      {
-          titleIsFound=true;
-          strSuffix.sprintf(expr.toLatin1().data(),iSuffix);
-          title=defaultTitle+strSuffix;
-          iSuffix++;
-      }
-      i++;
-  }
-  if (!titleIsFound)
-  {
-      titleIsUnique=true;
-  }
+        i=0;
+        titleIsFound=false;
+        while(i<list.size() && !titleIsFound)
+        {
+            if (title==list.at(i))
+            {
+                titleIsFound=true;
+                strSuffix.sprintf(expr.toLatin1().data(),iSuffix);
+                title=defaultTitle+strSuffix;
+                iSuffix++;
+            }
+            i++;
+        }
+        if (!titleIsFound)
+        {
+            titleIsUnique=true;
+        }
     }
     this->setName(title);
 }

@@ -62,12 +62,12 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
     _allModelsVars = new Variables(true,this);
     for(int i=0;i<_problem->models().size();i++)
     {
-  ModelPlus* modelPlus =  _project->modelPlus(_problem->models().at(i));
-  if(modelPlus)
-  {
-      Variables* modelVars = modelPlus->variables();
-      connect(modelVars,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(refreshAllModelsVars()));
-  }
+        ModelPlus* modelPlus =  _project->modelPlus(_problem->models().at(i));
+        if(modelPlus)
+        {
+            Variables* modelVars = modelPlus->variables();
+            connect(modelVars,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(refreshAllModelsVars()));
+        }
     }
 
     // create permanent vars vector
@@ -95,20 +95,20 @@ WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,Q
 
     // tables' model
     _optVariableProxyModel = GuiTools::ModelToViewWithFilter(_problem->optimizedVariables(),
-                                                       _tableOptimizedVars,NULL);
+                                                             _tableOptimizedVars,NULL);
 
 
     _variableProxyModel = GuiTools::ModelToViewWithFilter(_allModelsVars,
-                                                    _tableVariables,_ui->lineVariableFilter);
+                                                          _tableVariables,_ui->lineVariableFilter);
 
     _samplingProxyModel = GuiTools::ModelToViewWithFilter(_problem->scannedVariables(),
-                                                   _tableSamplingVars,NULL);
+                                                         _tableSamplingVars,NULL);
 
     _objectiveProxyModel = GuiTools::ModelToViewWithFilter(_problem->objectives(),
-                                                     _tableObjectives,NULL);
+                                                           _tableObjectives,NULL);
 
     _overVarsProxyModel = GuiTools::ModelToViewWithFilter(_problem->overwritedVariables(),
-                                                    _tableOverVars,NULL);
+                                                          _tableOverVars,NULL);
 
 
 
@@ -211,8 +211,8 @@ void WidgetSelectOptVars::removePermanentVars(QString model)
 {
     QList<int> toRemove;
     for(int i=0;i<_permanentVars->size();i++)
-  if(_permanentVars->at(i)->model()==model)
-      toRemove.push_back(i);
+        if(_permanentVars->at(i)->model()==model)
+            toRemove.push_back(i);
 
     _permanentVars->removeRows(toRemove);
 }
@@ -232,17 +232,17 @@ void WidgetSelectOptVars::addOptVariables()
 
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
-  curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+        curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
 
-  selVar=_allModelsVars->at(curSourceIndex.row());
+        selVar=_allModelsVars->at(curSourceIndex.row());
 
-  alreadyIn = _problem->optimizedVariables()->alreadyIn(selVar->name());
-  //        if ((!alreadyIn && !selVar->output()))
-  if (!alreadyIn)
-  {
-      optVarProv = new OptVariable(*selVar);
-      _problem->optimizedVariables()->addItem(optVarProv);
-  }
+        alreadyIn = _problem->optimizedVariables()->alreadyIn(selVar->name());
+        //        if ((!alreadyIn && !selVar->output()))
+        if (!alreadyIn)
+        {
+            optVarProv = new OptVariable(*selVar);
+            _problem->optimizedVariables()->addItem(optVarProv);
+        }
     }
 
     _tableOptimizedVars->resizeColumnsToContents();
@@ -256,8 +256,8 @@ void WidgetSelectOptVars::deleteOptVariables()
     QList<int> rows;
     for(int i=0;i<indexList.size();i++)
     {
-  curSourceIndex = _optVariableProxyModel->mapToSource(indexList.at(i));
-  rows.push_back(curSourceIndex.row());
+        curSourceIndex = _optVariableProxyModel->mapToSource(indexList.at(i));
+        rows.push_back(curSourceIndex.row());
     }
     _problem->optimizedVariables()->removeRows(rows);
 
@@ -277,17 +277,17 @@ void WidgetSelectOptVars::addSamplingVariables()
 
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
-  curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+        curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
 
-  selVar=_allModelsVars->at(curSourceIndex.row());
+        selVar=_allModelsVars->at(curSourceIndex.row());
 
-  alreadyIn = _problem->scannedVariables()->alreadyIn(selVar->name());
-  //        if (!alreadyIn && !selVar->output())
-  if (!alreadyIn)
-  {
-      scannedVarProv = new ScannedVariable(*selVar);
-      _problem->scannedVariables()->addItem(scannedVarProv);
-  }
+        alreadyIn = _problem->scannedVariables()->alreadyIn(selVar->name());
+        //        if (!alreadyIn && !selVar->output())
+        if (!alreadyIn)
+        {
+            scannedVarProv = new ScannedVariable(*selVar);
+            _problem->scannedVariables()->addItem(scannedVarProv);
+        }
     }
 
     _tableSamplingVars->resizeColumnsToContents();
@@ -301,8 +301,8 @@ void WidgetSelectOptVars::deleteSamplingVariables()
     QList<int> rows;
     for(int i=0;i<indexList.size();i++)
     {
-  curSourceIndex = _samplingProxyModel->mapToSource(indexList.at(i));
-  rows.push_back(curSourceIndex.row());
+        curSourceIndex = _samplingProxyModel->mapToSource(indexList.at(i));
+        rows.push_back(curSourceIndex.row());
     }
     _problem->scannedVariables()->removeRows(rows);
 
@@ -321,15 +321,15 @@ void WidgetSelectOptVars::addOverVariables()
 
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
-  curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
-  selVar=_allModelsVars->at(curSourceIndex.row());
-  alreadyIn = _problem->overwritedVariables()->alreadyIn(selVar->name());
-  //        if (!alreadyIn && !selVar->output())
-  if (!alreadyIn)
-  {
-      varProv = new Variable(*selVar);
-      _problem->overwritedVariables()->addItem(varProv);
-  }
+        curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+        selVar=_allModelsVars->at(curSourceIndex.row());
+        alreadyIn = _problem->overwritedVariables()->alreadyIn(selVar->name());
+        //        if (!alreadyIn && !selVar->output())
+        if (!alreadyIn)
+        {
+            varProv = new Variable(*selVar);
+            _problem->overwritedVariables()->addItem(varProv);
+        }
     }
 
     _tableOverVars->resizeColumnsToContents();
@@ -343,8 +343,8 @@ void WidgetSelectOptVars::deleteOverVariables()
     QList<int> rows;
     for(int i=0;i<indexList.size();i++)
     {
-  curSourceIndex = _overVarsProxyModel->mapToSource(indexList.at(i));
-  rows.push_back(curSourceIndex.row());
+        curSourceIndex = _overVarsProxyModel->mapToSource(indexList.at(i));
+        rows.push_back(curSourceIndex.row());
     }
     _problem->overwritedVariables()->removeRows(rows);
 
@@ -365,18 +365,18 @@ void WidgetSelectOptVars::addOptObjectives()
 
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
-  curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
+        curSourceIndex = _variableProxyModel->mapToSource(curProxyIndex);
 
-  selVar=_allModelsVars->at(curSourceIndex.row());
+        selVar=_allModelsVars->at(curSourceIndex.row());
 
-  alreadyIn = _problem->objectives()->alreadyIn(selVar->name());
-  if (!alreadyIn)
-      /*&&  (((_problem->ctrlType(_problem->models().at(0)) !=  ModPlusCtrl::EXECUTABLE))
-                     || ((_problem->ctrlType(_problem->models().at(0)) == ModPlusCtrl::EXECUTABLE) && selVar->output())) )*/
-  {
-      newObj = new OptObjective(*selVar);
-      _problem->objectives()->addItem(newObj);
-  }
+        alreadyIn = _problem->objectives()->alreadyIn(selVar->name());
+        if (!alreadyIn)
+            /*&&  (((_problem->ctrlType(_problem->models().at(0)) !=  ModPlusCtrl::EXECUTABLE))
+                           || ((_problem->ctrlType(_problem->models().at(0)) == ModPlusCtrl::EXECUTABLE) && selVar->output())) )*/
+        {
+            newObj = new OptObjective(*selVar);
+            _problem->objectives()->addItem(newObj);
+        }
     }
     _tableObjectives->resizeColumnsToContents();
 }
@@ -389,8 +389,8 @@ void WidgetSelectOptVars::deleteOptObjectives()
 
     for(int i=0;i<indexList.size();i++)
     {
-  curSourceIndex = _objectiveProxyModel->mapToSource(indexList.at(i));
-  rows.push_back(curSourceIndex.row());
+        curSourceIndex = _objectiveProxyModel->mapToSource(indexList.at(i));
+        rows.push_back(curSourceIndex.row());
     }
     _problem->objectives()->removeRows(rows);
     _tableObjectives->resizeColumnsToContents();
@@ -415,25 +415,25 @@ void WidgetSelectOptVars::actualizeGui()
     // if problem is solved
     if(!_isEditable)
     {
-  for(int i=0; i < unsolvedWidgets.size(); i++)
-      unsolvedWidgets.at(i)->hide();
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->hide();
 
-  for(int i=0; i < solvedWidgets.size(); i++)
-      solvedWidgets.at(i)->show();
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->show();
 
-  for(int i=0; i< tables.size(); i++)
-      tables.at(i)->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        for(int i=0; i< tables.size(); i++)
+            tables.at(i)->setEditTriggers(QAbstractItemView::NoEditTriggers);
     }
     else
     {
-  for(int i=0; i < unsolvedWidgets.size(); i++)
-      unsolvedWidgets.at(i)->show();
+        for(int i=0; i < unsolvedWidgets.size(); i++)
+            unsolvedWidgets.at(i)->show();
 
-  for(int i=0; i < solvedWidgets.size(); i++)
-      solvedWidgets.at(i)->hide();
+        for(int i=0; i < solvedWidgets.size(); i++)
+            solvedWidgets.at(i)->hide();
 
-  for(int i=0; i< tables.size(); i++)
-      tables.at(i)->setEditTriggers(QAbstractItemView::DoubleClicked);
+        for(int i=0; i< tables.size(); i++)
+            tables.at(i)->setEditTriggers(QAbstractItemView::DoubleClicked);
     }
 }
 
@@ -445,37 +445,37 @@ void WidgetSelectOptVars::readVariables()
 
     for(int i=0;i<_problem->models().size();i++)
     {
-  ModelPlus* curModelPlus = _project->modelPlus(_problem->models().at(i));
+        ModelPlus* curModelPlus = _project->modelPlus(_problem->models().at(i));
 
-  // is compiled
-  bool isCompiled;
+        // is compiled
+        bool isCompiled;
 
 
-  if(curModelPlus->modelType() == ModelPlus::MODELICA)
-      isCompiled = ((ModModelPlus *) curModelPlus)->isCompiled(_problem->ctrl(_problem->models().at(i)));
-  bool shouldForceRecompile = false;
-  if(isCompiled && curModelPlus->modelType() == ModelPlus::MODELICA)
-  {
-      // already compiled, ask user if we should only read init file or recompile model
-      QMessageBox msgBox;
-      msgBox.setText("Model "+_problem->models().at(i)+" is already compiled.");
-      msgBox.setInformativeText("Would you like to compile it again ?");
-      msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-      msgBox.setDefaultButton(QMessageBox::Yes);
-      int ret = msgBox.exec();
-      switch (ret)
-      {
-      case QMessageBox::Yes:
-          shouldForceRecompile = true;
-          break;
-      case QMessageBox::No:
-          shouldForceRecompile = false;
-          break;
-      }
-      ((ModModelPlus *)curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)),_problem->filesToCopy(),shouldForceRecompile);
-  }
-  if(curModelPlus->modelType() == ModelPlus::EXECUTABLE)
-      ((ModExePlus *) curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)));
+        if(curModelPlus->modelType() == ModelPlus::MODELICA)
+            isCompiled = ((ModModelPlus *) curModelPlus)->isCompiled(_problem->ctrl(_problem->models().at(i)));
+        bool shouldForceRecompile = false;
+        if(isCompiled && curModelPlus->modelType() == ModelPlus::MODELICA)
+        {
+            // already compiled, ask user if we should only read init file or recompile model
+            QMessageBox msgBox;
+            msgBox.setText("Model "+_problem->models().at(i)+" is already compiled.");
+            msgBox.setInformativeText("Would you like to compile it again ?");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+            switch (ret)
+            {
+            case QMessageBox::Yes:
+                shouldForceRecompile = true;
+                break;
+            case QMessageBox::No:
+                shouldForceRecompile = false;
+                break;
+            }
+            ((ModModelPlus *)curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)),_problem->filesToCopy(),shouldForceRecompile);
+        }
+        if(curModelPlus->modelType() == ModelPlus::EXECUTABLE)
+            ((ModExePlus *) curModelPlus)->readVariables(_problem->ctrl(_problem->models().at(i)));
     }
 
     refreshAllModelsVars();
@@ -491,14 +491,14 @@ void WidgetSelectOptVars::refreshAllModelsVars()
     Variables* curVariables;
     for(int i=0;i<_problem->models().size();i++)
     {
-  curModelPlus = _project->modelPlus(_problem->models().at(i));
-  if(curModelPlus)
-  {
-//      if(compileIfNeeded && !curModelPlus->isCompiled(_problem->ctrl(_problem->models().at(i))))
-//          curModelPlus->compile(_problem->ctrl(_problem->models().at(i)));
-      curVariables = curModelPlus->variables();
-      _allModelsVars->addItems(curVariables,true);
-  }
+        curModelPlus = _project->modelPlus(_problem->models().at(i));
+        if(curModelPlus)
+        {
+//            if(compileIfNeeded && !curModelPlus->isCompiled(_problem->ctrl(_problem->models().at(i))))
+//                curModelPlus->compile(_problem->ctrl(_problem->models().at(i)));
+            curVariables = curModelPlus->variables();
+            _allModelsVars->addItems(curVariables,true);
+        }
     }
 
     _allModelsVars->addItems(_permanentVars,true);
@@ -515,22 +515,22 @@ void WidgetSelectOptVars::setShownColumns()
 
 
     for(int i=0;i<_tableVariables->horizontalHeader()->count();i++)
-  _tableVariables->setColumnHidden(i,!varsColsToShow.contains(i));
+        _tableVariables->setColumnHidden(i,!varsColsToShow.contains(i));
 
     //    QList<int> optColsToHide;
     //    optColsToHide << OptVariable::DESCRIPTION;
     //    for(int i=0;i<optColsToHide.size();i++)
-    //  _tableOptimizedVars->setColumnHidden(optColsToHide.at(i),true);
+    //        _tableOptimizedVars->setColumnHidden(optColsToHide.at(i),true);
 
     //    QList<int> scannedColsToHide;
     //    scannedColsToHide << ScannedVariable::DESCRIPTION;
     //    for(int i=0;i<scannedColsToHide.size();i++)
-    //  _tableSamplingVars->setColumnHidden(scannedColsToHide.at(i),true);
+    //        _tableSamplingVars->setColumnHidden(scannedColsToHide.at(i),true);
 
     //    QList<int> objColsToHide;
     //    objColsToHide << OptObjective::DESCRIPTION;
     //    for(int i=0;i<objColsToHide.size();i++)
-    //  _tableObjectives->setColumnHidden(objColsToHide.at(i),true);
+    //        _tableObjectives->setColumnHidden(objColsToHide.at(i),true);
 
 }
 
@@ -540,25 +540,25 @@ void WidgetSelectOptVars::setDelegates()
     QList<int> values;
     QStringList titles;
     values << OptObjective::MINIMIZE    << OptObjective::MAXIMIZE;
-    titles << "Minimize"          << "Maximize";
+    titles << "Minimize"                << "Maximize";
     GenericDelegate *directionDelegate = new GenericDelegate(values,titles,this);
     _tableObjectives->setItemDelegateForColumn(OptObjective::DIRECTION,directionDelegate);
 
     values.clear();
     titles.clear();
     values << OptObjective::NONE
-     << OptObjective::SUM
-     << OptObjective::AVERAGE
-     << OptObjective::DEVIATION
-     << OptObjective::MINIMUM
-     << OptObjective::MAXIMUM ;
+           << OptObjective::SUM
+           << OptObjective::AVERAGE
+           << OptObjective::DEVIATION
+           << OptObjective::MINIMUM
+           << OptObjective::MAXIMUM ;
 
     titles << "None"
-     << "Sum"
-     << "Average"
-     << "Standard deviation"
-     << "Minimum"
-     << "Maximum";
+           << "Sum"
+           << "Average"
+           << "Standard deviation"
+           << "Minimum"
+           << "Maximum";
 
     GenericDelegate *scanFunctionDelegate = new GenericDelegate(values,titles,this);
     _tableObjectives->setItemDelegateForColumn(OptObjective::SAMPLINGFUNCTION,scanFunctionDelegate);

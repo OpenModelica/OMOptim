@@ -56,15 +56,15 @@ LowTools::~LowTools(void)
 bool LowTools::removeFile(QString filePath)
 {
     if(!QFile::exists(filePath))
-  return true;
+        return true;
 
     bool removeOk = QFile::remove(filePath);
 
     if(!removeOk)
     {
-  QFileInfo fileInfo(filePath);
-  QFile(filePath).setPermissions(fileInfo.permissions() | QFile::WriteUser);
-  removeOk = QFile::remove(filePath);
+        QFileInfo fileInfo(filePath);
+        QFile(filePath).setPermissions(fileInfo.permissions() | QFile::WriteUser);
+        removeOk = QFile::remove(filePath);
     }
     return removeOk;
 }
@@ -78,25 +78,25 @@ bool LowTools::removeDirContents(QString folder)
     QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
     for (int indf=0;indf<files.size();indf++)
     {
-  QFileInfo provFile(files.at(indf).absoluteFilePath());
+        QFileInfo provFile(files.at(indf).absoluteFilePath());
 
-  // provFile.setPermissions(provFile.permissions() | QFile::WriteUser);
-  fileRemoved = dir.remove(provFile.fileName());
-  if(!fileRemoved)
-  {
-      QFile(provFile.absoluteFilePath()).setPermissions(provFile.permissions() | QFile::WriteUser);
-      fileRemoved = dir.remove(provFile.fileName());
-  }
+        // provFile.setPermissions(provFile.permissions() | QFile::WriteUser);
+        fileRemoved = dir.remove(provFile.fileName());
+        if(!fileRemoved)
+        {
+            QFile(provFile.absoluteFilePath()).setPermissions(provFile.permissions() | QFile::WriteUser);
+            fileRemoved = dir.remove(provFile.fileName());
+        }
 
-  allRemoved = fileRemoved && allRemoved;
+        allRemoved = fileRemoved && allRemoved;
     }
 
     QStringList folders = dir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
     QString provFolder;
     for (int indf=0;indf<folders.size();indf++)
     {
-  provFolder = folders[indf];
-  allRemoved = removeDir(dir.absolutePath()+QDir::separator()+provFolder) && allRemoved;
+        provFolder = folders[indf];
+        allRemoved = removeDir(dir.absolutePath()+QDir::separator()+provFolder) && allRemoved;
     }
 
     return allRemoved;
@@ -111,17 +111,17 @@ bool LowTools::removeDirContentsExcept(QString folder,QStringList exceptExtensio
     QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
     for (int indf=0;indf<files.size();indf++)
     {
-  QFileInfo provFile(files.at(indf).absoluteFilePath());
-  if(!exceptExtensions.contains(provFile.suffix()) && !exceptExtensions.contains(provFile.completeSuffix()))
-      allRemoved = dir.remove(provFile.fileName()) && allRemoved;
+        QFileInfo provFile(files.at(indf).absoluteFilePath());
+        if(!exceptExtensions.contains(provFile.suffix()) && !exceptExtensions.contains(provFile.completeSuffix()))
+            allRemoved = dir.remove(provFile.fileName()) && allRemoved;
     }
 
     QStringList folders = dir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
     QString provFolder;
     for (int indf=0;indf<folders.size();indf++)
     {
-  provFolder = folders[indf];
-  allRemoved = removeDir(dir.absolutePath()+QDir::separator()+provFolder) && allRemoved;
+        provFolder = folders[indf];
+        allRemoved = removeDir(dir.absolutePath()+QDir::separator()+provFolder) && allRemoved;
     }
 
     return allRemoved;
@@ -135,29 +135,29 @@ bool LowTools::removeDir(QString folder)
     // if dir already exists, deleting it
     if (dir.exists())
     {
-  LowTools::removeDirContents(folder);
+        LowTools::removeDirContents(folder);
 
-  bool temp = dir.cdUp();
-  dir.refresh();
-  removed = dir.rmdir(folder);
-  if (!removed)
-  {
-      //wait one second before retrying (maybe useful during MOO)
-      SleeperThread::msleep(1000);
-      removed = dir.rmdir(folder);
+        bool temp = dir.cdUp();
+        dir.refresh();
+        removed = dir.rmdir(folder);
+        if (!removed)
+        {
+            //wait one second before retrying (maybe useful during MOO)
+            SleeperThread::msleep(1000);
+            removed = dir.rmdir(folder);
 
-      if(!removed)
-      {
-          InfoSender::instance()->send(Info(ListInfo::FOLDERUNREMOVABLE,folder));
-          return false;
-      }
-  }
+            if(!removed)
+            {
+                InfoSender::instance()->send(Info(ListInfo::FOLDERUNREMOVABLE,folder));
+                return false;
+            }
+        }
 
-  return removed;
+        return removed;
 
     }
     else
-  return true;
+        return true;
 
 }
 
@@ -170,18 +170,18 @@ void LowTools::copyDirContents(QString org,QString dest)
     QDir destDir(dest);
     // if dir does not exist, create it
     if(!destDir.exists())
-  destDir.mkpath(dest);
+        destDir.mkpath(dest);
 
     if (orgDir.exists())
     {
-  QStringList files = orgDir.entryList();
-  for (int indf=0;indf<files.size();indf++)
-  {
-      QString orgFilePath = orgDir.absoluteFilePath(files[indf]);
-      QString destFilePath = destDir.absoluteFilePath(files[indf]);
+        QStringList files = orgDir.entryList();
+        for (int indf=0;indf<files.size();indf++)
+        {
+            QString orgFilePath = orgDir.absoluteFilePath(files[indf]);
+            QString destFilePath = destDir.absoluteFilePath(files[indf]);
 
-      QFile::copy(orgFilePath,destFilePath);
-  }
+            QFile::copy(orgFilePath,destFilePath);
+        }
     }
 }
 
@@ -191,21 +191,21 @@ bool LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
     bool tmpBool;
     if(!folder.exists())
     {
-  LowTools::mkpath(folder.absolutePath(),false);
+        LowTools::mkpath(folder.absolutePath(),false);
     }
 
     for(int i=0;i<files.size();i++)
     {
-  QFileInfo fileInfo(files.at(i));
-  if(folder.exists(fileInfo.fileName()))
-      folder.remove(fileInfo.fileName());
-  tmpBool = QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
-  if(!tmpBool)
-  {
-      SleeperThread::msleep(1000);
-      tmpBool = QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
-  }
-  allCopyOk = allCopyOk && tmpBool;
+        QFileInfo fileInfo(files.at(i));
+        if(folder.exists(fileInfo.fileName()))
+            folder.remove(fileInfo.fileName());
+        tmpBool = QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
+        if(!tmpBool)
+        {
+            SleeperThread::msleep(1000);
+            tmpBool = QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
+        }
+        allCopyOk = allCopyOk && tmpBool;
     }
     return allCopyOk;
 }
@@ -226,15 +226,15 @@ QFileInfoList LowTools::findFiles(QDir folder, QString extension)
 
     more = folder.entryList(fileType,QDir::Files );
     for ( int i=0;i<more.size();i++)
-  result.push_back(QFileInfo(folder,more.at(i)));
+        result.push_back(QFileInfo(folder,more.at(i)));
 
     // reg exp in next line excludes . and .. dirs (and .* actually)
     more = folder.entryList( QDir::Dirs ).filter(QRegExp( "[^.]" ) );
     QString subDirPath;
     for ( int i=0;i<more.size();i++)
     {
-  subDirPath = folder.absolutePath()+QDir::separator()+more.at(i);
-  result.append(LowTools::findFiles(QDir(subDirPath),extension));
+        subDirPath = folder.absolutePath()+QDir::separator()+more.at(i);
+        result.append(LowTools::findFiles(QDir(subDirPath),extension));
     }
 
     return result;
@@ -248,7 +248,7 @@ void LowTools::copyDir(QString org,QString dest)
     QDir destDir(dest);
     // if dir already exists, deleting it
     if(destDir.exists())
-  removeDir(dest);
+        removeDir(dest);
 
     copyDirContents(org,dest);
 }
@@ -262,7 +262,7 @@ bool LowTools::mkpath(QString dirPath,bool eraseExisting)
     //tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
 
     if(tempDir.exists()&&eraseExisting)
-  LowTools::removeDir(dirPath);
+        LowTools::removeDir(dirPath);
 
     bool mkOk = QDir().mkpath(dirPath);
     tempDir.refresh();
@@ -279,8 +279,8 @@ QStringList LowTools::getDuplicates(const QStringList & list)
 
     for(int i=0;i<list.size();i++)
     {
-  if(list.indexOf(list.at(i),i+1)>-1)
-      result.push_back(list.at(i));
+        if(list.indexOf(list.at(i),i+1)>-1)
+            result.push_back(list.at(i));
     }
     return result;
 }
@@ -292,10 +292,10 @@ void LowTools::removeDuplicates(QVector<double> &vector)
 
     for(int i=0;i<vector.size();i++)
     {
-  while(vector.lastIndexOf(vector.at(i))>i)
-  {
-      vector.remove(vector.lastIndexOf(vector.at(i)));
-  }
+        while(vector.lastIndexOf(vector.at(i))>i)
+        {
+            vector.remove(vector.lastIndexOf(vector.at(i)));
+        }
     }
 }
 
@@ -316,39 +316,39 @@ void LowTools::removeWhiteSpaceStrings(QStringList &list)
     int iEmpty=list.indexOf(QRegExp("\\s*"));
     while(iEmpty>-1)
     {
-  list.removeAt(iEmpty);
-  iEmpty=list.indexOf(QRegExp("\\s*"));
+        list.removeAt(iEmpty);
+        iEmpty=list.indexOf(QRegExp("\\s*"));
     }
 }
 
 //void LowTools::sortItemsByField(QList<MOItem *> &list, int iField)
 //{
-//  //filling index
-//  QMap<QVariant,MOItem*> map;
-//  QVariant index;
-//  for(int i=0;i<list.size();i++)
-//  {
-//      index = list.at(i)->getFieldValue(iField);
-//      map.insert(index,list.at(i));
-//  }
-//  QList<QVariant> indexes = map.keys();
+//        //filling index
+//        QMap<QVariant,MOItem*> map;
+//        QVariant index;
+//        for(int i=0;i<list.size();i++)
+//        {
+//            index = list.at(i)->getFieldValue(iField);
+//            map.insert(index,list.at(i));
+//        }
+//        QList<QVariant> indexes = map.keys();
 
 
-//  // try with double
+//        // try with double
 
 
-//  // try with QString
+//        // try with QString
 
 
 
 
-//  //sorting
-//  qSort(indexes.begin(),indexes.end());
+//        //sorting
+//        qSort(indexes.begin(),indexes.end());
 
-//  //filling list
-//  list.clear();
-//  for(int i=0;i<indexes.size();i++)
-//      list.push_back(map.value(indexes.at(i)));
+//        //filling list
+//        list.clear();
+//        for(int i=0;i<indexes.size();i++)
+//            list.push_back(map.value(indexes.at(i)));
 //}
 
 void LowTools::openFolder(QString folderPath)
@@ -368,27 +368,27 @@ QList<int> LowTools::nextIndex(QList<int> oldIndex, QList<int>  maxIndex)
 {
     if(oldIndex.size()<0 || oldIndex.size() != maxIndex.size())
     {
-  return QList<int>();
+        return QList<int>();
     }
     else
     {
-  int iIndex = oldIndex.size()-1;
+        int iIndex = oldIndex.size()-1;
 
-  while((iIndex>-1) && (oldIndex.at(iIndex) == maxIndex.at(iIndex)))
-      iIndex--;
+        while((iIndex>-1) && (oldIndex.at(iIndex) == maxIndex.at(iIndex)))
+            iIndex--;
 
-  if(iIndex==-1)
-      return QList<int>();
-  else
-  {
-      QList<int> newIndex = oldIndex;
-      newIndex.replace(iIndex,newIndex.at(iIndex)+1);
+        if(iIndex==-1)
+            return QList<int>();
+        else
+        {
+            QList<int> newIndex = oldIndex;
+            newIndex.replace(iIndex,newIndex.at(iIndex)+1);
 
-      for(int i = iIndex+1; i<newIndex.size(); i++)
-          newIndex.replace(i,0);
+            for(int i = iIndex+1; i<newIndex.size(); i++)
+                newIndex.replace(i,0);
 
-      return newIndex;
-  }
+            return newIndex;
+        }
     }
 }
 
@@ -400,7 +400,7 @@ int LowTools::round(double d)
 double LowTools::roundToMultiple(double value, double multiple)
 {
     if(multiple==0)
-  return value;
+        return value;
 
     return multiple * round(value/multiple);
 }
@@ -421,9 +421,9 @@ double LowTools::gaussRandom(double average,double dev)
     double x1, x2, w, y;
 
     do {
-  x1 = 2.0 * double(rand()) / double(1.0 + RAND_MAX)- 1.0;
-  x2 = 2.0 * double(rand()) / double(1.0 + RAND_MAX) - 1.0;
-  w = x1 * x1 + x2 * x2;
+        x1 = 2.0 * double(rand()) / double(1.0 + RAND_MAX)- 1.0;
+        x2 = 2.0 * double(rand()) / double(1.0 + RAND_MAX) - 1.0;
+        w = x1 * x1 + x2 * x2;
     } while ( w >= 1.0 );
 
     w = sqrt( (-2.0 * log( w ) ) / w );

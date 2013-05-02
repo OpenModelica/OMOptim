@@ -62,9 +62,9 @@ OneSimulation::OneSimulation(Project* project, ModelPlus* ModPlus)
 
     _ModelPlus = ModPlus;
     if(!ModPlus)
-  _name="One Simulation";
+        _name="One Simulation";
     else
-  _name = "Simulation "+ModPlus->modelName().section(".",-1);
+        _name = "Simulation "+ModPlus->modelName().section(".",-1);
     _omProject = project;
 
 
@@ -110,49 +110,49 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
     ModItem* modModel = ((Project*)_project)->findModItem(modelName);
     if(modModel == NULL)
     {
-  InfoSender::instance()->sendWarning("Unable to find model "+modelName);
-  ok = false;
+        InfoSender::instance()->sendWarning("Unable to find model "+modelName);
+        ok = false;
     }
 
     _ModelPlus = project->modelPlus(modelName);
     if(!_ModelPlus)
     {
-  ok = false;
-  // create vector to avoid segfault when deleted
-  _overwritedVariables = new Variables(true,this);
-  _scannedVariables = new ScannedVariables(true,this);
-  _ctrls = new ModPlusCtrls(project,_ModelPlus,this);
+        ok = false;
+        // create vector to avoid segfault when deleted
+        _overwritedVariables = new Variables(true,this);
+        _scannedVariables = new ScannedVariables(true,this);
+        _ctrls = new ModPlusCtrls(project,_ModelPlus,this);
     }
     else
     {
-  // finishing initialization
-  _overwritedVariables = new Variables(true,this);
-  _scannedVariables = new ScannedVariables(true,this);
-  // Infos
-  this->setName(domInfos.attribute("name", "" ));
+        // finishing initialization
+        _overwritedVariables = new Variables(true,this);
+        _scannedVariables = new ScannedVariables(true,this);
+        // Infos
+        this->setName(domInfos.attribute("name", "" ));
 
-  // Scanned Variables
-  QDomElement domScanVars = domProblem.firstChildElement("ScannedVariables");
-  this->scannedVariables()->setItems(domScanVars);
+        // Scanned Variables
+        QDomElement domScanVars = domProblem.firstChildElement("ScannedVariables");
+        this->scannedVariables()->setItems(domScanVars);
 
-  // Overwrited Variables
-  QDomElement domOverVars = domProblem.firstChildElement("OverwritedVariables");
-  this->overwritedVariables()->setItems(domOverVars);
+        // Overwrited Variables
+        QDomElement domOverVars = domProblem.firstChildElement("OverwritedVariables");
+        this->overwritedVariables()->setItems(domOverVars);
 
-  // Files to copy
-  QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
-  QStringList strList = cFilesToCopy.text().split("\n",QString::SkipEmptyParts);
-  for(int i=0;i<strList.size();i++)
-      this->_filesToCopy.push_back(QFileInfo(strList.at(i)));
+        // Files to copy
+        QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
+        QStringList strList = cFilesToCopy.text().split("\n",QString::SkipEmptyParts);
+        for(int i=0;i<strList.size();i++)
+            this->_filesToCopy.push_back(QFileInfo(strList.at(i)));
 
-  // addOverWritedCVariables
-  // make their value editable
-//  for(int iV=0;iV<this->overwritedVariables()->size();iV++)
-//      this->overwritedVariables()->at(iV)->setIsEditableField(Variable::VALUE,true);
+        // addOverWritedCVariables
+        // make their value editable
+//        for(int iV=0;iV<this->overwritedVariables()->size();iV++)
+//            this->overwritedVariables()->at(iV)->setIsEditableField(Variable::VALUE,true);
 
-  // Controler type
-  QDomElement cControlers = domProblem.firstChildElement("Controlers");
-  _ctrls = new ModPlusCtrls(project,_ModelPlus,cControlers,this);
+        // Controler type
+        QDomElement cControlers = domProblem.firstChildElement("Controlers");
+        _ctrls = new ModPlusCtrls(project,_ModelPlus,cControlers,this);
     }
 
     // qDebug(QString("New OneSimulation").toLatin1().data());
@@ -193,7 +193,7 @@ Result* OneSimulation::launch(ProblemConfig config)
     QFileInfoList moDeps;
     ModModelPlus* modModelPlus = dynamic_cast<ModModelPlus*>(_ModelPlus);
     if(modModelPlus)
-  moDeps.append(modModelPlus->moDependencies());
+        moDeps.append(modModelPlus->moDependencies());
 
     // loop indexes on scannVariables
     QList<int> indexes,maxIndexes;
@@ -201,11 +201,11 @@ Result* OneSimulation::launch(ProblemConfig config)
     ScannedVariable *scannedVar;
     for(int iScanV=0; iScanV < _scannedVariables->size(); iScanV++)
     {
-  indexes.push_back(0);
-  scannedVar = _scannedVariables->at(iScanV);
-  maxIndexes.push_back(scannedVar->nbScans()-1);
-  clonedVar = new Variable(*(dynamic_cast<Variable*>(scannedVar)));
-  updatedVariables.addItem(clonedVar);
+        indexes.push_back(0);
+        scannedVar = _scannedVariables->at(iScanV);
+        maxIndexes.push_back(scannedVar->nbScans()-1);
+        clonedVar = new Variable(*(dynamic_cast<Variable*>(scannedVar)));
+        updatedVariables.addItem(clonedVar);
     }
 
     MOVector<Variable> curVariables(true);
@@ -214,50 +214,50 @@ Result* OneSimulation::launch(ProblemConfig config)
     int iScan=0;
     do
     {
-  // Update values
-  VariablesManip::updateScanValues(&updatedVariables,_scannedVariables,indexes);
+        // Update values
+        VariablesManip::updateScanValues(&updatedVariables,_scannedVariables,indexes);
 
-  // Simulate
-  curVariables.clear();
-  curSimSuccess = ctrl()->simulate(_project->tempPath(), &updatedVariables, &curVariables,
-                                   QFileInfoList() << _ModelPlus->neededFiles() << _filesToCopy,moDeps);
-  allSimSuccess = allSimSuccess && curSimSuccess;
+        // Simulate
+        curVariables.clear();
+        curSimSuccess = ctrl()->simulate(_project->tempPath(), &updatedVariables, &curVariables,
+                                         QFileInfoList() << _ModelPlus->neededFiles() << _filesToCopy,moDeps);
+        allSimSuccess = allSimSuccess && curSimSuccess;
 
-  if(allSimSuccess)
-  {
-      // Add values
-      double curValue;
-      //if it is first scan, finalvariables is an empy vector -> fill with curVariables
-      if(result->finalVariables()->isEmpty())
-      {
-          for(int i=0;i<curVariables.size();i++)
-          {
-              result->finalVariables()->addItem(new VariableResult(*curVariables.at(i)));
-              curValue = curVariables.at(i)->getFieldValue(Variable::VALUE).toDouble();
-              result->finalVariables()->at(i)->setFinalValue(iScan,0,curValue,true);
-          }
-      }
-      else
-      {
-          // append scan values
-          Variable *curVar;
-          for(int i=0;i<result->finalVariables()->size();i++)
-          {
-              curVar = curVariables.findItem(result->finalVariables()->at(i)->name());
-              if(curVar)
-              {
-                  curValue = curVar->value();
-                  result->finalVariables()->at(i)->setFinalValue(iScan,0,curValue,true);
-              }
-              else
-                  result->finalVariables()->at(i)->setFinalValue(iScan,0,-1,false);
-          }
-      }
-  }
+        if(allSimSuccess)
+        {
+            // Add values
+            double curValue;
+            //if it is first scan, finalvariables is an empy vector -> fill with curVariables
+            if(result->finalVariables()->isEmpty())
+            {
+                for(int i=0;i<curVariables.size();i++)
+                {
+                    result->finalVariables()->addItem(new VariableResult(*curVariables.at(i)));
+                    curValue = curVariables.at(i)->getFieldValue(Variable::VALUE).toDouble();
+                    result->finalVariables()->at(i)->setFinalValue(iScan,0,curValue,true);
+                }
+            }
+            else
+            {
+                // append scan values
+                Variable *curVar;
+                for(int i=0;i<result->finalVariables()->size();i++)
+                {
+                    curVar = curVariables.findItem(result->finalVariables()->at(i)->name());
+                    if(curVar)
+                    {
+                        curValue = curVar->value();
+                        result->finalVariables()->at(i)->setFinalValue(iScan,0,curValue,true);
+                    }
+                    else
+                        result->finalVariables()->at(i)->setFinalValue(iScan,0,-1,false);
+                }
+            }
+        }
 
 
-  indexes = LowTools::nextIndex(indexes,maxIndexes);
-  iScan++;
+        indexes = LowTools::nextIndex(indexes,maxIndexes);
+        iScan++;
     }
     while(!indexes.isEmpty() && allSimSuccess);
 
@@ -314,7 +314,7 @@ QDomElement OneSimulation::toXmlData(QDomDocument & doc)
     QDomElement cFilesToCopy = doc.createElement("FilesToCopy");
     QStringList strFilesToCopy;
     for(int i=0;i<_filesToCopy.size();i++)
-  strFilesToCopy.push_back(_filesToCopy.at(i).absoluteFilePath());
+        strFilesToCopy.push_back(_filesToCopy.at(i).absoluteFilePath());
     QDomText cFiles = doc.createTextNode(strFilesToCopy.join("\n"));
     cFilesToCopy.appendChild(cFiles);
     cProblem.appendChild(cFilesToCopy);

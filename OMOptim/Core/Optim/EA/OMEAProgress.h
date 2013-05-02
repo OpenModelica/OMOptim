@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file OMEAProgress.h
+        @file OMEAProgress.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
@@ -47,19 +47,19 @@ class OMEAProgress : public QObject
 {
     Q_OBJECT
 public :
-  OMEAProgress(){
-  curProgress=0;
-  totalEval=1;
+        OMEAProgress(){
+        curProgress=0;
+        totalEval=1;
     }
 
     void setTotalEval(int _totalEval)
     {
-  totalEval = _totalEval;
+        totalEval = _totalEval;
     }
     void setCurEval(int _curEval)
     {
-  curProgress = ((float)_curEval)/((float)totalEval);
-  emit newProgress(curProgress,_curEval,totalEval);
+        curProgress = ((float)_curEval)/((float)totalEval);
+        emit newProgress(curProgress,_curEval,totalEval);
     }
 
 private :

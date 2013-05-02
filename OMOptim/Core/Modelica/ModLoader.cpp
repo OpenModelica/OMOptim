@@ -30,7 +30,7 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file ModLoader.cpp
+        @file ModLoader.cpp
   @brief Comments for file documentation.
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
@@ -58,8 +58,8 @@ bool ModLoader::loadMoFile(ModItemsTree* modItemsTree,QString filePath,QString &
     // Read it in moomc
     if( !QFile::exists(filePath))
     {
-  InfoSender::instance()->send(Info(ListInfo::FILENOTEXISTS,filePath));
-  return false;
+        InfoSender::instance()->send(Info(ListInfo::FILENOTEXISTS,filePath));
+        return false;
     }
 
     // loading file in moomc
@@ -88,16 +88,16 @@ void ModLoader::loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bo
 
     for(int i=0;i<filePaths.size();i++)
     {
-  // Read it in moomc
-  if( !QFile::exists(filePaths.at(i)))
-  {
-      InfoSender::instance()->send(Info(ListInfo::FILENOTEXISTS,filePaths.at(i)));
-  }
-  else
-  {
-      // loading file in moomc
-      _moomc->loadModel(filePaths.at(i),forceLoad,loadOk,error);
-  }
+        // Read it in moomc
+        if( !QFile::exists(filePaths.at(i)))
+        {
+            InfoSender::instance()->send(Info(ListInfo::FILENOTEXISTS,filePaths.at(i)));
+        }
+        else
+        {
+            // loading file in moomc
+            _moomc->loadModel(filePaths.at(i),forceLoad,loadOk,error);
+        }
     }
 
     // clear tree
@@ -119,7 +119,7 @@ void ModLoader::unloadMoFile(ModItemsTree *modItemsTree, QString filePath)
 
     // delete classes
     for(int i=0;i<classNames.size();i++)
-  _moomc->deleteClass(classNames.at(i));
+        _moomc->deleteClass(classNames.at(i));
 
     // clear tree
     modItemsTree->clear();
@@ -133,7 +133,7 @@ int ModLoader::getDepthMax()
 {
     int depthMax = MOSettings::value("DepthReadWhileLoadingModModel").toInt();
     if(depthMax==-1)
-  depthMax = 100000;
+        depthMax = 100000;
     return depthMax;
 }
 

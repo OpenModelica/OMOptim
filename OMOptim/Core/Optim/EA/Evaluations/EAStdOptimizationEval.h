@@ -50,11 +50,11 @@
 #include "LowTools.h"
 
 /** \class EAStdOptimizationEval is a function for evaluating fitness of an individual.
-    * For each individual, it :
-    *    -creates a corresponding OneSimulation problem.
-    *    -set corresponding inputs
-    *    -read results and set corresponding values to objectives
-    */
+          * For each individual, it :
+          *    -creates a corresponding OneSimulation problem.
+          *    -set corresponding inputs
+          *    -read results and set corresponding values to objectives
+          */
 
 
 template<class EOT> class EAStdOptimizationEval : public moeoEvalFunc < EOT >
@@ -69,14 +69,14 @@ public:
      */
     EAStdOptimizationEval(const EAStdOptimizationEval & EAStdOptimizationEval)
     {
-  _problem = EAStdOptimizationEval._problem;
-  _project = EAStdOptimizationEval._project;
-  _modItemsTree = EAStdOptimizationEval._modItemsTree;
-  _tempDir = EAStdOptimizationEval._tempDir;
+        _problem = EAStdOptimizationEval._problem;
+        _project = EAStdOptimizationEval._project;
+        _modItemsTree = EAStdOptimizationEval._modItemsTree;
+        _tempDir = EAStdOptimizationEval._tempDir;
       //  _subModels = EAStdOptimizationEval._subModels;
-  _nbObj = EAStdOptimizationEval._nbObj;
-  _bObjectives = EAStdOptimizationEval._bObjectives;
-  _stop = EAStdOptimizationEval._stop;
+        _nbObj = EAStdOptimizationEval._nbObj;
+        _bObjectives = EAStdOptimizationEval._bObjectives;
+        _stop = EAStdOptimizationEval._stop;
     }
 
 
@@ -84,165 +84,165 @@ public:
      * \brief Ctor.
      */
     EAStdOptimizationEval(Project* project,Optimization* problem/*,QList<QList<ModelPlus*> > subModels*/,QString tempDir
-                     ,ModItemsTree* modItemsTree,bool *stop)
+                           ,ModItemsTree* modItemsTree,bool *stop)
     {
-  _project = project;
-  _problem = problem;
-  _modItemsTree = modItemsTree;
-  _tempDir = tempDir;
+        _project = project;
+        _problem = problem;
+        _modItemsTree = modItemsTree;
+        _tempDir = tempDir;
      //   _subModels = subModels;
-  _stop = stop;
+        _stop = stop;
 
-  /************************************
-  OBJECTIVE FUNCTIONS DEFINITION
-  ************************************/
-  _nbObj = _problem->objectives()->size();
-  OptObjective::Direction objDirection;
+        /************************************
+        OBJECTIVE FUNCTIONS DEFINITION
+        ************************************/
+        _nbObj = _problem->objectives()->size();
+        OptObjective::Direction objDirection;
 
-  for(unsigned int iObj=0;iObj<_nbObj;iObj++)
-  {
-      objDirection = problem->objectives()->at(iObj)->direction();
-      if(objDirection == OptObjective::MINIMIZE)
-      {
-          _bObjectives.push_back(true);
-      }
-      else
-      {
-          _bObjectives.push_back(false);
-      }
-  }
-  moeoObjectiveVectorTraits::setup(_nbObj,_bObjectives);
+        for(unsigned int iObj=0;iObj<_nbObj;iObj++)
+        {
+            objDirection = problem->objectives()->at(iObj)->direction();
+            if(objDirection == OptObjective::MINIMIZE)
+            {
+                _bObjectives.push_back(true);
+            }
+            else
+            {
+                _bObjectives.push_back(false);
+            }
+        }
+        moeoObjectiveVectorTraits::setup(_nbObj,_bObjectives);
 
     }
 
     void operator () (EOT & eo)
     {
-  if(*_stop)
-  {
-      eo.objectiveVector(worstObjVec());
-      return;
-  }
+        if(*_stop)
+        {
+            eo.objectiveVector(worstObjVec());
+            return;
+        }
 
-  if ( eo.invalidObjectiveVector())
-  {
-      moeoRealObjectiveVector< moeoObjectiveVectorTraits > objVec;
+        if ( eo.invalidObjectiveVector())
+        {
+            moeoRealObjectiveVector< moeoObjectiveVectorTraits > objVec;
 
-      QList<ModelPlus*> models;
-
-
-//      int iSubModel = -1;
-//      if(_subModels.size()>1)
-//      {
-//          iSubModel = eo.intVars.at(eo.intVars.size()-1);
-//          models = _subModels.at(iSubModel);
-//      }
-//      else
-//      {
-          QStringList modelsNames = _problem->models();
-          for(int i=0;i<modelsNames.size();i++)
-              models.push_back(_project->modelPlus(modelsNames.at(i)));
-//      }
+            QList<ModelPlus*> models;
 
 
-      //******************************
-      // get variables
-      //******************************
-      Variables* overwritedVariables = new Variables(true,NULL);
-      Variable *curVar;
-      int iDouble = 0;
-      int iBool = 0;
-      int iInt = 0;
-
-      int nbVars = _problem->optimizedVariables()->size();
-      for(int i=0;i<nbVars;i++)
-      {
-          curVar = new Variable(*_problem->optimizedVariables()->at(i));
-          switch(curVar->getFieldValue(Variable::DATATYPE).toInt())
-          {
-          case OMREAL :
-              curVar->setValue(eo.doubleVars.at(iDouble));
-              iDouble++;
-              break;
-          case OMBOOLEAN :
-              curVar->setValue(eo.boolVars.at(iBool));
-              iBool++;
-              break;
-          case OMINTEGER :
-              curVar->setValue(eo.intVars.at(iInt));
-              iInt++;
-              break;
-          }
-          overwritedVariables->addItem(curVar);
-      }
-
-      // copying relevant scanned variables
-      ScannedVariables* scannedVariables = _problem->scannedVariables()->clone();
-
-      /************************************
-              Evaluate
-      ************************************/
-      bool evaluationOk = true;
-      MOOptVector* resultVariables = _problem->evaluate(models,overwritedVariables,scannedVariables,evaluationOk);
+//            int iSubModel = -1;
+//            if(_subModels.size()>1)
+//            {
+//                iSubModel = eo.intVars.at(eo.intVars.size()-1);
+//                models = _subModels.at(iSubModel);
+//            }
+//            else
+//            {
+                QStringList modelsNames = _problem->models();
+                for(int i=0;i<modelsNames.size();i++)
+                    models.push_back(_project->modelPlus(modelsNames.at(i)));
+//            }
 
 
-      /************************************
-      Read results
-      ************************************/
+            //******************************
+            // get variables
+            //******************************
+            Variables* overwritedVariables = new Variables(true,NULL);
+            Variable *curVar;
+            int iDouble = 0;
+            int iBool = 0;
+            int iInt = 0;
 
-      bool readingObjOk = true;
-      if(evaluationOk)
-      {
-          //Recover Objective values
-          int nbObj = _problem->objectives()->size();
-          int iObj=0;
-          double curObjResult;
-          OptObjective* curObj;
+            int nbVars = _problem->optimizedVariables()->size();
+            for(int i=0;i<nbVars;i++)
+            {
+                curVar = new Variable(*_problem->optimizedVariables()->at(i));
+                switch(curVar->getFieldValue(Variable::DATATYPE).toInt())
+                {
+                case OMREAL :
+                    curVar->setValue(eo.doubleVars.at(iDouble));
+                    iDouble++;
+                    break;
+                case OMBOOLEAN :
+                    curVar->setValue(eo.boolVars.at(iBool));
+                    iBool++;
+                    break;
+                case OMINTEGER :
+                    curVar->setValue(eo.intVars.at(iInt));
+                    iInt++;
+                    break;
+                }
+                overwritedVariables->addItem(curVar);
+            }
 
-          while(readingObjOk && (iObj<nbObj))
-          {
-              curObj = _problem->objectives()->at(iObj);
+            // copying relevant scanned variables
+            ScannedVariables* scannedVariables = _problem->scannedVariables()->clone();
 
-              //looking for its value in resultVariables
-              curObjResult = VariablesManip::calculateObjValue(curObj,resultVariables,readingObjOk,0);
-              objVec[iObj]=curObjResult;
+            /************************************
+                    Evaluate
+            ************************************/
+            bool evaluationOk = true;
+            MOOptVector* resultVariables = _problem->evaluate(models,overwritedVariables,scannedVariables,evaluationOk);
 
-              iObj++;
-          }
 
-          // recover saved variables
-          // first delete those ( may contain old values from previous generations)
-          eo.savedVars.clear();
+            /************************************
+            Read results
+            ************************************/
 
-          QString curVarName;
-          QString curModelName;
-          VariableResult* curVarResult;
-          for(int i=0;i<_problem->savedVars()->size();i++)
-          {
-              curVarName=_problem->savedVars()->at(i)->name(Variable::SHORT);
-              curModelName=_problem->savedVars()->at(i)->model();
-              curVarResult = resultVariables->findVariable(curModelName,curVarName);
-              if(curVarResult)
-                  eo.savedVars.push_back(curVarResult->finalValue(0,0));
-              else
-                  eo.savedVars.push_back(LowTools::nan());
-          }
-      }
+            bool readingObjOk = true;
+            if(evaluationOk)
+            {
+                //Recover Objective values
+                int nbObj = _problem->objectives()->size();
+                int iObj=0;
+                double curObjResult;
+                OptObjective* curObj;
 
-      if (!evaluationOk || !readingObjOk)
-      {
-          // Penalty
-          objVec = worstObjVec();
-      }
+                while(readingObjOk && (iObj<nbObj))
+                {
+                    curObj = _problem->objectives()->at(iObj);
 
-      eo.objectiveVector(objVec);
+                    //looking for its value in resultVariables
+                    curObjResult = VariablesManip::calculateObjValue(curObj,resultVariables,readingObjOk,0);
+                    objVec[iObj]=curObjResult;
 
-      //************
-      // free memory
-      //************
-      delete resultVariables;
-      delete overwritedVariables;
-      delete scannedVariables;
-  }
+                    iObj++;
+                }
+
+                // recover saved variables
+                // first delete those ( may contain old values from previous generations)
+                eo.savedVars.clear();
+
+                QString curVarName;
+                QString curModelName;
+                VariableResult* curVarResult;
+                for(int i=0;i<_problem->savedVars()->size();i++)
+                {
+                    curVarName=_problem->savedVars()->at(i)->name(Variable::SHORT);
+                    curModelName=_problem->savedVars()->at(i)->model();
+                    curVarResult = resultVariables->findVariable(curModelName,curVarName);
+                    if(curVarResult)
+                        eo.savedVars.push_back(curVarResult->finalValue(0,0));
+                    else
+                        eo.savedVars.push_back(LowTools::nan());
+                }
+            }
+
+            if (!evaluationOk || !readingObjOk)
+            {
+                // Penalty
+                objVec = worstObjVec();
+            }
+
+            eo.objectiveVector(objVec);
+
+            //************
+            // free memory
+            //************
+            delete resultVariables;
+            delete overwritedVariables;
+            delete scannedVariables;
+        }
     }
 
     /** \brief creates the worst objective vector as to be unconsidered in population
@@ -250,16 +250,16 @@ public:
       */
     moeoRealObjectiveVector< moeoObjectiveVectorTraits > worstObjVec()
     {
-  moeoRealObjectiveVector< moeoObjectiveVectorTraits > objVec;
+        moeoRealObjectiveVector< moeoObjectiveVectorTraits > objVec;
 
-  for(int i=0;i<_nbObj;i++)
-  {
-      if(_bObjectives[i])
-          objVec[i]=std::numeric_limits<double>::infinity();
-      else
-          objVec[i]=-std::numeric_limits<double>::infinity();
-  }
-  return objVec;
+        for(int i=0;i<_nbObj;i++)
+        {
+            if(_bObjectives[i])
+                objVec[i]=std::numeric_limits<double>::infinity();
+            else
+                objVec[i]=-std::numeric_limits<double>::infinity();
+        }
+        return objVec;
     }
 
 protected:

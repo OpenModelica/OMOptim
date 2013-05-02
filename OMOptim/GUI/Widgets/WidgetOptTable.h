@@ -70,8 +70,8 @@ public:
     OptimResult* result;
 
     public slots:
-  void onResultCurPointChanged();
-  
+        void onResultCurPointChanged();
+        
 
 };
 

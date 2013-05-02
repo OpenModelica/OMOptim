@@ -51,11 +51,11 @@ class ModelicaConnections : public MOVector<ModelicaConnection>
 {
 
 public:
-  ModelicaConnections(ModItemsTree*);
+        ModelicaConnections(ModItemsTree*);
     ~ModelicaConnections(void);
 
 private :
-  ModItemsTree* _modItemsTree;
+        ModItemsTree* _modItemsTree;
 
 public :
 
@@ -88,7 +88,7 @@ public :
 //    QStringList getOutsideConnectingPortsNames(ModItem*,bool includeChildren,Modelica::NameFormat format);
 
 private :
-  bool portIsInElement(QString portName,QString elementName);
+        bool portIsInElement(QString portName,QString elementName);
 
 };
 

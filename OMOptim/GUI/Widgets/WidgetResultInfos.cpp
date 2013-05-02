@@ -1,5 +1,5 @@
 // $Id: WidgetResultInfos.cpp 10786 2011-12-19 17:10:19Z hubert.thieriot $
-  /**
+        /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),

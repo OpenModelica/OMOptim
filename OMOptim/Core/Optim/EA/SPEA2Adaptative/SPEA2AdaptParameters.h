@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file SPEA2AdaptParameters.h
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version 0.9
+        @file SPEA2AdaptParameters.h
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version 0.9
 
   */
 
@@ -50,49 +50,49 @@ class SPEA2AdaptParameters
 public :
     enum parameters
     {
-  POPULATIONSIZE,
-  OFFSPRINGRATE,
-  MAXGENERATIONS,
-  SAVEFREQUENCY,
-  USESTARTFILE,
-  STARTFILEPATH,
-  REINITSTDDEV
+        POPULATIONSIZE,
+        OFFSPRINGRATE,
+        MAXGENERATIONS,
+        SAVEFREQUENCY,
+        USESTARTFILE,
+        STARTFILEPATH,
+        REINITSTDDEV
     };
 
     static QString str(parameters index)
     {
-  switch(index)
-  {
-  case POPULATIONSIZE :return "PopulationSize";
-  case OFFSPRINGRATE :return "OffspringRate";
-  case MAXGENERATIONS : return "MaxGen";
-  case SAVEFREQUENCY :return "SaveFrequency";
-  case USESTARTFILE :return "UseStartFile";
-  case STARTFILEPATH :return "StartFilePath";
-  case REINITSTDDEV : return "ReinitStdDev";
-  }
-  return QString();
+        switch(index)
+        {
+        case POPULATIONSIZE :return "PopulationSize";
+        case OFFSPRINGRATE :return "OffspringRate";
+        case MAXGENERATIONS : return "MaxGen";
+        case SAVEFREQUENCY :return "SaveFrequency";
+        case USESTARTFILE :return "UseStartFile";
+        case STARTFILEPATH :return "StartFilePath";
+        case REINITSTDDEV : return "ReinitStdDev";
+        }
+        return QString();
     }
 
     static void setDefaultParameters(MOParameters *parameters)
     {
 
-  parameters->addItem(new MOParameter(str(POPULATIONSIZE),"Population size",50,MOParameter::INT,1,1000));
-  parameters->addItem(new MOParameter(str(OFFSPRINGRATE),"OffSpring size/PopulationSize",3,MOParameter::INT,1,1000));
-  parameters->addItem(new MOParameter(str(MAXGENERATIONS),"Max Generations",100,MOParameter::INT,0,100000));
-  parameters->addItem(new MOParameter(str(SAVEFREQUENCY),"Population saving frequency (# generations, 0 = save only final state)",1,MOParameter::INT,0,10000000));
+        parameters->addItem(new MOParameter(str(POPULATIONSIZE),"Population size",50,MOParameter::INT,1,1000));
+        parameters->addItem(new MOParameter(str(OFFSPRINGRATE),"OffSpring size/PopulationSize",3,MOParameter::INT,1,1000));
+        parameters->addItem(new MOParameter(str(MAXGENERATIONS),"Max Generations",100,MOParameter::INT,0,100000));
+        parameters->addItem(new MOParameter(str(SAVEFREQUENCY),"Population saving frequency (# generations, 0 = save only final state)",1,MOParameter::INT,0,10000000));
 
-  // pursue computation
-  parameters->addItem(new MOParameter(str(USESTARTFILE),"Use start file (restart from previous result)",false,MOParameter::BOOL));
-  parameters->addItem(new MOParameter(str(STARTFILEPATH),"Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
-  parameters->addItem(new MOParameter(str(REINITSTDDEV),"Reinitialize StdDeviation (for pursuing optimization only)",0,MOParameter::BOOL));
+        // pursue computation
+        parameters->addItem(new MOParameter(str(USESTARTFILE),"Use start file (restart from previous result)",false,MOParameter::BOOL));
+        parameters->addItem(new MOParameter(str(STARTFILEPATH),"Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
+        parameters->addItem(new MOParameter(str(REINITSTDDEV),"Reinitialize StdDeviation (for pursuing optimization only)",0,MOParameter::BOOL));
 
-  // make parameters enabled only when needed
-  QStringList grIndexes;
-  grIndexes << str(USESTARTFILE) << str(STARTFILEPATH) << str(REINITSTDDEV);
-  parameters->setGroup("Pursue computation",grIndexes);
-  grIndexes.removeAll(str(USESTARTFILE));
-  parameters->addEnablingIndex(grIndexes,str(USESTARTFILE),true);
+        // make parameters enabled only when needed
+        QStringList grIndexes;
+        grIndexes << str(USESTARTFILE) << str(STARTFILEPATH) << str(REINITSTDDEV);
+        parameters->setGroup("Pursue computation",grIndexes);
+        grIndexes.removeAll(str(USESTARTFILE));
+        parameters->addEnablingIndex(grIndexes,str(USESTARTFILE),true);
     };
 };
 

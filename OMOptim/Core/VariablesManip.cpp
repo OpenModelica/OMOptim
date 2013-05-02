@@ -62,23 +62,23 @@ void VariablesManip::updateScanValues(Variables *vars, ScannedVariables *scanned
 
     for(iov=0;iov<scannedVars->size();iov++)
     {
-  curName = scannedVars->at(iov)->name();
-  var=vars->findItem(curName);
+        curName = scannedVars->at(iov)->name();
+        var=vars->findItem(curName);
 
-  if(var)
-  {
-      curMin = scannedVars->at(iov)->getFieldValue(ScannedVariable::SCANMIN).toDouble();
-      curStep = scannedVars->at(iov)->getFieldValue(ScannedVariable::SCANSTEP).toDouble();
-      curValue = curMin + iScan.at(iov) * curStep;
+        if(var)
+        {
+            curMin = scannedVars->at(iov)->getFieldValue(ScannedVariable::SCANMIN).toDouble();
+            curStep = scannedVars->at(iov)->getFieldValue(ScannedVariable::SCANSTEP).toDouble();
+            curValue = curMin + iScan.at(iov) * curStep;
 
-      var->setFieldValue(Variable::VALUE,curValue);
-  }
-  else
-  {
-      QString msg;
-      msg.sprintf("in updateScanValues(), unable to find variable %s",curName.utf16());
-      InfoSender::instance()->debug(msg);
-  }
+            var->setFieldValue(Variable::VALUE,curValue);
+        }
+        else
+        {
+            QString msg;
+            msg.sprintf("in updateScanValues(), unable to find variable %s",curName.utf16());
+            InfoSender::instance()->debug(msg);
+        }
     }
 }
 
@@ -86,7 +86,7 @@ int VariablesManip::nbScans(ScannedVariables *scannedVars)
 {
     int nbScans = 1;
     for(int i=0;i<scannedVars->size();i++)
-  nbScans = nbScans*scannedVars->at(i)->nbScans();
+        nbScans = nbScans*scannedVars->at(i)->nbScans();
     
     return nbScans;
 }
@@ -98,43 +98,43 @@ double VariablesManip::calculateObjValue(OptObjective* optObj,MOOptVector * oneS
     double result;
     if(!varObj)
     {
-  InfoSender::instance()->send(Info("Could not find variable "+optObj->name()+". Setting value to 0",ListInfo::WARNING2));
-  ok = false;
-  return 0;
+        InfoSender::instance()->send(Info("Could not find variable "+optObj->name()+". Setting value to 0",ListInfo::WARNING2));
+        ok = false;
+        return 0;
     }
     else
     {
-  switch(optObj->scanFunction())
-  {
-  case OptObjective::SUM :
-      result = VariablesManip::calculateScanSum(varObj,ok,iPoint);
-      break;
-  case OptObjective::AVERAGE :
-      result = VariablesManip::calculateScanAverage(varObj,ok,iPoint);
-      break;
-  case OptObjective::DEVIATION :
-      result = VariablesManip::calculateScanStandardDev(varObj,ok,iPoint);
-      break;
-  case OptObjective::MINIMUM :
-      result = VariablesManip::extractMinimum(varObj,ok,iPoint);
-      break;
-  case OptObjective::MAXIMUM :
-      result = VariablesManip::extractMaximum(varObj,ok,iPoint);
-      break;
-  default :
-      result = varObj->finalValue(0,iPoint);
-      ok=true;
-      break;
-  }
+        switch(optObj->scanFunction())
+        {
+        case OptObjective::SUM :
+            result = VariablesManip::calculateScanSum(varObj,ok,iPoint);
+            break;
+        case OptObjective::AVERAGE :
+            result = VariablesManip::calculateScanAverage(varObj,ok,iPoint);
+            break;
+        case OptObjective::DEVIATION :
+            result = VariablesManip::calculateScanStandardDev(varObj,ok,iPoint);
+            break;
+        case OptObjective::MINIMUM :
+            result = VariablesManip::extractMinimum(varObj,ok,iPoint);
+            break;
+        case OptObjective::MAXIMUM :
+            result = VariablesManip::extractMaximum(varObj,ok,iPoint);
+            break;
+        default :
+            result = varObj->finalValue(0,iPoint);
+            ok=true;
+            break;
+        }
     }
 
     if(ok && (result>=optObj->min())
-      &&(result<=optObj->max()))
-  return result;
+            &&(result<=optObj->max()))
+        return result;
     else
     {
-  ok = false;
-  return 0;
+        ok = false;
+        return 0;
     }
 }
 
@@ -143,14 +143,14 @@ double VariablesManip::calculateScanSum(VariableResult *var,bool &ok, int iPoint
     int nbScans = var->nbScans();
     if(nbScans==0)
     {
-  ok=false;
-  return 0;
+        ok=false;
+        return 0;
     }
     
     double sum = 0;
     for(int iScan=0;iScan<nbScans;iScan++)
     {
-  sum += var->finalValue(iScan,iPoint);
+        sum += var->finalValue(iScan,iPoint);
     }
     ok=true;
     return sum;
@@ -160,8 +160,8 @@ double VariablesManip::calculateScanAverage(VariableResult* var,bool &ok, int iP
     int nbScans = var->nbScans();
     if(nbScans==0)
     {
-  ok=false;
-  return 0;
+        ok=false;
+        return 0;
     }
 
     double sum = calculateScanSum(var,ok,iPoint);
@@ -174,14 +174,14 @@ double VariablesManip::calculateScanStandardDev(VariableResult* var,bool &ok, in
     int nbScans = var->nbScans();
     if(nbScans==0)
     {
-  ok=false;
-  return 0;
+        ok=false;
+        return 0;
     }
 
     double variance = 0;
     for(int iScan=0;iScan<nbScans;iScan++)
     {
-  variance += pow(var->finalValue(iScan,iPoint)-avg,2);
+        variance += pow(var->finalValue(iScan,iPoint)-avg,2);
     }
     variance = variance / nbScans;
     double stdDev = sqrt(variance);
@@ -194,17 +194,17 @@ double VariablesManip::extractMinimum(VariableResult* var,bool &ok, int iPoint)
     double min;
     if(nbScans==0)
     {
-  ok=false;
-  return 0;
+        ok=false;
+        return 0;
     }
     else
     {
-  min = var->finalValue(0,iPoint);
+        min = var->finalValue(0,iPoint);
     }
 
     for(int iScan=1;iScan<nbScans;iScan++)
     {
-  min += std::min(min,var->finalValue(iScan,iPoint));
+        min += std::min(min,var->finalValue(iScan,iPoint));
     }
     ok=true;
     return min;
@@ -217,17 +217,17 @@ double VariablesManip::extractMaximum(VariableResult* var,bool &ok, int iPoint)
     double max;
     if(nbScans==0)
     {
-  ok=false;
-  return 0;
+        ok=false;
+        return 0;
     }
     else
     {
-  max = var->finalValue(0,iPoint);
+        max = var->finalValue(0,iPoint);
     }
 
     for(int iScan=1;iScan<nbScans;iScan++)
     {
-  max += std::max(max,var->finalValue(iScan,iPoint));
+        max += std::max(max,var->finalValue(iScan,iPoint));
     }
     ok=true;
     return max;

@@ -80,8 +80,8 @@ bool testDirRes(std::string _dirName, bool _erase);
  */
 template < class MOEOT >
 eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _state, eoEvalFuncCounter < MOEOT > & _eval,
-                                         eoContinue < MOEOT > & _continue, eoPop < MOEOT > & _pop, moeoArchive < MOEOT > & _archive,
-                                         Project* _project, MOParameters *_parameters,QString tempDir, int nbObj)
+                                               eoContinue < MOEOT > & _continue, eoPop < MOEOT > & _pop, moeoArchive < MOEOT > & _archive,
+                                               Project* _project, MOParameters *_parameters,QString tempDir, int nbObj)
 {
     eoCheckPoint < MOEOT > & checkpoint = _state.storeFunctor(new eoCheckPoint < MOEOT > (_continue));
     /* the objective vector type */
@@ -113,13 +113,13 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
     eoCountedStateSaver *stateSaver1;
     if(saveFreq==0)
     {
-  //just save last state (saveFreq is replaced by maximum number of iterations in order to avoid intermediate saving)
-  stateSaver1 = new eoCountedStateSaver(maxIter, _state, genSaveFilePath.toStdString(),true);
+        //just save last state (saveFreq is replaced by maximum number of iterations in order to avoid intermediate saving)
+        stateSaver1 = new eoCountedStateSaver(maxIter, _state, genSaveFilePath.toStdString(),true);
     }
     else
     {
-  // save every "savefreq" generations
-  stateSaver1 = new eoCountedStateSaver(saveFreq, _state, genSaveFilePath.toStdString(),true);
+        // save every "savefreq" generations
+        stateSaver1 = new eoCountedStateSaver(saveFreq, _state, genSaveFilePath.toStdString(),true);
     }
     _state.storeFunctor(stateSaver1);
     checkpoint.add(*stateSaver1);
@@ -163,11 +163,11 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
     bool useGnuplot = MOSettings::value("useGnuplot",false).toBool();
     if(useGnuplot /*&& nbObj>1*/)
     {
-  MyEoGnuplot1DMonitor *gnuplotMonitor = new MyEoGnuplot1DMonitor(QDir(tempDir),nbObj,false);
-  checkpoint.add(*gnuplotMonitor);
-  _state.storeFunctor(gnuplotMonitor);
-  gnuplotMonitor->add(*evalCounter);
-  gnuplotMonitor->add(*bestStat);
+        MyEoGnuplot1DMonitor *gnuplotMonitor = new MyEoGnuplot1DMonitor(QDir(tempDir),nbObj,false);
+        checkpoint.add(*gnuplotMonitor);
+        _state.storeFunctor(gnuplotMonitor);
+        gnuplotMonitor->add(*evalCounter);
+        gnuplotMonitor->add(*bestStat);
     }
 
     eoFileMonitor *bestStatsFileMonitor = new eoFileMonitor(bestStatsSaveFilePath.toStdString());
@@ -198,8 +198,8 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
 // */
 //template < class MOEOT >
 //moCheckpoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _state, eoEvalFuncCounter < MOEOT > & _eval,
-//                                                                                   eoContinue < MOEOT > & _continue, MOEOT & _sol, moeoArchive < MOEOT > & _archive,
-//                                                 Project* _project, MOParameters *_parameters,QString tempDir)
+//                                                                                         eoContinue < MOEOT > & _continue, MOEOT & _sol, moeoArchive < MOEOT > & _archive,
+//                                                       Project* _project, MOParameters *_parameters,QString tempDir)
 //{
 //  moCheckpoint < MOEOT > & checkpoint = _state.storeFunctor(new moCheckpoint < MOEOT > (_continue));
 //  /* the objective vector type */
@@ -232,13 +232,13 @@ eoCheckPoint < MOEOT > & createEAStdCheckPoint(eoParser & _parser, eoState & _st
 //  eoCountedStateSaver *stateSaver1;
 //  if(saveFreq==0)
 //  {
-//    //just save last state (saveFreq is replaced by maximum number of iterations in order to avoid intermediate saving)
-//    stateSaver1 = new eoCountedStateSaver(maxIter, _state, genSaveFilePath.toStdString(),true);
+//          //just save last state (saveFreq is replaced by maximum number of iterations in order to avoid intermediate saving)
+//          stateSaver1 = new eoCountedStateSaver(maxIter, _state, genSaveFilePath.toStdString(),true);
 //  }
 //  else
 //  {
-//    // save every "savefreq" generations
-//    stateSaver1 = new eoCountedStateSaver(saveFreq, _state, genSaveFilePath.toStdString(),true);
+//          // save every "savefreq" generations
+//          stateSaver1 = new eoCountedStateSaver(saveFreq, _state, genSaveFilePath.toStdString(),true);
 //  }
 //  _state.storeFunctor(stateSaver1);
 //  checkpoint.add(*stateSaver1);

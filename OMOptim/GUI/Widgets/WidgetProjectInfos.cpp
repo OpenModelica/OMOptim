@@ -30,7 +30,7 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file WidgetProjectInfos.cpp
+        @file WidgetProjectInfos.cpp
   @brief Comments for file documentation.
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
@@ -82,38 +82,38 @@ void WidgetProjectInfos::actualizeGuiFromProject()
     if(_project->isDefined())
     {
 
-  QString msg;
-  msg = "<b>Project name</b> : " + _project->name() +" <br> ";
-  msg += "<b>Project file</b> : <A href=\"file:///"+ _project->filePath() +"\">"+_project->filePath()+"</A>" +" <br> ";
-  msg += "<b>Project folder</b> :  <A href=\"file:///"+ _project->folder().absolutePath() +"\">"+_project->folder().absolutePath()+"</A>" + " <br> ";
-  msg += "<b>ModelFiles</b> <br> ";
+        QString msg;
+        msg = "<b>Project name</b> : " + _project->name() +" <br> ";
+        msg += "<b>Project file</b> : <A href=\"file:///"+ _project->filePath() +"\">"+_project->filePath()+"</A>" +" <br> ";
+        msg += "<b>Project folder</b> :  <A href=\"file:///"+ _project->folder().absolutePath() +"\">"+_project->folder().absolutePath()+"</A>" + " <br> ";
+        msg += "<b>ModelFiles</b> <br> ";
 
-  QStringList listMO;
-  for(int i=0;i<_project->moFiles().size();i++)
-  {
-      listMO.push_back(_project->moFiles().at(i).absoluteFilePath());
-  }
-  msg += listMO.join("<br>")+"<br>";
+        QStringList listMO;
+        for(int i=0;i<_project->moFiles().size();i++)
+        {
+            listMO.push_back(_project->moFiles().at(i).absoluteFilePath());
+        }
+        msg += listMO.join("<br>")+"<br>";
 
-  msg += "<b>Plugins</b> <br> ";
-  QStringList listPlugins;
-  QStringList pluginsNames(_project->pluginsLoaded().keys());
-  for(int i=0;i<pluginsNames.size();i++)
-  {
-      listPlugins.push_back(pluginsNames.at(i)+"\t"+_project->pluginsLoaded().values().at(i));
-  }
-  msg += listPlugins.join("<br>");
+        msg += "<b>Plugins</b> <br> ";
+        QStringList listPlugins;
+        QStringList pluginsNames(_project->pluginsLoaded().keys());
+        for(int i=0;i<pluginsNames.size();i++)
+        {
+            listPlugins.push_back(pluginsNames.at(i)+"\t"+_project->pluginsLoaded().values().at(i));
+        }
+        msg += listPlugins.join("<br>");
 
-  _myTextBrowser->setText(msg);
-  _myTextBrowser->setOpenExternalLinks(true);
-  _myTextBrowser->setOpenLinks(false);
-  _ui->widgetInfos->show();
-  _ui->widgetBeginning->hide();
+        _myTextBrowser->setText(msg);
+        _myTextBrowser->setOpenExternalLinks(true);
+        _myTextBrowser->setOpenLinks(false);
+        _ui->widgetInfos->show();
+        _ui->widgetBeginning->hide();
     }
     else
     {
-  _ui->widgetInfos->hide();
-  _ui->widgetBeginning->show();
+        _ui->widgetInfos->hide();
+        _ui->widgetBeginning->show();
     }
 }
 

@@ -54,7 +54,7 @@ Result::Result(ProjectBase* project,const Problem & problem)
     _success = false;
 
     if(_problem)
-  _name = _problem->name()+"_Result";
+        _name = _problem->name()+"_Result";
 }
 
 Result::Result(const Result &result)
@@ -65,9 +65,9 @@ Result::Result(const Result &result)
 
     // filled pointers
     if(result._problem)
-  _problem = result._problem->clone();
+        _problem = result._problem->clone();
     else
-  _problem = NULL;
+        _problem = NULL;
 
     // information
     _success = result._success;
@@ -82,15 +82,15 @@ Result::Result(const Result &result)
 Result::~Result(void)
 {
     if(_problem)
-  delete _problem;
+        delete _problem;
 }
 
 void Result::setDefaultSaveFileName()
 {
     if(_name.isEmpty())
-  _saveFileName= "result.mpb";
+        _saveFileName= "result.mpb";
     else
-  _saveFileName = _name + ".mpb";
+        _saveFileName = _name + ".mpb";
 }
 
 QString Result::getFieldName(int field,int role)
@@ -110,7 +110,7 @@ Problem* Result::problem() const
 void Result::setProblem(Problem & problem)
 {
     if(_problem)
-  delete _problem;
+        delete _problem;
 
     _problem = problem.clone();
 }

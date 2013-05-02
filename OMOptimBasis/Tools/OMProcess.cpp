@@ -9,7 +9,7 @@ OMProcess::OMProcess(QObject *parent) :
 
     setProcessChannelMode(MergedChannels);
     if(_dispOut)
-  connect(this,SIGNAL(readyReadStandardOutput()),this,SLOT(onReadyRead()));
+        connect(this,SIGNAL(readyReadStandardOutput()),this,SLOT(onReadyRead()));
 }
 
 void OMProcess::onReadyRead()

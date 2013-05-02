@@ -81,13 +81,13 @@ OptimAlgos::OptimAlgos(Project* project,Problem* problem)
 
     for(int i=0;i<OptimAlgosList::nbAlgos;i++)
     {
-  OptimAlgo* newAlgo;
-  newAlgo = OptimAlgosList::getNewAlgo(project,problem,(OptimAlgosList::Type)i);
-  this->insertAlgo(newAlgo->name(),newAlgo);
+        OptimAlgo* newAlgo;
+        newAlgo = OptimAlgosList::getNewAlgo(project,problem,(OptimAlgosList::Type)i);
+        this->insertAlgo(newAlgo->name(),newAlgo);
     }
 
     if(keys().size()>0)
-  setCurrentAlgo(keys().at(0));
+        setCurrentAlgo(keys().at(0));
 }
 
 OptimAlgos::OptimAlgos(Project* project,Problem* problem,const QDomElement & cAlgos)
@@ -98,39 +98,39 @@ OptimAlgos::OptimAlgos(Project* project,Problem* problem,const QDomElement & cAl
 
     for(int i=0;i<OptimAlgosList::nbAlgos;i++)
     {
-  OptimAlgo* newAlgo;
-  newAlgo = OptimAlgosList::getNewAlgo(project,problem,(OptimAlgosList::Type)i);
-  this->insertAlgo(newAlgo->name(),newAlgo);
+        OptimAlgo* newAlgo;
+        newAlgo = OptimAlgosList::getNewAlgo(project,problem,(OptimAlgosList::Type)i);
+        this->insertAlgo(newAlgo->name(),newAlgo);
     }
 
 
     if(!cAlgos.isNull() && cAlgos.tagName()==className())
     {
-  // Controler type
-  this->setCurrentAlgo(cAlgos.attribute("curAlgo",""));
+        // Controler type
+        this->setCurrentAlgo(cAlgos.attribute("curAlgo",""));
 
-  // Update controler parameters
-  QDomNodeList domAlgosList = cAlgos.elementsByTagName(OptimAlgo::className());
+        // Update controler parameters
+        QDomNodeList domAlgosList = cAlgos.elementsByTagName(OptimAlgo::className());
 
-  QDomElement cParams;
-  QDomElement cAlgo;
-  OptimAlgo* curAlgo;
-  QString curAlgoName;
-  for(int iC=0;iC<domAlgosList.size();iC++)
-  {
-      cAlgo = domAlgosList.at(iC).toElement();
-      curAlgoName = cAlgo.attribute("name","");
-      curAlgo = this->value(curAlgoName);
+        QDomElement cParams;
+        QDomElement cAlgo;
+        OptimAlgo* curAlgo;
+        QString curAlgoName;
+        for(int iC=0;iC<domAlgosList.size();iC++)
+        {
+            cAlgo = domAlgosList.at(iC).toElement();
+            curAlgoName = cAlgo.attribute("name","");
+            curAlgo = this->value(curAlgoName);
 
-      if(curAlgo)
-      {
-          cParams = cAlgo.firstChildElement("Parameters");
-          if(!cParams.isNull())
-          {
-              curAlgo->parameters()->update(cParams);
-          }
-      }
-  }
+            if(curAlgo)
+            {
+                cParams = cAlgo.firstChildElement("Parameters");
+                if(!cParams.isNull())
+                {
+                    curAlgo->parameters()->update(cParams);
+                }
+            }
+        }
     }
 }
 
@@ -138,7 +138,7 @@ OptimAlgos::~OptimAlgos()
 {
     for(int i=0;i<values().size();i++)
     {
-  delete values().at(i);
+        delete values().at(i);
     }
 }
 
@@ -150,14 +150,14 @@ OptimAlgos* OptimAlgos::clone()
     // first remove automatically created
     for(int i=0;i<cloned->values().size();i++)
     {
-  delete cloned->values().at(i);
+        delete cloned->values().at(i);
     }
     cloned->clear();
 
     // then add cloned
     for(int i=0;i<keys().size();i++)
     {
-  cloned->insertAlgo(this->keys().at(i),this->value(keys().at(i))->clone());
+        cloned->insertAlgo(this->keys().at(i),this->value(keys().at(i))->clone());
     }
 
     cloned->_curAlgoName = _curAlgoName;
@@ -170,7 +170,7 @@ void OptimAlgos::setProblem(Problem * problem)
     _problem = problem;
     for(int i=0;i<values().size();i++)
     {
-  values().at(i)->setProblem(problem);
+        values().at(i)->setProblem(problem);
     }
 //    setParent(problem);
 }
@@ -187,9 +187,9 @@ QDomElement OptimAlgos::toXmlData(QDomDocument & doc)
 
     for(int iAlgo=0;iAlgo<this->values().size();iAlgo++)
     {
-  curAlgo = this->values().at(iAlgo);
-  ccurAlgo = curAlgo->toXmlData(doc);
-  cOptimAlgos.appendChild(ccurAlgo);
+        curAlgo = this->values().at(iAlgo);
+        ccurAlgo = curAlgo->toXmlData(doc);
+        cOptimAlgos.appendChild(ccurAlgo);
     }
 
     return cOptimAlgos;
@@ -211,8 +211,8 @@ void OptimAlgos::setCurrentAlgo(QString curAlgoName)
 {
     if(curAlgoName != _curAlgoName)
     {
-  _curAlgoName = curAlgoName;
-  emit modified();
+        _curAlgoName = curAlgoName;
+        emit modified();
     }
 }
 
@@ -221,7 +221,7 @@ void OptimAlgos::setFromOtherAlgos(const OptimAlgos &newAlgos)
     // clear content
     for(int i=0;i<values().size();i++)
     {
-  delete values().at(i);
+        delete values().at(i);
     }
     this->clear();
 
@@ -230,9 +230,9 @@ void OptimAlgos::setFromOtherAlgos(const OptimAlgos &newAlgos)
     OptimAlgo* newAlgo;
     for(int i=0;i<newAlgos.keys().size();i++)
     {
-  curAlgoName = newAlgos.keys().at(i);
-  newAlgo = newAlgos.value(curAlgoName)->clone();
-  this->insert(curAlgoName,newAlgo);
+        curAlgoName = newAlgos.keys().at(i);
+        newAlgo = newAlgos.value(curAlgoName)->clone();
+        this->insert(curAlgoName,newAlgo);
     }
     this->_curAlgoName = newAlgos._curAlgoName;
 }
@@ -243,7 +243,7 @@ QStringList OptimAlgos::getNames() const
     // clear content
     for(int i=0;i<values().size();i++)
     {
-  result.push_back(values().at(i)->name());
+        result.push_back(values().at(i)->name());
     }
 
     return result;

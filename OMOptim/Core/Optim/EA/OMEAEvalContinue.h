@@ -64,13 +64,13 @@ public:
   virtual bool operator() ( const eoPop<EOT>& _vEO ) {
       if (eval.value() >= repTotalEvaluations) 
       {
-    std::cout << "STOP in MyEAEvalContinue: Reached maximum number of evaluations [" << repTotalEvaluations << "]\n";
-    return false;
+          std::cout << "STOP in MyEAEvalContinue: Reached maximum number of evaluations [" << repTotalEvaluations << "]\n";
+          return false;
       }
       if ((*stop))
       {
-    std::cout << "STOP asked by user. Reached" << repTotalEvaluations << "evaluations \n";
-  return false;
+          std::cout << "STOP asked by user. Reached" << repTotalEvaluations << "evaluations \n";
+        return false;
       }
       return true;
   }
@@ -97,25 +97,25 @@ private:
 //public:
 //  /// Ctor
 //  MyEAEvalContinueMo( eoEvalFuncCounter<EOT> & _eval, unsigned long _totalEval,bool* _stop)
-//    : eval(_eval), repTotalEvaluations( _totalEval ) {
+//          : eval(_eval), repTotalEvaluations( _totalEval ) {
 //    std::cout << "Ctor de eoEvalFuncCounter avec total = " << repTotalEvaluations << std::endl;
-//  stop = _stop;
+//        stop = _stop;
 //};
 
 //  /** Returns false when a certain number of evaluations has been done
 //   */
 //  virtual bool operator() ( const eoPop<EOT>& _vEO ) {
-//    if (eval.value() >= repTotalEvaluations)
-//    {
-//            std::cout << "STOP in MyEAEvalContinue: Reached maximum number of evaluations [" << repTotalEvaluations << "]\n";
-//            return false;
-//    }
-//    if ((*stop))
-//    {
-//            std::cout << "STOP asked by user. Reached" << repTotalEvaluations << "evaluations \n";
-//          return false;
-//    }
-//    return true;
+//          if (eval.value() >= repTotalEvaluations)
+//          {
+//                  std::cout << "STOP in MyEAEvalContinue: Reached maximum number of evaluations [" << repTotalEvaluations << "]\n";
+//                  return false;
+//          }
+//          if ((*stop))
+//          {
+//                  std::cout << "STOP asked by user. Reached" << repTotalEvaluations << "evaluations \n";
+//                return false;
+//          }
+//          return true;
 //  }
 
 //  /** Returns the number of generations to reach*/

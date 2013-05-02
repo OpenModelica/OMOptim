@@ -56,11 +56,11 @@ WidgetBlocks::WidgetBlocks(Project* project,OptimResult* result,QWidget *parent)
     connect(_result,SIGNAL(curPointChanged()),this,SLOT(onResultCurPointChanged()));
 
     _blockScene = new BlockSubsScene(((Optimization*)_result->problem())->blockSubstitutions(),
-          _project->modItemsTree(),true);
+                _project->modItemsTree(),true);
     _ui->graphBlocks->setScene(_blockScene);
     _ui->graphBlocks->setRenderHint(QPainter::Antialiasing);
     connect(_blockScene, SIGNAL(zoomRect(QRectF)),
-      this, SLOT(doZoomRect(QRectF)));
+            this, SLOT(doZoomRect(QRectF)));
     _blockScene->zoomFit();
 
 }
@@ -77,31 +77,31 @@ void WidgetBlocks::onResultCurPointChanged()
 
     if (curPoint==-1)
     {
-  _blockScene->deselectAll();
+        _blockScene->deselectAll();
     }
     else
     {
-  if(curPoint<_result->_iSubModels.size())
-  {
-      int iSubModel = _result->_iSubModels.at(curPoint);
-      if(iSubModel< _result->_subBlocks.size())
-      {
-          QStringList subBlocks;
-          QStringList orgBlocks;
+        if(curPoint<_result->_iSubModels.size())
+        {
+            int iSubModel = _result->_iSubModels.at(curPoint);
+            if(iSubModel< _result->_subBlocks.size())
+            {
+                QStringList subBlocks;
+                QStringList orgBlocks;
 
-          BlockSubstitutions* selectedBlocks  = _result->_subBlocks.at(iSubModel);
+                BlockSubstitutions* selectedBlocks  = _result->_subBlocks.at(iSubModel);
 
-          for(int i=0;i<selectedBlocks->size();i++)
-          {
-                                  orgBlocks << selectedBlocks->at(i)->_orgComponent;
-                                  subBlocks << selectedBlocks->at(i)->_subComponent;
-          }
-          _blockScene->selectSubs(orgBlocks,subBlocks,true);    
-      }
-      else
-      {
-          _blockScene->deselectAll();
-      }
-  }
+                for(int i=0;i<selectedBlocks->size();i++)
+                {
+                                        orgBlocks << selectedBlocks->at(i)->_orgComponent;
+                                        subBlocks << selectedBlocks->at(i)->_subComponent;
+                }
+                _blockScene->selectSubs(orgBlocks,subBlocks,true);    
+            }
+            else
+            {
+                _blockScene->deselectAll();
+            }
+        }
     }
 }

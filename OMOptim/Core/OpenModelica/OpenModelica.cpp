@@ -72,28 +72,28 @@ bool OpenModelica::compile(MOomc *_omc,QFileInfo moFile,QString modelToConsider,
     // load moDependencies if not already loaded
     // forceLoad = false
     for(int i=0;i<moDeps.size();i++)
-  _omc->loadModel(moDeps.at(i).absoluteFilePath(),false,loadOk,loadError);
+        _omc->loadModel(moDeps.at(i).absoluteFilePath(),false,loadOk,loadError);
 
     // if not already loaded, reload
     if(loadedMoFile != moFile)
     {
-  _omc->loadModel(moFile.absoluteFilePath(),true,loadOk,loadError);
+        _omc->loadModel(moFile.absoluteFilePath(),true,loadOk,loadError);
     }
 
     // Create working dir
     QString tmpPath = _omc->getWorkingDirectory();
 
     //    if(workDir.exists())
-    //  LowTools::removeDirContents(tmpPath);
+    //        LowTools::removeDirContents(tmpPath);
     //    else
     //    {
-    //  QDir dir;
-    //  dir.mkpath(tmpPath);
+    //        QDir dir;
+    //        dir.mkpath(tmpPath);
     //    }
 
 
     if(!QDir(tmpPath).exists())
-  QDir().mkpath(tmpPath);
+        QDir().mkpath(tmpPath);
     QDir workDir(tmpPath);
 
     // Copy file and folder
@@ -119,11 +119,11 @@ void OpenModelica::getInputVariablesFromTxtFile(MOomc *_omc,QString filePath, MO
 
     if (fileinfo.exists())
     {
-  QFile file(fileinfo.filePath());
-  file.open(QIODevice::ReadOnly);
-  QTextStream* in = new QTextStream(&file);
-  getInputVariablesFromTxtFile(_omc,in, variables,_modelName);
-  file.close();
+        QFile file(fileinfo.filePath());
+        file.open(QIODevice::ReadOnly);
+        QTextStream* in = new QTextStream(&file);
+        getInputVariablesFromTxtFile(_omc,in, variables,_modelName);
+        file.close();
     }
 }
 void OpenModelica::getInputVariablesFromTxtFile(MOomc *_omc,QTextStream * text, MOVector<Variable> * variables,QString _modelName)
@@ -141,30 +141,30 @@ void OpenModelica::getInputVariablesFromTxtFile(MOomc *_omc,QTextStream * text, 
     QRegExp rxDefault("^(\\S+)\\s*//[\\w||\\s]+//(\\S+)\\s*$");
     QStringList fields;
     while (!line.isEmpty()){
-  if(rx.indexIn(line)>-1)
-  {
-      fields = rx.capturedTexts();
-      newVariable = new Variable();
-      newVariable->setName(rx.cap(2));
-      newVariable->setModel(_modelName);
-      newVariable->setValue(rx.cap(1).toDouble());
-      variables->addItem(newVariable);
-      //get datatype
-      newVariable->setDataType(_omc->getPrimitiveDataType(newVariable->name()));
-  }
-  else if(rxDefault.indexIn(line)>-1)
-  {
-      fields = rxDefault.capturedTexts();
-      newVariable = new Variable();
-      newVariable->setName(rxDefault.cap(2));
-      newVariable->setModel(_modelName);
-      newVariable->setValue(rxDefault.cap(1).toDouble());
-      variables->addItem(newVariable);
-      //get datatype
-      newVariable->setDataType(_omc->getPrimitiveDataType(newVariable->name()));
-  }
+        if(rx.indexIn(line)>-1)
+        {
+            fields = rx.capturedTexts();
+            newVariable = new Variable();
+            newVariable->setName(rx.cap(2));
+            newVariable->setModel(_modelName);
+            newVariable->setValue(rx.cap(1).toDouble());
+            variables->addItem(newVariable);
+            //get datatype
+            newVariable->setDataType(_omc->getPrimitiveDataType(newVariable->name()));
+        }
+        else if(rxDefault.indexIn(line)>-1)
+        {
+            fields = rxDefault.capturedTexts();
+            newVariable = new Variable();
+            newVariable->setName(rxDefault.cap(2));
+            newVariable->setModel(_modelName);
+            newVariable->setValue(rxDefault.cap(1).toDouble());
+            variables->addItem(newVariable);
+            //get datatype
+            newVariable->setDataType(_omc->getPrimitiveDataType(newVariable->name()));
+        }
 
-  line=text->readLine();
+        line=text->readLine();
     }
 }
 
@@ -177,14 +177,14 @@ bool OpenModelica::getInputVariablesFromXmlFile(MOomc *omc,QString filePath, QSt
     QFile file(filePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-  // InfoSender::instance()->send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
-  return false;
+        // InfoSender::instance()->send( Info(ListInfo::PROBLEMFILENOTEXISTS,filePath));
+        return false;
     }
     else if( !doc.setContent(&file,&error) )
     {
-  file.close();
-  // InfoSender::instance()->send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
-  return false;
+        file.close();
+        // InfoSender::instance()->send( Info(ListInfo::PROBLEMFILECORRUPTED,error,filePath));
+        return false;
     }
     file.close();
 
@@ -205,10 +205,10 @@ bool OpenModelica::getInputVariablesFromXmlFile(MOomc *omc,const QDomDocument & 
     bool allok = true;
     for(int i=0;i<listScalarVars.size();i++)
     {
-  Variable* newVar = variableFromFmi(listScalarVars.at(i).toElement(),modModelName,ok);
-  if(ok)
-      variables->addItem(newVar);
-  allok = allok && ok;
+        Variable* newVar = variableFromFmi(listScalarVars.at(i).toElement(),modModelName,ok);
+        if(ok)
+            variables->addItem(newVar);
+        allok = allok && ok;
     }
 
     return allok;
@@ -220,8 +220,8 @@ Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modelName
     QString name = el.attribute("name");
     if(name.isEmpty())
     {
-  ok = false;
-  return NULL;
+        ok = false;
+        return NULL;
     }
 
     Variable* newVar = new Variable();
@@ -233,20 +233,20 @@ Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modelName
     QDomElement elType = el.firstChildElement("Real");
     if(!elType.isNull())
     {
-  newVar->setDataType(OMREAL);
-  newVar->setValue(elType.attribute("start").toDouble(&ok));
+        newVar->setDataType(OMREAL);
+        newVar->setValue(elType.attribute("start").toDouble(&ok));
     }
     elType = el.firstChildElement("Integer");
     if(!elType.isNull())
     {
-  newVar->setDataType(OMINTEGER);
-  newVar->setValue(elType.attribute("start").toInt(&ok));
+        newVar->setDataType(OMINTEGER);
+        newVar->setValue(elType.attribute("start").toInt(&ok));
     }
     elType = el.firstChildElement("Boolean");
     if(!elType.isNull())
     {
-  newVar->setDataType(OMBOOLEAN);
-  newVar->setValue(elType.attribute("start")=="true");
+        newVar->setDataType(OMBOOLEAN);
+        newVar->setValue(elType.attribute("start")=="true");
     }
 
     //look for causality
@@ -254,11 +254,11 @@ Variable* OpenModelica::variableFromFmi(const QDomElement & el,QString modelName
 
     if(!ok)
     {
-  delete newVar;
-  return NULL;
+        delete newVar;
+        return NULL;
     }
     else
-  return newVar;
+        return newVar;
 }
 
 VariableCausality OpenModelica::varCausality(const QDomElement & el)
@@ -267,9 +267,9 @@ VariableCausality OpenModelica::varCausality(const QDomElement & el)
     QString causality = el.attribute("causality");
 
     if(!variability.compare("parameter") || !causality.compare("input") )
-  return INPUT;
+        return INPUT;
     else
-  return OUTPUT;
+        return OUTPUT;
 }
 
 bool OpenModelica::getFinalVariablesFromFile(QString fileName_, MOVector<Variable> *variables,QString _modelName)
@@ -279,16 +279,16 @@ bool OpenModelica::getFinalVariablesFromFile(QString fileName_, MOVector<Variabl
 
     if (fileinfo.exists())
     {
-  QFile file(fileinfo.filePath());
-  file.open(QIODevice::ReadOnly);
-  QTextStream* in = new QTextStream(&file);
-  bool ok = getFinalVariablesFromFile(in, variables,_modelName);
-  file.close();
-  delete in;
-  return ok;
+        QFile file(fileinfo.filePath());
+        file.open(QIODevice::ReadOnly);
+        QTextStream* in = new QTextStream(&file);
+        bool ok = getFinalVariablesFromFile(in, variables,_modelName);
+        file.close();
+        delete in;
+        return ok;
     }
     else
-  return true;
+        return true;
 }
 
 
@@ -310,12 +310,12 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
     //Read in mat file
     if(0 != (msg = omc_new_matlab4_reader(fileName.toStdString().c_str(), &reader)))
     {
-  InfoSender::instance()->sendError("Unable to read .mat file: "+QString(msg));
+        InfoSender::instance()->sendError("Unable to read .mat file: "+QString(msg));
 
 #ifdef WIN32 // don't know why sigabrt on linux. Should look for.
-  delete[] msg;
+        delete[] msg;
 #endif
-  return false;
+        return false;
     }
 
    // delete[] msg;
@@ -324,52 +324,52 @@ bool OpenModelica::getFinalVariablesFromMatFile(QString fileName, MOVector<Varia
 
     if (reader.nvar < 1)
     {
-  InfoSender::instance()->sendError("Unable to read .mat file : no variable inside");
-  omc_free_matlab4_reader(&reader);
-  return false;
+        InfoSender::instance()->sendError("Unable to read .mat file : no variable inside");
+        omc_free_matlab4_reader(&reader);
+        return false;
     }
 
     // read in all values
     for (int i = 0; i < reader.nall; i++)
     {
-  newVar = new Variable();
-  QString name(reader.allInfo[i].name);
-  newVar->setName(name);
-  newVar->setModel(_modelName);
+        newVar = new Variable();
+        QString name(reader.allInfo[i].name);
+        newVar->setName(name);
+        newVar->setModel(_modelName);
 
 
-  // read the variable final value
-  var = omc_matlab4_find_var(&reader, reader.allInfo[i].name);
+        // read the variable final value
+        var = omc_matlab4_find_var(&reader, reader.allInfo[i].name);
 
 
-  if (!var->isParam)
-  {
-      status = omc_matlab4_val(&value,&reader,var,stopTime);
-  }
-  // if variable is a parameter then take at first step
-  else
-  {
-      status = omc_matlab4_val(&value,&reader,var,0.0);
-  }
+        if (!var->isParam)
+        {
+            status = omc_matlab4_val(&value,&reader,var,stopTime);
+        }
+        // if variable is a parameter then take at first step
+        else
+        {
+            status = omc_matlab4_val(&value,&reader,var,0.0);
+        }
 
 
-  varOk = (status==0);
-  if(!varOk && reader.nrows>0)
-  {
-      double *vals = omc_matlab4_read_vals(&reader,var->index);
-      value = vals[reader.nrows-1];
-      varOk = true;
-  }
-  newVar->setValue(value);
+        varOk = (status==0);
+        if(!varOk && reader.nrows>0)
+        {
+            double *vals = omc_matlab4_read_vals(&reader,var->index);
+            value = vals[reader.nrows-1];
+            varOk = true;
+        }
+        newVar->setValue(value);
 
 
-  if(varOk)
-      variables->addItem(newVar);
-  else
-  {
-      InfoSender::instance()->debug("Couldn't find value of variable in .mat file :" + newVar->name());
-      delete newVar;
-  }
+        if(varOk)
+            variables->addItem(newVar);
+        else
+        {
+            InfoSender::instance()->debug("Couldn't find value of variable in .mat file :" + newVar->name());
+            delete newVar;
+        }
     }
 
 
@@ -391,20 +391,20 @@ bool OpenModelica::getFinalVariablesFromFile(QTextStream *text, MOVector<Variabl
     varNames = str.split(",",QString::SkipEmptyParts);
 
     while(!text->atEnd())
-  line=text->readLine();
+        line=text->readLine();
 
     varValues = line.split(",",QString::SkipEmptyParts);
 
     if(varValues.size()!=varNames.size())
-  return false;
+        return false;
 
     for(int i=0;i<varValues.size();i++)
     {
-  newVar = new Variable();
-  newVar->setName(varNames.at(i));
-  newVar->setModel(_modelName);
-  newVar->setValue(varValues.at(i).toDouble());
-  variables->addItem(newVar);
+        newVar = new Variable();
+        newVar->setName(varNames.at(i));
+        newVar->setModel(_modelName);
+        newVar->setValue(varValues.at(i).toDouble());
+        variables->addItem(newVar);
     }
     return true;
 }
@@ -414,88 +414,88 @@ void OpenModelica::setInputVariablesTxt(QString fileName, MOVector<Variable> *va
     QFileInfo fileinfo = QFileInfo(fileName);
     if (fileinfo.exists())
     {
-  QFile file(fileinfo.filePath());
-  file.open(QIODevice::ReadOnly);
-  QTextStream textRead(&file);
-  QString allText = textRead.readAll();
-  file.close();
-  // change variable values
-  QRegExp rxLine;
-  int index=0;
-  QString newLine;
-  QString varName;
-  int iCurVar;
-  Variable* curVar;
-  QStringList fields;
+        QFile file(fileinfo.filePath());
+        file.open(QIODevice::ReadOnly);
+        QTextStream textRead(&file);
+        QString allText = textRead.readAll();
+        file.close();
+        // change variable values
+        QRegExp rxLine;
+        int index=0;
+        QString newLine;
+        QString varName;
+        int iCurVar;
+        Variable* curVar;
+        QStringList fields;
 
-  for(int iV=0;iV<variables->size();iV++)
-  {
-      curVar = variables->at(iV);
-      varName = curVar->name(Variable::SHORT);
-      //varName = varName.remove(modModelName+".");
-      rxLine.setPattern(sciNumRx()+"\\s*(//[\\w*|\\s*]*//|//)\\s*"+varName);
-      index = rxLine.indexIn(allText);
+        for(int iV=0;iV<variables->size();iV++)
+        {
+            curVar = variables->at(iV);
+            varName = curVar->name(Variable::SHORT);
+            //varName = varName.remove(modModelName+".");
+            rxLine.setPattern(sciNumRx()+"\\s*(//[\\w*|\\s*]*//|//)\\s*"+varName);
+            index = rxLine.indexIn(allText);
 
-      if(index>-1)
-      {
-          fields = rxLine.capturedTexts();
-          newLine = curVar->getFieldValue(Variable::VALUE).toString() +"\t";
-          newLine += fields.at(2)+varName;
-          allText = allText.replace(rxLine.cap(0),newLine);
-      }
-      else
-      {
-          InfoSender::instance()->send(Info("Warning : unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
-      }
-  }
+            if(index>-1)
+            {
+                fields = rxLine.capturedTexts();
+                newLine = curVar->getFieldValue(Variable::VALUE).toString() +"\t";
+                newLine += fields.at(2)+varName;
+                allText = allText.replace(rxLine.cap(0),newLine);
+            }
+            else
+            {
+                InfoSender::instance()->send(Info("Warning : unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
+            }
+        }
 
-  // Parameters to write in init file
-  /// @deprecated Now OM uses xml input.
-  if(parameters)
-  {
-      QList<OpenModelicaParameters::Parameters> initParameters; // parameters to specify in init file
-      initParameters << OpenModelicaParameters::STOPTIME;
+        // Parameters to write in init file
+        /// @deprecated Now OM uses xml input.
+        if(parameters)
+        {
+            QList<OpenModelicaParameters::Parameters> initParameters; // parameters to specify in init file
+            initParameters << OpenModelicaParameters::STOPTIME;
 
-      QStringList paramIndicators;
-      paramIndicators << "stop value";
-
-
-      QVariant paramValue;
-      QString paramName;
-      MOParameter * curParam;
-      int iP;
-      for(int i=0;i<initParameters.size();i++)
-      {
-          curParam = parameters->findItem(OpenModelicaParameters::str(initParameters.at(i)));
-          if(curParam)
-          {
-              paramName = paramIndicators.at(i);
-              paramValue = curParam->getFieldValue(MOParameter::VALUE);
-              rxLine.setPattern(sciNumRx()+"\\s*(//[\\w*|\\s*]*//|//)\\s*"+paramName);
-              index = rxLine.indexIn(allText);
-
-              if(index>-1)
-              {
-                  fields = rxLine.capturedTexts();
-                  newLine = paramValue.toString() +"\t";
-                  newLine += fields.at(2)+paramName;
-                  allText = allText.replace(rxLine.cap(0),newLine);
-              }
-              else
-              {
-                  InfoSender::instance()->send(Info("Warning : unable to set parameter value (not found in init file):"+paramName,ListInfo::ERROR2));
-              }
-          }
-      }
-  }
+            QStringList paramIndicators;
+            paramIndicators << "stop value";
 
 
-  fileinfo.setFile(fileName);
-  file.setFileName(fileinfo.filePath());
-  bool ok = file.open(QIODevice::WriteOnly);
-  QTextStream textWrite(&file);
-  textWrite<<allText;
-  file.close();
+            QVariant paramValue;
+            QString paramName;
+            MOParameter * curParam;
+            int iP;
+            for(int i=0;i<initParameters.size();i++)
+            {
+                curParam = parameters->findItem(OpenModelicaParameters::str(initParameters.at(i)));
+                if(curParam)
+                {
+                    paramName = paramIndicators.at(i);
+                    paramValue = curParam->getFieldValue(MOParameter::VALUE);
+                    rxLine.setPattern(sciNumRx()+"\\s*(//[\\w*|\\s*]*//|//)\\s*"+paramName);
+                    index = rxLine.indexIn(allText);
+
+                    if(index>-1)
+                    {
+                        fields = rxLine.capturedTexts();
+                        newLine = paramValue.toString() +"\t";
+                        newLine += fields.at(2)+paramName;
+                        allText = allText.replace(rxLine.cap(0),newLine);
+                    }
+                    else
+                    {
+                        InfoSender::instance()->send(Info("Warning : unable to set parameter value (not found in init file):"+paramName,ListInfo::ERROR2));
+                    }
+                }
+            }
+        }
+
+
+        fileinfo.setFile(fileName);
+        file.setFileName(fileinfo.filePath());
+        bool ok = file.open(QIODevice::WriteOnly);
+        QTextStream textWrite(&file);
+        textWrite<<allText;
+        file.close();
     }
 }
 
@@ -507,14 +507,14 @@ bool OpenModelica::setInputXml(QString fileName, MOVector<Variable> *variables, 
     QFile file(fileName);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-  InfoSender::instance()->debug("Model input file (xml) load failed");
-  return false;
+        InfoSender::instance()->debug("Model input file (xml) load failed");
+        return false;
     }
     else if( !doc.setContent(&file,&error) )
     {
-  InfoSender::instance()->sendError("Model input file (xml) is corrupted ! ["+error+"]");
-  file.close();
-  return false;
+        InfoSender::instance()->sendError("Model input file (xml) is corrupted ! ["+error+"]");
+        file.close();
+        return false;
     }
 
     // updates variables
@@ -522,12 +522,12 @@ bool OpenModelica::setInputXml(QString fileName, MOVector<Variable> *variables, 
 
     // updates parameters
     if(parameters)
-  setInputParametersXml(doc,parameters);
+        setInputParametersXml(doc,parameters);
 
     //Writing in .min file
     if(file.exists())
     {
-  file.remove();
+        file.remove();
     }
 
     ok = file.open(QIODevice::WriteOnly);
@@ -565,38 +565,38 @@ void OpenModelica::setInputVariablesXml(QDomDocument & doc, QString modelName, M
     // create map for index looking
     for(int i=0;i<listScalarVars.size();i++)
     {
-  curVar = listScalarVars.at(i).toElement();
-  mapScalarVars.insert(curVar.attribute("name"),i);
+        curVar = listScalarVars.at(i).toElement();
+        mapScalarVars.insert(curVar.attribute("name"),i);
     }
 
     // change variables values
     for(int i=0;i<variables->size();i++)
     {
-  // getting local var name (name in init file does not contain model name)
-  localVarName = variables->at(i)->name(Variable::SHORT);
-  //localVarName = localVarName.remove(modelName+".");
+        // getting local var name (name in init file does not contain model name)
+        localVarName = variables->at(i)->name(Variable::SHORT);
+        //localVarName = localVarName.remove(modelName+".");
 
-  index = mapScalarVars.value(localVarName,-1);
-  if(index>-1)
-  {
-      oldVar = listScalarVars.at(index).toElement();
-      newVar = oldVar;
+        index = mapScalarVars.value(localVarName,-1);
+        if(index>-1)
+        {
+            oldVar = listScalarVars.at(index).toElement();
+            newVar = oldVar;
 
-      oldType = newVar.firstChildElement("Real");
-      if(oldType.isNull())
-          oldType = newVar.firstChildElement("Integer");
-      if(oldType.isNull())
-          oldType = newVar.firstChildElement("Boolean");
+            oldType = newVar.firstChildElement("Real");
+            if(oldType.isNull())
+                oldType = newVar.firstChildElement("Integer");
+            if(oldType.isNull())
+                oldType = newVar.firstChildElement("Boolean");
 
-      if(!oldType.isNull())
-      {
-          newType = oldType;
-          newType.setAttribute("start",variables->at(i)->value());
-          newVar.replaceChild(newType,oldType);
-          xModelVars.replaceChild(newVar,oldVar);
-      }
-      xModelVars.replaceChild(newVar,oldVar);
-  }
+            if(!oldType.isNull())
+            {
+                newType = oldType;
+                newType.setAttribute("start",variables->at(i)->value());
+                newVar.replaceChild(newType,oldType);
+                xModelVars.replaceChild(newVar,oldVar);
+            }
+            xModelVars.replaceChild(newVar,oldVar);
+        }
     }
 
     // update xfmi with new vars
@@ -624,29 +624,29 @@ void OpenModelica::setInputParametersXml(QDomDocument &doc,MOParameters *paramet
     MOParameterListed* curParamListed;
     for(int i=0;i<parameters->size();i++)
     {
-  curParam = parameters->at(i);
+        curParam = parameters->at(i);
 
-  if(!curParam->name().contains(" ")) // remove old parameters, temporary
-  {
-      if(curParam->name()==OpenModelicaParameters::str(OpenModelicaParameters::SOLVER))
-      {
-          curParamListed = dynamic_cast<MOParameterListed*>(curParam);
-          xExp.setAttribute(curParamListed->name(),curParamListed->strValue());
-      }
-      else if(curParam->name()==OpenModelicaParameters::str(OpenModelicaParameters::OUTPUT))
-      {
-          curParamListed = dynamic_cast<MOParameterListed*>(curParam);
-          xExp.setAttribute(curParamListed->name(),curParamListed->strValue());
-      }
-      else if (curParam->name()==OpenModelicaParameters::str(OpenModelicaParameters::NBINTERVALS))
-      {
-          xExp.setAttribute("stepSize",QString::number(stepSize));
-      }
-      else
-      {
-          xExp.setAttribute(curParam->name(),curParam->value().toString());
-      }
-  }
+        if(!curParam->name().contains(" ")) // remove old parameters, temporary
+        {
+            if(curParam->name()==OpenModelicaParameters::str(OpenModelicaParameters::SOLVER))
+            {
+                curParamListed = dynamic_cast<MOParameterListed*>(curParam);
+                xExp.setAttribute(curParamListed->name(),curParamListed->strValue());
+            }
+            else if(curParam->name()==OpenModelicaParameters::str(OpenModelicaParameters::OUTPUT))
+            {
+                curParamListed = dynamic_cast<MOParameterListed*>(curParam);
+                xExp.setAttribute(curParamListed->name(),curParamListed->strValue());
+            }
+            else if (curParam->name()==OpenModelicaParameters::str(OpenModelicaParameters::NBINTERVALS))
+            {
+                xExp.setAttribute("stepSize",QString::number(stepSize));
+            }
+            else
+            {
+                xExp.setAttribute(curParam->name(),curParam->value().toString());
+            }
+        }
     }
 
     // update xfmi with new vars
@@ -688,15 +688,15 @@ void OpenModelica::start(QString exeFile,int maxnsec)
 
     int nmsec;
     if(maxnsec==-1)
-  nmsec = -1;
+        nmsec = -1;
     else
-  nmsec = maxnsec*1000;
+        nmsec = maxnsec*1000;
     bool ok = simProcess.waitForFinished(nmsec);
     if(!ok)
     {
-  QString msg("CreateProcess failed (%d).");
-  InfoSender::instance()->debug(msg);
-  return;
+        QString msg("CreateProcess failed (%d).");
+        InfoSender::instance()->debug(msg);
+        return;
     }
     QString output(simProcess.readAllStandardOutput());
     InfoSender::instance()->send(Info(output,ListInfo::OMCNORMAL2));
@@ -730,17 +730,17 @@ QString OpenModelica::getLibraryPath(QString version)
     QStringList omLibDirs = omLibDir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
     omLibDirs = omLibDirs.filter(QRegExp("^Modelica .*"));
     if(omLibDirs.isEmpty())
-  return QString();
+        return QString();
     else
     {
-  int iVersion = omLibDirs.indexOf("Modelica "+version);
-  if(iVersion>-1)
-      return omLibDir.absoluteFilePath(omLibDirs.at(iVersion)+QDir::separator()+"package.mo");
+        int iVersion = omLibDirs.indexOf("Modelica "+version);
+        if(iVersion>-1)
+            return omLibDir.absoluteFilePath(omLibDirs.at(iVersion)+QDir::separator()+"package.mo");
 
-  else
-  {
-      omLibDirs.sort();
-      return omLibDir.absoluteFilePath(omLibDirs.last()+QDir::separator()+"package.mo");
-  }
+        else
+        {
+            omLibDirs.sort();
+            return omLibDir.absoluteFilePath(omLibDirs.last()+QDir::separator()+"package.mo");
+        }
     }
 }

@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file ModPlusOMCtrl.h
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version
+        @file ModPlusOMCtrl.h
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version
 
   */
 #ifndef _MODPLUSOMCTRL_H
@@ -50,39 +50,39 @@ class ModPlusOMCtrl :public ModPlusCtrl
 {
     public:
 
-  ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* oms);
-  ~ModPlusOMCtrl(void);
-  ModPlusCtrl* clone();
+        ModPlusOMCtrl(Project* project,ModModelPlus* model,MOomc* oms);
+        ~ModPlusOMCtrl(void);
+        ModPlusCtrl* clone();
 
-  ModPlusCtrl::Type type() const;
-  QString name();
-  bool useMat();
-  QString resFile();
+        ModPlusCtrl::Type type() const;
+        QString name();
+        bool useMat();
+        QString resFile();
 
-  // Variables functions
-  bool readOutputVariables(MOVector<Variable> *,QString resFile="");
-  bool readInitialVariables(MOVector<Variable> *, const QFileInfoList filesToCopy,bool forceRecompile,QString initFile="");
+        // Variables functions
+        bool readOutputVariables(MOVector<Variable> *,QString resFile="");
+        bool readInitialVariables(MOVector<Variable> *, const QFileInfoList filesToCopy,bool forceRecompile,QString initFile="");
 
 
-  // compatible models
-  virtual QList<ModelPlus::ModelType> compatibleModels();
-  
+        // compatible models
+        virtual QList<ModelPlus::ModelType> compatibleModels();
+        
 
-  // Compile function
-  bool isCompiled();
-  bool compile(const QFileInfoList & moDeps, const QFileInfoList filesToCopy);
-  bool uncompile();
-  bool createInitFile(const QFileInfoList & moDeps, const QFileInfoList filesToCopy );
+        // Compile function
+        bool isCompiled();
+        bool compile(const QFileInfoList & moDeps, const QFileInfoList filesToCopy);
+        bool uncompile();
+        bool createInitFile(const QFileInfoList & moDeps, const QFileInfoList filesToCopy );
 
-  // Simulate function
-  bool simulate(QDir tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QFileInfoList filesToCopy ,QFileInfoList moDependencies);
-  bool setStopTime(double time);
+        // Simulate function
+        bool simulate(QDir tempDir,MOVector<Variable> * inputVars,MOVector<Variable> * outputVars,QFileInfoList filesToCopy ,QFileInfoList moDependencies);
+        bool setStopTime(double time);
 
 private :
-  QString _initFileXml;
-  QString _initFileTxt;
-  QString _exeFile;
-  ModModelPlus *_modModelPlus;
+        QString _initFileXml;
+        QString _initFileTxt;
+        QString _exeFile;
+        ModModelPlus *_modModelPlus;
 
 
 

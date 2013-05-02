@@ -64,13 +64,13 @@ void InfoSender::setLogStream(QTextStream* logStream,QList<ListInfo::InfoType> t
 
     if(_logStreamInfoTypes.isEmpty())
     {
-  _logStreamInfoTypes  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
-          ListInfo::ERROR2<<
-          ListInfo::OMCNORMAL2<<
-          ListInfo::OMCWARNING2<<
-          ListInfo::OMCERROR2<<
-          ListInfo::INFODEBUG<<
-          ListInfo::TASK;
+        _logStreamInfoTypes  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
+                ListInfo::ERROR2<<
+                ListInfo::OMCNORMAL2<<
+                ListInfo::OMCWARNING2<<
+                ListInfo::OMCERROR2<<
+                ListInfo::INFODEBUG<<
+                ListInfo::TASK;
     }
 }
 
@@ -89,15 +89,15 @@ InfoSender* InfoSender::instance()
     // A correct way would be to build an OMOptim shared lib, that exe and plugin would share
     if(!_instance)
     {
-  if(qApp->property("InfoSender").isValid())
-  {
-      _instance = dynamic_cast<InfoSender*>(qApp->property("InfoSender").value<QObject*>());
-  }
-  else
-  {
-      _instance = new InfoSender();
-      qApp->setProperty("InfoSender",qVariantFromValue(qobject_cast<QObject*>(_instance)));
-  }
+        if(qApp->property("InfoSender").isValid())
+        {
+            _instance = dynamic_cast<InfoSender*>(qApp->property("InfoSender").value<QObject*>());
+        }
+        else
+        {
+            _instance = new InfoSender();
+            qApp->setProperty("InfoSender",qVariantFromValue(qobject_cast<QObject*>(_instance)));
+        }
     }
     return _instance;
 }
@@ -106,9 +106,9 @@ void InfoSender::destroy()
 {
     if(_instance)
     {
-  delete _instance;
-  _instance = NULL;
-  qApp->setProperty("InfoSender",QVariant());
+        delete _instance;
+        _instance = NULL;
+        qApp->setProperty("InfoSender",QVariant());
     }
 }
 
@@ -119,13 +119,13 @@ void InfoSender::send(const Info &info)
 
     if(_logStream && _logStreamInfoTypes.contains(info.infoType))
     {
-  *_logStream << QTime::currentTime().toString().toAscii().data();
-  *_logStream << "\t";
-  *_logStream << info.infoMsg;
-  *_logStream << "\n";
+        *_logStream << QTime::currentTime().toString().toAscii().data();
+        *_logStream << "\t";
+        *_logStream << info.infoMsg;
+        *_logStream << "\n";
     }
     if(info.infoType==ListInfo::INFODEBUG)
-  qDebug(info.infoMsg.toLatin1().data());
+        qDebug(info.infoMsg.toLatin1().data());
 
 
     emit receivedInfo(info);
@@ -136,28 +136,28 @@ void InfoSender::onReceivedInfo(const Info &info)
     switch(info.infoType)
     {
     case ListInfo::OMCERROR2:
-  _infosOM->addInfo(info.infoMsg,Infos::INFOERROR,Infos::DESTOMC);
-  break;
+        _infosOM->addInfo(info.infoMsg,Infos::INFOERROR,Infos::DESTOMC);
+        break;
     case ListInfo::OMCNORMAL2:
-  _infosOM->addInfo(info.infoMsg,Infos::INFO,Infos::DESTOMC);
-  break;
+        _infosOM->addInfo(info.infoMsg,Infos::INFO,Infos::DESTOMC);
+        break;
     case ListInfo::OMCWARNING2:
-  _infosOM->addInfo(info.infoMsg,Infos::INFOWARNING,Infos::DESTOMC);
-  break;
+        _infosOM->addInfo(info.infoMsg,Infos::INFOWARNING,Infos::DESTOMC);
+        break;
     case ListInfo::NORMAL2:
     case ListInfo::TASK:
-  if(!info.infoMsg.isEmpty())
-      _infosNormal->addInfo(info.infoMsg,Infos::INFO,Infos::DESTNORMAL);
-  break;
+        if(!info.infoMsg.isEmpty())
+            _infosNormal->addInfo(info.infoMsg,Infos::INFO,Infos::DESTNORMAL);
+        break;
     case ListInfo::WARNING2:
-  _infosNormal->addInfo(info.infoMsg,Infos::INFOWARNING,Infos::DESTNORMAL);
-  break;
+        _infosNormal->addInfo(info.infoMsg,Infos::INFOWARNING,Infos::DESTNORMAL);
+        break;
     case ListInfo::ERROR2:
-  _infosNormal->addInfo(info.infoMsg,Infos::INFOERROR,Infos::DESTNORMAL);
-  break;
+        _infosNormal->addInfo(info.infoMsg,Infos::INFOERROR,Infos::DESTNORMAL);
+        break;
     case ListInfo::INFODEBUG:
-  _infosDebug->addInfo(info.infoMsg,Infos::INFO,Infos::DESTDEBUG);
-  break;
+        _infosDebug->addInfo(info.infoMsg,Infos::INFO,Infos::DESTDEBUG);
+        break;
     }
 
     emit sent(info);
@@ -188,12 +188,12 @@ Infos::~Infos()
 void Infos::addInfo(const QString &info, const type &infoType, const destination &infoDestination)
 {
     if(info.isEmpty())
-  return;
+        return;
 
     // if reached full size
     if(_type.count(INFO)>= _maximumInfoLines)
     {
-  removeFirstNormalInfos(_linesToRemove);
+        removeFirstNormalInfos(_linesToRemove);
     }
 
     // qDebug("Started adding Info");
@@ -218,40 +218,40 @@ void Infos::removeFirstNormalInfos(int count)
 
     while((i<_text.size())&&(nbRemoved+(iLast-iFirst+1)<count))
     {
-  if(_type.at(i)==INFO)
-  {
-      iLast = i;
-  }
-  else
-  {
-      if(iLast>=iFirst)
-      {
-          removeRows(iFirst,iLast-iFirst+1);
-          nbRemoved+=iLast-iFirst+1;
+        if(_type.at(i)==INFO)
+        {
+            iLast = i;
+        }
+        else
+        {
+            if(iLast>=iFirst)
+            {
+                removeRows(iFirst,iLast-iFirst+1);
+                nbRemoved+=iLast-iFirst+1;
 
-          // go back
-          i -= iLast-iFirst;
-          iFirst = i;
-          iLast = -1;
-      }
-      else
-      {
-          iFirst = i+1;
-      }
-  }
-  i++;
+                // go back
+                i -= iLast-iFirst;
+                iFirst = i;
+                iLast = -1;
+            }
+            else
+            {
+                iFirst = i+1;
+            }
+        }
+        i++;
     }
 
     if(iLast>=iFirst)
-  removeRows(iFirst,iLast-iFirst+1);
+        removeRows(iFirst,iLast-iFirst+1);
 }
 
 int Infos::rowCount(const QModelIndex &parent) const
 {
     if(!parent.isValid())
-  return _text.size();
+        return _text.size();
     else
-  return 0;
+        return 0;
 }
 
 bool Infos::removeRows(int position, int rows, const QModelIndex &index)
@@ -259,16 +259,16 @@ bool Infos::removeRows(int position, int rows, const QModelIndex &index)
     Q_UNUSED(index);
     if(rows == 0)
     {
-  qDebug(QString("!! Tried to remove 0 item in InfosSender").toLatin1().data());
-  return false;
+        qDebug(QString("!! Tried to remove 0 item in InfosSender").toLatin1().data());
+        return false;
     }
 
     beginRemoveRows(QModelIndex(), position, position+rows-1);
 
     for (int row=0; row < rows; ++row) {
-  _text.removeAt(position);
-  _type.removeAt(position);
-  _dest.removeAt(position);
+        _text.removeAt(position);
+        _type.removeAt(position);
+        _dest.removeAt(position);
     }
 
     endRemoveRows();
@@ -299,63 +299,63 @@ void Infos::clear()
 QVariant Infos::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
-  return QVariant();
+        return QVariant();
 
     if(role == Qt::BackgroundColorRole)
     {
-  switch (_type.at(index.row()))
-  {
-  case INFOERROR :
-      return QColor("#F58989");
-  case INFOWARNING:
-      return QColor("#F5D489");
-  case INFO:
-      return QColor("#FFFFFF");
-  }
+        switch (_type.at(index.row()))
+        {
+        case INFOERROR :
+            return QColor("#F58989");
+        case INFOWARNING:
+            return QColor("#F5D489");
+        case INFO:
+            return QColor("#FFFFFF");
+        }
     }
     if(role!=Qt::DisplayRole)
-  return QVariant();
+        return QVariant();
 
     if (index.row() >= _text.size())
-  return QVariant();
+        return QVariant();
 
     // type
     if(index.column()==0)
     {
-  // type
-  //        if(role == Qt::UserRole)
-  //            return _type.at(index.row());
-  if(role == Qt::DisplayRole)
-  {
-      switch (_type.at(index.row()))
-      {
-      case INFOERROR :
-          return "Error :";
-      case INFOWARNING:
-          return "Warning :";
-      case INFO:
-          return "Info :";
-      }
-  }
+        // type
+        //        if(role == Qt::UserRole)
+        //            return _type.at(index.row());
+        if(role == Qt::DisplayRole)
+        {
+            switch (_type.at(index.row()))
+            {
+            case INFOERROR :
+                return "Error :";
+            case INFOWARNING:
+                return "Warning :";
+            case INFO:
+                return "Info :";
+            }
+        }
     }
 
     // text
     if((index.column()==1) && (role==Qt::DisplayRole))
-  return _text.at(index.row());
+        return _text.at(index.row());
 
     return QVariant();
 }
 
 QVariant Infos::headerData(int section, Qt::Orientation orientation,
-                     int role) const
+                           int role) const
 {
     if (role != Qt::DisplayRole)
-  return QVariant();
+        return QVariant();
 
     if (orientation == Qt::Horizontal)
-  return QString("Column %1").arg(section);
+        return QString("Column %1").arg(section);
     else
-  return QString("Row %1").arg(section);
+        return QString("Row %1").arg(section);
 }
 
 

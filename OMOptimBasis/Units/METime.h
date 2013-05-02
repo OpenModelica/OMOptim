@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file METime.h
+        @file METime.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #if !defined(_METime_H)
@@ -54,7 +54,7 @@ public:
 
     enum Units
     {
-  SEC
+        SEC
     };
 
     QString unit(int iUnit)  const;

@@ -35,7 +35,7 @@ public:
      * @return true if the neighborhood was not empty
      */
     virtual bool hasNeighbor(EOT& _solution) {
-  return neighborhoodSize > 0;
+        return neighborhoodSize > 0;
     }
 
 
@@ -46,12 +46,12 @@ public:
      * @param _neighbor the first neighbor
      */
     virtual void init(EOT & _solution, Neighbor & _neighbor) {
-  _neighbor.index(rng.random(neighborhoodSize));
-  std::vector<eoRealInterval> tmpvar1 = this->getDoubleBounds();
-  _neighbor.setDoubleBounds(tmpvar1 );
-  std::vector<eoIntInterval> tmpvar2 = this->getIntBounds();
-  _neighbor.setIntBounds(tmpvar2);
-  _neighbor.setNbBool(this->getNbBool());
+        _neighbor.index(rng.random(neighborhoodSize));
+        std::vector<eoRealInterval> tmpvar1 = this->getDoubleBounds();
+        _neighbor.setDoubleBounds(tmpvar1 );
+        std::vector<eoIntInterval> tmpvar2 = this->getIntBounds();
+        _neighbor.setIntBounds(tmpvar2);
+        _neighbor.setNbBool(this->getNbBool());
     }
 
     /**
@@ -60,7 +60,7 @@ public:
      * @param _neighbor the next neighbor
      */
     virtual void next(EOT & _solution, Neighbor & _neighbor) {
-  _neighbor.index(rng.random(neighborhoodSize));
+        _neighbor.index(rng.random(neighborhoodSize));
     }
 
     /**
@@ -69,7 +69,7 @@ public:
      * @return true if there is again a neighbor to explore
      */
     virtual bool cont(EOT & _solution) {
-  return neighborhoodSize > 0;
+        return neighborhoodSize > 0;
     }
 
     /**
@@ -77,23 +77,23 @@ public:
      * @return the class name as a std::string
      */
     virtual std::string className() const {
-  return "moRndWithReplNeighborhood";
+        return "moRndWithReplNeighborhood";
     }
 
 
     std::vector<eoRealInterval> getDoubleBounds() const
     {
-  return _doubleBounds;
+        return _doubleBounds;
     }
 
     std::vector<eoIntInterval> getIntBounds() const
     {
-  return _intBounds;
+        return _intBounds;
     }
 
     int getNbBool() const
     {
-  return _nbBool;
+        return _nbBool;
     }
 
 

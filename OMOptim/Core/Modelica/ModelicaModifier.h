@@ -82,11 +82,11 @@ public :
 
     enum Field
     {
-  //Modelica fields
-  NAME,
-  DESCRIPTION,
-  VALUE,
-  COMPONENT_NAME,
+        //Modelica fields
+        NAME,
+        DESCRIPTION,
+        VALUE,
+        COMPONENT_NAME,
     };
 
 

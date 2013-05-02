@@ -70,7 +70,7 @@ MyEoGnuplot::MyEoGnuplot()
 MyEoGnuplot::~MyEoGnuplot()
 {
     if( gnuplotPipe )
-  pclose(gnuplotPipe);
+        pclose(gnuplotPipe);
 
 }
 
@@ -79,8 +79,8 @@ void MyEoGnuplot::gnuplotCommand(const QString & _command)
     QString cmd = _command+"\n";
     if(pipeOpen)
     {
-  fprintf(gnuplotPipe, cmd.toAscii().data());
-  fflush(gnuplotPipe);
+        fprintf(gnuplotPipe, cmd.toAscii().data());
+        fflush(gnuplotPipe);
     }
 }
 
@@ -91,41 +91,41 @@ void MyEoGnuplot::initGnuPlot()
     
     if(!useGnuplot)
     {
-  pipeOpen=false;
+        pipeOpen=false;
     }
     else
     {
-  if(!pipeOpen)
-  {
+        if(!pipeOpen)
+        {
 
-      QString pgnuplotFilePath = MOSettings::value("pgnuplotEXE").toString();
-      QString command("\""+pgnuplotFilePath +"\" -persist");
-      command.replace("/","\\");
+            QString pgnuplotFilePath = MOSettings::value("pgnuplotEXE").toString();
+            QString command("\""+pgnuplotFilePath +"\" -persist");
+            command.replace("/","\\");
 
-      InfoSender::instance()->debug("Loading gnuplot : "+pgnuplotFilePath);
-      gnuplotPipe = popen(command.toAscii().data(),"w");
+            InfoSender::instance()->debug("Loading gnuplot : "+pgnuplotFilePath);
+            gnuplotPipe = popen(command.toAscii().data(),"w");
 
 #ifdef WIN32
-      //pipeOpen = (bool)((*gnuplotPipe)._ptr);
-      pipeOpen = (bool)((gnuplotPipe));
+            //pipeOpen = (bool)((*gnuplotPipe)._ptr);
+            pipeOpen = (bool)((gnuplotPipe));
 #else
-      pipeOpen = gnuplotPipe != NULL;
+            pipeOpen = gnuplotPipe != NULL;
 #endif
-      //pipeOpen = (gnuplotPipe!=NULL);
-      if(!pipeOpen)
-      {
-          InfoSender::instance()->debug("Failed loading gnuplot");
-      }
-      else
-      {
-          InfoSender::instance()->debug("Succesfully loaded gnuplot");
+            //pipeOpen = (gnuplotPipe!=NULL);
+            if(!pipeOpen)
+            {
+                InfoSender::instance()->debug("Failed loading gnuplot");
+            }
+            else
+            {
+                InfoSender::instance()->debug("Succesfully loaded gnuplot");
 #ifdef WIN32
-          gnuplotCommand("set terminal windows");
+                gnuplotCommand("set terminal windows");
 #else
-          gnuplotCommand("set terminal wxt");
+                gnuplotCommand("set terminal wxt");
 #endif
-      }
-  }
+            }
+        }
     }
 }
 

@@ -53,7 +53,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
     // Variables
     _widgetOneSimVars = new WidgetOneSimVars(_project,_problem,this);
     addDockWidget("Variables",_widgetOneSimVars);
-  
+        
     _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
     addDockWidget("Files",_widgetFilesList,_widgetOneSimVars);
 
@@ -61,7 +61,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
     _widgetCtrl = new WidgetCtrlParameters(_project,_problem->_filesToCopy,_problem->model(),_problem->ctrls(),false,this);
 
     addDockWidget("Simulator",_widgetCtrl,_widgetOneSimVars);
-  
+        
     mapDockWidgets.key(_widgetOneSimVars)->raise();
 }
 

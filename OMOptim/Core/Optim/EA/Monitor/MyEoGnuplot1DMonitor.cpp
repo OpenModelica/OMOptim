@@ -52,15 +52,15 @@ eoMonitor& MyEoGnuplot1DMonitor::operator() (void)
     // assumes successive plots will have same nb of columns!!!
     //    if (firstTime)
     //    {
-    //  FirstPlot();
-    //  firstTime = false;
+    //        FirstPlot();
+    //        firstTime = false;
     //    }
     //    else
     //    {
-    //  if(gnuplotPipe)
-    //  {
-    //      gnuplotCommand("replot\n");
-    //  }
+    //        if(gnuplotPipe)
+    //        {
+    //            gnuplotCommand("replot\n");
+    //        }
     //    }
     gnuplotCommand(plotArchiveCommand());
     return *this;
@@ -72,16 +72,16 @@ eoMonitor& MyEoGnuplot1DMonitor::operator() (void)
 //{
 //    if (this->vec.size() < 2)
 //    {
-//  InfoSender::instance()->debug("GnuplotMonitor : Must have some stats to plot!");
+//        InfoSender::instance()->debug("GnuplotMonitor : Must have some stats to plot!");
 //    }
 //    QString command;
 
 //    command += "plot";
 //    for (unsigned i=1; i<this->vec.size(); i++) {
-//  command += " '" + QString(getFileName().c_str()) +
-//      "' using 1:" + QString::number(i+1) + " title '" + QString((this->vec[i])->longName().c_str()) + "' with lines" ;
-//  if (i<this->vec.size()-1)
-//      command += ", ";
+//        command += " '" + QString(getFileName().c_str()) +
+//            "' using 1:" + QString::number(i+1) + " title '" + QString((this->vec[i])->longName().c_str()) + "' with lines" ;
+//        if (i<this->vec.size()-1)
+//            command += ", ";
 //    }
 //    command += '\n';
 
@@ -94,54 +94,54 @@ QString MyEoGnuplot1DMonitor::plotArchiveCommand()
     QStringList archFiles = _folder.entryList(QStringList("archive.*"));
     int nbArchFilesConsidered =  5;// disp only the five last generations
     while(archFiles.size()>nbArchFilesConsidered)
-  archFiles.removeFirst();
+        archFiles.removeFirst();
 
     if((_nbObj>0)&&(archFiles.size()>0))
     {
-  int nbPlots = (_nbObj*(_nbObj-1))/2;
-  int nbRows = (int)(std::ceil(std::sqrt(nbPlots)));
-  int nbCols = nbRows;
-  int xCol=1;
-  int yCol=2;
+        int nbPlots = (_nbObj*(_nbObj-1))/2;
+        int nbRows = (int)(std::ceil(std::sqrt(nbPlots)));
+        int nbCols = nbRows;
+        int xCol=1;
+        int yCol=2;
 
-  cmd = "cd \'"+_folder.absolutePath()+"\'\n";
-  cmd += "set multiplot layout " +QString::number(nbRows)+","+QString::number(nbCols) + "\n";
-  cmd += "set autoscale \n";
-  cmd += "set key left top outside\n";
+        cmd = "cd \'"+_folder.absolutePath()+"\'\n";
+        cmd += "set multiplot layout " +QString::number(nbRows)+","+QString::number(nbCols) + "\n";
+        cmd += "set autoscale \n";
+        cmd += "set key left top outside\n";
 
-  for(int iPlot=0;iPlot<nbPlots;iPlot++)
-  {
-      QString columns = "u "+QString::number(xCol)+":"+QString::number(yCol)+" ";
-      QString labels = "set xlabel \'"+QString::number(xCol)+"\' \n";
-      labels += "set ylabel \'"+QString::number(yCol)+"\' \n";
-      cmd += labels;
+        for(int iPlot=0;iPlot<nbPlots;iPlot++)
+        {
+            QString columns = "u "+QString::number(xCol)+":"+QString::number(yCol)+" ";
+            QString labels = "set xlabel \'"+QString::number(xCol)+"\' \n";
+            labels += "set ylabel \'"+QString::number(yCol)+"\' \n";
+            cmd += labels;
 
-      QString title;
-      cmd+= "plot ";
-      for(int i=0;i<archFiles.size();i++)
-      {
-          // legend only on first plot
-          if(iPlot==0)
-              title = " t \'"+QFileInfo(_folder,archFiles.at(i)).completeSuffix()+"\' ";
-          else
-              title = "notitle";
+            QString title;
+            cmd+= "plot ";
+            for(int i=0;i<archFiles.size();i++)
+            {
+                // legend only on first plot
+                if(iPlot==0)
+                    title = " t \'"+QFileInfo(_folder,archFiles.at(i)).completeSuffix()+"\' ";
+                else
+                    title = "notitle";
 
-          cmd+= "\'"+archFiles.at(i)+"\'" + columns + title;
-          cmd+=",";
-      }
-      cmd.remove(-1,1);
-      cmd+="\n";
+                cmd+= "\'"+archFiles.at(i)+"\'" + columns + title;
+                cmd+=",";
+            }
+            cmd.remove(-1,1);
+            cmd+="\n";
 
-      // update data columns to plot
-      if(yCol<_nbObj)
-          yCol++;
-      else
-      {
-          xCol++;
-          yCol = xCol+1;
-      }
-  }
-  cmd += "unset multiplot";
+            // update data columns to plot
+            if(yCol<_nbObj)
+                yCol++;
+            else
+            {
+                xCol++;
+                yCol = xCol+1;
+            }
+        }
+        cmd += "unset multiplot";
     }
     return cmd;
 }

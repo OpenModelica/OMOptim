@@ -65,70 +65,70 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     //********************************
     // Crossover on double variables 
     //********************************
-  if(rng.flip(parameters->value("doublePCross",0.25).toDouble()) && (_eoA.doubleVars.size()>0))
+        if(rng.flip(parameters->value("doublePCross",0.25).toDouble()) && (_eoA.doubleVars.size()>0))
     {
-  // getting new eoA iVar1 value
-  iVar1 = LowTools::round(rng.random(_eoA.doubleVars.size()-1));
-  //newValue = random value between eoA and eoB var values
-  newValue1 = std::min<double>(_eoA.doubleVars.at(iVar1),_eoB.doubleVars.at(iVar1)) //min
-      + rng.random(fabs(_eoA.doubleVars.at(iVar1)-_eoB.doubleVars.at(iVar1)));
-  // getting new eoB iVar2 value
-  iVar2 = LowTools::round(rng.random(_eoA.doubleVars.size()-1));
-  //newValue = random value between eoA and eoB var values
-  newValue2 = std::min<double>(_eoA.doubleVars.at(iVar2),_eoB.doubleVars.at(iVar2)) //min
-      + rng.random(fabs(_eoA.doubleVars.at(iVar2)-_eoB.doubleVars.at(iVar2)));
-  // modifying eos
-  _eoA.doubleVars.at(iVar1) = newValue1;
-  _eoB.doubleVars.at(iVar2) = newValue2;
+        // getting new eoA iVar1 value
+        iVar1 = LowTools::round(rng.random(_eoA.doubleVars.size()-1));
+        //newValue = random value between eoA and eoB var values
+        newValue1 = std::min<double>(_eoA.doubleVars.at(iVar1),_eoB.doubleVars.at(iVar1)) //min
+            + rng.random(fabs(_eoA.doubleVars.at(iVar1)-_eoB.doubleVars.at(iVar1)));
+        // getting new eoB iVar2 value
+        iVar2 = LowTools::round(rng.random(_eoA.doubleVars.size()-1));
+        //newValue = random value between eoA and eoB var values
+        newValue2 = std::min<double>(_eoA.doubleVars.at(iVar2),_eoB.doubleVars.at(iVar2)) //min
+            + rng.random(fabs(_eoA.doubleVars.at(iVar2)-_eoB.doubleVars.at(iVar2)));
+        // modifying eos
+        _eoA.doubleVars.at(iVar1) = newValue1;
+        _eoB.doubleVars.at(iVar2) = newValue2;
 
-  oneHasChanged = true;
+        oneHasChanged = true;
     }
     
     //********************************
     // Crossover on int variables 
     //********************************
-  if(rng.flip(parameters->value("intPCross",0.25).toDouble()) && (_eoA.intVars.size()>0))
+        if(rng.flip(parameters->value("intPCross",0.25).toDouble()) && (_eoA.intVars.size()>0))
     {
-  // getting new eoA iVar1 value
-  iVar1 = LowTools::round(rng.random(_eoA.intVars.size()-1));
-  //newValue = random value between eoA and eoB var values
-  newValue1 = std::min<double>(_eoA.intVars.at(iVar1),_eoB.intVars.at(iVar1)) //min
-      + rng.random(abs((_eoA.intVars.at(iVar1))-(_eoB.intVars.at(iVar1))));
-  // getting new eoB iVar2 value
-  iVar2 = LowTools::round(rng.random(_eoA.intVars.size()-1));
-  //newValue = random value between eoA and eoB var values
-  newValue2 = std::min<double>(_eoA.intVars.at(iVar2),_eoB.intVars.at(iVar2)) //min
-      + rng.random(abs((_eoA.intVars.at(iVar2)-_eoB.intVars.at(iVar2))));
-  // modifying eos    
-  _eoA.intVars.at(iVar1) = LowTools::round(newValue1);
-  _eoB.intVars.at(iVar2) = LowTools::round(newValue2);
+        // getting new eoA iVar1 value
+        iVar1 = LowTools::round(rng.random(_eoA.intVars.size()-1));
+        //newValue = random value between eoA and eoB var values
+        newValue1 = std::min<double>(_eoA.intVars.at(iVar1),_eoB.intVars.at(iVar1)) //min
+            + rng.random(abs((_eoA.intVars.at(iVar1))-(_eoB.intVars.at(iVar1))));
+        // getting new eoB iVar2 value
+        iVar2 = LowTools::round(rng.random(_eoA.intVars.size()-1));
+        //newValue = random value between eoA and eoB var values
+        newValue2 = std::min<double>(_eoA.intVars.at(iVar2),_eoB.intVars.at(iVar2)) //min
+            + rng.random(abs((_eoA.intVars.at(iVar2)-_eoB.intVars.at(iVar2))));
+        // modifying eos    
+        _eoA.intVars.at(iVar1) = LowTools::round(newValue1);
+        _eoB.intVars.at(iVar2) = LowTools::round(newValue2);
 
-  oneHasChanged = true;
+        oneHasChanged = true;
     }
 
     //********************************
     // Crossover on bool variables 
     //********************************
-  if(rng.flip(parameters->value("boolPCross",0.25).toDouble()) && (_eoA.boolVars.size()>0))
+        if(rng.flip(parameters->value("boolPCross",0.25).toDouble()) && (_eoA.boolVars.size()>0))
     {
 
-  iVar1 = LowTools::round(rng.random(_eoA.boolVars.size()-1));
-  bool newBoolValue1 =_eoB.boolVars.at(iVar1);
+        iVar1 = LowTools::round(rng.random(_eoA.boolVars.size()-1));
+        bool newBoolValue1 =_eoB.boolVars.at(iVar1);
 
-  iVar2 = LowTools::round(rng.random(_eoA.boolVars.size()-1));
-  bool newBoolValue2 =_eoA.boolVars.at(iVar2);
+        iVar2 = LowTools::round(rng.random(_eoA.boolVars.size()-1));
+        bool newBoolValue2 =_eoA.boolVars.at(iVar2);
 
-  _eoA.boolVars.at(iVar1)=newBoolValue1;
-  _eoB.boolVars.at(iVar2)=newBoolValue2;
+        _eoA.boolVars.at(iVar1)=newBoolValue1;
+        _eoB.boolVars.at(iVar2)=newBoolValue2;
 
-  oneHasChanged = true;
+        oneHasChanged = true;
     }
     
     return oneHasChanged;
 }
 private :
 
-  MOParameters *parameters;
+        MOParameters *parameters;
 
 
 };

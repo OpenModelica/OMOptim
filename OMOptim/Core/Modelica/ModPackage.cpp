@@ -61,7 +61,7 @@ ModItem* ModPackage::clone() const
 
     for(int i=0;i<children().size();i++)
     {
-  newModPackage->addChild(child(i)->clone());
+        newModPackage->addChild(child(i)->clone());
     }
     return newModPackage;
 }

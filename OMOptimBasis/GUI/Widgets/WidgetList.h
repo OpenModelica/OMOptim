@@ -49,17 +49,17 @@ class WidgetList :
 {
     Q_OBJECT
 public:
-  WidgetList(QWidget* _parent);
-  virtual ~WidgetList(){};
+        WidgetList(QWidget* _parent);
+        virtual ~WidgetList(){};
 
     bool setSelectedIndexes(QList<int>);
     QList<int> getSelectedIndexes();
     
     public slots:
-  void onExtSelectionChanged(QList<int> &);
-  void onIntSelectionChanged();
+        void onExtSelectionChanged(QList<int> &);
+        void onIntSelectionChanged();
 signals:
-  void selectionChanged(QList<int> &);
+        void selectionChanged(QList<int> &);
 private :
     bool ignoreChange;
 

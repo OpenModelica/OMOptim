@@ -105,18 +105,18 @@
      enum DiagramType { Rectangle, StartEnd, Io };
 
      DiagramItem(DiagramType diagramType, QMenu *contextMenu,
-   QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+         QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
 
      void removeArrow(Arrow *arrow);
      void removeArrows();
      DiagramType diagramType() const
-   { return myDiagramType; }
+         { return myDiagramType; }
      QPolygonF polygon() const
-   { return myPolygon; }
+         { return myPolygon; }
      void addArrow(Arrow *arrow);
      QPixmap image() const;
      int type() const
-   { return Type;}
+         { return Type;}
 
      void setWidth(double _newWidth);
      void setHeight(double _newHeight);

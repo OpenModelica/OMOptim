@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #include "OMCase.h"
@@ -77,7 +77,7 @@ void OMCase::setName(QString name)
     emit renamed(_name);
 
     if(_saveFileName.isEmpty())
-  setDefaultSaveFileName();
+        setDefaultSaveFileName();
 }
 
 void OMCase::setIsSaved(bool isSaved)
@@ -151,36 +151,36 @@ void OMCase::store(QString destFolder, QString tempDir)
 
     if (!dir.exists())
     {
-  dir.mkpath(_relSaveFolder);
+        dir.mkpath(_relSaveFolder);
     }
     //    else
     //    {
-    //  LowTools::removeDir(_relSaveFolder);
-    //  dir.mkpath(_relSaveFolder);
+    //        LowTools::removeDir(_relSaveFolder);
+    //        dir.mkpath(_relSaveFolder);
     //    }
 
     //copy needed path from old place to new one
     if(tempDir != "")
     {
-  QDir tmpDir(tempDir);
-  QString fileToCopy;
+        QDir tmpDir(tempDir);
+        QString fileToCopy;
 
-  // copy problem files and folders
-  QStringList fileNames = tmpDir.entryList();
-  for(int i=0;i<fileNames.size();i++)
-  {
-      QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_relSaveFolder + QDir::separator() + fileNames.at(i));
-  }
+        // copy problem files and folders
+        QStringList fileNames = tmpDir.entryList();
+        for(int i=0;i<fileNames.size();i++)
+        {
+            QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_relSaveFolder + QDir::separator() + fileNames.at(i));
+        }
 
-  for(int i=0;i<_filesToCopy.size();i++)
-  {
-      if(_filesToCopy.at(i).isRelative())
-          fileToCopy = tmpDir.absoluteFilePath(_filesToCopy.at(i).filePath());
-      else
-          fileToCopy= _filesToCopy.at(i).absoluteFilePath();
+        for(int i=0;i<_filesToCopy.size();i++)
+        {
+            if(_filesToCopy.at(i).isRelative())
+                fileToCopy = tmpDir.absoluteFilePath(_filesToCopy.at(i).filePath());
+            else
+                fileToCopy= _filesToCopy.at(i).absoluteFilePath();
 
-      QFile::copy(fileToCopy,_relSaveFolder + QDir::separator() + _filesToCopy.at(i).fileName());
-  }
+            QFile::copy(fileToCopy,_relSaveFolder + QDir::separator() + _filesToCopy.at(i).fileName());
+        }
     }
 
     setSaveFolder(destFolder);
@@ -198,36 +198,36 @@ void OMCase::rename(QString newName, bool changeFolder)
 {
     if(newName != _name)
     {
-  QString oldName = _name;
-  setName(newName);
+        QString oldName = _name;
+        setName(newName);
 
-  if(changeFolder)
-  {
-      QString oldSaveFolder = saveFolder();
-      QString newSaveFolder = oldSaveFolder;
-      newSaveFolder.replace(oldName,newName);
+        if(changeFolder)
+        {
+            QString oldSaveFolder = saveFolder();
+            QString newSaveFolder = oldSaveFolder;
+            newSaveFolder.replace(oldName,newName);
 
-      QString oldSaveFileName = saveFileName();
-      QString newSaveFileName = oldSaveFileName;
-      newSaveFileName.replace(oldName,newName);
+            QString oldSaveFileName = saveFileName();
+            QString newSaveFileName = oldSaveFileName;
+            newSaveFileName.replace(oldName,newName);
 
-      QDir newDir(newSaveFolder);
-      if(newDir.exists())
-      {
-          newDir.cd("..");
-          newDir.rmdir(newSaveFolder);
-          newDir.setCurrent(newSaveFolder);
-      }
+            QDir newDir(newSaveFolder);
+            if(newDir.exists())
+            {
+                newDir.cd("..");
+                newDir.rmdir(newSaveFolder);
+                newDir.setCurrent(newSaveFolder);
+            }
 
-      LowTools::copyDir(oldSaveFolder,newSaveFolder);
-      if(oldSaveFolder!=newSaveFolder)
-          LowTools::removeDir(oldSaveFolder);
+            LowTools::copyDir(oldSaveFolder,newSaveFolder);
+            if(oldSaveFolder!=newSaveFolder)
+                LowTools::removeDir(oldSaveFolder);
 
-      newDir.rename(oldSaveFileName,newSaveFileName);
+            newDir.rename(oldSaveFileName,newSaveFileName);
 
-      setSaveFolder(newSaveFolder);
-      _saveFileName = newSaveFileName;
-  }
+            setSaveFolder(newSaveFolder);
+            _saveFileName = newSaveFileName;
+        }
     }
 }
 

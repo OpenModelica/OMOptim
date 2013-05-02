@@ -29,12 +29,12 @@
  *
  * Main contributor 2011, Hubert Thierot, CEP - ARMINES (France)
 
-  @file MESpecHeatCapacity.h
+        @file MESpecHeatCapacity.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #if !defined(_MESpecHeatCapacity_H)
@@ -47,28 +47,28 @@ class MESpecHeatCapacity : public MEDimValue
 {
 public:
     MESpecHeatCapacity();
-  MESpecHeatCapacity(double value,int unit);
-  MESpecHeatCapacity(const MESpecHeatCapacity&);
-  ~MESpecHeatCapacity();
+        MESpecHeatCapacity(double value,int unit);
+        MESpecHeatCapacity(const MESpecHeatCapacity&);
+        ~MESpecHeatCapacity();
 
-  using MEDimValue::operator=;
+        using MEDimValue::operator=;
 
     enum Units
     {
-      J_KG_K,
-      KJ_KG_K,
-      MJ_KG_K
+            J_KG_K,
+            KJ_KG_K,
+            MJ_KG_K
     };
 
     QString unit(int iUnit)  const;
-  QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
+        QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
     unsigned nbUnits() const;
     double convert(double value,int orgUnit,int dstUnit) const;
 
-  MESpecHeatCapacity& operator+=(const MESpecHeatCapacity&);
-  MESpecHeatCapacity& operator-=(const MESpecHeatCapacity&);
-  MESpecHeatCapacity operator-(const MESpecHeatCapacity&) const;
-  MESpecHeatCapacity operator+(const MESpecHeatCapacity&) const;
+        MESpecHeatCapacity& operator+=(const MESpecHeatCapacity&);
+        MESpecHeatCapacity& operator-=(const MESpecHeatCapacity&);
+        MESpecHeatCapacity operator-(const MESpecHeatCapacity&) const;
+        MESpecHeatCapacity operator+(const MESpecHeatCapacity&) const;
 
 };
 

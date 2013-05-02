@@ -35,7 +35,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-  @version
+        @version
 
   */
 #include "MEGeneric.h"
@@ -70,16 +70,16 @@ QString MEGeneric::unit(int iUnit) const
 {
     switch(iUnit)
     {
-  case UNITBASE :
-          return "";
+        case UNITBASE :
+                return "";
     default :
-  return "-";
+        return "-";
     }
 }
 
 QString MEGeneric::unit() const
 {
-  return unit(_unit);
+        return unit(_unit);
 }
 
 unsigned MEGeneric::nbUnits() const
@@ -90,24 +90,24 @@ unsigned MEGeneric::nbUnits() const
 double MEGeneric::convert(double value,int orgUnit,int dstUnit) const
 {
     double result=value;
-  // convert to m2
+        // convert to m2
     switch(orgUnit)
     {
-//  case CM2 :
-//          result=result/1E4;
-//  break;
+//        case CM2 :
+//                result=result/1E4;
+//        break;
     default :
-  break;
+        break;
     }
 
     // convert to dstUnit
     switch(dstUnit)
     {
-//  case CM2 :
-//          result=result*1E4;
-//  break;
+//        case CM2 :
+//                result=result*1E4;
+//        break;
     default :
-  break;
+        break;
     }
     return result;
 }

@@ -44,18 +44,18 @@
 namespace Modelica
 {
     enum ClassRestr{
-  PACKAGE,
-  GENERIC,
-  MODEL,
-  COMPONENT,
-          RECORD,
-          BLOCK,
-          FUNCTION,
-          TYPE,
-          CLASS,
-          CONNECTOR,
-          EXECUTABLE,
-  OTHER
+        PACKAGE,
+        GENERIC,
+        MODEL,
+        COMPONENT,
+                RECORD,
+                BLOCK,
+                FUNCTION,
+                TYPE,
+                CLASS,
+                CONNECTOR,
+                EXECUTABLE,
+        OTHER
     };
 
 

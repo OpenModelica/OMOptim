@@ -6,7 +6,7 @@
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
      @version 
-  
+        
     Main contributor 2010, Hubert Thierot, CEP - ARMINES, Paris, France
     Main contributor 2009, Hubert Thierot, CEP - ARMINES, Paris, France
 

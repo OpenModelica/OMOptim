@@ -55,16 +55,16 @@ public:
 
     enum type
     {
-  INFO,
-  INFOWARNING,
-  INFOERROR
+        INFO,
+        INFOWARNING,
+        INFOERROR
     };
 
     enum destination
     {
-  DESTOMC,
-  DESTNORMAL,
-  DESTDEBUG
+        DESTOMC,
+        DESTNORMAL,
+        DESTDEBUG
     };
 
     Infos(QObject* parent);
@@ -87,7 +87,7 @@ protected:
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant headerData(int section, Qt::Orientation orientation,
-                  int role = Qt::DisplayRole) const;
+                        int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );

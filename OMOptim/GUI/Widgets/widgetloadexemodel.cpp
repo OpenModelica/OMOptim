@@ -44,7 +44,7 @@ void WidgetLoadExeModel::openExe()
 
     QString filename = QFileDialog::getOpenFileName(this,"Executable",startDir.absolutePath());
     if(!filename.isEmpty())
-  ui->lineExe->setText(filename);
+        ui->lineExe->setText(filename);
 }
 
 void WidgetLoadExeModel::openInput()
@@ -52,13 +52,13 @@ void WidgetLoadExeModel::openInput()
     // get starting dir
     QDir startDir;
     if(!ui->lineInput->text().isEmpty())
-  startDir.setPath(QFileInfo(ui->lineInput->text()).absolutePath());
+        startDir.setPath(QFileInfo(ui->lineInput->text()).absolutePath());
     else
-  startDir.setPath(QFileInfo(ui->lineExe->text()).absolutePath());
+        startDir.setPath(QFileInfo(ui->lineExe->text()).absolutePath());
 
     QString filename = QFileDialog::getOpenFileName(this,"Input file",startDir.absolutePath());
     if(!filename.isEmpty())
-  ui->lineInput->setText(filename);
+        ui->lineInput->setText(filename);
 }
 
 void WidgetLoadExeModel::validate()
@@ -68,33 +68,33 @@ void WidgetLoadExeModel::validate()
     // check
     if(!exeFileInfo().exists())
     {
-  ok = false;
-  msg+= "Exe file does not exist. \n";
+        ok = false;
+        msg+= "Exe file does not exist. \n";
     }
 
     if(!inputFileInfo().exists())
     {
-  ok = false;
-  msg+= "Input file does not exist. \n";
+        ok = false;
+        msg+= "Input file does not exist. \n";
     }
 
     if(name().isEmpty())
     {
-  ok = false;
-  msg+= "Model name is empty. \n";
+        ok = false;
+        msg+= "Model name is empty. \n";
     }
     if(_project->findModItem(name()))
     {
-  ok = false;
-  msg+= "A similar named model already exists in project. \n";
+        ok = false;
+        msg+= "A similar named model already exists in project. \n";
     }
     if(ok)
-  accept();
+        accept();
     else
     {
-  QMessageBox msgBox;
-  msgBox.setText(msg);
-  msgBox.exec();
+        QMessageBox msgBox;
+        msgBox.setText(msg);
+        msgBox.exec();
     }
 }
 

@@ -64,20 +64,20 @@ It allows multi-objectives but only real variables (no integer)
 class PSO : public EABase
 {
 public :
-  PSO();
-  PSO(Project*,Problem*);
-  PSO(Project*,Problem*,MOParameters*);
-  PSO(const PSO &);
-  EABase* clone() const;
+        PSO();
+        PSO(Project*,Problem*);
+        PSO(Project*,Problem*,MOParameters*);
+        PSO(const PSO &);
+        EABase* clone() const;
 
-  bool acceptMultiObjectives();
+        bool acceptMultiObjectives();
 
-  Result* launch(QString tempDir);
-  QString name();
-  void setDefaultParameters();
+        Result* launch(QString tempDir);
+        QString name();
+        void setDefaultParameters();
 
 private :
-  inline Result* buildResult(moeoUnboundedArchive<EOStd> & );
+        inline Result* buildResult(moeoUnboundedArchive<EOStd> & );
 
 
 };
@@ -86,11 +86,11 @@ private :
 
 Result* PSO::buildResult(moeoUnboundedArchive<EOStd> & arch)
 {
-  Result* result;
-      result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,/*_subBlocks,*/
-                  arch);
+        Result* result;
+            result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,/*_subBlocks,*/
+                        arch);
 
-  return result;
+        return result;
 }
 
 

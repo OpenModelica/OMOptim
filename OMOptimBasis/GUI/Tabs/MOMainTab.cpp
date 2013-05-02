@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-  @file MOMainTab.cpp
-  @brief Comments for file documentation.
-  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-  Company : CEP - ARMINES (France)
-  http://www-cep.ensmp.fr/english/
-  @version
+        @file MOMainTab.cpp
+        @brief Comments for file documentation.
+        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+        Company : CEP - ARMINES (France)
+        http://www-cep.ensmp.fr/english/
+        @version
 */
 
 #include "MOMainTab.h"
@@ -67,15 +67,15 @@ void MOMainTab::contextMenuEvent(QContextMenuEvent* pEvent)
     int iTab=0;
     while((iTab<bar->count())&&!found)
     {
-  if (bar->tabRect(iTab).contains(pEvent->pos()))
-      found = true;
-  else
-      iTab++;
+        if (bar->tabRect(iTab).contains(pEvent->pos()))
+            found = true;
+        else
+            iTab++;
     }
 
     // if no bar was hit, return
     if (!found)
-  return;
+        return;
 
     // ... otherwise  bring tab to front
     setCurrentIndex(iTab);
@@ -83,7 +83,7 @@ void MOMainTab::contextMenuEvent(QContextMenuEvent* pEvent)
     // Create popup menu
     MOTabBase* curTab = dynamic_cast<MOTabBase*>(widget(iTab));
     if(!curTab)
-  return;
+        return;
 
     MOItem* _item = curTab->getItem();
 
@@ -93,27 +93,27 @@ void MOMainTab::contextMenuEvent(QContextMenuEvent* pEvent)
     Problem* selProblem = dynamic_cast<Problem*>(_item);
     if(selProblem)
     {
-  iProblem = _project->problems()->items.indexOf(selProblem);
-  if(iProblem>-1)
-  {
-      QMenu* problemMenu = GuiTools::createProblemPopupMenu(_project,_mainWindow, mapToGlobal(pEvent->pos()),selProblem,iProblem);
-      problemMenu->exec(this->mapToGlobal(pEvent->pos()));
-  }
+        iProblem = _project->problems()->items.indexOf(selProblem);
+        if(iProblem>-1)
+        {
+            QMenu* problemMenu = GuiTools::createProblemPopupMenu(_project,_mainWindow, mapToGlobal(pEvent->pos()),selProblem,iProblem);
+            problemMenu->exec(this->mapToGlobal(pEvent->pos()));
+        }
     }
     else
     {
 
-  // Try Result
-  Result* selResult = dynamic_cast<Result*>(_item);
-  if(selResult)
-  {
-      iResult = _project->results()->items.indexOf(selResult);
-      if(iResult>-1)
-      {
-          QMenu* resultMenu = GuiTools::createResultPopupMenu(_project,_mainWindow, mapToGlobal(pEvent->pos()),selResult,iResult);
-          resultMenu->exec(this->mapToGlobal(pEvent->pos()));
-      }
-  }
+        // Try Result
+        Result* selResult = dynamic_cast<Result*>(_item);
+        if(selResult)
+        {
+            iResult = _project->results()->items.indexOf(selResult);
+            if(iResult>-1)
+            {
+                QMenu* resultMenu = GuiTools::createResultPopupMenu(_project,_mainWindow, mapToGlobal(pEvent->pos()),selResult,iResult);
+                resultMenu->exec(this->mapToGlobal(pEvent->pos()));
+            }
+        }
     }
 }
 
@@ -124,16 +124,16 @@ void MOMainTab::removeTab(MOTabBase::TabType type,QString name)
     MOTabBase* curTab;
     while((iTab<count())&&!found)
     {
-  curTab = dynamic_cast<MOTabBase*>(widget(iTab));
+        curTab = dynamic_cast<MOTabBase*>(widget(iTab));
 
-  if((curTab->tabType()==type)&&(tabText(iTab)==name))
-      found = true;
-  else
-      iTab++;
+        if((curTab->tabType()==type)&&(tabText(iTab)==name))
+            found = true;
+        else
+            iTab++;
     }
 
     if(found)
-  removeTab(iTab);
+        removeTab(iTab);
 }
 
 
@@ -141,15 +141,15 @@ void MOMainTab::removeTab(int index)
 {
     if(index < this->count())
     {
-  QWidget* tabWidget =  this->widget(index);
+        QWidget* tabWidget =  this->widget(index);
 
-  // remove tab
-  ((QTabWidget*)this)->removeTab(index);
+        // remove tab
+        ((QTabWidget*)this)->removeTab(index);
 
-  // delete widget
-//  tabWidget->dumpObjectInfo();
-//  tabWidget->dumpObjectTree();
-  delete tabWidget; // if deleteLater, should keep OMCase alive !!
+        // delete widget
+//        tabWidget->dumpObjectInfo();
+//        tabWidget->dumpObjectTree();
+        delete tabWidget; // if deleteLater, should keep OMCase alive !!
     }
 }
 
@@ -161,14 +161,14 @@ void MOMainTab::enableCaseTab(OMCase* omCase)
     bool found = false;
     while(i<count() && !found)
     {
-  tab = dynamic_cast<MOTabBase*>(widget(i));
-  if(tab && (tab->getItem()==omCase))
-      found =true;
-  else
-      i++;
+        tab = dynamic_cast<MOTabBase*>(widget(i));
+        if(tab && (tab->getItem()==omCase))
+            found =true;
+        else
+            i++;
     }
     if (found)
-  setCurrentIndex(i);
+        setCurrentIndex(i);
 }
 
 void MOMainTab::addProblemTab(Problem* problem,QWidget* widget)
@@ -193,12 +193,12 @@ void MOMainTab::removeTab(Problem* problem)
 
     if(widget)
     {
-  int index = this->indexOf(widget);
-  if(index>-1)
-  {
-      this->removeTab(index);
-      _problemTabs.remove(problem);
-  }
+        int index = this->indexOf(widget);
+        if(index>-1)
+        {
+            this->removeTab(index);
+            _problemTabs.remove(problem);
+        }
     }
 }
 
@@ -209,12 +209,12 @@ void MOMainTab::removeTab(Result* result)
 
     if(widget)
     {
-  int index = this->indexOf(widget);
-  if(index>-1)
-  {
-      this->removeTab(index);
-      _resultTabs.remove(result);
-  }
+        int index = this->indexOf(widget);
+        if(index>-1)
+        {
+            this->removeTab(index);
+            _resultTabs.remove(result);
+        }
     }
 }
 
@@ -226,31 +226,31 @@ void MOMainTab::onOMCaseRenamed(QString newName)
     Problem* problem = qobject_cast<Problem*>(sender());
     if(problem)
     {
-  QWidget* widget = _problemTabs.value(problem,NULL);
-  if(widget)
-  {
-      int index = this->indexOf(widget);
-      if(index>-1)
-      {
-          this-> setTabText(index,newName);
-      }
-  }
+        QWidget* widget = _problemTabs.value(problem,NULL);
+        if(widget)
+        {
+            int index = this->indexOf(widget);
+            if(index>-1)
+            {
+                this-> setTabText(index,newName);
+            }
+        }
     }
     else
     {
-  Result* result = qobject_cast<Result*>(sender());
-  if(result)
-  {
-      QWidget* widget = _resultTabs.value(result,NULL);
-      if(widget)
-      {
-          int index = this->indexOf(widget);
-          if(index>-1)
-          {
-              this-> setTabText(index,newName);
-          }
-      }
-  }
+        Result* result = qobject_cast<Result*>(sender());
+        if(result)
+        {
+            QWidget* widget = _resultTabs.value(result,NULL);
+            if(widget)
+            {
+                int index = this->indexOf(widget);
+                if(index>-1)
+                {
+                    this-> setTabText(index,newName);
+                }
+            }
+        }
     }
 }
 

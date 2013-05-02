@@ -55,8 +55,8 @@ class MOTabSimple : public QWidget,public MOTabBase
     Q_OBJECT
 
 public:
-  MOTabSimple(QString _projectName,MOItem* _mainItem,QWidget* parent=0);
-  virtual  ~MOTabSimple(void);
+        MOTabSimple(QString _projectName,MOItem* _mainItem,QWidget* parent=0);
+        virtual  ~MOTabSimple(void);
 
 
 };
@@ -66,8 +66,8 @@ class MOTabCplx : public QMainWindow,public MOTabBase
     Q_OBJECT
 
 public:
-  MOTabCplx(QString _projectName,MOItem* _mainItem,QWidget* parent);
-  virtual  ~MOTabCplx(void);
+        MOTabCplx(QString _projectName,MOItem* _mainItem,QWidget* parent);
+        virtual  ~MOTabCplx(void);
     void readGUIState();
 
 protected :

@@ -84,7 +84,7 @@
  #include "arrow.h"
 
  DiagramItem::DiagramItem(DiagramType diagramType, QMenu *contextMenu,
-        QGraphicsItem *parent, QGraphicsScene *scene)
+              QGraphicsItem *parent, QGraphicsScene *scene)
      : QGraphicsPolygonItem(parent, scene)
  {
      myDiagramType = diagramType;
@@ -92,26 +92,26 @@
 
      QPainterPath path;
      switch (myDiagramType) {
-   case StartEnd:
-       path.moveTo(200, 50);
-       path.arcTo(150, 0, 50, 50, 0, 90);
-       path.arcTo(50, 0, 50, 50, 90, 90);
-       path.arcTo(50, 50, 50, 50, 180, 90);
-       path.arcTo(150, 50, 50, 50, 270, 90);
-       path.lineTo(200, 25);
-       myPolygon = path.toFillPolygon();
-       break;
-  
-   case Rectangle:
-       myPolygon << QPointF(0, 0) << QPointF(100, 0)
-                 << QPointF(100, 100) << QPointF(0, 100)
-                 << QPointF(0, 0);
-       break;
-   default:
-       myPolygon << QPointF(-120, -80) << QPointF(-70, 80)
-                 << QPointF(120, 80) << QPointF(70, -80)
-                 << QPointF(-120, -80);
-       break;
+         case StartEnd:
+             path.moveTo(200, 50);
+             path.arcTo(150, 0, 50, 50, 0, 90);
+             path.arcTo(50, 0, 50, 50, 90, 90);
+             path.arcTo(50, 50, 50, 50, 180, 90);
+             path.arcTo(150, 50, 50, 50, 270, 90);
+             path.lineTo(200, 25);
+             myPolygon = path.toFillPolygon();
+             break;
+        
+         case Rectangle:
+             myPolygon << QPointF(0, 0) << QPointF(100, 0)
+                       << QPointF(100, 100) << QPointF(0, 100)
+                       << QPointF(0, 0);
+             break;
+         default:
+             myPolygon << QPointF(-120, -80) << QPointF(-70, 80)
+                       << QPointF(120, 80) << QPointF(70, -80)
+                       << QPointF(-120, -80);
+             break;
      }
      setPolygon(myPolygon);
      setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -126,9 +126,9 @@
      QPolygonF _newPolygon;
      for(int i=0;i<myPolygon.size();i++)
      {
-   QPointF _newPoint = myPolygon.at(i);
-   _newPoint.setX(myPolygon.at(i).x()*_newWidth/_oldWidth);
-  _newPolygon << _newPoint;
+         QPointF _newPoint = myPolygon.at(i);
+         _newPoint.setX(myPolygon.at(i).x()*_newWidth/_oldWidth);
+        _newPolygon << _newPoint;
      }
 
      setPolygon(_newPolygon);
@@ -142,9 +142,9 @@
      QPolygonF _newPolygon;
      for(int i=0;i<myPolygon.size();i++)
      {
-   QPointF _newPoint = myPolygon.at(i);
-   _newPoint.setY(myPolygon.at(i).y()*_newHeight/_oldHeight);
-  _newPolygon << _newPoint;
+         QPointF _newPoint = myPolygon.at(i);
+         _newPoint.setY(myPolygon.at(i).y()*_newHeight/_oldHeight);
+        _newPolygon << _newPoint;
      }
 
      setPolygon(_newPolygon);
@@ -156,16 +156,16 @@
      int index = arrows.indexOf(arrow);
 
      if (index != -1)
-   arrows.removeAt(index);
+         arrows.removeAt(index);
  }
 
  void DiagramItem::removeArrows()
  {
      foreach (Arrow *arrow, arrows) {
-   arrow->startItem()->removeArrow(arrow);
-   arrow->endItem()->removeArrow(arrow);
-   scene()->removeItem(arrow);
-   delete arrow;
+         arrow->startItem()->removeArrow(arrow);
+         arrow->endItem()->removeArrow(arrow);
+         scene()->removeItem(arrow);
+         delete arrow;
      }
  }
 
@@ -191,16 +191,16 @@
      scene()->clearSelection();
      setSelected(true);
      if(myContextMenu)
-  myContextMenu->exec(event->screenPos());
+        myContextMenu->exec(event->screenPos());
  }
 
  QVariant DiagramItem::itemChange(GraphicsItemChange change,
-                const QVariant &value)
+                      const QVariant &value)
  {
      if (change == QGraphicsItem::ItemPositionChange) {
-   foreach (Arrow *arrow, arrows) {
-       arrow->updatePosition();
-   }
+         foreach (Arrow *arrow, arrows) {
+             arrow->updatePosition();
+         }
      }
 
      return value;

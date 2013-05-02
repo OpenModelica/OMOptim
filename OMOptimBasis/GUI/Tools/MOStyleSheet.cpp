@@ -51,7 +51,7 @@ MOStyleSheet::~MOStyleSheet(void)
 void MOStyleSheet::initialize(QApplication * _qApp)
 {
 
-    QString toolBoxSS = "QToolBox::tab {\n      background: #B8B8B8;\n\n   border-radius: 3px;\n        color: #212A5E;\n    font: bold;\n}";
+    QString toolBoxSS = "QToolBox::tab {\n      background: #B8B8B8;\n\n         border-radius: 3px;\n        color: #212A5E;\n    font: bold;\n}";
     QString mainWindowSS = "QMainWindow::separator { width: 1px; height: 1px; }";
     QString tabWidget = "QTabWidget{ border : 0px;}";
 
