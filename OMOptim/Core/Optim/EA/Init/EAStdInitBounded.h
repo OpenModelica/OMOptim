@@ -35,12 +35,12 @@
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
      @version 0.9 
-        
+  
     
     Slight modification of file eoRealInitBounded.h (eo Project)
     (c) EEAAX 2000 - Maarten Keijzer 2000
     Contact: Marc.Schoenauer@polytechnique.fr
-             mak@dhi.dk
+       mak@dhi.dk
      
      THIS PROGRAM IS PROVIDED UNDER THE TERMS OF THIS OSMC PUBLIC
     LICENSE (OSMC-PL). ANY USE, REPRODUCTION OR DISTRIBUTION OF
@@ -85,42 +85,42 @@ class EAStdInitBounded : public eoInit<EOT>
  public:
      /** Ctor - from eoRealVectorBounds */
      EAStdInitBounded(
-         std::vector<eoRealInterval> & _doubleBounds,
-         std::vector<eoIntInterval> & _intBounds,
-         unsigned _nbBool
-         ):
+   std::vector<eoRealInterval> & _doubleBounds,
+   std::vector<eoIntInterval> & _intBounds,
+   unsigned _nbBool
+   ):
     doubleBounds(_doubleBounds),
-         intBounds(_intBounds)
+   intBounds(_intBounds)
      {
-         nbBool = _nbBool;
+   nbBool = _nbBool;
     }
 
   /** simply passes the argument to the uniform method of the bounds */
   virtual void operator()(EOT & _eo)
     {
 
-        // init double values
-        _eo.doubleVars.resize(doubleBounds.size());
-        for(unsigned i=0;i<_eo.doubleVars.size();i++)
-        {
-            _eo.doubleVars.at(i) = doubleBounds.at(i).uniform();
-        }
+  // init double values
+  _eo.doubleVars.resize(doubleBounds.size());
+  for(unsigned i=0;i<_eo.doubleVars.size();i++)
+  {
+      _eo.doubleVars.at(i) = doubleBounds.at(i).uniform();
+  }
 
-        // init int values
-        _eo.intVars.resize(intBounds.size());
-        for(unsigned i=0;i<_eo.intVars.size();i++)
-        {
-            _eo.intVars.at(i) = LowTools::round(intBounds.at(i).uniform());
-        }
+  // init int values
+  _eo.intVars.resize(intBounds.size());
+  for(unsigned i=0;i<_eo.intVars.size();i++)
+  {
+      _eo.intVars.at(i) = LowTools::round(intBounds.at(i).uniform());
+  }
 
-        // init bool values
-        _eo.boolVars.resize(nbBool);
-        for(unsigned i=0;i<_eo.boolVars.size();i++)
-        {
-            _eo.boolVars.at(i) = rng.flip();
-        }
+  // init bool values
+  _eo.boolVars.resize(nbBool);
+  for(unsigned i=0;i<_eo.boolVars.size();i++)
+  {
+      _eo.boolVars.at(i) = rng.flip();
+  }
 
-        _eo.invalidate();           // was MISSING!!!!
+  _eo.invalidate();           // was MISSING!!!!
     }
 
  private:

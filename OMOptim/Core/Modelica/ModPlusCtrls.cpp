@@ -15,23 +15,23 @@ QObject(parent)
 
     if(_modelPlus)
     {
-        QList<ModPlusCtrl*> compatibleCtrls = getCompatibleCtrls(_project,_modelPlus);
+  QList<ModPlusCtrl*> compatibleCtrls = getCompatibleCtrls(_project,_modelPlus);
 
-        for(int i=0;i<compatibleCtrls.size();i++)
-            this->insertCtrl(compatibleCtrls.at(i)->type(),compatibleCtrls.at(i));
+  for(int i=0;i<compatibleCtrls.size();i++)
+      this->insertCtrl(compatibleCtrls.at(i)->type(),compatibleCtrls.at(i));
 
-        if(_modelPlus->modelType()==ModelPlus::MODELICA)
-        {
+  if(_modelPlus->modelType()==ModelPlus::MODELICA)
+  {
 #if DEFAULTSIMULATOR==0
-            setCurrentCtrlType(ModPlusCtrl::OPENMODELICA);
+      setCurrentCtrlType(ModPlusCtrl::OPENMODELICA);
 #else
-            setCurrentCtrlType(ModPlusCtrl::DYMOLA);
+      setCurrentCtrlType(ModPlusCtrl::DYMOLA);
 #endif
-        }
-        if(_modelPlus->modelType()==ModelPlus::EXECUTABLE)
-        {
-            setCurrentCtrlType(ModPlusCtrl::DYMOLAEXECUTABLE);
-        }
+  }
+  if(_modelPlus->modelType()==ModelPlus::EXECUTABLE)
+  {
+      setCurrentCtrlType(ModPlusCtrl::DYMOLAEXECUTABLE);
+  }
     }
 }
 
@@ -44,53 +44,53 @@ ModPlusCtrls::ModPlusCtrls(Project* project,ModelPlus* ModPlus,const QDomElement
 
     if(_modelPlus)
     {
-        QList<ModPlusCtrl*> compatibleCtrls = getCompatibleCtrls(_project,_modelPlus);
+  QList<ModPlusCtrl*> compatibleCtrls = getCompatibleCtrls(_project,_modelPlus);
 
-        for(int i=0;i<compatibleCtrls.size();i++)
-            this->insertCtrl(compatibleCtrls.at(i)->type(),compatibleCtrls.at(i));
+  for(int i=0;i<compatibleCtrls.size();i++)
+      this->insertCtrl(compatibleCtrls.at(i)->type(),compatibleCtrls.at(i));
 
-        if(_modelPlus->modelType()==ModelPlus::MODELICA)
-        {
+  if(_modelPlus->modelType()==ModelPlus::MODELICA)
+  {
 #if DEFAULTSIMULATOR==0
-            setCurrentCtrlType(ModPlusCtrl::OPENMODELICA);
+      setCurrentCtrlType(ModPlusCtrl::OPENMODELICA);
 #else
-            setCurrentCtrlType(ModPlusCtrl::DYMOLA);
+      setCurrentCtrlType(ModPlusCtrl::DYMOLA);
 #endif
-        }
-        if(_modelPlus->modelType()==ModelPlus::EXECUTABLE)
-        {
-            setCurrentCtrlType(ModPlusCtrl::DYMOLAEXECUTABLE);
-        }
+  }
+  if(_modelPlus->modelType()==ModelPlus::EXECUTABLE)
+  {
+      setCurrentCtrlType(ModPlusCtrl::DYMOLAEXECUTABLE);
+  }
     }
 
 
     if(!cControlers.isNull() && cControlers.tagName()==className())
     {
-        // Controler type
-        this->setCurrentCtrlType((ModPlusCtrl::Type)cControlers.attribute("curType","").toInt());
+  // Controler type
+  this->setCurrentCtrlType((ModPlusCtrl::Type)cControlers.attribute("curType","").toInt());
 
-        // Update controler parameters
-        QDomNodeList domControlerList = cControlers.elementsByTagName("Controler");
+  // Update controler parameters
+  QDomNodeList domControlerList = cControlers.elementsByTagName("Controler");
 
-        QDomElement cParams;
-        QDomElement cControler;
-        ModPlusCtrl* curCtrl;
-        ModPlusCtrl::Type curCtrlType;
-        for(int iC=0;iC<domControlerList.size();iC++)
-        {
-            cControler = domControlerList.at(iC).toElement();
-            curCtrlType = (ModPlusCtrl::Type)cControler.attribute("type","-1").toInt();
-            curCtrl = this->value(curCtrlType);
+  QDomElement cParams;
+  QDomElement cControler;
+  ModPlusCtrl* curCtrl;
+  ModPlusCtrl::Type curCtrlType;
+  for(int iC=0;iC<domControlerList.size();iC++)
+  {
+      cControler = domControlerList.at(iC).toElement();
+      curCtrlType = (ModPlusCtrl::Type)cControler.attribute("type","-1").toInt();
+      curCtrl = this->value(curCtrlType);
 
-            if(curCtrl)
-            {
-                cParams = cControler.firstChildElement("parameters");
-                if(!cParams.isNull())
-                {
-                    curCtrl->parameters()->update(cParams);
-                }
-            }
-        }
+      if(curCtrl)
+      {
+          cParams = cControler.firstChildElement("parameters");
+          if(!cParams.isNull())
+          {
+              curCtrl->parameters()->update(cParams);
+          }
+      }
+  }
     }
 }
 
@@ -99,7 +99,7 @@ ModPlusCtrls::~ModPlusCtrls()
 {
     for(int i=0;i<values().size();i++)
     {
-        delete values().at(i);
+  delete values().at(i);
     }
 }
 
@@ -110,14 +110,14 @@ ModPlusCtrls* ModPlusCtrls::clone()
     // first remove automatically created
     for(int i=0;i<cloned->values().size();i++)
     {
-        delete cloned->values().at(i);
+  delete cloned->values().at(i);
     }
     cloned->clear();
 
     // then add cloned
     for(int i=0;i<keys().size();i++)
     {
-        cloned->insertCtrl(this->keys().at(i),this->value(keys().at(i))->clone());
+  cloned->insertCtrl(this->keys().at(i),this->value(keys().at(i))->clone());
     }
 
     cloned->_ctrlType = _ctrlType;
@@ -130,17 +130,17 @@ ModPlusCtrl* ModPlusCtrls::getNewCtrl(ModPlusCtrl::Type type,Project* project,Mo
     switch(type)
     {
     case ModPlusCtrl::OPENMODELICA:
-        return new ModPlusOMCtrl(project,(ModModelPlus*)modPlus,project->moomc());
+  return new ModPlusOMCtrl(project,(ModModelPlus*)modPlus,project->moomc());
     case ModPlusCtrl::DYMOLA:
-        return new ModPlusDymolaCtrl(project,(ModModelPlus*)modPlus,project->moomc());
+  return new ModPlusDymolaCtrl(project,(ModModelPlus*)modPlus,project->moomc());
     case ModPlusCtrl::OMEXECUTABLE:
-        return new ModPlusOMExeCtrl(project, modPlus);
+  return new ModPlusOMExeCtrl(project, modPlus);
     case ModPlusCtrl::DYMOLAEXECUTABLE:
-        return new ModPlusDymolaExeCtrl(project, modPlus);
-        //    case ModPlusCtrl::BLACKBOXEXECUTABLE:
-        //        return new ModPlusBlackBoxExeCtrl(project, modPlus);
+  return new ModPlusDymolaExeCtrl(project, modPlus);
+  //    case ModPlusCtrl::BLACKBOXEXECUTABLE:
+  //        return new ModPlusBlackBoxExeCtrl(project, modPlus);
     default:
-        return NULL;
+  return NULL;
     }
 }
 
@@ -155,13 +155,13 @@ QDomElement ModPlusCtrls::toXmlData(QDomDocument & doc)
 
     for(int iCtrl=0;iCtrl<this->values().size();iCtrl++)
     {
-        curCtrl = this->values().at(iCtrl);
-        ccurCtrl = doc.createElement("Controler");
-        ccurCtrl.setAttribute("type",(int)curCtrl->type());
-        ccurParams = curCtrl->parameters()->toXmlData(doc,"parameters");
+  curCtrl = this->values().at(iCtrl);
+  ccurCtrl = doc.createElement("Controler");
+  ccurCtrl.setAttribute("type",(int)curCtrl->type());
+  ccurParams = curCtrl->parameters()->toXmlData(doc,"parameters");
 
-        ccurCtrl.appendChild(ccurParams);
-        cControlers.appendChild(ccurCtrl);
+  ccurCtrl.appendChild(ccurParams);
+  cControlers.appendChild(ccurCtrl);
     }
 
     return cControlers;
@@ -181,8 +181,8 @@ void ModPlusCtrls::setCurrentCtrlType(ModPlusCtrl::Type type)
 {
     if(type != _ctrlType)
     {
-        _ctrlType = type;
-        emit modified();
+  _ctrlType = type;
+  emit modified();
     }
 }
 
@@ -191,7 +191,7 @@ void ModPlusCtrls::setFromOtherCtrls(const ModPlusCtrls &newCtrls)
     // clear content
     for(int i=0;i<values().size();i++)
     {
-        delete values().at(i);
+  delete values().at(i);
     }
     this->clear();
 
@@ -200,9 +200,9 @@ void ModPlusCtrls::setFromOtherCtrls(const ModPlusCtrls &newCtrls)
     ModPlusCtrl* newCtrl;
     for(int i=0;i<newCtrls.keys().size();i++)
     {
-        curType = newCtrls.keys().at(i);
-        newCtrl = newCtrls.value(curType)->clone();
-        this->insertCtrl(curType,newCtrl);
+  curType = newCtrls.keys().at(i);
+  newCtrl = newCtrls.value(curType)->clone();
+  this->insertCtrl(curType,newCtrl);
     }
     this->_ctrlType = newCtrls._ctrlType;
 }
@@ -212,12 +212,12 @@ QList<ModPlusCtrl *> ModPlusCtrls::getCompatibleCtrls(Project* project, ModelPlu
     QList<ModPlusCtrl *> result;
     for(int i=0;i<ModPlusCtrl::nbTypes;i++)
     {
-        ModPlusCtrl* newCtrl;
-        newCtrl = getNewCtrl((ModPlusCtrl::Type)i,project,modelPlus);
-        if(newCtrl && newCtrl->compatibleModels().contains(modelPlus->modelType()))
-            result.push_back(newCtrl);
-        else
-            delete newCtrl;
+  ModPlusCtrl* newCtrl;
+  newCtrl = getNewCtrl((ModPlusCtrl::Type)i,project,modelPlus);
+  if(newCtrl && newCtrl->compatibleModels().contains(modelPlus->modelType()))
+      result.push_back(newCtrl);
+  else
+      delete newCtrl;
     }
     result.removeAll(NULL);
     return result;

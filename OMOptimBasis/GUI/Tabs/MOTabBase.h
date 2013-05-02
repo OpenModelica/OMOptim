@@ -56,16 +56,16 @@ public:
 
     enum TabType
     {
-        TABPROJECT,
-        TABPROBLEM,
-        TABSOLVEDPROBLEM,
-        TABOTHER
+  TABPROJECT,
+  TABPROBLEM,
+  TABSOLVEDPROBLEM,
+  TABOTHER
     };
 
 
-        MOTabBase(QString _projectName,MOItem* _mainItem);
+  MOTabBase(QString _projectName,MOItem* _mainItem);
     virtual ~MOTabBase(void);
-        virtual TabType tabType()=0;
+  virtual TabType tabType()=0;
 
 
 
@@ -74,7 +74,7 @@ public:
 
 protected :
     MOItem* mainItem;
-        QString projectName; //used for GUI saving
+  QString projectName; //used for GUI saving
 };
 
 #endif

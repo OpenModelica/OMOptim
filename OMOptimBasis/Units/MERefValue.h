@@ -66,8 +66,8 @@ public:
     QVariant value() const;
     virtual void setValue(QVariant,int iUnit=-1);
     virtual bool setValue(QVariant,QString unit);
-        virtual void setValue(const MERefValue &);
-        virtual void setValue(const DimValue &);
+  virtual void setValue(const MERefValue &);
+  virtual void setValue(const DimValue &);
     bool setUnit(QString iUnit);
     void setUnit(int);
     QStringList units() const;
@@ -75,12 +75,12 @@ public:
     int iUnit() const;
     virtual QString unit(int iUnit) const;
 
-        double numValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName=QString()) const;
-        DimValue numValue(MOOptVector *variables,bool &ok,QString modelName) const;
-        DimValue numValue() const;
+  double numValue(MOOptVector *variables,int iUnit,bool &ok,QString modelName=QString()) const;
+  DimValue numValue(MOOptVector *variables,bool &ok,QString modelName) const;
+  DimValue numValue() const;
 
-        QString reference() const ;
-        bool isNum() const;
+  QString reference() const ;
+  bool isNum() const;
     
     
 protected :

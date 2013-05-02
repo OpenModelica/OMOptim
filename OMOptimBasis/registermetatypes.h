@@ -23,7 +23,7 @@ public slots:
     void onApplicationQuit()
     {
        // delete _project;
-        InfoSender::destroy();
+  InfoSender::destroy();
     }
 
 protected :

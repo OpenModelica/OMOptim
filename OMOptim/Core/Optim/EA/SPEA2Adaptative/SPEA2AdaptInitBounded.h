@@ -56,62 +56,62 @@ class SPEA2AdaptInitBounded : public eoInit<EOT>
  public:
      /** Ctor - from eoRealVectorBounds */
      SPEA2AdaptInitBounded(
-         std::vector<eoRealInterval> & _doubleBounds,
-         std::vector<eoIntInterval> & _intBounds,
-         unsigned _nbBool,
-         unsigned _initPopSize
-         ):
+   std::vector<eoRealInterval> & _doubleBounds,
+   std::vector<eoIntInterval> & _intBounds,
+   unsigned _nbBool,
+   unsigned _initPopSize
+   ):
     doubleBounds(_doubleBounds),
-         intBounds(_intBounds)
+   intBounds(_intBounds)
      {
-         nbBool = _nbBool;
-         initPopSize = _initPopSize;
+   nbBool = _nbBool;
+   initPopSize = _initPopSize;
     }
 
   /** simply passes the argument to the uniform method of the bounds */
   virtual void operator()(EOT & _eo)
     {
 
-        // init double values
-        _eo.doubleVars.resize(doubleBounds.size());
-        for(unsigned i=0;i<_eo.doubleVars.size();i++)
-        {
-            _eo.doubleVars.at(i) = doubleBounds.at(i).uniform();
-        }
+  // init double values
+  _eo.doubleVars.resize(doubleBounds.size());
+  for(unsigned i=0;i<_eo.doubleVars.size();i++)
+  {
+      _eo.doubleVars.at(i) = doubleBounds.at(i).uniform();
+  }
 
-        // init int values
-        _eo.intVars.resize(intBounds.size());
-        for(unsigned i=0;i<_eo.intVars.size();i++)
-        {
-            _eo.intVars.at(i) = LowTools::round(intBounds.at(i).uniform());
-        }
+  // init int values
+  _eo.intVars.resize(intBounds.size());
+  for(unsigned i=0;i<_eo.intVars.size();i++)
+  {
+      _eo.intVars.at(i) = LowTools::round(intBounds.at(i).uniform());
+  }
 
-        // init bool values
-        _eo.boolVars.resize(nbBool);
-        for(unsigned i=0;i<_eo.boolVars.size();i++)
-        {
-            _eo.boolVars.at(i) = rng.flip();
-        }
+  // init bool values
+  _eo.boolVars.resize(nbBool);
+  for(unsigned i=0;i<_eo.boolVars.size();i++)
+  {
+      _eo.boolVars.at(i) = rng.flip();
+  }
 
-        // init double standard deviation
-        _eo.dblStdDev.resize(doubleBounds.size());
-        for(unsigned i=0;i<_eo.dblStdDev.size();i++)
-        {
-            //_eo.dblStdDev.at(i) = 0.013; // Hinterding, Self-Adaptive Genetic Algorithm
-            _eo.dblStdDev.at(i) = doubleBounds.at(i).range()/(sqrt((double)12)*initPopSize);
-        }
+  // init double standard deviation
+  _eo.dblStdDev.resize(doubleBounds.size());
+  for(unsigned i=0;i<_eo.dblStdDev.size();i++)
+  {
+      //_eo.dblStdDev.at(i) = 0.013; // Hinterding, Self-Adaptive Genetic Algorithm
+      _eo.dblStdDev.at(i) = doubleBounds.at(i).range()/(sqrt((double)12)*initPopSize);
+  }
 
-        // init int mutation probability
-        double pIntMut = rng.uniform(1);
-        double epsilon = 1E-40;
-        if(pIntMut < epsilon)
-            pIntMut = epsilon;
-        if(pIntMut > 1-epsilon)
-            pIntMut = 1-epsilon;
-        
-        _eo.intProbMut = pIntMut;
+  // init int mutation probability
+  double pIntMut = rng.uniform(1);
+  double epsilon = 1E-40;
+  if(pIntMut < epsilon)
+      pIntMut = epsilon;
+  if(pIntMut > 1-epsilon)
+      pIntMut = 1-epsilon;
+  
+  _eo.intProbMut = pIntMut;
 
-        _eo.invalidate();           // was MISSING!!!!
+  _eo.invalidate();           // was MISSING!!!!
     }
 
  private:

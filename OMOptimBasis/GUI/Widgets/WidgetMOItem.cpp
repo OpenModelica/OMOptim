@@ -67,9 +67,9 @@ void WidgetMOItem::clearGui()
 {
     if(itemWidget)
     {
-        ui->groupItem->layout()->removeWidget(itemWidget);
-        delete itemWidget;
-        fieldEditWidget.clear();
+  ui->groupItem->layout()->removeWidget(itemWidget);
+  delete itemWidget;
+  fieldEditWidget.clear();
     }
     itemWidget = new QWidget(this);
     ui->groupItem->layout()->addWidget(itemWidget);
@@ -87,51 +87,51 @@ void WidgetMOItem::initializeGui()
     QLabel* label;
     if(item)
     {
-        ui->groupItem->setTitle(item->name());
-        QWidget* curWidget;
+  ui->groupItem->setTitle(item->name());
+  QWidget* curWidget;
 
-        for(int iF=0;iF<item->getNbFields();iF++)
-        {
-            curWidget = createEditWidget(item, iF, _editable);
-            if(curWidget)
-            {
-                curWidget->setParent(this);
-                fieldEditWidget.insert(iF,curWidget);
+  for(int iF=0;iF<item->getNbFields();iF++)
+  {
+      curWidget = createEditWidget(item, iF, _editable);
+      if(curWidget)
+      {
+          curWidget->setParent(this);
+          fieldEditWidget.insert(iF,curWidget);
 
 
-                // add it to gui
-                label = new QLabel(item->getFieldName(iF),this);
-                label->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
-                itemLayout->addWidget(label,iF,0);
-                itemLayout->addWidget(curWidget,iF,1);
+          // add it to gui
+          label = new QLabel(item->getFieldName(iF),this);
+          label->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+          itemLayout->addWidget(label,iF,0);
+          itemLayout->addWidget(curWidget,iF,1);
 
-                // connect change
-                QComboBox* combo = dynamic_cast<QComboBox*>(curWidget);
-                if(combo)
-                    connect(combo,SIGNAL(thiseditTextChanged(const QString &)),
-                            this,SLOT(onValueChanged(const QString &)));
+          // connect change
+          QComboBox* combo = dynamic_cast<QComboBox*>(curWidget);
+          if(combo)
+              connect(combo,SIGNAL(thiseditTextChanged(const QString &)),
+                      this,SLOT(onValueChanged(const QString &)));
 
-                QSpinBox* spinBox = dynamic_cast<QSpinBox*>(curWidget);
-                if(spinBox)
-                    connect(spinBox,SIGNAL(valueChanged( const QString & )),
-                            this,SLOT(onValueChanged(const QString &)));
+          QSpinBox* spinBox = dynamic_cast<QSpinBox*>(curWidget);
+          if(spinBox)
+              connect(spinBox,SIGNAL(valueChanged( const QString & )),
+                      this,SLOT(onValueChanged(const QString &)));
 
-                QScienceSpinBox* doubleSpinBox = dynamic_cast<QScienceSpinBox*>(curWidget);
-                if(doubleSpinBox)
-                    connect(doubleSpinBox,SIGNAL(valueChanged( const QString & )),
-                            this,SLOT(onValueChanged(const QString &)));
+          QScienceSpinBox* doubleSpinBox = dynamic_cast<QScienceSpinBox*>(curWidget);
+          if(doubleSpinBox)
+              connect(doubleSpinBox,SIGNAL(valueChanged( const QString & )),
+                      this,SLOT(onValueChanged(const QString &)));
 
-                QCheckBox* checkBox = dynamic_cast<QCheckBox*>(curWidget);
-                if(checkBox)
-                    connect(checkBox,SIGNAL(stateChanged(int)),
-                            this,SLOT(onCheckChanged(int)));
+          QCheckBox* checkBox = dynamic_cast<QCheckBox*>(curWidget);
+          if(checkBox)
+              connect(checkBox,SIGNAL(stateChanged(int)),
+                      this,SLOT(onCheckChanged(int)));
 
-                QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
-                if(lineEdit)
-                    connect(lineEdit,SIGNAL(editingFinished()),
-                            this,SLOT(onLineEditValueChanged()));
-            }
-        }
+          QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
+          if(lineEdit)
+              connect(lineEdit,SIGNAL(editingFinished()),
+                      this,SLOT(onLineEditValueChanged()));
+      }
+  }
     }
 }
 
@@ -154,9 +154,9 @@ void WidgetMOItem::changeValue(QWidget* editor, const QVariant &value)
     int iF = fieldEditWidget.key(editor,-1);
     if(iF>-1)
     {
-        item->setFieldValue(iF,value);
-        updateWidgetValue(editor,item->getFieldValue(iF));
-        emit valueChanged();
+  item->setFieldValue(iF,value);
+  updateWidgetValue(editor,item->getFieldValue(iF));
+  emit valueChanged();
     }
 }
 
@@ -179,11 +179,11 @@ void WidgetMOItem::onCheckChanged(int state)
     {
     case Qt::Unchecked:
     case Qt::PartiallyChecked    :
-        changeValue(editor,QVariant(false));
-        break;
+  changeValue(editor,QVariant(false));
+  break;
     case Qt::Checked :
-        changeValue(editor,QVariant(true));
-        break;
+  changeValue(editor,QVariant(true));
+  break;
     }
 }
 
@@ -191,28 +191,28 @@ void WidgetMOItem::updateWidgetValue(QWidget* curWidget, QVariant value)
 {
     QComboBox* combo = dynamic_cast<QComboBox*>(curWidget);
     if(combo)
-        combo->setEditText(value.toString());
+  combo->setEditText(value.toString());
 
     QSpinBox* spinBox = dynamic_cast<QSpinBox*>(curWidget);
     if(spinBox)
-        spinBox->setValue(value.toInt());
+  spinBox->setValue(value.toInt());
 
     QScienceSpinBox* doubleSpinBox = dynamic_cast<QScienceSpinBox*>(curWidget);
     if(doubleSpinBox)
-        doubleSpinBox->setValue(value.toDouble());
+  doubleSpinBox->setValue(value.toDouble());
 
     QCheckBox* checkBox = dynamic_cast<QCheckBox*>(curWidget);
     if(checkBox)
     {
-        if(value.toBool())
-            checkBox->setCheckState(Qt::Checked);
-        else
-            checkBox->setCheckState(Qt::Unchecked);
+  if(value.toBool())
+      checkBox->setCheckState(Qt::Checked);
+  else
+      checkBox->setCheckState(Qt::Unchecked);
     }
 
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(curWidget);
     if(lineEdit)
-        lineEdit->setText(value.toString());
+  lineEdit->setText(value.toString());
 }
 
 
@@ -223,9 +223,9 @@ void WidgetMOItem::actualizeValues()
     int iField;
     for(int i=0;i<fieldEditWidget.values().size();i++)
     {
-        iField = fieldEditWidget.keys().at(i);
+  iField = fieldEditWidget.keys().at(i);
 
-        if(item)
-            updateWidgetValue(fieldEditWidget.values().at(i), item->getFieldValue(iField));
+  if(item)
+      updateWidgetValue(fieldEditWidget.values().at(i), item->getFieldValue(iField));
     }
 }

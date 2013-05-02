@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file WidgetMooPointsList.cpp
-        @brief Comments for file documentation.
-        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-        Company : CEP - ARMINES (France)
-        http://www-cep.ensmp.fr/english/
-        @version
+  @file WidgetMooPointsList.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 */
 
 #include "Widgets/WidgetMooPointsList.h"
@@ -65,29 +65,29 @@ WidgetMooPointsList::WidgetMooPointsList(OptimResult* result,QWidget *parent) :
 
     if(_result->optObjectivesResults()->size()>0)
     {
-        for (int i=0;i<_result->optObjectivesResults()->nbPoints();i++)
-        {
-            QListWidgetItem* newItem = new QListWidgetItem(QString::number(i));
-            newItem->setData(Qt::UserRole,QVariant(i));
-            _listPoints->addItem(newItem);
-        }
+  for (int i=0;i<_result->optObjectivesResults()->nbPoints();i++)
+  {
+      QListWidgetItem* newItem = new QListWidgetItem(QString::number(i));
+      newItem->setData(Qt::UserRole,QVariant(i));
+      _listPoints->addItem(newItem);
+  }
     }
     _listPoints->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 
     // reemiting signal (other widgets in tab should catch it)
     connect(_listPoints,SIGNAL(selectionChanged(QList<int>&)),
-            this,SLOT(onIntSelectionChanged(QList<int>&)));
+      this,SLOT(onIntSelectionChanged(QList<int>&)));
 
     //Shown points
     setOnlyPareto(_ui->pushPareto->isChecked());
     connect(_ui->pushPareto,SIGNAL(toggled(bool)),this,SLOT(setOnlyPareto(bool)));
 
     connect(_ui->pushCalcSelected,SIGNAL(clicked()),
-            this,SLOT(recomputeSelectedPoints()));
+      this,SLOT(recomputeSelectedPoints()));
 
     connect(_ui->pushExport,SIGNAL(clicked()),
-            this,SLOT(exportSelectedPoints()));
+      this,SLOT(exportSelectedPoints()));
 
     _selectedExportVariables = NULL;
 }
@@ -105,9 +105,9 @@ void WidgetMooPointsList::onExtSelectionChanged(QList<int> & list)
 void WidgetMooPointsList::onIntSelectionChanged(QList<int> & list)
 {
     if(list.size()!=1)
-        _result->setCurPoint(-1);
+  _result->setCurPoint(-1);
     else
-        _result->setCurPoint(list.at(0));
+  _result->setCurPoint(list.at(0));
 
     emit selectionChanged(list);
 }
@@ -118,7 +118,7 @@ void WidgetMooPointsList::setShownPoints(QList<int> list)
 
     for (int i=0;i<list.size();i++)
     {
-        _listPoints->addItem(QString::number(list.at(i)));
+  _listPoints->addItem(QString::number(list.at(i)));
     }
 
     emit shownPointsChanged(list);
@@ -132,10 +132,10 @@ void WidgetMooPointsList::showOnlyPoints(QList<int> _list)
     int i=0;
     while(i<selected.size())
     {
-        if(!_list.contains(selected.at(i)))
-            selected.removeAt(i);
-        else
-            i++;
+  if(!_list.contains(selected.at(i)))
+      selected.removeAt(i);
+  else
+      i++;
     }
     this->_listPoints->setSelectedIndexes(selected);
     this->setShownPoints(_list);
@@ -148,10 +148,10 @@ void WidgetMooPointsList::showAllPoints()
     QList<int> list;
     int nbPoints=0;
     if(_result->optObjectivesResults()->size()>0)
-        nbPoints = _result->optObjectivesResults()->nbPoints();
+  nbPoints = _result->optObjectivesResults()->nbPoints();
 
     for(int i =0;i<nbPoints;i++)
-        list.push_back(i);
+  list.push_back(i);
 
     showOnlyPoints(list);
 }
@@ -167,9 +167,9 @@ void WidgetMooPointsList::showParetoPoints()
 void WidgetMooPointsList::setOnlyPareto(bool onlyPareto)
 {
     if(onlyPareto)
-        showParetoPoints();
+  showParetoPoints();
     else
-        showAllPoints();
+  showAllPoints();
 }
 
 
@@ -187,9 +187,9 @@ void WidgetMooPointsList::recomputeSelectedPoints()
     MOParametersDlg dlg(&parameters);
     if(dlg.exec()==QDialog::Accepted)
     {
-        bool forceRecompute = parameters.value("forceRecompute").toBool();
-        _result->recomputePoints(pointsList,forceRecompute);
-        emit pointsRecomputed();
+  bool forceRecompute = parameters.value("forceRecompute").toBool();
+  _result->recomputePoints(pointsList,forceRecompute);
+  emit pointsRecomputed();
     }
 }
 
@@ -199,41 +199,41 @@ void WidgetMooPointsList::exportSelectedPoints()
 
     if(listPoints.isEmpty())
     {
-        QMessageBox msgBox;
-        msgBox.setText("Please select at least one point to export");
-        msgBox.exec();
-        return;
+  QMessageBox msgBox;
+  msgBox.setText("Please select at least one point to export");
+  msgBox.exec();
+  return;
     }
 
     // first select points
     MOOptVector* selectedOptVars = DlgSelectVars::getSelectedOptVars(_result->recomputedVariables(),_selectedExportVariables);
     if(_selectedExportVariables)
-        delete _selectedExportVariables;
+  delete _selectedExportVariables;
     _selectedExportVariables = selectedOptVars;
 
     if(selectedOptVars)
     {
-        // get file name
-        QString csvPath = QFileDialog::getSaveFileName(
-                    this,
-                    "MO - Export optimum points",
-                    QString::null,
-                    "CSV file (*.csv)" );
+  // get file name
+  QString csvPath = QFileDialog::getSaveFileName(
+              this,
+              "MO - Export optimum points",
+              QString::null,
+              "CSV file (*.csv)" );
 
-        if(!csvPath.isNull())
-        {
+  if(!csvPath.isNull())
+  {
 
-            QString csvText = _result->buildVarsFrontCSV(selectedOptVars,listPoints,",");
+      QString csvText = _result->buildVarsFrontCSV(selectedOptVars,listPoints,",");
 
-            QFile frontFile(csvPath);
-            if(frontFile.exists())
-                frontFile.remove();
+      QFile frontFile(csvPath);
+      if(frontFile.exists())
+          frontFile.remove();
 
-            frontFile.open(QIODevice::WriteOnly);
-            QTextStream tsfront( &frontFile );
-            tsfront << csvText;
-            frontFile.close();
-        }
+      frontFile.open(QIODevice::WriteOnly);
+      QTextStream tsfront( &frontFile );
+      tsfront << csvText;
+      frontFile.close();
+  }
     }
 }
 

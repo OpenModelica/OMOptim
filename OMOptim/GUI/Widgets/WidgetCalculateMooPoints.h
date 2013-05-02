@@ -68,8 +68,8 @@ public:
 public:
     Ui::WidgetCalculateMooPointsClass *_ui;
 
-        OptimResult* _result;
-        WidgetMooPointsList* _widgetMooPointsList;
+  OptimResult* _result;
+  WidgetMooPointsList* _widgetMooPointsList;
 
     public slots:
 

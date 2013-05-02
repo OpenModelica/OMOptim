@@ -33,9 +33,9 @@ public:
      * @param _finalT final temperature, threshold of the stopping criteria for cooling schedule (default = 0.01)
      */
     SA1mo(Neighborhood& _neighborhood, eoEvalFunc<EOT>& _fullEval, moEval<Neighbor>& _eval,  moContinuator<Neighbor>& _cont, double _initT=0.004, double _alpha=0.2, unsigned _span=100, double _finalT=0.00001):
-            moLocalSearch<Neighbor>(explorer, _cont, _fullEval),
-            defaultCool(_initT, _alpha, _span, _finalT),
-            explorer(_neighborhood, _eval, defaultSolNeighborComp, defaultCool)
+      moLocalSearch<Neighbor>(explorer, _cont, _fullEval),
+      defaultCool(_initT, _alpha, _span, _finalT),
+      explorer(_neighborhood, _eval, defaultSolNeighborComp, defaultCool)
     {}
 
 
@@ -47,9 +47,9 @@ public:
      * @param _cool a cooling schedule
      */
     SA1mo(Neighborhood& _neighborhood, eoEvalFunc<EOT>& _fullEval, moEval<Neighbor>& _eval, moCoolingSchedule<EOT>& _cool):
-            moLocalSearch<Neighbor>(explorer, trueCont, _fullEval),
-            defaultCool(0, 0, 0, 0),
-            explorer(_neighborhood, _eval, defaultSolNeighborComp, _cool)
+      moLocalSearch<Neighbor>(explorer, trueCont, _fullEval),
+      defaultCool(0, 0, 0, 0),
+      explorer(_neighborhood, _eval, defaultSolNeighborComp, _cool)
     {}
 
     /**
@@ -62,9 +62,9 @@ public:
      * @param _cont an external continuator
      */
     SA1mo(Neighborhood& _neighborhood, eoEvalFunc<EOT>& _fullEval, moEval<Neighbor>& _eval, moCoolingSchedule<EOT>& _cool, SA1moSolNeighborComparator<Neighbor>& _comp, moContinuator<Neighbor>& _cont):
-            moLocalSearch<Neighbor>(explorer, _cont, _fullEval),
-            defaultCool(0, 0, 0, 0),
-            explorer(_neighborhood, _eval, _comp, _cool)
+      moLocalSearch<Neighbor>(explorer, _cont, _fullEval),
+      defaultCool(0, 0, 0, 0),
+      explorer(_neighborhood, _eval, _comp, _cool)
     {}
 
 

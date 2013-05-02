@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file MOParameter.h
+  @file MOParameter.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
@@ -56,29 +56,29 @@ public:
 
     enum Field
     {
-        //Modelica fields
-        NAME,
-        VALUE,
-        DEFAULTVALUE,
-        TYPE,
-        MIN,
-        MAX,
-        DESCRIPTION,
-        //INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
-        GROUP, // used to display parameter in separated groupbox
-        PANEL   // used to display parameter in separated panel
+  //Modelica fields
+  NAME,
+  VALUE,
+  DEFAULTVALUE,
+  TYPE,
+  MIN,
+  MAX,
+  DESCRIPTION,
+  //INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
+  GROUP, // used to display parameter in separated groupbox
+  PANEL   // used to display parameter in separated panel
     };
 
     
     enum Type
     {
-        FOLDERPATH,
-        FILEPATH,
-        STRING,
-        BOOL,
-        INT,
-        DOUBLE,
-        LIST
+  FOLDERPATH,
+  FILEPATH,
+  STRING,
+  BOOL,
+  INT,
+  DOUBLE,
+  LIST
     };
 
     MOParameter();
@@ -121,7 +121,7 @@ protected :
     QVariant _max;
     //int _index;
     QMap<QString,QVariant> _enablingIndexes; /** map of enabling parameter (the one indexed by key) that enable this one.
-            QVariant corresponds to the value the enabling parameter should take to enable this parameter*/
+      QVariant corresponds to the value the enabling parameter should take to enable this parameter*/
 
     QString _group;
     QString _panel;
@@ -137,17 +137,17 @@ public:
 
     enum Field
     {
-        //Modelica fields
-        NAME,
-        VALUE,
-        DEFAULTVALUE,
-        TYPE,
-        MIN,
-        MAX,
-        DESCRIPTION,
-        //INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
-        GROUP,
-        PANEL
+  //Modelica fields
+  NAME,
+  VALUE,
+  DEFAULTVALUE,
+  TYPE,
+  MIN,
+  MAX,
+  DESCRIPTION,
+  //INDEX, // index in OpenModelica parameters or in Dymola parameters (e.g. OpenModelica::STOPVALUE)
+  GROUP,
+  PANEL
     };
 
 

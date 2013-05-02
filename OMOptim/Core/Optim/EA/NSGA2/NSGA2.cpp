@@ -215,41 +215,41 @@ Result* NSGA2::launch(QString tempDir)
 
     if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
     {
-        // create another state for reading
-        eoState inState;        // a state for loading - WITHOUT the parser
-        // register the rng and the pop in the state, so they can be loaded,
-        // and the present run will be the exact continuation of the saved run
-        // eventually with different parameters
-        inState.registerObject(pop);
-        inState.registerObject(rng);
+  // create another state for reading
+  eoState inState;        // a state for loading - WITHOUT the parser
+  // register the rng and the pop in the state, so they can be loaded,
+  // and the present run will be the exact continuation of the saved run
+  // eventually with different parameters
+  inState.registerObject(pop);
+  inState.registerObject(rng);
 
 
-        std::string str = reloadFilePath.toLatin1().data();
-        try{
-            inState.load(str);
-        }
-        catch(std::exception &e)
-        {
-            InfoSender::instance()->debug("loading start file failed :"+QString(e.what()));
-            loadFailed = true;
-        }
-        if(!loadFailed)
-        {
-            InfoSender::instance()->send(Info("Loading start file success : "+reloadFilePath,ListInfo::NORMAL2));
-        }
+  std::string str = reloadFilePath.toLatin1().data();
+  try{
+      inState.load(str);
+  }
+  catch(std::exception &e)
+  {
+      InfoSender::instance()->debug("loading start file failed :"+QString(e.what()));
+      loadFailed = true;
+  }
+  if(!loadFailed)
+  {
+      InfoSender::instance()->send(Info("Loading start file success : "+reloadFilePath,ListInfo::NORMAL2));
+  }
     }
 
 
     if(loadFailed)
     {
-        pop.clear();
-        pop = state.takeOwnership(eoPop<EOStd>());
+  pop.clear();
+  pop = state.takeOwnership(eoPop<EOStd>());
     }
 
     int populationSize = _parameters->value(NSGA2Parameters::str(NSGA2Parameters::POPULATIONSIZE),20).toInt();
     if(pop.size() < populationSize)
     {
-        pop.append(populationSize,*init);
+  pop.append(populationSize,*init);
     }
 
     // for future stateSave, register the algorithm into the state
@@ -297,7 +297,7 @@ Result* NSGA2::launch(QString tempDir)
     //GETTING RESULT FROM FINAL ARCHIVE
     //************************************/
     if(!_keepResults) // if stop has been called
-        return NULL;
+  return NULL;
 
     Result* result = buildResult(arch);
 

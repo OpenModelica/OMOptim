@@ -70,22 +70,22 @@ public:
 
 
 public slots :
-        void changedCtrl();
-        void openCtrlParameters();
-        void compile();
+  void changedCtrl();
+  void openCtrlParameters();
+  void compile();
 
 
  private :
-         QList<QObject*> _widgetsCreated;
-         QMap<QString,ModPlusCtrls *> _ctrls;
-         QMap<QString,QComboBox*> _comboBoxs;
-         QMap<QString,QPushButton*> _parametersPbs;
-         QMap<QString,QPushButton*> _compilePbs;
-         const QFileInfoList &_filesToCopy;
+   QList<QObject*> _widgetsCreated;
+   QMap<QString,ModPlusCtrls *> _ctrls;
+   QMap<QString,QComboBox*> _comboBoxs;
+   QMap<QString,QPushButton*> _parametersPbs;
+   QMap<QString,QPushButton*> _compilePbs;
+   const QFileInfoList &_filesToCopy;
 
-         bool _isResult;// defines wether form could be editable or not
-         QGridLayout* _layout;
-         Project* _project;
+   bool _isResult;// defines wether form could be editable or not
+   QGridLayout* _layout;
+   Project* _project;
 
  };
 

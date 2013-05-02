@@ -70,7 +70,7 @@ MOTableView::MOTableView(QWidget* parent):QTableView(parent)
 
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this,SIGNAL(customContextMenuRequested(const QPoint &)),
-            this,SLOT(contextualMenu(const QPoint &)));
+      this,SLOT(contextualMenu(const QPoint &)));
 
 
 }
@@ -90,47 +90,47 @@ void MOTableView::setEditable(bool editable)
 
     if(editable)
     {
-        this->setDragDropMode(QAbstractItemView::DragDrop);
-        this->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
+  this->setDragDropMode(QAbstractItemView::DragDrop);
+  this->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
 
     }
     else
     {
-        /// \todo find a way to avoid checking/unchecking
-        this->setDragDropMode(QAbstractItemView::NoDragDrop);
-        this->setEditTriggers(QAbstractItemView::NoEditTriggers);
+  /// \todo find a way to avoid checking/unchecking
+  this->setDragDropMode(QAbstractItemView::NoDragDrop);
+  this->setEditTriggers(QAbstractItemView::NoEditTriggers);
     }
 }
 
 void MOTableView::adjustViewSize()
 {
-    //        // Resize columns and rows.
-    //        resizeRowsToContents();
-    //        resizeColumnsToContents();
+    //  // Resize columns and rows.
+    //  resizeRowsToContents();
+    //  resizeColumnsToContents();
 
-    //        // Complete width of view port.
-    //        int totalWidth = viewport()->width();
-    //        int availableWidth = totalWidth;
+    //  // Complete width of view port.
+    //  int totalWidth = viewport()->width();
+    //  int availableWidth = totalWidth;
 
-    //        // Iterate all columns and give them the required size.
-    //        // The last column should receive the left size.
-    //        for( int i = 0; i < horizontalHeader()->count(); i++ )
-    //        {
-    //                        int reqColumnSize = columnWidth(i);
-    //                        availableWidth -= reqColumnSize;
-    //        }
+    //  // Iterate all columns and give them the required size.
+    //  // The last column should receive the left size.
+    //  for( int i = 0; i < horizontalHeader()->count(); i++ )
+    //  {
+    //                  int reqColumnSize = columnWidth(i);
+    //                  availableWidth -= reqColumnSize;
+    //  }
 
-    //        if( availableWidth > 0 && availableWidth<totalWidth )
-    //        {
-    //                float ratio = (float)totalWidth/(float)(totalWidth-availableWidth);
+    //  if( availableWidth > 0 && availableWidth<totalWidth )
+    //  {
+    //          float ratio = (float)totalWidth/(float)(totalWidth-availableWidth);
 
 
-    //                for( int i = 0; i < horizontalHeader()->count(); i++ )
-    //                {
-    //                        setColumnWidth(i,(int)((float)columnWidth(i)*ratio));
-    //                }
+    //          for( int i = 0; i < horizontalHeader()->count(); i++ )
+    //          {
+    //                  setColumnWidth(i,(int)((float)columnWidth(i)*ratio));
+    //          }
 
-    //        }
+    //  }
 
 }
 
@@ -148,11 +148,11 @@ bool MOTableView::eventFilter( QObject *obj, QEvent *ev )
 {
     if( obj == this )
     {
-        if( ev->type() == QEvent::Resize )
-        {
-            adjustViewSize();
-            return false;
-        }
+  if( ev->type() == QEvent::Resize )
+  {
+      adjustViewSize();
+      return false;
+  }
     }
     return false;
 }
@@ -161,13 +161,13 @@ void MOTableView::dragEnterEvent(QDragEnterEvent *event)
 {
     qDebug() << "MOTableView::dragEnterEvent; begin";
     if (children().contains(event->source())|| (event->source()==this)) {
-        InfoSender::instance()->debug("drag from same widget");
-        event->setDropAction(Qt::MoveAction);
-        event->accept();
+  InfoSender::instance()->debug("drag from same widget");
+  event->setDropAction(Qt::MoveAction);
+  event->accept();
     } else {
-        InfoSender::instance()->debug("drag to another widget");
-        event->setDropAction(Qt::CopyAction);
-        event->accept();
+  InfoSender::instance()->debug("drag to another widget");
+  event->setDropAction(Qt::CopyAction);
+  event->accept();
     }
     qDebug() << "MOTableView::dragEnterEvent; end";
 }
@@ -180,37 +180,37 @@ void MOTableView::startDrag(Qt::DropActions supportedActions)
     QList<QPersistentModelIndex> persistentIndexes;
 
     if (indexes.count() > 0) {
-        QMimeData *data = model()->mimeData(indexes);
-        if (!data)
-            return;
-        for (int i = 0; i<indexes.count(); i++){
-            QModelIndex idx = indexes.at(i);
-            persistentIndexes.append(QPersistentModelIndex(idx));
-        }
+  QMimeData *data = model()->mimeData(indexes);
+  if (!data)
+      return;
+  for (int i = 0; i<indexes.count(); i++){
+      QModelIndex idx = indexes.at(i);
+      persistentIndexes.append(QPersistentModelIndex(idx));
+  }
 
-        QPixmap pixmap = indexes.first().data(Qt::DecorationRole).value<QPixmap>();
-        QDrag *drag = new QDrag(this);
-        drag->setPixmap(pixmap);
-        drag->setMimeData(data);
-        drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
+  QPixmap pixmap = indexes.first().data(Qt::DecorationRole).value<QPixmap>();
+  QDrag *drag = new QDrag(this);
+  drag->setPixmap(pixmap);
+  drag->setMimeData(data);
+  drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
 
-        Qt::DropAction defaultDropAction = Qt::IgnoreAction;
-        if (supportedActions & Qt::MoveAction && dragDropMode() != QAbstractItemView::InternalMove)
-            defaultDropAction = Qt::MoveAction; //was Qt::CopyAction THIS WAS THE CULPRIT!
+  Qt::DropAction defaultDropAction = Qt::IgnoreAction;
+  if (supportedActions & Qt::MoveAction && dragDropMode() != QAbstractItemView::InternalMove)
+      defaultDropAction = Qt::MoveAction; //was Qt::CopyAction THIS WAS THE CULPRIT!
 
-        if ( drag->exec(supportedActions, defaultDropAction) == Qt::MoveAction ){
-            //when we get here any copying done in dropMimeData has messed up our selected indexes
-            //that's why we use persistent indexes
-            for (int i = 0; i<indexes.count(); i++){
-                QPersistentModelIndex idx = persistentIndexes.at(i);
-                if (idx.isValid()){ //the item is not top level
-                    model()->removeRow(idx.row(), idx.parent());
-                }
-                else{
-                    model()->removeRow(idx.row(), QModelIndex());
-                }
-            }
-        }
+  if ( drag->exec(supportedActions, defaultDropAction) == Qt::MoveAction ){
+      //when we get here any copying done in dropMimeData has messed up our selected indexes
+      //that's why we use persistent indexes
+      for (int i = 0; i<indexes.count(); i++){
+          QPersistentModelIndex idx = persistentIndexes.at(i);
+          if (idx.isValid()){ //the item is not top level
+              model()->removeRow(idx.row(), idx.parent());
+          }
+          else{
+              model()->removeRow(idx.row(), QModelIndex());
+          }
+      }
+  }
     }
     qDebug() << "MOTableView::startDrag; end";
 }
@@ -231,9 +231,9 @@ void MOTableView::onCopyAsked()
     QModelIndexList indexList = this->selectedIndexes();
     if(model())
     {
-        QMimeData* mimeData = model()->mimeData(indexList);
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setMimeData(mimeData);
+  QMimeData* mimeData = model()->mimeData(indexList);
+  QClipboard *clipboard = QApplication::clipboard();
+  clipboard->setMimeData(mimeData);
     }
 }
 

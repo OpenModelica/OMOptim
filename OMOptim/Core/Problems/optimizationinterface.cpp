@@ -14,16 +14,16 @@ Problem* OptimizationInterface::createNewProblem(ProjectBase* projectBase,const 
 
     if(modelsList.size()<1)
     {
-        InfoSender::instance()->send(Info("Model for optimization problem not defined",ListInfo::ERROR2));
-        return NULL;
+  InfoSender::instance()->send(Info("Model for optimization problem not defined",ListInfo::ERROR2));
+  return NULL;
     }
     else
     {
-        Project* project = dynamic_cast<Project*>(projectBase);
-        if(!project)
-            return NULL;
-        else
-            return new Optimization(project,modelsList);
+  Project* project = dynamic_cast<Project*>(projectBase);
+  if(!project)
+      return NULL;
+  else
+      return new Optimization(project,modelsList);
     }
 
 }
@@ -62,11 +62,11 @@ QWidget* OptimizationInterface::createResultTab(Result * result,QWidget* parent)
 Problem* OptimizationInterface::loadProblem(QFileInfo saveFile,const QDomElement & domOMCase, ProjectBase * projectBase)
 {
     if(domOMCase.isNull() || domOMCase.tagName()!="OMCase" )
-        return NULL;
+  return NULL;
 
     Project* project = dynamic_cast<Project*>(projectBase);
     if(!project)
-        return NULL;
+  return NULL;
 
     QDomElement domOMProblem = domOMCase.firstChildElement("OMProblem");
 
@@ -80,12 +80,12 @@ Problem* OptimizationInterface::loadProblem(QFileInfo saveFile,const QDomElement
 
     if(!ok)
     {
-        delete problem;
-        problem = NULL;
+  delete problem;
+  problem = NULL;
     }
     else
     {
-        problem->setEntireSavePath(saveFile.absoluteFilePath());
+  problem->setEntireSavePath(saveFile.absoluteFilePath());
     }
 
     return problem;
@@ -96,11 +96,11 @@ Problem* OptimizationInterface::loadProblem(QFileInfo saveFile,const QDomElement
 Result* OptimizationInterface::loadResult(QFileInfo saveFile,const QDomElement & domOMCase, ProjectBase * projectBase)
 {
     if(domOMCase.isNull() || domOMCase.tagName()!="OMCase" )
-        return NULL;
+  return NULL;
 
     Project* project = dynamic_cast<Project*>(projectBase);
     if(!project)
-        return NULL;
+  return NULL;
 
     // read problem
     bool ok;
@@ -110,8 +110,8 @@ Result* OptimizationInterface::loadResult(QFileInfo saveFile,const QDomElement &
 
     if(!ok)
     {
-        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
-        return NULL;
+  InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
+  return NULL;
     }
 
     // create result
@@ -121,15 +121,15 @@ Result* OptimizationInterface::loadResult(QFileInfo saveFile,const QDomElement &
 
     if(!result)
     {
-        InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
-        return NULL;
+  InfoSender::instance()->send( Info(ListInfo::RESULTFILECORRUPTED,saveFile.filePath()));
+  return NULL;
     }
 
     // attribute problem to result
     if(result)
     {
-        // attribute file path to result
-        result->setEntireSavePath(saveFile.filePath());
+  // attribute file path to result
+  result->setEntireSavePath(saveFile.filePath());
     }
 
     return result;

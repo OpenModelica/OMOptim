@@ -82,43 +82,43 @@ void Save::saveProject(ProjectBase* project,bool saveAllCases)
     QStringList pluginsPaths = project->pluginsLoaded().values();
     if(pluginsPaths.size()>0)
     {
-        QDomElement cPlugins = doc.createElement("Plugins");
-        for(int i=0;i<pluginsPaths.size();i++)
-        {
-            QDomElement cPlugin = doc.createElement("Plugin");
-            cPlugin.setAttribute("path",pluginsPaths.at(i));
-            cPlugins.appendChild(cPlugin);
-        }
-        root.appendChild(cPlugins);
+  QDomElement cPlugins = doc.createElement("Plugins");
+  for(int i=0;i<pluginsPaths.size();i++)
+  {
+      QDomElement cPlugin = doc.createElement("Plugin");
+      cPlugin.setAttribute("path",pluginsPaths.at(i));
+      cPlugins.appendChild(cPlugin);
+  }
+  root.appendChild(cPlugins);
     }
 
     // Project problems
     if(project->problems()->size()>0)
     {
-        QDomElement cOMCases = doc.createElement( "Problems" );
-        for (int nr=0;nr<project->problems()->size();nr++)
-        {
-            QDomElement cProblem = doc.createElement( "Problem" );
-            relPath = projectDir.relativeFilePath(project->problems()->at(nr)->entireSavePath());
-            cProblem.setAttribute("path",relPath);
-            cOMCases.appendChild(cProblem);
-        }
-        root.appendChild(cOMCases);
+  QDomElement cOMCases = doc.createElement( "Problems" );
+  for (int nr=0;nr<project->problems()->size();nr++)
+  {
+      QDomElement cProblem = doc.createElement( "Problem" );
+      relPath = projectDir.relativeFilePath(project->problems()->at(nr)->entireSavePath());
+      cProblem.setAttribute("path",relPath);
+      cOMCases.appendChild(cProblem);
+  }
+  root.appendChild(cOMCases);
     }
 
     // Project results
     if(project->results()->size()>0)
     {
-        QDomElement cResults = doc.createElement( "Results" );
+  QDomElement cResults = doc.createElement( "Results" );
 
-        for (int nr=0;nr<project->results()->size();nr++)
-        {
-            QDomElement cResult = doc.createElement( "Result" );
-            relPath = projectDir.relativeFilePath(project->results()->at(nr)->entireSavePath());
-            cResult.setAttribute("path",relPath);
-            cResults.appendChild(cResult);
-        }
-        root.appendChild(cResults);
+  for (int nr=0;nr<project->results()->size();nr++)
+  {
+      QDomElement cResult = doc.createElement( "Result" );
+      relPath = projectDir.relativeFilePath(project->results()->at(nr)->entireSavePath());
+      cResult.setAttribute("path",relPath);
+      cResults.appendChild(cResult);
+  }
+  root.appendChild(cResults);
     }
 
     //Writing in .min file
@@ -130,7 +130,7 @@ void Save::saveProject(ProjectBase* project,bool saveAllCases)
 
     if(file.exists())
     {
-        file.remove();
+  file.remove();
     }
     file.open(QIODevice::WriteOnly);
     QTextStream ts( &file );
@@ -139,22 +139,22 @@ void Save::saveProject(ProjectBase* project,bool saveAllCases)
 
     if(saveAllCases)
     {
-        // Saving results
-        Result* curResult;
-        for (int nr=0;nr<project->results()->size();nr++)
-        {
-            curResult = project->results()->at(nr);
-            saveResult(project,curResult);
+  // Saving results
+  Result* curResult;
+  for (int nr=0;nr<project->results()->size();nr++)
+  {
+      curResult = project->results()->at(nr);
+      saveResult(project,curResult);
 
-        }
+  }
 
-        // Saving problems
-        Problem* curProblem;
-        for (int nr=0;nr<project->problems()->size();nr++)
-        {
-            curProblem = project->problems()->at(nr);
-            saveProblem(project,curProblem);
-        }
+  // Saving problems
+  Problem* curProblem;
+  for (int nr=0;nr<project->problems()->size();nr++)
+  {
+      curProblem = project->problems()->at(nr);
+      saveProblem(project,curProblem);
+  }
     }
 }
 
@@ -162,13 +162,13 @@ void Save::saveProblem(ProjectBase* project,Problem* problem)
 {
     ProblemInterface* interface = project->problemsInterfaces().interfaceOf(problem);
     if(interface)
-        interface->saveProblem(problem);
+  interface->saveProblem(problem);
 }
 
 void Save::saveResult(ProjectBase* project,Result* result)
 {
     ProblemInterface* interface = project->problemsInterfaces().interfaceOf(result);
     if(interface)
-        interface->saveResult(result);
+  interface->saveResult(result);
 }
 

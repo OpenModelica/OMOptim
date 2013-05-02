@@ -10,7 +10,7 @@ bool ScriptParser::parseFile(QFileInfo fileInfo)
 {
     QFile file(fileInfo.absoluteFilePath());
     if(!file.exists())
-        return false;
+  return false;
 
     file.open(QIODevice::ReadOnly);
     QTextStream tsfront( &file );
@@ -25,12 +25,12 @@ bool ScriptParser::parseCommand(QString command)
 {
     // if empty
     if(command.isEmpty())
-        return true;
+  return true;
 
     // if several commands
     QStringList commands = command.split(";",QString::SkipEmptyParts);
     if(commands.size()>1)
-        return parseCommands(commands);
+  return parseCommands(commands);
 
     // apply one command
     QRegExp regExp("([\\S]+)\\((.*)\\)");
@@ -38,8 +38,8 @@ bool ScriptParser::parseCommand(QString command)
 
     if(regExp.capturedTexts().size()!=3)
     {
-        InfoSender::instance()->sendWarning("Unable to parse command: "+command);
-        return false;
+  InfoSender::instance()->sendWarning("Unable to parse command: "+command);
+  return false;
     }
 
     QString function = regExp.cap(1);
@@ -55,7 +55,7 @@ bool ScriptParser::parseCommands(QStringList commands)
     bool overalResult = true;
     for(int i=0;i<commands.size();i++)
     {
-        overalResult = overalResult & parseCommand(commands.at(i));
+  overalResult = overalResult & parseCommand(commands.at(i));
     }
     return overalResult;
 }
@@ -71,58 +71,58 @@ bool ScriptParserOMOptimBasis::launchFunction(QString function, QStringList args
 
     if(!function.compare("loadProject",Qt::CaseInsensitive))
     {
-        foundFunction = true;
-        // arg is project file path
-        if(args.size()!=1)
-            return false;
+  foundFunction = true;
+  // arg is project file path
+  if(args.size()!=1)
+      return false;
 
-        return _projectBase->load(args.at(0));
+  return _projectBase->load(args.at(0));
     }
 
     if(!function.compare("saveProject",Qt::CaseInsensitive))
     {
-        foundFunction = true;
-        // arg is project file path
-        if(args.size()!=0)
-            return false;
+  foundFunction = true;
+  // arg is project file path
+  if(args.size()!=0)
+      return false;
 
-        _projectBase->save(true);
-        return true;
+  _projectBase->save(true);
+  return true;
     }
 
     if(!function.compare("addProblem",Qt::CaseInsensitive))
     {
-        foundFunction = true;
-        // arg is mpb file path
-        if(args.size()!=1)
-            return false;
+  foundFunction = true;
+  // arg is mpb file path
+  if(args.size()!=1)
+      return false;
 
-        _projectBase->addOMCase(args.at(0));
-        return true;
+  _projectBase->addOMCase(args.at(0));
+  return true;
     }
 
     if(!function.compare("launchProblem",Qt::CaseInsensitive))
     {
-        foundFunction = true;
-        // arg is mpb file path
-        if(args.size()!=1)
-            return false;
+  foundFunction = true;
+  // arg is mpb file path
+  if(args.size()!=1)
+      return false;
 
-        _projectBase->launchProblem(args.at(0),false);
-        // do not use multithreading while scripting
-        return true;
+  _projectBase->launchProblem(args.at(0),false);
+  // do not use multithreading while scripting
+  return true;
     }
 
     if(!function.compare("removeAllResults",Qt::CaseInsensitive))
     {
-        foundFunction = true;
-        // arg is mpb file path
-        if(args.size()!=0)
-            return false;
+  foundFunction = true;
+  // arg is mpb file path
+  if(args.size()!=0)
+      return false;
 
-        _projectBase->removeAllResults();
-        // do not use multithreading while scripting
-        return true;
+  _projectBase->removeAllResults();
+  // do not use multithreading while scripting
+  return true;
     }
 
 

@@ -56,11 +56,11 @@ WidgetSelectModModel::WidgetSelectModModel(ModItemsTree* modItemsTree,ProblemInt
     switch(_needs)
     {
     case ProblemInterface::ONEMODEL :
-        ui->treeView->setSelectionMode(QAbstractItemView::SingleSelection);
-        break;
+  ui->treeView->setSelectionMode(QAbstractItemView::SingleSelection);
+  break;
     case ProblemInterface::SEVERALMODELS :
-        ui->treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        break;
+  ui->treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  break;
     }
 
     connect(ui->treeView, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
@@ -76,12 +76,12 @@ void WidgetSelectModModel::onSelectedModItem(QModelIndex index)
     QList<ModItem*> modClasses;
     for(int i=0;i<indexes.size();i++)
     {
-        if(indexes.at(i).isValid())
-        {
-            ModItem* modClass = static_cast<ModItem*>(indexes.at(i).internalPointer());
-            modClasses.push_back(modClass);
+  if(indexes.at(i).isValid())
+  {
+      ModItem* modClass = static_cast<ModItem*>(indexes.at(i).internalPointer());
+      modClasses.push_back(modClass);
 
-        }
+  }
     }
     setSelectedModModel(modClasses);
 
@@ -101,24 +101,24 @@ void WidgetSelectModModel::setSelectedModModel(QList<ModItem*> modClasses)
     {
     if((dynamic_cast<ModModel*>(modClasses.at(i)))|| (dynamic_cast<ExeModel*>(modClasses.at(i))) )
 
-        {
-            _selectedModels.push_back(modClasses.at(i));
-            ui->pushValidate->setEnabled(true);
-            ui->pushValidate->setFocus();
+  {
+      _selectedModels.push_back(modClasses.at(i));
+      ui->pushValidate->setEnabled(true);
+      ui->pushValidate->setFocus();
      //   selectedModel = modClass;
-        }
+  }
 
 
 
-//        selectedModel = dynamic_cast<ModModel*>(modClass);
+//  selectedModel = dynamic_cast<ModModel*>(modClass);
 
-//            if(selectedModel)
-//        {
-//                ui->pushValidate->setEnabled(true);
-//                ui->pushValidate->setFocus();
-//        }
-//            else
-//                ui->pushValidate->setEnabled(false);
+//      if(selectedModel)
+//  {
+//          ui->pushValidate->setEnabled(true);
+//          ui->pushValidate->setFocus();
+//  }
+//      else
+//          ui->pushValidate->setEnabled(false);
     }
 }
 

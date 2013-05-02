@@ -75,25 +75,25 @@ class SPEA2Adapt : public EABase
 {
 public : 
     SPEA2Adapt();
-        SPEA2Adapt(Project*,Problem*);
-        SPEA2Adapt(Project*,Problem*,MOParameters*);
+  SPEA2Adapt(Project*,Problem*);
+  SPEA2Adapt(Project*,Problem*,MOParameters*);
     SPEA2Adapt(const SPEA2Adapt &);
-        EABase* clone() const;
+  EABase* clone() const;
 
-        bool acceptMultiObjectives();
+  bool acceptMultiObjectives();
 
     Result* launch(QString tempDir);
     QString name();
     void setDefaultParameters();
 
 private :
-        inline Result* buildResult(moeoUnboundedArchive<EOAdapt> & );
+  inline Result* buildResult(moeoUnboundedArchive<EOAdapt> & );
 };
 
 Result* SPEA2Adapt::buildResult(moeoUnboundedArchive<EOAdapt> & arch)
 {
-        Result* result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,
-                                                                         /*_subBlocks,*/arch);
+  Result* result = (Result*)EAStdResult<EOAdapt>::buildOptimResult(_project,(Optimization*)_problem,
+                                                                   /*_subBlocks,*/arch);
 
     return result;
 }

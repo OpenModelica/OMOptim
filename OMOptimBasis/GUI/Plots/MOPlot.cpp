@@ -49,15 +49,15 @@ bool MOPlot::zoomIsOn()
 
 void MOPlot::enableZoom(bool checked)
 {
-        setEnabledZoom(checked);
+  setEnabledZoom(checked);
 }
 void MOPlot::setEnabledZoom(bool on)
 {
     _zoomer->setEnabled(on);
     if (on)
-        canvas()->setCursor(QCursor(Qt::CrossCursor));
+  canvas()->setCursor(QCursor(Qt::CrossCursor));
     else
-        canvas()->setCursor(Qt::ArrowCursor);
+  canvas()->setCursor(Qt::ArrowCursor);
 }
 
 //void MOPlot::zoomOut()

@@ -63,7 +63,7 @@ class DlgSettings : public MOParametersDlg
     Q_OBJECT
 
 public:
-        DlgSettings(bool editable = true);
+  DlgSettings(bool editable = true);
 
 
 

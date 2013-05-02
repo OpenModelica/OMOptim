@@ -63,14 +63,14 @@ void newProjectForm::validate()
 {
     if(!m_ui->lineProjectName->text().isEmpty())
     {
-        projectName=m_ui->lineProjectName->text();
+  projectName=m_ui->lineProjectName->text();
 
-        accept();
+  accept();
     }
     else
     {
-         QErrorMessage *errorMessageDialog = new QErrorMessage(this);
-         errorMessageDialog->showMessage("Incorrect name");
+   QErrorMessage *errorMessageDialog = new QErrorMessage(this);
+   errorMessageDialog->showMessage("Incorrect name");
     }
 
 }
@@ -80,10 +80,10 @@ void newProjectForm::changeEvent(QEvent *e)
 {
     switch (e->type()) {
     case QEvent::LanguageChange:
-        m_ui->retranslateUi(this);
-        break;
+  m_ui->retranslateUi(this);
+  break;
     default:
-        break;
+  break;
     }
 }
 

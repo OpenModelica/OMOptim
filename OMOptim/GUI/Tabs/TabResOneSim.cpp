@@ -77,14 +77,14 @@ TabResOneSim::TabResOneSim(OneSimResult *result, QWidget *parent) :
     // scan
     if(_result->finalVariables()->nbScans()>1)
     {
-        _widgetSelPointScan = new WidgetSelPointScan(_result->finalVariables(),this);
-        addFixedWidget("Scans",_widgetSelPointScan,Qt::BottomDockWidgetArea,Qt::Vertical,false);
-        _widgetSelPointScan->resize(_widgetSelPointScan->minimumSize());
-        QSize test = _widgetSelPointScan->minimumSize();
-        test = _widgetSelPointScan->size();
-        test = mapDockWidgets.key(_widgetSelPointScan)->size();
-        test = mapDockWidgets.key(_widgetSelPointScan)->minimumSize();
-        mapDockWidgets.key(_widgetSelPointScan)->resize(mapDockWidgets.key(_widgetSelPointScan)->minimumSize());
+  _widgetSelPointScan = new WidgetSelPointScan(_result->finalVariables(),this);
+  addFixedWidget("Scans",_widgetSelPointScan,Qt::BottomDockWidgetArea,Qt::Vertical,false);
+  _widgetSelPointScan->resize(_widgetSelPointScan->minimumSize());
+  QSize test = _widgetSelPointScan->minimumSize();
+  test = _widgetSelPointScan->size();
+  test = mapDockWidgets.key(_widgetSelPointScan)->size();
+  test = mapDockWidgets.key(_widgetSelPointScan)->minimumSize();
+  mapDockWidgets.key(_widgetSelPointScan)->resize(mapDockWidgets.key(_widgetSelPointScan)->minimumSize());
     }
 }
 
@@ -97,45 +97,45 @@ TabResOneSim::~TabResOneSim()
 //{
 //    if (newCurView != curView)
 //    {
-//        curView = newCurView;
-//        if (viewList[newCurView] == "Problem")
-//        {
+//  curView = newCurView;
+//  if (viewList[newCurView] == "Problem")
+//  {
 //
-//            tabProblem->show();
-//            problemToolBar->show();
+//      tabProblem->show();
+//      problemToolBar->show();
 //
-//            tabComposites->hide();
-//            compositesToolBar->hide();
+//      tabComposites->hide();
+//      compositesToolBar->hide();
 //
-//            tabVariables->hide();
-//            variablesToolBar->hide();
+//      tabVariables->hide();
+//      variablesToolBar->hide();
 //
 //
-//        }
+//  }
 //
-//        if (viewList[newCurView] == "Variables")
-//        {
+//  if (viewList[newCurView] == "Variables")
+//  {
 //
-//            tabVariables->show();
-//            variablesToolBar->show();
+//      tabVariables->show();
+//      variablesToolBar->show();
 //
-//            tabProblem->hide();
-//            problemToolBar->hide();
+//      tabProblem->hide();
+//      problemToolBar->hide();
 //
-//            tabComposites->hide();
-//            compositesToolBar->hide();
-//        }
-//        if (viewList[newCurView] == "Composite curves")
-//        {
-//            tabVariables->hide();
-//            variablesToolBar->hide();
-//            
-//            tabComposites->show();        
-//            compositesToolBar->show();
+//      tabComposites->hide();
+//      compositesToolBar->hide();
+//  }
+//  if (viewList[newCurView] == "Composite curves")
+//  {
+//      tabVariables->hide();
+//      variablesToolBar->hide();
+//      
+//      tabComposites->show();        
+//      compositesToolBar->show();
 //
-//            tabProblem->hide();
-//            problemToolBar->hide();
-//        }
+//      tabProblem->hide();
+//      problemToolBar->hide();
+//  }
 //    }
 //}
 //

@@ -68,13 +68,13 @@ public:
     * @param _p_change the one probability to change all coordinates
     */
     EAStdMutation(
-        std::vector<eoRealInterval> & _doubleBounds,
-        std::vector<eoIntInterval> & _intBounds,
-                MOParameters *_parameters
-        ):
+  std::vector<eoRealInterval> & _doubleBounds,
+  std::vector<eoIntInterval> & _intBounds,
+          MOParameters *_parameters
+  ):
     doubleBounds(_doubleBounds), intBounds(_intBounds)
     {
-                parameters = _parameters;
+          parameters = _parameters;
     }
 
     /// The class name.
@@ -86,77 +86,77 @@ public:
     */
     bool operator()(EOT& _eo)
     {
-        bool hasChanged=false;
-        // sanity check
-        if ((_eo.doubleVars.size() != doubleBounds.size())
-            || (_eo.intVars.size() != intBounds.size()))
-        {
-            throw std::runtime_error("Invalid size of indi in eoUniformMutation");
-        }
+  bool hasChanged=false;
+  // sanity check
+  if ((_eo.doubleVars.size() != doubleBounds.size())
+      || (_eo.intVars.size() != intBounds.size()))
+  {
+      throw std::runtime_error("Invalid size of indi in eoUniformMutation");
+  }
 
-        //************************
-        // mutation for double
-        //************************
-                double doublePMut = parameters->value("doublePMut",0.35).toDouble();
-                double doubleMutEpsilon = parameters->value("doubleMutEpsilon",0.01).toDouble();
+  //************************
+  // mutation for double
+  //************************
+          double doublePMut = parameters->value("doublePMut",0.35).toDouble();
+          double doubleMutEpsilon = parameters->value("doubleMutEpsilon",0.01).toDouble();
 
-        for (unsigned lieu=0; lieu<_eo.doubleVars.size(); lieu++)
-        {
-            if (rng.flip(doublePMut))
-            {
-                // check the bounds
-                double emin = _eo.doubleVars[lieu]-doubleMutEpsilon*doubleBounds[lieu].range();
-                double emax = _eo.doubleVars[lieu]+doubleMutEpsilon*doubleBounds[lieu].range();
-                emin = std::max<double>(doubleBounds[lieu].minimum(), emin);
-                emax = std::min<double>(doubleBounds[lieu].maximum(), emax);
+  for (unsigned lieu=0; lieu<_eo.doubleVars.size(); lieu++)
+  {
+      if (rng.flip(doublePMut))
+      {
+          // check the bounds
+          double emin = _eo.doubleVars[lieu]-doubleMutEpsilon*doubleBounds[lieu].range();
+          double emax = _eo.doubleVars[lieu]+doubleMutEpsilon*doubleBounds[lieu].range();
+          emin = std::max<double>(doubleBounds[lieu].minimum(), emin);
+          emax = std::min<double>(doubleBounds[lieu].maximum(), emax);
 
-                _eo.doubleVars[lieu] = emin + (emax-emin)*rng.uniform();
-                hasChanged = true;
-            }
-        }
+          _eo.doubleVars[lieu] = emin + (emax-emin)*rng.uniform();
+          hasChanged = true;
+      }
+  }
 
-        //************************
-        // mutation for int
-        //************************
+  //************************
+  // mutation for int
+  //************************
 
-                double intPMut = parameters->value("intPMut",0.35).toDouble();
+          double intPMut = parameters->value("intPMut",0.35).toDouble();
 
-        for (unsigned lieu=0; lieu<_eo.intVars.size(); lieu++)
-        {
-            if (rng.flip(intPMut))
-            {
-                // check the bounds
-                double emin = intBounds[lieu].minimum();
-                double emax = intBounds[lieu].maximum();
-                
-                int oldValue = _eo.intVars[lieu];
-                _eo.intVars[lieu] = LowTools::round(emin + (emax-emin)*rng.uniform());
-                
-                if(_eo.intVars[lieu]!=oldValue)
-                    hasChanged = true;
-            }
-        }
+  for (unsigned lieu=0; lieu<_eo.intVars.size(); lieu++)
+  {
+      if (rng.flip(intPMut))
+      {
+          // check the bounds
+          double emin = intBounds[lieu].minimum();
+          double emax = intBounds[lieu].maximum();
+          
+          int oldValue = _eo.intVars[lieu];
+          _eo.intVars[lieu] = LowTools::round(emin + (emax-emin)*rng.uniform());
+          
+          if(_eo.intVars[lieu]!=oldValue)
+              hasChanged = true;
+      }
+  }
 
-        //************************
-        // mutation for bool
-        //************************
-                double boolPMut = parameters->value("boolPMut",0.35).toDouble();
-        for (unsigned lieu=0; lieu<_eo.boolVars.size(); lieu++)
-        {
-            if (rng.flip(boolPMut))
-            {
-                _eo.boolVars[lieu] = !_eo.boolVars[lieu];
-                hasChanged = true;
-            }
-        }
-        return hasChanged;
+  //************************
+  // mutation for bool
+  //************************
+          double boolPMut = parameters->value("boolPMut",0.35).toDouble();
+  for (unsigned lieu=0; lieu<_eo.boolVars.size(); lieu++)
+  {
+      if (rng.flip(boolPMut))
+      {
+          _eo.boolVars[lieu] = !_eo.boolVars[lieu];
+          hasChanged = true;
+      }
+  }
+  return hasChanged;
     }
 
 private:
     std::vector<eoRealInterval> doubleBounds;
     std::vector<eoIntInterval> intBounds;
 
-        MOParameters *parameters;
+  MOParameters *parameters;
 };
 
 #endif

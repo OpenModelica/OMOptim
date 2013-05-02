@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file ModLoader.h
+  @file ModLoader.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
@@ -61,17 +61,17 @@ class ModLoader : public QObject
 
 public:
 
-        ModLoader(MOomc *moomc);
+  ModLoader(MOomc *moomc);
 
     // Load functions
-        bool loadMoFile(ModItemsTree* modItemsTree,QString filePath,QString &msg,bool forceLoad = true);
-        void loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bool forceLoad = true);
-        void unloadMoFile(ModItemsTree* modItemsTree,QString filePath);
+  bool loadMoFile(ModItemsTree* modItemsTree,QString filePath,QString &msg,bool forceLoad = true);
+  void loadMoFiles(ModItemsTree* modItemsTree,QStringList filePaths, bool forceLoad = true);
+  void unloadMoFile(ModItemsTree* modItemsTree,QString filePath);
 
-        int getDepthMax();
+  int getDepthMax();
 
 private :
-        MOomc* _moomc;
+  MOomc* _moomc;
 
 };
 

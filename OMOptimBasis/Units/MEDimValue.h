@@ -109,27 +109,27 @@ public :
       */
     static QString listToRowString(const QList<DimValue> &list, int iUnit,QString separator = ";" , bool displayInvalid = false)
     {
-        if(list.isEmpty())
-            return QString();
-        QString result="\[";
-        bool allAreId = true; // if all are id then copy only num value
-        for(int i=0;i<list.size();i++)
-        {
-            if(!displayInvalid && !list.at(i).isValid())
-                result+="-";
-            else
-                result+=QString::number(list.at(i).value(iUnit));
-            result+=separator;
-            allAreId = allAreId && (list.at(i).value(iUnit)==list.at(0).value(iUnit));
-        }
-        if(allAreId)
-            return QString::number(list.at(0).value(iUnit));
-        else
-        {
-            result.remove(result.size()-separator.size(),separator.size());
-            result.push_back("]");
-            return result;
-        }
+  if(list.isEmpty())
+      return QString();
+  QString result="\[";
+  bool allAreId = true; // if all are id then copy only num value
+  for(int i=0;i<list.size();i++)
+  {
+      if(!displayInvalid && !list.at(i).isValid())
+          result+="-";
+      else
+          result+=QString::number(list.at(i).value(iUnit));
+      result+=separator;
+      allAreId = allAreId && (list.at(i).value(iUnit)==list.at(0).value(iUnit));
+  }
+  if(allAreId)
+      return QString::number(list.at(0).value(iUnit));
+  else
+  {
+      result.remove(result.size()-separator.size(),separator.size());
+      result.push_back("]");
+      return result;
+  }
     }
 
     /**
@@ -139,29 +139,29 @@ public :
       */
     static QString listToColumnString(const QList<DimValue> &list, int iUnit,bool displayInvalid = false)
     {
-        if(list.isEmpty())
-            return QString();
+  if(list.isEmpty())
+      return QString();
 
-        QString separator = "\n";
-        QString result="";
-        bool allAreId = true; // if all are id then copy only num value
-        for(int i=0;i<list.size();i++)
-        {
-            if(!displayInvalid && !list.at(i).isValid())
-                result+="-";
-            else
-                result+=QString::number(list.at(i).value(iUnit));
-            result+=separator;
-            allAreId = allAreId && (list.at(i).value(iUnit)==list.at(0).value(iUnit));
-        }
-        if(allAreId)
-            return QString::number(list.at(0).value(iUnit));
-        else
-        {
-            result.remove(result.size()-separator.size(),separator.size());
-           // result.push_back("]");
-            return result;
-        }
+  QString separator = "\n";
+  QString result="";
+  bool allAreId = true; // if all are id then copy only num value
+  for(int i=0;i<list.size();i++)
+  {
+      if(!displayInvalid && !list.at(i).isValid())
+          result+="-";
+      else
+          result+=QString::number(list.at(i).value(iUnit));
+      result+=separator;
+      allAreId = allAreId && (list.at(i).value(iUnit)==list.at(0).value(iUnit));
+  }
+  if(allAreId)
+      return QString::number(list.at(0).value(iUnit));
+  else
+  {
+      result.remove(result.size()-separator.size(),separator.size());
+     // result.push_back("]");
+      return result;
+  }
     }
 
     /**
@@ -169,27 +169,27 @@ public :
       */
     static QList<DimValue> rowStringToList(QString str,int iUnit, bool &ok,QString separator = ";")
     {
-        bool tmpOk;
-        QList<DimValue> result;
-        // be sure to set the same separator in listToString function.
-        str = str.remove("[");
-        str = str.remove("]");
+  bool tmpOk;
+  QList<DimValue> result;
+  // be sure to set the same separator in listToString function.
+  str = str.remove("[");
+  str = str.remove("]");
 
-        QStringList strList = str.split(separator);
-        ok = !strList.isEmpty();
+  QStringList strList = str.split(separator);
+  ok = !strList.isEmpty();
 
-        for(int i=0;i<strList.size();i++)
-        {
-            DimValue newT(strList.at(i).toDouble(&tmpOk),iUnit);
-            // if field was empty, stream not in concerned period
-            if(!tmpOk)
-            {
-                ok = false;
-                newT.invalidate();
-            }
-            result.push_back(newT);
-        }
-        return result;
+  for(int i=0;i<strList.size();i++)
+  {
+      DimValue newT(strList.at(i).toDouble(&tmpOk),iUnit);
+      // if field was empty, stream not in concerned period
+      if(!tmpOk)
+      {
+          ok = false;
+          newT.invalidate();
+      }
+      result.push_back(newT);
+  }
+  return result;
     }
 
 };

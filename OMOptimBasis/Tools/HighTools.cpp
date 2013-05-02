@@ -61,8 +61,8 @@ QString HighTools::getUniqueName(QString baseName,QStringList brothers)
     suffix=2;
     while(brothers.contains(result))
     {
-        result=baseName+QString::number(suffix);
-        suffix++;
+  result=baseName+QString::number(suffix);
+  suffix++;
     }
 
     return result;
@@ -86,22 +86,22 @@ void HighTools::checkUniqueProblemName(ProjectBase* project_,Problem *problem_,O
     suffix=2;
     while(!titleIsUnique)
     {
-        i=0;
-        titleIsFound=false;
-        while(i<problems_->size() && !titleIsFound)
-        {
-            if (title==problems_->at(i)->name())
-            {
-                titleIsFound=true;
-                title=defaultTitle+" ("+QString::number(suffix)+")";
-                suffix=suffix+1;
-            }
-            i++;
-        }
-        if (!titleIsFound)
-        {
-            titleIsUnique=true;
-        }
+  i=0;
+  titleIsFound=false;
+  while(i<problems_->size() && !titleIsFound)
+  {
+      if (title==problems_->at(i)->name())
+      {
+          titleIsFound=true;
+          title=defaultTitle+" ("+QString::number(suffix)+")";
+          suffix=suffix+1;
+      }
+      i++;
+  }
+  if (!titleIsFound)
+  {
+      titleIsUnique=true;
+  }
     }
     problem_->setName(title);
 
@@ -126,22 +126,22 @@ void HighTools::checkUniqueResultName(ProjectBase* project_,Result *result_,OMCa
     suffix=2;
     while(!titleIsUnique)
     {
-        i=0;
-        titleIsFound=false;
-        while(i<results_->size() && !titleIsFound)
-        {
-            if (title==results_->at(i)->name())
-            {
-                titleIsFound=true;
-                title=defaultTitle+" ("+QString::number(suffix)+")";
-                suffix=suffix+1;
-            }
-            i++;
-        }
-        if (!titleIsFound)
-        {
-            titleIsUnique=true;
-        }
+  i=0;
+  titleIsFound=false;
+  while(i<results_->size() && !titleIsFound)
+  {
+      if (title==results_->at(i)->name())
+      {
+          titleIsFound=true;
+          title=defaultTitle+" ("+QString::number(suffix)+")";
+          suffix=suffix+1;
+      }
+      i++;
+  }
+  if (!titleIsFound)
+  {
+      titleIsUnique=true;
+  }
     }
     result_->setName(title);
 

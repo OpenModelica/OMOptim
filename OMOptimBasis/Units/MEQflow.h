@@ -45,28 +45,28 @@
 class MEQflow : public MEDimValue
 {
 public:
-        MEQflow();
-        MEQflow(double value,int unit);
+  MEQflow();
+  MEQflow(double value,int unit);
     ~MEQflow();
 
     enum Units
     {
-        W,
-        KW,
-        MW
+  W,
+  KW,
+  MW
     };
 
     QString unit(int iUnit)  const;
-        QString unit()  const; //should'nt be (should be inherited) but error in compiler otherwise
+  QString unit()  const; //should'nt be (should be inherited) but error in compiler otherwise
     unsigned nbUnits() const;
     double convert(double value,int orgUnit,int dstUnit) const;
 
-        MEQflow operator-(const MEQflow& b) const;
-        MEQflow operator+(const MEQflow& b) const;
-        MEQflow& operator+=(const MEQflow& b);
-        MEQflow& operator-=(const MEQflow& b);
-        double operator/(const MEQflow& b) const;
-        MEQflow operator*(const double& fact) const;
+  MEQflow operator-(const MEQflow& b) const;
+  MEQflow operator+(const MEQflow& b) const;
+  MEQflow& operator+=(const MEQflow& b);
+  MEQflow& operator-=(const MEQflow& b);
+  double operator/(const MEQflow& b) const;
+  MEQflow operator*(const double& fact) const;
 
 };
 

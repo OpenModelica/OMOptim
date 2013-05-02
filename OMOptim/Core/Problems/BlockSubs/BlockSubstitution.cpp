@@ -45,8 +45,8 @@
 #include "ModelicaConnections.h"
 
 BlockSubstitution::BlockSubstitution(Project* project,QString model, QString orgComponent, QString subComponent,
-                                     QStringList orgPorts,QList<QStringList> orgConnectedComps,
-                                     QStringList subPorts,QList<QStringList> subConnectedComps)
+                               QStringList orgPorts,QList<QStringList> orgConnectedComps,
+                               QStringList subPorts,QList<QStringList> subConnectedComps)
 {
     _project = project;
     _model = model;
@@ -66,7 +66,7 @@ BlockSubstitution::BlockSubstitution(Project* project,QString model, QString org
     ok = init(project,model,orgComponent,subComponent);
 
     if(doAutoConnect)
-        autoConnect();
+  autoConnect();
 }
 
 BlockSubstitution::BlockSubstitution(Project* project,QDomElement domEl,bool & ok)
@@ -74,9 +74,9 @@ BlockSubstitution::BlockSubstitution(Project* project,QDomElement domEl,bool & o
 
     if( domEl.tagName() != "BlockSubstitution" )
     {
-        //sendInfo( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
-        ok = false;
-        return;
+  //sendInfo( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+  ok = false;
+  return;
     }
 
     // get model
@@ -92,20 +92,20 @@ BlockSubstitution::BlockSubstitution(Project* project,QDomElement domEl,bool & o
     QDomNode n1 = domEl.firstChild();
     while( !n1.isNull() )
     {
-        QDomElement e1 = n1.toElement();
-        if( !e1.isNull() )
-        {
-            if( e1.tagName() == "ReplacedComponent" )
-            {
-                orgComponent = e1.attribute("name", "" );
-            }
+  QDomElement e1 = n1.toElement();
+  if( !e1.isNull() )
+  {
+      if( e1.tagName() == "ReplacedComponent" )
+      {
+          orgComponent = e1.attribute("name", "" );
+      }
 
-            if( e1.tagName() == "ReplacingComponent" )
-            {
-                subComponent = e1.attribute("class", "" );
-            }
-        }
-        n1 = n1.nextSibling();
+      if( e1.tagName() == "ReplacingComponent" )
+      {
+          subComponent = e1.attribute("class", "" );
+      }
+  }
+  n1 = n1.nextSibling();
     }
 
     //build first version
@@ -115,33 +115,33 @@ BlockSubstitution::BlockSubstitution(Project* project,QDomElement domEl,bool & o
     n1 = domEl.firstChild();
     while( !n1.isNull() )
     {
-        QDomElement e1 = n1.toElement();
-        if( !e1.isNull() && e1.tagName() == "ReplacingComponent")
-        {
-            QDomNode n2 = n1.firstChild();
-            while( !n2.isNull() )
-            {
-                QDomElement e2 = n2.toElement();
-                if( e2.tagName() == "Connection" )
-                {
-                    QString  from = e2.attribute("from", "" );
-                    QString  to = e2.attribute("to", "" );
+  QDomElement e1 = n1.toElement();
+  if( !e1.isNull() && e1.tagName() == "ReplacingComponent")
+  {
+      QDomNode n2 = n1.firstChild();
+      while( !n2.isNull() )
+      {
+          QDomElement e2 = n2.toElement();
+          if( e2.tagName() == "Connection" )
+          {
+              QString  from = e2.attribute("from", "" );
+              QString  to = e2.attribute("to", "" );
 
-                    QString subPort = subComponent+"." + from;
+              QString subPort = subComponent+"." + from;
 
-                    //looking from corresponding port
-                    int indexPort = _subPorts.indexOf(subPort);
-                    if(indexPort>-1)
-                    {
-                        QStringList curList = _subConnectedComps.at(indexPort);
-                        curList.append(to);
-                        _subConnectedComps.replace(indexPort,curList);
-                    }
-                }
-                n2 = n2.nextSibling();
-            }
-        }
-        n1 = n1.nextSibling();
+              //looking from corresponding port
+              int indexPort = _subPorts.indexOf(subPort);
+              if(indexPort>-1)
+              {
+                  QStringList curList = _subConnectedComps.at(indexPort);
+                  curList.append(to);
+                  _subConnectedComps.replace(indexPort,curList);
+              }
+          }
+          n2 = n2.nextSibling();
+      }
+  }
+  n1 = n1.nextSibling();
     }
 }
 
@@ -158,26 +158,26 @@ bool BlockSubstitution::init(Project * project, QString model,QString orgCompone
     ModItem* orgElement = project->modItemsTree()->findInDescendants(_orgComponent);
     if(orgElement==NULL)
     {
-        InfoSender::instance()->debug(_orgComponent + " not found.");
-        return false;
+  InfoSender::instance()->debug(_orgComponent + " not found.");
+  return false;
     }
     connections->getOutside(orgElement,true,_orgPorts,_orgConnectedComps);
 
     if(!subComponent.isEmpty())
     {
-        // reading subcomponent ports
-        ModItem* subElement;
-        QString libraryName = _subComponent.section(".",0,0);
+  // reading subcomponent ports
+  ModItem* subElement;
+  QString libraryName = _subComponent.section(".",0,0);
 
-        subElement =  project->modItemsTree()->findInDescendants(_subComponent);
-        if(subElement)
-            {
-            _subPorts = _project->modItemsTree()->getPorts(subElement,ModItem::FULL);
-            for(int i=0;i<_subPorts.size();i++)
-                {
-                _subConnectedComps.push_back(QStringList());
-                }
-            }
+  subElement =  project->modItemsTree()->findInDescendants(_subComponent);
+  if(subElement)
+      {
+      _subPorts = _project->modItemsTree()->getPorts(subElement,ModItem::FULL);
+      for(int i=0;i<_subPorts.size();i++)
+          {
+          _subConnectedComps.push_back(QStringList());
+          }
+      }
     }
     return true;
 }
@@ -194,11 +194,11 @@ void BlockSubstitution::setSubComponent(QString subComponent,bool doAutoConnect)
 
     if(subElement)
     {
-        _subPorts = _project->modItemsTree()->getPorts(subElement,ModItem::FULL);
-        for(int i=0;i<_subPorts.size();i++)
-        {
-            _subConnectedComps.push_back(QStringList());
-        }
+  _subPorts = _project->modItemsTree()->getPorts(subElement,ModItem::FULL);
+  for(int i=0;i<_subPorts.size();i++)
+  {
+      _subConnectedComps.push_back(QStringList());
+  }
     }
 }
 
@@ -209,9 +209,9 @@ BlockSubstitution::~BlockSubstitution(void)
 BlockSubstitution* BlockSubstitution::clone() const
 {
     BlockSubstitution* newBSub = new BlockSubstitution(
-                _project,_model,_orgComponent, _subComponent,
-                _orgPorts,_orgConnectedComps,
-                _subPorts,_subConnectedComps);
+          _project,_model,_orgComponent, _subComponent,
+          _orgPorts,_orgConnectedComps,
+          _subPorts,_subConnectedComps);
     return newBSub;
 }
 
@@ -231,12 +231,12 @@ void BlockSubstitution::autoConnect()
 {
     for(int iPort=0;iPort<_subPorts.size();iPort++)
     {
-        QString portName = _subPorts.at(iPort);
+  QString portName = _subPorts.at(iPort);
 
-        int index = _orgPorts.indexOf(QRegExp(".*"+portName.section(".",-1,-1)));
+  int index = _orgPorts.indexOf(QRegExp(".*"+portName.section(".",-1,-1)));
 
-        if(index>-1)
-            _subConnectedComps.replace(iPort,_orgConnectedComps.at(index));
+  if(index>-1)
+      _subConnectedComps.replace(iPort,_orgConnectedComps.at(index));
     }
 }
 
@@ -263,13 +263,13 @@ QDomElement BlockSubstitution::toXmlData(QDomDocument & doc)
     // Org connections
     for(int i=0; i < _subPorts.size(); i++)
     {
-        for(int j=0;j<_subConnectedComps.at(i).size();j++)
-        {
-            QDomElement cConnect = doc.createElement("Connection");
-            cConnect.setAttribute("from", _subPorts.at(i).section(".",-1,-1));
-            cConnect.setAttribute("to", _subConnectedComps.at(i).at(j));
-            cReplacing.appendChild(cConnect);
-        }
+  for(int j=0;j<_subConnectedComps.at(i).size();j++)
+  {
+      QDomElement cConnect = doc.createElement("Connection");
+      cConnect.setAttribute("from", _subPorts.at(i).section(".",-1,-1));
+      cConnect.setAttribute("to", _subConnectedComps.at(i).at(j));
+      cReplacing.appendChild(cConnect);
+  }
     }
     cBlock.appendChild(cReplacing);
 

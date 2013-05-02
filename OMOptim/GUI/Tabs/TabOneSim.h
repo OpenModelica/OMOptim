@@ -80,9 +80,9 @@ public:
     OneSimulation *_problem;
 
 private :
-        WidgetOneSimVars *_widgetOneSimVars;
-        WidgetFilesList *_widgetFilesList;
-        WidgetCtrlParameters *_widgetCtrl;
+  WidgetOneSimVars *_widgetOneSimVars;
+  WidgetFilesList *_widgetFilesList;
+  WidgetCtrlParameters *_widgetCtrl;
 
 
 

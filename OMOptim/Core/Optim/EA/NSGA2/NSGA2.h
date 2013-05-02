@@ -101,7 +101,7 @@ private :
 Result* NSGA2::buildResult(moeoUnboundedArchive<EOStd> & arch)
 {
     Result* result = (Result*)EAStdResult<EOStd>::buildOptimResult(_project,(Optimization*)_problem,
-                                                                   /*_subBlocks,*/arch);
+                                                             /*_subBlocks,*/arch);
     return result;
 }
 

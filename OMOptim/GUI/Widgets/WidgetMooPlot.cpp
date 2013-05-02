@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file WidgetMooPlot.cpp
-        @brief Comments for file documentation.
-        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-        Company : CEP - ARMINES (France)
-        http://www-cep.ensmp.fr/english/
-        @version
+  @file WidgetMooPlot.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 */
 
 #include "Widgets/WidgetMooPlot.h"
@@ -62,14 +62,14 @@ WidgetMooPlot::WidgetMooPlot(OptimResult* result,QWidget *parent) :
 
     // connect signals for selection changed
     connect(_plot1,SIGNAL(selectionChanged(QList<int>&)),
-            this,SIGNAL(selectionChanged(QList<int>&)));
+      this,SIGNAL(selectionChanged(QList<int>&)));
 
 
     // Connecting signals and slot
     connect(_ui->comboAbscissa,SIGNAL(activated(int)),
-            this,SLOT(varSelectionChanged()));
+      this,SLOT(varSelectionChanged()));
     connect(_ui->comboOrdinate,SIGNAL(activated(int)),
-            this,SLOT(varSelectionChanged()));
+      this,SLOT(varSelectionChanged()));
 
     // update combos and plot
     updateCombos();
@@ -140,73 +140,73 @@ void WidgetMooPlot::varSelectionChanged()
     XVar= _result->optObjectivesResults()->findItem(xVarName);
     if (XVar)
     {
-        XObjResult = XVar;
-        XType = 0;
-        xfound = true;
+  XObjResult = XVar;
+  XType = 0;
+  xfound = true;
     }
     else
     {
-        //looking in optVariables
-        XVar = _result->optVariablesResults()->findItem(xVarName);
-        if(XVar)
-        {
-            XVarResult = XVar;
-            XType = 1;
-            xfound=true;
-        }
+  //looking in optVariables
+  XVar = _result->optVariablesResults()->findItem(xVarName);
+  if(XVar)
+  {
+      XVarResult = XVar;
+      XType = 1;
+      xfound=true;
+  }
     }
 
     VariableResult* YVar;
     YVar = _result->optObjectivesResults()->findItem(yVarName);
     if (YVar)
     {
-        YObjResult = YVar;
-        YType = 0;
-        yfound = true;
+  YObjResult = YVar;
+  YType = 0;
+  yfound = true;
     }
     else
     {
-        //looking in optVariables
-        YVar = _result->optVariablesResults()->findItem(yVarName);
-        if(YVar)
-        {
-            YVarResult = YVar;
-            YType = 1;
-            yfound = true;
-        }
+  //looking in optVariables
+  YVar = _result->optVariablesResults()->findItem(yVarName);
+  if(YVar)
+  {
+      YVarResult = YVar;
+      YType = 1;
+      yfound = true;
+  }
     }
 
 
     // plot new variables
     if(xfound && yfound)
     {
-        switch(XType)
-        {
-        case 0 :
-            switch(YType)
-            {
-            case 0 :
-                _plot1->setXYVar(XObjResult,YObjResult);
-                break;
+  switch(XType)
+  {
+  case 0 :
+      switch(YType)
+      {
+      case 0 :
+          _plot1->setXYVar(XObjResult,YObjResult);
+          break;
 
-            case 1 :
-                _plot1->setXYVar(XObjResult,YVarResult);
-                break;
-            }
-            break;
-        case 1 :
-            switch(YType)
-            {
-            case 0 :
-                _plot1->setXYVar(XVarResult,YObjResult);
-                break;
+      case 1 :
+          _plot1->setXYVar(XObjResult,YVarResult);
+          break;
+      }
+      break;
+  case 1 :
+      switch(YType)
+      {
+      case 0 :
+          _plot1->setXYVar(XVarResult,YObjResult);
+          break;
 
-            case 1 :
-                _plot1->setXYVar(XVarResult,YVarResult);
-                break;
-            }
-            break;
-        }
+      case 1 :
+          _plot1->setXYVar(XVarResult,YVarResult);
+          break;
+      }
+      break;
+  }
     }
 }
 
@@ -225,26 +225,26 @@ void WidgetMooPlot::updateCombos()
     for (int i=0;i<nbObj;i++)
     {
 
-        fullNames.push_back(_result->optObjectivesResults()->at(i)->name(Variable::FULL));
-        shortNames.push_back(_result->optObjectivesResults()->at(i)->name(Variable::SHORT));
+  fullNames.push_back(_result->optObjectivesResults()->at(i)->name(Variable::FULL));
+  shortNames.push_back(_result->optObjectivesResults()->at(i)->name(Variable::SHORT));
 
     }
     for (int i=0;i<nbOpt;i++)
     {
-        if (!fullNames.contains(_result->optVariablesResults()->at(i)->name()))
-        {
-            fullNames.push_back(_result->optVariablesResults()->at(i)->name(Variable::FULL));
-            shortNames.push_back(_result->optVariablesResults()->at(i)->name(Variable::SHORT));
-        }
+  if (!fullNames.contains(_result->optVariablesResults()->at(i)->name()))
+  {
+      fullNames.push_back(_result->optVariablesResults()->at(i)->name(Variable::FULL));
+      shortNames.push_back(_result->optVariablesResults()->at(i)->name(Variable::SHORT));
+  }
     }
     for(int i=0;i<fullNames.size();i++)
     {
-        _ui->comboAbscissa->addItem(shortNames.at(i),fullNames.at(i));
-        _ui->comboOrdinate->addItem(shortNames.at(i),fullNames.at(i));
+  _ui->comboAbscissa->addItem(shortNames.at(i),fullNames.at(i));
+  _ui->comboOrdinate->addItem(shortNames.at(i),fullNames.at(i));
     }
 
     if(fullNames.size()>1)
-        _ui->comboOrdinate->setCurrentIndex(1);
+  _ui->comboOrdinate->setCurrentIndex(1);
 }
 
 void WidgetMooPlot::setShownPoints(QList<int> _list)

@@ -60,7 +60,7 @@ ModPlusCtrl::ModPlusCtrl(Project* project,ModelPlus* ModPlus,MOomc* moomc)
 ModPlusCtrl::~ModPlusCtrl(void)
 {
     if(_parameters)
-        delete _parameters;
+  delete _parameters;
 }
 
 /** Uncompile model: remove compiled version.
@@ -80,15 +80,15 @@ MOParameters* ModPlusCtrl::parameters() const
 
 bool operator==(const ModPlusCtrl &a, const ModPlusCtrl &b)
 {
-        bool sameType =  (a.type()==b.type());
+  bool sameType =  (a.type()==b.type());
 
-        if(!sameType)
-            return false;
-        else
-        {
-            bool sameParameters = ((*a.parameters())==(*b.parameters()));
-            return sameParameters;
-        }
+  if(!sameType)
+      return false;
+  else
+  {
+      bool sameParameters = ((*a.parameters())==(*b.parameters()));
+      return sameParameters;
+  }
 }
 
 

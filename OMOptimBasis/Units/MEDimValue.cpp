@@ -62,23 +62,23 @@ double MEDimValue::value(int iUnit) const
 
 double MEDimValue::value() const
 {
-        return _value;
+  return _value;
 }
 
 QString MEDimValue::strValue(int iUnit) const
 {
     if(isValid())
-        return QString::number(value(iUnit));
+  return QString::number(value(iUnit));
     else
-        return "-";
+  return "-";
 }
 
 QString MEDimValue::strValue() const
 {
     if(isValid())
-        return QString::number(value());
+  return QString::number(value());
     else
-        return "-";
+  return "-";
 }
 
 
@@ -86,7 +86,7 @@ void MEDimValue::setValue(double value,int iUnit)
 {
     _value = value;
     if(iUnit>-1)
-        _unit = iUnit;
+  _unit = iUnit;
 
     validate();
 }
@@ -111,9 +111,9 @@ bool MEDimValue::setUnit(QString unit)
 {
     int iUnit = units().indexOf(unit);
     if(iUnit==-1)
-        return false;
+  return false;
     else
-        setUnit(iUnit);
+  setUnit(iUnit);
     return true;
 
 }
@@ -121,9 +121,9 @@ bool MEDimValue::setValue(double value,QString unit)
 {
     int iUnit = units().indexOf(unit);
     if(iUnit==-1)
-        return false;
+  return false;
     else
-        setValue(value,iUnit);
+  setValue(value,iUnit);
 
     validate();
 
@@ -136,7 +136,7 @@ QStringList MEDimValue::units()  const
 {
     QStringList result;
     for(int i=0;i<nbUnits();i++)
-        result.push_back(unit(i));
+  result.push_back(unit(i));
 
     return result;
 }

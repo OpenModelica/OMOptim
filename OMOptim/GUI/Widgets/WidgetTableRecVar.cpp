@@ -84,11 +84,11 @@ void WidgetTableRecVar::onExtSelectionChanged(QList<int>& list)
 {
     if(list.size()==1)
     {
-        _result->setCurPoint(list.at(0));
+  _result->setCurPoint(list.at(0));
     }
     else
     {
-        _result->setCurPoint(-1);
+  _result->setCurPoint(-1);
     }
 
     _tableVariables->viewport()->update();

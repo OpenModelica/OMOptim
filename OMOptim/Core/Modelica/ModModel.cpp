@@ -61,7 +61,7 @@ ModItem* ModModel::clone() const
 
     for(int i=0;i<children().size();i++)
     {
-        newModModel->addChild(child(i)->clone());
+  newModModel->addChild(child(i)->clone());
     }
     return newModModel;
 }

@@ -60,15 +60,15 @@ void MOItemModel::setMOItem(MOItem* item)
 {
     if(_item)
     {
-        this->disconnect(_item);
-        _item->disconnect(this);
+  this->disconnect(_item);
+  _item->disconnect(this);
     }
     beginResetModel();
     _item = item;
     endResetModel();
 
     if(_item)
-        connect(_item,SIGNAL(destroyed()),this,SLOT(onItemDeleted()));
+  connect(_item,SIGNAL(destroyed()),this,SLOT(onItemDeleted()));
 }
 
 void MOItemModel::setShowDescription(bool show)
@@ -79,15 +79,15 @@ void MOItemModel::setShowDescription(bool show)
 int MOItemModel::columnCount(const QModelIndex &parent) const
 {
     if(_showDescription)
-        return 3;
+  return 3;
     else
-        return 2;
+  return 2;
 }
 
 void MOItemModel::hideField(int field)
 {
     if(!_hidedFields.contains(field))
-        _hidedFields.push_back(field);
+  _hidedFields.push_back(field);
 }
 
 void MOItemModel::setEditable(bool editable)
@@ -103,46 +103,46 @@ void MOItemModel::onItemDeleted()
 QVariant MOItemModel::data(const QModelIndex &index, int role) const
 {
     if(!_item)
-        return QVariant();
+  return QVariant();
 
     if (!index.isValid())
-        return QVariant();
+  return QVariant();
 
     if(index.column()<0 || index.column()>=columnCount())
-        return QVariant();
+  return QVariant();
 
     int iCol = index.column();
     int field = iField(index.row());
 
     bool ok = (role==Qt::DisplayRole)
-            ||(role==Qt::EditRole)
-            || ((role == Qt::CheckStateRole)&&iCol==1&&(_item->getFieldType(field)==MOItem::BOOL));
+      ||(role==Qt::EditRole)
+      || ((role == Qt::CheckStateRole)&&iCol==1&&(_item->getFieldType(field)==MOItem::BOOL));
     if(!ok)
-        return QVariant();
+  return QVariant();
 
     if(iCol == 0)
     {
-        return _item->getFieldName(field,role);
+  return _item->getFieldName(field,role);
     }
     if(iCol==1)
     {
-        if(role == Qt::CheckStateRole)
-        {
-            bool value = _item->getFieldValue(field,role).toBool();
-            if(value)
-                return Qt::Checked;
-            else
-                return Qt::Unchecked;
-        }
-        // avoid double display when checkbox
-        if((_item->getFieldType(field)==MOItem::BOOL)&&(role==Qt::DisplayRole))
-            return QVariant();
+  if(role == Qt::CheckStateRole)
+  {
+      bool value = _item->getFieldValue(field,role).toBool();
+      if(value)
+          return Qt::Checked;
+      else
+          return Qt::Unchecked;
+  }
+  // avoid double display when checkbox
+  if((_item->getFieldType(field)==MOItem::BOOL)&&(role==Qt::DisplayRole))
+      return QVariant();
 
-        return _item->getFieldValue(field,role);
+  return _item->getFieldValue(field,role);
     }
     if(iCol==2)
     {
-        return _item->getFieldDescription(field);
+  return _item->getFieldDescription(field);
     }
     return QVariant();
 }
@@ -151,28 +151,28 @@ bool MOItemModel::setData(const QModelIndex &index, const QVariant &value, int r
 {
     bool ok;
     if(!_editable || !_item)
-        return false;
+  return false;
 
     if (!index.isValid())
-        return false;
+  return false;
 
     if(index.column()!=1)
-        return false;
+  return false;
 
     int field = iField(index.row());
     switch(role)
     {
     case Qt::EditRole :
-        ok = _item->setFieldValue(field,value);
-        if(ok)
-            dataChanged(index,index);
-        return ok;
-        break;
+  ok = _item->setFieldValue(field,value);
+  if(ok)
+      dataChanged(index,index);
+  return ok;
+  break;
     case Qt::CheckStateRole :
-        return setCheckState(index,value.toInt());
-        break;
+  return setCheckState(index,value.toInt());
+  break;
     default:
-        return false;
+  return false;
     }
 }
 
@@ -180,30 +180,30 @@ bool MOItemModel::setCheckState(const QModelIndex & index, int checkState)
 {
     if(index.isValid() && _editable)
     {
-        if((checkState == Qt::Unchecked) || (checkState == Qt::PartiallyChecked))
-            return this->setData(index,QVariant(false),Qt::EditRole);
-        else
-            return this->setData(index,QVariant(true),Qt::EditRole);
+  if((checkState == Qt::Unchecked) || (checkState == Qt::PartiallyChecked))
+      return this->setData(index,QVariant(false),Qt::EditRole);
+  else
+      return this->setData(index,QVariant(true),Qt::EditRole);
     }
     else
-        return false;
+  return false;
 }
 
 int MOItemModel::iField(int iRow) const
 {
     if(!_item)
-        return -1;
+  return -1;
 
     QList<int> iFields;
     for(int i=0;i<_item->getNbFields();i++)
     {
-        if(!_hidedFields.contains((i)))
-            iFields.push_back(i);
+  if(!_hidedFields.contains((i)))
+      iFields.push_back(i);
     }
     if(iRow<iFields.size())
-        return iFields.at(iRow);
+  return iFields.at(iRow);
     else
-        return -1;
+  return -1;
 }
 
 
@@ -212,10 +212,10 @@ int MOItemModel::iField(int iRow) const
 //{
 //    if((row>-1)&&(row < rowCount(parent)))
 //    {
-//        return createIndex(row,column);
+//  return createIndex(row,column);
 //    }
 //    else
-//        return QModelIndex();
+//  return QModelIndex();
 //}
 
 //QModelIndex MOItemModel::parent(const QModelIndex &index) const
@@ -226,7 +226,7 @@ int MOItemModel::iField(int iRow) const
 Qt::ItemFlags MOItemModel::flags(const QModelIndex &index) const
 {
     if (!_item || !index.isValid())
-        return Qt::ItemIsEnabled;
+  return Qt::ItemIsEnabled;
 
 
     Qt::ItemFlags _flags;
@@ -235,29 +235,29 @@ Qt::ItemFlags MOItemModel::flags(const QModelIndex &index) const
     _flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable ;
 
     if(_editable && index.column()==1 && !_item->isProtectedField(field))
-        _flags = _flags | Qt::ItemIsEditable;
+  _flags = _flags | Qt::ItemIsEditable;
 
     if(_editable && (index.column()==1) &&(_item->getFieldType(field)==MOItem::BOOL))
-        _flags = _flags | Qt::ItemIsUserCheckable;
+  _flags = _flags | Qt::ItemIsUserCheckable;
 
     return _flags;
 }
 
 
 QVariant MOItemModel::headerData(int section, Qt::Orientation orientation,
-                                 int role) const
+                           int role) const
 {
     if((orientation==Qt::Horizontal))
     {
-        if (role == Qt::DisplayRole)
-        {
-            if(section==0)
-                return "Parameter";
-            if(section==1)
-                return "Value";
-            if(section==2)
-                return "Description";
-        }
+  if (role == Qt::DisplayRole)
+  {
+      if(section==0)
+          return "Parameter";
+      if(section==1)
+          return "Value";
+      if(section==2)
+          return "Description";
+  }
     }
     return QAbstractItemModel::headerData(section, orientation, role);
 }
@@ -267,7 +267,7 @@ QVariant MOItemModel::headerData(int section, Qt::Orientation orientation,
 int MOItemModel::rowCount(const QModelIndex &parent) const
 {
     if(_item)
-        return std::max<int>(0,_item->getNbFields()-_hidedFields.size());
+  return std::max<int>(0,_item->getNbFields()-_hidedFields.size());
     else
-        return 0;
+  return 0;
 }

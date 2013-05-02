@@ -60,13 +60,13 @@ QString MEQflow::unit(int iUnit) const
     switch(iUnit)
     {
     case W :
-        return "W";
+  return "W";
     case KW :
-        return "KW";
+  return "KW";
     case MW :
-        return "MW";
+  return "MW";
     default :
-        return "-";
+  return "-";
     }
 }
 
@@ -87,26 +87,26 @@ double MEQflow::convert(double value,int orgUnit,int dstUnit) const
     switch(orgUnit)
     {
     case KW :
-        result=result*1000;
-        break;
+  result=result*1000;
+  break;
     case MW :
-        result=result*1E6;
-        break;
+  result=result*1E6;
+  break;
     default :
-        break;
+  break;
     }
 
     // convert to dstUnit
     switch(dstUnit)
     {
     case KW :
-        result=result/1000;
-        break;
+  result=result/1000;
+  break;
     case MW :
-        result=result/1E6;
-        break;
+  result=result/1E6;
+  break;
     default :
-        break;
+  break;
     }
     return result;
 }
@@ -122,7 +122,7 @@ MEQflow& MEQflow::operator+=(const MEQflow& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-        this->invalidate();
+  this->invalidate();
     return *this;
 }
 
@@ -130,7 +130,7 @@ MEQflow& MEQflow::operator-=(const MEQflow& b)
 {
     setValue(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-        this->invalidate();
+  this->invalidate();
     return *this;
 }
 
@@ -138,7 +138,7 @@ MEQflow MEQflow::operator-(const MEQflow& b) const
 {
     MEQflow result(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-        result.invalidate();
+  result.invalidate();
 
     return result;
 }
@@ -147,7 +147,7 @@ MEQflow MEQflow::operator+(const MEQflow& b) const
 {
     MEQflow result(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-        result.invalidate();
+  result.invalidate();
 
     return result;
 }

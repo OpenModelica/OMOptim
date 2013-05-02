@@ -64,25 +64,25 @@ Info::Info(ListInfo::InfoNum infoNum_)
     bool found = false;
     while (i<NBINFOS && !found)
     {
-        if(strInfos[i].num==infoNum_)
-        {
-            found=true;
-        }
-        else
-        {
-            i++;
-        }
+  if(strInfos[i].num==infoNum_)
+  {
+      found=true;
+  }
+  else
+  {
+      i++;
+  }
     }
 
     if (!found)
     {
-        infoMsg="Unknown info";
-        infoType=NORMAL2;
+  infoMsg="Unknown info";
+  infoType=NORMAL2;
     }
     else
     {
-        infoMsg=strInfos[i].msg;
-        infoType=strInfos[i].type;
+  infoMsg=strInfos[i].msg;
+  infoType=strInfos[i].type;
     }
     }
     catch(std::exception &e)
@@ -101,26 +101,26 @@ Info::Info(ListInfo::InfoNum infoNum_, QString strSupp)
     bool found = false;
     while (i<NBINFOS && !found)
     {
-        if(strInfos[i].num==infoNum_)
-        {
-            found=true;
-        }
-        else
-        {
-            i++;
-        }
+  if(strInfos[i].num==infoNum_)
+  {
+      found=true;
+  }
+  else
+  {
+      i++;
+  }
     }
 
     if (!found)
     {
-        infoMsg="Unknown info";
-        infoType=NORMAL2;
+  infoMsg="Unknown info";
+  infoType=NORMAL2;
     }
     else
     {
-        infoMsg.clear();
-        infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp.toLatin1().data());
-        infoType=strInfos[i].type;
+  infoMsg.clear();
+  infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp.toLatin1().data());
+  infoType=strInfos[i].type;
     }
     }
     catch(std::exception &e)
@@ -138,26 +138,26 @@ Info::Info(ListInfo::InfoNum infoNum_, QString strSupp1, QString strSupp2)
     bool found = false;
     while (i<NBINFOS && !found)
     {
-        if(strInfos[i].num==infoNum_)
-        {
-            found=true;
-        }
-        else
-        {
-            i++;
-        }
+  if(strInfos[i].num==infoNum_)
+  {
+      found=true;
+  }
+  else
+  {
+      i++;
+  }
     }
 
     if (!found)
     {
-        infoMsg="Unknown info";
-        infoType=NORMAL2;
+  infoMsg="Unknown info";
+  infoType=NORMAL2;
     }
     else
     {
-        infoMsg.clear();
-        infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp1.toLatin1().data(),strSupp2.toLatin1().data());
-        infoType=strInfos[i].type;
+  infoMsg.clear();
+  infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp1.toLatin1().data(),strSupp2.toLatin1().data());
+  infoType=strInfos[i].type;
     }
     }
     catch(std::exception &e)

@@ -99,7 +99,7 @@ public:
 
     /** Class name */
     virtual std::string className() const
-        { return "MyEoGnuplot"; }
+  { return "MyEoGnuplot"; }
 
     /** Send command to gnuplot */
     void gnuplotCommand(const QString & _command);

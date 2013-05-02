@@ -34,7 +34,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-        @version
+  @version
 
   */
 #include "MESpecHeatCapacity.h"
@@ -62,13 +62,13 @@ QString MESpecHeatCapacity::unit(int iUnit) const
     switch(iUnit)
     {
     case MJ_KG_K :
-        return "MJ/kg.K";
+  return "MJ/kg.K";
     case KJ_KG_K :
-        return "kJ/kg.K";
+  return "kJ/kg.K";
     case J_KG_K :
-        return "J/kg.K";
+  return "J/kg.K";
     default :
-        return "-";
+  return "-";
     }
 }
 
@@ -89,26 +89,26 @@ double MESpecHeatCapacity::convert(double value,int orgUnit,int dstUnit) const
     switch(orgUnit)
     {
     case KJ_KG_K :
-        result = result*1000;
-        break;
+  result = result*1000;
+  break;
     case MJ_KG_K :
-        result = result*1E6;
-        break;
+  result = result*1E6;
+  break;
     default :
-        break;
+  break;
     }
 
     // convert to dstUnit
     switch(dstUnit)
     {
     case KJ_KG_K :
-        result = result/1000;
-        break;
+  result = result/1000;
+  break;
     case MJ_KG_K :
-        result = result/1E6;
-        break;
+  result = result/1E6;
+  break;
     default :
-        break;
+  break;
     }
     return result;
 }
@@ -118,7 +118,7 @@ MESpecHeatCapacity& MESpecHeatCapacity::operator+=(const MESpecHeatCapacity& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-        this->invalidate();
+  this->invalidate();
     return *this;
 }
 
@@ -126,7 +126,7 @@ MESpecHeatCapacity& MESpecHeatCapacity::operator-=(const MESpecHeatCapacity& b)
 {
     setValue(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-        this->invalidate();
+  this->invalidate();
     return *this;
 }
 
@@ -134,7 +134,7 @@ MESpecHeatCapacity MESpecHeatCapacity::operator-(const MESpecHeatCapacity& b) co
 {
     MESpecHeatCapacity result(value(_unit) - b.value(_unit),_unit);
     if(!b.isValid())
-        result.invalidate();
+  result.invalidate();
 
     return result;
 }
@@ -143,7 +143,7 @@ MESpecHeatCapacity MESpecHeatCapacity::operator+(const MESpecHeatCapacity& b) co
 {
     MESpecHeatCapacity result(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
-        result.invalidate();
+  result.invalidate();
 
     return result;
 }

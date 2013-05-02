@@ -55,10 +55,10 @@ WidgetCalculateMooPoints::WidgetCalculateMooPoints(OptimResult* result,WidgetMoo
     _widgetMooPointsList = widgetMooPointsList;
 
     connect(_ui->pushCalcSelected,SIGNAL(clicked()),
-            this,SLOT(recomputeSelectedPoints()));
+      this,SLOT(recomputeSelectedPoints()));
 
     connect(_ui->pushExport,SIGNAL(clicked()),
-            this,SLOT(exportSelectedPoints()));
+      this,SLOT(exportSelectedPoints()));
 }
 
 WidgetCalculateMooPoints::~WidgetCalculateMooPoints()
@@ -81,24 +81,24 @@ void WidgetCalculateMooPoints::exportSelectedPoints()
 
     // get file name
     QString csvPath = QFileDialog::getSaveFileName(
-                this,
-                "MO - Export optimum points",
-                _result->saveFolder(),
-                "CSV file (*.csv)" );
+          this,
+          "MO - Export optimum points",
+          _result->saveFolder(),
+          "CSV file (*.csv)" );
 
     if(!csvPath.isNull())
     {
-        QList<int> listPoints = _widgetMooPointsList->_listPoints->getSelectedIndexes();
-        QString csvText = _result->buildAllVarsFrontCSV(listPoints);
+  QList<int> listPoints = _widgetMooPointsList->_listPoints->getSelectedIndexes();
+  QString csvText = _result->buildAllVarsFrontCSV(listPoints);
 
-        QFile frontFile(csvPath);
-        if(frontFile.exists())
-            frontFile.remove();
+  QFile frontFile(csvPath);
+  if(frontFile.exists())
+      frontFile.remove();
 
-        frontFile.open(QIODevice::WriteOnly);
-        QTextStream tsfront( &frontFile );
-        tsfront << csvText;
-        frontFile.close();
+  frontFile.open(QIODevice::WriteOnly);
+  QTextStream tsfront( &frontFile );
+  tsfront << csvText;
+  frontFile.close();
     }
 }
 

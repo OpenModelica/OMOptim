@@ -24,7 +24,7 @@ public:
      * @return true if the neighbor is better than sol
      */
     virtual bool operator()( const EOT& _sol, const Neighbor& _neighbor) {
-        return (_sol.fitness() < _neighbor.fitness());
+  return (_sol.fitness() < _neighbor.fitness());
     }
 
     /**
@@ -34,7 +34,7 @@ public:
      * @return true if the neighbor is equal to the solution
      */
     virtual bool equals( const EOT& _sol, const Neighbor& _neighbor) {
-        return (_sol.fitness() == _neighbor.fitness());
+  return (_sol.fitness() == _neighbor.fitness());
     }
 
     /**
@@ -42,7 +42,7 @@ public:
      * @return the class name as a std::string
      */
     virtual std::string className() const {
-        return "SA1moSolNeighborComparator";
+  return "SA1moSolNeighborComparator";
     }
 };
 

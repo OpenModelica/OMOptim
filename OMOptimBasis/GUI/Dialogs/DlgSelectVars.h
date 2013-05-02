@@ -61,25 +61,25 @@ class DlgSelectVars : public QDialog
     Q_OBJECT
 
 public:
-        DlgSelectVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected = NULL);
-        DlgSelectVars(MOVector<Variable>* variables,QList<VariableCausality> causalities,MOVector<Variable>* alreadySelected = NULL);
-        DlgSelectVars(MOOptVector *,MOOptVector *alreadySelected = NULL);
+  DlgSelectVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected = NULL);
+  DlgSelectVars(MOVector<Variable>* variables,QList<VariableCausality> causalities,MOVector<Variable>* alreadySelected = NULL);
+  DlgSelectVars(MOOptVector *,MOOptVector *alreadySelected = NULL);
 
 
     
-        static MOVector<Variable>* getSelectedVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected=NULL);
-        static MOVector<Variable>* getSelectedVars(MOVector<Variable>*,QList<VariableCausality> causalities,MOVector<Variable>* alreadySelected=NULL);
+  static MOVector<Variable>* getSelectedVars(MOVector<Variable>*,MOVector<Variable>* alreadySelected=NULL);
+  static MOVector<Variable>* getSelectedVars(MOVector<Variable>*,QList<VariableCausality> causalities,MOVector<Variable>* alreadySelected=NULL);
 
-        static MOOptVector* getSelectedOptVars(MOOptVector *,MOOptVector *_alreadySelected = NULL);
+  static MOOptVector* getSelectedOptVars(MOOptVector *,MOOptVector *_alreadySelected = NULL);
 
 
 private :
-        bool _useOpt;
-        MOVector<Variable> *_variables;
-        MOVector<Variable>* _selectedVars;
+  bool _useOpt;
+  MOVector<Variable> *_variables;
+  MOVector<Variable>* _selectedVars;
 
-        MOOptVector *_optVariables;
-        MOOptVector* _selectedOptVars;
+  MOOptVector *_optVariables;
+  MOOptVector* _selectedOptVars;
 
     
     QPushButton *pushOk;

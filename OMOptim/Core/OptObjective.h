@@ -50,30 +50,30 @@ class OptObjective : public Variable
 public:
     enum Field
     {
-        NAME,
-        MODEL,
-        DESCRIPTION,
-        DIRECTION,
-        MIN,
-        MAX,
-        // Scan
-        SAMPLINGFUNCTION
+  NAME,
+  MODEL,
+  DESCRIPTION,
+  DIRECTION,
+  MIN,
+  MAX,
+  // Scan
+  SAMPLINGFUNCTION
     };
 
     enum Direction
     {
-        MAXIMIZE=0,
-        MINIMIZE=1
+  MAXIMIZE=0,
+  MINIMIZE=1
     };
 
     enum ScanFunction
     {
-        NONE,
-        AVERAGE,
-        SUM,
-        DEVIATION,
-        MINIMUM,
-        MAXIMUM
+  NONE,
+  AVERAGE,
+  SUM,
+  DEVIATION,
+  MINIMUM,
+  MAXIMUM
     };
 
     OptObjective();

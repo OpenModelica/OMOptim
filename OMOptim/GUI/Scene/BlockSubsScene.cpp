@@ -67,12 +67,12 @@ void BlockSubsScene::clearAll()
 {
     for(int i = 0;i<orgBlocks.size();i++)
     {
-        delete orgBlocks.at(i);
-        for(int j=0;j<subBlocks.at(i).size();j++)
-        {
-            delete subBlocks.at(i).at(j);
-            delete lines.at(i).at(j);
-        }
+  delete orgBlocks.at(i);
+  for(int j=0;j<subBlocks.at(i).size();j++)
+  {
+      delete subBlocks.at(i).at(j);
+      delete lines.at(i).at(j);
+  }
     }
 
     orgBlocks.clear();
@@ -109,74 +109,74 @@ void BlockSubsScene::refresh()
 
     if(blockSubs!=NULL)
     {
-        QStringList orgs = blockSubs->getReplacedComponentsNames();
-        for(int i=0;i<orgs.size();i++)
-        {
-            ModItem* _orgEl = modItemsTree->findInDescendants(orgs.at(i));
-            if(_orgEl)
-            {
+  QStringList orgs = blockSubs->getReplacedComponentsNames();
+  for(int i=0;i<orgs.size();i++)
+  {
+      ModItem* _orgEl = modItemsTree->findInDescendants(orgs.at(i));
+      if(_orgEl)
+      {
 
-                startOrgY = endOrgY + orgMargin;
-                //*************
-                // adding org
-                //*************
-                _curOrgPos.setY(startOrgY);
-                _curOrgBlock = addOrgBlock(_orgEl->name(), _curOrgPos);
-                maxOrgBlockWidth = std::max<double>((double)maxOrgBlockWidth,_curOrgBlock->geometry().width());
+          startOrgY = endOrgY + orgMargin;
+          //*************
+          // adding org
+          //*************
+          _curOrgPos.setY(startOrgY);
+          _curOrgBlock = addOrgBlock(_orgEl->name(), _curOrgPos);
+          maxOrgBlockWidth = std::max<double>((double)maxOrgBlockWidth,_curOrgBlock->geometry().width());
 
-                //*************
-                // adding subs
-                //*************
-                QStringList subs = blockSubs->getReplacingComponentNames(orgs.at(i));
-                int nbSubs = subs.size();
+          //*************
+          // adding subs
+          //*************
+          QStringList subs = blockSubs->getReplacingComponentNames(orgs.at(i));
+          int nbSubs = subs.size();
 
-                _curSubPos.setY(startOrgY);
+          _curSubPos.setY(startOrgY);
 
-                for(int j=0;j<nbSubs;j++)
-                {
-                    ModItem* _subEl = modItemsTree->findInDescendants(subs.at(j));
-                    if(_subEl)
-                    {
-                        _curSubBlock = addSubBlock(i,_subEl->name(), _curSubPos);
-                        maxSubBlockWidth = std::max<double>((double)maxSubBlockWidth,_curSubBlock->geometry().width());
-                        _curSubPos.setY(_curSubPos.y() + _curSubBlock->geometry().height() + subMargin);
-                    }
-                }
+          for(int j=0;j<nbSubs;j++)
+          {
+              ModItem* _subEl = modItemsTree->findInDescendants(subs.at(j));
+              if(_subEl)
+              {
+                  _curSubBlock = addSubBlock(i,_subEl->name(), _curSubPos);
+                  maxSubBlockWidth = std::max<double>((double)maxSubBlockWidth,_curSubBlock->geometry().width());
+                  _curSubPos.setY(_curSubPos.y() + _curSubBlock->geometry().height() + subMargin);
+              }
+          }
 
-                endOrgY = _curSubPos.y() - subMargin;
+          endOrgY = _curSubPos.y() - subMargin;
 
 
-                //***********************
-                // set pos of OrgBlock
-                //***********************
-                _curOrgPos.setY((startOrgY+endOrgY)/2 - _curOrgBlock->geometry().height()/2);
-                setBlockPos(_curOrgBlock,_curOrgPos);
-                endOrgY = std::max<double>(_curOrgPos.y()+_curOrgBlock->geometry().height(),(double)_curSubPos.y());
-            }
-        }
+          //***********************
+          // set pos of OrgBlock
+          //***********************
+          _curOrgPos.setY((startOrgY+endOrgY)/2 - _curOrgBlock->geometry().height()/2);
+          setBlockPos(_curOrgBlock,_curOrgPos);
+          endOrgY = std::max<double>(_curOrgPos.y()+_curOrgBlock->geometry().height(),(double)_curSubPos.y());
+      }
+  }
     }
 
     //set width and position
     for(int iOrg = 0;iOrg<proxOrgBlocks.size();iOrg++)
     {
-        QRectF newGeometry = proxOrgBlocks.at(iOrg)->geometry();
-        newGeometry.setWidth(maxOrgBlockWidth);
-        proxOrgBlocks.at(iOrg)->setGeometry(newGeometry);
+  QRectF newGeometry = proxOrgBlocks.at(iOrg)->geometry();
+  newGeometry.setWidth(maxOrgBlockWidth);
+  proxOrgBlocks.at(iOrg)->setGeometry(newGeometry);
 
-        for(int iSub = 0;iSub<proxSubBlocks.at(iOrg).size();iSub++)
-        {
-            QRectF newGeometry = proxSubBlocks.at(iOrg).at(iSub)->geometry();
-            newGeometry.setWidth(maxSubBlockWidth);
-            newGeometry.moveLeft(maxOrgBlockWidth+50);
-            proxSubBlocks.at(iOrg).at(iSub)->setGeometry(newGeometry);
+  for(int iSub = 0;iSub<proxSubBlocks.at(iOrg).size();iSub++)
+  {
+      QRectF newGeometry = proxSubBlocks.at(iOrg).at(iSub)->geometry();
+      newGeometry.setWidth(maxSubBlockWidth);
+      newGeometry.moveLeft(maxOrgBlockWidth+50);
+      proxSubBlocks.at(iOrg).at(iSub)->setGeometry(newGeometry);
 
 
-            double x1 = proxOrgBlocks.at(iOrg)->boundingRect().right();
-            double y1 = proxOrgBlocks.at(iOrg)->pos().y()+proxOrgBlocks.at(iOrg)->boundingRect().height()/2;
-            double x2 = proxSubBlocks.at(iOrg).at(iSub)->pos().x();
-            double y2 = proxSubBlocks.at(iOrg).at(iSub)->pos().y()+proxSubBlocks.at(iOrg).at(iSub)->boundingRect().height()/2;
-            lines.at(iOrg).at(iSub)->setLine(x1,y1,x2,y2);
-        }
+      double x1 = proxOrgBlocks.at(iOrg)->boundingRect().right();
+      double y1 = proxOrgBlocks.at(iOrg)->pos().y()+proxOrgBlocks.at(iOrg)->boundingRect().height()/2;
+      double x2 = proxSubBlocks.at(iOrg).at(iSub)->pos().x();
+      double y2 = proxSubBlocks.at(iOrg).at(iSub)->pos().y()+proxSubBlocks.at(iOrg).at(iSub)->boundingRect().height()/2;
+      lines.at(iOrg).at(iSub)->setLine(x1,y1,x2,y2);
+  }
     }
 
     deselectAll();
@@ -206,63 +206,63 @@ void BlockSubsScene::refresh()
 //
 //    if(blockSubs!=NULL)
 //    {
-//        QStringList orgs = blockSubs->getReplacedComponentsNames();
-//        for(int i=0;i<orgs.size();i++)
-//        {
-//            ModItem* _orgEl = modelRoot->findComporModelInDescendants(orgs.at(i));
-//            if(_orgEl)
-//            {
-//                QStringList subs = blockSubs->getReplacingComponentNames(orgs.at(i));
-//                int nbSubs = subs.size();
+//  QStringList orgs = blockSubs->getReplacedComponentsNames();
+//  for(int i=0;i<orgs.size();i++)
+//  {
+//      ModItem* _orgEl = modelRoot->findComporModelInDescendants(orgs.at(i));
+//      if(_orgEl)
+//      {
+//          QStringList subs = blockSubs->getReplacingComponentNames(orgs.at(i));
+//          int nbSubs = subs.size();
 //
-//                if(nbSubs == 0)
-//                {
-//                    _curRow = _rowOffset;
-//                    _rowOffset = _curRow+2;
-//                }
-//                else
-//                    _curRow = _rowOffset + nbSubs -1;
+//          if(nbSubs == 0)
+//          {
+//              _curRow = _rowOffset;
+//              _rowOffset = _curRow+2;
+//          }
+//          else
+//              _curRow = _rowOffset + nbSubs -1;
 //
-//                // Org block
-//                BlockDrawItem* _curOrgBlock = addOrgBlock(_orgEl, QPoint());
-//                layout->addItem(_curOrgBlock,_curRow,0,2,1);
-//                maxOrgWidth = max(_curOrgBlock->boundingRect().width(),maxOrgWidth);
-//                
-//                // Subs block
-//                for(int j=0;j<nbSubs;j++)
-//                {
-//                    int iLibrary = libraries->findItem(subs.at(j).section(".",0,0));
-//                    if(iLibrary>-1)
-//                    {
-//                        ModItem* _subEl = libraries->at(iLibrary)->findComporModelInDescendants(subs.at(j));
-//                        if(_subEl)
-//                        {
-//                            BlockDrawItem* _curSubBlock = addSubBlock(_curOrgBlock,_subEl, QPoint());
-//                            _curRow = _rowOffset+j*2;
-//                            layout->addItem(_curSubBlock,_curRow,1,2,1);
-//                            layout->setRowMinimumHeight(_curRow,_curSubBlock->boundingRect().height()/2);
-//                            layout->setRowMinimumHeight(_curRow+1,_curSubBlock->boundingRect().height()/2);
-//                            maxSubWidth = max(_curOrgBlock->boundingRect().width(),maxSubWidth);
-//                        }
-//                    }
-//                }
-//                _rowOffset = _rowOffset + nbSubs * 2;
-//            }
-//        }
+//          // Org block
+//          BlockDrawItem* _curOrgBlock = addOrgBlock(_orgEl, QPoint());
+//          layout->addItem(_curOrgBlock,_curRow,0,2,1);
+//          maxOrgWidth = max(_curOrgBlock->boundingRect().width(),maxOrgWidth);
+//          
+//          // Subs block
+//          for(int j=0;j<nbSubs;j++)
+//          {
+//              int iLibrary = libraries->findItem(subs.at(j).section(".",0,0));
+//              if(iLibrary>-1)
+//              {
+//                  ModItem* _subEl = libraries->at(iLibrary)->findComporModelInDescendants(subs.at(j));
+//                  if(_subEl)
+//                  {
+//                      BlockDrawItem* _curSubBlock = addSubBlock(_curOrgBlock,_subEl, QPoint());
+//                      _curRow = _rowOffset+j*2;
+//                      layout->addItem(_curSubBlock,_curRow,1,2,1);
+//                      layout->setRowMinimumHeight(_curRow,_curSubBlock->boundingRect().height()/2);
+//                      layout->setRowMinimumHeight(_curRow+1,_curSubBlock->boundingRect().height()/2);
+//                      maxSubWidth = max(_curOrgBlock->boundingRect().width(),maxSubWidth);
+//                  }
+//              }
+//          }
+//          _rowOffset = _rowOffset + nbSubs * 2;
+//      }
+//  }
 //
-//        layout->setColumnMinimumWidth(0,maxOrgWidth);
-//        layout->setColumnMinimumWidth(1,maxSubWidth);
+//  layout->setColumnMinimumWidth(0,maxOrgWidth);
+//  layout->setColumnMinimumWidth(1,maxSubWidth);
 //
-//        delete mainWidget;
-//        mainWidget = new QGraphicsWidget();
-//        mainWidget->setLayout(layout);
-//        addItem(mainWidget);
+//  delete mainWidget;
+//  mainWidget = new QGraphicsWidget();
+//  mainWidget->setLayout(layout);
+//  addItem(mainWidget);
 //
-//        QRectF _rect = layout->geometry();
-//        QRectF _rect1 = layout->contentsRect();
-//        
-//        // zoom
-//        zoomFit();
+//  QRectF _rect = layout->geometry();
+//  QRectF _rect1 = layout->contentsRect();
+//  
+//  // zoom
+//  zoomFit();
 //    }
 //}
 
@@ -323,8 +323,8 @@ void BlockSubsScene::zoomFit()
     double minHeight = 50;
     if(_rect.height()< minHeight)
     {
-        _rect.setWidth(_rect.width()*minHeight/_rect.height());
-        _rect.setHeight(minHeight);
+  _rect.setWidth(_rect.width()*minHeight/_rect.height());
+  _rect.setHeight(minHeight);
     }
 
 
@@ -393,25 +393,25 @@ void BlockSubsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
     {
-        QPointF _clkPos = mouseEvent->scenePos();
-        QGraphicsItem* _item = itemAt(_clkPos);
+  QPointF _clkPos = mouseEvent->scenePos();
+  QGraphicsItem* _item = itemAt(_clkPos);
 
-        if(mouseEvent->modifiers()!=Qt::ControlModifier)
-            deselectAll();
+  if(mouseEvent->modifiers()!=Qt::ControlModifier)
+      deselectAll();
 
-        if(_item)
-        {
-            int _iOrg,_iSub;
-            bool _isOrg;
+  if(_item)
+  {
+      int _iOrg,_iSub;
+      bool _isOrg;
 
-            if(findBlockDrawItem(_item , _iOrg, _iSub, _isOrg))
-            {
-                if(_isOrg)
-                    selectOrg(_iOrg,false);
-                else
-                    selectSub(_iOrg,_iSub,false);
-            }
-        }
+      if(findBlockDrawItem(_item , _iOrg, _iSub, _isOrg))
+      {
+          if(_isOrg)
+              selectOrg(_iOrg,false);
+          else
+              selectSub(_iOrg,_iSub,false);
+      }
+  }
     }
 
 
@@ -425,31 +425,31 @@ bool BlockSubsScene::findBlockDrawItem(QGraphicsItem*_item ,int & iOrg,int & iSu
 
     while(!found && (_iO < proxOrgBlocks.size()))
     {
-        if((_item == proxOrgBlocks.at(_iO)))
-        {
-            found = true;
-            isOrg = true;
-            iOrg = _iO;
-            return true;
-        }
-        else
-        {
-            _iS=0;
-            while(!found && (_iS < proxSubBlocks.at(_iO).size()))
-            {
-                if((_item == proxSubBlocks.at(_iO).at(_iS)))
-                {
-                    found = true;
-                    isOrg = false;
-                    iOrg = _iO;
-                    iSub = _iS;
-                    return true;
-                }
-                else
-                    _iS++;
-            }
-        }
-        _iO++;
+  if((_item == proxOrgBlocks.at(_iO)))
+  {
+      found = true;
+      isOrg = true;
+      iOrg = _iO;
+      return true;
+  }
+  else
+  {
+      _iS=0;
+      while(!found && (_iS < proxSubBlocks.at(_iO).size()))
+      {
+          if((_item == proxSubBlocks.at(_iO).at(_iS)))
+          {
+              found = true;
+              isOrg = false;
+              iOrg = _iO;
+              iSub = _iS;
+              return true;
+          }
+          else
+              _iS++;
+      }
+  }
+  _iO++;
     }
     return false;
 }
@@ -461,10 +461,10 @@ int BlockSubsScene::findOrgBlock(QString _org)
 
     while((i<orgBlocks.size()) && !found)
     {
-        if(orgBlocks.at(i)->componentName==_org)
-            return i;
-        else
-            i++;
+  if(orgBlocks.at(i)->componentName==_org)
+      return i;
+  else
+      i++;
     }
     return -1;
 }
@@ -474,18 +474,18 @@ bool BlockSubsScene::findSubBlock(QString _org,QString _sub,int & iOrg, int & iS
     iOrg = findOrgBlock(_org);
 
     if(iOrg==-1)
-        return false;
+  return false;
     else
     {
-        iSub = 0;
-        bool found = false;
-        while((iSub < subBlocks.at(iOrg).size()) && !found)
-        {
-            if(subBlocks.at(iOrg).at(iSub)->componentName==_sub)
-                return true;
-            else
-                iSub++;
-        }
+  iSub = 0;
+  bool found = false;
+  while((iSub < subBlocks.at(iOrg).size()) && !found)
+  {
+      if(subBlocks.at(iOrg).at(iSub)->componentName==_sub)
+          return true;
+      else
+          iSub++;
+  }
     }
     return false;
 }
@@ -494,34 +494,34 @@ void BlockSubsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent
 {
     if (mouseEvent->button() == Qt::LeftButton)
     {
-        QPointF _clkPos = mouseEvent->scenePos();
-        QGraphicsItem* _item = itemAt(_clkPos);
+  QPointF _clkPos = mouseEvent->scenePos();
+  QGraphicsItem* _item = itemAt(_clkPos);
 
-        int _iOrg;
-        int _iSub;
-        bool _isOrg;
+  int _iOrg;
+  int _iSub;
+  bool _isOrg;
 
-        bool found = findBlockDrawItem(_item ,_iOrg, _iSub, _isOrg);
+  bool found = findBlockDrawItem(_item ,_iOrg, _iSub, _isOrg);
 
-        if(found && !_isOrg)
-        {
+  if(found && !_isOrg)
+  {
 
-            QString replacedName = orgBlocks.at(_iOrg)->componentName;
-            QString replacingName = subBlocks.at(_iOrg).at(_iSub)->componentName;
+      QString replacedName = orgBlocks.at(_iOrg)->componentName;
+      QString replacingName = subBlocks.at(_iOrg).at(_iSub)->componentName;
 
-            BlockSubstitution* curBlockSub = blockSubs->find(replacedName,replacingName);
+      BlockSubstitution* curBlockSub = blockSubs->find(replacedName,replacingName);
 
-            if(curBlockSub!=NULL)
-            {
-                openConnections(curBlockSub);
-            }
+      if(curBlockSub!=NULL)
+      {
+          openConnections(curBlockSub);
+      }
 
-        }
+  }
 
-        if(!found)
-        {
-            zoomFit();
-        }
+  if(!found)
+  {
+      zoomFit();
+  }
     }
 }
 
@@ -532,47 +532,47 @@ void BlockSubsScene::contextMenuEvent( QGraphicsSceneContextMenuEvent * contextM
 
     if(_item)
     {
-        int _iOrg,_iSub;
-        bool _isOrg;
+  int _iOrg,_iSub;
+  bool _isOrg;
 
-        if(findBlockDrawItem(_item , _iOrg, _iSub, _isOrg))
-        {
+  if(findBlockDrawItem(_item , _iOrg, _iSub, _isOrg))
+  {
 
-            // select item
-            if(_isOrg)
-                selectOrg(_iOrg,true);
-            else
-                selectSub(_iOrg,_iSub,true);
-
-
-            QMenu *menu = new QMenu();
-
-            QStringList data;
-            data << orgBlocks.at(_iOrg)->componentName;
-            if(!_isOrg)
-                data << subBlocks.at(_iOrg).at(_iSub)->componentName;
-
-            if(!_isOrg)
-            {
-                // edit connections
-                QAction *editConn = new QAction("Edit connections...",menu);
-                editConn->setData(data);
-                connect(editConn,SIGNAL(triggered()),this,SLOT(openConnections()));
-                menu->addAction(editConn);
-            }
+      // select item
+      if(_isOrg)
+          selectOrg(_iOrg,true);
+      else
+          selectSub(_iOrg,_iSub,true);
 
 
-            if(isEditable)
-            {
-                // remove block
-                QAction *remove = new QAction("Remove",menu);
-                remove->setData(data);
-                connect(remove,SIGNAL(triggered()),this,SLOT(removeBlock()));
-                menu->addAction(remove);
-            }
-            if(menu->actions().size()>0)
-                menu->exec(contextMenuEvent->screenPos());
-        }
+      QMenu *menu = new QMenu();
+
+      QStringList data;
+      data << orgBlocks.at(_iOrg)->componentName;
+      if(!_isOrg)
+          data << subBlocks.at(_iOrg).at(_iSub)->componentName;
+
+      if(!_isOrg)
+      {
+          // edit connections
+          QAction *editConn = new QAction("Edit connections...",menu);
+          editConn->setData(data);
+          connect(editConn,SIGNAL(triggered()),this,SLOT(openConnections()));
+          menu->addAction(editConn);
+      }
+
+
+      if(isEditable)
+      {
+          // remove block
+          QAction *remove = new QAction("Remove",menu);
+          remove->setData(data);
+          connect(remove,SIGNAL(triggered()),this,SLOT(removeBlock()));
+          menu->addAction(remove);
+      }
+      if(menu->actions().size()>0)
+          menu->exec(contextMenuEvent->screenPos());
+  }
     }
 }
 
@@ -585,12 +585,12 @@ void BlockSubsScene::removeBlock()
     // if isOrg
     if(data.size()==1)
     {
-        blockSubs->removeBlocks(data.at(0));
+  blockSubs->removeBlocks(data.at(0));
     }
     else
     {
-        // it is sub
-        blockSubs->removeBlock(data.at(0),data.at(1));
+  // it is sub
+  blockSubs->removeBlock(data.at(0),data.at(1));
     }
 }
 
@@ -598,9 +598,9 @@ void BlockSubsScene::deselectAll()
 {
     for(int i=0; i <orgBlocks.size(); i++)
     {
-        orgBlocks.at(i)->desactivate();
-        for(int j=0;j<subBlocks.at(i).size();j++)
-            subBlocks.at(i).at(j)->desactivate();
+  orgBlocks.at(i)->desactivate();
+  for(int j=0;j<subBlocks.at(i).size();j++)
+      subBlocks.at(i).at(j)->desactivate();
     }
 
     selectedOrg.clear();
@@ -634,14 +634,14 @@ bool BlockSubsScene::openConnections(BlockSubstitution* blockSub)
 void BlockSubsScene::selectOrg(int i,bool doDeselectAll)
 {
     if(doDeselectAll)
-        deselectAll();
+  deselectAll();
 
     if(i<orgBlocks.size())
     {
-        orgBlocks.at(i)->activate();
+  orgBlocks.at(i)->activate();
 
-        selectedOrg.push_back(orgBlocks.at(i)->componentName);
-        selectedOrgProx.push_back(proxOrgBlocks.at(i));
+  selectedOrg.push_back(orgBlocks.at(i)->componentName);
+  selectedOrgProx.push_back(proxOrgBlocks.at(i));
     }
 }
 
@@ -652,7 +652,7 @@ void BlockSubsScene::selectOrg(QString _org,bool doDeselectAll)
     int i= findOrgBlock(_org);
     if(i>-1)
     {
-        selectOrg(i,doDeselectAll);
+  selectOrg(i,doDeselectAll);
     }
 }
 
@@ -660,10 +660,10 @@ void BlockSubsScene::selectOrg(QString _org,bool doDeselectAll)
 void BlockSubsScene::selectOrgs(QStringList _orgs,bool doDeselectAll)
 {
     if(doDeselectAll)
-        deselectAll();
+  deselectAll();
 
     for(int i=0; i<_orgs.size();i++)
-        selectOrg(_orgs.at(i),false);
+  selectOrg(_orgs.at(i),false);
 }
 
 
@@ -672,16 +672,16 @@ void BlockSubsScene::selectOrgs(QStringList _orgs,bool doDeselectAll)
 void BlockSubsScene::selectSub(int iOrg,int iSub, bool doDeselectAll)
 {
     if(doDeselectAll)
-        deselectAll();
+  deselectAll();
 
     if((iOrg<orgBlocks.size()) && (iSub<subBlocks.at(iOrg).size()))
     {
-        selectOrg(iOrg,false);
+  selectOrg(iOrg,false);
 
-        subBlocks.at(iOrg).at(iSub)->activate();
+  subBlocks.at(iOrg).at(iSub)->activate();
 
-        selectedSub.push_back(subBlocks.at(iOrg).at(iSub)->componentName);
-        selectedSubProx.push_back(proxSubBlocks.at(iOrg).at(iSub));
+  selectedSub.push_back(subBlocks.at(iOrg).at(iSub)->componentName);
+  selectedSubProx.push_back(proxSubBlocks.at(iOrg).at(iSub));
     }
 }
 
@@ -690,25 +690,25 @@ void BlockSubsScene::selectSub(QString _org,QString _sub, bool doDeselectAll)
     int iOrg,iSub;
 
     if(doDeselectAll)
-        deselectAll();
+  deselectAll();
 
     if(findSubBlock(_org,_sub,iOrg,iSub))
     {
-        selectSub(iOrg,iSub,false);
+  selectSub(iOrg,iSub,false);
     }
 
 }
 void BlockSubsScene::selectSubs(QStringList _orgs,QStringList _subs,bool doDeselectAll)
 {
     if(doDeselectAll)
-        deselectAll();
+  deselectAll();
 
     if(_orgs.size()==_subs.size())
     {
-        for(int i=0;i<_orgs.size();i++)
-        {
-            selectSub(_orgs.at(i),_subs.at(i),false);
-        }
+  for(int i=0;i<_orgs.size();i++)
+  {
+      selectSub(_orgs.at(i),_subs.at(i),false);
+  }
     }
 }
 
@@ -732,25 +732,25 @@ void BlockSubsScene::setBlockPos(QGraphicsProxyWidget* _prox, QPointF _newPos)
 
     if(findBlockDrawItem(_prox,iOrg,iSub,isOrg))
     {
-        if(isOrg)
-        {
-            for(int iL=0;iL<lines.at(iOrg).size();iL++)
-            {
-                double x1 = _newPos.x() + _prox->boundingRect().width();
-                double y1 = _newPos.y() +_prox->boundingRect().height()/2;
-                double x2 = lines.at(iOrg).at(iL)->line().x2();
-                double y2 = lines.at(iOrg).at(iL)->line().y2();
-                lines.at(iOrg).at(iL)->setLine(x1,y1,x2,y2);
-            }
-        }
-        else
-        {
-            double x2 = _prox->boundingRect().left();
-            double y2 = (_prox->boundingRect().top()+_prox->boundingRect().bottom())/2;
-            double x1 = lines.at(iOrg).at(iSub)->line().x1();
-            double y1 = lines.at(iOrg).at(iSub)->line().y1();
-            lines.at(iOrg).at(iSub)->setLine(x1,y1,x2,y2);
-        }
+  if(isOrg)
+  {
+      for(int iL=0;iL<lines.at(iOrg).size();iL++)
+      {
+          double x1 = _newPos.x() + _prox->boundingRect().width();
+          double y1 = _newPos.y() +_prox->boundingRect().height()/2;
+          double x2 = lines.at(iOrg).at(iL)->line().x2();
+          double y2 = lines.at(iOrg).at(iL)->line().y2();
+          lines.at(iOrg).at(iL)->setLine(x1,y1,x2,y2);
+      }
+  }
+  else
+  {
+      double x2 = _prox->boundingRect().left();
+      double y2 = (_prox->boundingRect().top()+_prox->boundingRect().bottom())/2;
+      double x1 = lines.at(iOrg).at(iSub)->line().x1();
+      double y1 = lines.at(iOrg).at(iSub)->line().y1();
+      lines.at(iOrg).at(iSub)->setLine(x1,y1,x2,y2);
+  }
     }
 }
 
@@ -759,46 +759,46 @@ void BlockSubsScene::keyReleaseEvent ( QKeyEvent * keyEvent )
 {
     if(keyEvent->key()==Qt::Key_Delete)
     {
-        for(int iS=0;iS<selectedSubProx.size();iS++)
-        {
-            QGraphicsItem* curItem = selectedSubProx.at(iS);
-            int iOrg,iSub;
-            bool isOrg;
-            bool found = findBlockDrawItem(curItem,iOrg,iSub,isOrg);
+  for(int iS=0;iS<selectedSubProx.size();iS++)
+  {
+      QGraphicsItem* curItem = selectedSubProx.at(iS);
+      int iOrg,iSub;
+      bool isOrg;
+      bool found = findBlockDrawItem(curItem,iOrg,iSub,isOrg);
 
-            if(found)
-            {
-                QString orgName = orgBlocks.at(iOrg)->componentName;
+      if(found)
+      {
+          QString orgName = orgBlocks.at(iOrg)->componentName;
 
-                if(isOrg)
-                    blockSubs->removeBlocks(orgName);
-                else
-                {
-                    QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
-                    blockSubs->removeBlock(orgName,subName);
-                }
-            }
-        }
+          if(isOrg)
+              blockSubs->removeBlocks(orgName);
+          else
+          {
+              QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
+              blockSubs->removeBlock(orgName,subName);
+          }
+      }
+  }
 
-        for(int iS=0;iS<selectedOrgProx.size();iS++)
-        {
-            QGraphicsItem* curItem = selectedOrgProx.at(iS);
-            int iOrg,iSub;
-            bool isOrg;
-            bool found = findBlockDrawItem(curItem,iOrg,iSub,isOrg);
+  for(int iS=0;iS<selectedOrgProx.size();iS++)
+  {
+      QGraphicsItem* curItem = selectedOrgProx.at(iS);
+      int iOrg,iSub;
+      bool isOrg;
+      bool found = findBlockDrawItem(curItem,iOrg,iSub,isOrg);
 
-            if(found)
-            {
-                QString orgName = orgBlocks.at(iOrg)->componentName;
+      if(found)
+      {
+          QString orgName = orgBlocks.at(iOrg)->componentName;
 
-                if(isOrg)
-                    blockSubs->removeBlocks(orgName);
-                else
-                {
-                    QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
-                    blockSubs->removeBlock(orgName,subName);
-                }
-            }
-        }
+          if(isOrg)
+              blockSubs->removeBlocks(orgName);
+          else
+          {
+              QString subName = subBlocks.at(iOrg).at(iSub)->componentName;
+              blockSubs->removeBlock(orgName,subName);
+          }
+      }
+  }
     }
 }

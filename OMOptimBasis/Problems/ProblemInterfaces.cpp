@@ -9,23 +9,23 @@ bool ProblemInterfaces::addProblemInterface(ProblemInterface* interface)
     bool oneAdded = false;
     for(int i=0;i<problemNames.size();i++)
     {
-        if(!this->contains(problemNames.at(i)))
-        {
-            insert(problemNames.at(i),interface);
-            //emit modified();
-            oneAdded = true;
-        }
+  if(!this->contains(problemNames.at(i)))
+  {
+      insert(problemNames.at(i),interface);
+      //emit modified();
+      oneAdded = true;
+  }
     }
 
     QStringList resultNames = interface->resultTypes();
     for(int i=0;i<resultNames.size();i++)
     {
-        if(!this->contains(resultNames.at(i)))
-        {
-            insert(resultNames.at(i),interface);
-            //emit modified();
-            oneAdded = true;
-        }
+  if(!this->contains(resultNames.at(i)))
+  {
+      insert(resultNames.at(i),interface);
+      //emit modified();
+      oneAdded = true;
+  }
     }
     return oneAdded;
 }
@@ -37,22 +37,22 @@ bool ProblemInterfaces::addProblemInterfaces(QList<ProblemInterface*> interfaces
 
     for(int i=0;i<interfaces.size();i++)
     {
-        QStringList problemNames = interfaces.at(i)->problemTypes();
+  QStringList problemNames = interfaces.at(i)->problemTypes();
 
-        for(int j=0;j<problemNames.size();j++)
-        {
-            if(this->contains(problemNames.at(j)))
-            {
-                allOk=false;
+  for(int j=0;j<problemNames.size();j++)
+  {
+      if(this->contains(problemNames.at(j)))
+      {
+          allOk=false;
 
-            }
-            else
-            {
-                insert(problemNames.at(j),interfaces.at(i));
-                //emit modified();
-                addedSome=true;
-            }
-        }
+      }
+      else
+      {
+          insert(problemNames.at(j),interfaces.at(i));
+          //emit modified();
+          addedSome=true;
+      }
+  }
 
     }
 
@@ -64,7 +64,7 @@ bool ProblemInterfaces::removeProblemInterface(QString interfaceName)
     int nbRemoved = this->remove(interfaceName);
     if(nbRemoved>0)
     {
-        return true;
+  return true;
     }
 }
 

@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file OptimAlgo.h
+  @file OptimAlgo.h
   @brief Comments for file documentation.
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
@@ -69,9 +69,9 @@ public:
     MOParameters* parameters(){return _parameters;}
 
     /**
-          * \brief Determines if algorithm accepts or not several objectives.
-          * Determines if algorithm accepts or not several objectives. Pure virtual function.
-          */
+    * \brief Determines if algorithm accepts or not several objectives.
+    * Determines if algorithm accepts or not several objectives. Pure virtual function.
+    */
     virtual bool acceptMultiObjectives() = 0;
 
     /**

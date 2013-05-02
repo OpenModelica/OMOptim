@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file NSGA2Parameters.h
-        @brief Comments for file documentation.
-        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-        Company : CEP - ARMINES (France)
-        http://www-cep.ensmp.fr/english/
-        @version
+  @file NSGA2Parameters.h
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 
@@ -50,51 +50,51 @@ class SA1Parameters
 public :
     enum parameters
     {
-        MAXITERATIONS,
-        INITTEMPERATURE,
-        FINALTEMPERATURE,
-        DECREASINGFACTOR,
-        SPAN,
-        SAVEFREQUENCY,
-        USESTARTFILE,
-        STARTFILEPATH
+  MAXITERATIONS,
+  INITTEMPERATURE,
+  FINALTEMPERATURE,
+  DECREASINGFACTOR,
+  SPAN,
+  SAVEFREQUENCY,
+  USESTARTFILE,
+  STARTFILEPATH
     };
 
     static QString str(parameters index)
     {
-        switch(index)
-        {
-        case MAXITERATIONS :return "MaxIterations";
-        case INITTEMPERATURE :return "InitialTemperature";
-        case FINALTEMPERATURE :return "FinalTemperature";
-        case DECREASINGFACTOR : return "DecreasingFactor";
-        case SPAN : return "Span";
-        case SAVEFREQUENCY :return "SaveFrequency";
-        case USESTARTFILE :return "UseStartFile";
-        case STARTFILEPATH :return "StartFilePath";
+  switch(index)
+  {
+  case MAXITERATIONS :return "MaxIterations";
+  case INITTEMPERATURE :return "InitialTemperature";
+  case FINALTEMPERATURE :return "FinalTemperature";
+  case DECREASINGFACTOR : return "DecreasingFactor";
+  case SPAN : return "Span";
+  case SAVEFREQUENCY :return "SaveFrequency";
+  case USESTARTFILE :return "UseStartFile";
+  case STARTFILEPATH :return "StartFilePath";
 
-        }
-        return QString();
+  }
+  return QString();
     }
 
 
     static void setDefaultParameters(MOParameters *parameters)
     {
-        parameters->addItem(new MOParameter(str(MAXITERATIONS),"Max Iterations",10000,MOParameter::INT,1,1000000000));
-        parameters->addItem(new MOParameter(str(INITTEMPERATURE),"Initial Temperature",1,MOParameter::DOUBLE,0.001,10000));
-        parameters->addItem(new MOParameter(str(FINALTEMPERATURE),"Final Temperature",0.01,MOParameter::DOUBLE,0.00001,100));
-        parameters->addItem(new MOParameter(str(DECREASINGFACTOR),"Decreasing Factor",0.9,MOParameter::DOUBLE,0.1,0.99));
-        parameters->addItem(new MOParameter(str(SPAN),"Number of iterations with the same temperature",100,MOParameter::INT,1,10000));
-        parameters->addItem(new MOParameter(str(SAVEFREQUENCY),"Population saving frequency (# generations, 0 = save only final state)",1,MOParameter::INT,0,10000000));
-        parameters->addItem(new MOParameter(str(USESTARTFILE),"Use start file (restart from previous result)",false,MOParameter::BOOL));
-        parameters->addItem(new MOParameter(str(STARTFILEPATH),"Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
+  parameters->addItem(new MOParameter(str(MAXITERATIONS),"Max Iterations",10000,MOParameter::INT,1,1000000000));
+  parameters->addItem(new MOParameter(str(INITTEMPERATURE),"Initial Temperature",1,MOParameter::DOUBLE,0.001,10000));
+  parameters->addItem(new MOParameter(str(FINALTEMPERATURE),"Final Temperature",0.01,MOParameter::DOUBLE,0.00001,100));
+  parameters->addItem(new MOParameter(str(DECREASINGFACTOR),"Decreasing Factor",0.9,MOParameter::DOUBLE,0.1,0.99));
+  parameters->addItem(new MOParameter(str(SPAN),"Number of iterations with the same temperature",100,MOParameter::INT,1,10000));
+  parameters->addItem(new MOParameter(str(SAVEFREQUENCY),"Population saving frequency (# generations, 0 = save only final state)",1,MOParameter::INT,0,10000000));
+  parameters->addItem(new MOParameter(str(USESTARTFILE),"Use start file (restart from previous result)",false,MOParameter::BOOL));
+  parameters->addItem(new MOParameter(str(STARTFILEPATH),"Start file path (only if Use start file is checked)",QString(),MOParameter::FILEPATH));
 
-        // make parameters enabled only when needed
-        QStringList grIndexes;
-        grIndexes << str(USESTARTFILE) << str(STARTFILEPATH);
-        parameters->setGroup("Pursue computation",grIndexes);
-        grIndexes.removeAll(str(USESTARTFILE));
-        parameters->addEnablingIndex(grIndexes,str(USESTARTFILE),true);
+  // make parameters enabled only when needed
+  QStringList grIndexes;
+  grIndexes << str(USESTARTFILE) << str(STARTFILEPATH);
+  parameters->setGroup("Pursue computation",grIndexes);
+  grIndexes.removeAll(str(USESTARTFILE));
+  parameters->addEnablingIndex(grIndexes,str(USESTARTFILE),true);
     }
 };
 

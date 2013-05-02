@@ -48,11 +48,11 @@ class MyTextLog : public QTextBrowser
 {
     Q_OBJECT
 public:
-        MyTextLog(QWidget* parent);
+  MyTextLog(QWidget* parent);
     ~MyTextLog(void);
 
     public slots :
-        virtual void setSource ( const QUrl & name );
+  virtual void setSource ( const QUrl & name );
 
 };
 

@@ -62,21 +62,21 @@ public:
 
     enum BlockType
     {
-        REPLACING,
-        REPLACED
+  REPLACING,
+  REPLACED
     };
 
-        QString componentName;
+  QString componentName;
     int type;
 
     QHBoxLayout  *blockLayout;
-        QLabel *label;
+  QLabel *label;
     QGraphicsLineItem *line;
 
     /*DiagramItem *rectangle;
     QGraphicsTextItem *text;*/
 
-        BlockDrawItem(QString, int);
+  BlockDrawItem(QString, int);
     ~BlockDrawItem(void);
     /*void setPos(QPointF &_pos);
     void setPos(QPoint &_pos);*/

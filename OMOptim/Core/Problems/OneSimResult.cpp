@@ -119,9 +119,9 @@ ModPlusCtrl* OneSimResult::modPlusCtrl()
     OneSimulation* oneSim = dynamic_cast<OneSimulation*>(_problem);
     if(oneSim)
     {
-        return oneSim->ctrl();
+  return oneSim->ctrl();
     }
     else
-        return NULL;
+  return NULL;
 }
 

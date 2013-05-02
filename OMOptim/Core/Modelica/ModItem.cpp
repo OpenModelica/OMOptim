@@ -66,7 +66,7 @@ ModItem* ModItem::clone() const
 
     for(int i=0;i<_children.size();i++)
     {
-        newModItem->addChild(_children.at(i)->clone());
+  newModItem->addChild(_children.at(i)->clone());
     }
     return newModItem;
 }
@@ -81,35 +81,35 @@ QVariant ModItem::getFieldValue(int iField, int role) const
     switch(iField)
     {
     case NAME:
-        return _name;
-        break;
+  return _name;
+  break;
     case FILEPATH:
-        return _file.absoluteFilePath();
-        break;
+  return _file.absoluteFilePath();
+  break;
     default :
-        return QVariant();
-        break;
+  return QVariant();
+  break;
     }
 }
 
 bool ModItem::setFieldValue(int iField, QVariant value)
 {
     try{
-        switch(iField)
-        {
-        case NAME:
-            _name = value.toString();
-            break;
-        case FILEPATH:
-            _file.setFile(value.toString());
-            break;
-        }
-        emit modified();
-        return true;
+  switch(iField)
+  {
+  case NAME:
+      _name = value.toString();
+      break;
+  case FILEPATH:
+      _file.setFile(value.toString());
+      break;
+  }
+  emit modified();
+  return true;
     }
     catch(std::exception )
     {
-        return false;
+  return false;
     }
 }
 
@@ -118,11 +118,11 @@ QString ModItem::sFieldName(int iField, int role)
     switch(iField)
     {
     case NAME:
-        return "Name";
+  return "Name";
     case FILEPATH:
-        return "FilePath";
+  return "FilePath";
     default :
-        return "-";
+  return "-";
     }
 }
 
@@ -141,7 +141,7 @@ QStringList ModItem::getChildrenNames()
     QStringList result;
     for(int i=0;i<this->childCount();i++)
     {
-        result.push_back(this->child(i)->name());
+  result.push_back(this->child(i)->name());
     }
     return result;
 }
@@ -160,8 +160,8 @@ int ModItem::compChildCount()
 {
     int nbComp=0;
     for(int i=0;i<_children.size();i++)
-        if(_children.at(i)->getClassRestr()==Modelica::COMPONENT)
-            nbComp++;
+  if(_children.at(i)->getClassRestr()==Modelica::COMPONENT)
+      nbComp++;
 
     return nbComp;
 }
@@ -170,8 +170,8 @@ int ModItem::modelChildCount()
 {
     int nbModel=0;
     for(int i=0;i<_children.size();i++)
-        if(_children.at(i)->getClassRestr()==Modelica::MODEL)
-            nbModel++;
+  if(_children.at(i)->getClassRestr()==Modelica::MODEL)
+      nbModel++;
 
     return nbModel;
 }
@@ -180,8 +180,8 @@ int ModItem::packageChildCount()
 {
     int nbPackage=0;
     for(int i=0;i<_children.size();i++)
-        if(_children.at(i)->getClassRestr()==Modelica::PACKAGE)
-            nbPackage++;
+  if(_children.at(i)->getClassRestr()==Modelica::PACKAGE)
+      nbPackage++;
 
     return nbPackage;
 }
@@ -190,8 +190,8 @@ int ModItem::recordChildCount()
 {
     int nbRecords=0;
     for(int i=0;i<_children.size();i++)
-        if(_children.at(i)->getClassRestr()==Modelica::RECORD)
-            nbRecords++;
+  if(_children.at(i)->getClassRestr()==Modelica::RECORD)
+      nbRecords++;
 
     return nbRecords;
 }
@@ -199,9 +199,9 @@ int ModItem::recordChildCount()
 ModItem* ModItem::child(int nRow) const
 {
     if((nRow>-1)&&(nRow<_children.count()))
-        return _children.at(nRow);
+  return _children.at(nRow);
     else
-        return NULL;
+  return NULL;
 }
 
 ModItem* ModItem::compChild(int nRow) const
@@ -210,16 +210,16 @@ ModItem* ModItem::compChild(int nRow) const
     int curIndex=0;
     while((curIndex<_children.size())&&(iCurComp<nRow))
     {
-        if(_children.at(curIndex)->getClassRestr()==Modelica::COMPONENT)
-            iCurComp++;
+  if(_children.at(curIndex)->getClassRestr()==Modelica::COMPONENT)
+      iCurComp++;
 
-        curIndex++;
+  curIndex++;
     }
 
     if(iCurComp==nRow)
-        return _children.at(curIndex-1);
+  return _children.at(curIndex-1);
     else
-        return NULL;
+  return NULL;
 }
 
 ModItem* ModItem::packageChild(int nRow) const
@@ -228,16 +228,16 @@ ModItem* ModItem::packageChild(int nRow) const
     int curIndex=0;
     while((curIndex<_children.size())&&(iCurPackage<nRow))
     {
-        if(_children.at(curIndex)->getClassRestr()==Modelica::PACKAGE)
-            iCurPackage++;
+  if(_children.at(curIndex)->getClassRestr()==Modelica::PACKAGE)
+      iCurPackage++;
 
-        curIndex++;
+  curIndex++;
     }
 
     if(iCurPackage==nRow)
-        return _children.at(curIndex-1);
+  return _children.at(curIndex-1);
     else
-        return NULL;
+  return NULL;
 }
 
 ModItem* ModItem::recordChild(int nRow) const
@@ -246,16 +246,16 @@ ModItem* ModItem::recordChild(int nRow) const
     int curIndex=0;
     while((curIndex<_children.size())&&(iCurRecord<nRow))
     {
-        if(_children.at(curIndex)->getClassRestr()==Modelica::PACKAGE)
-            iCurRecord++;
+  if(_children.at(curIndex)->getClassRestr()==Modelica::PACKAGE)
+      iCurRecord++;
 
-        curIndex++;
+  curIndex++;
     }
 
     if(iCurRecord==nRow)
-        return _children.at(curIndex-1);
+  return _children.at(curIndex-1);
     else
-        return NULL;
+  return NULL;
 }
 
 
@@ -265,22 +265,22 @@ ModItem* ModItem::modelChild(int nRow) const
     int curIndex=0;
     while((curIndex<_children.size())&&(iCurModel<nRow))
     {
-        if(_children.at(curIndex)->getClassRestr()==Modelica::MODEL)
-            iCurModel++;
+  if(_children.at(curIndex)->getClassRestr()==Modelica::MODEL)
+      iCurModel++;
 
-        curIndex++;
+  curIndex++;
     }
 
     if(iCurModel==nRow)
-        return _children.at(curIndex-1);
+  return _children.at(curIndex-1);
     else
-        return NULL;
+  return NULL;
 }
 
 int ModItem::indexInParent()
 {
     if(parent()==NULL)
-        return -1;
+  return -1;
 
 
     //looking for row number of child in parent
@@ -290,27 +290,27 @@ int ModItem::indexInParent()
 
     while(!found && iC<nbBrothers)
     {
-        found = (parentItem()->child(iC)==this);
-        if(!found)
-            iC++;
+  found = (parentItem()->child(iC)==this);
+  if(!found)
+      iC++;
     }
     if(!found)
-        return -1;
+  return -1;
     else
-        return iC;
+  return iC;
 }
 
 bool ModItem::containsItemOfClass(QString className) const
 {
     if(this->getClassName()==className)
-        return true;
+  return true;
 
     bool found = false;
     int i=0;
     while(!found && i<childCount())
     {
-        found = child(i)->containsItemOfClass(className);
-        i++;
+  found = child(i)->containsItemOfClass(className);
+  i++;
     }
     return found;
 }
@@ -322,13 +322,13 @@ QString ModItem::filePath()
     QFileInfo file = _file;
     while(file.fileName().isEmpty()&&(parent!=NULL))
     {
-        file = parent->_file;
-        parent = parent->parentItem();
+  file = parent->_file;
+  parent = parent->parentItem();
     }
 
     if(file.fileName().isEmpty() && _moomc)
     {
-        file = _moomc->getFileOfClass(name());
+  file = _moomc->getFileOfClass(name());
     }
     return file.absoluteFilePath();
 }
@@ -336,29 +336,29 @@ QString ModItem::filePath()
 QString ModItem::name(ModItem::NameFormat type)
 {
     if(type == ModItem::SHORT)
-        return _name.section(".",-1,-1);
+  return _name.section(".",-1,-1);
     else
     {
-        QString fullName = _name;
-        //                ModItem *curParent = parent();
+  QString fullName = _name;
+  //                ModItem *curParent = parent();
 
-        //        while((curParent!=NULL)&&(curParent->name(Modelica::SHORT)!=""))
-        //        {
-        //            fullName.insert(0,curParent->name(Modelica::SHORT)+".");
-        //                        curParent = curParent->parent();
-        //        }
+  //        while((curParent!=NULL)&&(curParent->name(Modelica::SHORT)!=""))
+  //        {
+  //            fullName.insert(0,curParent->name(Modelica::SHORT)+".");
+  //                        curParent = curParent->parent();
+  //        }
 
-        QString middleName;
-        switch(type)
-        {
-        case ModItem::WITHOUTROOT:
-            middleName = fullName.section(".",1,fullName.count(".")+1);
-            return middleName;
-        case ModItem::FULL:
-            return fullName;
-        default:
-            return _name;
-        }
+  QString middleName;
+  switch(type)
+  {
+  case ModItem::WITHOUTROOT:
+      middleName = fullName.section(".",1,fullName.count(".")+1);
+      return middleName;
+  case ModItem::FULL:
+      return fullName;
+  default:
+      return _name;
+  }
     }
 }
 
@@ -378,9 +378,9 @@ int ModItem::depth()
     ModItem *curParent = parentItem();
 
     if(curParent==NULL)
-        return  0;
+  return  0;
     else
-        return curParent->depth()+1;
+  return curParent->depth()+1;
 }
 
 QList<ModItem *> ModItem::children() const
@@ -406,8 +406,8 @@ void ModItem::clearDescendants()
 {
     while(_children.size()>0)
     {
-        delete _children.at(0);
-        _children.removeAt(0);
+  delete _children.at(0);
+  _children.removeAt(0);
     }
     _childrenReaden = false;
     emit modified();
@@ -418,14 +418,14 @@ bool ModItem::addChild(ModItem *child)
     bool ok=false;
     if(child)
     {
-        child->setParentItem(this);
-        _children.push_back(child);
-        ok = true;
-        emit addedChild(child);
-        connect(child,SIGNAL(modified()),this,SIGNAL(modified()));
+  child->setParentItem(this);
+  _children.push_back(child);
+  ok = true;
+  emit addedChild(child);
+  connect(child,SIGNAL(modified()),this,SIGNAL(modified()));
     }
     if(ok)
-        emit modified();
+  emit modified();
 
     return ok;
 }
@@ -435,8 +435,8 @@ void ModItem::setParentItem(ModItem *parent)
 {
     if(_parent != parent)
     {
-        _parent = parent;
-        emit modified();
+  _parent = parent;
+  emit modified();
     }
 }
 

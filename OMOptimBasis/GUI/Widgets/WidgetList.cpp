@@ -46,8 +46,8 @@ WidgetList::WidgetList(QWidget *_parent):QListWidget(_parent)
 {
     ignoreChange = false;
     connect(this,SIGNAL(itemSelectionChanged()),this,
-        SLOT(onIntSelectionChanged()));
-        this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
+  SLOT(onIntSelectionChanged()));
+  this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
 }
 
 
@@ -55,36 +55,36 @@ bool WidgetList::setSelectedIndexes(QList<int> _newIndexes)
 {
     if(!ignoreChange)
     {
-            QModelIndex curIndex;
-            QListWidgetItem tmpItem;
-            QList<QListWidgetItem*> tmpItems;
-            QItemSelectionModel * model = selectionModel();
+      QModelIndex curIndex;
+      QListWidgetItem tmpItem;
+      QList<QListWidgetItem*> tmpItems;
+      QItemSelectionModel * model = selectionModel();
 
-            // clear the selection
-            ignoreChange = true;
-            model->clearSelection();    // or QItemSelectionModel::clear()
-        
-            for(int i=0;i<_newIndexes.size();i++)
-            {
-                tmpItems = findItems(QString::number(_newIndexes.at(i)),Qt::MatchExactly);
-                if(tmpItems.size()>0)
-                {
-                    curIndex = indexFromItem(tmpItems.at(0));
-                    model->select(curIndex, QItemSelectionModel::SelectCurrent);    
-                }
-                else
-                {
-                                    QString msg;
-                                    msg.sprintf("WidgetList : unable to find item %d in list",_newIndexes.at(i));
-                                    InfoSender::instance()->debug(msg);
-                }
-            }
-            ignoreChange=false;
+      // clear the selection
+      ignoreChange = true;
+      model->clearSelection();    // or QItemSelectionModel::clear()
+  
+      for(int i=0;i<_newIndexes.size();i++)
+      {
+          tmpItems = findItems(QString::number(_newIndexes.at(i)),Qt::MatchExactly);
+          if(tmpItems.size()>0)
+          {
+              curIndex = indexFromItem(tmpItems.at(0));
+              model->select(curIndex, QItemSelectionModel::SelectCurrent);    
+          }
+          else
+          {
+                              QString msg;
+                              msg.sprintf("WidgetList : unable to find item %d in list",_newIndexes.at(i));
+                              InfoSender::instance()->debug(msg);
+          }
+      }
+      ignoreChange=false;
 
-            return true;
+      return true;
     }
     else
-        return false;
+  return false;
 }
 
 
@@ -93,7 +93,7 @@ QList<int> WidgetList::getSelectedIndexes()
     QList<QListWidgetItem*> itemList = selectedItems();
     QList<int> indexes;
     for(int i=0;i<itemList.size();i++)
-        indexes.push_back(itemList.at(i)->text().toInt());
+  indexes.push_back(itemList.at(i)->text().toInt());
 
     return indexes;
 }
@@ -109,7 +109,7 @@ void WidgetList::onIntSelectionChanged()
 {
     if(!ignoreChange) {
     QList<int> indexes = getSelectedIndexes(); // You may not use this directly as temporaries cannot be used as reference...
-        emit selectionChanged(indexes);
+  emit selectionChanged(indexes);
   }
 }
 

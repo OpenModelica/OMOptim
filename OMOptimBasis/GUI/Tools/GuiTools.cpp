@@ -55,38 +55,38 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
     QTableView* tableView = dynamic_cast<QTableView*>(view);
     if(tableView && model)
     {
-        tableView->horizontalHeader()->setStretchLastSection(true);
-        tableView->resizeColumnsToContents();
-        tableView->resizeRowsToContents();
+  tableView->horizontalHeader()->setStretchLastSection(true);
+  tableView->resizeColumnsToContents();
+  tableView->resizeRowsToContents();
 
-        //        // set maximum height
-        //        int count = model->rowCount(QModelIndex());
-        //        int h=0;
-        //        for (int i = 0; i < count; i++)
-        //            h += tableView->rowHeight(i);
-        //        int maxH =
-        //                (h +                                                      // total row height
-        //                 count +                                                  // to account for the pixel(s) used in the grid
-        //                 tableView->horizontalHeader()->height() +
-        //                 tableView->horizontalScrollBar()->height());   // Need room for the horizontal scrollbar
+  //        // set maximum height
+  //        int count = model->rowCount(QModelIndex());
+  //        int h=0;
+  //        for (int i = 0; i < count; i++)
+  //            h += tableView->rowHeight(i);
+  //        int maxH =
+  //                (h +                                                      // total row height
+  //                 count +                                                  // to account for the pixel(s) used in the grid
+  //                 tableView->horizontalHeader()->height() +
+  //                 tableView->horizontalScrollBar()->height());   // Need room for the horizontal scrollbar
 
-        //        tableView->setMaximumHeight(maxH);
-        //        tableView->resize(tableView->width(),maxH);
+  //        tableView->setMaximumHeight(maxH);
+  //        tableView->resize(tableView->width(),maxH);
 
     }
 
     QTreeView* treeView = dynamic_cast<QTreeView*>(view);
     if(treeView && model)
     {
-        for(int i=0;i<model->columnCount();i++)
-            treeView->resizeColumnToContents(i);
-        treeView->setSortingEnabled(true);
+  for(int i=0;i<model->columnCount();i++)
+      treeView->resizeColumnToContents(i);
+  treeView->setSortingEnabled(true);
     }
 
     MyTreeView* myTreeView = dynamic_cast<MyTreeView*>(view);
     if(myTreeView && model)
     {
-        connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),myTreeView,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
+  connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),myTreeView,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
     }
 }
 
@@ -104,7 +104,7 @@ QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *mode
 {
     view->reset();
     if(!proxyModel)
-        proxyModel = new QSortFilterProxyModel((QObject*)lineEdit);
+  proxyModel = new QSortFilterProxyModel((QObject*)lineEdit);
 
     proxyModel->setSourceModel(model);
     view->setModel(proxyModel);
@@ -112,19 +112,19 @@ QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *mode
     QTableView* tableView = dynamic_cast<QTableView*>(view);
     if(tableView)
     {
-        tableView->horizontalHeader()->setStretchLastSection(true);
-        tableView->resizeColumnsToContents();
-        tableView->resizeRowsToContents();
-        tableView->setSortingEnabled(true);
-        tableView->verticalHeader()->hide();
+  tableView->horizontalHeader()->setStretchLastSection(true);
+  tableView->resizeColumnsToContents();
+  tableView->resizeRowsToContents();
+  tableView->setSortingEnabled(true);
+  tableView->verticalHeader()->hide();
     }
 
     QTreeView* treeView = dynamic_cast<QTreeView*>(view);
     if(treeView)
     {
-        for(int i=0;i<model->columnCount();i++)
-            treeView->resizeColumnToContents(i);
-        treeView->setSortingEnabled(true);
+  for(int i=0;i<model->columnCount();i++)
+      treeView->resizeColumnToContents(i);
+  treeView->setSortingEnabled(true);
     }
 
 
@@ -132,7 +132,7 @@ QSortFilterProxyModel * GuiTools::ModelToViewWithFilter(QAbstractItemModel *mode
     proxyModel->setFilterKeyColumn(0);
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     connect(lineEdit,SIGNAL(textChanged(const QString&)),
-            proxyModel,SLOT(setFilterWildcard(const QString&)),Qt::AutoConnection);
+      proxyModel,SLOT(setFilterWildcard(const QString&)),Qt::AutoConnection);
 
     return proxyModel;
 }
@@ -217,24 +217,24 @@ void GuiTools::minimizeTableSize(QTableView* _table)
 
     int w=0;
     for (int i = 0; i < colCount; i++)
-        w += _table->columnWidth(i);
+  w += _table->columnWidth(i);
 
     int maxW =
-            (w +                                                      // total column width
-             colCount +                                                  // to account for the pixel(s) used in the grid
-             _table->verticalHeader()->width() +
-             _table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
+      (w +                                                      // total column width
+       colCount +                                                  // to account for the pixel(s) used in the grid
+       _table->verticalHeader()->width() +
+       _table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
 
 
     int h=0;
     for (int i = 0; i < rowCount; i++)
-        h += _table->rowHeight(i);
+  h += _table->rowHeight(i);
 
     int maxH =
-            (h +                                                      // total column width
-             rowCount +                                                  // to account for the pixel(s) used in the grid
-             _table->horizontalHeader()->height() +
-             _table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
+      (h +                                                      // total column width
+       rowCount +                                                  // to account for the pixel(s) used in the grid
+       _table->horizontalHeader()->height() +
+       _table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
 
     _table->resize(maxW+2,maxH+40);
 }
@@ -250,24 +250,24 @@ void GuiTools::minimizeTableSize(QTableWidget* _table)
 
     int w=0;
     for (int i = 0; i < colCount; i++)
-        w += _table->columnWidth(i);
+  w += _table->columnWidth(i);
 
     int maxW =
-            (w +                                                      // total column width
-             colCount +                                                  // to account for the pixel(s) used in the grid
-             _table->verticalHeader()->width() +
-             _table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
+      (w +                                                      // total column width
+       colCount +                                                  // to account for the pixel(s) used in the grid
+       _table->verticalHeader()->width() +
+       _table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
 
 
     int h=0;
     for (int i = 0; i < rowCount; i++)
-        h += _table->rowHeight(i);
+  h += _table->rowHeight(i);
 
     int maxH =
-            (h +                                                      // total column width
-             rowCount +                                                  // to account for the pixel(s) used in the grid
-             _table->horizontalHeader()->height() +
-             _table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
+      (h +                                                      // total column width
+       rowCount +                                                  // to account for the pixel(s) used in the grid
+       _table->horizontalHeader()->height() +
+       _table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
 
     _table->resize(maxW+2,maxH+40);
 }
@@ -278,25 +278,25 @@ void GuiTools::resizeTable(QTableView* table)
     int count = table->model()->columnCount(QModelIndex());
     int w=0;
     for (int i = 0; i < count; i++)
-        w += table->columnWidth(i);
+  w += table->columnWidth(i);
 
     int maxW =
-            (w +                                                      // total column width
-             count +                                                  // to account for the pixel(s) used in the grid
-             table->verticalHeader()->width() +
-             table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
+      (w +                                                      // total column width
+       count +                                                  // to account for the pixel(s) used in the grid
+       table->verticalHeader()->width() +
+       table->verticalScrollBar()->width());   // Need room for the vertical scrollbar
 
 
     count = table->model()->rowCount(QModelIndex());
     int h=0;
     for (int i = 0; i < count; i++)
-        h += table->rowHeight(i);
+  h += table->rowHeight(i);
 
     int maxH =
-            (h +                                                      // total column width
-             count +                                                  // to account for the pixel(s) used in the grid
-             table->horizontalHeader()->height() +
-             table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
+      (h +                                                      // total column width
+       count +                                                  // to account for the pixel(s) used in the grid
+       table->horizontalHeader()->height() +
+       table->horizontalScrollBar()->height());   // Need room for the vertical scrollbar
 
     table->resize(maxW+2,maxH+40);
 }
@@ -313,25 +313,25 @@ void GuiTools::resizeTreeViewColumns(MyTreeView* treeView)
     //    int curColSize;
     //    for (int i = 0; i < count; i++)
     //    {
-    //        curColSize = treeView->getColHintSize(i);
-    //        colsSize.push_back(curColSize);
-    //        allColsSize += curColSize;
+    //  curColSize = treeView->getColHintSize(i);
+    //  colsSize.push_back(curColSize);
+    //  allColsSize += curColSize;
     //    }
 
     //    int contentWidth = treeView->contentsRect().width();
     //    double fact = 1;
     //    if(allColsSize<contentWidth)
-    //        fact = (double)contentWidth/(double)allColsSize;
+    //  fact = (double)contentWidth/(double)allColsSize;
 
     //    for (int i = 0; i < count; i++)
     //    {
-    //        treeView->setColumnWidth(i,colsSize.at(i)*fact);
+    //  treeView->setColumnWidth(i,colsSize.at(i)*fact);
     //    }
 
     int count = treeView->model()->columnCount();
     for (int i = 0; i < count; i++)
     {
-        treeView->resizeColumnToContents(i);
+  treeView->resizeColumnToContents(i);
     }
 
 }
@@ -345,21 +345,21 @@ void GuiTools::resizeTableViewColumns(QTableView* tableView)
     int colsWidth=0;
     for (int i = 0; i < nbCols; i++)
     {
-        tableView->resizeColumnToContents(i);
-        colsWidth += tableView->columnWidth(i);
+  tableView->resizeColumnToContents(i);
+  colsWidth += tableView->columnWidth(i);
     }
 
     int contentWidth = tableView->verticalHeader()->width();
 
     if(colsWidth<contentWidth)
     {
-        double fact = (double)contentWidth/(double)colsWidth;
-        int curColWidth;
-        for (int i = 0; i < nbCols; i++)
-        {
-            curColWidth = tableView->columnWidth(i);
-            tableView->setColumnWidth(i,curColWidth*fact);
-        }
+  double fact = (double)contentWidth/(double)colsWidth;
+  int curColWidth;
+  for (int i = 0; i < nbCols; i++)
+  {
+      curColWidth = tableView->columnWidth(i);
+      tableView->setColumnWidth(i,curColWidth*fact);
+  }
     }
 }
 
@@ -385,8 +385,8 @@ QModelIndex &sourceParent) const
 
     if(variable)
     {
-        if(!_causalities.contains(variable->causality()))
-            return false;
+  if(!_causalities.contains(variable->causality()))
+      return false;
     }
 
     return QSortFilterProxyModel::filterAcceptsRow(sourceRow,sourceParent);

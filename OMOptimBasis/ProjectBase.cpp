@@ -88,7 +88,7 @@ ProjectBase::~ProjectBase()
 
     for(int i=0;i<_problemsInterfaces.uniqueInterfaces().size();i++)
     {
-        delete _problemsInterfaces.uniqueInterfaces().at(i);
+  delete _problemsInterfaces.uniqueInterfaces().at(i);
     }
     _problemsInterfaces.clear();
 
@@ -168,7 +168,7 @@ bool ProjectBase::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
     tryLoad = (forceLoad || !_pluginsLoaded.values().contains(pluginPath));
 
     if(!tryLoad)
-        return false;
+  return false;
 
     // unload if needed
     QFileInfo pluginFile(pluginPath);
@@ -176,11 +176,11 @@ bool ProjectBase::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
     QString destPluginPath = appDir.absoluteFilePath(pluginFile.fileName());
 
     if(forceLoad && _pluginsLoaded.values().contains(pluginPath))
-        unloadPlugin(destPluginPath);
+  unloadPlugin(destPluginPath);
 
     // copy plugin in application folder since it requires libraries
     if(pluginPath!=destPluginPath)
-        appDir.remove(pluginFile.fileName());
+  appDir.remove(pluginFile.fileName());
     QFile::copy(pluginPath,destPluginPath);
 
 
@@ -191,17 +191,17 @@ bool ProjectBase::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
 
     if(pbInter)
     {
-        InfoSender::instance()->sendNormal("Loaded plugin successfully : "+pbInter->name());
-        this->addProblemInterface(pbInter);
+  InfoSender::instance()->sendNormal("Loaded plugin successfully : "+pbInter->name());
+  this->addProblemInterface(pbInter);
 
-        // added corresponding settings
-        MOParameters* pluginParams = pbInter->parameters();
-        MOSettings::addParameters(pluginParams,pbInter->name());
+  // added corresponding settings
+  MOParameters* pluginParams = pbInter->parameters();
+  MOSettings::addParameters(pluginParams,pbInter->name());
     }
     else
     {
-        InfoSender::instance()->sendError("Loaded plugin failed : "+pluginPath
-                                          +"\n("+loader.errorString()+")");
+  InfoSender::instance()->sendError("Loaded plugin failed : "+pluginPath
+                                    +"\n("+loader.errorString()+")");
     }
 
     bool loadOk = (pbInter!=NULL);
@@ -209,8 +209,8 @@ bool ProjectBase::loadPlugin(QString pluginPath, bool storePath, bool forceLoad)
     // add to stored list
     if(loadOk && storePath)
     {
-        _pluginsLoaded.insert(pbInter->name(),pluginPath);
-        emit projectChanged();
+  _pluginsLoaded.insert(pbInter->name(),pluginPath);
+  emit projectChanged();
     }
 
     return loadOk;
@@ -232,11 +232,11 @@ bool ProjectBase::unloadPlugin(QString pluginPath)
     QPluginLoader loader(loadedFile);
     if(loader.unload())
     {
-        emit projectChanged();
-        return true;
+  emit projectChanged();
+  return true;
     }
     else
-        return false;
+  return false;
 }
 
 /**
@@ -247,7 +247,7 @@ bool ProjectBase::unloadPlugins()
     QStringList pluginsPaths(_pluginsLoaded.values());
     bool ok = true;
     for(int i=0;i<pluginsPaths.size();i++)
-        ok = unloadPlugin(pluginsPaths.at(i)) && ok;
+  ok = unloadPlugin(pluginsPaths.at(i)) && ok;
 
     emit projectChanged();
 
@@ -261,14 +261,14 @@ void ProjectBase::terminateProblemsThreads()
 
     for(int i=0;i<allLaunchedThreads.size();i++)
     {
-        QString msg ="Stopping thread "+allLaunchedThreads.at(i)->_name;
-        InfoSender::instance()->sendCurrentTask(msg);
-        //allLaunchedThreads.at(i)->terminate();
-        //allLaunchedThreads.at(i)->exit(-1);
-        allLaunchedThreads.at(i)->stop();
-        allLaunchedThreads.at(i)->wait();
-        qDebug("finished Thread");
-        InfoSender::instance()->eraseCurrentTask();
+  QString msg ="Stopping thread "+allLaunchedThreads.at(i)->_name;
+  InfoSender::instance()->sendCurrentTask(msg);
+  //allLaunchedThreads.at(i)->terminate();
+  //allLaunchedThreads.at(i)->exit(-1);
+  allLaunchedThreads.at(i)->stop();
+  allLaunchedThreads.at(i)->wait();
+  qDebug("finished Thread");
+  InfoSender::instance()->eraseCurrentTask();
     }
 }
 
@@ -321,18 +321,18 @@ bool ProjectBase::load(QString loadPath)
     bool loaded = false;
 
     if(configOk)
-        loaded = Load::loadProject(loadPath,this);
+  loaded = Load::loadProject(loadPath,this);
 
     if (loaded)
     {
-        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
-        emit projectChanged();
+  emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
+  emit projectChanged();
     }
     else
     {
-        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
-        clear();
-        emit projectChanged();
+  emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
+  clear();
+  emit projectChanged();
     }
     setSaved(true);
     emit projectChanged();
@@ -378,8 +378,8 @@ void ProjectBase::removeProblemInterface(QString interfaceName)
 {
     if(_problemsInterfaces.removeProblemInterface(interfaceName))
     {
-        emit interfacesModified();
-        emit projectChanged();
+  emit interfacesModified();
+  emit projectChanged();
     }
 }
 
@@ -388,13 +388,13 @@ void ProjectBase::addNewProblem(ProblemInterface* interface, QStringList modelsL
     Problem* newProblem = interface->createNewProblem(this,modelsList,problemType);
     if(newProblem)
     {
-        HighTools::checkUniqueProblemName(this,newProblem,_problems);
+  HighTools::checkUniqueProblemName(this,newProblem,_problems);
 
-        _problems->addCase(newProblem);
+  _problems->addCase(newProblem);
 
-        save(newProblem);
+  save(newProblem);
 
-        emit addedProblem(newProblem);
+  emit addedProblem(newProblem);
     }
 }
 
@@ -403,25 +403,25 @@ bool ProjectBase::addOMCase(QString filePath)
     // do not reload if already loaded
     if(!casesFiles().contains(QFileInfo(filePath)))
     {
-        OMCase* newCase = Load::newOMCase(filePath,this);
-        if(!newCase)
-            return false;
+  OMCase* newCase = Load::newOMCase(filePath,this);
+  if(!newCase)
+      return false;
 
-        Problem* problem = dynamic_cast<Problem*>(newCase);
-        if(problem)
-            addProblem(problem);
-        else
-        {
-            Result* result = dynamic_cast<Result*>(newCase);
-            if(result)
-                addResult(result);
-        }
-        return true;
+  Problem* problem = dynamic_cast<Problem*>(newCase);
+  if(problem)
+      addProblem(problem);
+  else
+  {
+      Result* result = dynamic_cast<Result*>(newCase);
+      if(result)
+          addResult(result);
+  }
+  return true;
     }
     else
     {
-        InfoSender::instance()->sendWarning(QString("OMCase already loaded. Won't be loaded a second time. [")+filePath+QString("]"));
-        return false;
+  InfoSender::instance()->sendWarning(QString("OMCase already loaded. Won't be loaded a second time. [")+filePath+QString("]"));
+  return false;
     }
 }
 
@@ -433,7 +433,7 @@ void ProjectBase::addOMCases(QDir folder)
     QFileInfoList omCasesFiles = LowTools::findFiles(folder,caseExtension);
 
     for(int i=0;i<omCasesFiles.size();i++)
-        addOMCase(omCasesFiles.at(i).absoluteFilePath());
+  addOMCase(omCasesFiles.at(i).absoluteFilePath());
 
 }
 
@@ -477,37 +477,37 @@ void ProjectBase::launchProblem(Problem* problem, bool useSeparateThread)
 {
     if(!_problemLaunchMutex.tryLock())
     {
-        QString msg = "Another problem is already running. Could not launch a new one.";
-        InfoSender::instance()->send(Info(msg));
+  QString msg = "Another problem is already running. Could not launch a new one.";
+  InfoSender::instance()->send(Info(msg));
     }
     else
     {
-        //Copy launched problem from selected one
-        Problem* launchedProblem;
-        launchedProblem = problem->clone();
+  //Copy launched problem from selected one
+  Problem* launchedProblem;
+  launchedProblem = problem->clone();
 
-        // Create temporary directory where calculations are performed
-        createTempDir();
+  // Create temporary directory where calculations are performed
+  createTempDir();
 
-        //Create problem thread
-        ProblemConfig config;
-        MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
+  //Create problem thread
+  ProblemConfig config;
+  MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
 
-        // connect signals
-        connect(launchThread,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
-        connect(launchThread,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
-        connect(launchThread,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
-        connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
-        connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SIGNAL(problemFinished(Problem*,Result*)));
+  // connect signals
+  connect(launchThread,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
+  connect(launchThread,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
+  connect(launchThread,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
+  connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
+  connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SIGNAL(problemFinished(Problem*,Result*)));
 
-        // store thread-problem
-        _problemsThreads.insert(launchedProblem,launchThread);
+  // store thread-problem
+  _problemsThreads.insert(launchedProblem,launchThread);
 
-        // start problem
-        if(useSeparateThread)
-            launchThread->start();
-        else
-            launchThread->run();
+  // start problem
+  if(useSeparateThread)
+      launchThread->start();
+  else
+      launchThread->run();
     }
 }
 
@@ -515,7 +515,7 @@ void ProjectBase::launchProblem(QString problemName, bool useSeparateThread )
 {
     Problem* problem = dynamic_cast<Problem*>(_problems->findItem(problemName));
     if(problem)
-        launchProblem(problem,useSeparateThread);
+  launchProblem(problem,useSeparateThread);
 
     return;
 }
@@ -524,56 +524,56 @@ void ProjectBase::launchProblems(QList<Problem*> problems, bool useSeparateThrea
 {
     if(!_problemLaunchMutex.tryLock())
     {
-        QString msg = "Another problem is already running. Could not launch a new one.";
-        InfoSender::instance()->send(Info(msg));
+  QString msg = "Another problem is already running. Could not launch a new one.";
+  InfoSender::instance()->send(Info(msg));
     }
     else
     {
 
-        // Create temporary directory where calculations are performed
-        createTempDir();
+  // Create temporary directory where calculations are performed
+  createTempDir();
 
-        QList<MOThreads::ProblemThread*> threads;
+  QList<MOThreads::ProblemThread*> threads;
 
-        for(int i=0;i<problems.size();i++)
-        {
-            //Copy launched problem from selected one
-            Problem* launchedProblem;
-            launchedProblem = problems.at(i)->clone();
-
-
-            //Create problem thread
-            ProblemConfig config;
-            MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
-
-            // connect signals
-            connect(launchThread,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
-            connect(launchThread,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
-            connect(launchThread,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
-            connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
-            connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SIGNAL(problemFinished(Problem*,Result*)));
-
-            // store thread-problem
-            _problemsThreads.insert(launchedProblem,launchThread);
-
-            threads.push_back(launchThread);
-        }
-
-        for(int i=0;i<threads.size()-1;i++)
-        {
-            connect(threads.at(i),SIGNAL(finished()),threads.at(i+1),SLOT(start()));
-        }
+  for(int i=0;i<problems.size();i++)
+  {
+      //Copy launched problem from selected one
+      Problem* launchedProblem;
+      launchedProblem = problems.at(i)->clone();
 
 
-        // start first thread
-        if(threads.size()>0)
-        {   if(useSeparateThread)
-                threads.at(0)->start();
-            else
-                threads.at(0)->run();
-        }
-        else
-            _problemLaunchMutex.unlock();
+      //Create problem thread
+      ProblemConfig config;
+      MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
+
+      // connect signals
+      connect(launchThread,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
+      connect(launchThread,SIGNAL(newProgress(float)),this,SIGNAL(newProblemProgress(float)));
+      connect(launchThread,SIGNAL(newProgress(float,int,int)),this,SIGNAL(newProblemProgress(float,int,int)));
+      connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SLOT(onProblemFinished(Problem*,Result*)));
+      connect(launchThread,SIGNAL(finished(Problem*,Result*)),this,SIGNAL(problemFinished(Problem*,Result*)));
+
+      // store thread-problem
+      _problemsThreads.insert(launchedProblem,launchThread);
+
+      threads.push_back(launchThread);
+  }
+
+  for(int i=0;i<threads.size()-1;i++)
+  {
+      connect(threads.at(i),SIGNAL(finished()),threads.at(i+1),SLOT(start()));
+  }
+
+
+  // start first thread
+  if(threads.size()>0)
+  {   if(useSeparateThread)
+          threads.at(0)->start();
+      else
+          threads.at(0)->run();
+  }
+  else
+      _problemLaunchMutex.unlock();
     }
 }
 
@@ -594,28 +594,28 @@ void ProjectBase::onProblemFinished(Problem* problem,Result* result)
 {
     if(result)
     {
-        //Results
-        if(!result->isSuccess())
-        {
-            QString msg = "Problem "+ problem->getClassName()+ " has failed";
-            InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
-            delete result;
-        }
-        else
-        {
-            QString msg = "Problem "+ problem->getClassName()+ " succeeded";
-            InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
+  //Results
+  if(!result->isSuccess())
+  {
+      QString msg = "Problem "+ problem->getClassName()+ " has failed";
+      InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
+      delete result;
+  }
+  else
+  {
+      QString msg = "Problem "+ problem->getClassName()+ " succeeded";
+      InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
 
-            if(result->name().isEmpty())
-                result->setName(result->problem()->name()+" result");
+      if(result->name().isEmpty())
+          result->setName(result->problem()->name()+" result");
 
-            HighTools::checkUniqueResultName(this,result,_results);
+      HighTools::checkUniqueResultName(this,result,_results);
 
-            result->store(QString(resultsFolder()+QDir::separator()+result->name()),tempPath());
-           // result->setParent(this);
-            addResult(result);
-            save(result);
-        }
+      result->store(QString(resultsFolder()+QDir::separator()+result->name()),tempPath());
+     // result->setParent(this);
+      addResult(result);
+      save(result);
+  }
     }
     _problemLaunchMutex.unlock();
     _problemsThreads.remove(problem);
@@ -646,25 +646,25 @@ void ProjectBase::removeResult(OMCase* result,bool saveProject )
     if(num>-1)
     {
 
-        // result to be removed
-        emit beforeRemoveResult(dynamic_cast<Result*>(result));
+  // result to be removed
+  emit beforeRemoveResult(dynamic_cast<Result*>(result));
 
-        // remove folder and data
-        QDir folder(result->saveFolder());
-        if(folder!=QDir(resultsFolder()))
-            LowTools::removeDir(folder.absolutePath());
+  // remove folder and data
+  QDir folder(result->saveFolder());
+  if(folder!=QDir(resultsFolder()))
+      LowTools::removeDir(folder.absolutePath());
 
-        _results->removeRow(num);
+  _results->removeRow(num);
 
-        if(saveProject)
-            save(false);
+  if(saveProject)
+      save(false);
     }
 }
 
 void ProjectBase::removeAllResults()
 {
     for(int i=0;i<results()->size();i++)
-        removeResult(results()->items[i],false); // avoid multiple saving
+  removeResult(results()->items[i],false); // avoid multiple saving
 
     save(false);
 }
@@ -675,19 +675,19 @@ void ProjectBase::removeProblem(Problem* problem)
     int num = problems()->items.indexOf(problem);
     if(num>-1)
     {
-        // result to be removed
-        emit beforeRemoveProblem(problem);
+  // result to be removed
+  emit beforeRemoveProblem(problem);
 
-        // remove folder and data
-        QDir problemFolderInfo(problem->saveFolder());
-        QDir problemsFolderInfo(problemsFolder());
+  // remove folder and data
+  QDir problemFolderInfo(problem->saveFolder());
+  QDir problemsFolderInfo(problemsFolder());
 
-        if(problemFolderInfo!=problemsFolderInfo)
-            LowTools::removeDir(problemFolderInfo.absolutePath());
+  if(problemFolderInfo!=problemsFolderInfo)
+      LowTools::removeDir(problemFolderInfo.absolutePath());
 
-        _problems->removeRow(num);
+  _problems->removeRow(num);
 
-        save(false);
+  save(false);
     }
 }
 
@@ -698,15 +698,15 @@ void ProjectBase::removeCases(QList<OMCase*> cases)
     Result* result;
     for(int i=0;i<cases.size();i++)
     {
-        problem = dynamic_cast<Problem*>(cases.at(i));
-        if(problem)
-            removeProblem(problem);
-        else
-        {
-            result = dynamic_cast<Result*>(cases.at(i));
-            if(result)
-                removeResult(result);
-        }
+  problem = dynamic_cast<Problem*>(cases.at(i));
+  if(problem)
+      removeProblem(problem);
+  else
+  {
+      result = dynamic_cast<Result*>(cases.at(i));
+      if(result)
+          removeResult(result);
+  }
     }
 }
 
@@ -716,12 +716,12 @@ void ProjectBase::renameCase(OMCase* curCase,QString newName)
     Result* result;
     problem = dynamic_cast<Problem*>(curCase);
     if(problem)
-        renameProblem(problem,newName);
+  renameProblem(problem,newName);
     else
     {
-        result = dynamic_cast<Result*>(curCase);
-        if(result)
-            renameResult(result,newName);
+  result = dynamic_cast<Result*>(curCase);
+  if(result)
+      renameResult(result,newName);
     }
 }
 
@@ -729,11 +729,11 @@ OMCase *ProjectBase::findOMCase(QString name)
 {
     OMCase* omCase = _problems->findItem(name);
     if(omCase)
-        return omCase;
+  return omCase;
 
     omCase = _results->findItem(name);
     if(omCase)
-        return omCase;
+  return omCase;
 
     return NULL;
 }
@@ -743,7 +743,7 @@ bool ProjectBase::renameProblem(Problem* problem,QString newName)
 {
     // test if name already exists
     if(_problems->findItem(newName))
-        return false;
+  return false;
 
     // change name
     problem->rename(newName,true);
@@ -755,7 +755,7 @@ bool ProjectBase::renameResult(Result* result,QString newName)
 {
     // test if name already exists
     if(_results->findItem(newName))
-        return false;
+  return false;
 
     // change name
     result->rename(newName,true);
@@ -768,10 +768,10 @@ void ProjectBase::openOMCaseFolder()
     QAction* actionSender = dynamic_cast<QAction*>(sender());
     if(actionSender)
     {
-        QString omCaseName = actionSender->data().toString();
-        OMCase* omCase = this->findOMCase(omCaseName);
-        if(omCase)
-            omCase->openFolder();
+  QString omCaseName = actionSender->data().toString();
+  OMCase* omCase = this->findOMCase(omCaseName);
+  if(omCase)
+      omCase->openFolder();
     }
 }
 
@@ -788,10 +788,10 @@ QFileInfoList ProjectBase::casesFiles()
     QFileInfoList result;
 
     for(int i=0;i<_problems->size();i++)
-        result.push_back(_problems->at(i)->entireSavePath());
+  result.push_back(_problems->at(i)->entireSavePath());
 
     for(int i=0;i<_results->size();i++)
-        result.push_back(_results->at(i)->entireSavePath());
+  result.push_back(_results->at(i)->entireSavePath());
 
     return result;
 }

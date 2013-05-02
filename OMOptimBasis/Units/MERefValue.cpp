@@ -46,7 +46,7 @@ template<class DimValue>
 MERefValue<DimValue>::MERefValue(QVariant value,int unit)
 {
     setValue(value,unit);
-        //dimValue = new DimValue();
+  //dimValue = new DimValue();
 }
 
 template<class DimValue>
@@ -66,7 +66,7 @@ void MERefValue<DimValue>::setValue(QVariant value,int iUnit)
 {
     _value = value; 
     if(iUnit>-1)
-        _unit = iUnit;
+  _unit = iUnit;
 }
 
 template<class DimValue>
@@ -74,9 +74,9 @@ bool MERefValue<DimValue>::setValue(QVariant value,QString unit)
 {
     int iUnit = units().indexOf(unit);
     if(iUnit==-1)
-        return false;
+  return false;
     else
-        setValue(value,iUnit);
+  setValue(value,iUnit);
     return true;
 }
 template<class DimValue>
@@ -98,9 +98,9 @@ bool MERefValue<DimValue>::setUnit(QString unit)
 {
     int iUnit = units().indexOf(unit);
     if(iUnit==-1)
-        return false;
+  return false;
     else
-        setUnit(iUnit);
+  setUnit(iUnit);
     return true;
     
 }
@@ -115,7 +115,7 @@ template<class DimValue>
 QStringList MERefValue<DimValue>::units() const
 {
     DimValue dimValue;
-        return dimValue.units();
+  return dimValue.units();
 }
 
 template<class DimValue>
@@ -140,7 +140,7 @@ template<class DimValue>
 unsigned MERefValue<DimValue>::nbUnits() const
 {
     DimValue dimValue;
-        return dimValue.nbUnits();
+  return dimValue.nbUnits();
 }
 
 
@@ -157,45 +157,45 @@ double MERefValue<DimValue>::numValue(MOOptVector *variables,int iUnit,bool &ok,
     double result = _value.toDouble(&isNum);
     if(isNum)
     {
-                dimValue.setValue(result,_unit);
-        ok=true;
-                return dimValue.value(iUnit);
+          dimValue.setValue(result,_unit);
+  ok=true;
+          return dimValue.value(iUnit);
     }
     else
     {
-        if(variables==NULL)
-        {
-            ok = false;
-            return -1;
-        }
-        //*******************************
-        // looking for reference in variables
-        //*******************************
-        int iVar = -1;
-        //first look with modelName as prefix
-        if(!modelName.isEmpty())
-        {
-            refName = modelName+"."+_value.toString();
-            iVar = variables->findItem(refName);
-        }
+  if(variables==NULL)
+  {
+      ok = false;
+      return -1;
+  }
+  //*******************************
+  // looking for reference in variables
+  //*******************************
+  int iVar = -1;
+  //first look with modelName as prefix
+  if(!modelName.isEmpty())
+  {
+      refName = modelName+"."+_value.toString();
+      iVar = variables->findItem(refName);
+  }
 
-        if(iVar==-1) //if not found try without modelName as prefix
-        {
-            iVar = variables->findItem(_value.toString());
-        }
+  if(iVar==-1) //if not found try without modelName as prefix
+  {
+      iVar = variables->findItem(_value.toString());
+  }
 
-        if(iVar==-1)
-        {
-            ok = false;
-            return -1;
-        }
-        else
-        {
-            ok =  true;
-            result = variables->at(iVar)->finalValue(variables->curScan(),variables->curPoint());
-                        result = dimValue.convert(result,this->iUnit(),iUnit);
-            return result;
-        }
+  if(iVar==-1)
+  {
+      ok = false;
+      return -1;
+  }
+  else
+  {
+      ok =  true;
+      result = variables->at(iVar)->finalValue(variables->curScan(),variables->curPoint());
+                  result = dimValue.convert(result,this->iUnit(),iUnit);
+      return result;
+  }
     }
 }
 
@@ -231,9 +231,9 @@ QString  MERefValue<DimValue>::reference() const
     _value.toDouble(&isDouble);
 
     if(!isDouble)
-        return _value.toString();
+  return _value.toString();
     else
-        return QString();
+  return QString();
 }
 
 template<class DimValue>

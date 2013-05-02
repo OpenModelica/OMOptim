@@ -61,8 +61,8 @@ WidgetModelsList::WidgetModelsList(Project* project,Optimization* problem,QWidge
     _editable = editable;
     if(!editable)
     {
-        _ui->pushAdd->hide();
-        _ui->pushRemove->hide();
+  _ui->pushAdd->hide();
+  _ui->pushRemove->hide();
     }
 
     connect(_ui->pushAdd,SIGNAL(clicked()),this,SLOT(addModels()));
@@ -80,7 +80,7 @@ void WidgetModelsList::addModels(QStringList list)
 {
     for(int i=0;i<list.size();i++)
     {
-        _problem->addModel(list.at(i));
+  _problem->addModel(list.at(i));
     }
 }
 
@@ -91,11 +91,11 @@ void WidgetModelsList::addModels()
 
     if(widget->exec()==QDialog::Accepted)
     {
-        QList<ModItem*> models = widget->_selectedModels;
-        for(int i=0;i<models.size();i++)
-            modelsList.push_back(models.at(i)->name());
+  QList<ModItem*> models = widget->_selectedModels;
+  for(int i=0;i<models.size();i++)
+      modelsList.push_back(models.at(i)->name());
 
-        addModels(modelsList);
+  addModels(modelsList);
     }
 }
 
@@ -103,9 +103,9 @@ void WidgetModelsList::setInfos(const QString &infos)
 {
     _ui->labelInfos->setText(infos);
     if(infos.isEmpty())
-        _ui->labelInfos->hide();
+  _ui->labelInfos->hide();
     else
-        _ui->labelInfos->show();
+  _ui->labelInfos->show();
 }
 
 void WidgetModelsList::refreshList()
@@ -113,7 +113,7 @@ void WidgetModelsList::refreshList()
     _ui->filesList->clear();
     QStringList models = _problem->models();
     for(int i=0;i<models.size();i++)
-        _ui->filesList->addItem(models.at(i));
+  _ui->filesList->addItem(models.at(i));
 }
 
 void WidgetModelsList::removeModels()
@@ -122,11 +122,11 @@ void WidgetModelsList::removeModels()
     QStringList modelsToRemove;
     for(int i=0;i<itemsList.size();i++)
     {
-        modelsToRemove.push_back(itemsList.at(i)->text());
+  modelsToRemove.push_back(itemsList.at(i)->text());
     }
 
     for(int i=0;i<modelsToRemove.size();i++)
-        _problem->removeModel(modelsToRemove.at(i));
+  _problem->removeModel(modelsToRemove.at(i));
 }
 
 

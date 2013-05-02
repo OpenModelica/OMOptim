@@ -93,12 +93,12 @@ MOParameter::MOParameter(QDomElement & domEl)
 
     for(int i=0;i<attributes.count();i++)
     {
-        fieldName = attributes.item(i).toAttr().name();
-        fieldName.replace(XMLTools::space()," ");
-        fieldValue = attributes.item(i).toAttr().value();
-        fieldValue.replace(XMLTools::space()," ");
+  fieldName = attributes.item(i).toAttr().name();
+  fieldName.replace(XMLTools::space()," ");
+  fieldValue = attributes.item(i).toAttr().value();
+  fieldValue.replace(XMLTools::space()," ");
 
-        MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+  MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
 }
 
@@ -110,46 +110,46 @@ MOParameter::~MOParameter(void)
 bool MOParameter::setFieldValue(int ifield,QVariant value)
 {
     try{
-        switch (ifield)
-        {
-        case NAME :
-            _name=value.toString();
-            break;
-        case DESCRIPTION :
-            _description=value.toString();
-            break;
-        case VALUE :
-            _value=value;
-            break;
-        case DEFAULTVALUE :
-            _defaultValue = value;
-            break;
-        case TYPE :
-            _type=((MOParameter::Type)value.toInt());
-            break;
-        case MIN :
-            _min=value;
-            break;
-        case MAX :
-            _max=value;
-            break;
-            //        case INDEX:
-            //            _index=value.toInt();
-            //            break;
-        case GROUP:
-            _group=value.toString();
-            break;
-        case PANEL:
-            _panel=value.toString();
-            break;
-        }
-        if(!_filledFields.contains(ifield))
-            _filledFields.push_back(ifield);
-        return true;
+  switch (ifield)
+  {
+  case NAME :
+      _name=value.toString();
+      break;
+  case DESCRIPTION :
+      _description=value.toString();
+      break;
+  case VALUE :
+      _value=value;
+      break;
+  case DEFAULTVALUE :
+      _defaultValue = value;
+      break;
+  case TYPE :
+      _type=((MOParameter::Type)value.toInt());
+      break;
+  case MIN :
+      _min=value;
+      break;
+  case MAX :
+      _max=value;
+      break;
+      //        case INDEX:
+      //            _index=value.toInt();
+      //            break;
+  case GROUP:
+      _group=value.toString();
+      break;
+  case PANEL:
+      _panel=value.toString();
+      break;
+  }
+  if(!_filledFields.contains(ifield))
+      _filledFields.push_back(ifield);
+  return true;
     }
     catch(std::exception)
     {
-        return false;
+  return false;
     }
 }
 
@@ -157,34 +157,34 @@ bool MOParameter::setFieldValue(int ifield,QVariant value)
 QVariant MOParameter::getFieldValue(int ifield, int role) const
 {
     if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-        return QString("-");
+  return QString("-");
     else
     {
-        switch (ifield)
-        {
-        case NAME :
-            return _name;
-        case DESCRIPTION :
-            return _description;
-        case VALUE :
-            return _value;
-        case MIN :
-            return _min;
-        case MAX :
-            return _max;
-        case TYPE :
-            return _type;
-        case DEFAULTVALUE :
-            return _defaultValue;
-            //        case INDEX :
-            //            return _index;
-        case GROUP :
-            return _group;
-        case PANEL :
-            return _panel;
-        default :
-            return "unknown field";
-        }
+  switch (ifield)
+  {
+  case NAME :
+      return _name;
+  case DESCRIPTION :
+      return _description;
+  case VALUE :
+      return _value;
+  case MIN :
+      return _min;
+  case MAX :
+      return _max;
+  case TYPE :
+      return _type;
+  case DEFAULTVALUE :
+      return _defaultValue;
+      //        case INDEX :
+      //            return _index;
+  case GROUP :
+      return _group;
+  case PANEL :
+      return _panel;
+  default :
+      return "unknown field";
+  }
     }
 }
 
@@ -199,27 +199,27 @@ QString MOParameter::sFieldName(int iField, int role)
     switch (iField)
     {
     case NAME :
-        return "Name";
+  return "Name";
     case DESCRIPTION :
-        return "Description";
+  return "Description";
     case VALUE :
-        return "Value";
+  return "Value";
     case MIN :
-        return "Min";
+  return "Min";
     case MAX :
-        return "Max";
+  return "Max";
     case TYPE :
-        return "Type";
-        //    case INDEX :
-        //        return "Index";
+  return "Type";
+  //    case INDEX :
+  //        return "Index";
     case DEFAULTVALUE :
-        return "DefaultValue";
+  return "DefaultValue";
     case GROUP :
-        return "Group";
+  return "Group";
     case PANEL :
-        return "Panel";
+  return "Panel";
     default :
-        return "unknown field";
+  return "unknown field";
     }
 }
 
@@ -246,14 +246,14 @@ QDomElement MOParameter::toXmlData(QDomDocument & doc)
     QString fieldValue;
     for(int iF=0;iF<getNbFields();iF++)
     {
-        //        if(iF!=MOParameter::INDEX)
-        //        {
-        fieldName = getFieldName(iF,Qt::UserRole);
-        fieldName.replace(" ",XMLTools::space());
-        fieldValue = getFieldValue(iF).toString();
-        fieldValue.replace(" ",XMLTools::space());
-        cItem.setAttribute(fieldName,fieldValue);
-        //        }
+  //        if(iF!=MOParameter::INDEX)
+  //        {
+  fieldName = getFieldName(iF,Qt::UserRole);
+  fieldName.replace(" ",XMLTools::space());
+  fieldValue = getFieldValue(iF).toString();
+  fieldValue.replace(" ",XMLTools::space());
+  cItem.setAttribute(fieldName,fieldValue);
+  //        }
     }
     return cItem;
 }
@@ -273,12 +273,12 @@ void MOParameter::update(QDomElement & domEl)
     int iField;
     for(int i=0;i<attributes.count();i++)
     {
-        fieldName = attributes.item(i).toAttr().name();
-        fieldName.replace(XMLTools::space()," ");
-        fieldValue = attributes.item(i).toAttr().value();
-        fieldValue.replace(XMLTools::space()," ");
-        iField = getFieldIndex(fieldName,Qt::UserRole);
-        setFieldValue(iField,QVariant(fieldValue));
+  fieldName = attributes.item(i).toAttr().name();
+  fieldName.replace(XMLTools::space()," ");
+  fieldValue = attributes.item(i).toAttr().value();
+  fieldValue.replace(XMLTools::space()," ");
+  iField = getFieldIndex(fieldName,Qt::UserRole);
+  setFieldValue(iField,QVariant(fieldValue));
     }
 }
 
@@ -309,12 +309,12 @@ MOParameterListed::MOParameterListed(QDomElement & domEl)
 
     for(int i=0;i<attributes.count();i++)
     {
-        fieldName = attributes.item(i).toAttr().name();
-        fieldName.replace(XMLTools::space()," ");
-        fieldValue = attributes.item(i).toAttr().value();
-        fieldValue.replace(XMLTools::space()," ");
+  fieldName = attributes.item(i).toAttr().name();
+  fieldName.replace(XMLTools::space()," ");
+  fieldValue = attributes.item(i).toAttr().value();
+  fieldValue.replace(XMLTools::space()," ");
 
-        MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+  MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
 }
 
@@ -331,36 +331,36 @@ bool MOParameterListed::setFieldValue(int ifield,QVariant value)
     switch (ifield)
     {
     case NAME :
-        _name=value.toString();
-        break;
+  _name=value.toString();
+  break;
     case DESCRIPTION :
-        _description=value.toString();
-        break;
+  _description=value.toString();
+  break;
     case VALUE :
-        iValue = value.toInt(&isInt);
-        if(isInt)
-            _value = value;
-        else
-        {
-            iValue = _mapList.key(value.toString(),0);
-            _value = iValue;
-        }
-        break;
+  iValue = value.toInt(&isInt);
+  if(isInt)
+      _value = value;
+  else
+  {
+      iValue = _mapList.key(value.toString(),0);
+      _value = iValue;
+  }
+  break;
     case DEFAULTVALUE :
-        _defaultValue = value;
-        break;
-        //    case INDEX:
-        //        _index=value.toInt();
-        //        break;
+  _defaultValue = value;
+  break;
+  //    case INDEX:
+  //        _index=value.toInt();
+  //        break;
     case GROUP:
-        _group=value.toString();
-        break;
+  _group=value.toString();
+  break;
     case PANEL:
-        _panel=value.toString();
-        break;
+  _panel=value.toString();
+  break;
     }
     if(!_filledFields.contains(ifield))
-        _filledFields.push_back(ifield);
+  _filledFields.push_back(ifield);
     return true;
 }
 
@@ -368,33 +368,33 @@ bool MOParameterListed::setFieldValue(int ifield,QVariant value)
 QVariant MOParameterListed::getFieldValue(int ifield, int role) const
 {
     if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-        return QString("-");
+  return QString("-");
     else
     {
-        switch (ifield)
-        {
-        case NAME :
-            return _name;
-        case DESCRIPTION :
-            return _description;
-        case VALUE :
-            if(role==Qt::DisplayRole)
-                return _mapList.value(_value.toInt(),QString());
-            else
-                return _value.toInt();
-        case TYPE :
-            return _type;
-        case DEFAULTVALUE :
-            return _defaultValue;
-            //        case INDEX :
-            //            return _index;
-        case GROUP :
-            return _group;
-        case PANEL :
-            return _panel;
-        default :
-            return "unknown field";
-        }
+  switch (ifield)
+  {
+  case NAME :
+      return _name;
+  case DESCRIPTION :
+      return _description;
+  case VALUE :
+      if(role==Qt::DisplayRole)
+          return _mapList.value(_value.toInt(),QString());
+      else
+          return _value.toInt();
+  case TYPE :
+      return _type;
+  case DEFAULTVALUE :
+      return _defaultValue;
+      //        case INDEX :
+      //            return _index;
+  case GROUP :
+      return _group;
+  case PANEL :
+      return _panel;
+  default :
+      return "unknown field";
+  }
     }
 }
 
@@ -437,12 +437,12 @@ QVariant MOParameters::value(QString name,QVariant defaultValue) const
 {
     MOParameter* param = this->findItem(name,MOParameter::NAME);
     if(param)
-        return param->getFieldValue(MOParameter::VALUE);
+  return param->getFieldValue(MOParameter::VALUE);
     else
     {
-        QString msg = "MOParameters : did not find parameter :"+name;
-        InfoSender::instance()->debug(msg);
-        return defaultValue;
+  QString msg = "MOParameters : did not find parameter :"+name;
+  InfoSender::instance()->debug(msg);
+  return defaultValue;
     }
 }
 
@@ -450,16 +450,16 @@ bool MOParameters::setValue(QString name,QVariant value)
 {
     MOParameter* param = this->findItem(name);
     if(param)
-        return param->setFieldValue(MOParameter::VALUE,value);
+  return param->setFieldValue(MOParameter::VALUE,value);
     else
-        return false;
+  return false;
 }
 
 QMultiMap<QString,MOParameter*> MOParameters::groupmap() const
 {
     QMultiMap<QString,MOParameter*> map;
     for(int i=0;i<size();i++)
-        map.insert(this->at(i)->getFieldValue(MOParameter::GROUP).toString(),this->at(i));
+  map.insert(this->at(i)->getFieldValue(MOParameter::GROUP).toString(),this->at(i));
 
     return map;
 }
@@ -468,9 +468,9 @@ void MOParameters::setGroup(QString group,QStringList indexes)
 {
     for(int i=0;i<indexes.size();i++)
     {
-        MOParameter *param = this->findItem(indexes.at(i));
-        if(param)
-            param->setFieldValue(MOParameter::GROUP,group);
+  MOParameter *param = this->findItem(indexes.at(i));
+  if(param)
+      param->setFieldValue(MOParameter::GROUP,group);
     }
 }
 
@@ -479,7 +479,7 @@ void MOParameters::setPanel(QString panel)
     int iParam;
     for(int i=0;i<size();i++)
     {
-        iParam = this->at(i)->setFieldValue(MOParameter::PANEL,panel);
+  iParam = this->at(i)->setFieldValue(MOParameter::PANEL,panel);
     }
 }
 
@@ -487,9 +487,9 @@ void MOParameters::addEnablingIndex(QStringList enabledIndexes,QString enablingI
 {
     for(int i=0;i<enabledIndexes.size();i++)
     {
-        MOParameter* param = this->findItem(enabledIndexes.at(i));
-        if(param)
-            param->addEnablingIndex(enablingIndex,enablingValue);
+  MOParameter* param = this->findItem(enabledIndexes.at(i));
+  if(param)
+      param->addEnablingIndex(enablingIndex,enablingValue);
     }
 }
 
@@ -501,7 +501,7 @@ bool MOParameters::shouldBeEnabled(QString name)
 {
     MOParameter* param = this->findItem(name);
     if(!param)
-        return false;
+  return false;
 
     QMap<QString,QVariant> enablingIndexes = param->enablingIndexes();
     bool result = true;
@@ -509,10 +509,10 @@ bool MOParameters::shouldBeEnabled(QString name)
     QString curKey;
     while(result && (i<enablingIndexes.keys().size()))
     {
-        curKey = enablingIndexes.keys().at(i);
-        if(!curKey.isEmpty())
-            result = result && (value(curKey)==enablingIndexes.value(curKey));
-        i++;
+  curKey = enablingIndexes.keys().at(i);
+  if(!curKey.isEmpty())
+      result = result && (value(curKey)==enablingIndexes.value(curKey));
+  i++;
     }
     return result;
 }
@@ -521,23 +521,23 @@ MOParameters* MOParameters::clone() const
 {
     MOParameters* newVector = new MOParameters();
     for(int i=0;i<this->size();i++)
-        newVector->addItem(this->at(i)->clone());
+  newVector->addItem(this->at(i)->clone());
     return newVector;
 }
 
 bool MOParameters::operator==(const MOParameters& b)const
 {
     if(this->size()!=b.size())
-        return false;
+  return false;
 
     bool equals = true;
     QString curName;
     int i=0;
     while(equals && (i<size()))
     {
-        curName = this->at(i)->name();
-        equals = equals && (this->at(i)->value()==b.value(curName));
-        i++;
+  curName = this->at(i)->name();
+  equals = equals && (this->at(i)->value()==b.value(curName));
+  i++;
     }
     return equals;
 }

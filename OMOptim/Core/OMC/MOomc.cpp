@@ -82,7 +82,7 @@ MOomc::MOomc(QString appName,bool start)
 
     if (start)
     {
-        startServer();
+  startServer();
     }
 
 }
@@ -106,9 +106,9 @@ void MOomc::removeUsingThread(QThread* _thread)
     int index = threads.indexOf(_thread);
     if(index>-1)
     {
-        emit finishOMCThread(threadsNames.at(index));
-        threads.removeAt(index);
-        threadsNames.removeAt(index);
+  emit finishOMCThread(threadsNames.at(index));
+  threads.removeAt(index);
+  threadsNames.removeAt(index);
     }
 }
 
@@ -128,12 +128,12 @@ QStringList MOomc::getClassNames(QString parentClass)
 {
     QString commandRes= evalCommand("getClassNames("+parentClass+")");
     if(commandRes.contains("error",Qt::CaseInsensitive))
-        return QStringList();
+  return QStringList();
     else
     {
-        commandRes.remove("{");
-        commandRes.remove("}");
-        return commandRes.split(",",QString::SkipEmptyParts);
+  commandRes.remove("{");
+  commandRes.remove("}");
+  return commandRes.split(",",QString::SkipEmptyParts);
     }
 }
 
@@ -151,8 +151,8 @@ QStringList MOomc::getPackages(QString parentClass)
 
     if(commandRes.contains("error",Qt::CaseInsensitive))
     {
-        //InfoSender::instance()->send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
-        return QStringList();
+  //InfoSender::instance()->send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
+  return QStringList();
 
     }
     commandRes.remove("{");
@@ -162,7 +162,7 @@ QStringList MOomc::getPackages(QString parentClass)
 
     if(list.at(0)=="")
     {
-        list.clear();
+  list.clear();
     }
     return list;
 }
@@ -173,11 +173,11 @@ QStringList MOomc::getRecords(QString parentClass)
     QString fullClassName;
     for(int i=0;i<allClasses.size();i++)
     {
-        fullClassName = parentClass.isEmpty() ? allClasses.at(i) : parentClass+"."+allClasses.at(i);
+  fullClassName = parentClass.isEmpty() ? allClasses.at(i) : parentClass+"."+allClasses.at(i);
 
-        // check if it is a record
-        if(isRecord(fullClassName))
-            models.push_back(allClasses.at(i));
+  // check if it is a record
+  if(isRecord(fullClassName))
+      models.push_back(allClasses.at(i));
     }
     return models;
 }
@@ -190,11 +190,11 @@ QStringList MOomc::getClasses(QString parentClass)
     QString fullClassName;
     for(int i=0;i<allClasses.size();i++)
     {
-        fullClassName = parentClass.isEmpty() ? allClasses.at(i) : parentClass+"."+allClasses.at(i);
+  fullClassName = parentClass.isEmpty() ? allClasses.at(i) : parentClass+"."+allClasses.at(i);
 
-        // check if it is a class
-        if(isClass(fullClassName))
-            models.push_back(allClasses.at(i));
+  // check if it is a class
+  if(isClass(fullClassName))
+      models.push_back(allClasses.at(i));
     }
     return models;
 }
@@ -207,10 +207,10 @@ QStringList MOomc::getModels(QString parentClass)
     QString fullClassName;
     for(int i=0;i<allClasses.size();i++)
     {
-        fullClassName = parentClass.isEmpty() ? allClasses.at(i) : parentClass+"."+allClasses.at(i);
-        // check if it is a model
-        if(isModel(fullClassName))
-            models.push_back(allClasses.at(i));
+  fullClassName = parentClass.isEmpty() ? allClasses.at(i) : parentClass+"."+allClasses.at(i);
+  // check if it is a model
+  if(isModel(fullClassName))
+      models.push_back(allClasses.at(i));
     }
     return models;
 }
@@ -223,45 +223,45 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
     QString commandRes;
 
     if(parentClass.contains("Modelica.Media.Interfaces")) //bug of open modelica
-        return;
+  return;
 
     if(!parentClass.isEmpty())
     {
-        QString msg;
-        msg.sprintf("Reading components of class %s ",parentClass.toLatin1().data());
-        InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
+  QString msg;
+  msg.sprintf("Reading components of class %s ",parentClass.toLatin1().data());
+  InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
 
-        commandRes= evalCommand("getComponents(" + parentClass +")");
+  commandRes= evalCommand("getComponents(" + parentClass +")");
 
-        if(commandRes.contains("error",Qt::CaseInsensitive))
-        {
-            if(!isPrimitive(parentClass))
-            {
-                InfoSender::instance()->send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
-            }
-            return;
-        }
-        commandRes.remove("{}");
-        commandRes.remove("{{");
-        commandRes.remove("}}");
+  if(commandRes.contains("error",Qt::CaseInsensitive))
+  {
+      if(!isPrimitive(parentClass))
+      {
+          InfoSender::instance()->send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
+      }
+      return;
+  }
+  commandRes.remove("{}");
+  commandRes.remove("{{");
+  commandRes.remove("}}");
 
-        QStringList list = commandRes.split("},{",QString::SkipEmptyParts);
+  QStringList list = commandRes.split("},{",QString::SkipEmptyParts);
 
-        QStringList strComponent;
+  QStringList strComponent;
 
-        for(int nc = 0; nc < list.size(); nc++)
-        {
-            strComponent = list.at(nc).split(",");
-            if(strComponent.size()>1)
-            {
-                compNames.push_back(strComponent.at(1));
-                compClasses.push_back(strComponent.at(0));
-            }
-            else
-            {
-                //ERROR
-            }
-        }
+  for(int nc = 0; nc < list.size(); nc++)
+  {
+      strComponent = list.at(nc).split(",");
+      if(strComponent.size()>1)
+      {
+          compNames.push_back(strComponent.at(1));
+          compClasses.push_back(strComponent.at(0));
+      }
+      else
+      {
+          //ERROR
+      }
+  }
     }
 
     QStringList inhNames, inhClasses;
@@ -275,16 +275,16 @@ QString MOomc::getParameterValue(QString parentClass, QString parameterName)
 {
     QString commandRes= evalCommand("getParameterValue(" + parentClass +","+ parameterName+")");
     if(commandRes=="Error")
-        return QString();
+  return QString();
     else
-        return commandRes;
+  return commandRes;
 }
 
 double MOomc::getParameterDoubleValue(QString parentClass, QString parameterName,double defaultValue)
 {
     QString commandRes= evalCommand("getParameterValue(" + parentClass +","+ parameterName+")");
     if(commandRes=="Error" || commandRes.isEmpty())
-        return defaultValue;
+  return defaultValue;
 
     bool isDouble;
     int i=0; // to avoid infinite loop (if for whatever reason, incorrect case is catched by error boolean)
@@ -294,17 +294,17 @@ double MOomc::getParameterDoubleValue(QString parentClass, QString parameterName
 
     while(!isDouble && (i<100) &&!error)
     {
-        parentClass = commandRes.section(".",0,-2);
-        parameterName= commandRes.section(".",-1,-1);
-        commandRes = evalCommand("getParameterValue(" + parentClass +","+ parameterName+")");
-        error = (commandRes=="Error" || commandRes.isEmpty());
-        result = commandRes.toDouble(&isDouble);
-        i++;
+  parentClass = commandRes.section(".",0,-2);
+  parameterName= commandRes.section(".",-1,-1);
+  commandRes = evalCommand("getParameterValue(" + parentClass +","+ parameterName+")");
+  error = (commandRes=="Error" || commandRes.isEmpty());
+  result = commandRes.toDouble(&isDouble);
+  i++;
     }
     if(isDouble)
-        return result;
+  return result;
     else
-        return defaultValue;
+  return defaultValue;
 
 }
 
@@ -313,7 +313,7 @@ QStringList MOomc::getParameterNames(QString parentClass,bool includeInherited)
     QStringList parameterNames;
     QString commandRes= evalCommand("getParameterNames(" + parentClass +")");
     if(commandRes=="Error")
-        return QStringList(commandRes);
+  return QStringList(commandRes);
 
     commandRes.remove("}");
     commandRes.remove("{");
@@ -322,11 +322,11 @@ QStringList MOomc::getParameterNames(QString parentClass,bool includeInherited)
 
     if(includeInherited)
     {
-        QStringList inheritedClass = getInheritedClasses(parentClass);
-        for(int i=0;i<inheritedClass.size();i++)
-        {
-            parameterNames << getParameterNames(inheritedClass.at(i),true);
-        }
+  QStringList inheritedClass = getInheritedClasses(parentClass);
+  for(int i=0;i<inheritedClass.size();i++)
+  {
+      parameterNames << getParameterNames(inheritedClass.at(i),true);
+  }
     }
     return parameterNames;
 }
@@ -339,22 +339,22 @@ QMap<QString,QString> MOomc::getConnections(const QString & curModel)
     QString res= evalCommand("getConnectionCount("+curModel+")");
     if (res!="Error")
     {
-        int nbConnections = res.toInt();
+  int nbConnections = res.toInt();
 
-        // for each connection
-        for(int iC=0;iC<nbConnections;iC++)
-        {
-            //get its name
-            res= evalCommand("getNthConnection("+curModel+","+QString::number(iC+1)+")");
-            if (res!="Error")
-            {
-                res.remove("{");
-                res.remove("}");
-                connectFields = res.split(",");
+  // for each connection
+  for(int iC=0;iC<nbConnections;iC++)
+  {
+      //get its name
+      res= evalCommand("getNthConnection("+curModel+","+QString::number(iC+1)+")");
+      if (res!="Error")
+      {
+          res.remove("{");
+          res.remove("}");
+          connectFields = res.split(",");
 
-                result.insert(connectFields.at(0),connectFields.at(1));
-            }
-        }
+          result.insert(connectFields.at(0),connectFields.at(1));
+      }
+  }
     }
     return result;
 }
@@ -362,7 +362,7 @@ QMap<QString,QString> MOomc::getConnections(const QString & curModel)
 QStringList MOomc::getInheritedClasses(QString inheritingClass)
 {
     if(inheritingClass.isEmpty())
-        return QStringList();
+  return QStringList();
 
     // Getting number and names of inherited classes
     QString commandText = "getInheritanceCount(" + inheritingClass +")";
@@ -373,14 +373,14 @@ QStringList MOomc::getInheritedClasses(QString inheritingClass)
 
     if ((commandRes!="Error"))
     {
-        nbInheritance = commandRes.toInt();
+  nbInheritance = commandRes.toInt();
 
-        for(int i=0;i<nbInheritance;i++)
-        {
-            commandText = "getNthInheritedClass(" + inheritingClass +","+QString::number(i+1)+")";
-            commandRes= evalCommand(commandText);
-            inheritedClasses << commandRes;
-        }
+  for(int i=0;i<nbInheritance;i++)
+  {
+      commandText = "getNthInheritedClass(" + inheritingClass +","+QString::number(i+1)+")";
+      commandRes= evalCommand(commandText);
+      inheritedClasses << commandRes;
+  }
     }
     inheritedClasses.removeAll(inheritingClass); // sometimes, a class appears as inheriting itself
     return inheritedClasses;
@@ -389,16 +389,16 @@ QStringList MOomc::getInheritedClasses(QString inheritingClass)
 QString MOomc::getPrimitiveClass(QString className)
 {
     if(isPrimitive(className))
-        return className;
+  return className;
     else
     {
-        QStringList inherited = getInheritedClasses(className);
-        if(inherited.size()==1)
-        {
-            return getPrimitiveClass(inherited.at(0));
-        }
-        else
-            return QString();
+  QStringList inherited = getInheritedClasses(className);
+  if(inherited.size()==1)
+  {
+      return getPrimitiveClass(inherited.at(0));
+  }
+  else
+      return QString();
     }
 }
 VariableType MOomc::getPrimitiveDataType(QString className)
@@ -406,13 +406,13 @@ VariableType MOomc::getPrimitiveDataType(QString className)
     QString primitiveClass = getPrimitiveClass(className);
 
     if(!primitiveClass.compare("Real"))
-        return OMREAL;
+  return OMREAL;
     if(!primitiveClass.compare("Integer"))
-        return OMINTEGER;
+  return OMINTEGER;
     if(!primitiveClass.compare("Boolean"))
-        return OMBOOLEAN;
+  return OMBOOLEAN;
     if(!primitiveClass.compare("String"))
-        return OMSTRING;
+  return OMSTRING;
 
     // case not found, REAL is default DataType
     return OMREAL;
@@ -437,9 +437,9 @@ QString MOomc::getComponentClass(QString parameter)
     getContainedComponents(parent,compNames,compClasses);
     int iParameter = compNames.indexOf(parameter.section(".",-1,-1));
     if(iParameter>-1)
-        return compClasses.at(iParameter);
+  return compClasses.at(iParameter);
     else
-        return QString();
+  return QString();
 }
 
 
@@ -453,24 +453,24 @@ QStringList MOomc::getComponentModifierNames(QString componentName)
     //Checking that component is a first level one
     if(levelNames.size()!=2)
     {
-        InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
-        return QStringList();
+  InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
+  return QStringList();
     }
     else
     {
-        commandText = "getComponentModifierNames(" + levelNames.at(0) +","+levelNames.at(1)+")";
-        commandRes = evalCommand(commandText);
+  commandText = "getComponentModifierNames(" + levelNames.at(0) +","+levelNames.at(1)+")";
+  commandRes = evalCommand(commandText);
 
-        if(commandRes.indexOf("Class getConnectionCount (its type)  not found in scope <global scope>")>-1)
-        {
-            InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
-            return QStringList();
-        }
+  if(commandRes.indexOf("Class getConnectionCount (its type)  not found in scope <global scope>")>-1)
+  {
+      InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
+      return QStringList();
+  }
 
-        commandRes.remove("{");
-        commandRes.remove("}");
-        commandRes.remove(" ");
-        return(commandRes.split(","));
+  commandRes.remove("{");
+  commandRes.remove("}");
+  commandRes.remove(" ");
+  return(commandRes.split(","));
     }
 }
 
@@ -484,14 +484,14 @@ QString MOomc::getFlattenedModel(const QString & modelName)
     QString flattened = evalCommand(flatcmd,errorString);
 
     if(flattened=="\"\"")
-        flattened.clear();
+  flattened.clear();
 
     if(!errorString.isEmpty() && !flattened.isEmpty())
-        InfoSender::instance()->sendWarning("Instantiating model warned ["+modelName+"]");
+  InfoSender::instance()->sendWarning("Instantiating model warned ["+modelName+"]");
     else  if(!errorString.isEmpty() && flattened.isEmpty())
-        InfoSender::instance()->sendError("Instantiating model failed ["+modelName+"]");
+  InfoSender::instance()->sendError("Instantiating model failed ["+modelName+"]");
     else
-        InfoSender::instance()->sendNormal("Instantiating model successful ["+modelName+"]");
+  InfoSender::instance()->sendNormal("Instantiating model successful ["+modelName+"]");
 
     return flattened;
 }
@@ -509,9 +509,9 @@ QStringList MOomc::getFlattenedModifierVectorValue(const QString & modelName,con
     QString curValue;
     for(int i=0;i<size;i++)
     {
-        curModifier = modifierName+"\\["+QString::number(i+1)+"\\]";
-        curValue = getFlattenedModifierValue(modelName,componentName,curModifier,flattenedModel);
-        result.push_back(curValue);
+  curModifier = modifierName+"\\["+QString::number(i+1)+"\\]";
+  curValue = getFlattenedModifierValue(modelName,componentName,curModifier,flattenedModel);
+  result.push_back(curValue);
     }
     return result;
 }
@@ -520,7 +520,7 @@ QStringList MOomc::getFlattenedModifierVectorValue(const QString & modelName,con
 QString MOomc::getFlattenedModifierUnit(const QString & modelName,const QString & componentName,const QString & modifierName, QString & flattenedModel)
 {
     if(flattenedModel.isEmpty())
-        flattenedModel = getFlattenedModel(modelName);
+  flattenedModel = getFlattenedModel(modelName);
 
     QRegExp exp1(componentName+"."+modifierName+".*unit[\\s|=]*\\\\\\\"(.*)\\\\\\\"");
     exp1.setMinimal(true);
@@ -529,8 +529,8 @@ QString MOomc::getFlattenedModifierUnit(const QString & modelName,const QString 
 
     if((i1>-1)&&exp1.capturedTexts().size()==2)
     {
-        QString result = exp1.capturedTexts().at(1);
-        return result;
+  QString result = exp1.capturedTexts().at(1);
+  return result;
     }
     return QString();
 }
@@ -540,12 +540,12 @@ QString MOomc::getFlattenedModifierUnit(const QString & modelName,const QString 
 QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString & componentName,const QString & modifierName, QString & flattenedModel)
 {
     if(flattenedModel.isEmpty())
-        flattenedModel = getFlattenedModel(modelName);
+  flattenedModel = getFlattenedModel(modelName);
 
     QStringList lines = flattenedModel.split("\n");
     if(lines.size()==1)
     {
-        lines = flattenedModel.split("\\n");
+  lines = flattenedModel.split("\\n");
     }
 
 
@@ -556,9 +556,9 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
 
     if((i1>-1)&&exp1.capturedTexts().size()==2)
     {
-        QString result = exp1.capturedTexts().at(1);
-        result = result.remove(QRegExp("[\\\\|\"]*"));
-        return result;
+  QString result = exp1.capturedTexts().at(1);
+  result = result.remove(QRegExp("[\\\\|\"]*"));
+  return result;
     }
 
     // 2nd format with unit
@@ -566,14 +566,14 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
     int i2 = lines.indexOf(exp2);
 
     if((i2>-1)&&exp2.capturedTexts().size()==2)
-        return exp2.capturedTexts().at(1);
+  return exp2.capturedTexts().at(1);
 
     // 3rd format
     QRegExp exp3(".*"+componentName+"\\(.*"+modifierName+"[\\s]*=[\\s]*([\\d|\\.]*).*;");
     int i3 = lines.indexOf(exp3);
 
     if((i3>-1)&&exp3.capturedTexts().size()==2)
-        return exp3.capturedTexts().at(1);
+  return exp3.capturedTexts().at(1);
 
     // 4th format : a vector
     // e.g.   eIFactMultEquation.groups = {\"group1\", \"group2\"};
@@ -582,7 +582,7 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
 
     if((i4>-1)&&exp4.capturedTexts().size()==2)
     {
-        return exp4.capturedTexts().at(1);
+  return exp4.capturedTexts().at(1);
     }
 
     return QString();
@@ -597,9 +597,9 @@ QString MOomc::getComponentModifierValue(QString modelName,QString shortComponen
     //    //Checking that component is a first level one
     //    if(levelNames.size()!=2)
     //    {
-    //        InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
-    //        QString errorString;
-    //        return errorString;
+    //  InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,componentName));
+    //  QString errorString;
+    //  return errorString;
     //    }
     //    else
     //    {
@@ -607,8 +607,8 @@ QString MOomc::getComponentModifierValue(QString modelName,QString shortComponen
     commandRes = evalCommand(commandText);
     if(commandRes.contains("Error",Qt::CaseInsensitive))
     {
-        InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,shortComponentName));
-        return QString();
+  InfoSender::instance()->send( Info(ListInfo::OMSOBTMODIFIERSFAILED,shortComponentName));
+  return QString();
     }
     commandRes.remove("=");
     commandRes.remove(" ");
@@ -620,11 +620,11 @@ bool MOomc::setComponentModifiers(QString compName,QString model, QStringList mo
 {
     for(int i=0;i<modNames.size();i++)
     {
-        QString commandText = "setComponentModifierValue(";
-        commandText += model+",";
-        commandText += compName.section(".",-1,-1)+"."+modNames.at(i)+","+"$Code(="+modValues.at(i)+"))";
+  QString commandText = "setComponentModifierValue(";
+  commandText += model+",";
+  commandText += compName.section(".",-1,-1)+"."+modNames.at(i)+","+"$Code(="+modValues.at(i)+"))";
 
-        QString commandRes = evalCommand(commandText);
+  QString commandRes = evalCommand(commandText);
     }
     return true;
 }
@@ -684,15 +684,15 @@ bool MOomc::isComponent(QString name)
 Modelica::ClassRestr MOomc::getClassRestriction(QString className)
 {
     if(isPackage(className))
-        return Modelica::PACKAGE;
+  return Modelica::PACKAGE;
     else
-        if(isModel(className))
-            return Modelica::MODEL;
-        else
-            if(isComponent(className))
-                return Modelica::COMPONENT;
-            else
-                return Modelica::OTHER;
+  if(isModel(className))
+      return Modelica::MODEL;
+  else
+      if(isComponent(className))
+          return Modelica::COMPONENT;
+      else
+          return Modelica::OTHER;
 }
 
 QString MOomc::getAnnotation(QString compName,QString compClass,QString model)
@@ -715,18 +715,18 @@ QString MOomc::getAnnotation(QString compName,QString compClass,QString model)
     //    cap = regExp.capturedTexts();
 
     //    if(iLine == -1)
-    //        return QString();
+    //  return QString();
     //    else
     //    {
-    //        QString annot = listLines.at(iLine);
-    //        if(!annot.contains("annotation"))
-    //            return QString();
-    //        else
-    //        {
-    //            annot.remove(QRegExp(".*annotation\\("));
-    //            annot.remove(QRegExp("\\)[\\s]*;"));
-    //            return annot;
-    //        }
+    //  QString annot = listLines.at(iLine);
+    //  if(!annot.contains("annotation"))
+    //      return QString();
+    //  else
+    //  {
+    //      annot.remove(QRegExp(".*annotation\\("));
+    //      annot.remove(QRegExp("\\)[\\s]*;"));
+    //      return annot;
+    //  }
     //    }
     return annot;
 }
@@ -736,7 +736,7 @@ QString MOomc::getComment(QString modelName, QString compName)
     QString commandRes= evalCommand("getComponents(" + modelName +")");
 
     if(commandRes.indexOf("error",Qt::CaseInsensitive)==0)
-        return QString();
+  return QString();
 
     //  {{Modelica.SIunits.Temp_K,TorcH,"ORC hot temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}},{Modelica.SIunits.Temp_K,TorcC,"ORC cold temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}}}
 
@@ -744,11 +744,11 @@ QString MOomc::getComment(QString modelName, QString compName)
     rexp.setMinimal(true);
     if(commandRes.contains(rexp)&&rexp.capturedTexts().size()>1)
     {
-        QStringList captured = rexp.capturedTexts();
-        return captured.at(1);
+  QStringList captured = rexp.capturedTexts();
+  return captured.at(1);
     }
     else
-        return QString();
+  return QString();
 }
 
 int MOomc::getConnectionNumber(QString className)
@@ -793,16 +793,16 @@ bool MOomc::buildModel(QString model,QString & exeFile,QString & initFile)
     bool success = !exeFile.isEmpty();
     if(!success)
     {
-        exeFile.clear();
-        initFile.clear();
+  exeFile.clear();
+  initFile.clear();
     }
     else
     {
 #ifdef WIN32
-        exeFile.append(".exe");
+  exeFile.append(".exe");
 #endif
-        QDir dir = QFileInfo(exeFile).absoluteDir();
-        initFile = dir.absoluteFilePath(commandRes.section(",",1,1));
+  QDir dir = QFileInfo(exeFile).absoluteDir();
+  initFile = dir.absoluteFilePath(commandRes.section(",",1,1));
     }
     return success;
 }
@@ -846,12 +846,12 @@ bool MOomc::deleteConnection(const QString & org,const QString & dest, const QSt
 
     if((existingConns.value(shortOrg) == shortDest)||(existingConns.value(shortDest) == shortOrg))
     {
-        QString msg = "deleting connection didn't work ["+org+","+dest+"]";
-        InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
-        return false;
+  QString msg = "deleting connection didn't work ["+org+","+dest+"]";
+  InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
+  return false;
     }
     else
-        return true;
+  return true;
 
 }
 bool MOomc::deleteConnections(const QStringList &  orgs, const QStringList  &  dests, const QString & model)
@@ -859,11 +859,11 @@ bool MOomc::deleteConnections(const QStringList &  orgs, const QStringList  &  d
     bool allOk = false;
     if(orgs.size()==dests.size())
     {
-        allOk = true;
-        for(int i=0;i<orgs.size();i++)
-        {
-            allOk = deleteConnection(orgs.at(i),dests.at(i),model) && allOk;
-        }
+  allOk = true;
+  for(int i=0;i<orgs.size();i++)
+  {
+      allOk = deleteConnection(orgs.at(i),dests.at(i),model) && allOk;
+  }
     }
     return allOk;
 }
@@ -873,12 +873,12 @@ bool MOomc::deleteConnections(const QStringList &  orgs,const QList<QStringList>
     bool allOk = false;
     if(orgs.size()==dests.size())
     {
-        allOk = true;
-        for(int i=0;i<orgs.size();i++)
-        {
-            for(int j=0;j<dests.at(i).size();j++)
-                allOk = deleteConnection(orgs.at(i),dests.at(i).at(j),model) && allOk;
-        }
+  allOk = true;
+  for(int i=0;i<orgs.size();i++)
+  {
+      for(int j=0;j<dests.at(i).size();j++)
+          allOk = deleteConnection(orgs.at(i),dests.at(i).at(j),model) && allOk;
+  }
     }
     return allOk;
 }
@@ -889,47 +889,47 @@ bool MOomc::addConnection(QString org, QString dest)
     QString modelDest = dest.section(".",0,-3);
 
     if(modelOrg!=modelDest || modelOrg.isEmpty())
-        return false;
+  return false;
     else
     {
-        QString shortOrg = org.section(".",-2,-1);
-        QString shortDest = dest.section(".",-2,-1);
+  QString shortOrg = org.section(".",-2,-1);
+  QString shortDest = dest.section(".",-2,-1);
 
-        QString commandText = "addConnection("+shortOrg+","+shortDest+","+modelOrg+")";
-        QString commandRes = evalCommand(commandText);
+  QString commandText = "addConnection("+shortOrg+","+shortDest+","+modelOrg+")";
+  QString commandRes = evalCommand(commandText);
 
-        return ((commandRes=="true") || (commandRes=="Ok"));
+  return ((commandRes=="true") || (commandRes=="Ok"));
     }
 }
 
 bool MOomc::addConnections(QStringList orgs, QStringList dests)
 {
     if(orgs.size()!=dests.size())
-        return false;
+  return false;
     else
     {
-        bool all = true;
-        for(int i =0;i < orgs.size();i++)
-        {
-            all = addConnection(orgs.at(i),dests.at(i)) && all;
-        }
-        return all;
+  bool all = true;
+  for(int i =0;i < orgs.size();i++)
+  {
+      all = addConnection(orgs.at(i),dests.at(i)) && all;
+  }
+  return all;
     }
 }
 
 bool MOomc::addConnections(QStringList orgs, QList<QStringList> dests)
 {
     if(orgs.size()!=dests.size())
-        return false;
+  return false;
     else
     {
-        bool all = true;
-        for(int i =0;i < orgs.size();i++)
-        {
-            for(int j=0;j<dests.at(i).size();j++)
-                all = addConnection(orgs.at(i),dests.at(i).at(j)) && all;
-        }
-        return all;
+  bool all = true;
+  for(int i =0;i < orgs.size();i++)
+  {
+      for(int j=0;j<dests.at(i).size();j++)
+          all = addConnection(orgs.at(i),dests.at(i).at(j)) && all;
+  }
+  return all;
     }
 }
 
@@ -938,13 +938,13 @@ bool MOomc::inherits(QString childClass, QString parentClass)
     QStringList inherited = getInheritedClasses(childClass);
     while(!inherited.isEmpty())
     {
-        if(inherited.contains(parentClass))
-            return true;
-        else
-        {
-            inherited.append(getInheritedClasses(inherited.at(0)));
-            inherited.removeAt(0);
-        }
+  if(inherited.contains(parentClass))
+      return true;
+  else
+  {
+      inherited.append(getInheritedClasses(inherited.at(0)));
+      inherited.removeAt(0);
+  }
     }
     return false;
 }
@@ -953,7 +953,7 @@ bool MOomc::inherits(QString childClass, QString parentClass)
 bool MOomc::addComponent(QString name,QString className, QString modelName,QString annotation)
 {
     if(annotation.isEmpty() || (annotation.left(1)!="\"") || (annotation.right(1)!="\""))
-        annotation = "\""+annotation+"\"";
+  annotation = "\""+annotation+"\"";
 
     QString commandText = "addComponent("+name.section(".",-1,-1)+","+className+","+modelName+",annotate="+annotation+")";
     QString commandRes= evalCommand(commandText);
@@ -987,56 +987,56 @@ QString MOomc::evalCommand(QString command,QString &errorString)
 
     if (!mHasInitialized)
     {
-        InfoSender::instance()->send(Info(QString("OMC not started. Please start it again (menu OMC->restart)"),ListInfo::WARNING2));
-        return QString();
+  InfoSender::instance()->send(Info(QString("OMC not started. Please start it again (menu OMC->restart)"),ListInfo::WARNING2));
+  return QString();
     }
 
-    //        if(!startServer())
-    //        {
-    //            InfoSender::instance()->send(Info(QString("Unable to communicate with OMC ")));
-    //            return QString();
-    //        }
+    //  if(!startServer())
+    //  {
+    //      InfoSender::instance()->send(Info(QString("Unable to communicate with OMC ")));
+    //      return QString();
+    //  }
     //    }
 
     // Send command to server
     try
     {
-        //mResult = mOMC->sendExpression(command.toLatin1());
-        mResult = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
-        // logOMCMessages(command);
-        InfoSender::instance()->send(Info(getResult(),ListInfo::OMCNORMAL2));
+  //mResult = mOMC->sendExpression(command.toLatin1());
+  mResult = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
+  // logOMCMessages(command);
+  InfoSender::instance()->send(Info(getResult(),ListInfo::OMCNORMAL2));
 
-        // display errors
-        command = "getErrorString()";
-        errorString = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
-        errorString.remove("\"");
-        if((!errorString.isEmpty())&&(errorString!="\n"))
-            InfoSender::instance()->send(Info(errorString,ListInfo::OMCWARNING2));
+  // display errors
+  command = "getErrorString()";
+  errorString = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
+  errorString.remove("\"");
+  if((!errorString.isEmpty())&&(errorString!="\n"))
+      InfoSender::instance()->send(Info(errorString,ListInfo::OMCWARNING2));
     }
     catch(CORBA::Exception&)
     {
-        // if the command is quit() and we get exception just simply quit
-        if (command == "quit()")
-            return QString();
+  // if the command is quit() and we get exception just simply quit
+  if (command == "quit()")
+      return QString();
 
-        QFile::remove(mObjectRefFile);
-        InfoSender::instance()->send(Info(QString("Communication with OMC server has lost ")));
-        return QString();
+  QFile::remove(mObjectRefFile);
+  InfoSender::instance()->send(Info(QString("Communication with OMC server has lost ")));
+  return QString();
     }
     catch( omniORB::fatalException & ex)
     {
-        InfoSender::instance()->debug("Caught omniORB2 fatalException. This is a bug in omniORB");
-        return QString();
+  InfoSender::instance()->debug("Caught omniORB2 fatalException. This is a bug in omniORB");
+  return QString();
     }
     catch( CORBA::COMM_FAILURE &ex)
     {
-        InfoSender::instance()->debug("Caught CORBA::COMM_FAILURE");
-        return QString();
+  InfoSender::instance()->debug("Caught CORBA::COMM_FAILURE");
+  return QString();
     }
     catch (...)
     {
-        InfoSender::instance()->debug("Caught exception");
-        return QString();
+  InfoSender::instance()->debug("Caught exception");
+  return QString();
     }
 
     return getResult();
@@ -1074,53 +1074,53 @@ QString MOomc::evalCommand(QString command,QString &errorString)
 //    if( isStarted )
 //    {
 //eval:
-//        // 2006-02-02 AF, Added try-catch
-//        try
-//        {
-//            delegate_->evalExpression(command );
-//        }
-//        catch( exception &e )
-//        {
-//            exceptionInEval(e);
-//            return;
-//        }
+//  // 2006-02-02 AF, Added try-catch
+//  try
+//  {
+//      delegate_->evalExpression(command );
+//  }
+//  catch( exception &e )
+//  {
+//      exceptionInEval(e);
+//      return;
+//  }
 //
-//        // get result
-//        msg = delegate_->result();
-//        InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
+//  // get result
+//  msg = delegate_->result();
+//  InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
 //
-//        //if(msg.contains("error",Qt::CaseInsensitive))
-//        if(true)
-//        {
-//            // get Error text
-//            try
-//            {
-//                QString getErrorString = "getErrorString()";
-//                delegate_->evalExpression(getErrorString);
-//            }
-//            catch( exception &e )
-//            {
-//                exceptionInEval(e);
-//                return;
-//            }
-//            msg = delegate_->result();
-//            if(msg!="\"\"")
-//                InfoSender::instance()->send(Info(msg,ListInfo::OMCERROR2));
-//        }
+//  //if(msg.contains("error",Qt::CaseInsensitive))
+//  if(true)
+//  {
+//      // get Error text
+//      try
+//      {
+//          QString getErrorString = "getErrorString()";
+//          delegate_->evalExpression(getErrorString);
+//      }
+//      catch( exception &e )
+//      {
+//          exceptionInEval(e);
+//          return;
+//      }
+//      msg = delegate_->result();
+//      if(msg!="\"\"")
+//          InfoSender::instance()->send(Info(msg,ListInfo::OMCERROR2));
+//  }
 //    }
 //    else
 //    {
-//        if( startServer() )
-//        {
-//            msg ="No OMC server started - restarted OMC\n" ;
-//            InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
-//            goto eval;
-//        }
-//        else
-//        {
-//            msg="No OMC server started - unable to restart OMC\n";
-//            InfoSender::instance()->send(  Info(msg,ListInfo::ERROR2));
-//        }
+//  if( startServer() )
+//  {
+//      msg ="No OMC server started - restarted OMC\n" ;
+//      InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
+//      goto eval;
+//  }
+//  else
+//  {
+//      msg="No OMC server started - unable to restart OMC\n";
+//      InfoSender::instance()->send(  Info(msg,ListInfo::ERROR2));
+//  }
 //    }
 //    return;
 //}
@@ -1132,18 +1132,18 @@ QString MOomc::evalCommand(QString command,QString &errorString)
 //    // 2006-0-09 AF, try to reconnect to OMC first.
 //    try
 //    {
-//        msg = "Command did not achieve properly :"+QString( e.what() )+"\n";
-//        msg = msg + "Trying to reconnect...\n";
-//        InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
+//  msg = "Command did not achieve properly :"+QString( e.what() )+"\n";
+//  msg = msg + "Trying to reconnect...\n";
+//  InfoSender::instance()->send( Info(msg,ListInfo::WARNING2));
 
-//        delegate_->closeConnection();
-//        delegate_->reconnect();
-//        evalCommand();
+//  delegate_->closeConnection();
+//  delegate_->reconnect();
+//  evalCommand();
 //    }
 //    catch( exception &e )
 //    {
-//        // unable to reconnect
-//        InfoSender::instance()->send(  Info("Still did not work. Aborting.",ListInfo::ERROR2));
+//  // unable to reconnect
+//  InfoSender::instance()->send(  Info("Still did not work. Aborting.",ListInfo::ERROR2));
 
 //    }
 //}
@@ -1157,10 +1157,10 @@ QStringList MOomc::getDependenciesPaths(QString fileName,bool commentImportPaths
     QFile moFile(fileName);
     if(!moFile.exists())
     {
-        return QStringList();
+  return QStringList();
     }
     if(!moFile.open(QIODevice::ReadOnly))
-        return QStringList();
+  return QStringList();
 
     QTextStream ts(&moFile);
     QString text = ts.readAll();
@@ -1177,31 +1177,31 @@ QStringList MOomc::getDependenciesPaths(QString fileName,bool commentImportPaths
 
     while(index>-1)
     {
-        tmpDep = lines.at(index);
-        tmpDep.remove(QRegExp("[\\s]*import[\\s]*\""));
-        tmpDep.remove(QRegExp("\".*"));
-        importFiles.push_back(tmpDep);
+  tmpDep = lines.at(index);
+  tmpDep.remove(QRegExp("[\\s]*import[\\s]*\""));
+  tmpDep.remove(QRegExp("\".*"));
+  importFiles.push_back(tmpDep);
 
-        if(commentImportPaths)
-        {
-            tmpDep=lines.at(index);
-            tmpDep.insert(0,"//");
-            lines.replace(index,tmpDep);
-        }
+  if(commentImportPaths)
+  {
+      tmpDep=lines.at(index);
+      tmpDep.insert(0,"//");
+      lines.replace(index,tmpDep);
+  }
 
-        index0=index+1;
-        index=lines.indexOf(regExp,index0);
+  index0=index+1;
+  index=lines.indexOf(regExp,index0);
     }
 
 
     if(commentImportPaths && importFiles.size()>0)
     {
-        bool openOk = moFile.open(QIODevice::WriteOnly);
-        QTextStream ts2(&moFile);
+  bool openOk = moFile.open(QIODevice::WriteOnly);
+  QTextStream ts2(&moFile);
 
-        QString newText = lines.join("\n");
-        ts2 << newText;
-        moFile.close();
+  QString newText = lines.join("\n");
+  ts2 << newText;
+  moFile.close();
     }
 
     return importFiles;
@@ -1212,69 +1212,69 @@ void MOomc::loadModel(QString filename,bool force,bool &ok,QString & error)
     bool doLoad = true;
     if(!force)
     {
-        QStringList classLoaded = getClassNames("");
-        int i=0;
-        while(doLoad && i<classLoaded.size())
-        {
-            QFileInfo fileOfClassInOMC = getFileOfClass(classLoaded.at(i));
+  QStringList classLoaded = getClassNames("");
+  int i=0;
+  while(doLoad && i<classLoaded.size())
+  {
+      QFileInfo fileOfClassInOMC = getFileOfClass(classLoaded.at(i));
 
-            if(fileOfClassInOMC == QFileInfo(filename))
-                doLoad = false;
+      if(fileOfClassInOMC == QFileInfo(filename))
+          doLoad = false;
 
-            i++;
-        }
+      i++;
+  }
     }
 
     if(doLoad)
     {
-        // store mo file before modifying it
-        // (imports will be commented)
-        QFile moFile(filename);
-        QFileInfo moFileInfo(filename);
-        QDir moDir(moFileInfo.absolutePath());
-        QString copyPath=filename+"_bkp";
-        moDir.remove(copyPath);
-        moFile.copy(filename+"_bkp");
+  // store mo file before modifying it
+  // (imports will be commented)
+  QFile moFile(filename);
+  QFileInfo moFileInfo(filename);
+  QDir moDir(moFileInfo.absolutePath());
+  QString copyPath=filename+"_bkp";
+  moDir.remove(copyPath);
+  moFile.copy(filename+"_bkp");
 
 
-        // load dependencies
-        QStringList depFiles = getDependenciesPaths(filename,true);
-        for(int i=0;i<depFiles.size();i++)
-        {
-            bool _depOk;
-            QString _depError;
-            loadModel(depFiles.at(i),false,_depOk,_depError);
-        }
+  // load dependencies
+  QStringList depFiles = getDependenciesPaths(filename,true);
+  for(int i=0;i<depFiles.size();i++)
+  {
+      bool _depOk;
+      QString _depError;
+      loadModel(depFiles.at(i),false,_depOk,_depError);
+  }
 
 
-        QString result = loadFileWThread(filename);
+  QString result = loadFileWThread(filename);
 
 
 
-        // Restore file
-        moDir.remove(filename);
-        QFile moCopiedFile(copyPath);
-        moCopiedFile.copy(filename);
+  // Restore file
+  moDir.remove(filename);
+  QFile moCopiedFile(copyPath);
+  moCopiedFile.copy(filename);
 
-        if(result.contains("true",Qt::CaseInsensitive))
-        {
-            InfoSender::instance()->send(Info(ListInfo::MODELLOADSUCCESS,filename));
-            ok = true;
-            error = "";
+  if(result.contains("true",Qt::CaseInsensitive))
+  {
+      InfoSender::instance()->send(Info(ListInfo::MODELLOADSUCCESS,filename));
+      ok = true;
+      error = "";
 
-        }
-        else
-        {
-            ok = false;
-            error = result;
-            InfoSender::instance()->send(Info(ListInfo::MODELLOADFAIL,filename,error));
-        }
+  }
+  else
+  {
+      ok = false;
+      error = result;
+      InfoSender::instance()->send(Info(ListInfo::MODELLOADFAIL,filename,error));
+  }
     }
     else
     {
-        InfoSender::instance()->send( Info(QString("Model file already loaded - ignoring. (" + filename + ")"),ListInfo::NORMAL2));
-        ok = true;
-        error = "";
+  InfoSender::instance()->send( Info(QString("Model file already loaded - ignoring. (" + filename + ")"),ListInfo::NORMAL2));
+  ok = true;
+  error = "";
     }
 
     InfoSender::eraseCurrentTask();
@@ -1285,7 +1285,7 @@ QStringList MOomc::loadFiles(const QStringList & filePaths)
     QStringList result;
     for(int i=0;i<filePaths.size();i++)
     {
-        result.push_back(loadFile(filePaths.at(i)));
+  result.push_back(loadFile(filePaths.at(i)));
     }
     return result;
 }
@@ -1304,8 +1304,8 @@ QString MOomc::loadFile(const QString & filePath)
     // if file is not in UTF-8, try with another encoding
     if(result.contains("false",Qt::CaseInsensitive) && errorString.contains("The file was not encoded in UTF-8"))
     {
-        cmd = QString("loadFile(\"") + localFile + QString("\",encoding=\"ISO-8859-1\")");
-        result = evalCommand(cmd);
+  cmd = QString("loadFile(\"") + localFile + QString("\",encoding=\"ISO-8859-1\")");
+  result = evalCommand(cmd);
     }
 
     emit loadedFile(localFile,result);
@@ -1320,8 +1320,8 @@ QString MOomc::loadFileWThread(QString filePath)
     loader->run(); // avoid thread separation. Does not work properly yet...
     while (loader->isRunning())
     {
-        InfoSender::instance()->sendNormal("refreshing");
-        qApp->processEvents();
+  InfoSender::instance()->sendNormal("refreshing");
+  qApp->processEvents();
     }
 
     QString result = loader->_result;
@@ -1335,10 +1335,10 @@ QString MOomc::loadFileWThread(QString filePath)
 void MOomc::loadStandardLibrary(QString path)
 {
     if(path.isEmpty())
-        evalCommand("loadModel(Modelica)");
+  evalCommand("loadModel(Modelica)");
     else
     {
-        loadFile(path);
+  loadFile(path);
     }
     //evalCommand("loadModel(ModelicaServices)");
 
@@ -1352,7 +1352,7 @@ void MOomc::loadStandardLibrary(QString path)
 void MOomc::clear()
 {
     if(isStarted())
-        evalCommand("clear()");
+  evalCommand("clear()");
 
     initTempDirectory();
 }
@@ -1363,12 +1363,12 @@ void MOomc::exit()
     // check if omc is running, if so: ask if it is ok that omc also closes.
     try
     {
-        if( mHasInitialized )
-        {
-            // delegate_->closeConnection();
-            // delegate_->reconnect();
-            stopServer();
-        }
+  if( mHasInitialized )
+  {
+      // delegate_->closeConnection();
+      // delegate_->reconnect();
+      stopServer();
+  }
     }
     catch(exception e)
     {}
@@ -1385,94 +1385,94 @@ bool MOomc::startServer()
 {
     try
     {
-        QString msg;
-        const char *omhome = getenv("OPENMODELICAHOME");
-        QString omcPath;
+  QString msg;
+  const char *omhome = getenv("OPENMODELICAHOME");
+  QString omcPath;
 #ifdef WIN32
-        if (!omhome)
-        {
-            InfoSender::instance()->send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
-            return false;
-        }
-        omcPath = QString( omhome ) + "bin/omc.exe";
+  if (!omhome)
+  {
+      InfoSender::instance()->send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
+      return false;
+  }
+  omcPath = QString( omhome ) + "bin/omc.exe";
 #else /* unix */
-        omcPath = (omhome ? QString(omhome)+"bin/omc" : QString(CONFIG_DEFAULT_OPENMODELICAHOME) + "/bin/omc");
+  omcPath = (omhome ? QString(omhome)+"bin/omc" : QString(CONFIG_DEFAULT_OPENMODELICAHOME) + "/bin/omc");
 #endif
 
-        // Check the IOR file created by omc.exe
-        QFile objectRefFile;
-        QString fileIdentifier;
-        fileIdentifier = qApp->sessionId().append(QTime::currentTime().toString(tr("hh:mm:ss:zzz")).remove(":"));
+  // Check the IOR file created by omc.exe
+  QFile objectRefFile;
+  QString fileIdentifier;
+  fileIdentifier = qApp->sessionId().append(QTime::currentTime().toString(tr("hh:mm:ss:zzz")).remove(":"));
 
 #ifdef WIN32 // Win32
-        objectRefFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.objid.").append(this->mName).append(fileIdentifier));
+  objectRefFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.objid.").append(this->mName).append(fileIdentifier));
 #else // UNIX environment
-        char *user = getenv("USER");
-        if (!user) { user = "nobody"; }
-        objectRefFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(QString(user)).append(".objid.").append(this->mName).append(fileIdentifier));
+  char *user = getenv("USER");
+  if (!user) { user = "nobody"; }
+  objectRefFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(QString(user)).append(".objid.").append(this->mName).append(fileIdentifier));
 #endif
 
-        if (objectRefFile.exists())
-            objectRefFile.remove();
+  if (objectRefFile.exists())
+      objectRefFile.remove();
 
-        mObjectRefFile = objectRefFile.fileName();
+  mObjectRefFile = objectRefFile.fileName();
 
 
-        // Start the omc.exe
-        QStringList parameters;
-        parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba");
-        QProcess *omcProcess = new QProcess();
-        QFile omcOutputFile;
+  // Start the omc.exe
+  QStringList parameters;
+  parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba");
+  QProcess *omcProcess = new QProcess();
+  QFile omcOutputFile;
 #ifdef WIN32 // Win32
-        omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
+  omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
 #else // UNIX environment
-        omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(( QString(user))).append(".omc.output.").append(mName));
+  omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(( QString(user))).append(".omc.output.").append(mName));
 #endif
-        omcProcess->setProcessChannelMode(QProcess::MergedChannels);
-        omcProcess->setStandardOutputFile(omcOutputFile.fileName());
-        omcProcess->start(omcPath, parameters);
-        // wait for the server to start.
-        int ticks = 0;
-        while (!objectRefFile.exists())
-        {
-            SleeperThread::msleep(1000);
-            ticks++;
-            if (ticks > 20)
-            {
-                msg = "Unable to find " + OMCHelper::applicationName + " server, Object reference file " + mObjectRefFile + " not created.";
-                throw std::runtime_error(msg.toStdString());
-            }
-        }
+  omcProcess->setProcessChannelMode(QProcess::MergedChannels);
+  omcProcess->setStandardOutputFile(omcOutputFile.fileName());
+  omcProcess->start(omcPath, parameters);
+  // wait for the server to start.
+  int ticks = 0;
+  while (!objectRefFile.exists())
+  {
+      SleeperThread::msleep(1000);
+      ticks++;
+      if (ticks > 20)
+      {
+          msg = "Unable to find " + OMCHelper::applicationName + " server, Object reference file " + mObjectRefFile + " not created.";
+          throw std::runtime_error(msg.toStdString());
+      }
+  }
 
-        // ORB initialization.
-        int argc = 2;
-        static const char *argv[] = { "-ORBgiopMaxMsgSize", "10485760" };
-        CORBA::ORB_var orb = CORBA::ORB_init(argc, (char **)argv);
+  // ORB initialization.
+  int argc = 2;
+  static const char *argv[] = { "-ORBgiopMaxMsgSize", "10485760" };
+  CORBA::ORB_var orb = CORBA::ORB_init(argc, (char **)argv);
 
-        objectRefFile.open(QIODevice::ReadOnly);
+  objectRefFile.open(QIODevice::ReadOnly);
 
-        char buf[1024];
-        objectRefFile.readLine( buf, sizeof(buf) );
-        QString uri( (const char*)buf );
+  char buf[1024];
+  objectRefFile.readLine( buf, sizeof(buf) );
+  QString uri( (const char*)buf );
 
-        CORBA::Object_var obj = orb->string_to_object(uri.trimmed().toLatin1());
+  CORBA::Object_var obj = orb->string_to_object(uri.trimmed().toLatin1());
 
-        mOMC = OmcCommunication::_narrow(obj);
-        mHasInitialized = true;
+  mOMC = OmcCommunication::_narrow(obj);
+  mHasInitialized = true;
     }
     catch(std::exception &e)
     {
-        QString msg = e.what();
-        InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
-        mHasInitialized = false;
-        return false;
+  QString msg = e.what();
+  InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
+  mHasInitialized = false;
+  return false;
     }
     catch (CORBA::Exception&)
     {
-        QString msg = "Unable to communicate with OMC";
-        InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
-        mHasInitialized = false;
-        return false;
+  QString msg = "Unable to communicate with OMC";
+  InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
+  mHasInitialized = false;
+  return false;
     }
 
     evalCommand("getInstallationDirectoryPath()");
@@ -1497,21 +1497,21 @@ void MOomc::initTempDirectory()
     QString cdResult;
     if (!QDir().exists(tmpPath))
     {
-        if (LowTools::mkpath(tmpPath,false))
-            cdResult = changeDirectory(tmpPath);
+  if (LowTools::mkpath(tmpPath,false))
+      cdResult = changeDirectory(tmpPath);
     }
     else
-        cdResult = changeDirectory(tmpPath);
+  cdResult = changeDirectory(tmpPath);
 }
 
 void MOomc::stopServer()
 {
     if(isStarted())
-        //  if( delegate_ )
+  //  if( delegate_ )
     {
-        QString quit = "quit()";
-        mOMC->sendExpression( quit.toLatin1() );
-        InfoSender::instance()->send( Info("Quiting OMC...",ListInfo::NORMAL2));
+  QString quit = "quit()";
+  mOMC->sendExpression( quit.toLatin1() );
+  InfoSender::instance()->send( Info("Quiting OMC...",ListInfo::NORMAL2));
     }
     mHasInitialized = false;
 }
@@ -1536,12 +1536,12 @@ QString MOomc::changeDirectory(QString directory)
     QString correctedDir = QDir(directory).absolutePath();
     if (correctedDir.isEmpty())
     {
-        evalCommand("cd()");
+  evalCommand("cd()");
     }
     else
     {
-        correctedDir = correctedDir.replace("\\", "/");
-        evalCommand("cd(\"" + correctedDir + "\")");
+  correctedDir = correctedDir.replace("\\", "/");
+  evalCommand("cd(\"" + correctedDir + "\")");
     }
     return getResult();
 }
@@ -1569,8 +1569,8 @@ QFileInfo MOomc::getFileOfClass(QString _className)
 
     if(res.compare("Error",Qt::CaseInsensitive))
     {
-        filePath = res.section(",",2,2);
-        filePath.remove("\"");
+  filePath = res.section(",",2,2);
+  filePath.remove("\"");
     }
 
     return QFileInfo(filePath);
@@ -1596,10 +1596,10 @@ QStringList MOomc::getClassesOfFile(QString _fileName)
 
     for(int i=0;i<loadedClasses.size();i++)
     {
-        fileInfo2 = QFileInfo(getFileOfClass(loadedClasses.at(i)));
+  fileInfo2 = QFileInfo(getFileOfClass(loadedClasses.at(i)));
 
-        if(fileInfo.absoluteFilePath()==fileInfo2.absoluteFilePath())
-            fileClasses.append(loadedClasses.at(i));
+  if(fileInfo.absoluteFilePath()==fileInfo2.absoluteFilePath())
+      fileClasses.append(loadedClasses.at(i));
     }
 
     return fileClasses;
@@ -1618,9 +1618,9 @@ void MOomc::getInheritedComponents(QString parentClass, QStringList & names, QSt
     //call to getContainedComponents which will call this function (recursive algorithm)
     for(int i=0;i<nbInheritance;i++)
     {
-        getContainedComponents(firstInheritedClasses.at(i),curNames,curClasses);
-        names<<curNames;
-        classes<<curClasses;
+  getContainedComponents(firstInheritedClasses.at(i),curNames,curClasses);
+  names<<curNames;
+  classes<<curClasses;
     }
 }
 
@@ -1630,15 +1630,15 @@ QStringList MOomc::getElementInfos(QString parentClass)
     QString res = evalCommand("getElementsInfo("+parentClass+")");
     QStringList list;
     if(res == "Error" || res.size()<=2)
-        return QStringList();
+  return QStringList();
     else
     {
-        res.remove("{");
-        res.remove("}");
-        res.remove(")");
-        list = res.split("rec(",QString::SkipEmptyParts);
+  res.remove("{");
+  res.remove("}");
+  res.remove(")");
+  list = res.split("rec(",QString::SkipEmptyParts);
 
-        LowTools::removeWhiteSpaceStrings(list);
+  LowTools::removeWhiteSpaceStrings(list);
     }
 
     return list;
@@ -1667,62 +1667,62 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
 
     for(int iEl=0; iEl<elementsInfos.size();iEl++)
     {
-        elementInfos = elementsInfos.at(iEl);
-        fields = elementInfos.split(",");
+  elementInfos = elementsInfos.at(iEl);
+  fields = elementInfos.split(",");
 
-        // get element type
-        type = getValueFromElementInfo(elementInfos,"elementtype");
+  // get element type
+  type = getValueFromElementInfo(elementInfos,"elementtype");
 
-        // Package or Model
-        if(type=="classdef")
-        {
-            //get classrestriction (MODEL or PACKAGE or RECORD)
-            QString restr = getValueFromElementInfo(elementInfos,"classrestriction");
+  // Package or Model
+  if(type=="classdef")
+  {
+      //get classrestriction (MODEL or PACKAGE or RECORD)
+      QString restr = getValueFromElementInfo(elementInfos,"classrestriction");
 
-            //get classname
-            QString className = getValueFromElementInfo(elementInfos,"classname");
+      //get classname
+      QString className = getValueFromElementInfo(elementInfos,"classname");
 
-            //add it
-            if(restr.contains("MODEL"))
-            {
-                modelsClasses.push_back(className);
-                QString msg;
-                msg.sprintf("Adding model: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
-                InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
-            }
-            if(restr.contains("PACKAGE"))
-            {
-                packagesClasses.push_back(className);
-                QString msg;
-                msg.sprintf("Adding package: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
-                InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
-            }
-            if(restr.contains("RECORD"))
-            {
-                recordNames.push_back(className);
-                QString msg;
-                msg.sprintf("Adding record: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
-                InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
-            }
+      //add it
+      if(restr.contains("MODEL"))
+      {
+          modelsClasses.push_back(className);
+          QString msg;
+          msg.sprintf("Adding model: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
+          InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
+      }
+      if(restr.contains("PACKAGE"))
+      {
+          packagesClasses.push_back(className);
+          QString msg;
+          msg.sprintf("Adding package: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
+          InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
+      }
+      if(restr.contains("RECORD"))
+      {
+          recordNames.push_back(className);
+          QString msg;
+          msg.sprintf("Adding record: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
+          InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
+      }
 
 
-        }
+  }
 
-        // Component
-        if(type=="component")
-        {
-            //get component class
-            compClass = getValueFromElementInfo(elementInfos,"typename");
+  // Component
+  if(type=="component")
+  {
+      //get component class
+      compClass = getValueFromElementInfo(elementInfos,"typename");
 
-            //get classname
-            compName = getValueFromElementInfo(elementInfos,"names");
-            compName.remove("{");
-            compName.remove("}");
-            compName = compName.split(",").at(0);
+      //get classname
+      compName = getValueFromElementInfo(elementInfos,"names");
+      compName.remove("{");
+      compName.remove("}");
+      compName = compName.split(",").at(0);
 
-            compsClasses.push_back(compClass);
-            compsNames.push_back(compName);
-        }
+      compsClasses.push_back(compClass);
+      compsNames.push_back(compName);
+  }
 
     }
 }
@@ -1736,20 +1736,20 @@ QString MOomc::getValueFromElementInfo(QString elementInfoLine,QString fieldName
     int iField=fields.indexOf(regExp);
     if(iField>-1)
     {
-        try{
-            QString value = fields.at(iField).section("=",1,1);
+  try{
+      QString value = fields.at(iField).section("=",1,1);
 
-            // removing whitespaces for non-path fields
-            if(value.indexOf("\"")==-1)
-            {
-                value.remove(" ");
-            }
-            return value;
-        }
-        catch(std::exception &e)
-        {
-            return QString();
-        }
+      // removing whitespaces for non-path fields
+      if(value.indexOf("\"")==-1)
+      {
+          value.remove(" ");
+      }
+      return value;
+  }
+  catch(std::exception &e)
+  {
+      return QString();
+  }
     }
     return QString();
 }

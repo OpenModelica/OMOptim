@@ -102,34 +102,34 @@ class WidgetTable : public QWidget
 public:
     WidgetTable(QAbstractItemModel *vector,QWidget *parent) :QWidget(parent)
     {
-        _vector = vector;
-        this->setLocale(QLocale::C);
+  _vector = vector;
+  this->setLocale(QLocale::C);
 
-        // Layouts
-        _allLayout = new QGridLayout(this);
-        this->setLayout(_allLayout);
+  // Layouts
+  _allLayout = new QGridLayout(this);
+  this->setLayout(_allLayout);
 
-        // variables table
-        _table = new MOTableView(this);
-        _table->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+  // variables table
+  _table = new MOTableView(this);
+  _table->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
 
-        GuiTools::ModelToView(vector,_table);
-        //GuiTools::minimizeTableSize(_table);
-        _allLayout->addWidget(_table);
+  GuiTools::ModelToView(vector,_table);
+  //GuiTools::minimizeTableSize(_table);
+  _allLayout->addWidget(_table);
     }
 
     QList<int> selectedRows()
     {
-        QList<int> result;
-        QModelIndexList indexes = _table->selectionModel()->selectedIndexes();
-        for(int i=0;i<indexes.size();i++)
-        {
-            if(!result.contains(indexes.at(i).row()))
-                result.push_back(indexes.at(i).row());
-        }
-        result.removeAll(-1);
-        return result;
+  QList<int> result;
+  QModelIndexList indexes = _table->selectionModel()->selectedIndexes();
+  for(int i=0;i<indexes.size();i++)
+  {
+      if(!result.contains(indexes.at(i).row()))
+          result.push_back(indexes.at(i).row());
+  }
+  result.removeAll(-1);
+  return result;
     }
 
 public:

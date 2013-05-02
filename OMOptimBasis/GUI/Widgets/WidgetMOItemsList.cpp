@@ -74,14 +74,14 @@ void WidgetMOItemsList::onIndexChanged()
     QModelIndex index = _ui->listItems->currentIndex();
 
     if(!index.isValid())
-        _itemModel->setMOItem(NULL);
+  _itemModel->setMOItem(NULL);
 
 
     MOItem* item = static_cast<MOItem*>(index.internalPointer());
     if(item)
-        _itemModel->setMOItem(item);
+  _itemModel->setMOItem(item);
     else
-        _itemModel->setMOItem(NULL);
+  _itemModel->setMOItem(NULL);
 
     _itemView->setModel(NULL);
     _itemView->setModel(_itemModel);

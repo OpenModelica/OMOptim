@@ -44,11 +44,11 @@
 BlockDrawItem::BlockDrawItem(QString _comp,int _type) : QWidget()
 {
     type = _type;
-        componentName = _comp;
+  componentName = _comp;
 
     build();
 
-        label->setText(componentName);
+  label->setText(componentName);
 
 
     ////rectangle

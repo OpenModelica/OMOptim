@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file OptimAlgosList.h
+  @file OptimAlgosList.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
@@ -59,11 +59,11 @@ public :
 
     enum Type
     {
-        iSPEA2Adapt,
-        iNSGA2,
-        iSPEA2,
-        iSA1,
-        iPSO
+  iSPEA2Adapt,
+  iNSGA2,
+  iSPEA2,
+  iSA1,
+  iPSO
     };
 
     static OptimAlgo* getNewAlgo(Project* project,Problem* problem,Type iAlgo);

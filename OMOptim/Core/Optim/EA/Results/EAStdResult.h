@@ -60,15 +60,15 @@ template<class EOT> class EAStdResult
 {
 public :
     inline static OptimResult* buildOptimResult(Project*,Optimization* ,/*QList<BlockSubstitutions*>,*/
-                                                moeoUnboundedArchive<EOT> & arch);
+                                          moeoUnboundedArchive<EOT> & arch);
 };
 
 template<class EOT>
 OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* problem,/*QList<BlockSubstitutions*> subBlocks,*/
-                                                moeoUnboundedArchive<EOT> & arch)
+                                          moeoUnboundedArchive<EOT> & arch)
 {
     if(arch.size()==0)
-        return NULL;
+  return NULL;
 
 
     OptimResult *result = new OptimResult(project,*problem);
@@ -89,13 +89,13 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     VariableResult *curRecompVar;
     for(int iM=0;iM<problem->models().size();iM++)
     {
-        ModelPlus* modelPlus = project->modelPlus(problem->models().at(iM));
-        for (int i=0;i< modelPlus->variables()->size();i++)
-        {
-            curRecompVar = new VariableResult(*modelPlus->variables()->at(i));
-            curRecompVar->clearFinalValues();
-            result->recomputedVariables()->addItem(curRecompVar);
-        }
+  ModelPlus* modelPlus = project->modelPlus(problem->models().at(iM));
+  for (int i=0;i< modelPlus->variables()->size();i++)
+  {
+      curRecompVar = new VariableResult(*modelPlus->variables()->at(i));
+      curRecompVar->clearFinalValues();
+      result->recomputedVariables()->addItem(curRecompVar);
+  }
     }
 
     // define optVariableResult from optVariables
@@ -105,11 +105,11 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     int nbOptVar = problem->optimizedVariables()->size();
     for (int iOptVar = 0; iOptVar < nbOptVar; iOptVar++)
     {
-        curOptVarRes = new VariableResult(*problem->optimizedVariables()->at(iOptVar));
-        curOptVarRes->clearFinalValues();
-        result->optVariablesResults()->addItem(curOptVarRes);
-        if(!result->recomputedVariables()->findItem(curOptVarRes->name(Variable::FULL)))
-            result->recomputedVariables()->addItem(curOptVarRes->clone());
+  curOptVarRes = new VariableResult(*problem->optimizedVariables()->at(iOptVar));
+  curOptVarRes->clearFinalValues();
+  result->optVariablesResults()->addItem(curOptVarRes);
+  if(!result->recomputedVariables()->findItem(curOptVarRes->name(Variable::FULL)))
+      result->recomputedVariables()->addItem(curOptVarRes->clone());
     }
 
     // define optObjectiveResult from optObjective
@@ -118,22 +118,22 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     int nbOptObj = problem->objectives()->size();
     for (int iOptObj = 0; iOptObj < nbOptObj; iOptObj++)
     {
-        curOptObjRes = new VariableResult(*problem->objectives()->at(iOptObj));
-        curOptObjRes->clearFinalValues();
-        result->optObjectivesResults()->addItem(curOptObjRes);
-        if(!result->recomputedVariables()->findItem(curOptObjRes->name(Variable::FULL)))
-            result->recomputedVariables()->addItem(curOptObjRes->clone());
+  curOptObjRes = new VariableResult(*problem->objectives()->at(iOptObj));
+  curOptObjRes->clearFinalValues();
+  result->optObjectivesResults()->addItem(curOptObjRes);
+  if(!result->recomputedVariables()->findItem(curOptObjRes->name(Variable::FULL)))
+      result->recomputedVariables()->addItem(curOptObjRes->clone());
     }
 
     // and add savedVariables in recomputedVariables if not present
     int nbSavedVars= problem->savedVars()->size();
     for (int iSavVar = 0; iSavVar < nbSavedVars; iSavVar++)
     {
-        curOptVarRes = new VariableResult(*problem->savedVars()->at(iSavVar));
-        curOptVarRes->clearFinalValues();
-        if(!result->recomputedVariables()->findItem(curOptVarRes->name(Variable::FULL)))
-            result->recomputedVariables()->addItem(curOptVarRes->clone());
-        delete curOptVarRes;
+  curOptVarRes = new VariableResult(*problem->savedVars()->at(iSavVar));
+  curOptVarRes->clearFinalValues();
+  if(!result->recomputedVariables()->findItem(curOptVarRes->name(Variable::FULL)))
+      result->recomputedVariables()->addItem(curOptVarRes->clone());
+  delete curOptVarRes;
     }
 
 
@@ -156,61 +156,61 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
 
     for(int iVar=0; iVar<nbOptVar; iVar++)
     {
-        curOptVar = problem->optimizedVariables()->at(iVar);
-        corrVar = result->recomputedVariables()->findItem(curOptVar->name());
+  curOptVar = problem->optimizedVariables()->at(iVar);
+  corrVar = result->recomputedVariables()->findItem(curOptVar->name());
 
-        if(iCorrRecompVar<0)
-        {
-            QString msg;
-            msg.sprintf("Unable to find variable %s for filling result",curOptVar->name().utf16());
-            InfoSender::instance()->debug(msg);
-        }
-        else
-        {
-            int dataType = curOptVar->getFieldValue(OptVariable::DATATYPE).toInt();
+  if(iCorrRecompVar<0)
+  {
+      QString msg;
+      msg.sprintf("Unable to find variable %s for filling result",curOptVar->name().utf16());
+      InfoSender::instance()->debug(msg);
+  }
+  else
+  {
+      int dataType = curOptVar->getFieldValue(OptVariable::DATATYPE).toInt();
 
-            //For each result point
-            for(int iPoint=0;iPoint<arch.size();iPoint++)
-            {
-                curResultPoint = &arch.at(iPoint);
+      //For each result point
+      for(int iPoint=0;iPoint<arch.size();iPoint++)
+      {
+          curResultPoint = &arch.at(iPoint);
 
-                switch(dataType)
-                {
-                case OMREAL:
-                    result->optVariablesResults()->at(iVar)->setFinalValue(0,iPoint,
-                                curResultPoint->doubleVars.at(iDouble),true);
-                    corrVar->setFinalValue(0,iPoint,
-                                curResultPoint->doubleVars.at(iDouble),true);
-                    break;
-                case OMINTEGER:
-                    result->optVariablesResults()->at(iVar)->setFinalValue(0,iPoint,
-                                (double)curResultPoint->intVars.at(iInt),true);
-                    corrVar->setFinalValue(0,iPoint,
-                                (double)curResultPoint->intVars.at(iInt),true);
-                    break;
-                case OMBOOLEAN:
-                    result->optVariablesResults()->at(iVar)->setFinalValue(0,iPoint,
-                                (double)curResultPoint->boolVars.at(iBool),true);
-                    corrVar->setFinalValue(0,iPoint,
-                                (double)curResultPoint->boolVars.at(iBool),true);
-                    break;
-                }
-            }
+          switch(dataType)
+          {
+          case OMREAL:
+              result->optVariablesResults()->at(iVar)->setFinalValue(0,iPoint,
+                          curResultPoint->doubleVars.at(iDouble),true);
+              corrVar->setFinalValue(0,iPoint,
+                          curResultPoint->doubleVars.at(iDouble),true);
+              break;
+          case OMINTEGER:
+              result->optVariablesResults()->at(iVar)->setFinalValue(0,iPoint,
+                          (double)curResultPoint->intVars.at(iInt),true);
+              corrVar->setFinalValue(0,iPoint,
+                          (double)curResultPoint->intVars.at(iInt),true);
+              break;
+          case OMBOOLEAN:
+              result->optVariablesResults()->at(iVar)->setFinalValue(0,iPoint,
+                          (double)curResultPoint->boolVars.at(iBool),true);
+              corrVar->setFinalValue(0,iPoint,
+                          (double)curResultPoint->boolVars.at(iBool),true);
+              break;
+          }
+      }
 
-            // increasing index
-            switch(dataType)
-            {
-            case OMREAL:
-                iDouble++;
-                break;
-            case OMINTEGER:
-                iInt++;
-                break;
-            case OMBOOLEAN:
-                iBool++;
-                break;
-            }
-        }
+      // increasing index
+      switch(dataType)
+      {
+      case OMREAL:
+          iDouble++;
+          break;
+      case OMINTEGER:
+          iInt++;
+          break;
+      case OMBOOLEAN:
+          iBool++;
+          break;
+      }
+  }
     }
 
 
@@ -221,11 +221,11 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
 //    // *******************************************************************
 //    if(subBlocks.size()>0)
 //    {
-//        for(int i=0;i<arch.size();i++)
-//        {
-//            curResultPoint = &arch.at(i);
-//            result->_iSubModels.push_back(curResultPoint->intVars.at(curResultPoint->intVars.size()-1));
-//        }
+//  for(int i=0;i<arch.size();i++)
+//  {
+//      curResultPoint = &arch.at(i);
+//      result->_iSubModels.push_back(curResultPoint->intVars.at(curResultPoint->intVars.size()-1));
+//  }
 //    }
 
     // *******************************************************************
@@ -237,29 +237,29 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     VariableResult* curObjResult;
     for(int iObj=0;iObj<nbObj;iObj++)
     {
-        curObjResult = result->optObjectivesResults()->at(iObj);
-        corrVar = result->recomputedVariables()->findItem(curObjResult->name());
-        if(iCorrRecompVar<0)
-        {
-            QString msg;
-            msg.sprintf("Unable to find objective %s in in recomputed variables",curObjResult->name().utf16());
-            InfoSender::instance()->debug(msg);
-        }
-        else
-        {
-            qDebug(QString("Found recomp value of obj " + curObjResult->name()).toLatin1().data());
-            for(int iPoint=0;iPoint<arch.size();iPoint++)
-            {
-                curResultPoint = &arch.at(iPoint);
-                resObjVector = curResultPoint->objectiveVector();
-                result->optObjectivesResults()->at(iObj)->setFinalValue(0,iPoint,resObjVector.at(iObj),true);
-                if(fillRecompValues)
-                {
-                    qDebug(QString("Fill Recomp value of obj " + curObjResult->name()).toLatin1().data());
-                    corrVar->setFinalValue(0,iPoint,resObjVector.at(iObj),true);
-                }
-            }
-        }
+  curObjResult = result->optObjectivesResults()->at(iObj);
+  corrVar = result->recomputedVariables()->findItem(curObjResult->name());
+  if(iCorrRecompVar<0)
+  {
+      QString msg;
+      msg.sprintf("Unable to find objective %s in in recomputed variables",curObjResult->name().utf16());
+      InfoSender::instance()->debug(msg);
+  }
+  else
+  {
+      qDebug(QString("Found recomp value of obj " + curObjResult->name()).toLatin1().data());
+      for(int iPoint=0;iPoint<arch.size();iPoint++)
+      {
+          curResultPoint = &arch.at(iPoint);
+          resObjVector = curResultPoint->objectiveVector();
+          result->optObjectivesResults()->at(iObj)->setFinalValue(0,iPoint,resObjVector.at(iObj),true);
+          if(fillRecompValues)
+          {
+              qDebug(QString("Fill Recomp value of obj " + curObjResult->name()).toLatin1().data());
+              corrVar->setFinalValue(0,iPoint,resObjVector.at(iObj),true);
+          }
+      }
+  }
     }
 
     // *******************************************************************
@@ -269,19 +269,19 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
     Variable* curVar;
     for(int iSavedVar=0;iSavedVar<nbSavedVars;iSavedVar++)
     {
-        curVar = problem->savedVars()->at(iSavedVar);
-        corrVar = result->recomputedVariables()->findItem(curVar->name());
-        if(iCorrRecompVar>-1)
-        {
-            for(int iPoint=0;iPoint<arch.size();iPoint++)
-            {
-                curResultPoint = &arch.at(iPoint);
-                if(fillRecompValues)
-                {
-                    corrVar->setFinalValue(0,iPoint,curResultPoint->savedVars.at(iSavedVar),true);
-                }
-            }
-        }
+  curVar = problem->savedVars()->at(iSavedVar);
+  corrVar = result->recomputedVariables()->findItem(curVar->name());
+  if(iCorrRecompVar>-1)
+  {
+      for(int iPoint=0;iPoint<arch.size();iPoint++)
+      {
+          curResultPoint = &arch.at(iPoint);
+          if(fillRecompValues)
+          {
+              corrVar->setFinalValue(0,iPoint,curResultPoint->savedVars.at(iSavedVar),true);
+          }
+      }
+  }
     }
 
     result->setSuccess(true);

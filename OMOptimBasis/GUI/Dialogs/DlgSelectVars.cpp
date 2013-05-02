@@ -48,9 +48,9 @@ DlgSelectVars::DlgSelectVars(MOVector<Variable>* variables,MOVector<Variable>* a
     _useOpt = false;
     _variables = variables;
     if(alreadySelected)
-        _selectedVars=alreadySelected;
+  _selectedVars=alreadySelected;
     else
-        _selectedVars=new MOVector<Variable>(false);
+  _selectedVars=new MOVector<Variable>(false);
 
     QGridLayout* allLayout = new QGridLayout(this);
     QGridLayout* varLayout = new QGridLayout(this);
@@ -77,9 +77,9 @@ DlgSelectVars::DlgSelectVars(MOVector<Variable> * variables, QList<VariableCausa
     _variables = variables;
 
     if(alreadySelected)
-        _selectedVars=alreadySelected;
+  _selectedVars=alreadySelected;
     else
-        _selectedVars=new MOVector<Variable>(false);
+  _selectedVars=new MOVector<Variable>(false);
 
     QGridLayout* allLayout = new QGridLayout(this);
     QGridLayout* varLayout = new QGridLayout(this);
@@ -105,9 +105,9 @@ DlgSelectVars::DlgSelectVars(MOOptVector* variables,MOOptVector* alreadySelected
     _useOpt = true;
     _optVariables = variables;
     if(alreadySelected)
-        _selectedOptVars=alreadySelected;
+  _selectedOptVars=alreadySelected;
     else
-        _selectedOptVars=new MOOptVector(false,true,true,this);
+  _selectedOptVars=new MOOptVector(false,true,true,this);
 
 
     QGridLayout* allLayout = new QGridLayout(this);
@@ -135,9 +135,9 @@ DlgSelectVars::DlgSelectVars(MOOptVector* variables,MOOptVector* alreadySelected
 void DlgSelectVars::pushedOk()
 {
     if(_useOpt)
-        _selectedOptVars = widgetSelectVars->getSelectedOptVars();
+  _selectedOptVars = widgetSelectVars->getSelectedOptVars();
     else
-        _selectedVars = widgetSelectVars->getSelectedVars();
+  _selectedVars = widgetSelectVars->getSelectedVars();
     accept();
 }
 
@@ -150,27 +150,27 @@ MOVector<Variable>* DlgSelectVars::getSelectedVars(MOVector<Variable>* allVariab
 {
     DlgSelectVars dlg(allVariables,alreadySelected);
     if(dlg.exec()==QDialog::Accepted)
-        return dlg._selectedVars;
+  return dlg._selectedVars;
     else
-        return alreadySelected;
+  return alreadySelected;
 }
 
 MOVector<Variable> *DlgSelectVars::getSelectedVars(MOVector<Variable> * allVariables,
-                                                   QList<VariableCausality> causalities,
-                                                   MOVector<Variable>* alreadySelected)
+                                             QList<VariableCausality> causalities,
+                                             MOVector<Variable>* alreadySelected)
 {
     DlgSelectVars dlg(allVariables,causalities,alreadySelected);
     if(dlg.exec()==QDialog::Accepted)
-        return dlg._selectedVars;
+  return dlg._selectedVars;
     else
-        return alreadySelected;
+  return alreadySelected;
 }
 
 MOOptVector* DlgSelectVars::getSelectedOptVars(MOOptVector * allOptVariables,MOOptVector *alreadySelected)
 {
     DlgSelectVars dlg(allOptVariables,alreadySelected);
     if(dlg.exec()==QDialog::Accepted)
-        return dlg._selectedOptVars;
+  return dlg._selectedOptVars;
     else
-        return alreadySelected;
+  return alreadySelected;
 }

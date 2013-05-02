@@ -204,10 +204,10 @@ Result* SA1::launch(QString tempDir)
 
 
     /* =========================================================
-            *
-            * Parameters
-            *
-            * ========================================================= */
+      *
+      * Parameters
+      *
+      * ========================================================= */
 
     // First define a parser from the command-line arguments
     eoParser parser(argc, argv);
@@ -231,19 +231,19 @@ Result* SA1::launch(QString tempDir)
     // do the following AFTER ALL PARAMETERS HAVE BEEN PROCESSED
     // i.e. in case you need parameters somewhere else, postpone these
     if (parser.userNeedsHelp()) {
-        parser.printHelp(cout);
-        exit(1);
+  parser.printHelp(cout);
+  exit(1);
     }
     if (statusParam.value() != "") {
-        ofstream os(statusParam.value().c_str());
-        os << parser;// and you can use that file as parameter file
+  ofstream os(statusParam.value().c_str());
+  os << parser;// and you can use that file as parameter file
     }
 
     /* =========================================================
-             *
-             * Random seed
-             *
-             * ========================================================= */
+       *
+       * Random seed
+       *
+       * ========================================================= */
 
     //reproducible random seed: if you don't change SEED above,
     // you'll always get the same result, NOT a random run
@@ -251,8 +251,8 @@ Result* SA1::launch(QString tempDir)
 
 
     /************************************
-                BOUNDS
-                ************************************/
+          BOUNDS
+          ************************************/
     std::vector<eoRealInterval> doubleBounds;
     std::vector<eoIntInterval> intBounds;
     int nbDouble=0,nbInt=0,nbBool=0;
@@ -261,18 +261,18 @@ Result* SA1::launch(QString tempDir)
     EAStdBounds::setBounds((Optimization*)_problem,/*_subModels,*/doubleBounds,intBounds,nbDouble,nbInt,nbBool);
 
     /************************************
-                PROGRESS
-                ************************************/
+          PROGRESS
+          ************************************/
     OMEAProgress* omEAProgress = new OMEAProgress();
     connect(omEAProgress,SIGNAL(newProgress(float)),_problem,SIGNAL(newProgress(float)));
     connect(omEAProgress,SIGNAL(newProgress(float,int,int)),_problem,SIGNAL(newProgress(float,int,int)));
     int totalEval = _parameters->value(SA1Parameters::str(SA1Parameters::MAXITERATIONS),100).toInt();
 
     /* =========================================================
-             *
-             * Eval fitness function
-             *
-             * ========================================================= */
+       *
+       * Eval fitness function
+       *
+       * ========================================================= */
     moeoEvalFunc < EOStd > *plainEval;
     plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,/*_subModels,*/tempDir,_modItemsTree,&_quickEnd);
 
@@ -283,26 +283,26 @@ Result* SA1::launch(QString tempDir)
 
 
     /* =========================================================
-             *
-             * Initilisation of the solution
-             *
-             * ========================================================= */
+       *
+       * Initilisation of the solution
+       *
+       * ========================================================= */
 
     EAStdInitBounded<EOStd> *init = new EAStdInitBounded<EOStd>(doubleBounds,intBounds,nbBool);
     state.storeFunctor(init);
     /* =========================================================
-             *
-             * evaluation of a neighbor solution
-             *
-             * ========================================================= */
+       *
+       * evaluation of a neighbor solution
+       *
+       * ========================================================= */
 
     SA1moFullEvalByCopy<shiftNeighbor> shiftEval(*plainEval);
 
     /* =========================================================
-             *
-             * the neighborhood of a solution
-             *
-             * ========================================================= */
+       *
+       * the neighborhood of a solution
+       *
+       * ========================================================= */
 
 
     SA1rndShiftNeighborhood rndShiftNH(nbDouble+nbInt+nbBool, doubleBounds, intBounds, nbBool);
@@ -310,47 +310,47 @@ Result* SA1::launch(QString tempDir)
 
 
     /************************************
-                STOPPING CRITERIA
-                ************************************/
+          STOPPING CRITERIA
+          ************************************/
 
-    //                MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_quickEnd);
-    //                state.storeFunctor(evalCont);
+    //          MyEAEvalContinue<EOStd> *evalCont = new MyEAEvalContinue<EOStd>(*eval,totalEval,&_quickEnd);
+    //          state.storeFunctor(evalCont);
 
 
     /* =========================================================
-             *
-             * execute the local search from random solution
-             *
-             * ========================================================= */
+       *
+       * execute the local search from random solution
+       *
+       * ========================================================= */
 
     EOStd  solution2;
 
-    //            /* =========================================================
-    //             *
-    //             * the cooling schedule of the process
-    //             *
-    //             * ========================================================= */
+    //      /* =========================================================
+    //       *
+    //       * the cooling schedule of the process
+    //       *
+    //       * ========================================================= */
 
-    //            // initial temp, factor of decrease, number of steps without decrease, final temp.
+    //      // initial temp, factor of decrease, number of steps without decrease, final temp.
     moSimpleCoolingSchedule<EOStd> coolingSchedule(
-                _parameters->value(SA1Parameters::str(SA1Parameters::INITTEMPERATURE),100).toDouble(),
-                _parameters->value(SA1Parameters::str(SA1Parameters::DECREASINGFACTOR),0.9).toDouble(),
-                _parameters->value(SA1Parameters::str(SA1Parameters::SPAN),100).toDouble(),
-                _parameters->value(SA1Parameters::str(SA1Parameters::FINALTEMPERATURE),1).toDouble());
+          _parameters->value(SA1Parameters::str(SA1Parameters::INITTEMPERATURE),100).toDouble(),
+          _parameters->value(SA1Parameters::str(SA1Parameters::DECREASINGFACTOR),0.9).toDouble(),
+          _parameters->value(SA1Parameters::str(SA1Parameters::SPAN),100).toDouble(),
+          _parameters->value(SA1Parameters::str(SA1Parameters::FINALTEMPERATURE),1).toDouble());
 
-    //            /* =========================================================
-    //             *
-    //             * Comparator of neighbors
-    //             *
-    //             * ========================================================= */
+    //      /* =========================================================
+    //       *
+    //       * Comparator of neighbors
+    //       *
+    //       * ========================================================= */
 
-    //            SA1moSolNeighborComparator<shiftNeighbor> solComparator;
+    //      SA1moSolNeighborComparator<shiftNeighbor> solComparator;
 
-    //            /* =========================================================
-    //             *
-    //             * Example of Checkpointing
-    //             *
-    //             * ========================================================= */
+    //      /* =========================================================
+    //       *
+    //       * Example of Checkpointing
+    //       *
+    //       * ========================================================= */
 
     moTrueContinuator<shiftNeighbor> continuator;//always continue
     moCheckpoint<shiftNeighbor> checkpoint2(continuator);
@@ -364,13 +364,13 @@ Result* SA1::launch(QString tempDir)
     EAUpdaterDispObjGUIOneSol < EOStd > disp_updater(solution2);
     checkpoint2.add(disp_updater);
 
-    //            moTrueContinuator<shiftNeighbor> continuator2;//always continue
-    //            moCheckpoint<shiftNeighbor> checkpoint2(continuator2);
-    //            moFitnessStat<EOStd> fitStat2;
-    //            checkpoint1.add(fitStat2);
-    //            // display obj vector in GUI
-    //            EAUpdaterDispObjGUIOneSol < EOStd > disp_updater2(solution2);
-    //            checkpoint2.add(disp_updater2);
+    //      moTrueContinuator<shiftNeighbor> continuator2;//always continue
+    //      moCheckpoint<shiftNeighbor> checkpoint2(continuator2);
+    //      moFitnessStat<EOStd> fitStat2;
+    //      checkpoint1.add(fitStat2);
+    //      // display obj vector in GUI
+    //      EAUpdaterDispObjGUIOneSol < EOStd > disp_updater2(solution2);
+    //      checkpoint2.add(disp_updater2);
     SA1moSolNeighborComparator<shiftNeighbor> solComparator;
 
     SA1mo<shiftNeighbor> localSearch2(rndShiftNH, *plainEval, shiftEval, coolingSchedule, solComparator, checkpoint2);
@@ -393,7 +393,7 @@ Result* SA1::launch(QString tempDir)
     //GETTING RESULT FROM FINAL ARCHIVE
     //************************************/
     if(!_keepResults) // if stop has been called
-        return NULL;
+  return NULL;
 
     Result* result = buildResult(arch);
 

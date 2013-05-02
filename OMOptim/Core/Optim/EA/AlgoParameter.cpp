@@ -77,17 +77,17 @@ AlgoParameter::AlgoParameter(QString savedString)
     QStringList fields = savedString.split(" ",QString::SkipEmptyParts);
     if(fields.size()!=nbFields)
     {
-        emit sendInfo(Info(ListInfo::PROBLEMREADINGLINE,savedString));
+  emit sendInfo(Info(ListInfo::PROBLEMREADINGLINE,savedString));
     }
     else
     {
-        for(int iF=0;iF<fields.size();iF++)
-        {
-            QString curField = fields.at(iF);
-            curField.remove(" ");
-            curField.remove("\t");
-            setFieldValue(iF,QVariant(curField));
-        }
+  for(int iF=0;iF<fields.size();iF++)
+  {
+      QString curField = fields.at(iF);
+      curField.remove(" ");
+      curField.remove("\t");
+      setFieldValue(iF,QVariant(curField));
+  }
     }
     
    setEditableFields(QList<int>()<<  AlgoParameter::VALUE);
@@ -101,12 +101,12 @@ AlgoParameter::AlgoParameter(QDomElement & domEl)
 
     for(int i=0;i<attributes.count();i++)
     {
-        fieldName = attributes.item(i).toAttr().name();
-        fieldName.replace(XMLTools::space()," ");
-        fieldValue = attributes.item(i).toAttr().value();
-        fieldValue.replace(XMLTools::space()," ");
+  fieldName = attributes.item(i).toAttr().name();
+  fieldName.replace(XMLTools::space()," ");
+  fieldValue = attributes.item(i).toAttr().value();
+  fieldValue.replace(XMLTools::space()," ");
 
-        MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+  MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
 }
 
@@ -120,35 +120,35 @@ bool AlgoParameter::setFieldValue(int ifield,QVariant value)
     try{
     switch (ifield)
     {
-        case NAME :
-            _name=value.toString();
-            break;
-        case DESCRIPTION :
-            _description=value.toString();
-            break;
-        case VALUE :
-            _value=value;
-            break;
-        case DEFAULTVALUE :
-            _defaultValue = value;
-            break;
-        case TYPE :
-            _type=value.toString();
-            break;
-        case MIN :
-            _min=value;
-            break;
-        case MAX :
-            _max=value;
-            break;
+  case NAME :
+      _name=value.toString();
+      break;
+  case DESCRIPTION :
+      _description=value.toString();
+      break;
+  case VALUE :
+      _value=value;
+      break;
+  case DEFAULTVALUE :
+      _defaultValue = value;
+      break;
+  case TYPE :
+      _type=value.toString();
+      break;
+  case MIN :
+      _min=value;
+      break;
+  case MAX :
+      _max=value;
+      break;
     }
     if(!_filledFields.contains(ifield))
-        _filledFields.push_back(ifield);
+  _filledFields.push_back(ifield);
     return true;
     }
     catch(std::exception)
     {
-        return false;
+  return false;
     }
 }
 
@@ -156,28 +156,28 @@ bool AlgoParameter::setFieldValue(int ifield,QVariant value)
 QVariant AlgoParameter::getFieldValue(int ifield, int role) const
 {
  if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-        return QString("-");
+  return QString("-");
     else
     {
-        switch (ifield)
-        {
-        case NAME :
-            return _name;
-        case DESCRIPTION :
-            return _description;
-        case VALUE :
-            return _value;
-        case MIN :
-            return _min;
-        case MAX :
-            return _max;
-        case TYPE :
-            return _type;
-        case DEFAULTVALUE :
-            return _defaultValue;
-        default :
-            return "unknown field";
-        }
+  switch (ifield)
+  {
+  case NAME :
+      return _name;
+  case DESCRIPTION :
+      return _description;
+  case VALUE :
+      return _value;
+  case MIN :
+      return _min;
+  case MAX :
+      return _max;
+  case TYPE :
+      return _type;
+  case DEFAULTVALUE :
+      return _defaultValue;
+  default :
+      return "unknown field";
+  }
     }
 }
 
@@ -187,7 +187,7 @@ AlgoParameter* AlgoParameter::clone() const
 
     for(int i=0;i<nbFields;i++)
     {
-        newParam->setFieldValue(i,getFieldValue(i));
+  newParam->setFieldValue(i,getFieldValue(i));
     }
     newParam->_filledFields = _filledFields;
     newParam->_protectedFields = _protectedFields;
@@ -201,20 +201,20 @@ QString AlgoParameter::sFieldName(int iField, int role)
     switch (iField)
     {
     case NAME :
-        return "Name";
+  return "Name";
     case DESCRIPTION :
-        return "Description";
+  return "Description";
     case VALUE :
-        return "Value";
+  return "Value";
     case MIN :
-        return "Min";
+  return "Min";
     case MAX :
-        return "Max";
+  return "Max";
     case TYPE :
-        return "Type";
+  return "Type";
     case DEFAULTVALUE :
-        return "DefaultValue";
+  return "DefaultValue";
     default :
-        return "unknown field";
+  return "unknown field";
     }
 }

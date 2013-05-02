@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-        @version
+  @version
 
   */
 #if !defined(_METEMPERATURE_H)
@@ -53,8 +53,8 @@ public:
 
     enum Units
     {
-        K,
-        C
+  K,
+  C
     };
 
     QString unit(int iUnit) const;

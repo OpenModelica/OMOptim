@@ -75,7 +75,7 @@ public slots :
     void addScannedVariables();
     void deleteScannedVariables();
     void simulate();
-        void readVariables();
+  void readVariables();
 };
 
 #endif // WidgetOneSimVarsCLASS_H

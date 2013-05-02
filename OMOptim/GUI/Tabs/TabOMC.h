@@ -77,7 +77,7 @@ public:
 
     
 
-        Project *project;
+  Project *project;
     
 
 
@@ -111,7 +111,7 @@ private:
     void createAction();
     void createMenu();
     void createToolbar();
-        void exceptionInEval(std::exception &e);
+  void exceptionInEval(std::exception &e);
     void addCommandLine();
     void selectCommandLine();
     QStringList getFunctionNames(QString);

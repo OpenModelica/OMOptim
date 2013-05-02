@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file Results.h
+  @file Results.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
@@ -46,12 +46,12 @@
 class Results : public OMCases
 {
 public:
-        Results(QString name="Results");
-        virtual ~Results(void);
+  Results(QString name="Results");
+  virtual ~Results(void);
 
-        Result* at(int i);
+  Result* at(int i);
 private :
-        QString name;
+  QString name;
 };
 
 #endif

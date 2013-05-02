@@ -32,15 +32,15 @@ void MyTreeView::onDataChanged(const QModelIndex & indexA,const QModelIndex & in
     int col2 = std::max(indexA.column(),indexB.column());
 
     for(int i=col1;i<=col2;i++)
-        resizeColumnToContents(i);
+  resizeColumnToContents(i);
 }
 
 void MyTreeView::resizeColumns()
 {
     if(model())
     {
-        for(int i=0;i<=model()->columnCount();i++)
-            resizeColumnToContents(i);
+  for(int i=0;i<=model()->columnCount();i++)
+      resizeColumnToContents(i);
     }
 }
 
@@ -62,7 +62,7 @@ OMCasesTreeView::OMCasesTreeView(ProjectBase* project,OMCasesCombiner* model,QWi
     this->header()->setResizeMode(QHeaderView::Stretch);
     this->expandAll();
     connect (this,SIGNAL(customContextMenuRequested(const QPoint &)),
-             this,SLOT(onRightClicked(const QPoint &)));
+       this,SLOT(onRightClicked(const QPoint &)));
 
 
 }
@@ -81,25 +81,25 @@ void OMCasesTreeView::onRightClicked(const QPoint &point)
 
     if ( !index.isValid() == -1 )
     {
-        // no item selected
+  // no item selected
     }
     else
     {
-        if(indexes.size()<=1)
-        {
-            if(selectedCase)
-            {
-                QMenu* caseMenu = createOMCasePopupMenu(selectedCase);
-                if(caseMenu)
-                    caseMenu->exec(this->mapToGlobal(point));
-            }
-        }
-        else
-        {
-            QMenu* caseMenu = createOMCasesPopupMenu();
-            if(caseMenu)
-                caseMenu->exec(this->mapToGlobal(point));
-        }
+  if(indexes.size()<=1)
+  {
+      if(selectedCase)
+      {
+          QMenu* caseMenu = createOMCasePopupMenu(selectedCase);
+          if(caseMenu)
+              caseMenu->exec(this->mapToGlobal(point));
+      }
+  }
+  else
+  {
+      QMenu* caseMenu = createOMCasesPopupMenu();
+      if(caseMenu)
+          caseMenu->exec(this->mapToGlobal(point));
+  }
     }
 }
 
@@ -159,13 +159,13 @@ void OMCasesTreeView::onRemoveAsked()
     QModelIndexList indexes = this->selectionModel()->selectedIndexes();
     QList<OMCase*> selectedCases;
     for(int i=0;i<indexes.size();i++)
-        selectedCases.push_back(_model->item(indexes.at(i)));
+  selectedCases.push_back(_model->item(indexes.at(i)));
 
     QString msg= "Are you sure you want to remove following cases ? \n";
     for(int i=0;i<selectedCases.size();i++)
     {
-        if(selectedCases.at(i))
-            msg.push_back(" - "+selectedCases.at(i)->name()+"\n");
+  if(selectedCases.at(i))
+      msg.push_back(" - "+selectedCases.at(i)->name()+"\n");
     }
     QMessageBox msgBox;
     msgBox.setText("Removing problem cannot be undone.");
@@ -175,7 +175,7 @@ void OMCasesTreeView::onRemoveAsked()
 
     if(msgBox.exec() == QMessageBox::Yes)
     {
-        _project->removeCases(selectedCases);
+  _project->removeCases(selectedCases);
     }
 }
 
@@ -184,18 +184,18 @@ void OMCasesTreeView::onRenameAsked()
     QModelIndex index = currentIndex();
     if(index.isValid())
     {
-        OMCase* curCase = static_cast<OMCase*>(index.internalPointer());
-        if (curCase)
-        {
-            bool ok;
-            QString newName = QInputDialog::getText(this, "Rename...",
-                                                    "New name :", QLineEdit::Normal,curCase->name(),&ok);
+  OMCase* curCase = static_cast<OMCase*>(index.internalPointer());
+  if (curCase)
+  {
+      bool ok;
+      QString newName = QInputDialog::getText(this, "Rename...",
+                                              "New name :", QLineEdit::Normal,curCase->name(),&ok);
 
-            if (ok && !newName.isEmpty())
-            {
-                _project->renameCase(curCase,newName);
-            }
-        }
+      if (ok && !newName.isEmpty())
+      {
+          _project->renameCase(curCase,newName);
+      }
+  }
     }
 }
 

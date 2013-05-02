@@ -79,7 +79,7 @@ public:
 
 
     bool moveApplied() {
-        return isMoved;
+  return isMoved;
     }
 
     /**
@@ -87,7 +87,7 @@ public:
      * @param _isMoved
      */
     void moveApplied(bool _isMoved) {
-        isMoved=_isMoved;
+  isMoved=_isMoved;
     }
 
 protected:

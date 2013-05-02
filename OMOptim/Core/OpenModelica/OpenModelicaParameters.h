@@ -35,7 +35,7 @@
   @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
   Company : CEP - ARMINES (France)
   http://www-cep.ensmp.fr/english/
-        @version
+  @version
 
   */
 
@@ -55,40 +55,40 @@ public :
 
     static QString str(Parameters index)
     {
-        switch(index)
-        {
-        case STOPTIME: return "stopTime";
-        case MAXSIMTIME: return "MaxSimTime";
-        case SOLVER: return "solver";
-        case TOLERANCE: return "tolerance";
-        case NBINTERVALS: return "NbIntervals";
-        case STARTTIME: return "startTime";
-        case OUTPUT: return "outputFormat";
-        }
+  switch(index)
+  {
+  case STOPTIME: return "stopTime";
+  case MAXSIMTIME: return "MaxSimTime";
+  case SOLVER: return "solver";
+  case TOLERANCE: return "tolerance";
+  case NBINTERVALS: return "NbIntervals";
+  case STARTTIME: return "startTime";
+  case OUTPUT: return "outputFormat";
+  }
     }
 
 
     static void setDefaultParameters(MOParameters *parameters)
     {
-        parameters->addItem(new MOParameter(str(STOPTIME),"Stop time",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+  parameters->addItem(new MOParameter(str(STOPTIME),"Stop time",1,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
 
-        QMap<int,QString> mapSolvers;
-        mapSolvers.insert(DASSL,"dassl");
-        mapSolvers.insert(EULER,"euler");
+  QMap<int,QString> mapSolvers;
+  mapSolvers.insert(DASSL,"dassl");
+  mapSolvers.insert(EULER,"euler");
 
-        parameters->addItem( new MOParameterListed(str(SOLVER),"Solver",DASSL,mapSolvers));
+  parameters->addItem( new MOParameterListed(str(SOLVER),"Solver",DASSL,mapSolvers));
 
-        parameters->addItem(new MOParameter(str(TOLERANCE),"Tolerance",1e-6,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
-        parameters->addItem(new MOParameter(str(NBINTERVALS),"Number of output intervals",2,MOParameter::INT,2,std::numeric_limits<int>::max()));
-        parameters->addItem(new MOParameter(str(STARTTIME),"Start time",0,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+  parameters->addItem(new MOParameter(str(TOLERANCE),"Tolerance",1e-6,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
+  parameters->addItem(new MOParameter(str(NBINTERVALS),"Number of output intervals",2,MOParameter::INT,2,std::numeric_limits<int>::max()));
+  parameters->addItem(new MOParameter(str(STARTTIME),"Start time",0,MOParameter::DOUBLE,0,std::numeric_limits<int>::max()));
 
-        parameters->addItem(new MOParameter(str(MAXSIMTIME),"Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
+  parameters->addItem(new MOParameter(str(MAXSIMTIME),"Maximum time allowed for simulation [sec] (-1 : no limit)",-1,MOParameter::INT,-1,std::numeric_limits<int>::max()));
 
-        QMap<int,QString> mapOutput;
-        mapOutput.insert(MAT,"mat");
-        mapOutput.insert(CSV,"csv");
+  QMap<int,QString> mapOutput;
+  mapOutput.insert(MAT,"mat");
+  mapOutput.insert(CSV,"csv");
 
-        parameters->addItem( new MOParameterListed(str(OUTPUT),"Output",MAT,mapOutput));
+  parameters->addItem( new MOParameterListed(str(OUTPUT),"Output",MAT,mapOutput));
     }
 
 };

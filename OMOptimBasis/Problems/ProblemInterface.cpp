@@ -28,19 +28,19 @@ bool ProblemInterface::saveProblem(Problem* problem)
     // Writing to file
     if(!problem->saveFileName().isEmpty())
     {
-        QFile file(problem->entireSavePath());
-        QFileInfo fileInfo(problem->entireSavePath());
-        QDir dir = fileInfo.absoluteDir();
-        dir.mkpath(dir.absolutePath());
+  QFile file(problem->entireSavePath());
+  QFileInfo fileInfo(problem->entireSavePath());
+  QDir dir = fileInfo.absoluteDir();
+  dir.mkpath(dir.absolutePath());
 
-        if(file.exists())
-        {
-            file.remove();
-        }
-        file.open(QIODevice::WriteOnly);
-        QTextStream ts( &file );
-        ts << doc.toString();
-        file.close();
+  if(file.exists())
+  {
+      file.remove();
+  }
+  file.open(QIODevice::WriteOnly);
+  QTextStream ts( &file );
+  ts << doc.toString();
+  file.close();
     }
 
     problem->setIsSaved(true);
@@ -80,19 +80,19 @@ bool ProblemInterface::saveResult(Result* result)
     // Writing to file
     if(!result->saveFileName().isEmpty())
     {
-        QFile file(result->entireSavePath());
-        QFileInfo fileInfo(result->entireSavePath());
-        QDir dir = fileInfo.absoluteDir();
-        dir.mkpath(dir.absolutePath());
+  QFile file(result->entireSavePath());
+  QFileInfo fileInfo(result->entireSavePath());
+  QDir dir = fileInfo.absoluteDir();
+  dir.mkpath(dir.absolutePath());
 
-        if(file.exists())
-        {
-            file.remove();
-        }
-        file.open(QIODevice::WriteOnly);
-        QTextStream ts( &file );
-        ts << doc.toString();
-        file.close();
+  if(file.exists())
+  {
+      file.remove();
+  }
+  file.open(QIODevice::WriteOnly);
+  QTextStream ts( &file );
+  ts << doc.toString();
+  file.close();
     }
 
     result->setIsSaved(true);

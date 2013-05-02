@@ -57,11 +57,11 @@ void ModExecution::copyModelFilesToTempDir(ModModel* model,QString _tempFolder)
     
     /*for(int i=0;i<neededFiles.size();i++)
     {
-        QString oldFilePath = getMmoFolder()+QDir::separator()+neededFiles.at(i);
-        QString newFilePath = _tempFolder + QDir::separator()+neededFiles.at(i);
-        QFile::remove(newFilePath);
-        QFile::copy(oldFilePath,newFilePath);
-        emit sendInfo( Info(ListInfo::COPYINGFILETOTEMP,neededFiles.at(i)));
+  QString oldFilePath = getMmoFolder()+QDir::separator()+neededFiles.at(i);
+  QString newFilePath = _tempFolder + QDir::separator()+neededFiles.at(i);
+  QFile::remove(newFilePath);
+  QFile::copy(oldFilePath,newFilePath);
+  emit sendInfo( Info(ListInfo::COPYINGFILETOTEMP,neededFiles.at(i)));
     }*/
 
 }

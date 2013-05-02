@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file CSV.cpp
-        @brief Comments for file documentation.
-        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-        Company : CEP - ARMINES (France)
-        http://www-cep.ensmp.fr/english/
-        @version
+  @file CSV.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #include "CSV.h"
@@ -56,31 +56,31 @@ CSV::~CSV(void)
 
 QString CSV::space()
 {
-        return "___";
+  return "___";
 }
 
 
 QString CSV::optObjectivesToLines(MOVector<OptObjective>* objectives)
 {
-        QString text = "\t ObjectiveName \t Direction (Minimize = 1, Maximize = 0) \t Description -->\n";
+  QString text = "\t ObjectiveName \t Direction (Minimize = 1, Maximize = 0) \t Description -->\n";
 
-        OptObjective *curObj;
+  OptObjective *curObj;
 
-        for (int i=0;i<objectives->size();i++)
-        {
-                curObj=objectives->at(i);
+  for (int i=0;i<objectives->size();i++)
+  {
+          curObj=objectives->at(i);
 
-                //Objective fields
-                text += ("#OBJ");
+          //Objective fields
+          text += ("#OBJ");
 
-                for (int nf=0;nf<OptObjective::nbFields;nf++)
-                {
-                        text += "\t";
-                        text += curObj->getFieldValue(nf).toString();
-                }
-                text += "\n";
-        }
-        return text;
+          for (int nf=0;nf<OptObjective::nbFields;nf++)
+          {
+                  text += "\t";
+                  text += curObj->getFieldValue(nf).toString();
+          }
+          text += "\n";
+  }
+  return text;
 }
 
 
@@ -89,63 +89,63 @@ QString CSV::optObjectivesToLines(MOVector<OptObjective>* objectives)
 
 void CSV::LinesToOptObjectives(MOVector<OptObjective>* objectives, QString lines)
 {
-        //Clear variables
-        objectives->clear();
+  //Clear variables
+  objectives->clear();
 
-        QStringList lineList = lines.split("\n");
-        QStringList fields;
-        OptObjective *newObjective;
+  QStringList lineList = lines.split("\n");
+  QStringList fields;
+  OptObjective *newObjective;
 
-        for(int nl=0;nl<lineList.size();nl++)
-        {
-                if(!lineList[nl].isEmpty())
-                {
+  for(int nl=0;nl<lineList.size();nl++)
+  {
+          if(!lineList[nl].isEmpty())
+          {
 
-                        fields = lineList[nl].split("\t");
+                  fields = lineList[nl].split("\t");
 
-                        //Treating only lines begininng with #OBJ
-                        //left(4) is used to avoid space problems
-                        if(fields[0].left(4)=="#OBJ")
-                        {
-                                newObjective = new OptObjective();
-                                for (int nf=0;(nf<OptObjective::nbFields)&&(nf<fields.size()-1);nf++)
-                                {
-                                        newObjective->setFieldValue(nf,QVariant(fields[nf+1]));
-                                }
-                                objectives->addItem(newObjective);
-                        }
-                }
-        }
+                  //Treating only lines begininng with #OBJ
+                  //left(4) is used to avoid space problems
+                  if(fields[0].left(4)=="#OBJ")
+                  {
+                          newObjective = new OptObjective();
+                          for (int nf=0;(nf<OptObjective::nbFields)&&(nf<fields.size()-1);nf++)
+                          {
+                                  newObjective->setFieldValue(nf,QVariant(fields[nf+1]));
+                          }
+                          objectives->addItem(newObjective);
+                  }
+          }
+  }
 }
 
 void CSV::LinesToOptObjectives(MOVector<OptObjectiveResult>* objectives, QString lines)
 {
 
-        //Clear variables
-        objectives->clear();
+  //Clear variables
+  objectives->clear();
 
-        QStringList lineList = lines.split("\n");
-        QStringList fields;
-        OptObjectiveResult *newObjective;
+  QStringList lineList = lines.split("\n");
+  QStringList fields;
+  OptObjectiveResult *newObjective;
 
-        for(int nl=0;nl<lineList.size();nl++)
-        {
-                if(!lineList[nl].isEmpty())
-                {
-                        fields = lineList[nl].split("\t");
+  for(int nl=0;nl<lineList.size();nl++)
+  {
+          if(!lineList[nl].isEmpty())
+          {
+                  fields = lineList[nl].split("\t");
 
-                        //Treating only lines begininng with #OBJ
-                        //left(4) is used to avoid space problems
-                        if(fields[0].left(4)=="#OBJ")
-                        {
-                                newObjective = new OptObjectiveResult();
-                                for (int nf=0;(nf<OptObjective::nbFields)&&(nf<fields.size()-1);nf++)
-                                {
-                                        newObjective->setFieldValue(nf,QVariant(fields[nf+1]));
-                                }
-                                objectives->addItem(newObjective);
-                        }
-                }
-        }
+                  //Treating only lines begininng with #OBJ
+                  //left(4) is used to avoid space problems
+                  if(fields[0].left(4)=="#OBJ")
+                  {
+                          newObjective = new OptObjectiveResult();
+                          for (int nf=0;(nf<OptObjective::nbFields)&&(nf<fields.size()-1);nf++)
+                          {
+                                  newObjective->setFieldValue(nf,QVariant(fields[nf+1]));
+                          }
+                          objectives->addItem(newObjective);
+                  }
+          }
+  }
 }
 

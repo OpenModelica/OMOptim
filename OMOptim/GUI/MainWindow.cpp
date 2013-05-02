@@ -135,9 +135,9 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect(_ui->treeModItem, SIGNAL(clicked(QModelIndex)),this, SLOT(onSelectedModItem(QModelIndex)));
     connect(this, SIGNAL(sendInfo(Info)),this, SLOT( displayInfo(Info)));
     connect (_ui->treeModItem,SIGNAL(customContextMenuRequested(const QPoint &)),
-             this,SLOT(showModItemsTreePopup(const QPoint &)));
+       this,SLOT(showModItemsTreePopup(const QPoint &)));
     connect (_tabMain,SIGNAL(customContextMenuRequested(const QPoint &)),
-             this,SLOT(showTabTitlePopup(const QPoint &)));
+       this,SLOT(showTabTitlePopup(const QPoint &)));
     connect(_tabProject,SIGNAL(newProject()),this,SLOT(newProject()));
     connect(_tabProject,SIGNAL(loadProject()),this,SLOT(loadProject()));
 
@@ -218,7 +218,7 @@ void MainWindow::clearLog()
 void MainWindow::displayInfo(Info i)
 {
     if(i.infoMsg.isEmpty() && i.infoType!=ListInfo::TASK)
-        return ;
+  return ;
 
     QTextCharFormat infoFormat;
 
@@ -230,48 +230,48 @@ void MainWindow::displayInfo(Info i)
     {
     case ListInfo::NORMAL2 :
     case ListInfo::TASK :
-        prefix = "";
-        suffix = "";
-        infoFormat.setForeground(Qt::black);
-        infoFormat.setFontWeight(QFont::Normal);
-        break;
+  prefix = "";
+  suffix = "";
+  infoFormat.setForeground(Qt::black);
+  infoFormat.setFontWeight(QFont::Normal);
+  break;
     case ListInfo::WARNING2 :
-        prefix = "<b><font color='#FF7700'>Warning : ";
-        suffix = "</font></b>";
-        infoFormat.setForeground(QBrush(QColor(255,119,0)));
-        infoFormat.setFontWeight(QFont::Bold);
-        break;
+  prefix = "<b><font color='#FF7700'>Warning : ";
+  suffix = "</font></b>";
+  infoFormat.setForeground(QBrush(QColor(255,119,0)));
+  infoFormat.setFontWeight(QFont::Bold);
+  break;
     case ListInfo::ERROR2 :
-        prefix = "<b><font color='red'>Error : ";
-        suffix = "</font></b>";
-        infoFormat.setForeground(Qt::red);
-        infoFormat.setFontWeight(QFont::Bold);
-        break;
+  prefix = "<b><font color='red'>Error : ";
+  suffix = "</font></b>";
+  infoFormat.setForeground(Qt::red);
+  infoFormat.setFontWeight(QFont::Bold);
+  break;
 
     case ListInfo::OMCNORMAL2 :
-        prefix = "OMCNormal :";
-        suffix = "";
-        infoFormat.setForeground(Qt::black);
-        infoFormat.setFontWeight(QFont::Normal);
-        break;
+  prefix = "OMCNormal :";
+  suffix = "";
+  infoFormat.setForeground(Qt::black);
+  infoFormat.setFontWeight(QFont::Normal);
+  break;
     case ListInfo::OMCWARNING2 :
-        prefix = "OMCWarning :";
-        suffix = "";
-        infoFormat.setForeground(Qt::darkYellow);
-        infoFormat.setFontWeight(QFont::Bold);
-        break;
+  prefix = "OMCWarning :";
+  suffix = "";
+  infoFormat.setForeground(Qt::darkYellow);
+  infoFormat.setFontWeight(QFont::Bold);
+  break;
     case ListInfo::OMCERROR2 :
-        prefix = "<b><font color='red'>OMCError : ";
-        suffix = "</font></b>";
-        infoFormat.setForeground(Qt::red);
-        infoFormat.setFontWeight(QFont::Bold);
-        break;
+  prefix = "<b><font color='red'>OMCError : ";
+  suffix = "</font></b>";
+  infoFormat.setForeground(Qt::red);
+  infoFormat.setFontWeight(QFont::Bold);
+  break;
     case ListInfo::INFODEBUG :
-        prefix = "<b><font color='blue'>Debug : ";
-        suffix = "</font></b>";
-        infoFormat.setForeground(Qt::blue);
-        infoFormat.setFontWeight(QFont::Bold);
-        break;
+  prefix = "<b><font color='blue'>Debug : ";
+  suffix = "</font></b>";
+  infoFormat.setForeground(Qt::blue);
+  infoFormat.setFontWeight(QFont::Bold);
+  break;
     }
 
     // QString msg = prefix + i.infoMsg + suffix;
@@ -284,24 +284,24 @@ void MainWindow::displayInfo(Info i)
     case ListInfo::WARNING2 :
     case ListInfo::ERROR2 :
     case ListInfo::TASK :
-        _textLog->setCurrentCharFormat(infoFormat);
-        _textLog->append(msg);
-        break;
+  _textLog->setCurrentCharFormat(infoFormat);
+  _textLog->append(msg);
+  break;
     case ListInfo::OMCNORMAL2 :
     case ListInfo::OMCWARNING2 :
     case ListInfo::OMCERROR2 :
-        _ui->textOMC->setCurrentCharFormat(infoFormat);
-        _ui->textOMC->append(msg);
-        break;
+  _ui->textOMC->setCurrentCharFormat(infoFormat);
+  _ui->textOMC->append(msg);
+  break;
     case ListInfo::INFODEBUG :
-        _ui->textDebug->setCurrentCharFormat(infoFormat);
-        _ui->textDebug->append(msg);
-        break;
+  _ui->textDebug->setCurrentCharFormat(infoFormat);
+  _ui->textDebug->append(msg);
+  break;
     }
 
     if(i.infoType==ListInfo::TASK)
     {
-        setStatusBarText(msg);
+  setStatusBarText(msg);
     }
 }
 
@@ -334,16 +334,16 @@ void MainWindow::newProject()
     //Saving form information
     if (form->exec() == QDialog::Accepted) {
 
-        // project information
-        _project->clear();
-        _project->setName(form->projectName);
-        _project->setIsDefined(true);
+  // project information
+  _project->clear();
+  _project->setName(form->projectName);
+  _project->setIsDefined(true);
 
-        // save it (as it is first save, it will ask for path)
-        saveProject();
+  // save it (as it is first save, it will ask for path)
+  saveProject();
 
-        // actualize gui
-        actualizeGuiFromProject();
+  // actualize gui
+  actualizeGuiFromProject();
     }
 }
 
@@ -351,32 +351,32 @@ void MainWindow::saveProject()
 {
     if (!_project->isDefined())
     {
-        // project does not exist
+  // project does not exist
     }
     else
     {
-        QString _filePath = _project->filePath() ;
-        if(_filePath.length())
-        {
-            _project->save(true);
-        }
-        else
-        {
-            _filePath = QFileDialog::getSaveFileName(
-                        this,
-                        "MO - Save Project",
-                        _project->name()+".min",
-                        "MO project (*.min)" );
-            if(!_filePath.isNull())
-            {
-                _project->setFilePath(_filePath);
-                _project->save(true);
-            }
-        }
+  QString _filePath = _project->filePath() ;
+  if(_filePath.length())
+  {
+      _project->save(true);
+  }
+  else
+  {
+      _filePath = QFileDialog::getSaveFileName(
+                  this,
+                  "MO - Save Project",
+                  _project->name()+".min",
+                  "MO project (*.min)" );
+      if(!_filePath.isNull())
+      {
+          _project->setFilePath(_filePath);
+          _project->save(true);
+      }
+  }
 
-        updateRecentFilesList(_filePath);
+  updateRecentFilesList(_filePath);
 
-        actualizeGuiFromProject();
+  actualizeGuiFromProject();
     }
 
 
@@ -386,22 +386,22 @@ void MainWindow::loadProject()
 
 
     QString filename = QFileDialog::getOpenFileName(
-                this,
-                qAppName()+" - Open Project",
-                getLastProjectFolder(),
-                "project (*.min)" );
+          this,
+          qAppName()+" - Open Project",
+          getLastProjectFolder(),
+          "project (*.min)" );
 
     if (!filename.isNull())
     {
-        OMOptimGuiTools::consolidateModelsPath(filename,this);
-        bool loaded = _project->load(filename);
+  OMOptimGuiTools::consolidateModelsPath(filename,this);
+  bool loaded = _project->load(filename);
 
-        if(loaded)
-        {
-            updateRecentFilesList(filename);
-            QFileInfo info = QFileInfo(filename);
-            setLastProjectFolder(info.absolutePath());
-        }
+  if(loaded)
+  {
+      updateRecentFilesList(filename);
+      QFileInfo info = QFileInfo(filename);
+      setLastProjectFolder(info.absolutePath());
+  }
 
     }
 
@@ -417,9 +417,9 @@ void MainWindow::loadProject(QString filename)
     bool loaded = _project->load(filename);
     if(loaded)
     {
-        updateRecentFilesList(filename);
-        QFileInfo info = QFileInfo(filename);
-        setLastProjectFolder(info.absolutePath());
+  updateRecentFilesList(filename);
+  QFileInfo info = QFileInfo(filename);
+  setLastProjectFolder(info.absolutePath());
     }
 
     //update GUI
@@ -440,20 +440,20 @@ void MainWindow::loadPlugins()
     filters = "OMOptim plugins (*.dll);; All files (*.*)";
 #endif
     QStringList filenames = QFileDialog::getOpenFileNames(
-                this,
-                "OMOptim - Load plugins",
-                folder,
-                filters );
+          this,
+          "OMOptim - Load plugins",
+          folder,
+          filters );
 
     foreach (QString fileName, filenames)
     {
-        _project->loadPlugin(fileName,true,true);
+  _project->loadPlugin(fileName,true,true);
     }
 
     if(filenames.size()>0)
     {
-        QDir dir(filenames.at(0));
-        settings.setValue("MO/recentPluginsFolder",dir.absolutePath());
+  QDir dir(filenames.at(0));
+  settings.setValue("MO/recentPluginsFolder",dir.absolutePath());
     }
 }
 
@@ -463,9 +463,9 @@ void MainWindow::loadCases()
     QString folder = _project->folder().absolutePath();
 
     QString problemsFolder = QFileDialog::getExistingDirectory(
-                this,
-                "OMOptim - Load problems",
-                folder);
+          this,
+          "OMOptim - Load problems",
+          folder);
 
     _project->addOMCases(problemsFolder);
 }
@@ -541,7 +541,7 @@ void MainWindow::actualizeGuiFromProject()
 
     QString windowTitle = "OMOptim - "+_project->name();
     if(!_project->isSaved()&& _project->isDefined())
-        windowTitle.append("*");
+  windowTitle.append("*");
     this->setWindowTitle(windowTitle);
 }
 
@@ -550,15 +550,15 @@ void MainWindow::newOMCShell()
 {
     if(_project->isDefined())
     {
-        //adding tab
-        TabOMC* newTab = new TabOMC(_project);
-        newTab->setBackgroundRole(QPalette::Window);
-        newTab->setAutoFillBackground(true);
-        newTab->setWindowTitle("OMC");
+  //adding tab
+  TabOMC* newTab = new TabOMC(_project);
+  newTab->setBackgroundRole(QPalette::Window);
+  newTab->setAutoFillBackground(true);
+  newTab->setWindowTitle("OMC");
 
-        //Adding tab
-        _tabMain->addTab(newTab,"OMC");
-        _tabMain->setCurrentWidget(newTab);
+  //Adding tab
+  _tabMain->addTab(newTab,"OMC");
+  _tabMain->setCurrentWidget(newTab);
     }
 }
 
@@ -572,7 +572,7 @@ void MainWindow::OMCClear()
 {
     if(_project->isDefined())
     {
-        _project->moomc()->clear();
+  _project->moomc()->clear();
     }
 }
 
@@ -581,8 +581,8 @@ void MainWindow::enableOMCaseTab(QModelIndex index)
 {
     if(index.isValid())
     {
-        OMCase* selectedCase = _casesTree->item(index);
-        _tabMain->enableCaseTab(selectedCase);
+  OMCase* selectedCase = _casesTree->item(index);
+  _tabMain->enableCaseTab(selectedCase);
     }
 }
 
@@ -592,28 +592,28 @@ void MainWindow::quit()
 
     if(!_project->isSaved() && _project->isDefined())
     {
-        QMessageBox msgBox;
-        msgBox.setText("The project has been modified.");
-        msgBox.setInformativeText("Do you want to save your changes?");
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Save);
-        int ret = msgBox.exec();
-        switch (ret)
-        {
-        case QMessageBox::Save:
-            _project->save(true);
-            qApp->quit();
-            break;
-        case QMessageBox::Discard:
-            qApp->quit();
-            break;
-        case QMessageBox::Cancel:
-            // Cancel was clicked
-            break;
-        default:
-            // should never be reached
-            break;
-        }
+  QMessageBox msgBox;
+  msgBox.setText("The project has been modified.");
+  msgBox.setInformativeText("Do you want to save your changes?");
+  msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+  msgBox.setDefaultButton(QMessageBox::Save);
+  int ret = msgBox.exec();
+  switch (ret)
+  {
+  case QMessageBox::Save:
+      _project->save(true);
+      qApp->quit();
+      break;
+  case QMessageBox::Discard:
+      qApp->quit();
+      break;
+  case QMessageBox::Cancel:
+      // Cancel was clicked
+      break;
+  default:
+      // should never be reached
+      break;
+  }
     }
     // if the slot is activated by the File->Quit menuitem.
     QAction *pActionQuit = qobject_cast<QAction*>(const_cast<QObject*>(sender()));
@@ -625,7 +625,7 @@ void MainWindow::onProjectAboutToBeReset()
     // deleting tabs
     while(_tabMain->count()>1)
     {
-        _tabMain->removeTab(1);
+  _tabMain->removeTab(1);
     }
 
     _casesTreeView->reset();
@@ -642,8 +642,8 @@ void MainWindow::onAddedProblem(Problem* newProblem)
     QTime elapsed;
     if(interface)
     {
-        elapsed.restart();
-        _tabMain->addProblemTab(newProblem,interface->createProblemTab(newProblem,this));
+  elapsed.restart();
+  _tabMain->addProblemTab(newProblem,interface->createProblemTab(newProblem,this));
     }
 
     _tabMain->enableCaseTab(newProblem);
@@ -657,8 +657,8 @@ void MainWindow::onAddedResult(Result* newResult)
     QTime elapsed;
     if(interface)
     {
-        elapsed.restart();
-        _tabMain->addResultTab(newResult,interface->createResultTab(newResult,this));
+  elapsed.restart();
+  _tabMain->addResultTab(newResult,interface->createResultTab(newResult,this));
     }
 
     _tabMain->enableCaseTab(newResult);
@@ -670,9 +670,9 @@ void MainWindow::removeResult()
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
     {
-        int iPb = action->data().toInt();
-        if((iPb>-1) && (iPb<_project->results()->rowCount()))
-            removeResult(_project->results()->at(iPb));
+  int iPb = action->data().toInt();
+  if((iPb>-1) && (iPb<_project->results()->rowCount()))
+      removeResult(_project->results()->at(iPb));
     }
 }
 
@@ -689,7 +689,7 @@ void MainWindow::removeResult(Result* result)
 
     if(msgBox.exec() == QMessageBox::Yes)
     {
-        _project->removeResult(result);
+  _project->removeResult(result);
     }
 }
 
@@ -705,9 +705,9 @@ void MainWindow::removeProblem()
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
     {
-        int iPb = action->data().toInt();
-        if((iPb>-1) && (iPb<_project->problems()->rowCount()))
-            removeProblem(_project->problems()->at(iPb));
+  int iPb = action->data().toInt();
+  if((iPb>-1) && (iPb<_project->problems()->rowCount()))
+      removeProblem(_project->problems()->at(iPb));
     }
 }
 
@@ -725,7 +725,7 @@ void MainWindow::removeProblem(Problem* problem)
 
     if(msgBox.exec() == QMessageBox::Yes)
     {
-        _project->removeProblem(problem);
+  _project->removeProblem(problem);
     }
 }
 
@@ -741,9 +741,9 @@ void MainWindow::renameProblem()
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
     {
-        int iPb = action->data().toInt();
-        if((iPb>-1) && (iPb<_project->problems()->rowCount()))
-            renameProblem(_project->problems()->at(iPb));
+  int iPb = action->data().toInt();
+  if((iPb>-1) && (iPb<_project->problems()->rowCount()))
+      renameProblem(_project->problems()->at(iPb));
     }
 
 }
@@ -752,11 +752,11 @@ void MainWindow::renameProblem(Problem* problem)
 {
     bool ok;
     QString newName = QInputDialog::getText(this, "Rename...",
-                                            "New name :", QLineEdit::Normal,problem->name(),&ok);
+                                      "New name :", QLineEdit::Normal,problem->name(),&ok);
 
     if (ok && !newName.isEmpty())
     {
-        _project->renameProblem(problem,newName);
+  _project->renameProblem(problem,newName);
     }
 }
 
@@ -767,9 +767,9 @@ void MainWindow::renameResult()
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
     {
-        int iPb = action->data().toInt();
-        if((iPb>-1) && (iPb<_project->results()->rowCount()))
-            renameResult(_project->results()->at(iPb));
+  int iPb = action->data().toInt();
+  if((iPb>-1) && (iPb<_project->results()->rowCount()))
+      renameResult(_project->results()->at(iPb));
     }
 
 }
@@ -777,11 +777,11 @@ void MainWindow::renameResult(Result* result)
 {
     bool ok;
     QString newName = QInputDialog::getText(this, "Rename...",
-                                            "New name :", QLineEdit::Normal,result->name(),&ok);
+                                      "New name :", QLineEdit::Normal,result->name(),&ok);
 
     if (ok && !newName.isEmpty())
     {
-        _project->renameResult(result,newName);
+  _project->renameResult(result,newName);
     }
 }
 
@@ -798,23 +798,23 @@ void MainWindow::rightClickedOnCase(const QPoint & iPoint)
 
     if ( !index.isValid() == -1 )
     {
-        // no item selected
+  // no item selected
     }
     else
     {
-        if(indexes.contains(index))
-        {
-            QMenu* caseMenu = NULL;
-            OMCase* selectedCase = _casesTree->item(index);
+  if(indexes.contains(index))
+  {
+      QMenu* caseMenu = NULL;
+      OMCase* selectedCase = _casesTree->item(index);
 
-            if(_project->problems()->contains(selectedCase))
-                caseMenu = GuiTools::createProblemPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Problem*>(selectedCase),index.row());
-            if(_project->results()->contains(selectedCase))
-                caseMenu = GuiTools::createResultPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Result*>(selectedCase),index.row());
+      if(_project->problems()->contains(selectedCase))
+          caseMenu = GuiTools::createProblemPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Problem*>(selectedCase),index.row());
+      if(_project->results()->contains(selectedCase))
+          caseMenu = GuiTools::createResultPopupMenu(_project,this,_casesTreeView->mapToGlobal(iPoint),dynamic_cast<Result*>(selectedCase),index.row());
 
-            if(caseMenu)
-                caseMenu->exec(_casesTreeView->mapToGlobal(iPoint));
-        }
+      if(caseMenu)
+          caseMenu->exec(_casesTreeView->mapToGlobal(iPoint));
+  }
     }
 }
 
@@ -826,14 +826,14 @@ void MainWindow::showModItemsTreePopup(const QPoint & iPoint)
     index = _ui->treeModItem->indexAt(iPoint);
     if ( !index.isValid())
     {
-        // no item selected
+  // no item selected
     }
     else
     {
-        ModItem* selectedModItem = static_cast<ModItem*>(index.internalPointer());
-        QMenu * modClassMenu= OMOptimGuiTools::newModItemPopupMenu(_project,_ui->treeModItem->mapToGlobal(iPoint),selectedModItem);
-        if(modClassMenu)
-            modClassMenu->exec(_ui->treeModItem->mapToGlobal(iPoint));
+  ModItem* selectedModItem = static_cast<ModItem*>(index.internalPointer());
+  QMenu * modClassMenu= OMOptimGuiTools::newModItemPopupMenu(_project,_ui->treeModItem->mapToGlobal(iPoint),selectedModItem);
+  if(modClassMenu)
+      modClassMenu->exec(_ui->treeModItem->mapToGlobal(iPoint));
     }
 }
 
@@ -848,7 +848,7 @@ void MainWindow::updateRecentFilesList(QString fileName)
     
     while (files.size() > MaxRecentFiles)
     {
-        files.removeLast();
+  files.removeLast();
     }
 
     settings.setValue("MO/recentFileList", files);
@@ -889,15 +889,15 @@ void MainWindow::createRecentFilesMenu()
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
-        newAction = new QAction(this);
-        QString text = tr("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
-        newAction->setText(text);
-        newAction->setData(files[i]);
-        newAction->setVisible(true);
-        connect(newAction, SIGNAL(triggered()),
-                this, SLOT(openRecentFile()));
-        _recentFileActs.push_back(newAction);
-        _ui->menuFile->insertAction(_ui->actionQuit,newAction);
+  newAction = new QAction(this);
+  QString text = tr("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
+  newAction->setText(text);
+  newAction->setData(files[i]);
+  newAction->setVisible(true);
+  connect(newAction, SIGNAL(triggered()),
+          this, SLOT(openRecentFile()));
+  _recentFileActs.push_back(newAction);
+  _ui->menuFile->insertAction(_ui->actionQuit,newAction);
     }
 
     //_separatorAct->setVisible(numRecentFiles > 0);
@@ -919,7 +919,7 @@ void MainWindow::openRecentFile()
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
     {
-        loadProject(action->data().toString());
+  loadProject(action->data().toString());
     }
 }
 
@@ -927,15 +927,15 @@ void MainWindow::displayProgress(float fraction)
 {
     if(fraction==0)
     {
-        _ui->dockProgress->hide();
-        //_widgetProgress->hide();
-        _widgetProgress->setProgress(0);
+  _ui->dockProgress->hide();
+  //_widgetProgress->hide();
+  _widgetProgress->setProgress(0);
     }
     else
     {
-        _ui->dockProgress->show();
-        //_widgetProgress->show();
-        _widgetProgress->setProgress(fraction);
+  _ui->dockProgress->show();
+  //_widgetProgress->show();
+  _widgetProgress->setProgress(fraction);
     }
 }
 
@@ -943,15 +943,15 @@ void MainWindow::displayProgress(float fraction,int curEval,int totalEval)
 {
     if(fraction==0)
     {
-        _ui->dockProgress->hide();
-        //_widgetProgress->hide();
-        _widgetProgress->setProgress(0,curEval,totalEval);
+  _ui->dockProgress->hide();
+  //_widgetProgress->hide();
+  _widgetProgress->setProgress(0,curEval,totalEval);
     }
     else
     {
-        _ui->dockProgress->show();
-        //_widgetProgress->show();
-        _widgetProgress->setProgress(fraction,curEval,totalEval);
+  _ui->dockProgress->show();
+  //_widgetProgress->show();
+  _widgetProgress->setProgress(fraction,curEval,totalEval);
     }
 }
 
@@ -991,11 +991,11 @@ void MainWindow::onMoFileChanged(const QString &moFile)
     _project->_mofilesWatcher.removePath(moFile);
 
     QMessageBox msgbox(QMessageBox::Question,"Reload .mo file","Model file has been modified. Do you want to reload it ? \n"+moFile,
-                       QMessageBox::No|QMessageBox::Yes,this);
+                 QMessageBox::No|QMessageBox::Yes,this);
     if(msgbox.exec()==QMessageBox::Yes)
     {
-        _project->loadMoFile(moFile,true,true);
-        refreshModelTreeView();
+  _project->loadMoFile(moFile,true,true);
+  refreshModelTreeView();
     }
     // restore watcher
     _project->_mofilesWatcher.addPath(moFile);
@@ -1008,22 +1008,22 @@ void MainWindow::loadMoFile()
     QString lastMoFolder = settings.value("LastMoFolder").toString();
 
     QStringList fileNames = QFileDialog::getOpenFileNames(
-                this,
-                "MO - Add .mo file to project",
-                lastMoFolder,
-                "Modelica file (*.mo)" );
+          this,
+          "MO - Add .mo file to project",
+          lastMoFolder,
+          "Modelica file (*.mo)" );
 
     for(int i=0;i<fileNames.size();i++)
-        _project->loadMoFile(fileNames.at(i));
+  _project->loadMoFile(fileNames.at(i));
 
     refreshModelTreeView();
 
     // save last .mo folder
     if(fileNames.size())
     {
-        QFileInfo loaded(fileNames.at(0));
-        lastMoFolder = loaded.absoluteDir().absolutePath();
-        settings.setValue("LastMoFolder",lastMoFolder);
+  QFileInfo loaded(fileNames.at(0));
+  lastMoFolder = loaded.absoluteDir().absolutePath();
+  settings.setValue("LastMoFolder",lastMoFolder);
     }
 }
 
@@ -1040,18 +1040,18 @@ void MainWindow::loadExecutableModel()
     bool isloaded =false;
     while((name.isEmpty() || _project->modItemsTree()->findInDescendants(name)) && !isloaded )
     {
-        if(widget->exec() == QDialog::Accepted)
-        {
-            name = widget->name();
-            if( !widget->name().isEmpty() && !_project->modItemsTree()->findInDescendants(name))
-            {
-                _project->loadExecutableModel(name, widget->exeFileInfo(),widget->inputFileInfo());
-                refreshModelTreeView();
-                isloaded =true;
-            }
-        }
-        else
-            break;
+  if(widget->exec() == QDialog::Accepted)
+  {
+      name = widget->name();
+      if( !widget->name().isEmpty() && !_project->modItemsTree()->findInDescendants(name))
+      {
+          _project->loadExecutableModel(name, widget->exeFileInfo(),widget->inputFileInfo());
+          refreshModelTreeView();
+          isloaded =true;
+      }
+  }
+  else
+      break;
     }
 }
 
@@ -1076,25 +1076,25 @@ void MainWindow::updateProblemsMenu()
 
     for(int i=0;i<_project->problemsInterfaces().uniqueInterfaces().size();i++)
     {
-        interface = _project->problemsInterfaces().uniqueInterfaces().at(i);
-        problemTypes = interface->problemTypes();
+  interface = _project->problemsInterfaces().uniqueInterfaces().at(i);
+  problemTypes = interface->problemTypes();
 
-        if(problemTypes.size()>1)
-        {
-            curMenu = new QMenu(interface->name(),_ui->menuProblems);
-            _ui->menuProblems->addMenu(curMenu);
-        }
-        else
-            curMenu = _ui->menuProblems;
+  if(problemTypes.size()>1)
+  {
+      curMenu = new QMenu(interface->name(),_ui->menuProblems);
+      _ui->menuProblems->addMenu(curMenu);
+  }
+  else
+      curMenu = _ui->menuProblems;
 
-        for(int j=0;j<interface->problemTypes().size();j++)
-        {
-            QAction *action = new QAction(interface->problemTypes().at(j),this);
-            action->setData(interface->problemTypes().at(j));
-            connect(action,SIGNAL(triggered()),this,SLOT(onPushedNewProblem()));
+  for(int j=0;j<interface->problemTypes().size();j++)
+  {
+      QAction *action = new QAction(interface->problemTypes().at(j),this);
+      action->setData(interface->problemTypes().at(j));
+      connect(action,SIGNAL(triggered()),this,SLOT(onPushedNewProblem()));
 
-            curMenu->addAction(action);
-        }
+      curMenu->addAction(action);
+  }
     }
 }
 
@@ -1105,37 +1105,37 @@ void MainWindow::onPushedNewProblem()
     ProblemInterface *interface = _project->problemsInterfaces().value(problemType,NULL);
     if(interface)
     {
-        bool pursue = true;
+  bool pursue = true;
 
-        WidgetSelectModModel* widgetSelect;
+  WidgetSelectModModel* widgetSelect;
 
-        QStringList modelsList;
+  QStringList modelsList;
 
-        if(interface)
-        {
-            switch(interface->modelNeeds(problemType))
-            {
-            case ProblemInterface::NOMODEL:
-                break;
-            case ProblemInterface::ONEMODEL:
-            case ProblemInterface::SEVERALMODELS:
-                widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),interface->modelNeeds(problemType),this);
-                if(widgetSelect->exec()==QDialog::Accepted)
-                {
+  if(interface)
+  {
+      switch(interface->modelNeeds(problemType))
+      {
+      case ProblemInterface::NOMODEL:
+          break;
+      case ProblemInterface::ONEMODEL:
+      case ProblemInterface::SEVERALMODELS:
+          widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),interface->modelNeeds(problemType),this);
+          if(widgetSelect->exec()==QDialog::Accepted)
+          {
 
-                    QList<ModItem*> models = widgetSelect->_selectedModels;
-                    for(int i=0;i<models.size();i++)
-                        modelsList.push_back(models.at(i)->name());
+              QList<ModItem*> models = widgetSelect->_selectedModels;
+              for(int i=0;i<models.size();i++)
+                  modelsList.push_back(models.at(i)->name());
 
-                }
-                else
-                    pursue = false;
-                delete widgetSelect;
-                break;
-            }
-            if(pursue)
-                _project->addNewProblem(interface,modelsList,problemType);
-        }
+          }
+          else
+              pursue = false;
+          delete widgetSelect;
+          break;
+      }
+      if(pursue)
+          _project->addNewProblem(interface,modelsList,problemType);
+  }
 
     }
 }
@@ -1144,13 +1144,13 @@ void MainWindow::onSelectedModItem(QModelIndex index)
 {
     if(index.isValid())
     {
-        ModItem* modClass = static_cast<ModItem*>(index.internalPointer());
+  ModItem* modClass = static_cast<ModItem*>(index.internalPointer());
 
-        if(modClass)
-            _project->setCurModItem(modClass);
+  if(modClass)
+      _project->setCurModItem(modClass);
     }
     else
-        _project->setCurModItem(NULL);
+  _project->setCurModItem(NULL);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -1190,8 +1190,8 @@ void MainWindow::openUserManual()
     bool openOk=false;
     while(iTry<pathTries.size()&&!openOk)
     {
-        openOk = QDesktopServices::openUrl(QUrl(QString("file:///").append(pathTries.at(iTry))));
-        iTry++;
+  openOk = QDesktopServices::openUrl(QUrl(QString("file:///").append(pathTries.at(iTry))));
+  iTry++;
     }
 }
 

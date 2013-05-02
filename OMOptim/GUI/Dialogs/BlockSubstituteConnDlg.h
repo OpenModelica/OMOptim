@@ -79,9 +79,9 @@ public:
 
     public slots :
 
-        void validate();
-        //void actualizeComboConnections();
-        void addPortCombo();
+  void validate();
+  //void actualizeComboConnections();
+  void addPortCombo();
     
 
 

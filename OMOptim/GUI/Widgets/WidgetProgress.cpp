@@ -77,15 +77,15 @@ void WidgetProgress::setProgress(float fraction)
 
     // hide if 0%
     if(fraction==0)
-        ui->progressBar->hide();
+  ui->progressBar->hide();
     else
-        ui->progressBar->show();
+  ui->progressBar->show();
 
     //speed
     int elapsed = _lastTime.elapsed();
     double newSpeed = (_fraction-oldFraction)/(double)elapsed;
     if(_lastSpeeds.size()==_nbSpeeds)
-        _lastSpeeds.removeFirst();
+  _lastSpeeds.removeFirst();
     _lastSpeeds.push_back(newSpeed);
 
     // restart time counter
@@ -105,7 +105,7 @@ void WidgetProgress::setProgress(float fraction,int curEval,int totalEval)
     int elapsed = _lastTime.elapsed();
     double newSpeed = (_fraction-oldFraction)/(double)elapsed;
     if(_lastSpeeds.size()==_nbSpeeds)
-        _lastSpeeds.removeFirst();
+  _lastSpeeds.removeFirst();
     _lastSpeeds.push_back(newSpeed);
 
     // restart time counter
@@ -141,21 +141,21 @@ void WidgetProgress::updateTimeLeft()
 
     if(_lastSpeeds.size()>0)
     {
-        ui->labelTimeLeft->show();
-        for(int i=0;i<_lastSpeeds.size();i++)
-            averageSpeed += _lastSpeeds.at(i);
-        averageSpeed = averageSpeed / _lastSpeeds.size();
+  ui->labelTimeLeft->show();
+  for(int i=0;i<_lastSpeeds.size();i++)
+      averageSpeed += _lastSpeeds.at(i);
+  averageSpeed = averageSpeed / _lastSpeeds.size();
 
-        int timeLeft = (1-_fraction)/averageSpeed;
+  int timeLeft = (1-_fraction)/averageSpeed;
 
-        QTime dispTime(0,0,0);
-        dispTime = dispTime.addMSecs(timeLeft);
+  QTime dispTime(0,0,0);
+  dispTime = dispTime.addMSecs(timeLeft);
 
 
-        ui->labelTimeLeft->setText("- "+dispTime.toString());
+  ui->labelTimeLeft->setText("- "+dispTime.toString());
     }
     else
-        ui->labelTimeLeft->hide();
+  ui->labelTimeLeft->hide();
 }
 
 void WidgetProgress::onPushedStop()
@@ -169,7 +169,7 @@ void WidgetProgress::onPushedQuickEnd()
 
     if(optim)
     {
-        optim->quickEnd();
+  optim->quickEnd();
     }
 }
 
@@ -178,14 +178,14 @@ void WidgetProgress::setCurProblem(Problem* problem)
     _problem = problem;
 
     if(!_problem || !_problem->canBeStoped())
-        ui->pushStop->hide();
+  ui->pushStop->hide();
     else
-        ui->pushStop->show();
+  ui->pushStop->show();
 
     if(!_problem || !_problem->hasQuickEndOption())
-        ui->pushQuickEnd->hide();
+  ui->pushQuickEnd->hide();
     else
-        ui->pushQuickEnd->show();
+  ui->pushQuickEnd->show();
 
 }
 

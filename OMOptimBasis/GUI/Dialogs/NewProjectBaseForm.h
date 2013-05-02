@@ -70,7 +70,7 @@ public:
 
 public slots :
 
-        void validate();
+  void validate();
 };
 
 #endif // NewProjectBaseForm_H

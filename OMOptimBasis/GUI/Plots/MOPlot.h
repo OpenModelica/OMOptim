@@ -86,7 +86,7 @@ public:
 protected:
     
     
-        QFont _axisFont;
+  QFont _axisFont;
     double selectedX;
     double selectedY;
 
@@ -98,7 +98,7 @@ protected:
     QAction* _actionRefresh;
 
     inline virtual void drawItems (QPainter *painter, const QRect &rect,
-                                   const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
+                             const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
     
 
 
@@ -173,7 +173,7 @@ MOPlot::MOPlot()
      _zoomer->setMousePattern(QwtEventPattern::MouseSelect3, Qt::NoButton);
 
 //    _zoomer = new QwtPlotZoomer(QwtPlot::xBottom, QwtPlot::yLeft,
-//                                QwtPicker::DragSelection | QwtPicker::CornerToCorner, QwtPicker::AlwaysOff, canvas());
+//                          QwtPicker::DragSelection | QwtPicker::CornerToCorner, QwtPicker::AlwaysOff, canvas());
     _zoomer->setRubberBandPen(QPen(Qt::black));
 
 
@@ -205,7 +205,7 @@ MOPlot::~MOPlot()
     //detach curves because they will be deleted elsewhere
     // and should not be deleted here
     for(int i=0;i<curves.size();i++)
-        curves.at(i)->detach();
+  curves.at(i)->detach();
 }
 
 void MOPlot::setCurves(QList<QwtPlotCurve*>& _curves)
@@ -215,7 +215,7 @@ void MOPlot::setCurves(QList<QwtPlotCurve*>& _curves)
     
     for(int i =0;i<_curves.size();i++)
     {
-        addCurve(_curves.at(i));
+  addCurve(_curves.at(i));
     }
 
     setAxisAutoScale(QwtPlot::xBottom);
@@ -229,7 +229,7 @@ void MOPlot::clear()
     // first detach curves in order not to delete them
     for(int i=0;i<curves.size();i++)
     {
-        curves.at(i)->detach();
+  curves.at(i)->detach();
     }
 
 
@@ -241,7 +241,7 @@ void MOPlot::clear()
 void MOPlot::addCurve(QwtPlotCurve *_curve)
 {
     if(!curves.contains(_curve))
-        curves.push_back(_curve);
+  curves.push_back(_curve);
     
     _curve->attach(this);
 }
@@ -260,15 +260,15 @@ int MOPlot::getNearestPointIndex(QwtPlotCurve * curve,const QwtDoublePoint & poi
 
     /*for(int iPoint=0;iPoint<xData.size();iPoint++)
     {
-        xPointPos = transform(QwtPlot::xBottom,xData.at(iPoint));
-        yPointPos = transform(QwtPlot::yLeft,yData.at(iPoint));
+  xPointPos = transform(QwtPlot::xBottom,xData.at(iPoint));
+  yPointPos = transform(QwtPlot::yLeft,yData.at(iPoint));
 
-        curDist = sqrt(pow((double)(yPointPos-yPos),2)+pow((double)(xPointPos-xPos),2));
-        if((curDist<minDist)|| (iPoint==0))
-        {
-            indexMin = iPoint;
-            minDist = curDist;
-        }
+  curDist = sqrt(pow((double)(yPointPos-yPos),2)+pow((double)(xPointPos-xPos),2));
+  if((curDist<minDist)|| (iPoint==0))
+  {
+      indexMin = iPoint;
+      minDist = curDist;
+  }
     }*/
     return indexMin;
 }
@@ -283,31 +283,31 @@ void MOPlot::onClicked(const QwtDoublePoint & pos)
 }
 
 void MOPlot::drawItems (QPainter *painter, const QRect &rect,
-                        const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
+                  const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
 {
     painter->save();
 
     const QwtPlotItemList& itmList = itemList();
     for ( QwtPlotItemIterator it = itmList.begin();
-          it != itmList.end(); ++it )
+    it != itmList.end(); ++it )
     {
-        QwtPlotItem *item = *it;
-        if ( item && item->isVisible() )
-        {
-            if ( !(pfilter.options() & QwtPlotPrintFilter::PrintGrid)
-                 && item->rtti() == QwtPlotItem::Rtti_PlotGrid )
-            {
-                continue;
-            }
+  QwtPlotItem *item = *it;
+  if ( item && item->isVisible() )
+  {
+      if ( !(pfilter.options() & QwtPlotPrintFilter::PrintGrid)
+           && item->rtti() == QwtPlotItem::Rtti_PlotGrid )
+      {
+          continue;
+      }
 
 #if QT_VERSION >= 0x040000
-            painter->setRenderHint(QPainter::Antialiasing,true);
+      painter->setRenderHint(QPainter::Antialiasing,true);
 #endif
 
-            item->draw(painter,
-                       map[item->xAxis()], map[item->yAxis()],
-                       rect);
-        }
+      item->draw(painter,
+                 map[item->xAxis()], map[item->yAxis()],
+                 rect);
+  }
     }
 
     painter->restore();
@@ -343,7 +343,7 @@ void MOPlot::onCopyAsked()
 
     // Set the clilpboard image
     QClipboard * clipboard =
-            QApplication::clipboard();
+      QApplication::clipboard();
     clipboard->setImage(image);
 
 
@@ -353,17 +353,17 @@ void MOPlot::onCopyAsked()
     QString separator = "\t";
     for(int i=0;i<curves.size();i++)
     {
-        curve = curves.at(i);
-        QString yTitle = this->axisTitle(QwtPlot::yLeft).text();
-        QString xTitle = this->axisTitle(QwtPlot::xBottom).text();
-        csv+= xTitle + separator + yTitle + "\n";
-        for(unsigned int j=0;j<curve->data().size();j++)
-        {
-            curve->data().size();
-            csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
-        }
+  curve = curves.at(i);
+  QString yTitle = this->axisTitle(QwtPlot::yLeft).text();
+  QString xTitle = this->axisTitle(QwtPlot::xBottom).text();
+  csv+= xTitle + separator + yTitle + "\n";
+  for(unsigned int j=0;j<curve->data().size();j++)
+  {
+      curve->data().size();
+      csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
+  }
 
-        csv+= "\n \n";
+  csv+= "\n \n";
     }
     clipboard->setText(csv);
 }

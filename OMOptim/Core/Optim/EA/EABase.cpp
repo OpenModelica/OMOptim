@@ -81,7 +81,7 @@ EABase::~EABase(void)
 
 //    if(_subModels.size()>1)
 //    {
-//        _useSubModels = true;
+//  _useSubModels = true;
 //    }
 //}
 

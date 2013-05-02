@@ -29,12 +29,12 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file MEMassFlow.h
+  @file MEMassFlow.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-        @version
+  @version
 
   */
 #if !defined(_MEMASSFLOW_H)
@@ -46,27 +46,27 @@
 class MEMassFlow : public MEDimValue
 {
 public:
-        MEMassFlow();
-        MEMassFlow(double value,int unit);
-        MEMassFlow(const MEMassFlow&);
-        ~MEMassFlow();
+  MEMassFlow();
+  MEMassFlow(double value,int unit);
+  MEMassFlow(const MEMassFlow&);
+  ~MEMassFlow();
 
     enum Units
     {
-                KG_S,
-                T_H
+          KG_S,
+          T_H
     };
 
     QString unit(int iUnit)  const;
-        QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
+  QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
     unsigned nbUnits() const;
     double convert(double value,int orgUnit,int dstUnit) const;
 
-        MEMassFlow& operator+=(const MEMassFlow&);
-        MEMassFlow& operator-=(const MEMassFlow&);
-        MEMassFlow operator-(const MEMassFlow&) const;
-        MEMassFlow operator+(const MEMassFlow&) const;
-        MEMassFlow operator*(const double &) const;
+  MEMassFlow& operator+=(const MEMassFlow&);
+  MEMassFlow& operator-=(const MEMassFlow&);
+  MEMassFlow operator-(const MEMassFlow&) const;
+  MEMassFlow operator+(const MEMassFlow&) const;
+  MEMassFlow operator*(const double &) const;
 
 
 };

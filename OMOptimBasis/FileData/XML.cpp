@@ -62,28 +62,28 @@ XML::~XML(void)
 
 //    while( !n.isNull() )
 //    {
-//        e = n.toElement();
-//        if( !e.isNull() && (e.tagName()=="VariableResult"))
-//        {
-//            VariableResult* newVar = new VariableResult();
-//            QDomNamedNodeMap attributes = e.attributes();
-//            for(int i=0;i<attributes.count();i++)
-//            {
-//                fieldName = attributes.item(i).toAttr().name();
-//                iField = newVar->getFieldIndex(fieldName);
-//                if(iField>-1)
-//                    newVar->setFieldValue(iField,QVariant(attributes.item(i).toAttr().value()));
+//  e = n.toElement();
+//  if( !e.isNull() && (e.tagName()=="VariableResult"))
+//  {
+//      VariableResult* newVar = new VariableResult();
+//      QDomNamedNodeMap attributes = e.attributes();
+//      for(int i=0;i<attributes.count();i++)
+//      {
+//          fieldName = attributes.item(i).toAttr().name();
+//          iField = newVar->getFieldIndex(fieldName);
+//          if(iField>-1)
+//              newVar->setFieldValue(iField,QVariant(attributes.item(i).toAttr().value()));
 
-//                if(!fieldName.compare("Values"))
-//                {
-//                    QString text = attributes.item(i).toAttr().value();
-//                                        /// \todo Fill values
-//                                        InfoSender::instance()->debug("XMLToVariableResults not implemented. Do not use!!");
-//                }
-//            }
-//            variables.addItem(newVar);
-//        }
-//        n = n.nextSibling();
+//          if(!fieldName.compare("Values"))
+//          {
+//              QString text = attributes.item(i).toAttr().value();
+//                                  /// \todo Fill values
+//                                  InfoSender::instance()->debug("XMLToVariableResults not implemented. Do not use!!");
+//          }
+//      }
+//      variables.addItem(newVar);
+//  }
+//  n = n.nextSibling();
 //    }
 //}
 
@@ -95,18 +95,18 @@ XML::~XML(void)
 
 //    for(int i=0;i<vector.items.size();i++)
 //    {
-//        QDomElement cItem = doc.createElement(itemTitle);
-//        for(int iF=0;iF<vector.items.at(i)->getNbFields();iF++)
-//        {
-//            if(iF!=VariableResult::VALUE)
-//                cItem.setAttribute(vector.items.at(i)->getFieldName(iF),vector.items.at(i)->getFieldValue(iF).toString());
-//        }
-//        QDomElement _values = doc.createElement("Values");
-//        QDomText _text = doc.createTextNode(CSVBase::oneVariableResultToValueLines(vector.items.at(i)));
-//        _values.appendChild(_text);
-//        cItem.appendChild(_values);
+//  QDomElement cItem = doc.createElement(itemTitle);
+//  for(int iF=0;iF<vector.items.at(i)->getNbFields();iF++)
+//  {
+//      if(iF!=VariableResult::VALUE)
+//          cItem.setAttribute(vector.items.at(i)->getFieldName(iF),vector.items.at(i)->getFieldValue(iF).toString());
+//  }
+//  QDomElement _values = doc.createElement("Values");
+//  QDomText _text = doc.createTextNode(CSVBase::oneVariableResultToValueLines(vector.items.at(i)));
+//  _values.appendChild(_text);
+//  cItem.appendChild(_values);
 
-//        cList.appendChild(cItem);
+//  cList.appendChild(cItem);
 //    }
 //    return cList;
 //}
@@ -123,19 +123,19 @@ void  XML::XMLToVariables(MOVector<Variable> & variables,QDomElement &element)
 
     while( !n.isNull() )
     {
-        e = n.toElement();
-        if( !e.isNull() && (e.tagName()=="Variable"))
-        {
-            Variable* newVar = new Variable();
-            QDomNamedNodeMap attributes = e.attributes();
-            for(int i=0;i<attributes.count();i++)
-            {
-                iField = newVar->getFieldIndex(attributes.item(i).toAttr().name());
-                if(iField>-1)
-                    newVar->setFieldValue(iField,QVariant(attributes.item(i).toAttr().value()));
-            }
-            variables.addItem(newVar);        
-        }
-        n = n.nextSibling();
+  e = n.toElement();
+  if( !e.isNull() && (e.tagName()=="Variable"))
+  {
+      Variable* newVar = new Variable();
+      QDomNamedNodeMap attributes = e.attributes();
+      for(int i=0;i<attributes.count();i++)
+      {
+          iField = newVar->getFieldIndex(attributes.item(i).toAttr().name());
+          if(iField>-1)
+              newVar->setFieldValue(iField,QVariant(attributes.item(i).toAttr().value()));
+      }
+      variables.addItem(newVar);        
+  }
+  n = n.nextSibling();
     }
 }

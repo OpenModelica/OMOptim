@@ -51,17 +51,17 @@ class EAStdBounds
 {
 public :
     inline static void setBounds(Optimization*,
-                                // QList<QList<ModelPlus*> > subModels,
-                                 std::vector<eoRealInterval> &doubleBounds,
-                                 std::vector<eoIntInterval> &intBounds,
-                                 int &nbDouble,int &nbInt,int &nbBool);
+                          // QList<QList<ModelPlus*> > subModels,
+                           std::vector<eoRealInterval> &doubleBounds,
+                           std::vector<eoIntInterval> &intBounds,
+                           int &nbDouble,int &nbInt,int &nbBool);
 
 
 //    inline static void setBounds(VariableDet*,
-//                                           QVector<QVector< int> > &index,
-//                                          std::vector<eoRealInterval> &doubleBounds,
-//                                                std::vector<eoIntInterval> &intBounds,
-//                                                int &nbDouble,int &nbInt,int &nbBool);
+//                                     QVector<QVector< int> > &index,
+//                                    std::vector<eoRealInterval> &doubleBounds,
+//                                          std::vector<eoIntInterval> &intBounds,
+//                                          int &nbDouble,int &nbInt,int &nbBool);
 };
 
 
@@ -77,36 +77,36 @@ void EAStdBounds::setBounds(Optimization *_problem, /*QList<QList<ModelPlus*> > 
     double min,max;
     for(int i=0; i<nbVar; i++)
     {
-        curVar = _problem->optimizedVariables()->at(i);
-        min = curVar->optMin();
-        max = curVar->optMax();
+  curVar = _problem->optimizedVariables()->at(i);
+  min = curVar->optMin();
+  max = curVar->optMax();
 
-        switch(curVar->getFieldValue(OptVariable::DATATYPE).toInt())
-        {
-        case OMREAL:
-            realInterval = new eoRealInterval(min,max);
-            doubleBounds.push_back(*realInterval);
-            nbDouble++;
-            break;
-        case OMINTEGER:
-            intInterval = new eoIntInterval((int)min,(int)max);
-            intBounds.push_back(*intInterval);
-            nbInt++;
-            break;
+  switch(curVar->getFieldValue(OptVariable::DATATYPE).toInt())
+  {
+  case OMREAL:
+      realInterval = new eoRealInterval(min,max);
+      doubleBounds.push_back(*realInterval);
+      nbDouble++;
+      break;
+  case OMINTEGER:
+      intInterval = new eoIntInterval((int)min,(int)max);
+      intBounds.push_back(*intInterval);
+      nbInt++;
+      break;
 
-        case OMBOOLEAN:
-            //No need to specify bounds for boolean...
-            nbBool++;
-            break;
-        }
+  case OMBOOLEAN:
+      //No need to specify bounds for boolean...
+      nbBool++;
+      break;
+  }
     }
 
 //    //Adding int variable corresponding to subModelSelection
 //    if(subModels.size()>1)
 //    {
-//        intInterval = new eoIntInterval((int)0,subModels.size()-1);
-//        intBounds.push_back(*intInterval);
-//        nbInt++;
+//  intInterval = new eoIntInterval((int)0,subModels.size()-1);
+//  intBounds.push_back(*intInterval);
+//  nbInt++;
 //    }
 }
 

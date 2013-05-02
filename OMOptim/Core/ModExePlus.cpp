@@ -32,12 +32,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file ModExePlus.cpp
-        @brief Comments for file documentation.
-        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-        Company : CEP - ARMINES (France)
-        http://www-cep.ensmp.fr/english/
-        @version
+  @file ModExePlus.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 
@@ -129,11 +129,11 @@ Variables* ModExePlus::variables(ModItem* element)
 
     for(int i=0;i<_variables->size();i++)
     {
-        curVar = _variables->at(i);
-        curElName = curVar->name().section(".",0,-2);
+  curVar = _variables->at(i);
+  curElName = curVar->name().section(".",0,-2);
 
-        if(QString::compare(curElName,elName,Qt::CaseInsensitive)==0)
-            elVars->addItem(curVar);
+  if(QString::compare(curElName,elName,Qt::CaseInsensitive)==0)
+      elVars->addItem(curVar);
     }
     return elVars;
 }
@@ -230,46 +230,46 @@ bool ModExePlus::variablesRead() const
 //    ModItem* orgClass = _project->modItemsTree()->findInDescendants(blockSub->_orgComponent,modModel());
 //    if(!orgClass)
 //    {
-//        QString msg;
-//        msg.sprintf("Could not apply component substitution : component %s not found",
-//                    blockSub->_orgComponent.utf16());
-//        InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
-//        return false;
+//  QString msg;
+//  msg.sprintf("Could not apply component substitution : component %s not found",
+//              blockSub->_orgComponent.utf16());
+//  InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
+//  return false;
 //    }
 
 //    ModComponent* orgComp = NULL;
 //    if(orgClass->getClassRestr()==Modelica::COMPONENT)
-//        orgComp = (ModComponent*)orgClass;
+//  orgComp = (ModComponent*)orgClass;
 
 //    if(orgComp)
 //    {
-//        // first save annotation and modifiers
-//        QString annotation;// = _moomc->getAnnotation(blockSub->_orgComponent,blockSub->_model);
-//        QStringList modifiersNames = _moomc->getComponentModifierNames(blockSub->_orgComponent);
-//        QStringList modifiersValues;
-//        for(int i=0;i<modifiersNames.size();i++)
-//            modifiersValues.push_back(_moomc->getComponentModifierValue(modelName,shortOrg,modifiersNames.at(i)));
+//  // first save annotation and modifiers
+//  QString annotation;// = _moomc->getAnnotation(blockSub->_orgComponent,blockSub->_model);
+//  QStringList modifiersNames = _moomc->getComponentModifierNames(blockSub->_orgComponent);
+//  QStringList modifiersValues;
+//  for(int i=0;i<modifiersNames.size();i++)
+//      modifiersValues.push_back(_moomc->getComponentModifierValue(modelName,shortOrg,modifiersNames.at(i)));
 
-//        // delete org component
-//        _moomc->deleteComponent(blockSub->_orgComponent);
+//  // delete org component
+//  _moomc->deleteComponent(blockSub->_orgComponent);
 
-//        // create new component
-//        QString newCompName = blockSub->_orgComponent;
-//        //keep same name will avoid problem if objective or optimized variables are in component
+//  // create new component
+//  QString newCompName = blockSub->_orgComponent;
+//  //keep same name will avoid problem if objective or optimized variables are in component
 
-//        _moomc->addComponent(newCompName,blockSub->_subComponent,modelName(),annotation);
+//  _moomc->addComponent(newCompName,blockSub->_subComponent,modelName(),annotation);
 
-//        // specify modifiers equal to orgComponent
-//        _moomc->setComponentModifiers(newCompName,modelName(),modifiersNames,modifiersValues);
+//  // specify modifiers equal to orgComponent
+//  _moomc->setComponentModifiers(newCompName,modelName(),modifiersNames,modifiersValues);
 
-//        // connect it
-//        QStringList newCompPorts;
-//        for(int i=0;i<blockSub->_subPorts.size();i++)
-//        {
-//            newCompPorts.push_back(newCompName + "." + blockSub->_subPorts.at(i).section(".",-1,-1));
-//        }
+//  // connect it
+//  QStringList newCompPorts;
+//  for(int i=0;i<blockSub->_subPorts.size();i++)
+//  {
+//      newCompPorts.push_back(newCompName + "." + blockSub->_subPorts.at(i).section(".",-1,-1));
+//  }
 
-//        _moomc->addConnections(newCompPorts,blockSub->_subConnectedComps);
+//  _moomc->addConnections(newCompPorts,blockSub->_subConnectedComps);
 //    }
 
 //    _moomc->save(modelName());

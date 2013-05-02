@@ -59,12 +59,12 @@ ModelicaConnection::ModelicaConnection(QDomElement & domEl)
 
     for(int i=0;i<attributes.count();i++)
     {
-        fieldName = attributes.item(i).toAttr().name();
-        fieldName.replace(XMLTools::space()," ");
-        fieldValue = attributes.item(i).toAttr().value();
-        fieldValue.replace(XMLTools::space()," ");
+  fieldName = attributes.item(i).toAttr().name();
+  fieldName.replace(XMLTools::space()," ");
+  fieldValue = attributes.item(i).toAttr().value();
+  fieldValue.replace(XMLTools::space()," ");
 
-        MOItem::setFieldValue(fieldName,QVariant(fieldValue));
+  MOItem::setFieldValue(fieldName,QVariant(fieldValue));
     }
 }
 
@@ -96,14 +96,14 @@ QString ModelicaConnection::sFieldName(int ifield, int role)
 {
     switch (ifield)
     {
-        case NAME :
-            return "Name";
-        case A :
-            return "Org";
-        case B :
-            return "Dest";
-        default :
-            return "unknown field";
+  case NAME :
+      return "Name";
+  case A :
+      return "Org";
+  case B :
+      return "Dest";
+  default :
+      return "unknown field";
     }
 }
 
@@ -111,20 +111,20 @@ QString ModelicaConnection::sFieldName(int ifield, int role)
 QVariant ModelicaConnection::getFieldValue(int ifield, int role) const
 {
  if (!_filledFields.contains(ifield)&&(role==Qt::DisplayRole))
-        return QString("-");
+  return QString("-");
     else
     {
-        switch (ifield)
-        {
-        case NAME :
-            return _name;
-        case A :
-            return _a;
-        case B :
-            return _b;
-        default :
-            return "unknown field";
-        }
+  switch (ifield)
+  {
+  case NAME :
+      return _name;
+  case A :
+      return _a;
+  case B :
+      return _b;
+  default :
+      return "unknown field";
+  }
     }
 }
 
@@ -134,23 +134,23 @@ bool ModelicaConnection::setFieldValue(int ifield,QVariant value_)
     try{
     switch (ifield)
     {
-        case NAME :
-            _name=value_.toString();
-            break;
-        case A :
-            _a=value_.toDouble();
-            break;
-        case B :
-            _b = value_.toString();
-            break;
+  case NAME :
+      _name=value_.toString();
+      break;
+  case A :
+      _a=value_.toDouble();
+      break;
+  case B :
+      _b = value_.toString();
+      break;
     }
     if(!_filledFields.contains(ifield))
-        _filledFields.push_back(ifield);
+  _filledFields.push_back(ifield);
     return true;
     }
     catch(std::exception)
     {
-        return false;
+  return false;
     }
 }
 

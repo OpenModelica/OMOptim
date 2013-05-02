@@ -52,9 +52,9 @@ WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *allVariables,QWidget *par
     _useOpt = false;
     _allVariables = allVariables;
     if(selectedVariables)
-        _selectedVariables = selectedVariables->clone();
+  _selectedVariables = selectedVariables->clone();
     else
-        _selectedVariables = new MOVector<Variable>(false);
+  _selectedVariables = new MOVector<Variable>(false);
 
     variableProxyModel = GuiTools::ModelToViewWithFilter(_allVariables,ui->listVars,ui->lineVariableFilter);
 
@@ -76,9 +76,9 @@ WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *allVariables, QWidget *pa
     _useOpt = false;
     _allVariables = allVariables;
     if(selectedVariables)
-        _selectedVariables = selectedVariables->clone();
+  _selectedVariables = selectedVariables->clone();
     else
-        _selectedVariables = new MOVector<Variable>(false);
+  _selectedVariables = new MOVector<Variable>(false);
 
    // variableProxyModel = GuiTools::ModelToViewWithFilter(_allVariables,ui->listVars,ui->lineVariableFilter);
 
@@ -105,9 +105,9 @@ WidgetSelectVars::WidgetSelectVars(MOOptVector *allVariables,QWidget *parent,MOO
     _useOpt = true;
     _allOptVariables= allVariables;
     if(selectedVariables)
-        _selectedOptVariables = selectedVariables->clone();
+  _selectedOptVariables = selectedVariables->clone();
     else
-        _selectedOptVariables = new MOOptVector(false,true,true,this);
+  _selectedOptVariables = new MOOptVector(false,true,true,this);
 
 
     variableProxyModel = GuiTools::ModelToViewWithFilter(_allOptVariables,ui->listVars,ui->lineVariableFilter);
@@ -143,40 +143,40 @@ void WidgetSelectVars::addVariables()
 
     foreach(curProxyIndex, proxyIndexes)   // loop through and remove them
     {
-        curSourceIndex = variableProxyModel->mapToSource(curProxyIndex);
+  curSourceIndex = variableProxyModel->mapToSource(curProxyIndex);
 
-        if(_useOpt)
-        {
-            VariableResult *newVar;
-            optVarSelected=_allOptVariables->at(curSourceIndex.row());
-            qDebug() << optVarSelected;
-            qDebug() << curProxyIndex.internalPointer();
-            qDebug() << curSourceIndex.internalPointer();
-            alreadyIn = _selectedOptVariables->alreadyIn(optVarSelected->name());
+  if(_useOpt)
+  {
+      VariableResult *newVar;
+      optVarSelected=_allOptVariables->at(curSourceIndex.row());
+      qDebug() << optVarSelected;
+      qDebug() << curProxyIndex.internalPointer();
+      qDebug() << curSourceIndex.internalPointer();
+      alreadyIn = _selectedOptVariables->alreadyIn(optVarSelected->name());
 
 
-            if (!alreadyIn)
-            {
-                newVar = new VariableResult(*optVarSelected);
-                _selectedOptVariables->addItem(newVar);;
-            }
-        }
-        else
-        {
-            Variable *newVar;
-            varSelected=_allVariables->at(curSourceIndex.row());
-            alreadyIn = _selectedVariables->alreadyIn(varSelected->name());
+      if (!alreadyIn)
+      {
+          newVar = new VariableResult(*optVarSelected);
+          _selectedOptVariables->addItem(newVar);;
+      }
+  }
+  else
+  {
+      Variable *newVar;
+      varSelected=_allVariables->at(curSourceIndex.row());
+      alreadyIn = _selectedVariables->alreadyIn(varSelected->name());
 
-            qDebug() << varSelected;
-            qDebug() << curProxyIndex.internalPointer();
-            qDebug() << curSourceIndex.internalPointer();
+      qDebug() << varSelected;
+      qDebug() << curProxyIndex.internalPointer();
+      qDebug() << curSourceIndex.internalPointer();
 
-            if (!alreadyIn)
-            {
-                newVar = new Variable(*varSelected);
-                _selectedVariables->addItem(newVar);;
-            }
-        }
+      if (!alreadyIn)
+      {
+          newVar = new Variable(*varSelected);
+          _selectedVariables->addItem(newVar);;
+      }
+  }
     }
 }
 
@@ -186,18 +186,18 @@ void WidgetSelectVars::removeVariables()
 
     for(int i=0;i<indexList.size();i++)
     {
-        if(_useOpt)
-        {
-            int iVar = _selectedOptVariables->indexOf((VariableResult*)indexList.at(i).internalPointer());
-            if(iVar>-1)
-                _selectedOptVariables->removeRow(iVar);
-        }
-        else
-        {
-            int iVar = _selectedVariables->indexOf((Variable*)indexList.at(i).internalPointer());
-            if(iVar>-1)
-                _selectedVariables->removeRow(iVar);
-        }
+  if(_useOpt)
+  {
+      int iVar = _selectedOptVariables->indexOf((VariableResult*)indexList.at(i).internalPointer());
+      if(iVar>-1)
+          _selectedOptVariables->removeRow(iVar);
+  }
+  else
+  {
+      int iVar = _selectedVariables->indexOf((Variable*)indexList.at(i).internalPointer());
+      if(iVar>-1)
+          _selectedVariables->removeRow(iVar);
+  }
     }
 }
 

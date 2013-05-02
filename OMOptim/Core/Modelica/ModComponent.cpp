@@ -62,7 +62,7 @@ ModItem* ModComponent::clone() const
 
     for(int i=0;i<children().size();i++)
     {
-        newModComp->addChild(child(i)->clone());
+  newModComp->addChild(child(i)->clone());
     }
     return newModComp;
 }
@@ -79,35 +79,35 @@ QVariant ModComponent::getFieldValue(int iField, int role) const
     switch(iField)
     {
     case NAME:
-        return _name;
-        case CLASSNAME:
-        return _modClassName;
+  return _name;
+  case CLASSNAME:
+  return _modClassName;
     case FILEPATH:
-        return _file.absoluteFilePath();
+  return _file.absoluteFilePath();
     default :
-        return QVariant();
+  return QVariant();
     }
 }
 
 bool ModComponent::setFieldValue(int iField, QVariant value)
 {
     try{
-        switch(iField)
-        {
-        case NAME:
-            _name = value.toString();
-            break;
-                case CLASSNAME:
-            _modClassName = value.toString();
-        case FILEPATH:
-            _file = value.toString();
-            break;
-        }
-        return true;
+  switch(iField)
+  {
+  case NAME:
+      _name = value.toString();
+      break;
+          case CLASSNAME:
+      _modClassName = value.toString();
+  case FILEPATH:
+      _file = value.toString();
+      break;
+  }
+  return true;
     }
     catch(std::exception)
     {
-        return false;
+  return false;
     }
 }
 
@@ -116,13 +116,13 @@ QString ModComponent::sFieldName(int iField, int role)
     switch(iField)
     {
     case NAME:
-        return "Name";
-        case CLASSNAME:
-        return "Class";
+  return "Name";
+  case CLASSNAME:
+  return "Class";
     case FILEPATH:
-        return "FilePath";
+  return "FilePath";
     default:
-        return "-";
+  return "-";
     }
 }
 

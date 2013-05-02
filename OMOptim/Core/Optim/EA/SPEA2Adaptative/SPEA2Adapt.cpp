@@ -184,7 +184,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
     ************************************/
     moeoEvalFunc < EOAdapt > *plainEval;
     plainEval = new EAStdOptimizationEval<EOAdapt>(_project,(Optimization*)_problem,/*_subModels,*/tempDir,
-                                                   _modItemsTree,&_quickEnd);
+                                             _modItemsTree,&_quickEnd);
 
     OMEAEvalFuncCounter<EOAdapt>* eval = new OMEAEvalFuncCounter<EOAdapt> (* plainEval,&OMEAProgress,nTotalEvals);
 
@@ -224,45 +224,45 @@ Result* SPEA2Adapt::launch(QString tempDir)
     if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
     {
 
-        // create another state for reading
-        eoState inState;        // a state for loading - WITHOUT the parser
-        // register the rng and the pop in the state, so they can be loaded,
-        // and the present run will be the exact continuation of the saved run
-        // eventually with different parameters
-        inState.registerObject(pop);
-        inState.registerObject(rng);
+  // create another state for reading
+  eoState inState;        // a state for loading - WITHOUT the parser
+  // register the rng and the pop in the state, so they can be loaded,
+  // and the present run will be the exact continuation of the saved run
+  // eventually with different parameters
+  inState.registerObject(pop);
+  inState.registerObject(rng);
 
 
-        std::string str = reloadFilePath.toLatin1().data();
-        try{
-            inState.load(str);
-        }
-        catch(std::exception &e)
-        {
-            InfoSender::instance()->send(Info("Loading start file failed :"+QString(e.what()),ListInfo::WARNING2));
-            loadFailed = true;
-        }
-        if(!loadFailed)
-        {
-            InfoSender::instance()->send(Info("Loading start file success : "+reloadFilePath,ListInfo::NORMAL2));
-        }
-        bool reinitStdDev= _parameters->value(SPEA2AdaptParameters::str(SPEA2AdaptParameters::REINITSTDDEV)).toBool();
-        if(reinitStdDev)
-        {
-            EAAdaptReinitStdDev<EOAdapt>::reinitDblStdDev(pop,doubleBounds,initPopSize);
-        }
+  std::string str = reloadFilePath.toLatin1().data();
+  try{
+      inState.load(str);
+  }
+  catch(std::exception &e)
+  {
+      InfoSender::instance()->send(Info("Loading start file failed :"+QString(e.what()),ListInfo::WARNING2));
+      loadFailed = true;
+  }
+  if(!loadFailed)
+  {
+      InfoSender::instance()->send(Info("Loading start file success : "+reloadFilePath,ListInfo::NORMAL2));
+  }
+  bool reinitStdDev= _parameters->value(SPEA2AdaptParameters::str(SPEA2AdaptParameters::REINITSTDDEV)).toBool();
+  if(reinitStdDev)
+  {
+      EAAdaptReinitStdDev<EOAdapt>::reinitDblStdDev(pop,doubleBounds,initPopSize);
+  }
     }
 
     if(loadFailed)
     {
-        pop.clear();
-        pop = state.takeOwnership(eoPop<EOAdapt>());
+  pop.clear();
+  pop = state.takeOwnership(eoPop<EOAdapt>());
     }
 
 
     if(pop.size() < initPopSize)
     {
-        pop.append(initPopSize,*init);
+  pop.append(initPopSize,*init);
     }
 
     // for future stateSave, register the algorithm into the state
@@ -337,7 +337,7 @@ Result* SPEA2Adapt::launch(QString tempDir)
     //GETTING RESULT FROM FINAL ARCHIVE
     //************************************/
     if(!_keepResults) // if stop has been called
-        return NULL;
+  return NULL;
 
     Result* result = buildResult(arch);
 

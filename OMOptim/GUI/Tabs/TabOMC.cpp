@@ -1,5 +1,5 @@
 // $Id$
-        /**
+  /**
  * This file is part of OpenModelica.
  *
  * Copyright (c) 1998-CurrentYear, Open Source Modelica Consortium (OSMC),
@@ -46,13 +46,13 @@
 #include "Plots/MOOptPlot.h"
 
 
-        namespace Ui
+  namespace Ui
 {
     class TabOMC_Class;
 }
 
 TabOMC::TabOMC(Project *project_,QWidget *parent) :
-        MOTabSimple(NULL,NULL), ui(new Ui::TabOMC_Class)
+  MOTabSimple(NULL,NULL), ui(new Ui::TabOMC_Class)
 {
 
     ui->setupUi(this);
@@ -71,23 +71,23 @@ TabOMC::TabOMC(Project *project_,QWidget *parent) :
     // create command compleation instance
     QString openmodelica( getenv( "OPENMODELICAHOME" ) );
     if( openmodelica.isEmpty() )
-        QMessageBox::critical( 0, "OMShell Error", "Could not find environment variable OPENMODELICAHOME, command compleation will not work" );
+  QMessageBox::critical( 0, "OMShell Error", "Could not find environment variable OPENMODELICAHOME, command compleation will not work" );
 
     try
     {
-        QString commandfile;
-        if( openmodelica.endsWith("/") || openmodelica.endsWith( "\\") )
-            commandfile = openmodelica + "bin/commands.xml";
-        else
-            commandfile = openmodelica + "/bin/commands.xml";
+  QString commandfile;
+  if( openmodelica.endsWith("/") || openmodelica.endsWith( "\\") )
+      commandfile = openmodelica + "bin/commands.xml";
+  else
+      commandfile = openmodelica + "/bin/commands.xml";
 
     //    commandcompletion_ = IAEX::CommandCompletion::instance( commandfile );
     }
     catch( std::exception &e )
     {
-        QString msg = e.what();
-        msg += "\nCould not create command completion class!";
-        QMessageBox::warning( QApplication::activeWindow(), "Error", msg, "OK" );
+  QString msg = e.what();
+  msg += "\nCould not create command completion class!";
+  QMessageBox::warning( QApplication::activeWindow(), "Error", msg, "OK" );
     }
 
     // add function names for code completion
@@ -156,7 +156,7 @@ void TabOMC::createMoshEdit()
     moshEdit_->setAutoFormatting( QTextEdit::AutoNone );
 
     moshEdit_->setSizePolicy( QSizePolicy(
-            QSizePolicy::Expanding, QSizePolicy::Expanding ));
+      QSizePolicy::Expanding, QSizePolicy::Expanding ));
     moshEdit_->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     moshEdit_->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
     moshEdit_->setContextMenuPolicy( Qt::NoContextMenu );
@@ -169,19 +169,19 @@ void TabOMC::createMoshEdit()
     textFormat_ = moshEdit_->currentCharFormat();
 
     connect( moshEdit_, SIGNAL( returnPressed() ),
-             this, SLOT( returnPressed() ));
+       this, SLOT( returnPressed() ));
     connect( moshEdit_, SIGNAL( insertNewline() ),
-             this, SLOT( insertNewline() ));
+       this, SLOT( insertNewline() ));
     connect( moshEdit_, SIGNAL( prevCommand() ),
-             this, SLOT( prevCommand() ));
+       this, SLOT( prevCommand() ));
     connect( moshEdit_, SIGNAL( nextCommand() ),
-             this, SLOT( nextCommand() ));
+       this, SLOT( nextCommand() ));
     connect( moshEdit_, SIGNAL( goHome(bool) ),
-             this, SLOT( goHome(bool) ));
+       this, SLOT( goHome(bool) ));
     connect( moshEdit_, SIGNAL( codeCompletion(bool) ),
-             this, SLOT( codeCompletion(bool) ));
+       this, SLOT( codeCompletion(bool) ));
     connect( moshEdit_, SIGNAL( codeNextField() ),
-             this, SLOT( codeNextField() ));
+       this, SLOT( codeNextField() ));
 }
 
 
@@ -206,56 +206,56 @@ void MyTextEdit::keyPressEvent(QKeyEvent *event)
 {
     if( !insideCommandSign() )
     {
-        switch( event->key() )
-        {
-        case Qt::Key_Backspace:
-        case Qt::Key_Left:
-            if( !startOfCommandSign() )
-                QTextEdit::keyPressEvent( event );
-            sameTab_ = false;
-            break;
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
-            if( event->modifiers() == Qt::ShiftModifier )
-                emit insertNewline();
-            else
-                emit returnPressed();
-            sameTab_ = false;
-            break;
-        case Qt::Key_Up:
-            emit prevCommand();
-            sameTab_ = false;
-            break;
-        case Qt::Key_Down:
-            emit nextCommand();
-            sameTab_ = false;
-            break;
-        case Qt::Key_Home:
-            if( event->modifiers() == Qt::ShiftModifier )
-                emit goHome(true);
-            else
-                emit goHome(false);
-            sameTab_ = false;
-            break;
-        case Qt::Key_Tab:
-            {
-                if( event->modifiers() == Qt::ControlModifier )
-                {
-                    emit codeNextField();
-                    sameTab_ = false;
-                }
-                else
-                {
-                    emit codeCompletion( sameTab_ );
-                    sameTab_ = true;
-                }
-            }
-            break;
-        default:
-            QTextEdit::keyPressEvent( event );
-            sameTab_ = false;
-            break;
-        }
+  switch( event->key() )
+  {
+  case Qt::Key_Backspace:
+  case Qt::Key_Left:
+      if( !startOfCommandSign() )
+          QTextEdit::keyPressEvent( event );
+      sameTab_ = false;
+      break;
+  case Qt::Key_Enter:
+  case Qt::Key_Return:
+      if( event->modifiers() == Qt::ShiftModifier )
+          emit insertNewline();
+      else
+          emit returnPressed();
+      sameTab_ = false;
+      break;
+  case Qt::Key_Up:
+      emit prevCommand();
+      sameTab_ = false;
+      break;
+  case Qt::Key_Down:
+      emit nextCommand();
+      sameTab_ = false;
+      break;
+  case Qt::Key_Home:
+      if( event->modifiers() == Qt::ShiftModifier )
+          emit goHome(true);
+      else
+          emit goHome(false);
+      sameTab_ = false;
+      break;
+  case Qt::Key_Tab:
+      {
+          if( event->modifiers() == Qt::ControlModifier )
+          {
+              emit codeNextField();
+              sameTab_ = false;
+          }
+          else
+          {
+              emit codeCompletion( sameTab_ );
+              sameTab_ = true;
+          }
+      }
+      break;
+  default:
+      QTextEdit::keyPressEvent( event );
+      sameTab_ = false;
+      break;
+  }
     }
 }
 
@@ -264,23 +264,23 @@ bool MyTextEdit::insideCommandSign()
     QTextBlock block = document()->findBlock( textCursor().position() );
     if( block.isValid() )
     {
-        int signPos = block.text().indexOf( ">> ", 0, Qt::CaseInsensitive );
-        int blockStartPos = block.position();
-        int cursorPos = textCursor().position();
-        if( blockStartPos <= cursorPos && cursorPos < (blockStartPos+3) && signPos == 0)
-        {
-            /*        cerr << "Inside Command Sign" << endl;
-            cerr << "BlockStart: " << blockStartPos <<
-                ", Cursor: " << cursorPos << endl << endl;*/
+  int signPos = block.text().indexOf( ">> ", 0, Qt::CaseInsensitive );
+  int blockStartPos = block.position();
+  int cursorPos = textCursor().position();
+  if( blockStartPos <= cursorPos && cursorPos < (blockStartPos+3) && signPos == 0)
+  {
+      /*        cerr << "Inside Command Sign" << endl;
+      cerr << "BlockStart: " << blockStartPos <<
+          ", Cursor: " << cursorPos << endl << endl;*/
 
 
-            return true;
-        }
-        else
-            return false;
+      return true;
+  }
+  else
+      return false;
     }
     else
-        //cerr << "Not a valid QTextBlock (insideCommandSign)" << endl;
+  //cerr << "Not a valid QTextBlock (insideCommandSign)" << endl;
 
     return true;
 }
@@ -290,16 +290,16 @@ bool MyTextEdit::startOfCommandSign()
     QTextBlock block = document()->findBlock( textCursor().position() );
     if( block.isValid() )
     {
-        int signPos = block.text().indexOf( ">> ", 0, Qt::CaseInsensitive );
-        int blockStartPos = block.position();
-        int cursorPos = textCursor().position();
-        if( cursorPos == (blockStartPos+3) && signPos == 0 )
-            return true;
-        else
-            return false;
+  int signPos = block.text().indexOf( ">> ", 0, Qt::CaseInsensitive );
+  int blockStartPos = block.position();
+  int cursorPos = textCursor().position();
+  if( cursorPos == (blockStartPos+3) && signPos == 0 )
+      return true;
+  else
+      return false;
     }
     else
-        //cerr << "Not a valid QTextBlock (startOfCommandSign)" << endl;
+  //cerr << "Not a valid QTextBlock (startOfCommandSign)" << endl;
 
     return true;
 }
@@ -312,13 +312,13 @@ void MyTextEdit::insertFromMimeData(const QMimeData *source)
 {
     if( source->hasText() )
     {
-        QMimeData *newSource = new QMimeData();
-        newSource->setText( source->text() );
-        QTextEdit::insertFromMimeData( newSource );
-        delete newSource;
+  QMimeData *newSource = new QMimeData();
+  newSource->setText( source->text() );
+  QTextEdit::insertFromMimeData( newSource );
+  delete newSource;
     }
     else
-        QTextEdit::insertFromMimeData( source );
+  QTextEdit::insertFromMimeData( source );
 }
 void TabOMC::addCommandLine()
 {
@@ -352,25 +352,25 @@ void TabOMC::returnPressed()
     QString commandText;
     while( true )
     {
-        if( block.isValid() )
-        {
-            commandText = block.text() + commandText;
+  if( block.isValid() )
+  {
+      commandText = block.text() + commandText;
 
-            if( block.text().indexOf( ">> ", 0, Qt::CaseInsensitive ) == 0 )
-            { // last command sign found, send command to OMC
-                break;
-            }
-            else
-            { // no command sign, look in previous text block
-                block = block.previous();
-                commandText = "\n" + commandText;
-            }
-        }
-        else
-        {
-            //cerr << "Not a valid QTextBlock (returnPressed)" << endl;
-            break;
-        }
+      if( block.text().indexOf( ">> ", 0, Qt::CaseInsensitive ) == 0 )
+      { // last command sign found, send command to OMC
+          break;
+      }
+      else
+      { // no command sign, look in previous text block
+          block = block.previous();
+          commandText = "\n" + commandText;
+      }
+  }
+  else
+  {
+      //cerr << "Not a valid QTextBlock (returnPressed)" << endl;
+      break;
+  }
     }
 
     // strip command sign from commandText
@@ -386,81 +386,81 @@ void TabOMC::returnPressed()
     // if 'quit()' exit WinMosh
     if( commandText == "quit()" )
     {
-        //exit();
-        return;
+  //exit();
+  return;
     }
 
     // send command to OMC
     if(!project->moomc()->isStarted())
     {
-        project->moomc()->startServer();
+  project->moomc()->startServer();
     }
     if( project->moomc()->isStarted() )
     {
-        eval:
-        // 2006-02-02 AF, Added try-catch
-        try
-        {
-            project->moomc()->evalCommand(commandText );
-        }
-        catch( std::exception &e )
-        {
-            exceptionInEval(e);
-            return;
-        }
+  eval:
+  // 2006-02-02 AF, Added try-catch
+  try
+  {
+      project->moomc()->evalCommand(commandText );
+  }
+  catch( std::exception &e )
+  {
+      exceptionInEval(e);
+      return;
+  }
 
-        // get result
-        QString res = project->moomc()->getResult();
+  // get result
+  QString res = project->moomc()->getResult();
 
-        if( res.isEmpty() )
-            cursor_.insertText( "\n", textFormat_ );
-        else
-            cursor_.insertText( "\n" + res + "\n", textFormat_ );
+  if( res.isEmpty() )
+      cursor_.insertText( "\n", textFormat_ );
+  else
+      cursor_.insertText( "\n" + res + "\n", textFormat_ );
 
-        // get Error text
-        try
-        {
-            QString getErrorString = "getErrorString()";
-            project->moomc()->evalCommand(getErrorString);
-        }
-        catch( std::exception &e )
-        {
-            exceptionInEval(e);
-            return;
-        }
-        QString error = project->moomc()->getResult();
-        if( error.size() > 2 )
-        {
-            cursor_.insertText( error.mid( 1, error.size() - 2 ) );
-            /*
-            QTextCursor errorCursor = moshError_->textCursor();
-            errorCursor.insertText( "\n" + error.mid( 0, error.size() - 1 ) );
-            moshError_->verticalScrollBar()->triggerAction(QAbstractSlider::SliderToMaximum);
-            */
-        }
+  // get Error text
+  try
+  {
+      QString getErrorString = "getErrorString()";
+      project->moomc()->evalCommand(getErrorString);
+  }
+  catch( std::exception &e )
+  {
+      exceptionInEval(e);
+      return;
+  }
+  QString error = project->moomc()->getResult();
+  if( error.size() > 2 )
+  {
+      cursor_.insertText( error.mid( 1, error.size() - 2 ) );
+      /*
+      QTextCursor errorCursor = moshError_->textCursor();
+      errorCursor.insertText( "\n" + error.mid( 0, error.size() - 1 ) );
+      moshError_->verticalScrollBar()->triggerAction(QAbstractSlider::SliderToMaximum);
+      */
+  }
     }
     else
     {
-        if( project->moomc()->startServer() )
-        {
-            cursor_.insertText("[ERROR] No OMC server started - restarted OMC\n" );
-            goto eval;
-        }
-        else
-            cursor_.insertText("[ERROR] No OMC server started - unable to restart OMC\n" );
+  if( project->moomc()->startServer() )
+  {
+      cursor_.insertText("[ERROR] No OMC server started - restarted OMC\n" );
+      goto eval;
+  }
+  else
+      cursor_.insertText("[ERROR] No OMC server started - unable to restart OMC\n" );
 
 
-        /*
-        QTextCursor cursor = moshError_->textCursor();
+  /*
+  QTextCursor cursor = moshError_->textCursor();
 
-        if( startServer() )
-        {
-            cursor.insertText("[ERROR] No OMC serer started - restarted OMC\n" );
-            goto eval;
-        }
-        else
-            cursor.insertText("[ERROR] No OMC serer started - unable to restart OMC\n" );
-        */
+  if( startServer() )
+  {
+      cursor.insertText("[ERROR] No OMC serer started - restarted OMC\n" );
+      goto eval;
+  }
+  else
+      cursor.insertText("[ERROR] No OMC serer started - unable to restart OMC\n" );
+  */
     }
 
     // add new command line
@@ -472,23 +472,23 @@ void TabOMC::selectCommandLine()
     QTextBlock block = moshEdit_->document()->findBlock( cursor_.position() );
     while( true )
     {
-        if( block.isValid() )
-        {
-            if( block.text().indexOf( ">> ", 0, Qt::CaseInsensitive ) == 0 )
-            { // last command sign found, move cursor there
-                cursor_.setPosition( block.position()+3, QTextCursor::KeepAnchor );
-                break;
-            }
-            else
-            { // no command sign, look in previous text block
-                block = block.previous();
-            }
-        }
-        else
-        {
-            //cout << "Not a valid QTextBlock (selectCommandLine)" << endl;
-            break;
-        }
+  if( block.isValid() )
+  {
+      if( block.text().indexOf( ">> ", 0, Qt::CaseInsensitive ) == 0 )
+      { // last command sign found, move cursor there
+          cursor_.setPosition( block.position()+3, QTextCursor::KeepAnchor );
+          break;
+      }
+      else
+      { // no command sign, look in previous text block
+          block = block.previous();
+      }
+  }
+  else
+  {
+      //cout << "Not a valid QTextBlock (selectCommandLine)" << endl;
+      break;
+  }
     }
 
     moshEdit_->ensureCursorVisible();
@@ -500,42 +500,42 @@ void TabOMC::exceptionInEval(std::exception &e)
     // 2006-0-09 AF, try to reconnect to OMC first.
     try
     {
-        //project->moomc()->getCommunicator()->closeConnection();
-        //bool reconnected = project->moomc()->getCommunicator()->establishConnection();
-        returnPressed();
+  //project->moomc()->getCommunicator()->closeConnection();
+  //bool reconnected = project->moomc()->getCommunicator()->establishConnection();
+  returnPressed();
     }
     catch( std::exception &e )
     {
-        // unable to reconnect, ask if user want to restart omc.
-        QString msg = QString( e.what() ) + "\n\nUnable to reconnect with OMC. Do you want to restart OMC?";
-        int result = QMessageBox::critical( 0, tr("Communication Error with OMC"),
-                                            msg,
-                                            QMessageBox::Yes | QMessageBox::Default,
-                                            QMessageBox::No );
+  // unable to reconnect, ask if user want to restart omc.
+  QString msg = QString( e.what() ) + "\n\nUnable to reconnect with OMC. Do you want to restart OMC?";
+  int result = QMessageBox::critical( 0, tr("Communication Error with OMC"),
+                                      msg,
+                                      QMessageBox::Yes | QMessageBox::Default,
+                                      QMessageBox::No );
 
-        if( result == QMessageBox::Yes )
-        {
-            project->moomc()->stopServer();
-            if( project->moomc()->startServer())
-            {
-                // 2006-03-14 AF, wait before trying to reconnect,
-                // give OMC time to start up
-                //SleeperThread::msleep( 1000 );
+  if( result == QMessageBox::Yes )
+  {
+      project->moomc()->stopServer();
+      if( project->moomc()->startServer())
+      {
+          // 2006-03-14 AF, wait before trying to reconnect,
+          // give OMC time to start up
+          //SleeperThread::msleep( 1000 );
 
-                //project->moomc()->delegate_->closeConnection();
-                try
-                {
-                    //project->moomc()->getCommunicator()->establishConnection();
-                    returnPressed();
-                }
-                catch( std::exception &e )
-                {
-                    QMessageBox::critical( 0, tr("Communication Error"),
-                                           tr("<B>Unable to communication correctlly with OMC.</B>") );
-                    //exit();
-                }
-            }
-        }
+          //project->moomc()->delegate_->closeConnection();
+          try
+          {
+              //project->moomc()->getCommunicator()->establishConnection();
+              returnPressed();
+          }
+          catch( std::exception &e )
+          {
+              QMessageBox::critical( 0, tr("Communication Error"),
+                                     tr("<B>Unable to communication correctlly with OMC.</B>") );
+              //exit();
+          }
+      }
+  }
     }
 }
 
@@ -551,22 +551,22 @@ void TabOMC::prevCommand()
 {
     if( commands_->size() > 0 )
     {
-        if( currentCommand_ < 0 )
-            currentCommand_ = commands_->size() - 1;
-        else
-        {
-            if( currentCommand_ >= 1 )
-                currentCommand_--;
-            else
-                currentCommand_ = 0;
-        }
+  if( currentCommand_ < 0 )
+      currentCommand_ = commands_->size() - 1;
+  else
+  {
+      if( currentCommand_ >= 1 )
+          currentCommand_--;
+      else
+          currentCommand_ = 0;
+  }
 
-        // select all text in the last commandline
-        selectCommandLine();
-        cursor_.removeSelectedText();
-        cursor_.insertText( commands_->at( currentCommand_ ));
-        cursor_.movePosition( QTextCursor::EndOfBlock, QTextCursor::MoveAnchor );
-        moshEdit_->setTextCursor( cursor_ );
+  // select all text in the last commandline
+  selectCommandLine();
+  cursor_.removeSelectedText();
+  cursor_.insertText( commands_->at( currentCommand_ ));
+  cursor_.movePosition( QTextCursor::EndOfBlock, QTextCursor::MoveAnchor );
+  moshEdit_->setTextCursor( cursor_ );
     }
 
     moshEdit_->verticalScrollBar()->triggerAction(QAbstractSlider::SliderToMaximum);
@@ -576,33 +576,33 @@ void TabOMC::nextCommand()
 {
     if( currentCommand_ >= 0 )
     {
-        if( currentCommand_ == commands_->size()-1 )
-        { // last command is currently displayed, clear the commandline
-            currentCommand_ = -1;
+  if( currentCommand_ == commands_->size()-1 )
+  { // last command is currently displayed, clear the commandline
+      currentCommand_ = -1;
 
-            selectCommandLine();
-            cursor_.removeSelectedText();
-            cursor_.movePosition( QTextCursor::EndOfBlock, QTextCursor::MoveAnchor );
-            moshEdit_->setTextCursor( cursor_ );
-        }
-        else
-        {
-            currentCommand_++;
+      selectCommandLine();
+      cursor_.removeSelectedText();
+      cursor_.movePosition( QTextCursor::EndOfBlock, QTextCursor::MoveAnchor );
+      moshEdit_->setTextCursor( cursor_ );
+  }
+  else
+  {
+      currentCommand_++;
 
-            selectCommandLine();
-            cursor_.removeSelectedText();
-            cursor_.insertText( commands_->at( currentCommand_ ));
-            cursor_.movePosition( QTextCursor::EndOfBlock, QTextCursor::MoveAnchor );
-            moshEdit_->setTextCursor( cursor_ );
-        }
+      selectCommandLine();
+      cursor_.removeSelectedText();
+      cursor_.insertText( commands_->at( currentCommand_ ));
+      cursor_.movePosition( QTextCursor::EndOfBlock, QTextCursor::MoveAnchor );
+      moshEdit_->setTextCursor( cursor_ );
+  }
     }
     else
     {
-        // no erlier commands, clear the commandline..
-        selectCommandLine();
-        cursor_.removeSelectedText();
-        cursor_.movePosition( QTextCursor::EndOfBlock, QTextCursor::MoveAnchor );
-        moshEdit_->setTextCursor( cursor_ );
+  // no erlier commands, clear the commandline..
+  selectCommandLine();
+  cursor_.removeSelectedText();
+  cursor_.movePosition( QTextCursor::EndOfBlock, QTextCursor::MoveAnchor );
+  moshEdit_->setTextCursor( cursor_ );
     }
 
     moshEdit_->verticalScrollBar()->triggerAction(QAbstractSlider::SliderToMaximum);
@@ -618,7 +618,7 @@ void TabOMC::cut()
     /*    }
     else if( moshError_->hasFocus() )
     {
-        moshError_->copy();
+  moshError_->copy();
     }*/
 }
 
@@ -631,7 +631,7 @@ void TabOMC::copy()
     /*    }
     else if( moshError_->hasFocus() )
     {
-        moshError_->copy();
+  moshError_->copy();
     }*/
 }
 
@@ -647,14 +647,14 @@ void TabOMC::goHome( bool shift )
     QTextBlock block = moshEdit_->document()->findBlock( cursor_.position() );
     if( block.isValid() )
     {
-        cursor_ = moshEdit_->textCursor();
+  cursor_ = moshEdit_->textCursor();
 
-        if( shift )
-            cursor_.setPosition( block.position() + 3, QTextCursor::KeepAnchor );
-        else
-            cursor_.setPosition( block.position() + 3, QTextCursor::MoveAnchor );
+  if( shift )
+      cursor_.setPosition( block.position() + 3, QTextCursor::KeepAnchor );
+  else
+      cursor_.setPosition( block.position() + 3, QTextCursor::MoveAnchor );
 
-        moshEdit_->setTextCursor( cursor_ );
+  moshEdit_->setTextCursor( cursor_ );
     }
     //else
     //cout << "Not a valid QTextBlock (selectCommandLine)" << endl;
@@ -665,13 +665,13 @@ void TabOMC::goHome( bool shift )
 //    cursor_ = moshEdit_->textCursor();
 //    if( !same )
 //    {
-//        commandcompletion_->insertCommand( cursor_ );
-//        moshEdit_->setTextCursor( cursor_ );
+//  commandcompletion_->insertCommand( cursor_ );
+//  moshEdit_->setTextCursor( cursor_ );
 //    }
 //    else
 //    {
-//        commandcompletion_->nextCommand( cursor_ );
-//        moshEdit_->setTextCursor( cursor_ );
+//  commandcompletion_->nextCommand( cursor_ );
+//  moshEdit_->setTextCursor( cursor_ );
 //    }
 //
 //    /*
@@ -679,33 +679,33 @@ void TabOMC::goHome( bool shift )
 //
 //    if( !same )
 //    {
-//        //find last word
-//        cursor_.movePosition( QTextCursor::PreviousWord, QTextCursor::KeepAnchor );
-//        currentFunctionName_ = cursor_.selectedText();
-//        currentFunction_ = 0;
+//  //find last word
+//  cursor_.movePosition( QTextCursor::PreviousWord, QTextCursor::KeepAnchor );
+//  currentFunctionName_ = cursor_.selectedText();
+//  currentFunction_ = 0;
 //    }
 //
 //
 //    QStringList list = getFunctionNames( currentFunctionName_ );
 //    if( list.isEmpty() )
 //    {
-//        if( currentFunctionName_ == "> " )
-//            list = *functionList_;
+//  if( currentFunctionName_ == "> " )
+//      list = *functionList_;
 //    }
 //
 //    if( !list.isEmpty() )
 //    {
-//        if( same )
-//        {
-//            if( currentFunction_ == list.size() - 1 )
-//                currentFunction_ = 0;
-//            else
-//                currentFunction_++;
-//        }
+//  if( same )
+//  {
+//      if( currentFunction_ == list.size() - 1 )
+//          currentFunction_ = 0;
+//      else
+//          currentFunction_++;
+//  }
 //
-//        selectCommandLine();
-//        cursor_.insertText( list.at( currentFunction_ ));
-//        moshEdit_->setTextCursor( cursor_ );
+//  selectCommandLine();
+//  cursor_.insertText( list.at( currentFunction_ ));
+//  moshEdit_->setTextCursor( cursor_ );
 //    }
 //*/
 //

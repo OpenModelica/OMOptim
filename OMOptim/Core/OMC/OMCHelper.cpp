@@ -71,60 +71,60 @@ QString GUIMessages::getMessage(int type)
     switch (type)
     {
     case SAME_COMPONENT_NAME:
-        return "A Component with the same name already exists. Please choose another Name.";
+  return "A Component with the same name already exists. Please choose another Name.";
     case SAME_PORT_CONNECT:
-        return "You can not connect a port to itself.";
+  return "You can not connect a port to itself.";
     case NO_OPEN_MODEL:
-        return "There is no open Model to simulate.";
+  return "There is no open Model to simulate.";
     case NO_SIMULATION_STARTTIME:
-        return "Simulation Start Time is not defined. Default value (0.0) will be used.";
+  return "Simulation Start Time is not defined. Default value (0.0) will be used.";
     case NO_SIMULATION_STOPTIME:
-        return "Simulation Stop Time is not defined.";
+  return "Simulation Stop Time is not defined.";
     case SIMULATION_STARTTIME_LESSTHAN_STOPTIME:
-        return "Simulation Start Time should be less than Stop Time.";
+  return "Simulation Start Time should be less than Stop Time.";
     case ENTER_NAME:
-        return "Please enter %1 Name.";
+  return "Please enter %1 Name.";
     case MODEL_ALREADY_EXISTS:
-        return "%1 %2 already exits %3.";
+  return "%1 %2 already exits %3.";
     case ITEM_ALREADY_EXISTS:
-        return "An item with the same name already exists. Please try some other name.";
+  return "An item with the same name already exists. Please try some other name.";
     case OPEN_MODELICA_HOME_NOT_FOUND:
-        return "Could not find environment variable OPENMODELICAHOME. Please make sure OpenModelica is installed properly.";
+  return "Could not find environment variable OPENMODELICAHOME. Please make sure OpenModelica is installed properly.";
     case ERROR_OCCURRED:
-        return "Following Error has occurred. \n\n%1";
+  return "Following Error has occurred. \n\n%1";
     case ERROR_IN_MODELICA_TEXT:
-        return "Following Errors are found in Modelica Text. \n\n%1";
+  return "Following Errors are found in Modelica Text. \n\n%1";
     case UNDO_OR_FIX_ERRORS:
-        return "\n\nFor normal users it is recommended to choose 'Undo changes'. You can also choose 'Let me fix errors' if you want to fix them by your own.";
+  return "\n\nFor normal users it is recommended to choose 'Undo changes'. You can also choose 'Let me fix errors' if you want to fix them by your own.";
     case NO_OPEN_MODELICA_KEYWORDS:
-        return "Please make sure you are not using any OpenModelica Keywords like (model, package, record, class etc.)";
+  return "Please make sure you are not using any OpenModelica Keywords like (model, package, record, class etc.)";
     case INCOMPATIBLE_CONNECTORS:
-        return "Incompatible types for the connectors.";
+  return "Incompatible types for the connectors.";
     case SAVE_CHANGES:
-        return "Do you want to save your changes before closing?";
+  return "Do you want to save your changes before closing?";
     case DELETE_FAIL:
-        return "Unable to delete. Server error has occurred while trying to delete.";
+  return "Unable to delete. Server error has occurred while trying to delete.";
     case ONLY_MODEL_ALLOWED:
-        return "This item is not a model.";
+  return "This item is not a model.";
     case UNABLE_TO_LOAD_FILE:
-        return "Error has occurred while loading the file. Unable to load the file.";
+  return "Error has occurred while loading the file. Unable to load the file.";
     case DELETE_AND_LOAD:
-        return "Delete the existing models before loading the file.";
+  return "Delete the existing models before loading the file.";
     case REDEFING_EXISTING_MODELS:
-        return "Redefing models '%1' which already exists.";
+  return "Redefing models '%1' which already exists.";
     case INVALID_COMPONENT_ANNOTATIONS:
-        return "The Annotations for the component %1 (%2) are not correct. Unable to add component.";
+  return "The Annotations for the component %1 (%2) are not correct. Unable to add component.";
     case SAVED_MODEL:
-        return "The %1 '%2' is not saved.";
+  return "The %1 '%2' is not saved.";
     case COMMENT_SAVE_ERROR:
-        return "Following Error has occurred while saving component comment. \n\n %1.";
+  return "Following Error has occurred while saving component comment. \n\n %1.";
     case ATTRIBUTES_SAVE_ERROR:
-        return "Following Error has occurred while saving component attributes. \n\n %1.";
+  return "Following Error has occurred while saving component attributes. \n\n %1.";
     case CHILD_MODEL_SAVE:
-        return "The %1 '%2' is contained inside a package. It is automatically saved when you save the package.";
+  return "The %1 '%2' is contained inside a package. It is automatically saved when you save the package.";
     case SEARCH_STRING_NOT_FOUND:
-        return "The search string '%1' is not found.";
+  return "The search string '%1' is not found.";
     default:
-        return "";
+  return "";
     }
 }

@@ -67,7 +67,7 @@ public:
     virtual ~WidgetBlocks();
 
 public slots:
-        void onResultCurPointChanged();
+  void onResultCurPointChanged();
 
 public:
     Ui::WidgetBlocksClass *_ui;

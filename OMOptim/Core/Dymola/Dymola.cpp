@@ -51,14 +51,14 @@ void Dymola::verifyInstallation()
 
 
 bool Dymola::compile(QFileInfo moPath,QString modelToConsider,QDir storeFolder,QFileInfo logFile,
-                      const QFileInfoList & moDeps, QFileInfoList neededFiles)
+                const QFileInfoList & moDeps, QFileInfoList neededFiles)
 {
     // Create Dymola script
     QString filePath = storeFolder.absoluteFilePath("MOFirstRun.mos");
     QFile file(filePath);
     if(file.exists())
     {
-        file.remove();
+  file.remove();
     }
     file.open(QIODevice::WriteOnly);
 
@@ -73,8 +73,8 @@ bool Dymola::compile(QFileInfo moPath,QString modelToConsider,QDir storeFolder,Q
 
     for(int i=0;i<moToLoad.size();i++)
     {
-        curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
-        scriptText.append("openModel(\""+curPath+"\",false)\n");
+  curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
+  scriptText.append("openModel(\""+curPath+"\",false)\n");
     }
 
 
@@ -102,52 +102,52 @@ bool Dymola::compile(QFileInfo moPath,QString modelToConsider,QDir storeFolder,Q
     QFileInfo dymolaBin(dymolaPath);
     if(!dymolaBin.exists())
     {
-        InfoSender::instance()->send(Info("Dymola executable not found. Please verify path in Settings",ListInfo::ERROR2));
-        return false;
+  InfoSender::instance()->send(Info("Dymola executable not found. Please verify path in Settings",ListInfo::ERROR2));
+  return false;
     }
     else
     {
-        // delete previous dymosim.exe
-        QFile dymoFile(storeFolder.absoluteFilePath("dymosim.exe"));
-        if(dymoFile.exists())
-            dymoFile.remove();
+  // delete previous dymosim.exe
+  QFile dymoFile(storeFolder.absoluteFilePath("dymosim.exe"));
+  if(dymoFile.exists())
+      dymoFile.remove();
 
-        // delete previous dsin file
-        QFile dsinFile(storeFolder.absoluteFilePath("dsin.txt"));
-        if(dsinFile.exists())
-            dsinFile.remove();
+  // delete previous dsin file
+  QFile dsinFile(storeFolder.absoluteFilePath("dsin.txt"));
+  if(dsinFile.exists())
+      dsinFile.remove();
 
-        // launch script
-        QProcess scriptProcess;
-        QStringList args;
-        args.push_back(filePath);
+  // launch script
+  QProcess scriptProcess;
+  QStringList args;
+  args.push_back(filePath);
 
-        //start process
-        InfoSender::sendCurrentTask("Launching Dymola...");
-        scriptProcess.start(dymolaPath,args);
-        bool ok = scriptProcess.waitForFinished(-1);
-        if(!ok)
-        {
-            QString msg("CreateProcess failed");
-            InfoSender::instance()->debug(msg);
-            return false;
-        }
+  //start process
+  InfoSender::sendCurrentTask("Launching Dymola...");
+  scriptProcess.start(dymolaPath,args);
+  bool ok = scriptProcess.waitForFinished(-1);
+  if(!ok)
+  {
+      QString msg("CreateProcess failed");
+      InfoSender::instance()->debug(msg);
+      return false;
+  }
 
-        //look if it succeed
-        bool success = dymoFile.exists();
-        InfoSender::eraseCurrentTask();
-        return success;
+  //look if it succeed
+  bool success = dymoFile.exists();
+  InfoSender::eraseCurrentTask();
+  return success;
     }
 }
 
 bool Dymola::createDsin(QFileInfo moFile,QString modelToConsider,QDir folder,
-                        const QFileInfoList & moDeps,QFileInfoList neededFiles)
+                  const QFileInfoList & moDeps,QFileInfoList neededFiles)
 {
     // Create Dymola script
     QFile file(folder.absoluteFilePath("MOFirstRun.mos"));
     if(file.exists())
     {
-        file.remove();
+  file.remove();
     }
     file.open(QIODevice::WriteOnly);
 
@@ -164,8 +164,8 @@ bool Dymola::createDsin(QFileInfo moFile,QString modelToConsider,QDir folder,
 
     for(int i=0;i<moToLoad.size();i++)
     {
-        curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
-        scriptText.append("openModel(\""+curPath+"\")\n");
+  curPath = QDir::fromNativeSeparators(moToLoad.at(i).absoluteFilePath());
+  scriptText.append("openModel(\""+curPath+"\")\n");
     }
 
 
@@ -194,7 +194,7 @@ bool Dymola::createDsin(QFileInfo moFile,QString modelToConsider,QDir folder,
     // delete previous dsin file
     QFile dsinFile(folder.absoluteFilePath("dsin.txt"));
     if(dsinFile.exists())
-        dsinFile.remove();
+  dsinFile.remove();
 
     // launch script
     InfoSender::instance()->send(Info("Launching Dymola..."));
@@ -202,9 +202,9 @@ bool Dymola::createDsin(QFileInfo moFile,QString modelToConsider,QDir folder,
     bool ok = simProcess.waitForFinished(-1);
     if(!ok)
     {
-        QString msg("CreateProcess failed");
-        InfoSender::instance()->debug(msg);
-        return false;
+  QString msg("CreateProcess failed");
+  InfoSender::instance()->debug(msg);
+  return false;
     }
 
     //look if it succeed
@@ -227,12 +227,12 @@ QString Dymola::getExecutablePath()
     
     if( RegOpenKey(HKEY_LOCAL_MACHINE,VQTConvert::QString_To_LPCTSTR(subkey),&hKey) == ERROR_SUCCESS)
     {
-        dwType = REG_SZ;
-        if( RegQueryValueEx(hKey,NULL,NULL, &dwType, (BYTE*)buf, &dwBufSize) == ERROR_SUCCESS)
-        {
-            path = QString(buf);
-        }
-        RegCloseKey(hKey);
+  dwType = REG_SZ;
+  if( RegQueryValueEx(hKey,NULL,NULL, &dwType, (BYTE*)buf, &dwBufSize) == ERROR_SUCCESS)
+  {
+      path = QString(buf);
+  }
+  RegCloseKey(hKey);
     }
 
     path.remove("\"");
@@ -254,17 +254,17 @@ void Dymola::start(QDir folder,QProcess &simProcess,int maxNSec)
 
     int nmsec;
     if(maxNSec==-1)
-        nmsec = -1;
+  nmsec = -1;
     else
-        nmsec = maxNSec*1000;
+  nmsec = maxNSec*1000;
 
     bool ok = simProcess.waitForFinished(nmsec);
     if(!ok)
     {
-        QString msg("CreateProcess failed.");
-        InfoSender::instance()->debug(msg);
-        simProcess.close();
-        return;
+  QString msg("CreateProcess failed.");
+  InfoSender::instance()->debug(msg);
+  simProcess.close();
+  return;
     }
 
 #endif
@@ -278,8 +278,8 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     int iLForm = lines.indexOf(QRegExp(".* # lform .*"));
     if(iLForm>-1)
     {
-        newLine =  " 0                         # lform    0/1 ASCII/Matlab-binary storage format of results";
-        lines.replace(iLForm,newLine);
+  newLine =  " 0                         # lform    0/1 ASCII/Matlab-binary storage format of results";
+  lines.replace(iLForm,newLine);
     }
 
 
@@ -287,62 +287,62 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     int iLStopTime = lines.indexOf(QRegExp(".* # StopTime .*"));
     if((iLStopTime>-1) && pStopTime)
     {
-        newLine =  "       "
-                +pStopTime->getFieldValue(MOParameter::VALUE).toString()
-                +"                   # StopTime     Time at which integration stops";
-        lines.replace(iLStopTime,newLine);
+  newLine =  "       "
+          +pStopTime->getFieldValue(MOParameter::VALUE).toString()
+          +"                   # StopTime     Time at which integration stops";
+  lines.replace(iLStopTime,newLine);
     }
 
     MOParameter* pTolerance = parameters->findItem(DymolaParameters::str(DymolaParameters::TOLERANCE));
     int iLTolerance = lines.indexOf(QRegExp(".*  # Tolerance .*"));
     if((iLTolerance>-1) && pTolerance)
     {
-        newLine =  "       "
-                +pTolerance->getFieldValue(MOParameter::VALUE).toString()
-                +"                   # nInterval    Relative precision of signals for \n                            #              simulation, linearization and trimming";
-        lines.replace(iLTolerance,newLine);
+  newLine =  "       "
+          +pTolerance->getFieldValue(MOParameter::VALUE).toString()
+          +"                   # nInterval    Relative precision of signals for \n                            #              simulation, linearization and trimming";
+  lines.replace(iLTolerance,newLine);
     }
 
     MOParameter* pnInterval = parameters->findItem(DymolaParameters::str(DymolaParameters::NINTERVAL));
     int iLnInterval = lines.indexOf(QRegExp(".*  # nInterval .*"));
     if((iLnInterval>-1) && pnInterval)
     {
-        newLine =  "       "
-                +pnInterval->getFieldValue(MOParameter::VALUE).toString()
-                +"                   # nInterval    Number of communication intervals, if > 0";
-        lines.replace(iLnInterval,newLine);
+  newLine =  "       "
+          +pnInterval->getFieldValue(MOParameter::VALUE).toString()
+          +"                   # nInterval    Number of communication intervals, if > 0";
+  lines.replace(iLnInterval,newLine);
     }
 
     MOParameter* pSolver = parameters->findItem(DymolaParameters::str(DymolaParameters::SOLVER));
     int iLSolver = lines.indexOf(QRegExp(".*  # Algorithm .*"));
     if((iLSolver>-1) && pSolver)
     {
-        newLine =  "       "
-                +pSolver->getFieldValue(MOParameter::VALUE).toString()
-                +"                   # Algorithm    Integration algorithm as integer";
-        lines.replace(iLSolver,newLine);
+  newLine =  "       "
+          +pSolver->getFieldValue(MOParameter::VALUE).toString()
+          +"                   # Algorithm    Integration algorithm as integer";
+  lines.replace(iLSolver,newLine);
     }
 
     MOParameter* pFinalFile = parameters->findItem(DymolaParameters::str(DymolaParameters::FINALFILE));
     int iLineLRes = lines.indexOf(QRegExp(".*  # lres     0/1 do not/store results .*"));
     if((iLineLRes>-1) && pFinalFile)
     {
-        int lRes;
-        switch(pFinalFile->value().toInt())
-        {
-        case DymolaParameters::DSFINAL :
-            lRes = 0;
-            break;
-        case DymolaParameters::DSRES :
-        default :
-            lRes = 1;
-            break;
-        }
+  int lRes;
+  switch(pFinalFile->value().toInt())
+  {
+  case DymolaParameters::DSFINAL :
+      lRes = 0;
+      break;
+  case DymolaParameters::DSRES :
+  default :
+      lRes = 1;
+      break;
+  }
 
-        newLine =  "       "
-                +QString::number(lRes)
-                +"                   # lres     0/1 do not/store results on result file";
-        lines.replace(iLineLRes,newLine);
+  newLine =  "       "
+          +QString::number(lRes)
+          +"                   # lres     0/1 do not/store results on result file";
+  lines.replace(iLineLRes,newLine);
     }
 
 
@@ -374,11 +374,11 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     // Get variables' names
     line = text->readLine();
     while (!line.isEmpty()){
-        newVariable = new Variable();
-        newVariable->setName(line);
-        newVariable->setModel(modelName);
-        variables->addItem(newVariable);
-        line=text->readLine();
+  newVariable = new Variable();
+  newVariable->setName(line);
+  newVariable->setModel(modelName);
+  variables->addItem(newVariable);
+  line=text->readLine();
     }
 
 
@@ -390,35 +390,35 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     line = text->readLine();
     while (!line.isEmpty())
     {
-        linefields = line.split(" ", QString::SkipEmptyParts);
-        if(linefields.size()<8)
-        {
-            // data has been stored on two lines
-            line = text->readLine();
-            linefields << line.split(" ", QString::SkipEmptyParts);
-        }
-        if(nv>=variables->size())
-        {
-            InfoSender::instance()->sendError("Corrupted dsin file. Unable to read variables. Try to regenerate dsin file.");
-            variables->clear();
-            return false;
-        }
-        if(linefields.size()<8)
-        {
-            InfoSender::instance()->sendWarning("Cannot read variable information ["+variables->at(nv)->name()+"]. It will not be considered");
-            variables->removeRow(nv);
-        }
-        else
-        {
-            variables->at(nv)->setValue(linefields[1].toDouble());
-            int dymDataType = linefields[5].toInt();
-            variables->at(nv)->setDataType(convertVariableType(dymDataType));
-            int dymValueType = linefields[0].toInt();
-            int dymCategory = linefields[4].toInt();
-            variables->at(nv)->setCausality(convertToCausality(dymValueType,dymCategory));
-            nv++;
-        }
-        line = text->readLine();
+  linefields = line.split(" ", QString::SkipEmptyParts);
+  if(linefields.size()<8)
+  {
+      // data has been stored on two lines
+      line = text->readLine();
+      linefields << line.split(" ", QString::SkipEmptyParts);
+  }
+  if(nv>=variables->size())
+  {
+      InfoSender::instance()->sendError("Corrupted dsin file. Unable to read variables. Try to regenerate dsin file.");
+      variables->clear();
+      return false;
+  }
+  if(linefields.size()<8)
+  {
+      InfoSender::instance()->sendWarning("Cannot read variable information ["+variables->at(nv)->name()+"]. It will not be considered");
+      variables->removeRow(nv);
+  }
+  else
+  {
+      variables->at(nv)->setValue(linefields[1].toDouble());
+      int dymDataType = linefields[5].toInt();
+      variables->at(nv)->setDataType(convertVariableType(dymDataType));
+      int dymValueType = linefields[0].toInt();
+      int dymCategory = linefields[4].toInt();
+      variables->at(nv)->setCausality(convertToCausality(dymValueType,dymCategory));
+      nv++;
+  }
+  line = text->readLine();
     }
 
     // Get variables' description
@@ -431,9 +431,9 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     nbv=variables->size();
     while (!text->atEnd() && nv<nbv)
     {
-        variables->at(nv)->setDescription(line);
-        line = text->readLine();
-        nv++;
+  variables->at(nv)->setDescription(line);
+  line = text->readLine();
+  nv++;
     }
     return true;
 }
@@ -445,11 +445,11 @@ bool Dymola::getVariablesFromDsFile(QString fileName_, MOVector<Variable> *varia
     bool result = false;
     if (fileinfo.exists())
     {
-        QFile file(fileinfo.filePath());
-        file.open(QIODevice::ReadOnly);
-        QTextStream* in = new QTextStream(&file);
-        result = getVariablesFromDsFile(in, variables,_modelName);
-        file.close();
+  QFile file(fileinfo.filePath());
+  file.open(QIODevice::ReadOnly);
+  QTextStream* in = new QTextStream(&file);
+  result = getVariablesFromDsFile(in, variables,_modelName);
+  file.close();
     }
     return result;
 }
@@ -461,12 +461,12 @@ bool Dymola::getFinalVariablesFromDsFile(QString fileName_, MOVector<Variable> *
     bool result = false;
     if (fileinfo.exists())
     {
-        QFile file(fileinfo.filePath());
-        file.open(QIODevice::ReadOnly);
-        QTextStream* in = new QTextStream(&file);
-        result = getFinalVariablesFromDsFile(in, variables,modelName);
-        file.close();
-        delete in;
+  QFile file(fileinfo.filePath());
+  file.open(QIODevice::ReadOnly);
+  QTextStream* in = new QTextStream(&file);
+  result = getFinalVariablesFromDsFile(in, variables,modelName);
+  file.close();
+  delete in;
     }
     return result;
 }
@@ -506,11 +506,11 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
     line = text->readLine(); //go to next line
     line = text->readLine(); //read line
     while (!line.isEmpty()){
-        newVariable = new Variable();
-        newVariable->setName(line);
-        newVariable->setModel(_modelName);
-        variables->addItem(newVariable);
-        line=text->readLine();
+  newVariable = new Variable();
+  newVariable->setName(line);
+  newVariable->setModel(_modelName);
+  variables->addItem(newVariable);
+  line=text->readLine();
     }
     nbv=variables->size();
 
@@ -524,9 +524,9 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
 
     nv=0;
     while (!line.isEmpty() && nv<nbv){
-        variables->at(nv)->setDescription(line);
-        line = text->readLine();
-        nv++;
+  variables->at(nv)->setDescription(line);
+  line = text->readLine();
+  nv++;
     }
 
 
@@ -541,13 +541,13 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
     QStringList curDataInfos;
     nv=0;
     while (!line.isEmpty() && nv<nbv){
-        curDataInfos = line.split(" ",QString::SkipEmptyParts);
-        dataInfo1.push_back(curDataInfos.at(0).toInt());
-        dataInfo2.push_back(curDataInfos.at(1).toInt());
-        dataInfo3.push_back(curDataInfos.at(2).toInt());
-        dataInfo4.push_back(curDataInfos.at(3).toInt());
-        line = text->readLine();
-        nv++;
+  curDataInfos = line.split(" ",QString::SkipEmptyParts);
+  dataInfo1.push_back(curDataInfos.at(0).toInt());
+  dataInfo2.push_back(curDataInfos.at(1).toInt());
+  dataInfo3.push_back(curDataInfos.at(2).toInt());
+  dataInfo4.push_back(curDataInfos.at(3).toInt());
+  line = text->readLine();
+  nv++;
     }
 
 
@@ -568,8 +568,8 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
     data.clear();
     line = text->readLine(); //read line
     while (!line.isEmpty()){
-        data.append(line);
-        line = text->readLine();
+  data.append(line);
+  line = text->readLine();
     }
     curDataInfos = data.split(" ",QString::SkipEmptyParts);
 
@@ -578,12 +578,12 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
     data1 = new double* [nbRows1];
     for (int row = 0; row < nbRows1; row++)
     {
-        data1[row] = new double[nbCols1];
+  data1[row] = new double[nbCols1];
 
-        for(int col = 0; col < nbCols1; col++)
-        {
-            data1[row][col] = curDataInfos.at(row*nbCols1+col).toDouble();
-        }
+  for(int col = 0; col < nbCols1; col++)
+  {
+      data1[row][col] = curDataInfos.at(row*nbCols1+col).toDouble();
+  }
     }
 
     // DATA2
@@ -600,8 +600,8 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
     data.clear();
     line = text->readLine(); //read line
     while (!line.isEmpty()){
-        data.append(line);
-        line = text->readLine();
+  data.append(line);
+  line = text->readLine();
     }
     curDataInfos = data.split(" ",QString::SkipEmptyParts);
 
@@ -610,12 +610,12 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
     data2 = new double* [nbRows2];
     for (int row = 0; row < nbRows2; row++)
     {
-        data2[row] = new double[nbCols2];
+  data2[row] = new double[nbCols2];
 
-        for(int col = 0; col < nbCols2; col++)
-        {
-            data2[row][col] = curDataInfos.at(row*nbCols2+col).toDouble();
-        }
+  for(int col = 0; col < nbCols2; col++)
+  {
+      data2[row][col] = curDataInfos.at(row*nbCols2+col).toDouble();
+  }
     }
 
 
@@ -626,29 +626,29 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
     // **************************
     for(int iV=0;iV<nbv;iV++)
     {
-        if(dataInfo1.at(iV) ==0 || dataInfo1.at(iV) ==1)
-        {
-            if(dataInfo2.at(iV)<0)
-                variables->at(iV)->setValue(data1[nbRows1-1][-dataInfo2.at(iV)-1]);
-            else
-                variables->at(iV)->setValue(data1[nbRows1-1][dataInfo2.at(iV)-1]);
-        }
-        else
-        {
-            if(dataInfo2.at(iV)<0)
-                variables->at(iV)->setValue(data2[nbRows2-1][-dataInfo2.at(iV)-1]);
-            else
-                variables->at(iV)->setValue(data2[nbRows2-1][dataInfo2.at(iV)-1]);
-        }
+  if(dataInfo1.at(iV) ==0 || dataInfo1.at(iV) ==1)
+  {
+      if(dataInfo2.at(iV)<0)
+          variables->at(iV)->setValue(data1[nbRows1-1][-dataInfo2.at(iV)-1]);
+      else
+          variables->at(iV)->setValue(data1[nbRows1-1][dataInfo2.at(iV)-1]);
+  }
+  else
+  {
+      if(dataInfo2.at(iV)<0)
+          variables->at(iV)->setValue(data2[nbRows2-1][-dataInfo2.at(iV)-1]);
+      else
+          variables->at(iV)->setValue(data2[nbRows2-1][dataInfo2.at(iV)-1]);
+  }
     }
 
 
     for (int i = 0; i < nbRows1; i++)
-        delete [] data1[i];
+  delete [] data1[i];
     delete [] data1;
 
     for (int i = 0; i < nbRows2; i++)
-        delete [] data2[i];
+  delete [] data2[i];
     delete [] data2;
 
     return true;
@@ -663,90 +663,90 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
     QFileInfo fileinfo = QFileInfo(fileName);
     if (fileinfo.exists())
     {
-        QFile file(fileinfo.filePath());
-        file.open(QIODevice::ReadOnly);
-        QTextStream textRead(&file);
-        QString allText = textRead.readAll();
-        file.close();
+  QFile file(fileinfo.filePath());
+  file.open(QIODevice::ReadOnly);
+  QTextStream textRead(&file);
+  QString allText = textRead.readAll();
+  file.close();
 
-        // change preamble
-        writeParameters(allText,parameters);
+  // change preamble
+  writeParameters(allText,parameters);
 
-        // change variable values
-        QRegExp rxLine;
-        int index=0;
-        QString newLine1,newLine2;
-        QString varName;
-        int iCurVar;
-        Variable* curVar;
-        QStringList fields;
-        QString smallText;
-        QStringList capLines;
-        int index2;
-        int prec=MOSettings::value("MaxDigitsDsin").toInt(); //number of decimals
-        QString value;
-        for(int iV=0;iV<variables->size();iV++)
-        {
-            InfoSender::instance()->debug("Setting variable "+ varName+" in "+fileName);
+  // change variable values
+  QRegExp rxLine;
+  int index=0;
+  QString newLine1,newLine2;
+  QString varName;
+  int iCurVar;
+  Variable* curVar;
+  QStringList fields;
+  QString smallText;
+  QStringList capLines;
+  int index2;
+  int prec=MOSettings::value("MaxDigitsDsin").toInt(); //number of decimals
+  QString value;
+  for(int iV=0;iV<variables->size();iV++)
+  {
+      InfoSender::instance()->debug("Setting variable "+ varName+" in "+fileName);
 
-            curVar = variables->at(iV);
-            varName = curVar->name(Variable::SHORT);
-            //varName = varName.remove(modelName+".");
-            rxLine.setPattern(sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s*#\\s*("+varName+")\\s*");
+      curVar = variables->at(iV);
+      varName = curVar->name(Variable::SHORT);
+      //varName = varName.remove(modelName+".");
+      rxLine.setPattern(sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s+"+sciNumRx()+"\\s*#\\s*("+varName+")\\s*");
 
-            // extracting only text around varname
-            // to speed-up regexp research (too long without)
-            index2 = allText.indexOf(varName);
-            smallText.clear();
-            while(index2>-1)
-            {
-                smallText += allText.mid(index2-300,310+varName.size()); // must capture end of line chars -> 310>300
-                index2 = allText.indexOf(varName,index2+1);
-            }
+      // extracting only text around varname
+      // to speed-up regexp research (too long without)
+      index2 = allText.indexOf(varName);
+      smallText.clear();
+      while(index2>-1)
+      {
+          smallText += allText.mid(index2-300,310+varName.size()); // must capture end of line chars -> 310>300
+          index2 = allText.indexOf(varName,index2+1);
+      }
 
-            index = rxLine.indexIn(smallText);
-            if(index>-1)
-            {
+      index = rxLine.indexIn(smallText);
+      if(index>-1)
+      {
 
 
-                char format = 'E';
+          char format = 'E';
 
-                value = QString::number(curVar->getFieldValue(Variable::VALUE).toDouble(),format,prec);
-                fields = rxLine.capturedTexts();
-                capLines = rxLine.cap(0).split("\n",QString::SkipEmptyParts);
-                newLine1 = fields.at(1)+"\t"+ value +"\t";
-                newLine1 += fields.at(3)+"\t"+fields.at(4);
-                newLine2 = fields.at(5)+"\t"+fields.at(6)+"\t"+" # "+fields.at(7);
-                // if variable def were on two lines
-                if((capLines.size()>1)&& capLines.at(1).contains(QRegExp("\\S")))
-                {
-                    InfoSender::instance()->debug("found variable. 2 lines. Total text captured:  "+rxLine.cap(0));
-                    allText = allText.replace(rxLine.cap(0),newLine1+"\n"+newLine2+"\n");
-                    InfoSender::instance()->debug("New Text :  "+newLine1+"\n"+newLine2);
-                }
-                else
-                {
-                    InfoSender::instance()->debug("found variable. 1 line. Total text captured:  "+rxLine.cap(0));
-                    // if variable def were on only one line
-                    allText = allText.replace(rxLine.cap(0),newLine1+"\t"+newLine2+"\n");
-                    InfoSender::instance()->debug("New Text :  "+newLine1+"\t"+newLine2);
-                }
-            }
-            else
-            {
-                InfoSender::instance()->send(Info("Unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
-            }
-        }
+          value = QString::number(curVar->getFieldValue(Variable::VALUE).toDouble(),format,prec);
+          fields = rxLine.capturedTexts();
+          capLines = rxLine.cap(0).split("\n",QString::SkipEmptyParts);
+          newLine1 = fields.at(1)+"\t"+ value +"\t";
+          newLine1 += fields.at(3)+"\t"+fields.at(4);
+          newLine2 = fields.at(5)+"\t"+fields.at(6)+"\t"+" # "+fields.at(7);
+          // if variable def were on two lines
+          if((capLines.size()>1)&& capLines.at(1).contains(QRegExp("\\S")))
+          {
+              InfoSender::instance()->debug("found variable. 2 lines. Total text captured:  "+rxLine.cap(0));
+              allText = allText.replace(rxLine.cap(0),newLine1+"\n"+newLine2+"\n");
+              InfoSender::instance()->debug("New Text :  "+newLine1+"\n"+newLine2);
+          }
+          else
+          {
+              InfoSender::instance()->debug("found variable. 1 line. Total text captured:  "+rxLine.cap(0));
+              // if variable def were on only one line
+              allText = allText.replace(rxLine.cap(0),newLine1+"\t"+newLine2+"\n");
+              InfoSender::instance()->debug("New Text :  "+newLine1+"\t"+newLine2);
+          }
+      }
+      else
+      {
+          InfoSender::instance()->send(Info("Unable to set variable value (not found in init file):"+varName,ListInfo::ERROR2));
+      }
+  }
 
-        fileinfo.setFile(fileName);
-        file.setFileName(fileinfo.filePath());
-        bool ok = file.open(QIODevice::WriteOnly);
-        if(!ok)
-            InfoSender::instance()->send(Info("Unable to open file for writing :"+fileinfo.filePath(),ListInfo::ERROR2));
+  fileinfo.setFile(fileName);
+  file.setFileName(fileinfo.filePath());
+  bool ok = file.open(QIODevice::WriteOnly);
+  if(!ok)
+      InfoSender::instance()->send(Info("Unable to open file for writing :"+fileinfo.filePath(),ListInfo::ERROR2));
 
-        QTextStream textWrite(&file);
-        textWrite<<allText;
-        file.close();
+  QTextStream textWrite(&file);
+  textWrite<<allText;
+  file.close();
     }
 }
 
@@ -760,29 +760,29 @@ VariableType Dymola::convertVariableType(int dymDataType)
 {
     dymDataType = dymDataType % 4; // use %4 to avoid Dymola variable definition 'bug'
     //# column 6: Data type of variable.
-    //#           = 0: real.
-    //#           = 1: boolean.
-    //#           = 2: integer.
+    //#     = 0: real.
+    //#     = 1: boolean.
+    //#     = 2: integer.
     switch(dymDataType)
     {
     case 0 :
-        return OMREAL;
+  return OMREAL;
     case 1 :
-        return OMBOOLEAN;
+  return OMBOOLEAN;
     case 2 :
-        return OMINTEGER;
+  return OMINTEGER;
     default :
-        return OMREAL;
+  return OMREAL;
     }
 }
 
 VariableCausality Dymola::convertToCausality(int dymValueType, int dymCategory)
 {
     if((dymValueType==-1)||(dymCategory==1)||(dymCategory==5))
-        return INPUT;
+  return INPUT;
 
     if((dymValueType==-2)||(dymValueType==-0))
-        return OUTPUT;
+  return OUTPUT;
 
     return UNKNOWN;
 }

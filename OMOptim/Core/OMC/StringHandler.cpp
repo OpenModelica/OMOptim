@@ -59,50 +59,50 @@ QString StringHandler::getModelicaClassType(int type)
     switch (type)
     {
     case StringHandler::MODEL:
-        return "Model";
+  return "Model";
     case StringHandler::CLASS:
-        return "Class";
+  return "Class";
     case StringHandler::CONNECTOR:
-        return "Connector";
+  return "Connector";
     case StringHandler::RECORD:
-        return "Record";
+  return "Record";
     case StringHandler::BLOCK:
-        return "Block";
+  return "Block";
     case StringHandler::FUNCTION:
-        return "Function";
+  return "Function";
     case StringHandler::PACKAGE:
-        return "Package";
+  return "Package";
     case StringHandler::PRIMITIVE:
-        return "Primitive";
+  return "Primitive";
     case StringHandler::TYPE:
-        return "Type";
+  return "Type";
     case StringHandler::PARAMETER:
-        return "Parameter";
+  return "Parameter";
     case StringHandler::CONSTANT:
-        return "Constant";
+  return "Constant";
     case StringHandler::PROTECTED:
-        return "Protected";
+  return "Protected";
     default:
-        // should never be reached
-        return "";
+  // should never be reached
+  return "";
     }
 }
 
 QString StringHandler::getViewType(int type)
 {
     /* swaped icon and diagram to show the user the right text, since in application we call diagram as icon and icon
-        as diagram.......... */
+  as diagram.......... */
     switch (type)
     {
     case StringHandler::ICON:
-        return "Diagram View";
+  return "Diagram View";
     case StringHandler::DIAGRAM:
-        return "Icon View";
+  return "Icon View";
     case StringHandler::MODELICATEXT:
-        return "Modelica Text View";
+  return "Modelica Text View";
     default:
-        // should never be reached
-        return "";
+  // should never be reached
+  return "";
     }
 }
 
@@ -113,7 +113,7 @@ QString StringHandler::removeFirstLastCurlBrackets(QString value)
     value = value.trimmed();
     if (value.length() > 1 && value.at(0) == '{' && value.at(value.length() - 1) == '}')
     {
-        value = value.mid(1, (value.length() - 2));
+  value = value.mid(1, (value.length() - 2));
     }
     return value;
 }
@@ -125,7 +125,7 @@ QString StringHandler::removeFirstLastBrackets(QString value)
     value = value.trimmed();
     if (value.length() > 1 && value.at(0) == '(' && value.at(value.length() - 1) == ')')
     {
-        value = value.mid(1, (value.length() - 2));
+  value = value.mid(1, (value.length() - 2));
     }
     return value;
 }
@@ -137,7 +137,7 @@ QString StringHandler::removeFirstLastQuotes(QString value)
     value = value.trimmed();
     if (value.length() > 1 && value.at(0) == '\"' && value.at(value.length() - 1) == '\"')
     {
-        value = value.mid(1, (value.length() - 2));
+  value = value.mid(1, (value.length() - 2));
     }
     return value;
 }
@@ -148,7 +148,7 @@ QString StringHandler::getSubStringFromDots(QString value)
 {
     if (value.isEmpty())
     {
-        return "";
+  return "";
     }
     value = value.trimmed();
     QStringList list = value.split(".", QString::SkipEmptyParts);
@@ -161,7 +161,7 @@ QString StringHandler::removeLastDot(QString value)
 {
     if (value.isEmpty())
     {
-        return "";
+  return "";
     }
     value = value.trimmed();
     return value.remove((value.length() - 1), 1);
@@ -181,33 +181,33 @@ QStringList StringHandler::getStrings(QString value, char start, char end)
     int ele = 0;
     foreach (QString temp, tokenizer)
     {
-        if (ele == 0)
-        {
-            if (t.length() > 0)
-            {
-                list.append(t.trimmed());
-            }
-            t = temp;
-        }
-        else
-        {
-            t = t.trimmed() + ", " + temp.trimmed();
-        }
+  if (ele == 0)
+  {
+      if (t.length() > 0)
+      {
+          list.append(t.trimmed());
+      }
+      t = temp;
+  }
+  else
+  {
+      t = t.trimmed() + ", " + temp.trimmed();
+  }
 
-        for (int i = 0 ; i < temp.length() ; i++)
-        {
-            if (temp.at(i) == start)
-            {
-                ele++;
-            }
-            else if (temp.at(i) == end)
-            {
-                ele--;
-            }
-        }
+  for (int i = 0 ; i < temp.length() ; i++)
+  {
+      if (temp.at(i) == start)
+      {
+          ele++;
+      }
+      else if (temp.at(i) == end)
+      {
+          ele--;
+      }
+  }
     }
     if (t.length() > 0)
-        list.append(t.trimmed());
+  list.append(t.trimmed());
 
     return list;
 }
@@ -216,17 +216,17 @@ QString StringHandler::getLastWordAfterDot(QString value)
 {
     if (value.isEmpty())
     {
-        return "";
+  return "";
     }
 
     int pos = value.lastIndexOf('.');
     if (pos >= 0)
     {
-        return value.mid((pos + 1), (value.length() - 1));
+  return value.mid((pos + 1), (value.length() - 1));
     }
     else
     {
-        return value;
+  return value;
     }
 }
 
@@ -234,17 +234,17 @@ QString StringHandler::getFirstWordBeforeDot(QString value)
 {
     if (value.isEmpty())
     {
-        return "";
+  return "";
     }
 
     int pos = value.indexOf('.');
     if (pos >= 0)
     {
-        return value.mid(0, (pos));
+  return value.mid(0, (pos));
     }
     else
     {
-        return value;
+  return value;
     }
 }
 
@@ -252,18 +252,18 @@ QString StringHandler::removeLastSlashWord(QString value)
 {
     if (value.isEmpty())
     {
-        return "";
+  return "";
     }
     value = value.trimmed();
 
     int pos = value.lastIndexOf('/');
     if (pos >= 0)
     {
-        return value.mid(0, (pos));
+  return value.mid(0, (pos));
     }
     else
     {
-        return value;
+  return value;
     }
 }
 
@@ -271,18 +271,18 @@ QString StringHandler::removeLastWordAfterDot(QString value)
 {
     if (value.isEmpty())
     {
-        return "";
+  return "";
     }
     value = value.trimmed();
 
     int pos = value.lastIndexOf('.');
     if (pos >= 0)
     {
-        return value.mid(0, (pos));
+  return value.mid(0, (pos));
     }
     else
     {
-        return value;
+  return value;
     }
 }
 
@@ -290,7 +290,7 @@ QString StringHandler::removeComment(QString value)
 {
     if (value.isEmpty())
     {
-        return "";
+  return "";
     }
     value = value.trimmed();
 

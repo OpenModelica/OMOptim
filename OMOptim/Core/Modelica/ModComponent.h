@@ -48,7 +48,7 @@ public:
     ModComponent(MOomc*);
     ModComponent(MOomc*,ModItem* parent,QString name,QString className,QFileInfo file = QFileInfo());
     ~ModComponent(void);
-        virtual ModItem* clone() const;
+  virtual ModItem* clone() const;
 
     virtual QString getClassName() const {return "ModComponent";};
     
@@ -56,9 +56,9 @@ public:
 
     enum Field
     {
-        NAME,
-                CLASSNAME,
-        FILEPATH
+  NAME,
+          CLASSNAME,
+  FILEPATH
     };
 
     QString getModClassName();

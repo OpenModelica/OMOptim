@@ -79,7 +79,7 @@ void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
 
     // delete old widgets
     for(int i=0;i<_widgetsCreated.size();i++)
-        delete _widgetsCreated.at(i);
+  delete _widgetsCreated.at(i);
 
     _widgetsCreated.clear();
 
@@ -103,71 +103,71 @@ void WidgetCtrlParameters::update(QMap<QString,ModPlusCtrls *> ctrlsMap)
     int iRow;
     for(int i=0;i<models.size();i++)
     {
-        curmodel = models.at(i);
-        curCtrls = ctrlsMap.value(curmodel);
+  curmodel = models.at(i);
+  curCtrls = ctrlsMap.value(curmodel);
 
-        // insert in _ctrls
-        _ctrls.insert(curmodel,curCtrls);
+  // insert in _ctrls
+  _ctrls.insert(curmodel,curCtrls);
 
-        // add model combobox
-        QComboBox *newCb = new QComboBox(this);
-        //Ctrl box
-        ModPlusCtrl::Type curCtrlType;
-        ModPlusCtrl *curCtrl;
+  // add model combobox
+  QComboBox *newCb = new QComboBox(this);
+  //Ctrl box
+  ModPlusCtrl::Type curCtrlType;
+  ModPlusCtrl *curCtrl;
 
-        for(int i=0;i< curCtrls->keys().size();i++)
-        {
-            curCtrlType = curCtrls->keys().at(i);
-            curCtrl = curCtrls->value(curCtrlType);
+  for(int i=0;i< curCtrls->keys().size();i++)
+  {
+      curCtrlType = curCtrls->keys().at(i);
+      curCtrl = curCtrls->value(curCtrlType);
 
-            newCb->addItem(curCtrl->name(),curCtrlType);
+      newCb->addItem(curCtrl->name(),curCtrlType);
 
-            if(curCtrlType == curCtrls->currentCtrlType())
-            {
-                newCb->setCurrentIndex(i);
-            }
-        }
+      if(curCtrlType == curCtrls->currentCtrlType())
+      {
+          newCb->setCurrentIndex(i);
+      }
+  }
 
-        newCb->setEnabled(!_isResult);
-        _comboBoxs.insert(curmodel,newCb);
-        iRow = _layout->rowCount()+1;
+  newCb->setEnabled(!_isResult);
+  _comboBoxs.insert(curmodel,newCb);
+  iRow = _layout->rowCount()+1;
 
-        QLabel *newLabel = new QLabel(curmodel,this);
+  QLabel *newLabel = new QLabel(curmodel,this);
 
-        _layout->addWidget(newLabel,iRow,0);
-        _layout->addWidget(newCb,iRow,1);
+  _layout->addWidget(newLabel,iRow,0);
+  _layout->addWidget(newCb,iRow,1);
 
-        // add push buttons
-        QPushButton* newParamPb = new QPushButton("Parameters ...",this);
-        _layout->addWidget(newParamPb,iRow,2);
-        _parametersPbs.insert(curmodel,newParamPb);
-
-
+  // add push buttons
+  QPushButton* newParamPb = new QPushButton("Parameters ...",this);
+  _layout->addWidget(newParamPb,iRow,2);
+  _parametersPbs.insert(curmodel,newParamPb);
 
 
-        connect(newCb, SIGNAL(currentIndexChanged(int)),this, SLOT(changedCtrl()));
-        connect(newParamPb, SIGNAL(clicked()),this,SLOT(openCtrlParameters()));
 
 
-        // horizontal spacer
-        //        QSpacerItem* spacer = new QSpacerItem(10,10,QSizePolicy::Expanding,QSizePolicy::Ignored);
-        //        _layout->addItem(spacer,iRow,4);
-        _layout->setColumnStretch(4,10);
-        _widgetsCreated.push_back(newLabel);
-        _widgetsCreated.push_back(newCb);
-        _widgetsCreated.push_back(newParamPb);
+  connect(newCb, SIGNAL(currentIndexChanged(int)),this, SLOT(changedCtrl()));
+  connect(newParamPb, SIGNAL(clicked()),this,SLOT(openCtrlParameters()));
 
 
-        QPushButton* newCompilePb;
-        if(_project->modelPlus(curmodel)->modelType() == ModelPlus::MODELICA)
-        {
-            newCompilePb = new QPushButton("Compile",this);
-            _layout->addWidget(newCompilePb,iRow,3);
-            _compilePbs.insert(curmodel,newCompilePb);
-            connect(newCompilePb, SIGNAL(clicked()),this,SLOT(compile()));
-        _widgetsCreated.push_back(newCompilePb);
-        }
-        //_widgetsCreated.push_back(spacer);
+  // horizontal spacer
+  //        QSpacerItem* spacer = new QSpacerItem(10,10,QSizePolicy::Expanding,QSizePolicy::Ignored);
+  //        _layout->addItem(spacer,iRow,4);
+  _layout->setColumnStretch(4,10);
+  _widgetsCreated.push_back(newLabel);
+  _widgetsCreated.push_back(newCb);
+  _widgetsCreated.push_back(newParamPb);
+
+
+  QPushButton* newCompilePb;
+  if(_project->modelPlus(curmodel)->modelType() == ModelPlus::MODELICA)
+  {
+      newCompilePb = new QPushButton("Compile",this);
+      _layout->addWidget(newCompilePb,iRow,3);
+      _compilePbs.insert(curmodel,newCompilePb);
+      connect(newCompilePb, SIGNAL(clicked()),this,SLOT(compile()));
+  _widgetsCreated.push_back(newCompilePb);
+  }
+  //_widgetsCreated.push_back(spacer);
     }
 }
 
@@ -184,15 +184,15 @@ void WidgetCtrlParameters::changedCtrl()
 
     if(cb)
     {
-        QString model = _comboBoxs.key(cb);
+  QString model = _comboBoxs.key(cb);
 
-        ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
+  ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
 
-        if(modelCtrls)
-        {
-            int selectedType = cb->itemData(cb->currentIndex()).toInt();
-            modelCtrls->setCurrentCtrlType((ModPlusCtrl::Type)selectedType);
-        }
+  if(modelCtrls)
+  {
+      int selectedType = cb->itemData(cb->currentIndex()).toInt();
+      modelCtrls->setCurrentCtrlType((ModPlusCtrl::Type)selectedType);
+  }
     }
 }
 
@@ -205,15 +205,15 @@ void WidgetCtrlParameters::openCtrlParameters()
     if(pb)
     {
 
-        QString model = _parametersPbs.key(pb);
+  QString model = _parametersPbs.key(pb);
 
-        ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
+  ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
 
-        if(modelCtrls)
-        {
-            MOParametersDlg dlg(modelCtrls->currentCtrl()->parameters(),!_isResult);
-            dlg.exec();
-        }
+  if(modelCtrls)
+  {
+      MOParametersDlg dlg(modelCtrls->currentCtrl()->parameters(),!_isResult);
+      dlg.exec();
+  }
     }
 }
 
@@ -227,20 +227,20 @@ void WidgetCtrlParameters::compile()
     {
 
 
-        QString model = _compilePbs.key(pb);
-        ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
+  QString model = _compilePbs.key(pb);
+  ModPlusCtrls *modelCtrls = _ctrls.value(model,NULL);
 
 
-        ModelPlus* modelPlus = _project->modelPlus(model);
+  ModelPlus* modelPlus = _project->modelPlus(model);
 
-        if(modelCtrls)
-        {
-            bool compileOk = ((ModModelPlus*)modelPlus)->compile(modelCtrls->currentCtrl(),_filesToCopy);
+  if(modelCtrls)
+  {
+      bool compileOk = ((ModModelPlus*)modelPlus)->compile(modelCtrls->currentCtrl(),_filesToCopy);
 
-            // if compiled success, read variables
-            if(compileOk)
-                modelPlus->readVariables(modelCtrls->currentCtrl(),_filesToCopy);
-        }
+      // if compiled success, read variables
+      if(compileOk)
+          modelPlus->readVariables(modelCtrls->currentCtrl(),_filesToCopy);
+  }
     }
 }
 

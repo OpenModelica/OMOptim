@@ -13,9 +13,9 @@ ExeModel::ExeModel(QString name,QString exeFilePath, QString inputFilePath)
 QString ExeModel::getStrToolTip()
 {
     QString toolTip;
-        toolTip += ("Executable Model: " + _name + "\n");
-        toolTip += ("File: " + _exeFile.absoluteFilePath() + "\n");
-        toolTip += ("InputFile: " + _inputFile.absoluteFilePath() + "\n");
+  toolTip += ("Executable Model: " + _name + "\n");
+  toolTip += ("File: " + _exeFile.absoluteFilePath() + "\n");
+  toolTip += ("InputFile: " + _inputFile.absoluteFilePath() + "\n");
     return toolTip;
 }
 

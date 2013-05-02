@@ -44,7 +44,7 @@
 ParetoDominance::ParetoDominance()
 {
 
-        
+  
 }
 
 ParetoDominance::~ParetoDominance(void)
@@ -55,12 +55,12 @@ ParetoDominance::~ParetoDominance(void)
 QList<int> ParetoDominance::getParetoSet(MOVector<OptObjective>* _objs,MOOptVector* _objResults)
 {
     if((_objResults->size()==0)||(_objs->size()!=_objResults->size()))
-        return QList<int>();
+  return QList<int>();
 
     // Fulling set
     QList<int> paretoSet;
     for(int i=0;i<_objResults->at(0)->nbPoints();i++)
-        paretoSet.push_back(i);
+  paretoSet.push_back(i);
 
     // Removing points by points when dominated
     int index=0;
@@ -68,23 +68,23 @@ QList<int> ParetoDominance::getParetoSet(MOVector<OptObjective>* _objs,MOOptVect
     bool indexDominated;
     while(index<paretoSet.size())
     {
-        indexDominated = false;
-        index2=0;
-        while(!indexDominated && index2<paretoSet.size())
-        {
-            if(index!=index2)
-                indexDominated = dominates(_objs,_objResults,paretoSet.at(index2),paretoSet.at(index));
-            
-            index2++;
-        }
-        if(indexDominated)
-        {
-            paretoSet.removeAt(index);
-        }
-        else
-        {
-            index++;
-        }
+  indexDominated = false;
+  index2=0;
+  while(!indexDominated && index2<paretoSet.size())
+  {
+      if(index!=index2)
+          indexDominated = dominates(_objs,_objResults,paretoSet.at(index2),paretoSet.at(index));
+      
+      index2++;
+  }
+  if(indexDominated)
+  {
+      paretoSet.removeAt(index);
+  }
+  else
+  {
+      index++;
+  }
     }
 
     return paretoSet;
@@ -102,46 +102,46 @@ bool ParetoDominance::dominates(MOVector<OptObjective>* _objs,MOOptVector* _objR
     QList<bool> dom;
     
     if(_objResults->size()==0)
-        return false;
+  return false;
 
     for (unsigned int iObj=0; iObj<_objResults->size(); iObj++)
     {
-        // first, we have to check if the 2 objective values are not equal for the ith objective
-        if ( fabs(_objResults->at(iObj)->finalValue(0,iPoint1) - _objResults->at(iObj)->finalValue(0,iPoint2)) > tolerance)
-        {
-            // if the ith objective have to be minimized...
-            if (_objs->at(iObj)->isMinimized())
-            {
-                if (_objResults->at(iObj)->finalValue(0,iPoint1) > _objResults->at(iObj)->finalValue(0,iPoint2))
-                {
-                    dom.push_back(false);        // iPoint1 is not better than iPoint2
-                }
-                else
-                {
-                    dom.push_back(true);    // iPoint2 is not better than iPoint1
-                }
-            }
-            // if the ith objective have to be maximized...
-            else
-            {
-                if (_objResults->at(iObj)->finalValue(0,iPoint1) < _objResults->at(iObj)->finalValue(0,iPoint2))
-                {
-                    dom.push_back(false);        // iPoint1 is not better than iPoint2
-                }
-                else
-                {
-                    dom.push_back(true);    // iPoint2 is not better than iPoint1
-                }
-            }
-        }
-        else
-            dom.push_back(true);
+  // first, we have to check if the 2 objective values are not equal for the ith objective
+  if ( fabs(_objResults->at(iObj)->finalValue(0,iPoint1) - _objResults->at(iObj)->finalValue(0,iPoint2)) > tolerance)
+  {
+      // if the ith objective have to be minimized...
+      if (_objs->at(iObj)->isMinimized())
+      {
+          if (_objResults->at(iObj)->finalValue(0,iPoint1) > _objResults->at(iObj)->finalValue(0,iPoint2))
+          {
+              dom.push_back(false);        // iPoint1 is not better than iPoint2
+          }
+          else
+          {
+              dom.push_back(true);    // iPoint2 is not better than iPoint1
+          }
+      }
+      // if the ith objective have to be maximized...
+      else
+      {
+          if (_objResults->at(iObj)->finalValue(0,iPoint1) < _objResults->at(iObj)->finalValue(0,iPoint2))
+          {
+              dom.push_back(false);        // iPoint1 is not better than iPoint2
+          }
+          else
+          {
+              dom.push_back(true);    // iPoint2 is not better than iPoint1
+          }
+      }
+  }
+  else
+      dom.push_back(true);
     }
     
     bool allDoms=true;
     for(int i=0;i<dom.size();i++)
     {
-        allDoms = allDoms && dom.at(i);
+  allDoms = allDoms && dom.at(i);
     }
 
     return allDoms;

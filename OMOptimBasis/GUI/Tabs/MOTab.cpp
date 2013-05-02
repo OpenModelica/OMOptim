@@ -68,8 +68,8 @@ void MOTabCplx::saveGUIState()
 {
 
     QSettings settings("MO", "GUI_");
-        settings.setValue(projectName+"/"+name+"/geometry", saveGeometry());
-        settings.setValue(projectName+"/"+name+"/windowState", saveState());
+  settings.setValue(projectName+"/"+name+"/geometry", saveGeometry());
+  settings.setValue(projectName+"/"+name+"/windowState", saveState());
 }
 
  void MOTabCplx::readGUIState()

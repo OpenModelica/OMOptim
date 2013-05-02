@@ -51,9 +51,9 @@ public:
 
     enum Field
     {
-        NAME,
-        A,
-        B
+  NAME,
+  A,
+  B
     };
 
     

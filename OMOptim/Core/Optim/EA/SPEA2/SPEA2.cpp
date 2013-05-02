@@ -188,7 +188,7 @@ Result* SPEA2::launch(QString tempDir)
     ************************************/
     moeoEvalFunc < EOStd > *plainEval;
     plainEval = new EAStdOptimizationEval<EOStd>(_project,(Optimization*)_problem,/*_subModels,*/tempDir,
-                                                 _modItemsTree,&_quickEnd);
+                                           _modItemsTree,&_quickEnd);
 
     OMEAEvalFuncCounter<EOStd>* eval = new OMEAEvalFuncCounter<EOStd> (* plainEval,omEAProgress,totalEval);
     state.storeFunctor(eval);
@@ -224,41 +224,41 @@ Result* SPEA2::launch(QString tempDir)
 
     if(useStartFile && (reloadFilePath!="") && QFileInfo(reloadFilePath).exists())
     {
-        // create another state for reading
-        eoState inState;        // a state for loading - WITHOUT the parser
-        // register the rng and the pop in the state, so they can be loaded,
-        // and the present run will be the exact continuation of the saved run
-        // eventually with different parameters
-        inState.registerObject(pop);
-        inState.registerObject(rng);
+  // create another state for reading
+  eoState inState;        // a state for loading - WITHOUT the parser
+  // register the rng and the pop in the state, so they can be loaded,
+  // and the present run will be the exact continuation of the saved run
+  // eventually with different parameters
+  inState.registerObject(pop);
+  inState.registerObject(rng);
 
-        std::string str = reloadFilePath.toLatin1().data();
-        try{
-            inState.load(str);
-        }
-        catch(std::exception &e)
-        {
-            InfoSender::instance()->debug("loading start file failed :"+QString(e.what()));
-            loadFailed = true;
-        }
-        if(!loadFailed)
-        {
-            InfoSender::instance()->send(Info("Loading start file success : "+reloadFilePath,ListInfo::NORMAL2));
-        }
+  std::string str = reloadFilePath.toLatin1().data();
+  try{
+      inState.load(str);
+  }
+  catch(std::exception &e)
+  {
+      InfoSender::instance()->debug("loading start file failed :"+QString(e.what()));
+      loadFailed = true;
+  }
+  if(!loadFailed)
+  {
+      InfoSender::instance()->send(Info("Loading start file success : "+reloadFilePath,ListInfo::NORMAL2));
+  }
     }
 
 
     if(loadFailed)
     {
-        pop.clear();
-        pop = state.takeOwnership(eoPop<EOStd>());
+  pop.clear();
+  pop = state.takeOwnership(eoPop<EOStd>());
     }
 
 
     int popSize = _parameters->value(SPEA2Parameters::str(SPEA2Parameters::POPULATIONSIZE),20).toInt();
     if(pop.size() < popSize)
     {
-        pop.append(popSize-pop.size(),*init);
+  pop.append(popSize-pop.size(),*init);
     }
 
     // for future stateSave, register the algorithm into the state
@@ -298,7 +298,7 @@ Result* SPEA2::launch(QString tempDir)
     //GETTING RESULT FROM FINAL ARCHIVE
     //************************************/
     if(!_keepResults) // if stop has been called
-        return NULL;
+  return NULL;
 
     Result* result = buildResult(arch);
     return result;

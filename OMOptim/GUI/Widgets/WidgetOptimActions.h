@@ -75,12 +75,12 @@ public:
     QPushButton * addButton(QString text, bool before);
 
 public slots :
-        void launch();
-        void restoreProblem();
-        void onShowModelAsked();
+  void launch();
+  void restoreProblem();
+  void onShowModelAsked();
 
 signals:
-        void showModclass(ModItem*);
+  void showModclass(ModItem*);
 
 
 };

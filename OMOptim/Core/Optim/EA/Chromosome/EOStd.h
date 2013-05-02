@@ -70,98 +70,98 @@ public:
     void printOn(std::ostream& _os) const
     {
 
-        // first write size informations
-        _os << objectiveVector().size() << ' ';
-        _os << objectiveVector() << ' ';
+  // first write size informations
+  _os << objectiveVector().size() << ' ';
+  _os << objectiveVector() << ' ';
 
 
-        // write the fitness
+  // write the fitness
     //    moeoVector<EOStdObjectiveVector,double>::printOn(_os);
     //    _os << ' ';
 
-        // START Code of default output 
-        _os << doubleVars.size() << ' ' ;
-        for (unsigned i=0; i<doubleVars.size(); i++)
-            _os << doubleVars[i] << ' ' ;
+  // START Code of default output 
+  _os << doubleVars.size() << ' ' ;
+  for (unsigned i=0; i<doubleVars.size(); i++)
+      _os << doubleVars[i] << ' ' ;
 
-        _os << intVars.size() << ' ' ;
-        for (unsigned i=0; i<intVars.size(); i++)
-            _os << intVars[i] << ' ' ;
+  _os << intVars.size() << ' ' ;
+  for (unsigned i=0; i<intVars.size(); i++)
+      _os << intVars[i] << ' ' ;
 
-        _os << boolVars.size() << ' ' ;
-        for (unsigned i=0; i<boolVars.size(); i++)
-            _os << boolVars[i] << ' ' ;
+  _os << boolVars.size() << ' ' ;
+  for (unsigned i=0; i<boolVars.size(); i++)
+      _os << boolVars[i] << ' ' ;
 
 
-        _os << savedVars.size() << ' ' ;
-        for (unsigned i=0; i<savedVars.size(); i++)
-            _os << savedVars[i] << ' ' ;
+  _os << savedVars.size() << ' ' ;
+  for (unsigned i=0; i<savedVars.size(); i++)
+      _os << savedVars[i] << ' ' ;
 
-        // END   Code of default output
+  // END   Code of default output
     }
 
     void readFrom(std::istream& _is)
     {
-        // START Code of input
-        unsigned doubleSize,intSize,boolSize,nbObj,savedVarsSize;
-        double tmpDouble;
-        int tmpInt;
-        bool tmpBool;
+  // START Code of input
+  unsigned doubleSize,intSize,boolSize,nbObj,savedVarsSize;
+  double tmpDouble;
+  int tmpInt;
+  bool tmpBool;
 
 
 
-        //read nbobjectives first
-        _is >> nbObj;
+  //read nbobjectives first
+  _is >> nbObj;
 
-        // read and store  obj values
-        EOStdObjectiveVector newObjVector;
-        
-        for (unsigned i=0; i<nbObj; i++)
-        {
-            _is >> tmpDouble;
-            newObjVector.at(i)=tmpDouble;
-        }            
-        objectiveVector(newObjVector);
+  // read and store  obj values
+  EOStdObjectiveVector newObjVector;
+  
+  for (unsigned i=0; i<nbObj; i++)
+  {
+      _is >> tmpDouble;
+      newObjVector.at(i)=tmpDouble;
+  }            
+  objectiveVector(newObjVector);
 
-        
-        // of course you should read the fitness first!
-        //moeoVector<EOStdObjectiveVector,double>::readFrom(_is);
+  
+  // of course you should read the fitness first!
+  //moeoVector<EOStdObjectiveVector,double>::readFrom(_is);
 
     
 
-        _is >> doubleSize;
-        doubleVars.resize(doubleSize);
-        for (unsigned i=0; i<doubleSize; i++)
-        {
-            _is >> tmpDouble;
-            doubleVars[i]=tmpDouble;
-        }            
+  _is >> doubleSize;
+  doubleVars.resize(doubleSize);
+  for (unsigned i=0; i<doubleSize; i++)
+  {
+      _is >> tmpDouble;
+      doubleVars[i]=tmpDouble;
+  }            
 
-        _is >> intSize;
-        intVars.resize(intSize);
-        for (unsigned i=0; i<intSize; i++)
-        {
-            _is >> tmpInt;
-            intVars[i]=tmpInt;
-        }
+  _is >> intSize;
+  intVars.resize(intSize);
+  for (unsigned i=0; i<intSize; i++)
+  {
+      _is >> tmpInt;
+      intVars[i]=tmpInt;
+  }
 
-        _is >> boolSize;
-        boolVars.resize(boolSize);
-        for (unsigned i=0; i<boolSize; i++)
-        {
-            _is >> tmpBool;
-            boolVars[i]=tmpBool;
-        }
+  _is >> boolSize;
+  boolVars.resize(boolSize);
+  for (unsigned i=0; i<boolSize; i++)
+  {
+      _is >> tmpBool;
+      boolVars[i]=tmpBool;
+  }
 
-        _is >> savedVarsSize;
-        savedVars.resize(savedVarsSize);
-        for (unsigned i=0; i<savedVarsSize; i++)
-        {
-            _is >> tmpDouble;
-            savedVars[i]=tmpDouble;
-        }
+  _is >> savedVarsSize;
+  savedVars.resize(savedVarsSize);
+  for (unsigned i=0; i<savedVarsSize; i++)
+  {
+      _is >> tmpDouble;
+      savedVars[i]=tmpDouble;
+  }
 
-        // END   Code of input
+  // END   Code of input
     }
 
 
@@ -170,7 +170,7 @@ public:
     std::vector<int> intVars;
     std::vector<bool> boolVars;
     std::vector<double> savedVars; // vars that are neither optVariables nor optObjectives,
-                                    // but which we want to keep information of.
+                              // but which we want to keep information of.
 
 };
 

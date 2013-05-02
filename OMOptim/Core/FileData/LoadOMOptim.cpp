@@ -30,12 +30,12 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file LoadOMOptim.cpp
-        @brief Comments for file documentation.
-        @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
-        Company : CEP - ARMINES (France)
-        http://www-cep.ensmp.fr/english/
-        @version
+  @file LoadOMOptim.cpp
+  @brief Comments for file documentation.
+  @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
+  Company : CEP - ARMINES (France)
+  http://www-cep.ensmp.fr/english/
+  @version
 
   */
 #include "LoadOMOptim.h"
@@ -61,21 +61,21 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     QFile file(filePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-        InfoSender::instance()->send( Info(ListInfo::PROJECTFILENOTEXISTS,filePath));
-        return false;
+  InfoSender::instance()->send( Info(ListInfo::PROJECTFILENOTEXISTS,filePath));
+  return false;
     }
     if( !doc.setContent( &file ) )
     {
-        file.close();
-        InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
-        return false;
+  file.close();
+  InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+  return false;
     }
     file.close();
     QDomElement root = doc.documentElement();
     if( root.tagName() != "MOProject" )
     {
-        InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
-        return false;
+  InfoSender::instance()->send( Info(ListInfo::PROJECTFILECORRUPTED,filePath));
+  return false;
     }
 
     //**************************************
@@ -91,14 +91,14 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     QDomNodeList listMoFiles = domMoFiles.elementsByTagName("MoFile");
     for(int i=0;i<listMoFiles.size();i++)
     {
-        tmpPath = listMoFiles.at(i).toElement().attribute("path", "" );
-        QFileInfo modelFileInfo(tmpPath);
-        if(!modelFileInfo.exists())
-        {
-            InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,tmpPath));
-        }
-        else
-            modelMoFilePaths.push_back(modelFileInfo.absoluteFilePath());
+  tmpPath = listMoFiles.at(i).toElement().attribute("path", "" );
+  QFileInfo modelFileInfo(tmpPath);
+  if(!modelFileInfo.exists())
+  {
+      InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,tmpPath));
+  }
+  else
+      modelMoFilePaths.push_back(modelFileInfo.absoluteFilePath());
     }
 
     // Mmo files
@@ -107,9 +107,9 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     QDomNodeList listMmoFiles = domMmoFiles.elementsByTagName("MmoFile");
     for(int i=0;i<listMmoFiles.size();i++)
     {
-        tmpPath = listMmoFiles.at(i).toElement().attribute("path", "" );
-        QFileInfo modelFileInfo(projectDir,tmpPath);
-        modelMmoFilePaths.push_back(modelFileInfo.absoluteFilePath());
+  tmpPath = listMmoFiles.at(i).toElement().attribute("path", "" );
+  QFileInfo modelFileInfo(projectDir,tmpPath);
+  modelMmoFilePaths.push_back(modelFileInfo.absoluteFilePath());
     }
 
 
@@ -119,9 +119,9 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     QDomNodeList listPlugins = domPlugins.elementsByTagName("Plugin");
     for(int i=0;i<listPlugins.size();i++)
     {
-        tmpPath = listPlugins.at(i).toElement().attribute("path", "" );
-        QFileInfo pluginFileInfo(tmpPath);
-        pluginsPaths.push_back(pluginFileInfo.absoluteFilePath());
+  tmpPath = listPlugins.at(i).toElement().attribute("path", "" );
+  QFileInfo pluginFileInfo(tmpPath);
+  pluginsPaths.push_back(pluginFileInfo.absoluteFilePath());
     }
 
     // Problems to load
@@ -130,9 +130,9 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     QDomNodeList listOMCases = domOMCases.elementsByTagName("Problem");
     for(int i=0;i<listOMCases.size();i++)
     {
-        tmpPath = listOMCases.at(i).toElement().attribute("path", "" );
-        QFileInfo problemFileInfo(projectDir,tmpPath);
-        problemsPaths.push_back(problemFileInfo.absoluteFilePath());
+  tmpPath = listOMCases.at(i).toElement().attribute("path", "" );
+  QFileInfo problemFileInfo(projectDir,tmpPath);
+  problemsPaths.push_back(problemFileInfo.absoluteFilePath());
     }
 
     // Results to load
@@ -141,9 +141,9 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     QDomNodeList listResults = domResults.elementsByTagName("Result");
     for(int i=0;i<listResults.size();i++)
     {
-        tmpPath = listResults.at(i).toElement().attribute("path", "" );
-        QFileInfo solvedFileInfo(projectDir,tmpPath);
-        resultsPaths.push_back(solvedFileInfo.absoluteFilePath());
+  tmpPath = listResults.at(i).toElement().attribute("path", "" );
+  QFileInfo solvedFileInfo(projectDir,tmpPath);
+  resultsPaths.push_back(solvedFileInfo.absoluteFilePath());
     }
 
 
@@ -152,11 +152,11 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     //**************************************
     for(int i=0;i<modelMoFilePaths.size();i++)
     {
-        QFileInfo fileinfo = QFileInfo(modelMoFilePaths.at(i));
-        qDebug(fileinfo.absoluteFilePath().toLatin1().data());
+  QFileInfo fileinfo = QFileInfo(modelMoFilePaths.at(i));
+  qDebug(fileinfo.absoluteFilePath().toLatin1().data());
 
-        if (!fileinfo.exists())
-            InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMoFilePaths.at(i)));
+  if (!fileinfo.exists())
+      InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMoFilePaths.at(i)));
     }
     _project->loadMoFiles(modelMoFilePaths);
 
@@ -166,12 +166,12 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     //**************************************
     for(int i=0;i<modelMmoFilePaths.size();i++)
     {
-        QFileInfo fileinfo = QFileInfo(modelMmoFilePaths.at(i));
+  QFileInfo fileinfo = QFileInfo(modelMmoFilePaths.at(i));
 
-        if (!fileinfo.exists())
-            InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
-        else
-            _project->loadModelPlus(modelMmoFilePaths.at(i),true); // and remove compiled executables of modelica models
+  if (!fileinfo.exists())
+      InfoSender::instance()->send(Info(ListInfo::MODELFILENOTEXISTS,modelMmoFilePaths.at(i)));
+  else
+      _project->loadModelPlus(modelMmoFilePaths.at(i),true); // and remove compiled executables of modelica models
     }
 
     //**************************************
@@ -179,11 +179,11 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     //**************************************
     for(int i=0;i<pluginsPaths.size();i++)
     {
-        QFileInfo fileinfo = QFileInfo(pluginsPaths.at(i));
-        if (!fileinfo.exists())
-            InfoSender::instance()->sendError("Plugin file does not exist : "+pluginsPaths.at(i));
-        else
-            _project->loadPlugin(pluginsPaths.at(i));
+  QFileInfo fileinfo = QFileInfo(pluginsPaths.at(i));
+  if (!fileinfo.exists())
+      InfoSender::instance()->sendError("Plugin file does not exist : "+pluginsPaths.at(i));
+  else
+      _project->loadPlugin(pluginsPaths.at(i));
     }
 
     //**************************************
@@ -192,7 +192,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     QString msg;
     for(int i=0;i<problemsPaths.size();i++)
     {
-        _project->addOMCase(problemsPaths.at(i));
+  _project->addOMCase(problemsPaths.at(i));
     }
 
     //**************************************
@@ -200,7 +200,7 @@ bool LoadOMOptim::loadProject(QString filePath,Project* _project)
     //**************************************
     for(int i=0;i<resultsPaths.size();i++)
     {
-        _project->addOMCase(resultsPaths.at(i));
+  _project->addOMCase(resultsPaths.at(i));
     }
 
     _project->setIsDefined(true);
@@ -217,15 +217,15 @@ QString LoadOMOptim::loadModelPlus(Project* project,QString mmoFilePath)
     QFile file(mmoFilePath);
     if( !file.open( QIODevice::ReadOnly ) )
     {
-        InfoSender::instance()->send( Info(ListInfo::MODELFILENOTEXISTS,mmoFilePath));
-        return QString();
+  InfoSender::instance()->send( Info(ListInfo::MODELFILENOTEXISTS,mmoFilePath));
+  return QString();
     }
     QString error;
     if( !doc.setContent( &file,&error ) )
     {
-        file.close();
-        InfoSender::instance()->send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
-        return QString();
+  file.close();
+  InfoSender::instance()->send( Info(ListInfo::MODMODELFILECORRUPTED,error,mmoFilePath));
+  return QString();
     }
     file.close();
 
@@ -235,32 +235,32 @@ QString LoadOMOptim::loadModelPlus(Project* project,QString mmoFilePath)
     qDebug(root.tagName().toLatin1().data());
     if(root.tagName()==ModelPlus::className())
     {
-        // error : should be impossible
-        // but since old version
-        return QString();
+  // error : should be impossible
+  // but since old version
+  return QString();
     }
     else if(root.tagName()==ModExePlus::className())
     {
-        newModelPlus = new ModExePlus(project,root);
+  newModelPlus = new ModExePlus(project,root);
     }
     else if(root.tagName()==ModModelPlus::className())
     {
-        newModelPlus = new ModModelPlus(project,root);
+  newModelPlus = new ModModelPlus(project,root);
     }
     // older version
     else if(root.tagName()=="MOModel")
     {
-        newModelPlus = new ModModelPlus(project,root);
+  newModelPlus = new ModModelPlus(project,root);
     }
 
     if(newModelPlus)
     {
-        newModelPlus->setMmoFilePath(mmoFilePath);
-        project->addModelPlus(newModelPlus);
-        return newModelPlus->name();
+  newModelPlus->setMmoFilePath(mmoFilePath);
+  project->addModelPlus(newModelPlus);
+  return newModelPlus->name();
     }
     else
-        return QString();
+  return QString();
 }
 
 QStringList LoadOMOptim::getModelsPath(QString projectFilePath)
@@ -272,13 +272,13 @@ QStringList LoadOMOptim::getModelsPath(QString projectFilePath)
     QFile file(projectFilePath);
     if( !file.open( QIODevice::ReadOnly ) || ! doc.setContent( &file ) )
     {
-        return result;
+  return result;
     }
     file.close();
     QDomElement root = doc.documentElement();
     if( root.tagName() != "MOProject" )
     {
-        return result;
+  return result;
     }
 
     //**************************************
@@ -289,8 +289,8 @@ QStringList LoadOMOptim::getModelsPath(QString projectFilePath)
     QString tmpPath;
     for(int i=0;i<listMoFiles.size();i++)
     {
-        tmpPath = listMoFiles.at(i).toElement().attribute("path", "" );
-        result.push_back(tmpPath);
+  tmpPath = listMoFiles.at(i).toElement().attribute("path", "" );
+  result.push_back(tmpPath);
     }
     return result;
 }

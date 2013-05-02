@@ -102,13 +102,13 @@
      DiagramScene(QMenu *itemMenu=0, QObject *parent = 0);
 
      QFont font() const
-         { return myFont; }
+   { return myFont; }
      QColor textColor() const
-         { return myTextColor; }
+   { return myTextColor; }
      QColor itemColor() const
-         { return myItemColor; }
+   { return myItemColor; }
      QColor lineColor() const
-         { return myLineColor; }
+   { return myLineColor; }
      void setLineColor(const QColor &color);
      void setTextColor(const QColor &color);
      void setItemColor(const QColor &color);

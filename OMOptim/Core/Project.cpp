@@ -97,19 +97,19 @@ Project::~Project()
     _moomc->stopServer();
 
     if(_modItemsTree)
-        delete _modItemsTree;
+  delete _modItemsTree;
 
     delete _moomc;
     delete _modLoader;
 
     for(int i=0;i<_problemsInterfaces.uniqueInterfaces().size();i++)
     {
-        delete _problemsInterfaces.uniqueInterfaces().at(i);
+  delete _problemsInterfaces.uniqueInterfaces().at(i);
     }
 
     QList<ModelPlus*> allModelPlus = _mapModelPlus.values();
     for(int i=0;i<allModelPlus.size();i++)
-        delete allModelPlus.at(i);
+  delete allModelPlus.at(i);
 
     _problemsInterfaces.clear();
 
@@ -179,13 +179,13 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
     QList<ModModelPlus*> modModelsConcerned = modModelPlusOfFile(moFilePath);
     for(int i=0;i<modModelsConcerned.size();i++)
     {
-        modModelsConcerned.at(i)->uncompile();
-        modModelsConcerned.at(i)->clear();
+  modModelsConcerned.at(i)->uncompile();
+  modModelsConcerned.at(i)->clear();
     }
 
     // add to mofileloadedlist
     if(storePath && !_moFiles.contains(moFilePath))
-        _moFiles.push_back(QFileInfo(moFilePath));
+  _moFiles.push_back(QFileInfo(moFilePath));
 
     // load moFile ...
     QString msg;
@@ -193,12 +193,12 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
 
     // watch mo file
     if(storePath || wasThere)
-        _mofilesWatcher.addPath(moFilePath);
+  _mofilesWatcher.addPath(moFilePath);
 
     if(loadOk)
     {
-        _modItemsTree->emitDataChanged();
-        emit projectChanged();
+  _modItemsTree->emitDataChanged();
+  emit projectChanged();
     }
 }
 
@@ -214,9 +214,9 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
     QString moFilePath;
     for(int i=0;i<moFilePaths.size();i++)
     {
-        moFilePath = moFilePaths.at(i);
-        if(storePath && !_moFiles.contains(moFilePath))
-            _moFiles.push_back(moFilePath);
+  moFilePath = moFilePaths.at(i);
+  if(storePath && !_moFiles.contains(moFilePath))
+      _moFiles.push_back(moFilePath);
     }
 
     // load _moFiles and read them
@@ -235,8 +235,8 @@ void Project::loadExeFiles(QStringList exeModelNames, QStringList exeFilePaths, 
 {
     for(int i = 0; i<exeFilePaths.size(); i++)
     {
-        //    QString name = QFileInfo(exeFilePaths.at(i)).dir().dirName();
-        loadExecutableModel(exeModelNames.at(i),QFileInfo(exeFilePaths.at(i)), QFileInfo(inputFilePaths.at(i)));
+  //    QString name = QFileInfo(exeFilePaths.at(i)).dir().dirName();
+  loadExecutableModel(exeModelNames.at(i),QFileInfo(exeFilePaths.at(i)), QFileInfo(inputFilePaths.at(i)));
     }
 
 }
@@ -256,7 +256,7 @@ void Project::unloadMoFile(QString moFilePath, bool removePath)
 
     // remove from mofileloadedlist
     if(removePath)
-        _moFiles.removeAll(moFilePath);
+  _moFiles.removeAll(moFilePath);
 
     // unload moFile ...
     _modLoader->unloadMoFile(modItemsTree(),moFilePath);
@@ -282,8 +282,8 @@ bool Project::loadModelicaLibrary(bool storePath, bool forceLoad)
     QFileInfo libPathInfo = _moomc->getFileOfClass("Modelica");
     if(storePath)
     {
-        _moFiles.removeAll(previousLoadedModelica); // only one loaded Modelica
-        _moFiles.push_back(libPathInfo);
+  _moFiles.removeAll(previousLoadedModelica); // only one loaded Modelica
+  _moFiles.push_back(libPathInfo);
     }
 
     refreshAllMod();
@@ -300,7 +300,7 @@ bool Project::loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo 
     //      QString modelFolderName = modModelPlusFolder()+ QDir::separator() + name;
 
     //    if(!QDir(modelFolderName).exists())
-    //        QDir(modelFolderName).mkpath(modelFolderName);
+    //  QDir(modelFolderName).mkpath(modelFolderName);
     //    bool copyExeFileOk = QFile::copy(exeFileInfo.absoluteFilePath(), exeFile );
     //    bool copyInputFileOk = QFile::copy(inputFileInfo.absoluteFilePath(), inputFile);
 
@@ -333,9 +333,9 @@ void Project::loadModelPlus(QString mmoFilePath, bool uncompile)
 
     if(uncompile)
     {
-        ModModelPlus* modelPlus = dynamic_cast<ModModelPlus*>(this->modelPlus(modelName));
-        if(modelPlus)
-            modelPlus->uncompile();
+  ModModelPlus* modelPlus = dynamic_cast<ModModelPlus*>(this->modelPlus(modelName));
+  if(modelPlus)
+      modelPlus->uncompile();
     }
 
     emit projectChanged();
@@ -350,7 +350,7 @@ void Project::storeMmoFilePath(QString mmoFilePath)
 
     if(!_mmoFiles.contains(path))
     {
-        _mmoFiles.push_back(path);
+  _mmoFiles.push_back(path);
     }
 
     emit projectChanged();
@@ -362,7 +362,7 @@ void Project::storeMmoFilePath(QString mmoFilePath)
 
 //    if(!_exeFileInfoList.contains(QFileInfo(exeFilePath)))
 //    {
-//        _exeFileInfoList.push_back(exeFilePath);
+//  _exeFileInfoList.push_back(exeFilePath);
 //    }
 
 //    emit projectChanged();
@@ -375,8 +375,8 @@ void Project::reloadModModel(QString modModelName)
     ModModel* model = dynamic_cast<ModModel*>(modItemsTree()->findItem(modModelName));
     if(model)
     {
-        QString moFile = model->filePath();
-        this->loadMoFile(moFile,true,true);
+  QString moFile = model->filePath();
+  this->loadMoFile(moFile,true,true);
     }
 
     emit projectChanged();
@@ -399,9 +399,9 @@ void Project::refreshAllMod()
 ModModel* Project::curModModel()
 {
     if(_curModItem && (_curModItem->getClassRestr()==Modelica::MODEL))
-        return (ModModel*)_curModItem;
+  return (ModModel*)_curModItem;
     else
-        return NULL;
+  return NULL;
 }
 /**
 * \brief Find a ModModel within _modItemsTree
@@ -412,9 +412,9 @@ ModModel* Project::curModModel()
 //    ModItem* modModel = _modItemsTree->findInDescendants(modelName);
 
 //    if(!modModel || modModel->getClassRestr()!=Modelica::MODEL)
-//        return NULL;
+//  return NULL;
 //    else
-//        return (ModModel*)modModel;
+//  return (ModModel*)modModel;
 //}
 
 ModItem* Project::findModItem(QString modelName)
@@ -422,9 +422,9 @@ ModItem* Project::findModItem(QString modelName)
     ModItem* modModel = _modItemsTree->findInDescendants(modelName);
 
     if(!modModel)
-        return NULL;
+  return NULL;
     else
-        return modModel;
+  return modModel;
 }
 /**
 * \brief Returns all ModModelPlus contained in project
@@ -440,7 +440,7 @@ QList<ModelPlus*> Project::allModelPlus()
 void Project::addModelPlus(ModelPlus* modelPlus)
 {
     if(modelPlus)
-        _mapModelPlus.insert(modelPlus->modelName(),modelPlus);
+  _mapModelPlus.insert(modelPlus->modelName(),modelPlus);
 }
 
 /**
@@ -450,20 +450,20 @@ ModelPlus* Project::curModelPlus()
 {
     ModModel* curMM = curModModel();
     if(curMM)
-        return modelPlus(curMM->name());
+  return modelPlus(curMM->name());
     else
-        return NULL;
+  return NULL;
 }
 
 void Project::setCurModItem(ModItem* modClass)
 {
     if(_curModItem != modClass)
     {
-        _curModItem = modClass;
-        emit curModItemChanged(_curModItem);
+  _curModItem = modClass;
+  emit curModItemChanged(_curModItem);
 
-        if(_curModItem && _curModItem->getClassRestr()==Modelica::MODEL)
-            emit curModModelChanged((ModModel*)_curModItem);
+  if(_curModItem && _curModItem->getClassRestr()==Modelica::MODEL)
+      emit curModModelChanged((ModModel*)_curModItem);
     }
 }
 
@@ -477,13 +477,13 @@ ModelPlus* Project::modelPlus(QString modelName)
     ModelPlus* corrModelPlus = _mapModelPlus.value(modelName,NULL);
 
     if(corrModelPlus)
-        return corrModelPlus;
+  return corrModelPlus;
     else
     {
-        corrModelPlus = newModelPlus(modelName);
-        if(corrModelPlus)
-            addModelPlus(corrModelPlus);
-        return corrModelPlus;
+  corrModelPlus = newModelPlus(modelName);
+  if(corrModelPlus)
+      addModelPlus(corrModelPlus);
+  return corrModelPlus;
     }
 }
 
@@ -497,9 +497,9 @@ QList<ModModelPlus*> Project::modModelPlusOfFile(QString moFile)
     ModModelPlus* curModel;
     for(int i=0;i<allModels.size();i++)
     {
-        curModel = dynamic_cast<ModModelPlus*>(allModels.at(i));
-        if(curModel && QFileInfo(curModel->moFilePath())==QFileInfo(moFile))
-            result.push_back(curModel);
+  curModel = dynamic_cast<ModModelPlus*>(allModels.at(i));
+  if(curModel && QFileInfo(curModel->moFilePath())==QFileInfo(moFile))
+      result.push_back(curModel);
     }
     return result;
 }
@@ -519,13 +519,13 @@ ModelPlus* Project::newModelPlus(QString modelName)
     ExeModel* exeModel = dynamic_cast<ExeModel*> (item);
 
     if(modModel)
-        modelPlus = new ModModelPlus(this,modelName);
+  modelPlus = new ModModelPlus(this,modelName);
 
     if(exeModel)
-        modelPlus = new ModExePlus(this, modelName);
+  modelPlus = new ModExePlus(this, modelName);
 
     if(!modelPlus)
-        return NULL;
+  return NULL;
 
     // Add to map
     _mapModelPlus.insert(modelName,modelPlus);
@@ -570,66 +570,66 @@ void Project::exportProjectFolder(QDir externalFolder)
     // only if folder is empty
     if(externalFolder.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs).isEmpty())
     {
-        QFileInfoList orgMoFiles = this->moFiles();
+  QFileInfoList orgMoFiles = this->moFiles();
 
-        QFileInfo orgPathInfo(this->filePath());
+  QFileInfo orgPathInfo(this->filePath());
 
-        this->setFilePath(externalFolder.absoluteFilePath(orgPathInfo.fileName()));
+  this->setFilePath(externalFolder.absoluteFilePath(orgPathInfo.fileName()));
 
-        //        // copy mo files
-        //        QFileInfoList orgMoFiles = this->moFiles();
-        //        QFileInfoList newMoFiles;
-        //        QFileInfo orgMoFile;
-        //        QString newMoFileName;
-        //        for(int i=0;i<orgMoFiles.size();i++)
-        //        {
-        //            orgMoFile = orgMoFiles.at(i);
-        //            newMoFileName = orgMoFile.fileName();
-        //            if(newMoFileName != "package.mo")
-        //            {
-        //                // get new paths
-        //                int i=2;
-        //                while(externalFolder.entryList().contains(newMoFileName))
-        //                {
+  //        // copy mo files
+  //        QFileInfoList orgMoFiles = this->moFiles();
+  //        QFileInfoList newMoFiles;
+  //        QFileInfo orgMoFile;
+  //        QString newMoFileName;
+  //        for(int i=0;i<orgMoFiles.size();i++)
+  //        {
+  //            orgMoFile = orgMoFiles.at(i);
+  //            newMoFileName = orgMoFile.fileName();
+  //            if(newMoFileName != "package.mo")
+  //            {
+  //                // get new paths
+  //                int i=2;
+  //                while(externalFolder.entryList().contains(newMoFileName))
+  //                {
 
-        //                    newMoFileName = orgMoFile.baseName()+
-        //                            QString::number(i)+"."+orgMoFile.completeSuffix();
-        //                    i++;
-        //                }
-        //                QFile::copy(orgMoFile.absoluteFilePath(),externalFolder.absoluteFilePath(newMoFileName));
-        //                newMoFiles.push_back(QFileInfo(externalFolder,newMoFileName));
-        //            }
-        //        }
+  //                    newMoFileName = orgMoFile.baseName()+
+  //                            QString::number(i)+"."+orgMoFile.completeSuffix();
+  //                    i++;
+  //                }
+  //                QFile::copy(orgMoFile.absoluteFilePath(),externalFolder.absoluteFilePath(newMoFileName));
+  //                newMoFiles.push_back(QFileInfo(externalFolder,newMoFileName));
+  //            }
+  //        }
 
-        //        // change mo filepaths
-        //        this->setMoFiles(newMoFiles);
-        //        this->save(true);
+  //        // change mo filepaths
+  //        this->setMoFiles(newMoFiles);
+  //        this->save(true);
 
-        // create mo file with all content
-        QString moTxt = _moomc->getWholeText();
-        moTxt.replace("\\\\","\\");
-        moTxt.replace("\\\"","\"");
+  // create mo file with all content
+  QString moTxt = _moomc->getWholeText();
+  moTxt.replace("\\\\","\\");
+  moTxt.replace("\\\"","\"");
 
-        QString moFilePath = externalFolder.absoluteFilePath("Models.mo");
-        QFile file(moFilePath);
-        QFileInfo moFileInfo(moFilePath);
+  QString moFilePath = externalFolder.absoluteFilePath("Models.mo");
+  QFile file(moFilePath);
+  QFileInfo moFileInfo(moFilePath);
 
-        file.open(QIODevice::WriteOnly);
+  file.open(QIODevice::WriteOnly);
 
-        moTxt.remove(QRegExp("^\""));
-        moTxt.remove(QRegExp("\"$"));
-        QTextStream ts( &file );
-        ts << moTxt.toLocal8Bit();
-        file.close();
+  moTxt.remove(QRegExp("^\""));
+  moTxt.remove(QRegExp("\"$"));
+  QTextStream ts( &file );
+  ts << moTxt.toLocal8Bit();
+  file.close();
 
-        // change mo filepaths
-        QFileInfoList newMoFiles;
-        newMoFiles << moFileInfo;
-        this->setMoFiles(newMoFiles);
-        this->save(true);
-        // restore
-        this->setMoFiles(orgMoFiles);
-        this->setFilePath(orgPathInfo.absoluteFilePath());
+  // change mo filepaths
+  QFileInfoList newMoFiles;
+  newMoFiles << moFileInfo;
+  this->setMoFiles(newMoFiles);
+  this->save(true);
+  // restore
+  this->setMoFiles(orgMoFiles);
+  this->setFilePath(orgPathInfo.absoluteFilePath());
     }
 }
 
@@ -667,18 +667,18 @@ bool Project::load(QString loadPath)
     bool loaded = false;
 
     if(configOk)
-        loaded = LoadOMOptim::loadProject(loadPath,this);
+  loaded = LoadOMOptim::loadProject(loadPath,this);
 
     if (loaded)
     {
-        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
-        emit projectChanged();
+  emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
+  emit projectChanged();
     }
     else
     {
-        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
-        clear();
-        emit projectChanged();
+  emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
+  clear();
+  emit projectChanged();
     }
     setSaved(true);
     emit projectChanged();
@@ -702,7 +702,7 @@ bool Project::checkConfiguration()
     bool ok = true;
 
     if(!_moomc->isStarted())
-        ok = ok && _moomc->startServer();
+  ok = ok && _moomc->startServer();
 
     return ok;
 }
@@ -714,13 +714,13 @@ void Project::terminateOms()
 {
     if(_moomc!=NULL)
     {
-        // terminating current threads using omc
-        for(int i=0;i<_moomc->getThreads().size();i++)
-        {
-            QString msg ="Stopping "+_moomc->getThreadsNames().at(i);
-            InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
-            _moomc->getThreads().at(i)->terminate();
-        }
+  // terminating current threads using omc
+  for(int i=0;i<_moomc->getThreads().size();i++)
+  {
+      QString msg ="Stopping "+_moomc->getThreadsNames().at(i);
+      InfoSender::instance()->send(Info(msg,ListInfo::NORMAL2));
+      _moomc->getThreads().at(i)->terminate();
+  }
     }
     _moomc->stopServer();
 }
@@ -770,17 +770,17 @@ void Project::onModItemSelectionChanged(QList<ModItem*> &classes)
 {
     if(classes.size()==1)
     {
-        emit curModItemChanged(classes.at(0));
+  emit curModItemChanged(classes.at(0));
 
-        if(classes.at(0)->getClassRestr()==Modelica::MODEL)
-            emit curModModelChanged((ModModel*)classes.at(0));
-        else
-            emit curModModelChanged(NULL);
+  if(classes.at(0)->getClassRestr()==Modelica::MODEL)
+      emit curModModelChanged((ModModel*)classes.at(0));
+  else
+      emit curModModelChanged(NULL);
     }
     else
     {
-        curModItemChanged(NULL);
-        curModModelChanged(NULL);
+  curModItemChanged(NULL);
+  curModModelChanged(NULL);
     }
 }
 
@@ -789,9 +789,9 @@ void Project::onReloadMOFileAsked()
     QAction* button = dynamic_cast<QAction*>(sender());
     if(button)
     {
-        QString moFile = button->data().toString();
-        this->loadMoFile(moFile,true,true);
-        _modItemsTree->readFromOMCWThread(_modItemsTree->rootElement(),2);
+  QString moFile = button->data().toString();
+  this->loadMoFile(moFile,true,true);
+  _modItemsTree->readFromOMCWThread(_modItemsTree->rootElement(),2);
     }
 }
 
@@ -800,8 +800,8 @@ void Project::onUnloadMOFileAsked()
     QAction* button = dynamic_cast<QAction*>(sender());
     if(button)
     {
-        QString moFile = button->data().toString();
-        this->unloadMoFile(moFile,true);
-        _modItemsTree->readFromOMCWThread(_modItemsTree->rootElement(),2);
+  QString moFile = button->data().toString();
+  this->unloadMoFile(moFile,true);
+  _modItemsTree->readFromOMCWThread(_modItemsTree->rootElement(),2);
     }
 }

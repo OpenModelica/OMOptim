@@ -75,12 +75,12 @@ void WidgetOptTable::fillOptTable()
     QStringList colHeaders;
     //colHeaders << "Variable" ;
     for (int i=0;i< nbPoints;i++)
-        colHeaders << QString::number(i);
+  colHeaders << QString::number(i);
 
     
 
     for(int i = 0; i < nbPoints; i++)
-        ui->tableOpt->insertColumn(i);
+  ui->tableOpt->insertColumn(i);
 
     ui->tableOpt->setHorizontalHeaderLabels(colHeaders);
 
@@ -90,35 +90,35 @@ void WidgetOptTable::fillOptTable()
     QStringList objNames;
     for (int i=0;i<nbObj;i++)
     {
-        ui->tableOpt->insertRow(curRow);
-        rowHeaders << result->optObjectivesResults()->at(i)->name();
-        
-        objNames << result->optObjectivesResults()->at(i)->name();
-        for(int j=0;j<nbPoints;j++)
-        {
-            ui->tableOpt->setItem(curRow,j,new QTableWidgetItem(QString::number(result->optObjectivesResults()->at(i)->finalValue(0,j))));
-        }
-        curRow++;
+  ui->tableOpt->insertRow(curRow);
+  rowHeaders << result->optObjectivesResults()->at(i)->name();
+  
+  objNames << result->optObjectivesResults()->at(i)->name();
+  for(int j=0;j<nbPoints;j++)
+  {
+      ui->tableOpt->setItem(curRow,j,new QTableWidgetItem(QString::number(result->optObjectivesResults()->at(i)->finalValue(0,j))));
+  }
+  curRow++;
     }
 
     for (int i=0;i<nbOpt;i++)
     {
-        if (!objNames.contains(result->optVariablesResults()->at(i)->name()))
-        {
-            ui->tableOpt->insertRow(curRow);
-            rowHeaders << result->optVariablesResults()->at(i)->name();
+  if (!objNames.contains(result->optVariablesResults()->at(i)->name()))
+  {
+      ui->tableOpt->insertRow(curRow);
+      rowHeaders << result->optVariablesResults()->at(i)->name();
 
-            if(result->optVariablesResults()->at(i)->finalValuesAtScan(0).size()>0)
-            {
-                for(int j=0;j<nbPoints;j++)
-                {
-                    QString msg = "Widget Opt Table Row : "+QString::number(i)+", column : "+QString::number(j) + "\n";
-                    InfoSender::instance()->debug(msg);
-                    ui->tableOpt->setItem(curRow,j,new QTableWidgetItem(QString::number(result->optVariablesResults()->at(i)->finalValue(0,j))));
-                }
-            }
-            curRow++;
-        }
+      if(result->optVariablesResults()->at(i)->finalValuesAtScan(0).size()>0)
+      {
+          for(int j=0;j<nbPoints;j++)
+          {
+              QString msg = "Widget Opt Table Row : "+QString::number(i)+", column : "+QString::number(j) + "\n";
+              InfoSender::instance()->debug(msg);
+              ui->tableOpt->setItem(curRow,j,new QTableWidgetItem(QString::number(result->optVariablesResults()->at(i)->finalValue(0,j))));
+          }
+      }
+      curRow++;
+  }
     }
 
 ui->tableOpt->setVerticalHeaderLabels(rowHeaders);

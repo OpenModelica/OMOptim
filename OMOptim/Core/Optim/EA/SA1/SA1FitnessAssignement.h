@@ -12,17 +12,17 @@ class SA1FitnessAssignement
 public:
     void operator() (EOT & sol)
     {
-        MEOEFitness fit = 0.0;
-        EOStdObjectiveVector objVec = sol.objectiveVector();
+  MEOEFitness fit = 0.0;
+  EOStdObjectiveVector objVec = sol.objectiveVector();
 
-        for(int i=0; i< (EOStdObjectiveVector::nObjectives()); i++)
-           {
-            if(EOStdObjectiveVector::minimizing(i))
-              fit +=  (-(sol.objectiveVector()).at(i));
-            else
-              fit += (sol.objectiveVector()).at(i);
-           }
-        sol.fitness(fit);
+  for(int i=0; i< (EOStdObjectiveVector::nObjectives()); i++)
+     {
+      if(EOStdObjectiveVector::minimizing(i))
+        fit +=  (-(sol.objectiveVector()).at(i));
+      else
+        fit += (sol.objectiveVector()).at(i);
+     }
+  sol.fitness(fit);
     };
 
 
