@@ -95,6 +95,7 @@ public:
 
     // numerical functions
     static int round(double);
+    static double round(double, int nbDecimals);
     static double roundToMultiple(double value, double multiple);
     static QList<int> nextIndex(QList<int> oldIndex, QList<int>  maxIndex);
 
@@ -103,8 +104,12 @@ public:
 
     static double gaussRandom(double average,double dev);
 
+    static QString commonSections(const QStringList &names);
 
+    static QList<QList<int> > getAllCombinations(const QList<int> &indexes, int combSize);
 
+private :
+     static void getAllCombinations(const QList<int> &indexes, int combSize, int offset, QList<int> &curCombination, QList<QList<int> > &allCombinations);
 };
 
 template < class T>

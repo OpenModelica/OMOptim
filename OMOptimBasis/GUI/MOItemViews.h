@@ -64,8 +64,6 @@ public:
     void initDelegates();
 
 
-
-
     void setModel(QAbstractItemModel *model);
 
 protected :

@@ -361,6 +361,35 @@ bool LowTools::openFile(QString filePath)
     return QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
 }
 
+QList<QList<int> > LowTools::getAllCombinations(const QList<int> & indexes, int combSize)
+{
+    QList<int> curCombination;
+    QList<QList<int> > allCombinations;
+
+    getAllCombinations(indexes,combSize,0,curCombination,allCombinations);
+
+    return allCombinations;
+}
+
+void LowTools::getAllCombinations(const QList<int>  & indexes, int combSize,int offset,QList<int> &curCombination,QList<QList<int> > & allCombinations)
+{
+    if (combSize == 0)
+    {
+        allCombinations.push_back(curCombination);
+        return;
+    }
+    else
+    {
+        for (int i = offset; i <= indexes.size() - combSize; ++i)
+        {
+            curCombination.push_back(indexes.at(i));
+            getAllCombinations(indexes,combSize-1,i+1,curCombination,allCombinations);
+            curCombination.pop_back();
+        }
+        return;
+    }
+
+}
 
 
 
@@ -392,9 +421,17 @@ QList<int> LowTools::nextIndex(QList<int> oldIndex, QList<int>  maxIndex)
     }
 }
 
+
+
+
 int LowTools::round(double d)
 {
     return (int)(d+0.5);
+}
+
+double LowTools::round(double d, int nbDecimals)
+{
+    return floor(d * std::pow(10,nbDecimals) + 0.5) / std::pow(10,nbDecimals);
 }
 
 double LowTools::roundToMultiple(double value, double multiple)
@@ -432,5 +469,40 @@ double LowTools::gaussRandom(double average,double dev)
     double result = average + dev * y;
     return result;
 
+}
+
+QString LowTools::commonSections(const QStringList &names)
+{
+    if(names.isEmpty())
+        return QString();
+
+    QString firstName = names.first();
+
+    if(firstName.isEmpty())
+        return QString();
+
+    bool common=true;
+    QString commonText;
+
+    int i=1;
+    int n = 0;
+
+    while(common && (n<firstName.size()))
+    {
+        i = 1;
+        n++;
+        commonText = firstName.left(n);
+
+        while((i<names.size()) && common)
+        {
+            common = names.at(i).startsWith(commonText);
+            i++;
+        }
+
+    }
+
+    commonText = firstName.left(n-1);
+
+    return commonText;
 }
 

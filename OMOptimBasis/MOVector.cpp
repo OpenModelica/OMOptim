@@ -201,7 +201,7 @@ void MOAVector<ItemClass>::addItem(ItemClass* item)
 }
 
 template<class ItemClass>
-void MOAVector<ItemClass>::insertItem(ItemClass* item,int index)
+bool MOAVector<ItemClass>::insertItem(ItemClass* item,int index)
 {
     // Add an item pointer in Vector
     if(index>-1)
@@ -209,7 +209,10 @@ void MOAVector<ItemClass>::insertItem(ItemClass* item,int index)
         beginInsertRows(QModelIndex(),index,index);
         _items.insert(index,item);
         endInsertRows();
+        return true;
     }
+    else
+        return false;
 }
 
 template<class ItemClass>
@@ -262,6 +265,17 @@ bool MOAVector<ItemClass>::removeRows(int index, int count, const QModelIndex &p
     {
         return false;
     }
+}
+
+template<class ItemClass>
+bool MOAVector<ItemClass>::removeItems(QList<ItemClass*> items)
+{
+    QList<int> indexes;
+    for(int i=0;i<items.size();i++)
+        indexes.push_back(this->indexOf(items.at(i)));
+    indexes.removeAll(-1);
+
+    return removeRows(indexes);
 }
 
 
@@ -711,13 +725,12 @@ bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
 
     if(text.indexOf("XML::")==0)
     {
-        somethingDone = true;
-
-        // look for item
+         // look for item
         QString xmlContent = text.remove(QRegExp("^XML::"));
         qDebug(QString("Drop :"+xmlContent).toLatin1().data());
         QDomDocument doc;
-        doc.setContent(xmlContent);
+        if(!doc.setContent(xmlContent))
+            return false;
 
         // create _items from xml
         QDomElement el = doc.firstChildElement("list");
@@ -725,7 +738,7 @@ bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
         qDebug(QString("droped vector size :"+QString::number(dropedVector.size())).toLatin1().data());
         for(int i=0;i<dropedVector.size();i++)
         {
-            insertItem(dropedVector.at(i),row);
+            somethingDone = insertItem(dropedVector.at(i),row) || somethingDone;
         }
     }
     return somethingDone;

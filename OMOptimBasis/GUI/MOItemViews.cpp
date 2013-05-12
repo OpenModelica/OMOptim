@@ -85,9 +85,11 @@ void MOItemTreeView::setEditable(bool editable)
 void MOItemTreeView::setModel ( QAbstractItemModel * model )
 {
     QTreeView::setModel(model);
+    if(!model)
+        QTreeView::reset();
     if(model)
     {
-        initDelegates();
+        //initDelegates();
         //connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),this,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
     }
 }
@@ -114,7 +116,7 @@ void MOItemTreeView::initDelegates()
                     this->setItemDelegateForRow(i,dblDelegate);
                     break;
                 default:
-                     this->setItemDelegateForRow(i,NULL);
+                    this->setItemDelegateForRow(i,new QStyledItemDelegate(this));
                     break;
                 }
             }

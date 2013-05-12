@@ -143,6 +143,8 @@ public :
     virtual QString name(Variable::NameFormat = Variable::FULL) const;
     virtual QString getStrToolTip();
 
+    virtual bool valueDefined(){return _filledFields.contains(Variable::VALUE);}
+
 
 
 protected :

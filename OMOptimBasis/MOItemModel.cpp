@@ -228,7 +228,6 @@ Qt::ItemFlags MOItemModel::flags(const QModelIndex &index) const
     if (!_item || !index.isValid())
         return Qt::ItemIsEnabled;
 
-
     Qt::ItemFlags _flags;
     int field = iField(index.row());
 

@@ -115,7 +115,7 @@ public:
     virtual QString getFieldName(int iField,int role = Qt::DisplayRole)=0;
     static QString sFieldName(int field, int role);
     virtual QString getFieldDescription(int iField) const;
-    virtual FieldType getFieldType(int iField) const;
+    virtual MOItem::FieldType getFieldType(int iField) const;
 
     void setProtectedFields(QList<int> protectedFields);
     void setIsProtectedField(int iField, bool isProtected);

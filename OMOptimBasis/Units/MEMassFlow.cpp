@@ -39,6 +39,7 @@
 
   */
 #include "MEMassFlow.h"
+#include "LowTools.h"
 
 MEMassFlow::MEMassFlow():
 MEDimValue()
@@ -138,6 +139,16 @@ MEMassFlow MEMassFlow::operator+(const MEMassFlow& b) const
     MEMassFlow result(value(_unit) + b.value(_unit),_unit);
     if(!b.isValid())
         result.invalidate();
+
+    return result;
+}
+
+double MEMassFlow::operator/(const MEMassFlow& b) const
+{
+    if(b.value()==0)
+        return LowTools::nan();
+
+    double result = value(_unit)/b.value(_unit);
 
     return result;
 }

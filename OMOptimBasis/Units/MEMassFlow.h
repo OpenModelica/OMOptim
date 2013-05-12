@@ -66,6 +66,7 @@ public:
         MEMassFlow& operator-=(const MEMassFlow&);
         MEMassFlow operator-(const MEMassFlow&) const;
         MEMassFlow operator+(const MEMassFlow&) const;
+        double operator/(const MEMassFlow&) const;
         MEMassFlow operator*(const double &) const;
 
 

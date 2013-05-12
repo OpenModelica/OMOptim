@@ -118,6 +118,12 @@ MEQflow MEQflow::operator*(const double& fact) const
     return MEQflow(resValue,_unit);
 }
 
+MEQflow MEQflow::operator/(const double& fact) const
+{
+    double resValue = value(_unit)/fact;
+    return MEQflow(resValue,_unit);
+}
+
 MEQflow& MEQflow::operator+=(const MEQflow& b)
 {
     setValue(value(_unit) + b.value(_unit),_unit);

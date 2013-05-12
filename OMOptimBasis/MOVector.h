@@ -87,11 +87,12 @@ public:
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     void addItem(ItemClass*);
-    virtual void insertItem(ItemClass*,int);
+    virtual bool insertItem(ItemClass*,int);
     virtual bool removeRow(int index,const QModelIndex &parent = QModelIndex());
     virtual void removeRow(QString);
     virtual bool removeRows(int index, int count,const QModelIndex &parent = QModelIndex());
     virtual bool removeRows(QList<int> indexes);
+    virtual bool removeItems(QList<ItemClass*> indexes);
     ItemClass* findItem(QString) const;
     ItemClass* findItem(QVariant itemFieldValue,int iField) const;
     int indexOf(QVariant itemFieldValue,int iField) const;
@@ -146,7 +147,7 @@ template<class ItemClass>
 class MOVector : public MOAVector<ItemClass>
 {
 public:
-    MOVector(bool owner,QObject* parent);
+    MOVector(bool owner,QObject* parent=NULL); // must have parent=NULL, otherwise MOVector(true) is considered as MOVector(QObject*) (strange behavior though)
     MOVector(const QList<ItemClass*> ,bool owner,bool makeACopy, QObject *parent);
     MOVector(const MOAVector<ItemClass> &);
     MOVector<ItemClass>& operator=(const MOAVector<ItemClass> &copied);
