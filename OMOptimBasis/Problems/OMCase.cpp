@@ -58,7 +58,7 @@ OMCase::OMCase(const OMCase &omCase)
 {
     _name = omCase._name;
     _project = omCase._project;
- //   this->setParent(_project);
+    //   this->setParent(_project);
 
     _filesToCopy = omCase._filesToCopy;
     _relSaveFolder = omCase._relSaveFolder;
@@ -98,7 +98,7 @@ void OMCase::setProject(ProjectBase* project)
 void OMCase::setSaveFolder(QString saveFolder)
 {
     QDir projectDir = _project->folder();
-   _relSaveFolder = projectDir.relativeFilePath(saveFolder);
+    _relSaveFolder = projectDir.relativeFilePath(saveFolder);
 }
 
 void OMCase::setEntireSavePath(QString savePath)
@@ -144,20 +144,9 @@ void OMCase::store(QString destFolder, QString tempDir)
     setSaveFolder(destFolder);
     setDefaultSaveFileName();
 
-    QString savePath = _relSaveFolder + QDir::separator() + _saveFileName;
+    QDir destDir = QDir(destFolder);
 
-
-    QDir dir = QDir(_relSaveFolder);
-
-    if (!dir.exists())
-    {
-        dir.mkpath(_relSaveFolder);
-    }
-    //    else
-    //    {
-    //        LowTools::removeDir(_relSaveFolder);
-    //        dir.mkpath(_relSaveFolder);
-    //    }
+    LowTools::mkpath(destFolder,false);
 
     //copy needed path from old place to new one
     if(tempDir != "")
@@ -166,10 +155,10 @@ void OMCase::store(QString destFolder, QString tempDir)
         QString fileToCopy;
 
         // copy problem files and folders
-        QStringList fileNames = tmpDir.entryList();
+        QStringList fileNames = tmpDir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot);
         for(int i=0;i<fileNames.size();i++)
         {
-            QFile::copy(tempDir + QDir::separator() + fileNames.at(i),_relSaveFolder + QDir::separator() + fileNames.at(i));
+            QFile::copy(tmpDir.filePath(fileNames.at(i)),destDir.filePath(fileNames.at(i)));
         }
 
         for(int i=0;i<_filesToCopy.size();i++)
@@ -184,8 +173,6 @@ void OMCase::store(QString destFolder, QString tempDir)
     }
 
     setSaveFolder(destFolder);
-
-
 }
 
 

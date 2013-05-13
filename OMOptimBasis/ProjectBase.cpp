@@ -611,7 +611,11 @@ void ProjectBase::onProblemFinished(Problem* problem,Result* result)
 
             HighTools::checkUniqueResultName(this,result,_results);
 
-            result->store(QString(resultsFolder()+QDir::separator()+result->name()),tempPath());
+            // prepare directory (erase content/create folder)
+            QString storeFolder = resultsFolder()+QDir::separator()+result->name();
+            LowTools::mkpath(storeFolder,true);
+
+            result->store(storeFolder,tempPath());
            // result->setParent(this);
             addResult(result);
             save(result);
