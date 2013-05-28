@@ -139,6 +139,8 @@ public:
 
     int nbScans();
 
+    // edit functions (for scripting mainly)
+    bool setOverwritedVariableValue(QString varName,double value);
 
 public slots :
     void quickEnd();

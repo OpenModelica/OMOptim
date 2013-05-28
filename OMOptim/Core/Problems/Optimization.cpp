@@ -821,6 +821,16 @@ int Optimization::nbScans()
     return nbScans;
 }
 
+bool Optimization::setOverwritedVariableValue(QString varName, double value)
+{
+    Variable* overVar = _overwritedVariables->findItem(varName);
+
+    if(!overVar)
+        return false;
+    else
+        overVar->setValue(value);
+}
+
 OptimAlgo* Optimization::getCurAlgo() const
 {
     return _algos->currentAlgo();
