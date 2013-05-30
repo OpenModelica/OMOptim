@@ -213,6 +213,7 @@
     <addaction name="menuOMC"/>
     <addaction name="actionSettings"/>
     <addaction name="actionLoadCases"/>
+    <addaction name="actionLaunchScript"/>
    </widget>
    <widget class="QMenu" name="menuModels">
     <property name="title">
@@ -524,6 +525,11 @@ color:white;
   <action name="actionLoadCases">
    <property name="text">
     <string>Load problems/results...</string>
+   </property>
+  </action>
+  <action name="actionLaunchScript">
+   <property name="text">
+    <string>Launch script...</string>
    </property>
   </action>
  </widget>

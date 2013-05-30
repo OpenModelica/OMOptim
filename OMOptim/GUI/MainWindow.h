@@ -97,6 +97,7 @@ public slots :
     void newProject();
     void saveProject();
     void loadProject();
+    void launchScript();
     void loadProject(QString);
     void loadCases();
     void loadPlugins();
@@ -104,6 +105,7 @@ public slots :
     void OMCClear();
     void quit();
     void openSettings();
+
 
     void onProjectAboutToBeReset();
     void loadMoFile();

@@ -159,7 +159,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionStartOmc,SIGNAL(triggered()),_project->moomc(),SLOT(startServer()));
     connect( _ui->actionClearLog,SIGNAL(triggered()),this,SLOT(clearLog()));
     connect( _ui->actionLoadCases,SIGNAL(triggered()),this,SLOT(loadCases()));
-
+    connect( _ui->actionLaunchScript,SIGNAL(triggered()),this,SLOT(launchScript()));
 
     //*********************************
     // Signals for informations
@@ -428,6 +428,19 @@ void MainWindow::loadProject(QString filename)
     refreshModelTreeView();
 }
 
+void MainWindow::launchScript()
+{
+
+
+    QString filename = QFileDialog::getOpenFileName(
+                this,
+                qAppName()+" - Open script",
+                getLastProjectFolder(),
+                "All files (*.*)" );
+
+    if(!filename.isNull())
+        _project->launchScript(QFileInfo(filename));
+}
 
 void MainWindow::loadPlugins()
 {

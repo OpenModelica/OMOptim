@@ -46,6 +46,7 @@
 #include "version.h"
 #include "registermetatypes.h"
 #include "config.h"
+#include "scriptparseromoptim.h"
 
 #define HAVE_QAPPLICATION_H
 #define HAVE_QSOCKETNOTIFIER_H
@@ -54,15 +55,8 @@
 #include <omniORB4/CORBA.h>
 CORBA::ORB_var orb;
 
-
-
-
 int main(int argc, char *argv[])
 {
-
-
-
-
     // Register Info as a metaType
     // Needed for Info communication between threads
     // register meta types for connect signals/slots
@@ -73,6 +67,28 @@ int main(int argc, char *argv[])
     QApplication *app = new QApplication(argc,argv);
     app->setApplicationName("OMOptim");
 
+    //Read arguments
+    QStringList args;
+    for(int i=0;i<argc;i++)
+    {
+        args.push_back(QString(argv[i]));
+    }
+
+    // separate filepath and options
+    QStringList filePaths;
+    QStringList options;
+    for(int i=1;i<args.size();i++) //arg0 is the executable path
+    {
+        // if start with -, it's an option
+        QRegExp regExpOption("^[\\-]([\\S]*)$");
+
+        if(args.at(i).contains(regExpOption))
+        {
+            options.push_back(regExpOption.cap(1));
+        }
+        else
+            filePaths.push_back(args.at(i));
+    }
 
     // Setting the Application version
     //app->setApplicationVersion(APP_VERSION);
@@ -85,8 +101,7 @@ int main(int argc, char *argv[])
     // Style
     MOStyleSheet::initialize(qApp);
 
-    // Project
-    Project* project = new Project();
+
 
     // Message handler
     QString logFilePath = app->applicationDirPath()+QDir::separator()+"MOLog.txt";
@@ -100,22 +115,68 @@ int main(int argc, char *argv[])
     //#endif
 
 
-    // Starting
-    MainWindow w(project);
-    // w.setWindowTitle("CERES");
-    app->connect( app, SIGNAL( lastWindowClosed() ), &w, SLOT( quit() ) );
+    bool showGUI = true;
 
-    w.show();
+    // if script file to parse
+    bool launchScript = false;
+    QMap<QString,QString> definitions;
+    QStringList scriptCommands;
 
-//     load plugins
-    QDir pluginsDir = QDir(QApplication::applicationDirPath()+QDir::separator()+"Plugins");
-    if(pluginsDir.exists())
+    if(filePaths.size()==1)
     {
-        QStringList pluginsNames = pluginsDir.entryList();
-        pluginsNames.removeAll(".");
-        pluginsNames.removeAll("..");
-        for(int i=0;i<pluginsNames.size();i++)
-            project->loadPlugin(pluginsDir.filePath(pluginsNames.at(i)),false,true);
+        // read commands and options
+        bool scriptResult = ScriptParser::parseFile(QFileInfo(filePaths.at(0)),scriptCommands,definitions);
+
+        // show gui ?
+        if(options.contains("nogui"))
+            showGUI = false;
+        if(definitions.value("usegui",QString()).contains(QRegExp("^[false|0]+$")))
+            showGUI = false;
+
+        if(!showGUI && !scriptResult)
+            return -1;
+        else
+            launchScript = true;
+    }
+
+    // Project
+    bool startOMC = true;
+    if(options.contains("noomc"))
+        startOMC = false;
+    if(definitions.value("useomc",QString()).contains(QRegExp("^[false|0]+$")))
+        startOMC = false;
+
+    Project* project = new Project(startOMC);
+
+    // create GUI
+    if(showGUI)
+    {
+        MainWindow *w = NULL;
+        if(!options.contains("nogui"))
+        {
+            w = new MainWindow(project);
+            app->connect( app, SIGNAL( lastWindowClosed() ), w, SLOT( quit() ) );
+            w->show();
+        }
+    }
+
+    // launchScript
+    if(launchScript)
+    {
+        // set output to terminal
+        QTextStream * stdStream = new QTextStream(stdout, QIODevice::WriteOnly);
+        QList<ListInfo::InfoType> logInfoTypes;
+        logInfoTypes  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
+                         ListInfo::ERROR2<< ListInfo::TASK;
+        InfoSender::instance()->setLogStream(stdStream,logInfoTypes);
+
+        ScriptParserOMOptim* scriptParser = new ScriptParserOMOptim(project);
+
+        bool scriptOk = scriptParser->executeCommands(scriptCommands);
+        if(!showGUI && scriptOk)
+            return 0;
+        if(!showGUI && !scriptOk)
+            return -1;
     }
 
     try
@@ -141,3 +202,13 @@ int main(int argc, char *argv[])
 }
 
 
+//     load plugins
+//    QDir pluginsDir = QDir(QApplication::applicationDirPath()+QDir::separator()+"Plugins");
+//    if(pluginsDir.exists())
+//    {
+//        QStringList pluginsNames = pluginsDir.entryList();
+//        pluginsNames.removeAll(".");
+//        pluginsNames.removeAll("..");
+//        for(int i=0;i<pluginsNames.size();i++)
+//            project->loadPlugin(pluginsDir.filePath(pluginsNames.at(i)),false,true);
+//    }

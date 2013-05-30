@@ -99,8 +99,11 @@ private:
     void setMoFiles(QFileInfoList moFiles);
 
  public:
-    explicit Project();
+    explicit Project(bool startOMC=true);
     ~Project();
+
+     virtual bool launchScript(QFileInfo scriptFile);
+
     QString getClassName() const {return "Project";};
 
     void clear();

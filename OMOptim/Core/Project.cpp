@@ -65,9 +65,9 @@
 #include "ProblemInterface.h"
 #include "ProblemInterfaces.h"
 #include "ModExePlus.h"
+#include "scriptparseromoptim.h"
 
-
-Project::Project()
+Project::Project(bool startOMC)
 {
     _isdefined = false;
     //    _curProblem = -1;
@@ -78,7 +78,7 @@ Project::Project()
     //    _curLaunchedProblem = NULL;
     setCurModItem(NULL);
 
-    _moomc = new MOomc("OMOptim",true);
+    _moomc = new MOomc("OMOptim",startOMC);
     _modLoader = new ModLoader(_moomc);
     _modItemsTree = new ModItemsTree(_modLoader,_moomc);
 
@@ -114,6 +114,25 @@ Project::~Project()
     _problemsInterfaces.clear();
 
 }
+
+bool Project::launchScript(QFileInfo scriptFile)
+{
+    // parse file
+    QStringList scriptCommands;
+    QMap<QString,QString> definitions;
+
+    bool scriptResult = ScriptParser::parseFile(scriptFile,scriptCommands,definitions);
+    if(!scriptResult)
+    {
+        InfoSender::instance()->sendWarning("Failed to read script file.");
+        return false;
+    }
+
+    ScriptParserOMOptim* scriptParser = new ScriptParserOMOptim(this);
+    bool scriptOk = scriptParser->executeCommands(scriptCommands);
+    return scriptOk;
+}
+
 
 QString Project::getFieldName(int iField, int role)
 {
