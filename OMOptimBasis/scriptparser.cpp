@@ -6,8 +6,11 @@
 
 
 
-bool ScriptParser::parseFile(QFileInfo fileInfo)
+bool ScriptParser::parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QString,QString> & definitions)
 {
+    commands.clear();
+    definitions.clear();
+
     QFile file(fileInfo.absoluteFilePath());
     if(!file.exists())
         return false;
@@ -17,11 +20,33 @@ bool ScriptParser::parseFile(QFileInfo fileInfo)
     QString text = tsfront.readAll();
     file.close();
 
-    QStringList commands = text.split(QRegExp("[\\n|;]"),QString::SkipEmptyParts);
-    return parseCommands(commands);
+    QStringList lines = text.split(QRegExp("[\\n|;]"),QString::SkipEmptyParts);
+    // remove commented lines
+    QRegExp commentRegExp("^[#|\\s]+[\\s|\\S]*$");
+    int iC = lines.indexOf(commentRegExp);
+    while(iC!=-1)
+    {
+        lines.removeAt(iC);
+        iC = lines.indexOf(commentRegExp);
+    }
+
+    QString line;
+    QRegExp commandRegExp("^[\\s]*([\\S]*\\(.*\\)).*$");
+    QRegExp definitionRegExp("^[\\s]*([\\S]+)[\\s]*=[\\s]*([\\S]*).*$");
+    for(int i=0;i<lines.size();i++)
+    {
+        line = lines.at(i);
+        // if line is a command
+        if(line.contains(commandRegExp))
+            commands.push_back(commandRegExp.cap(1));
+        else if(line.contains(definitionRegExp))
+            definitions.insert(definitionRegExp.cap(1),definitionRegExp.cap(2));
+        else InfoSender::instance()->sendWarning("Unknown command: "+line);
+    }
+    return true;
 }
 
-bool ScriptParser::parseCommand(QString command)
+bool ScriptParser::executeCommand(QString command)
 {
     // if empty
     if(command.isEmpty())
@@ -30,7 +55,7 @@ bool ScriptParser::parseCommand(QString command)
     // if several commands
     QStringList commands = command.split(";",QString::SkipEmptyParts);
     if(commands.size()>1)
-        return parseCommands(commands);
+        return executeCommands(commands);
 
     // apply one command
     QRegExp regExp("([\\S]+)\\((.*)\\)");
@@ -50,12 +75,12 @@ bool ScriptParser::parseCommand(QString command)
     return launchFunction(function,args,foundFunction);
 }
 
-bool ScriptParser::parseCommands(QStringList commands)
+bool ScriptParser::executeCommands(QStringList commands)
 {
     bool overalResult = true;
     for(int i=0;i<commands.size();i++)
     {
-        overalResult = overalResult & parseCommand(commands.at(i));
+        overalResult = overalResult & executeCommand(commands.at(i));
     }
     return overalResult;
 }

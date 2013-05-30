@@ -44,7 +44,7 @@
 
 #include "ProjectBase.h"
 #include "MOSettings.h"
-
+#include "scriptparser.h"
 
 
 #include "OMCases.h"
@@ -120,6 +120,8 @@ void ProjectBase::clear()
     _filePath.clear();
     _name.clear();
 
+    _problemLaunchMutex.unlock();
+
     unloadPlugins();
 
     emit projectChanged();
@@ -151,6 +153,7 @@ void ProjectBase::setSaved(bool isSaved)
 {
     _isSaved = isSaved;
 }
+
 
 /**
 * Load a OMOptim plugin
@@ -475,7 +478,7 @@ bool ProjectBase::createTempDir()
 
 void ProjectBase::launchProblem(Problem* problem, bool useSeparateThread)
 {
-    if(!_problemLaunchMutex.tryLock())
+    if(useSeparateThread && !_problemLaunchMutex.tryLock())
     {
         QString msg = "Another problem is already running. Could not launch a new one.";
         InfoSender::instance()->send(Info(msg));

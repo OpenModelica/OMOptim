@@ -4,15 +4,18 @@
 #include <QFile>
 #include <QString>
 #include <QFileInfo>
+#include <QMap>
+
 
 class ProjectBase;
 
 class ScriptParser
 {
 public:
-    bool parseFile(QFileInfo fileInfo);
-    bool parseCommand(QString command);
-    bool parseCommands( QStringList commands);
+
+    static bool parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QString,QString> &options);
+    bool executeCommand(QString command);
+    bool executeCommands( QStringList commands);
 
  protected:
     virtual bool launchFunction(QString function, QStringList args, bool & foundFunction)=0;
