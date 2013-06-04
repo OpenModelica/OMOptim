@@ -134,6 +134,26 @@ bool Project::launchScript(QFileInfo scriptFile)
 }
 
 
+bool Project::launchScript(const QString & text)
+{
+    if(!_scriptParser)
+        return false;
+
+    // parse file
+    QStringList scriptCommands;
+    QMap<QString,QString> definitions;
+
+    bool scriptResult = ScriptParser::parseFile(text,scriptCommands,definitions);
+    if(!scriptResult)
+    {
+        InfoSender::instance()->sendWarning("Failed to read script file.");
+        return false;
+    }
+
+    bool scriptOk = _scriptParser->executeCommands(scriptCommands);
+    return scriptOk;
+}
+
 QString Project::getFieldName(int iField, int role)
 {
     return "name";

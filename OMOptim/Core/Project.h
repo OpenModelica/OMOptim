@@ -102,7 +102,8 @@ private:
     explicit Project(bool startOMC=true);
     ~Project();
 
-     virtual bool launchScript(QFileInfo scriptFile);
+    virtual bool launchScript(QFileInfo scriptFile);
+    virtual bool launchScript(const QString & text);
 
     QString getClassName() const {return "Project";};
 

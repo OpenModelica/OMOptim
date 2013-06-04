@@ -32,21 +32,57 @@ bool ScriptParserOMOptim::launchFunction(QString function, QStringList args, boo
          return true;
     }
 
-    if(!function.compare("setOptimParameter",Qt::CaseInsensitive))
+//    if(!function.compare("setOptimParameter",Qt::CaseInsensitive))
+//    {
+//        // e.g. setOptimParameter(problem,model1.var1,27.2);
+//        // note: model1.var1 should already be in optimization overwritedvariables
+//        foundFunction = true;
+//        // arg is mmo file path
+//        if(args.size()!=3)
+//            return false;
+
+//        Optimization* optim = dynamic_cast<Optimization*>(_project->findOMCase(args.at(0)));
+//        if(!optim)
+//            return false;
+//        return optim->setOverwritedVariableValue(args.at(1),args.at(2),args.at(3).toDouble());
+//    }
+
+    if(!function.compare("setOverwritedVariableValue",Qt::CaseInsensitive))
     {
-        // e.g. setOptimParameter(problem,model1.var1,27.2);
+        // e.g. setOptimParameter(problem,modelName,varName,27.2);
         // note: model1.var1 should already be in optimization overwritedvariables
         foundFunction = true;
         // arg is mmo file path
-        if(args.size()!=3)
+        if(args.size()!=4)
             return false;
 
         Optimization* optim = dynamic_cast<Optimization*>(_project->findOMCase(args.at(0)));
-        if(!optim)
+        OneSimulation* oneSim = dynamic_cast<OneSimulation*>(_project->findOMCase(args.at(0)));
+        if(!optim && !oneSim)
             return false;
-        return optim->setOverwritedVariableValue(args.at(1),args.at(2).toDouble());
+        if(optim)
+            return optim->setOverwritedVariableValue(args.at(1),args.at(2),args.at(3).toDouble());
+        if(oneSim)
+            return optim->setOverwritedVariableValue(args.at(1),args.at(2),args.at(3).toDouble());
     }
 
     return ScriptParserOMOptimBasis::launchFunction(function,args,foundFunction);
 }
 
+QString ScriptParserOMOptim::stHelpText()
+{
+    QString text;
+
+    text += "#List of functions \n \n";
+    text += "loadMOFile(\"MoFilePath\")";
+    text += "setOptimParameter(problemName,parameterName,parameterValue) #cf. list of optim parameters below \n";
+    text += "setOverwritedVariableValue(problemName,modelName,variableName,variableValue) \n";
+
+    text+="\n";
+    text += "#List of Optimization parameters \n";
+    QStringList optimParamNames = OptimAlgosList::getCommonParametersNames();
+    for(int i=0;i<optimParamNames.size();i++)
+            text+= optimParamNames.at(i)+"\n";
+
+    return text;
+}

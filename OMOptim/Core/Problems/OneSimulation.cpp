@@ -271,6 +271,25 @@ Result* OneSimulation::launch(ProblemConfig config)
 }
 
 
+bool OneSimulation::setOverwritedVariableValue(QString modelName, QString varName, double value)
+{
+    Variable* overVar = _overwritedVariables->findVariable(modelName,varName);
+
+    if(!overVar)
+    {
+        overVar = new Variable(varName);
+        overVar->setModel(modelName);
+        overVar->setValue(value);
+        _overwritedVariables->addItem(overVar);
+        return true;
+    }
+    else
+    {
+        overVar->setValue(value);
+        return true;
+    }
+}
+
 void OneSimulation::stop()
 {
     ctrl()->stopSimulation();

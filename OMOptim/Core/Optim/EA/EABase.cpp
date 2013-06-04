@@ -53,7 +53,10 @@ EABase::EABase(Project* project,Problem* problem)
 {
     _project = project;
     _problem = problem;
-    _modItemsTree = project->modItemsTree();
+    if(project)
+        _modItemsTree = project->modItemsTree();
+    else
+        _modItemsTree = NULL;
     _quickEnd = false;
     _keepResults = true;
 }

@@ -31,6 +31,9 @@
 #include "Results.h"
 #include "ProblemInterfaces.h"
 #include "widgetloadexemodel.h"
+#include "scriptparseromoptim.h"
+#include "Dialogs/HelpDlg.h"
+#include "ScriptTextDlg.h"
 
 namespace Ui
 {
@@ -159,7 +162,8 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionStartOmc,SIGNAL(triggered()),_project->moomc(),SLOT(startServer()));
     connect( _ui->actionClearLog,SIGNAL(triggered()),this,SLOT(clearLog()));
     connect( _ui->actionLoadCases,SIGNAL(triggered()),this,SLOT(loadCases()));
-    connect( _ui->actionLaunchScript,SIGNAL(triggered()),this,SLOT(launchScript()));
+    connect( _ui->actionLaunchScript2,SIGNAL(triggered()),this,SLOT(launchScript()));
+    connect( _ui->actionDispScriptFunctions,SIGNAL(triggered()),this,SLOT(dispScriptFunctions()));
 
     //*********************************
     // Signals for informations
@@ -440,6 +444,20 @@ void MainWindow::launchScript()
 
     if(!filename.isNull())
         _project->launchScript(QFileInfo(filename));
+}
+
+void MainWindow::dispScriptFunctions()
+{
+    HelpDlg dlg(this);
+    dlg.ui->textBrowser->setText(_project->scriptParser()->helpText());
+
+    dlg.exec();
+}
+
+void MainWindow::launchScriptText()
+{
+    ScriptTextDlg dlg(_project->scriptParser(),_project,this);
+    dlg.exec();
 }
 
 void MainWindow::loadPlugins()

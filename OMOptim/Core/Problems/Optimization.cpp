@@ -57,7 +57,7 @@ Optimization::Optimization(Project* project,QStringList models)
     _savedVars = new Variables(true,this);
     _scannedVariables = new ScannedVariables(true,this);
     _objectives = new OptObjectives(true,this);
-  //  _blockSubstitutions = new BlockSubstitutions();
+    //  _blockSubstitutions = new BlockSubstitutions();
 
     _algos = new OptimAlgos(project,this);
     _algos->setCurrentAlgo(SPEA2Adapt().name());
@@ -73,16 +73,16 @@ Optimization::Optimization(const Optimization &optim)
     :Problem(optim)
 {
     _optimizedVariables = optim._optimizedVariables->clone();
-//    _optimizedVariables->setParent(this);
+    //    _optimizedVariables->setParent(this);
     _scannedVariables = optim._scannedVariables->clone();
-//    _scannedVariables->setParent(this);
+    //    _scannedVariables->setParent(this);
     _overwritedVariables = optim._overwritedVariables->clone();
-//    _overwritedVariables->setParent(this);
+    //    _overwritedVariables->setParent(this);
     _savedVars = optim._savedVars->clone();
-//    _savedVars->setParent(this);
+    //    _savedVars->setParent(this);
     _objectives = optim._objectives->clone();
-//    _objectives->setParent(this);
- //   _blockSubstitutions = optim._blockSubstitutions->clone();
+    //    _objectives->setParent(this);
+    //   _blockSubstitutions = optim._blockSubstitutions->clone();
 
     QString curModel;
     ModPlusCtrls* newCtrls;
@@ -90,7 +90,7 @@ Optimization::Optimization(const Optimization &optim)
     {
         curModel = optim._models.at(i);
         newCtrls = optim._ctrls.value(curModel)->clone();
-//        newCtrls->setParent(this);
+        //        newCtrls->setParent(this);
         this->addModel(curModel,newCtrls);
     }
 
@@ -109,7 +109,7 @@ Optimization::~Optimization()
 
     delete _optimizedVariables;
     delete _objectives;
- //   delete _blockSubstitutions;
+    //   delete _blockSubstitutions;
     delete _overwritedVariables;
     delete _savedVars;
     delete _scannedVariables;
@@ -220,22 +220,22 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
         QDomElement  domInfos = domProblem.firstChildElement("Infos");
         this->setName(domInfos.attribute("name", "" ));
 
-//        // compatibility with older saving format (one model, saved in Infos node)
-//        if(!domInfos.attribute("model").isEmpty())
-//        {
-//            QString modelName = domInfos.attribute("model");
-//            ModelPlus* modelPlus = project->modelPlus(modelName);
+        //        // compatibility with older saving format (one model, saved in Infos node)
+        //        if(!domInfos.attribute("model").isEmpty())
+        //        {
+        //            QString modelName = domInfos.attribute("model");
+        //            ModelPlus* modelPlus = project->modelPlus(modelName);
 
-//            if(modelPlus)
-//            {
-//                // read corresponding controlers
-//                QDomElement domCtrls = domProblem.firstChildElement(ModPlusCtrls::className());
-//                ModPlusCtrls* ctrls = new ModPlusCtrls(project,modelPlus,domCtrls,this);
+        //            if(modelPlus)
+        //            {
+        //                // read corresponding controlers
+        //                QDomElement domCtrls = domProblem.firstChildElement(ModPlusCtrls::className());
+        //                ModPlusCtrls* ctrls = new ModPlusCtrls(project,modelPlus,domCtrls,this);
 
-//                // add model
-//                this->addModel(domInfos.attribute("model"));
-//            }
-//        }
+        //                // add model
+        //                this->addModel(domInfos.attribute("model"));
+        //            }
+        //        }
 
         // new format
         QDomElement domModels = domProblem.firstChildElement("Models");
@@ -246,7 +246,7 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
             ModelPlus* modelPlus = project->modelPlus(modelName);
 
             if(modelPlus) // add it only if found in project
-                          // otherwise, may lead to segfaults
+                // otherwise, may lead to segfaults
             {
                 // read corresponding controlers
                 QDomElement domCtrls = domModel.firstChildElement(ModPlusCtrls::className());
@@ -288,14 +288,14 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     // Overvars Variables
     QDomElement domOverVars = domProblem.firstChildElement("OverwritedVariables");
     this->overwritedVariables()->setItems(domOverVars);
-//    for(int i=0;i<overwritedVariables()->size();i++)
-//        overwritedVariables()->at(i)->setIsEditableField(Variable::VALUE,true);
+    //    for(int i=0;i<overwritedVariables()->size();i++)
+    //        overwritedVariables()->at(i)->setIsEditableField(Variable::VALUE,true);
 
     // saved Variables
     QDomElement domSavedVars = domProblem.firstChildElement("SavedVariables");
     this->savedVars()->setItems(domSavedVars);
-//    for(int i=0;i<savedVars()->size();i++)
-//        savedVars()->at(i)->setIsEditableField(Variable::VALUE,true);
+    //    for(int i=0;i<savedVars()->size();i++)
+    //        savedVars()->at(i)->setIsEditableField(Variable::VALUE,true);
 
     // Files to copy
     QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
@@ -304,9 +304,9 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     for(int i=0;i<strList.size();i++)
         this->_filesToCopy.push_back(QFileInfo(strList.at(i)));
 
-//    // BlockSubstitutions
-//    QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
-//    _blockSubstitutions = new BlockSubstitutions(project,domBlockSubs);
+    //    // BlockSubstitutions
+    //    QDomElement domBlockSubs = domProblem.firstChildElement("BlockSubstitutions");
+    //    _blockSubstitutions = new BlockSubstitutions(project,domBlockSubs);
 
     // Algos
     QDomElement cAlgos = domProblem.firstChildElement(OptimAlgos::className());
@@ -789,9 +789,9 @@ QDomElement Optimization::toXmlData(QDomDocument & doc)
     cProblem.appendChild(cSavedVars);
 
 
-//    //BlockSubstitutions
-//    QDomElement cBlocks = _blockSubstitutions->toXmlData(doc);
-//    cProblem.appendChild(cBlocks);
+    //    //BlockSubstitutions
+    //    QDomElement cBlocks = _blockSubstitutions->toXmlData(doc);
+    //    cProblem.appendChild(cBlocks);
 
     // Files to copy
     QDomElement cFilesToCopy = doc.createElement("FilesToCopy");
@@ -821,14 +821,23 @@ int Optimization::nbScans()
     return nbScans;
 }
 
-bool Optimization::setOverwritedVariableValue(QString varName, double value)
+bool Optimization::setOverwritedVariableValue(QString modelName, QString varName, double value)
 {
-    Variable* overVar = _overwritedVariables->findItem(varName);
+    Variable* overVar = _overwritedVariables->findVariable(modelName,varName);
 
     if(!overVar)
-        return false;
-    else
+    {
+        overVar = new Variable(varName);
+        overVar->setModel(modelName);
         overVar->setValue(value);
+        _overwritedVariables->addItem(overVar);
+        return true;
+    }
+    else
+    {
+        overVar->setValue(value);
+        return true;
+    }
 }
 
 OptimAlgo* Optimization::getCurAlgo() const

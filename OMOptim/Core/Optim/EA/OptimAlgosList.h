@@ -67,6 +67,7 @@ public :
     };
 
     static OptimAlgo* getNewAlgo(Project* project,Problem* problem,Type iAlgo);
+    static QStringList getCommonParametersNames();
 };
 
 

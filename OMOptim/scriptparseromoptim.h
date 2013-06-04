@@ -11,6 +11,10 @@ public:
     ScriptParserOMOptim(Project*);
 
 
+    static QString stHelpText();
+    virtual QString helpText(){return ScriptParserOMOptim::stHelpText();}
+
+
 protected:
   virtual bool launchFunction(QString function, QStringList args, bool & foundFunction);
     Project* _project;

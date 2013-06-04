@@ -99,8 +99,9 @@ public:
     QString model() const;
 
 //public slots :
-//    void setCtrlType();
+    //    void setCtrlType();
 
+    bool setOverwritedVariableValue(QString modelName, QString varName, double value);
 protected :
 
     Project* _omProject; /// same adress than _project but casted to Project* instead of ProjectBase*

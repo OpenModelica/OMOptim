@@ -112,7 +112,7 @@ SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,MOParameters* parameter
 {
     delete _parameters;
     _parameters = new MOParameters(*parameters);
-};
+}
 
 SPEA2Adapt::SPEA2Adapt(const SPEA2Adapt & ea):EABase(ea)
 {

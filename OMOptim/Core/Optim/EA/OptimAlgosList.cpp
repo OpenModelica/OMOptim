@@ -26,3 +26,24 @@ OptimAlgo* OptimAlgosList::getNewAlgo(Project* project,Problem* problem,OptimAlg
         return NULL;
     }
 }
+
+QStringList OptimAlgosList::getCommonParametersNames()
+{
+    QSet<QString> names;
+    QStringList curNames;
+    for(int i=0;i<OptimAlgosList::nbAlgos;i++)
+    {
+        OptimAlgo* newAlgo;
+        newAlgo = getNewAlgo(NULL,NULL,(OptimAlgosList::Type)i);
+
+        curNames = newAlgo->parameters()->getItemNames();
+        if(i==0)
+        {
+            names = curNames.toSet();
+        }
+        else
+            names = names.intersect(curNames.toSet());
+        delete newAlgo;
+    }
+    return names.toList();
+}

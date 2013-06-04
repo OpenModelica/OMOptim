@@ -282,7 +282,6 @@ HEADERS += ../config.h \
 FORMS += ../GUI/MainWindow.ui \
          ../GUI/Dialogs/AboutOMOptim.ui \
         # ../GUI/Dialogs/BlockSubstituteConnDlg.ui \
-         ../GUI/Dialogs/HelpDlg.ui \
          ../GUI/Dialogs/newprojectform.ui \
          ../GUI/Dialogs/OtherDlg.ui \
       #   ../GUI/Widgets/WidgetBlocks.ui \
@@ -345,7 +344,6 @@ SOURCES += ../Core/OptObjective.cpp \
            ../Core/Tools/vqtconvert.cpp \
            ../GUI/Dialogs/AboutOMOptim.cpp \
           # ../GUI/Dialogs/BlockSubstituteConnDlg.cpp \
-           ../GUI/Dialogs/HelpDlg.cpp \
            ../GUI/Dialogs/newprojectform.cpp \
            ../GUI/Plots/MOPlot.cpp \
            ../GUI/Scene/arrow.cpp \
