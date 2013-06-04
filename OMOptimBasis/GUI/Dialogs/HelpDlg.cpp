@@ -46,7 +46,7 @@
 #include "ui_HelpDlg.h"
 #include <QtGui/QErrorMessage>
 #include <QtGui/QTextBrowser>
-#include <QtGUi/QSpacerItem>
+#include <QtGui/QSpacerItem>
 
 #include <QtGui/QListWidget>
 
