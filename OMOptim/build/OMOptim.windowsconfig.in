@@ -23,7 +23,7 @@ CONFIG(debug, debug|release){
     OBJECTS_DIR = debug/generatedfiles
 
     INCLUDEPATH  += ../../OMOptimBasis/build/debug/generatedfiles/ui
-    INCLUDEPATH  += ../build/debug/generatedfiles/ui
+    INCLUDEPATH  += debug/generatedfiles/ui
 
 }else {
     UI_DIR = release/generatedfiles/ui
@@ -32,7 +32,7 @@ CONFIG(debug, debug|release){
     OBJECTS_DIR = release/generatedfiles
 
     INCLUDEPATH  += ../../OMOptimBasis/build/release/generatedfiles/ui
-    INCLUDEPATH  += ../build/release/generatedfiles/ui
+    INCLUDEPATH  += release/generatedfiles/ui
 }
 
 INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.6-mingw/include \
@@ -76,9 +76,3 @@ LIBS += \
     -leoutils \
     -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/lib \
     -lmoeo
-
-
-
-
-
-

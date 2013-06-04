@@ -14,9 +14,9 @@ CONFIG(debug, debug|release){
 }
 
 win32 {
-    include(../build/OMOptim.windowsconfig.in)
+    include(OMOptim.windowsconfig.in)
 }else {
-    include(../build/OMOptim.config)
+    include(OMOptim.config)
 }
 
 DESTDIR = ../bin

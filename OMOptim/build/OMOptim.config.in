@@ -5,4 +5,25 @@ QMAKE_LINK = @OMOPTIM_CXX@
 LIBS += @CORBALIBS@ -lqwt@with_qwt_suffix@ -lmoeo -leo -leoutils -L../../OMOptimBasis/bin -lOMOptimBasis
 INCLUDEPATH += @with_qwt@ @CORBA_QMAKE_INCLUDES@ @with_paradiseo_include@
 
+### FOLDERS, INCLUDES
+
+CONFIG(debug, debug|release){
+    UI_DIR = debug/generatedfiles/ui
+    MOC_DIR = debug/generatedfiles/moc
+    RCC_DIR = debug/generatedfiles/rcc
+    OBJECTS_DIR = debug/generatedfiles
+
+    INCLUDEPATH  += ../../OMOptimBasis/build/debug/generatedfiles/ui
+    INCLUDEPATH  += debug/generatedfiles/ui
+
+}else {
+    UI_DIR = release/generatedfiles/ui
+    MOC_DIR = release/generatedfiles/moc
+    RCC_DIR = release/generatedfiles/rcc
+    OBJECTS_DIR = release/generatedfiles
+
+    INCLUDEPATH  += ../../OMOptimBasis/build/release/generatedfiles/ui
+    INCLUDEPATH  += release/generatedfiles/ui
+}
+
 QMAKE_LFLAGS += @LDFLAGS@ @with_paradiseo_lib@

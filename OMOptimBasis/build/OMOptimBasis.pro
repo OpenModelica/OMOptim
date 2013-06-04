@@ -50,8 +50,7 @@ INCLUDEPATH += . \
               ../Tools \
               ../Infos \
               ../FileData \
-              ../Problems \
-              $$(UI_DIR)
+              ../Problems
 
 DEPENDPATH += . \
               .. \
