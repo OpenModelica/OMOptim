@@ -59,12 +59,14 @@
 #include "MOItem.h"
 #include "ProblemInterfaces.h"
 
+
 class ProblemInterface;
 class Problems;
 class Results;
 class Problem;
 class Result;
 class OMCase;
+class ScriptParser;
 
 namespace MOThreads
 {
@@ -106,6 +108,9 @@ protected:
     // Problems interfaces
     ProblemInterfaces _problemsInterfaces; /// List of problemInterface pluged to project
 
+    // Parser
+    ScriptParser* _scriptParser;
+
  public:
     ProjectBase();
     virtual ~ProjectBase();
@@ -142,6 +147,10 @@ protected:
     OMCase* findOMCase(QString name);
 
 
+    // scripts
+    virtual bool launchScript(QFileInfo scriptFile){return false;}
+    virtual bool launchScript(const QString & text){return false;}
+
     //****************************
     // Get/Set functions
     //****************************
@@ -156,6 +165,9 @@ protected:
     void setIsDefined(bool);
     Problem* curLaunchedProblem();
     QMap<QString,QString> pluginsLoaded();
+    void setScriptParser(ScriptParser *parser);
+    ScriptParser* scriptParser() const {return _scriptParser;}
+
 
     Problems* problems(){return _problems;}
     Results* results(){return _results;}

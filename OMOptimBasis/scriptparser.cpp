@@ -4,8 +4,6 @@
 
 
 
-
-
 bool ScriptParser::parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QString,QString> & definitions)
 {
     commands.clear();
@@ -20,6 +18,13 @@ bool ScriptParser::parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QStri
     QString text = tsfront.readAll();
     file.close();
 
+   return parseFile(text,commands,definitions);
+}
+
+
+
+bool ScriptParser::parseFile(const QString & text,QStringList &commands,QMap<QString,QString> & definitions)
+{
     QStringList lines = text.split(QRegExp("[\\n|;]"),QString::SkipEmptyParts);
     // remove commented lines
     QRegExp commentRegExp("^[#|\\s]+[\\s|\\S]*$");
@@ -101,7 +106,9 @@ bool ScriptParserOMOptimBasis::launchFunction(QString function, QStringList args
         if(args.size()!=1)
             return false;
 
-        return _projectBase->load(args.at(0));
+        QString filePath = args.at(0);
+        filePath.remove("\"");
+        return _projectBase->load(filePath);
     }
 
     if(!function.compare("saveProject",Qt::CaseInsensitive))

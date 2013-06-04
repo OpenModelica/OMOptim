@@ -71,9 +71,9 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
     dockWidget->setTitleBarWidget(new QWidget(this));
 
     if(closable)
-        dockWidget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+        dockWidget->setFeatures(QDockWidget::DockWidgetClosable /*| QDockWidget::DockWidgetMovable*/ | QDockWidget::DockWidgetFloatable);
     else
-        dockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+        dockWidget->setFeatures(/*QDockWidget::DockWidgetMovable |*/ QDockWidget::DockWidgetFloatable);
 
     //dockWidget->setLayout(new QGridLayout());
     dockWidget->setWidget(widget);

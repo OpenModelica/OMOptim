@@ -43,6 +43,7 @@
 
 #include "MEDimValue.h"
 #include <cmath>
+#include <limits>
 
 class METime : public MEDimValue
 {
@@ -50,12 +51,15 @@ public:
     METime();
     METime(double value,int unit); // better not to have default value for unit : forbid unwished conversion from double.
     METime(const METime&);
+
     ~METime();
 
     enum Units
     {
         SEC
     };
+
+    static METime inf(){return METime(std::numeric_limits<double>::infinity(),METime::SEC);}
 
     QString unit(int iUnit)  const;
     QString unit() const;  //should'nt be (should be inherited) but error in compiler otherwise
@@ -66,7 +70,7 @@ public:
     METime& operator-=(const METime&);
     METime operator-(const METime&) const;
     METime operator+(const METime&) const;
-
+    double operator/(const METime&) const;
 };
 
 
@@ -74,9 +78,25 @@ class METimes : public QList<METime>
 {
 public :
     METime time(int iP, bool &ok, QString &msg) const;
-    int iPeriod(const METime & time) const;
+    int iPeriod(const METime & time, bool lastIsEndingTime) const;
     METimes& operator=(const QList<METime> &);
 
+};
+class MEDurations : public QList<METime>
+{
+public :
+    MEDurations(){};
+    MEDurations (QList<METime> times);
+    METime startingTime(int iP, bool &ok, QString &msg) const;
+    int iPeriod(const METime & time) const;
+    MEDurations& operator=(const QList<METime> &);
+    METimes allTimes() const;
+    METime at(int i) const;
+    void push_back(const METime duration);
+
+    void setDuration(const METime duration, int iPeriod);
+private:
+    static METime treshold(){return METime(1e30,METime::SEC);} // treshold to be consider as infinity
 };
 
 

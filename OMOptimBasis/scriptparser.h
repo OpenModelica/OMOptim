@@ -14,8 +14,11 @@ class ScriptParser
 public:
 
     static bool parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QString,QString> &options);
+    static bool parseFile(const QString & text,QStringList &commands,QMap<QString,QString> &options);
+
     bool executeCommand(QString command);
     bool executeCommands( QStringList commands);
+    virtual QString helpText(){return QString();}
 
  protected:
     virtual bool launchFunction(QString function, QStringList args, bool & foundFunction)=0;

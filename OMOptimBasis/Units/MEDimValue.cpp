@@ -115,8 +115,25 @@ bool MEDimValue::setUnit(QString unit)
     else
         setUnit(iUnit);
     return true;
-
 }
+
+bool MEDimValue::setUnit(QVariant unit)
+{
+    QString strUnit = unit.toString();
+    bool intOk;
+
+    int iUnit = unit.toInt(&intOk);
+
+    bool ok = setUnit(strUnit);
+    if(!ok && intOk)
+    {
+        setUnit(iUnit);
+        ok = true;
+    }
+
+    return ok;
+}
+
 bool MEDimValue::setValue(double value,QString unit)
 {
     int iUnit = units().indexOf(unit);

@@ -63,6 +63,7 @@ public:
     virtual void setUnit(int iUnit);
     virtual void setDispUnit(int iUnit);
     virtual bool setUnit(QString iUnit);
+    virtual bool setUnit(QVariant iUnit);
     double value(int iUnit) const;
     double value() const;
     QString strValue(int iUnit) const;

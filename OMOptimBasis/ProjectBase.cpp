@@ -75,9 +75,11 @@ ProjectBase::ProjectBase()
 
     _problems = new Problems("Problems");
     _results = new Results("Results");
-
+    _scriptParser = NULL;
     emit projectChanged();
 }
+
+
 
 ProjectBase::~ProjectBase()
 {
@@ -91,6 +93,9 @@ ProjectBase::~ProjectBase()
         delete _problemsInterfaces.uniqueInterfaces().at(i);
     }
     _problemsInterfaces.clear();
+
+    if(_scriptParser)
+        delete _scriptParser;
 
 }
 
@@ -154,6 +159,13 @@ void ProjectBase::setSaved(bool isSaved)
     _isSaved = isSaved;
 }
 
+void ProjectBase::setScriptParser(ScriptParser* parser)
+{
+    if(_scriptParser && parser!=_scriptParser)
+        delete _scriptParser;
+
+    _scriptParser = parser;
+}
 
 /**
 * Load a OMOptim plugin

@@ -140,7 +140,9 @@ HEADERS += \
     ../MOItemModel.h \
     ../GUI/MOItemViews.h \
     ../Units/MEGeneric.h \
-    ../scriptparser.h
+    ../scriptparser.h \
+    ../GUI/Dialogs/ScriptTextDlg.h \
+    ../GUI/Dialogs/HelpDlg.h
 
 SOURCES += \
     ../Variables.cpp \
@@ -212,7 +214,9 @@ SOURCES += \
     ../MOItemModel.cpp \
     ../GUI/MOItemViews.cpp \
     ../Units/MEGeneric.cpp \
-    ../scriptparser.cpp
+    ../scriptparser.cpp \
+    ../GUI/Dialogs/ScriptTextDlg.cpp \
+    ../GUI/Dialogs/HelpDlg.cpp
 
 FORMS += \
     ../GUI/Widgets/WidgetFilesList.ui \
@@ -222,4 +226,9 @@ FORMS += \
     ../GUI/Widgets/WidgetProjectBaseInfos.ui \
     ../GUI/Widgets/WidgetSelectVars.ui \
     ../GUI/Dialogs/NewProjectBaseForm.ui \
-    ../GUI/Widgets/WidgetMOItemsList.ui
+    ../GUI/Widgets/WidgetMOItemsList.ui \
+    ../GUI/Dialogs/ScriptTextDlg.ui \
+    ../GUI/Dialogs/HelpDlg.ui
+
+RESOURCES += \
+    ../GUI/Resources/OMOptimBasis.qrc
