@@ -48,7 +48,7 @@
 
 
 #include <QtGui/QListWidget>
-#include "../../../OMOptim/GUI/Dialogs/HelpDlg.h"
+#include "HelpDlg.h"
 #include "ProjectBase.h"
 
 ScriptTextDlg::ScriptTextDlg(ScriptParser* parser,ProjectBase* project, QWidget *parent) :
