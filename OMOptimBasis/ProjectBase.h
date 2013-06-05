@@ -90,6 +90,7 @@ public :
     QMutex _componentMutex;
     QMutex _connectionMutex;
     QMutex _problemLaunchMutex;
+    QMutex _saveLoadMutex;
     QMap<Problem*,MOThreads::ProblemThread *> _problemsThreads;
 
 

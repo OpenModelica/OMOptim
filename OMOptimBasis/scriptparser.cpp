@@ -1,7 +1,7 @@
 #include "scriptparser.h"
 #include "ProjectBase.h"
 #include "InfoSender.h"
-
+#include "MOSettings.h"
 
 
 bool ScriptParser::parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QString,QString> & definitions)
@@ -18,7 +18,7 @@ bool ScriptParser::parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QStri
     QString text = tsfront.readAll();
     file.close();
 
-   return parseFile(text,commands,definitions);
+    return parseFile(text,commands,definitions);
 }
 
 
@@ -90,77 +90,168 @@ bool ScriptParser::executeCommands(QStringList commands)
     return overalResult;
 }
 
+ScriptFunction ScriptParser::findFunction(QString functionName, int nbArgs, bool &ok)
+{
+    QStringList functionNames = _functions.keys();
+    functionNames = functionNames.filter(functionName,Qt::CaseInsensitive);
+
+    if(functionNames.isEmpty())
+    {
+        ok = false;
+        return ScriptFunction(QString(),QStringList());
+    }
+    else
+    {
+        ScriptFunction function = _functions.value(functionNames.first());
+        if(nbArgs==function.args.size())
+        {
+            ok = true;
+            return function;
+        }
+        else
+        {
+            ok = false;
+            return ScriptFunction(QString(),QStringList());
+        }
+    }
+}
+
+QStringList ScriptParser::functionsList()
+{
+    QStringList result;
+    QList<ScriptFunction> functions = _functions.values();
+    for(int i=0;i<functions.size();i++)
+    {
+        result += functions.at(i).toTxt();
+    }
+    return result;
+}
+
+QString ScriptFunction::toTxt() const
+{
+    bool includesDescription=true;
+    QString result = name+"(";
+    for(int i=0;i<args.size();i++)
+    {
+        result+=args.at(i)+",";
+    }
+    result.remove(QRegExp("[,]$"));
+    result +=")";
+    if(includesDescription && !description.isEmpty())
+        result +="\t#"+description;
+    return result;
+}
+
 ScriptParserOMOptimBasis::ScriptParserOMOptimBasis(ProjectBase* projectBase)
 {
     _projectBase = projectBase;
+    initFunctions();
 }
 
 
-bool ScriptParserOMOptimBasis::launchFunction(QString function, QStringList args, bool & foundFunction)
+bool ScriptParserOMOptimBasis::launchFunction(QString functionName, QStringList args, bool & foundFunction)
 {
 
-    if(!function.compare("loadProject",Qt::CaseInsensitive))
-    {
-        foundFunction = true;
-        // arg is project file path
-        if(args.size()!=1)
-            return false;
+    ScriptFunction function = findFunction(functionName,args.size(),foundFunction);
+    if(!foundFunction)
+        return false;
 
+
+    if(!function.name.compare("loadProject",Qt::CaseInsensitive))
+    {
         QString filePath = args.at(0);
         filePath.remove("\"");
         return _projectBase->load(filePath);
     }
 
-    if(!function.compare("saveProject",Qt::CaseInsensitive))
+    if(!function.name.compare("saveProject",Qt::CaseInsensitive))
     {
-        foundFunction = true;
-        // arg is project file path
-        if(args.size()!=0)
-            return false;
-
         _projectBase->save(true);
         return true;
     }
 
-    if(!function.compare("addProblem",Qt::CaseInsensitive))
+    if(!function.name.compare("addProblem",Qt::CaseInsensitive))
     {
-        foundFunction = true;
-        // arg is mpb file path
-        if(args.size()!=1)
-            return false;
-
         _projectBase->addOMCase(args.at(0));
         return true;
     }
 
-    if(!function.compare("launchProblem",Qt::CaseInsensitive))
+    if(!function.name.compare("launchProblem",Qt::CaseInsensitive))
     {
-        foundFunction = true;
-        // arg is mpb file path
-        if(args.size()!=1)
-            return false;
-
         _projectBase->launchProblem(args.at(0),false);
         // do not use multithreading while scripting
         return true;
     }
 
-    if(!function.compare("removeAllResults",Qt::CaseInsensitive))
+    if(!function.name.compare("removeAllResults",Qt::CaseInsensitive))
     {
-        foundFunction = true;
-        // arg is mpb file path
-        if(args.size()!=0)
-            return false;
-
         _projectBase->removeAllResults();
-        // do not use multithreading while scripting
         return true;
     }
 
+    if(!function.name.compare("setSetting",Qt::CaseInsensitive))
+    {
+        QString settingName = args.at(0);
+        QString settingValue = args.at(1);
+
+        return MOSettings::instance()->setValue(settingName,settingValue);
+    }
 
     // if not found
     foundFunction = false;
     return false;
 }
 
+void ScriptParserOMOptimBasis::initFunctions()
+{
+    QStringList names;
+    QList<QStringList> args;
+    QStringList descriptions;
 
+    names+= "loadProject";
+    args += QStringList() << "\"projectFilePath\"";
+    descriptions += QString();
+
+    names+= "saveProject";
+    args += QStringList() ;
+    descriptions += QString();
+
+    names+= "addProblem";
+    args += QStringList() << "\"problemFilePath\"";
+    descriptions += QString();
+
+    names+= "launchProblem";
+    args += QStringList() << "problemName";
+    descriptions += QString();
+
+    names+= "removeAllResults";
+    args += QStringList() ;
+    descriptions += QString();
+
+    names+= "setSetting";
+    args += QStringList()  << "settingName" << "settingValue";
+    descriptions += QString();
+
+    for(int i=0;i<names.size();i++)
+    {
+        _functions.insert(names.at(i),ScriptFunction(names.at(i),args.at(i),descriptions.at(i)));
+    }
+}
+
+QString ScriptParserOMOptimBasis::helpText()
+{
+    QString text = "#List of functions \n \n";
+
+    QStringList functions = this->functionsList();
+    text += functions.join("\n");
+
+    return text;
+}
+
+
+ScriptFunction::ScriptFunction(QString functionName, QStringList argsNames, QString functionDescription)
+{
+    name = functionName;
+    args = argsNames;
+    description = functionDescription;
+}

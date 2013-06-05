@@ -332,26 +332,30 @@ void ProjectBase::save(Problem* problem)
 
 bool ProjectBase::load(QString loadPath)
 {
-    bool configOk = checkConfiguration();
-    bool loaded = false;
-
-    if(configOk)
-        loaded = Load::loadProject(loadPath,this);
-
-    if (loaded)
+    if(_saveLoadMutex.tryLock())
     {
-        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
+        bool configOk = checkConfiguration();
+        bool loaded = false;
+
+        if(configOk)
+            loaded = Load::loadProject(loadPath,this);
+
+        if (loaded)
+        {
+            emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
+            emit projectChanged();
+        }
+        else
+        {
+            emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
+            clear();
+            emit projectChanged();
+        }
+        setSaved(true);
         emit projectChanged();
+        _saveLoadMutex.unlock();
+        return loaded;
     }
-    else
-    {
-        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
-        clear();
-        emit projectChanged();
-    }
-    setSaved(true);
-    emit projectChanged();
-    return loaded;
 }
 
 
@@ -631,7 +635,7 @@ void ProjectBase::onProblemFinished(Problem* problem,Result* result)
             LowTools::mkpath(storeFolder,true);
 
             result->store(storeFolder,tempPath());
-           // result->setParent(this);
+            // result->setParent(this);
             addResult(result);
             save(result);
         }

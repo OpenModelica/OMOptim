@@ -48,7 +48,7 @@
 
 
 #include <QtGui/QListWidget>
-#include "HelpDlg.h"
+#include "Dialogs/HelpDlg.h"
 #include "ProjectBase.h"
 
 ScriptTextDlg::ScriptTextDlg(ScriptParser* parser,ProjectBase* project, QWidget *parent) :
@@ -59,8 +59,9 @@ ScriptTextDlg::ScriptTextDlg(ScriptParser* parser,ProjectBase* project, QWidget 
     _parser = parser;
     _project = project;
 
+    ui->textHelp->setText(_parser->helpText());
 
-    connect(ui->pushHelp,SIGNAL(clicked()),this,SLOT(help()));
+ //   connect(ui->pushHelp,SIGNAL(clicked()),this,SLOT(help()));
     connect(ui->pushLaunch,SIGNAL(clicked()),this,SLOT(launch()));
     connect(ui->pushCancel,SIGNAL(clicked()),this,SLOT(reject()));
 }
@@ -78,7 +79,6 @@ void ScriptTextDlg::launch()
 
 void ScriptTextDlg::help()
 {
-    HelpDlg* dlg = new HelpDlg(this);
-    dlg->ui->textBrowser->setText(_parser->helpText());
-    dlg->exec();
+    TextDlg dlg(_parser->helpText(),"Script functions",this);
+    dlg.exec();
 }
