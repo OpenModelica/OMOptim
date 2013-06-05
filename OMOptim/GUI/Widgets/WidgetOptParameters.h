@@ -77,6 +77,7 @@ public:
 public slots :
 
     void changedAlgorithm();
+    void onChangedAlgorithm(QString); // when problem algorithm has been changed elsewhere
 
     //void onAlgosConfigChanged();
     void openAlgoParameters();

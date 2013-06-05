@@ -467,9 +467,17 @@ Result* Optimization::launch(ProblemConfig config)
 
 #endif
 
+    //add a file watcher : if a file called stop is created in temp fol
+    QString stopPath = _project->tempPath();//+QDir::separator()+"stop";
+    QFileSystemWatcher stopWatcher(QStringList() << stopPath);
+    connect(&stopWatcher,SIGNAL(fileChanged(QString)),this,SLOT(stopFileChanged()));
+
+
+
     OptimResult* result = dynamic_cast<OptimResult*>(algo->launch(_project->tempPath()));
 
-    result->setName(this->name()+" result");
+    if(result)
+        result->setName(this->name()+" result");
 
     return result;
 }
@@ -851,9 +859,9 @@ QStringList Optimization::getAlgoNames()
     return _algos->getNames();
 }
 
-void Optimization::setCurAlgo(QString curAlgoName)
+bool Optimization::setCurAlgo(QString curAlgoName)
 {
-    _algos->setCurrentAlgo(curAlgoName);
+    return _algos->setCurrentAlgo(curAlgoName);
 }
 
 /**
@@ -870,6 +878,15 @@ void Optimization::quickEnd()
 void Optimization::stop()
 {
     getCurAlgo()->stop();
+}
+
+void Optimization::stopFileChanged()
+{
+    if(QDir(_project->tempPath()).exists("stop"))
+    {
+        InfoSender::instance()->debug("Found a stop file in temp directory : ask to quickend optimization");
+        stop();
+    }
 }
 
 

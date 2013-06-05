@@ -89,7 +89,7 @@ public :
     QStringList getThreadsNames();
 
     //Modelica functions
-    QString getWholeText();
+    QString getWholeText(bool includeMSL);
     QStringList getClassNames(QString parentClass = "");
     QStringList getPackages(QString parentClass);
     QStringList getClasses(QString parentClass);

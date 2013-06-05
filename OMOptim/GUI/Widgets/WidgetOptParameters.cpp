@@ -72,7 +72,7 @@ WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,
 
     //changed algorithm
     connect(_ui->comboAlgo, SIGNAL(currentIndexChanged(int)),this, SLOT(changedAlgorithm()));
-
+    connect(_problem->algos(),SIGNAL(algoChanged(QString)),this,SLOT(onChangedAlgorithm(QString)));
 
 
 
@@ -97,6 +97,11 @@ void WidgetOptParameters::changedAlgorithm()
     int iAlgo = _ui->comboAlgo->currentIndex();
     QString algoName = _ui->comboAlgo->itemData(iAlgo).toString();
     _problem->setCurAlgo(algoName);
+}
+
+void WidgetOptParameters::onChangedAlgorithm(QString algoName)
+{
+    _ui->comboAlgo->setCurrentIndex(_ui->comboAlgo->findData(algoName));
 }
 
 

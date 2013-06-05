@@ -7,12 +7,15 @@ class Project;
 
 class ScriptParserOMOptim : public ScriptParserOMOptimBasis
 {
+
 public:
     ScriptParserOMOptim(Project*);
 
 
-    static QString stHelpText();
-    virtual QString helpText(){return ScriptParserOMOptim::stHelpText();}
+    virtual QString helpText();
+    static QString annexHelpText();
+
+    virtual void initFunctions();
 
 
 protected:

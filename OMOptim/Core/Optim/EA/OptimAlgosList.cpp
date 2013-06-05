@@ -47,3 +47,34 @@ QStringList OptimAlgosList::getCommonParametersNames()
     }
     return names.toList();
 }
+
+QMap<QString,QStringList> OptimAlgosList::getAlgosParametersNames()
+{
+    QMap<QString,QStringList> result;
+    QStringList curNames;
+    for(int i=0;i<OptimAlgosList::nbAlgos;i++)
+    {
+        OptimAlgo* newAlgo;
+        newAlgo = getNewAlgo(NULL,NULL,(OptimAlgosList::Type)i);
+
+        curNames = newAlgo->parameters()->getItemNames();
+
+        result.insert(newAlgo->name(),curNames);
+        delete newAlgo;
+    }
+    return result;
+}
+
+QStringList OptimAlgosList::getAlgoNames()
+{
+    QStringList names;
+    for(int i=0;i<OptimAlgosList::nbAlgos;i++)
+    {
+        OptimAlgo* newAlgo;
+        newAlgo = getNewAlgo(NULL,NULL,(OptimAlgosList::Type)i);
+
+        names += newAlgo->name();
+        delete newAlgo;
+    }
+    return names;
+}

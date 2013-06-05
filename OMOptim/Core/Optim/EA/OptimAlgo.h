@@ -109,13 +109,14 @@ public :
 
     OptimAlgo* currentAlgo() const;
     QString currentAlgoName() const;
-    void setCurrentAlgo(QString curAlgo);
+    bool setCurrentAlgo(QString curAlgo);
     void setFromOtherAlgos(const OptimAlgos &);
 
     QStringList getNames() const;
 
 signals :
     void modified();
+    void algoChanged(QString);
 
 
 private :

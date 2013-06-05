@@ -207,12 +207,16 @@ QString OptimAlgos::currentAlgoName() const
 }
 
 
-void OptimAlgos::setCurrentAlgo(QString curAlgoName)
+bool OptimAlgos::setCurrentAlgo(QString curAlgoName)
 {
+    if(!keys().contains(curAlgoName))
+        return false;
+
     if(curAlgoName != _curAlgoName)
     {
         _curAlgoName = curAlgoName;
         emit modified();
+        emit algoChanged(_curAlgoName);
     }
 }
 
@@ -234,7 +238,7 @@ void OptimAlgos::setFromOtherAlgos(const OptimAlgos &newAlgos)
         newAlgo = newAlgos.value(curAlgoName)->clone();
         this->insert(curAlgoName,newAlgo);
     }
-    this->_curAlgoName = newAlgos._curAlgoName;
+    this->setCurrentAlgo(newAlgos._curAlgoName);
 }
 
 QStringList OptimAlgos::getNames() const

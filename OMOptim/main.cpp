@@ -90,23 +90,22 @@ int main(int argc, char *argv[])
             filePaths.push_back(args.at(i));
     }
 
-    // Setting the Application version
-    //app->setApplicationVersion(APP_VERSION);
-    QString version = QString::number(Version::MAJOR)+"."+QString::number(Version::MINOR)+"."+QString::number(Version::REVISION);
-    app->setApplicationVersion(version);
+
 
     // Settings
     OMOptimSettings::initialize();
-
-    // Style
-    MOStyleSheet::initialize(qApp);
-
-
 
     // Message handler
     QString logFilePath = app->applicationDirPath()+QDir::separator()+"MOLog.txt";
     QFile logFile(logFilePath);
     logFile.open(QIODevice::WriteOnly);
+
+    // Setting the Application version
+    QString version = QString::number(Version::MAJOR)+"."+QString::number(Version::MINOR)+"."+QString::number(Version::REVISION);
+    app->setApplicationVersion(version);
+
+    // Style
+    MOStyleSheet::initialize(qApp);
 
 
     //#ifdef _DEBUG
@@ -147,11 +146,12 @@ int main(int argc, char *argv[])
         startOMC = false;
 
     Project* project = new Project(startOMC);
+    project->setScriptParser(new ScriptParserOMOptim(project));
 
     // create GUI
+    MainWindow *w = NULL;
     if(showGUI)
     {
-        MainWindow *w = NULL;
         if(!options.contains("nogui"))
         {
             w = new MainWindow(project);
@@ -170,9 +170,7 @@ int main(int argc, char *argv[])
                          ListInfo::ERROR2<< ListInfo::TASK;
         InfoSender::instance()->setLogStream(stdStream,logInfoTypes);
 
-        ScriptParserOMOptim* scriptParser = new ScriptParserOMOptim(project);
-
-        bool scriptOk = scriptParser->executeCommands(scriptCommands);
+        bool scriptOk = project->scriptParser()->executeCommands(scriptCommands);
         if(!showGUI && scriptOk)
             return 0;
         if(!showGUI && !scriptOk)

@@ -93,7 +93,7 @@ public :
         parameters->setGroup("Pursue computation",grIndexes);
         grIndexes.removeAll(str(USESTARTFILE));
         parameters->addEnablingIndex(grIndexes,str(USESTARTFILE),true);
-    };
+    }
 };
 
 #endif

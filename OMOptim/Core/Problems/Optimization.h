@@ -128,7 +128,7 @@ public:
     OptimAlgos* algos() const;
     OptimAlgo* getCurAlgo() const;
     QStringList getAlgoNames();
-    void setCurAlgo(QString algoName);
+    bool setCurAlgo(QString algoName);
 
     // controlers
     ModPlusCtrl* ctrl(QString model) const;
@@ -142,9 +142,11 @@ public:
     // edit functions (for scripting mainly)
     bool setOverwritedVariableValue(QString modelName,QString varName,double value);
 
+
 public slots :
     void quickEnd();
     virtual void stop();
+    void stopFileChanged();
 
 signals :
     void addedModel(QString);

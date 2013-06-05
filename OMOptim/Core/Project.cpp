@@ -349,8 +349,6 @@ bool Project::loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo 
     // add modelplus
     addModelPlus(newModelPlus(name));
 
-    // save project (and thus mmo)
-    save(false);
     //Store the model
     //    QDir modPlusdir(modModelPlusFolder()+QDir::separator()+name);
     //    LowTools::mkpath(modPlusdir.absolutePath(),true);
@@ -596,15 +594,19 @@ ModelPlus* Project::newModelPlus(QString modelName)
   */
 void Project::save(bool saveAllOMCases)
 {
-    InfoSender::instance()->sendCurrentTask("Saving project...");
-    SaveOMOptim::saveProject(this,saveAllOMCases);
+    if(_saveLoadMutex.tryLock())
+    {
+        InfoSender::instance()->sendCurrentTask("Saving project...");
+        SaveOMOptim::saveProject(this,saveAllOMCases);
 
-    setSaved(true);
-    emit projectChanged();
-    InfoSender::instance()->eraseCurrentTask();
+        setSaved(true);
+        emit projectChanged();
+        InfoSender::instance()->eraseCurrentTask();
+        _saveLoadMutex.unlock();
+    }
 }
 
-void Project::exportProjectFolder(QDir externalFolder)
+void Project::exportProjectFolder(QDir externalFolder,bool includeMSL)
 {
     // only if folder is empty
     if(externalFolder.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs).isEmpty())
@@ -644,8 +646,8 @@ void Project::exportProjectFolder(QDir externalFolder)
         //        this->setMoFiles(newMoFiles);
         //        this->save(true);
 
-        // create mo file with all content
-        QString moTxt = _moomc->getWholeText();
+        // create mo file with all content (without Modelica)
+        QString moTxt = _moomc->getWholeText(includeMSL);
         moTxt.replace("\\\\","\\");
         moTxt.replace("\\\"","\"");
 
@@ -689,39 +691,46 @@ void Project::save(Result* result)
   */
 void Project::save(Problem* problem)
 {
-    // save project but not all omcases
-    SaveOMOptim::saveProject(this,false);
+        // save project but not all omcases
+        SaveOMOptim::saveProject(this,false);
 
-    // save problem
-    Save::saveProblem(this,problem);
+        // save problem
+        Save::saveProblem(this,problem);
 
-    emit projectChanged();
+        emit projectChanged();
+        _saveLoadMutex.unlock();
 }
 
 /** @brief Load project from file given as parameter.
   */
 bool Project::load(QString loadPath)
 {
-    bool configOk = checkConfiguration();
-    bool loaded = false;
-
-    if(configOk)
-        loaded = LoadOMOptim::loadProject(loadPath,this);
-
-    if (loaded)
+    if(_saveLoadMutex.tryLock())
     {
-        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
+        bool configOk = checkConfiguration();
+        bool loaded = false;
+
+        if(configOk)
+            loaded = LoadOMOptim::loadProject(loadPath,this);
+
+        if (loaded)
+        {
+            emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADSUCCESSFULL,filePath()));
+            emit projectChanged();
+        }
+        else
+        {
+            emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
+            clear();
+            emit projectChanged();
+        }
+        setSaved(true);
         emit projectChanged();
+        _saveLoadMutex.unlock();
+        return loaded;
     }
     else
-    {
-        emit InfoSender::instance()->send( Info(ListInfo::PROJECTLOADFAILED,filePath()));
-        clear();
-        emit projectChanged();
-    }
-    setSaved(true);
-    emit projectChanged();
-    return loaded;
+        return false;
 }
 
 
@@ -783,21 +792,6 @@ void Project::setMoFiles(QFileInfoList moFiles)
 {
     _moFiles = moFiles;
 }
-
-//QFileInfoList Project::exeFiles()
-//{
-//    return _exeFileInfoList;
-//}
-
-//QFileInfoList Project::inputFiles()
-//{
-//    return _inputFileInfoList;
-//}
-
-//QStringList Project::fileNameListForExec()
-//{
-//    return _fileNameListForExec;
-//}
 
 ModItem *Project::rootModItem()
 {

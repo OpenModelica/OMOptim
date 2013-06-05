@@ -163,7 +163,7 @@ private:
     // Save/ Load functions
     //****************************
     void save(bool saveAllOMCases);
-    void exportProjectFolder(QDir externalFolder);
+    void exportProjectFolder(QDir externalFolder, bool includeMSL);
     void save(Problem*);
     void save(Result*);
     bool load(QString);

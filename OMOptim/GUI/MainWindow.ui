@@ -212,9 +212,10 @@
     </widget>
     <widget class="QMenu" name="menuLaunchSCript">
      <property name="title">
-      <string>Launch script...</string>
+      <string>Scripts</string>
      </property>
      <addaction name="actionLaunchScript2"/>
+     <addaction name="actionLaunchScriptText"/>
      <addaction name="actionDispScriptFunctions"/>
     </widget>
     <addaction name="menuOMC"/>
@@ -325,7 +326,7 @@ color:white;
         <string>Add .mo</string>
        </property>
        <property name="icon">
-        <iconset resource="../../GUI/Resources/CERESGui.qrc">
+        <iconset resource="Resources/OMOptim.qrc">
          <normaloff>:/Folder</normaloff>:/Folder</iconset>
        </property>
       </widget>
@@ -536,18 +537,23 @@ color:white;
   </action>
   <action name="actionLaunchScript2">
    <property name="text">
-    <string>Launch script...</string>
+    <string>Launch script file...</string>
    </property>
   </action>
   <action name="actionDispScriptFunctions">
    <property name="text">
-    <string>Script functions</string>
+    <string>Script functions...</string>
+   </property>
+  </action>
+  <action name="actionLaunchScriptText">
+   <property name="text">
+    <string>Launch script text...</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../../GUI/Resources/CERESGui.qrc"/>
+  <include location="Resources/OMOptim.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -104,7 +104,7 @@ SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem)
     :EABase(project,problem)
 {
     setDefaultParameters();
-};
+}
 
 
 SPEA2Adapt::SPEA2Adapt(Project* project,Problem* problem,MOParameters* parameters)

@@ -137,12 +137,27 @@ QStringList MOomc::getClassNames(QString parentClass)
     }
 }
 
-QString MOomc::getWholeText()
+QString MOomc::getWholeText(bool includeMSL)
 {
-    QString result = evalCommand("list()");
-    return result;
-}
+    if(includeMSL)
+    {
+        QString result = evalCommand("list()");
+        return result;
+    }
+    else
+    {
+        QStringList classLoaded = getClassNames();
+        classLoaded.removeAll("Modelica");
 
+        QString result;
+        for(int i=0;i<classLoaded.size();i++)
+        {
+            result += evalCommand("list("+classLoaded.at(i)+")");
+            result +="\n \n";
+        }
+        return result;
+    }
+}
 
 
 QStringList MOomc::getPackages(QString parentClass)

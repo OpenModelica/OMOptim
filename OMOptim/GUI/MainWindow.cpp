@@ -164,6 +164,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionLoadCases,SIGNAL(triggered()),this,SLOT(loadCases()));
     connect( _ui->actionLaunchScript2,SIGNAL(triggered()),this,SLOT(launchScript()));
     connect( _ui->actionDispScriptFunctions,SIGNAL(triggered()),this,SLOT(dispScriptFunctions()));
+    connect( _ui->actionLaunchScriptText,SIGNAL(triggered()),this,SLOT(launchScriptText()));
 
     //*********************************
     // Signals for informations
@@ -288,8 +289,11 @@ void MainWindow::displayInfo(Info i)
     case ListInfo::WARNING2 :
     case ListInfo::ERROR2 :
     case ListInfo::TASK :
-        _textLog->setCurrentCharFormat(infoFormat);
-        _textLog->append(msg);
+        if(!i.infoMsg.isEmpty())
+        {
+            _textLog->setCurrentCharFormat(infoFormat);
+            _textLog->append(msg);
+        }
         break;
     case ListInfo::OMCNORMAL2 :
     case ListInfo::OMCWARNING2 :
@@ -448,9 +452,7 @@ void MainWindow::launchScript()
 
 void MainWindow::dispScriptFunctions()
 {
-    HelpDlg dlg(this);
-    dlg.ui->textBrowser->setText(_project->scriptParser()->helpText());
-
+    TextDlg dlg(_project->scriptParser()->helpText(),"Script functions",this);
     dlg.exec();
 }
 
@@ -459,6 +461,7 @@ void MainWindow::launchScriptText()
     ScriptTextDlg dlg(_project->scriptParser(),_project,this);
     dlg.exec();
 }
+
 
 void MainWindow::loadPlugins()
 {
