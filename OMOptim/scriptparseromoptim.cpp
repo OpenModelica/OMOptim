@@ -28,21 +28,20 @@ bool ScriptParserOMOptim::launchFunction(QString functionName, QStringList args,
          return true;
     }
 
-    if(!function.name.compare("setOptimParameter",Qt::CaseInsensitive))
+    if(!function.name.compare("setOptimAlgoParameter",Qt::CaseInsensitive))
     {
         // e.g. setOptimParameter(problem,parameterName,value);
         // note: model1.var1 should already be in optimization overwritedvariables
         Optimization* optim = dynamic_cast<Optimization*>(_project->findOMCase(args.at(0)));
         if(!optim)
             return false;
-        return optim->parameters()->setValue(args.at(1),args.at(2));
+        return optim->setAlgoParameter(args.at(1),args.at(2),args.at(3));
     }
 
 
     if(!function.name.compare("setOptimAlgo",Qt::CaseInsensitive))
     {
         // e.g. setOptimParameter(problem,parameterName,value);
-        // note: model1.var1 should already be in optimization overwritedvariables
         Optimization* optim = dynamic_cast<Optimization*>(_project->findOMCase(args.at(0)));
         if(!optim)
             return false;
@@ -61,7 +60,7 @@ bool ScriptParserOMOptim::launchFunction(QString functionName, QStringList args,
         if(optim)
             return optim->setOverwritedVariableValue(args.at(1),args.at(2),args.at(3).toDouble());
         if(oneSim)
-            return optim->setOverwritedVariableValue(args.at(1),args.at(2),args.at(3).toDouble());
+            return oneSim->setOverwritedVariableValue(args.at(1),args.at(2),args.at(3).toDouble());
     }
 
     return ScriptParserOMOptimBasis::launchFunction(functionName,args,foundFunction);
@@ -75,6 +74,7 @@ QString ScriptParserOMOptim::helpText()
     text+="\n";
 
     text+=ScriptParserOMOptim::annexHelpText();
+    text+=ScriptParserOMOptimBasis::annexHelpText();
     return text;
 }
 
@@ -124,8 +124,8 @@ void ScriptParserOMOptim::initFunctions()
     args += QStringList() << "\"mmoFilePath\"";
     descriptions += QString();
 
-    names+= "setOptimParameter";
-    args += QStringList() << "problemName" << "parameterName" << "parameterValue";
+    names+= "setOptimAlgoParameter";
+    args += QStringList() << "problemName" << "algoName"<<"parameterName" << "parameterValue";
     descriptions += QString();
 
     names+= "setOptimAlgo";

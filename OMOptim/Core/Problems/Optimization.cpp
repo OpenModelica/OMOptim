@@ -155,7 +155,6 @@ MOOptVector *Optimization::evaluate(QList<ModelPlus*> models, Variables *optimVa
             oneSim->_filesToCopy = this->_filesToCopy;
             oneSim->setCtrls(*this->ctrls(modelName));
 
-
             int nbVar = optimVariables->size();
             Variable* curVar;
 
@@ -862,6 +861,14 @@ QStringList Optimization::getAlgoNames()
 bool Optimization::setCurAlgo(QString curAlgoName)
 {
     return _algos->setCurrentAlgo(curAlgoName);
+}
+
+bool Optimization::setAlgoParameter(QString algoName, QString parameterName, QVariant value)
+{
+    OptimAlgo* algo = _algos->value(algoName,NULL);
+    if(!algo)
+        return false;
+    return algo->parameters()->setValue(parameterName,value);
 }
 
 /**

@@ -47,6 +47,10 @@
 #include "registermetatypes.h"
 #include "config.h"
 #include "scriptparseromoptim.h"
+#include <cstdio>    // fileno()
+#include <unistd.h>  // isatty()
+#include "GuiTools.h"
+#include "Dialogs/ConsoleDlg.h"
 
 #define HAVE_QAPPLICATION_H
 #define HAVE_QSOCKETNOTIFIER_H
@@ -160,21 +164,56 @@ int main(int argc, char *argv[])
         }
     }
 
+
+
+    QList<QTextStream*> logStreams;
+
     // launchScript
     if(launchScript)
     {
-        // set output to terminal
-        QTextStream * stdStream = new QTextStream(stdout, QIODevice::WriteOnly);
-        QList<ListInfo::InfoType> logInfoTypes;
-        logInfoTypes  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
-                         ListInfo::ERROR2<< ListInfo::TASK;
-        InfoSender::instance()->setLogStream(stdStream,logInfoTypes);
 
-        bool scriptOk = project->scriptParser()->executeCommands(scriptCommands);
-        if(!showGUI && scriptOk)
-            return 0;
-        if(!showGUI && !scriptOk)
-            return -1;
+        bool launchFromCmdLine = false;
+        if (isatty(fileno(stdin)))
+            launchFromCmdLine = true;
+
+
+        ConsoleDlg* console = NULL;
+        int result = 0;
+        if(!launchFromCmdLine)
+        {
+            // create a window
+            console = new ConsoleDlg(app,project,scriptCommands);
+            console->show();
+            console->launch();
+            result = console->exec();
+        }
+        else
+        {
+            // set output to terminal
+            QTextStream* stdStream = new QTextStream(stdout, QIODevice::WriteOnly);
+            QList<ListInfo::InfoType> logInfoTypes;
+            logInfoTypes  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
+                             ListInfo::ERROR2<< ListInfo::TASK << ListInfo::SCRIPT;
+            InfoSender::instance()->setLogStream(stdStream,logInfoTypes);
+
+            logStreams.push_back(stdStream);
+
+            bool scriptOk = project->scriptParser()->executeCommands(scriptCommands);
+            if(scriptOk)
+                result = 0;
+            else
+                result = -1;
+        }
+
+
+
+
+
+        for(int i=0;i<logStreams.size();i++)
+            logStreams.at(i)->flush();
+
+
+        return result;
     }
 
     try

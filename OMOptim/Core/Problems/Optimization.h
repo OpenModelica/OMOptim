@@ -129,6 +129,7 @@ public:
     OptimAlgo* getCurAlgo() const;
     QStringList getAlgoNames();
     bool setCurAlgo(QString algoName);
+    bool setAlgoParameter(QString algoName,QString parameterName,QVariant value);
 
     // controlers
     ModPlusCtrl* ctrl(QString model) const;
