@@ -111,7 +111,7 @@ public:
     void setMoDependencies(const QStringList &);
     void setMoDependencies(const QFileInfoList &);
     QFileInfoList moDependencies() const;
-    QString getFieldName(int,int role){return "-";};
+    QString getFieldName(int,int role) const {return "-";};
     unsigned getNbFields( ) const {return 0;};
     //*************************
     // Path functions

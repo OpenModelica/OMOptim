@@ -139,24 +139,30 @@ QStringList MOomc::getClassNames(QString parentClass)
 
 QString MOomc::getWholeText(bool includeMSL)
 {
+    QString moTxt;
     if(includeMSL)
     {
-        QString result = evalCommand("list()");
-        return result;
+        moTxt = evalCommand("list()");
     }
     else
     {
         QStringList classLoaded = getClassNames();
         classLoaded.removeAll("Modelica");
 
-        QString result;
         for(int i=0;i<classLoaded.size();i++)
         {
-            result += evalCommand("list("+classLoaded.at(i)+")");
-            result +="\n \n";
+            moTxt += evalCommand("list("+classLoaded.at(i)+")");
+            moTxt +="\n \n";
         }
-        return result;
     }
+
+    moTxt.replace("\\\\","\\");
+    moTxt.replace("\\\"","\"");
+    moTxt.remove(QRegExp("^([\\s|\\\"]+)"));
+    moTxt.remove(QRegExp("([\\s|\\\"]+)$"));
+
+    return moTxt;
+
 }
 
 

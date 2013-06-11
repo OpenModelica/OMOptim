@@ -98,7 +98,7 @@ public:
     bool check(QString &error);
     bool isMinimized();
     static QString sFieldName(int field, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptObjective::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return OptObjective::sFieldName(i,role);};
 
     virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int ifield, QVariant value_);
@@ -132,7 +132,7 @@ public:
 
 
     static QString sFieldName(int field, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptObjectiveResult::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return OptObjectiveResult::sFieldName(i,role);};
 
     QVariant getFieldValue(int, int role = Qt::UserRole) const;
     bool setFieldValue(int ifield, QVariant value_);

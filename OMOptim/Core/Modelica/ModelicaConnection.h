@@ -65,7 +65,7 @@ public:
 
     virtual QString getClassName() const {return "ModelicaConnection";};
     static QString sFieldName(int field, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModelicaConnection::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return ModelicaConnection::sFieldName(i,role);};
     virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int ifield, QVariant value_);
 

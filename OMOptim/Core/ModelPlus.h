@@ -74,7 +74,7 @@ public:
     QStringList otherFiles();
 
     void clearOtherFiles();
-    QString getFieldName(int,int role){return "-";};
+    QString getFieldName(int,int role) const {return "-";};
     unsigned getNbFields( ) const {return 0;};
     Project* getProject() ;
     ModModel* modModel();

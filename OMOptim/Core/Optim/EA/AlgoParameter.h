@@ -81,7 +81,7 @@ public:
     bool setFieldValue(int ,QVariant );
     QVariant getFieldValue(int ifield, int role = Qt::UserRole) const;
     static QString sFieldName(int ifield, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return AlgoParameter::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return AlgoParameter::sFieldName(i,role);};
 
     AlgoParameter* clone() const;
 

@@ -111,7 +111,7 @@ public:
     virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int iField, QVariant value);
     static QString sFieldName(int field, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModItem::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return ModItem::sFieldName(i,role);};
 
     virtual QString getModClassName();
     void emitModified();

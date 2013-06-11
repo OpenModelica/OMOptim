@@ -73,7 +73,7 @@ public :
     QVariant getFieldValue(int, int role = Qt::UserRole) const;
     bool setFieldValue(int ifield, QVariant value_);
     static QString sFieldName(int field, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ModelicaModifier::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return ModelicaModifier::sFieldName(i,role);};
 
 
     static const int nbFields = 4;

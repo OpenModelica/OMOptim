@@ -154,7 +154,7 @@ bool Project::launchScript(const QString & text)
     return scriptOk;
 }
 
-QString Project::getFieldName(int iField, int role)
+QString Project::getFieldName(int iField, int role) const
 {
     return "name";
 }
@@ -648,8 +648,6 @@ void Project::exportProjectFolder(QDir externalFolder,bool includeMSL)
 
         // create mo file with all content (without Modelica)
         QString moTxt = _moomc->getWholeText(includeMSL);
-        moTxt.replace("\\\\","\\");
-        moTxt.replace("\\\"","\"");
 
         QString moFilePath = externalFolder.absoluteFilePath("Models.mo");
         QFile file(moFilePath);
