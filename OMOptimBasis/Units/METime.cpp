@@ -279,3 +279,25 @@ void MEDurations::setDuration(const METime duration, int iPeriod)
         replace(iPeriod,duration);
 
 }
+
+void MEDurations::cutTotalDuration(const METime totalDuration)
+{
+    int i = 0;
+    METime soFar(0,0);
+    bool reached = false;
+    while((i<size()) && (!reached))
+    {
+        if(soFar+this->at(i)>=totalDuration)
+        {
+            replace(i,totalDuration-soFar);
+            while(size()!=i+1)
+                removeAt(i+1);
+            reached = true;
+        }
+        else
+        {
+            soFar += this->at(i);
+            i++;
+        }
+    }
+}

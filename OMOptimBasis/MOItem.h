@@ -107,12 +107,13 @@ public:
 
     //All fields
     virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
+    virtual QVariant getFieldValue(const QString &, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int, QVariant);
     virtual bool setFieldValue(QString, QVariant);
 
-    virtual int getFieldIndex(QString _fieldName,int role= Qt::DisplayRole);
+    virtual int getFieldIndex(const QString &_fieldName,int role= Qt::DisplayRole) const;
 
-    virtual QString getFieldName(int iField,int role = Qt::DisplayRole)=0;
+    virtual QString getFieldName(int iField,int role = Qt::DisplayRole) const=0;
     static QString sFieldName(int field, int role);
     virtual QString getFieldDescription(int iField) const;
     virtual MOItem::FieldType getFieldType(int iField) const;
@@ -122,6 +123,8 @@ public:
     bool isProtectedField(int);
     bool protectAllFields();
     void setEditableFields(QList<int> editableFields);
+    virtual bool isListField(int) const{return false;}
+    virtual QMap<int,QString> fieldList(int iField) const{return QMap<int,QString>();}
 
     static const int nbFields = 1;
     virtual unsigned getNbFields() const=0;

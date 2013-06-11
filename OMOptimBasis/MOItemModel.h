@@ -79,6 +79,7 @@ public:
 
      void setEditable(bool editable);
 
+     int iRow(int iField) const;
 
 public slots:
     void onItemDeleted();

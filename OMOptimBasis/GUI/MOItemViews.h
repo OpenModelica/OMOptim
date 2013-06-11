@@ -52,6 +52,8 @@
 
 #include "MOItem.h"
 
+class QStyledItemDelegate;
+
 class MOItemTreeView : public QTreeView
 {
     Q_OBJECT
@@ -64,9 +66,12 @@ public:
     void initDelegates();
 
 
+
     void setModel(QAbstractItemModel *model);
 
 protected :
+    void clearDelegates();
+    QList<QStyledItemDelegate*> _delegates;
 
 };
 

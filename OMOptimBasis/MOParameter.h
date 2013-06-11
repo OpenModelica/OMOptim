@@ -97,7 +97,7 @@ public:
     virtual bool setFieldValue(int iField,QVariant _value);
     virtual QVariant getFieldValue(int ifield, int role = Qt::UserRole) const;
     static QString sFieldName(int ifield, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return MOParameter::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return MOParameter::sFieldName(i,role);};
 
     virtual MOParameter* clone() const;
 
@@ -169,7 +169,7 @@ public:
     bool setFieldValue(int iField,QVariant _value);
     QVariant getFieldValue(int ifield, int role = Qt::UserRole) const;
     QString sFieldName(int ifield, int role);
-    QString getFieldName(int i, int role = Qt::DisplayRole){return MOParameter::sFieldName(i,role);};
+    QString getFieldName(int i, int role = Qt::DisplayRole) const {return MOParameter::sFieldName(i,role);};
 
     QMap<int,QString> mapList(){return _mapList;};
     QString strValue();

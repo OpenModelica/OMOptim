@@ -99,7 +99,7 @@ ProjectBase::~ProjectBase()
 
 }
 
-QString ProjectBase::getFieldName(int iField, int role)
+QString ProjectBase::getFieldName(int iField, int role) const
 {
     return "name";
 }

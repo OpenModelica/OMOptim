@@ -93,7 +93,7 @@ void Result::setDefaultSaveFileName()
         _saveFileName = _name + ".mpb";
 }
 
-QString Result::getFieldName(int field,int role)
+QString Result::getFieldName(int field,int role) const
 {
     return "name";
 }

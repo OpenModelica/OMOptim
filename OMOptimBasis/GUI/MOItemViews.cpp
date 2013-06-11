@@ -56,7 +56,7 @@ MOItemTreeView::MOItemTreeView(QWidget* parent):QTreeView(parent)
     setItemsExpandable(false);
     setSortingEnabled(true);
 
-    initDelegates();
+    //initDelegates();
 
 
     // frame
@@ -84,20 +84,33 @@ void MOItemTreeView::setEditable(bool editable)
 
 void MOItemTreeView::setModel ( QAbstractItemModel * model )
 {
+    QTreeView::reset();
+    QTreeView::setModel(NULL);
     QTreeView::setModel(model);
     if(!model)
         QTreeView::reset();
     if(model)
     {
-        //initDelegates();
+        initDelegates();
         //connect(model,SIGNAL(dataChanged(const QModelIndex&,const QModelIndex&)),this,SLOT(onDataChanged(const QModelIndex&,const QModelIndex&)));
     }
+}
+
+void MOItemTreeView::clearDelegates()
+{
+    for(int i=0;i<_delegates.size();i++)
+        delete _delegates.at(i);
+
+    _delegates.clear();
 }
 
 
 
 void MOItemTreeView::initDelegates()
 {
+    clearDelegates();
+
+
     MOItemModel* itemModel = dynamic_cast<MOItemModel*>(model());
     DoubleSpinBoxDelegate* dblDelegate;
     if(itemModel)
@@ -107,17 +120,30 @@ void MOItemTreeView::initDelegates()
         {
             for(int i=0;i<item->getNbFields();i++)
             {
-                switch(item->getFieldType(i))
+                if(item->isListField(i))
                 {
-                case MOItem::BOOL :
-                    break;
-                case MOItem::DOUBLE :
-                    dblDelegate = new DoubleSpinBoxDelegate(this,10);
-                    this->setItemDelegateForRow(i,dblDelegate);
-                    break;
-                default:
-                    this->setItemDelegateForRow(i,new QStyledItemDelegate(this));
-                    break;
+                    QMap<int,QString> list = item->fieldList(i);
+                    GenericDelegate* listDelegate = new GenericDelegate(list.keys(),list.values(),this);
+                    this->setItemDelegateForRow(itemModel->iRow(i),listDelegate);
+                    _delegates.push_back(listDelegate);
+                }
+                else
+                {
+                    switch(item->getFieldType(i))
+                    {
+                    case MOItem::BOOL :
+                        break;
+                    case MOItem::DOUBLE :
+                        dblDelegate = new DoubleSpinBoxDelegate(this,10);
+                        this->setItemDelegateForRow(itemModel->iRow(i),dblDelegate);
+                        _delegates.push_back(dblDelegate);
+                        break;
+                    default:
+                        QStyledItemDelegate* stdDelegate = new QStyledItemDelegate(this);
+                        this->setItemDelegateForRow(itemModel->iRow(i),stdDelegate);
+                        _delegates.push_back(stdDelegate);
+                        break;
+                    }
                 }
             }
         }

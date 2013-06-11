@@ -76,7 +76,7 @@ void Problem::setDefaultSaveFileName()
         _saveFileName = _name + ".mpb";
 }
 
-QString Problem::getFieldName(int field,int role)
+QString Problem::getFieldName(int field,int role) const
 {
     return "name";
 }

@@ -206,6 +206,22 @@ int MOItemModel::iField(int iRow) const
         return -1;
 }
 
+int MOItemModel::iRow(int iField) const
+{
+    if(!_item)
+        return -1;
+
+    if(_hidedFields.contains(iField))
+        return -1;
+
+    int iRow = 0;
+    for(int i=0;i<iField;i++)
+    {
+        if(!_hidedFields.contains(i))
+            iRow++;
+    }
+    return iRow;
+}
 
 //QModelIndex MOItemModel::index(int row, int column, const QModelIndex &parent)
 //const

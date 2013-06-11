@@ -127,7 +127,7 @@ public :
     virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int ifield, QVariant value_);
     static QString sFieldName(int field, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return Variable::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return Variable::sFieldName(i,role);};
 
     static const int nbFields = 6;
     virtual unsigned getNbFields( ) const {return nbFields;};
@@ -256,7 +256,7 @@ public :
     virtual QVariant getFieldValue(int, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int ifield, QVariant value_);
     static QString sFieldName(int field, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return OptVariable::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return OptVariable::sFieldName(i,role);};
     static const int nbFields = 8;
     virtual unsigned getNbFields( ) const {return nbFields;};
 
@@ -314,7 +314,7 @@ public :
     QVariant getFieldValue(int, int role = Qt::UserRole) const;
     bool setFieldValue(int ifield, QVariant value_);
     static QString sFieldName(int field, int role);
-    virtual QString getFieldName(int i, int role = Qt::DisplayRole){return ScannedVariable::sFieldName(i,role);};
+    virtual QString getFieldName(int i, int role = Qt::DisplayRole) const {return ScannedVariable::sFieldName(i,role);};
 
 
     static const int nbFields = 9;

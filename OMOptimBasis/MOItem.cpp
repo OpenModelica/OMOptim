@@ -141,6 +141,17 @@ QVariant MOItem::getFieldValue(int ifield, int role) const
     }
 }
 
+QVariant MOItem::getFieldValue(const QString &fieldName, int role) const
+{
+    int i = getFieldIndex(fieldName,Qt::UserRole);
+    if(i>-1)
+    {
+        return getFieldValue(i,role);
+    }
+    else
+        return false;
+}
+
 bool MOItem::setFieldValue(int iField, QVariant value)
 {
     if(!_filledFields.contains(iField))
@@ -162,8 +173,7 @@ bool MOItem::setFieldValue(QString field, QVariant value)
     int i = getFieldIndex(field,Qt::UserRole);
     if(i>-1)
     {
-        setFieldValue(i,value);
-        return true;
+        return setFieldValue(i,value);
     }
     else
         return false;
@@ -190,7 +200,7 @@ MOItem::FieldType MOItem::getFieldType(int iField) const
     return GENERIC;
 }
 
-int MOItem::getFieldIndex(QString fieldName,int role)
+int MOItem::getFieldIndex(const QString & fieldName,int role) const
 {
     int index=0;
     while((index<this->getNbFields()) && (this->getFieldName(index,role)!=fieldName))

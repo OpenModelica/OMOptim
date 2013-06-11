@@ -95,6 +95,7 @@ public :
     void push_back(const METime duration);
 
     void setDuration(const METime duration, int iPeriod);
+    void cutTotalDuration(const METime duration);
 private:
     static METime treshold(){return METime(1e30,METime::SEC);} // treshold to be consider as infinity
 };
