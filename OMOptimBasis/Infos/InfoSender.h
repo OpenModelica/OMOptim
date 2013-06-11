@@ -139,7 +139,8 @@ signals :
     void noCurrentTask();
 
 private :
-    QTextStream* _logStream;
+    QMap<ListInfo::InfoType,QTextStream*> _logStreams;
+    //QTextStream* _logStream;
     InfoSender();
     static InfoSender* _instance;
     Infos* _infosNormal;

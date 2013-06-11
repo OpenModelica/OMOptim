@@ -52,6 +52,8 @@ public:
 
     virtual QString helpText();
 
+    QString annexHelpText();
+
 protected :
     virtual bool launchFunction(QString function, QStringList args, bool & foundFunction);
     virtual void initFunctions();

@@ -2,7 +2,7 @@
 #include "ProjectBase.h"
 #include "InfoSender.h"
 #include "MOSettings.h"
-
+#include "MOThreads.h"
 
 bool ScriptParser::parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QString,QString> & definitions)
 {
@@ -77,7 +77,15 @@ bool ScriptParser::executeCommand(QString command)
     QStringList args = arg.split(",",QString::SkipEmptyParts);
 
     bool foundFunction;
-    return launchFunction(function,args,foundFunction);
+
+    InfoSender::instance()->send(Info(command,ListInfo::SCRIPT));
+    bool result = launchFunction(function,args,foundFunction);
+    if(result)
+        InfoSender::instance()->send(Info("Ok",ListInfo::SCRIPT));
+    else
+        InfoSender::instance()->send(Info("Error",ListInfo::SCRIPT));
+
+    return result;
 }
 
 bool ScriptParser::executeCommands(QStringList commands)
@@ -85,7 +93,7 @@ bool ScriptParser::executeCommands(QStringList commands)
     bool overalResult = true;
     for(int i=0;i<commands.size();i++)
     {
-        overalResult = overalResult & executeCommand(commands.at(i));
+        overalResult = executeCommand(commands.at(i)) && overalResult;
     }
     return overalResult;
 }
@@ -178,8 +186,15 @@ bool ScriptParserOMOptimBasis::launchFunction(QString functionName, QStringList 
 
     if(!function.name.compare("launchProblem",Qt::CaseInsensitive))
     {
-        _projectBase->launchProblem(args.at(0),false);
-        // do not use multithreading while scripting
+        // launch in multi threading but wait until it is finished
+        MOThreads::ProblemThread* thread = _projectBase->launchProblem(args.at(0),true);
+        if(!thread)
+            return false;
+
+        while(thread->isAlive())
+        {
+            QCoreApplication::processEvents();
+        }
         return true;
     }
 
@@ -245,9 +260,19 @@ QString ScriptParserOMOptimBasis::helpText()
     QStringList functions = this->functionsList();
     text += functions.join("\n");
 
+    text += "\n \n";
+    text+=annexHelpText();
+
     return text;
 }
 
+QString ScriptParserOMOptimBasis::annexHelpText()
+{
+    QString text = "#List of options \n \n";
+    text += "nogui   #do not display gui\n";
+
+    return text;
+}
 
 ScriptFunction::ScriptFunction(QString functionName, QStringList argsNames, QString functionDescription)
 {

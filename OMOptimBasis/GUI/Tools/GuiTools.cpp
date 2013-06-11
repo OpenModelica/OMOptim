@@ -90,7 +90,7 @@ void GuiTools::ModelToView(QAbstractItemModel *model, QAbstractItemView *view)
     }
 }
 
- QFrame* GuiTools::buildLine(QWidget* parent)
+QFrame* GuiTools::buildLine(QWidget* parent)
 {
     QFrame*line = new QFrame(parent);
     line->setObjectName(QString::fromUtf8("line"));
@@ -370,15 +370,14 @@ VariableSortFilter::VariableSortFilter(QObject *parent)
 }
 
 VariableSortFilter::VariableSortFilter(QList<VariableCausality> causalities, QObject *parent)
-:QSortFilterProxyModel(parent)
+    :QSortFilterProxyModel(parent)
 {
     _causalities = causalities;
 }
 
 bool VariableSortFilter::filterAcceptsRow(int sourceRow, const
-QModelIndex &sourceParent) const
+                                          QModelIndex &sourceParent) const
 {
-
     QModelIndex index = this->sourceModel()->index(sourceRow, 0, sourceParent);
     MOItem *item = static_cast<MOItem*>(index.internalPointer());
     Variable* variable = dynamic_cast<Variable*>(item);
@@ -390,5 +389,17 @@ QModelIndex &sourceParent) const
     }
 
     return QSortFilterProxyModel::filterAcceptsRow(sourceRow,sourceParent);
+}
+
+qint64 TextEditIoDevice::writeData(const char *data, qint64 maxSize)
+{
+    if(textBrowser)
+    {
+        QString msg(data);
+        msg.remove(QRegExp("\\n$"));
+        if(!msg.isEmpty())
+            textBrowser->append(msg);
+    }
+    return maxSize;
 }
 

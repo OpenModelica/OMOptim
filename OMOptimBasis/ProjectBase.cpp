@@ -280,6 +280,7 @@ void ProjectBase::terminateProblemsThreads()
         InfoSender::instance()->sendCurrentTask(msg);
         //allLaunchedThreads.at(i)->terminate();
         //allLaunchedThreads.at(i)->exit(-1);
+        allLaunchedThreads.at(i)->setIsAlive(false); // used for script purpose
         allLaunchedThreads.at(i)->stop();
         allLaunchedThreads.at(i)->wait();
         qDebug("finished Thread");
@@ -492,12 +493,13 @@ bool ProjectBase::createTempDir()
 }
 
 
-void ProjectBase::launchProblem(Problem* problem, bool useSeparateThread)
+MOThreads::ProblemThread*  ProjectBase::launchProblem(Problem* problem, bool useSeparateThread)
 {
     if(useSeparateThread && !_problemLaunchMutex.tryLock())
     {
         QString msg = "Another problem is already running. Could not launch a new one.";
         InfoSender::instance()->send(Info(msg));
+        return NULL;
     }
     else
     {
@@ -510,7 +512,7 @@ void ProjectBase::launchProblem(Problem* problem, bool useSeparateThread)
 
         //Create problem thread
         ProblemConfig config;
-        MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
+        MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(this,launchedProblem,config);
 
         // connect signals
         connect(launchThread,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));
@@ -527,16 +529,18 @@ void ProjectBase::launchProblem(Problem* problem, bool useSeparateThread)
             launchThread->start();
         else
             launchThread->run();
+
+        return launchThread;
     }
 }
 
-void ProjectBase::launchProblem(QString problemName, bool useSeparateThread )
+MOThreads::ProblemThread* ProjectBase::launchProblem(QString problemName, bool useSeparateThread )
 {
     Problem* problem = dynamic_cast<Problem*>(_problems->findItem(problemName));
     if(problem)
-        launchProblem(problem,useSeparateThread);
+        return launchProblem(problem,useSeparateThread);
 
-    return;
+    return NULL;
 }
 
 void ProjectBase::launchProblems(QList<Problem*> problems, bool useSeparateThread )
@@ -563,7 +567,7 @@ void ProjectBase::launchProblems(QList<Problem*> problems, bool useSeparateThrea
 
             //Create problem thread
             ProblemConfig config;
-            MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(launchedProblem,config);
+            MOThreads::ProblemThread* launchThread = new MOThreads::ProblemThread(this,launchedProblem,config);
 
             // connect signals
             connect(launchThread,SIGNAL(begun(Problem*)),this,SIGNAL(problemBegun(Problem*)));

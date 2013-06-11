@@ -46,12 +46,16 @@
 namespace MOThreads
 {
 
-ProblemThread::ProblemThread(Problem* problem,ProblemConfig config)
+ProblemThread::ProblemThread(ProjectBase* project,Problem* problem,ProblemConfig config)
+    :QThread(project)
 {
     _problem = problem;
     _config = config;
+    _projectBase = project;
     _result = NULL;
+
     _name = problem->name();
+    _isAlive = false;
 
     connect(this,SIGNAL(finished()),this,SLOT(onFinished()));
 
@@ -62,6 +66,7 @@ ProblemThread::ProblemThread(Problem* problem,ProblemConfig config)
 
 void ProblemThread::run()
 {
+    _isAlive = true;
     QString error;
     bool ok = _problem->checkBeforeComp(error);
     if(!ok)
@@ -110,11 +115,17 @@ void ProblemThread::run()
             _result->moveToThread(QApplication::instance()->thread());
         }
     }
+    _isAlive = false;
 }
 
 Result* ProblemThread::result()
 {
     return _result;
+}
+
+void ProblemThread::setIsAlive(bool isAlive)
+{
+    _isAlive = isAlive;
 }
 
 

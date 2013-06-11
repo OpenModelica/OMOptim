@@ -137,8 +137,8 @@ protected:
     void addProblem(Problem *);
     bool addOMCase(QString filePath);
     void addOMCases(QDir folder);
-    void launchProblem(Problem*,bool useSeparateThread = true);
-    void launchProblem(QString,bool useSeparateThread = true);
+    MOThreads::ProblemThread*  launchProblem(Problem*,bool useSeparateThread = true);
+    MOThreads::ProblemThread*  launchProblem(QString,bool useSeparateThread = true);
     void launchProblems(QList<Problem*>,bool useSeparateThread = true);
     void removeResult(OMCase *, bool saveProject = true);
     void removeAllResults();

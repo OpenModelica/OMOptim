@@ -55,10 +55,13 @@
 #include <QUrl>
 #include <QtGui/QHeaderView>
 #include <QtGui/QScrollBar>
+#include <QtGui/QTextBrowser>
+#include <QtGui/QTextEdit>
 #include <QEvent>
 #include <QKeyEvent>
 #include <QSortFilterProxyModel>
 #include <QGroupBox>
+#include <QPointer>
 
 #include "VariableType.h"
 
@@ -163,5 +166,28 @@ public Q_SLOTS :
         setFlat( ! checked );
     }
 };
+
+class TextEditIoDevice : public QIODevice
+{
+    Q_OBJECT
+
+public:
+    TextEditIoDevice(QTextBrowser *const textBrowser, QObject *const parent)
+        : QIODevice(parent)
+        , textBrowser(textBrowser)
+    {
+        open(QIODevice::WriteOnly|QIODevice::Text);
+    }
+
+    //...
+
+protected:
+    qint64 readData(char *data, qint64 maxSize) { return 0; }
+    qint64 writeData(const char *data, qint64 maxSize);
+
+private:
+    QPointer<QTextBrowser> textBrowser;
+};
+
 
 #endif

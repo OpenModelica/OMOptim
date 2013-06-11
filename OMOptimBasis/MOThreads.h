@@ -56,7 +56,7 @@ class ProblemThread : public QThread
 {
     Q_OBJECT
 public:
-    ProblemThread(Problem*,ProblemConfig);
+    ProblemThread(ProjectBase* project,Problem*,ProblemConfig);
     void run();
     void publicExec();
     Result* result();
@@ -65,10 +65,14 @@ public:
     QString _name;
 
 
+    bool isAlive() const{return _isAlive;}
+    void setIsAlive(bool isAlive);
 private:
     Problem* _problem;
     ProblemConfig _config;
     Result* _result;
+    ProjectBase* _projectBase;
+    bool _isAlive;
 
 
 public slots :

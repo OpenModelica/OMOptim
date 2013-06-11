@@ -54,7 +54,8 @@ enum InfoType{
     OMCWARNING2,
     OMCERROR2,
     INFODEBUG,
-    TASK
+    TASK,
+    SCRIPT
 };
 
 enum InfoNum{

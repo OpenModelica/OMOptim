@@ -48,7 +48,7 @@ InfoSender* InfoSender::_instance = NULL;
 
 InfoSender::InfoSender()
 {
-    _logStream = NULL;
+//    _logStream = NULL;
     _infosNormal = new Infos(this);
     _infosOM = new Infos(this);
     _infosDebug = new Infos(this);
@@ -58,7 +58,9 @@ InfoSender::InfoSender()
 
 void InfoSender::setLogStream(QTextStream* logStream,QList<ListInfo::InfoType> types )
 {
-    _logStream = logStream;
+    for(int i=0;i<types.size();i++)
+        _logStreams.insert(types.at(i),logStream);
+//    _logStream = logStream;
 
     _logStreamInfoTypes = types;
 
@@ -116,13 +118,17 @@ void InfoSender::destroy()
 
 void InfoSender::send(const Info &info)
 {
+    ListInfo::InfoType type = info.infoType;
+    QTextStream* logStream = _logStreams.value(type,NULL);
 
-    if(_logStream && _logStreamInfoTypes.contains(info.infoType))
+    if(logStream)
+    //if(_logStream && _logStreamInfoTypes.contains(info.infoType))
     {
-        *_logStream << QTime::currentTime().toString().toAscii().data();
-        *_logStream << "\t";
-        *_logStream << info.infoMsg;
-        *_logStream << "\n";
+        *logStream << QTime::currentTime().toString().toAscii().data();
+        *logStream << "\t";
+        *logStream << info.infoMsg;
+        *logStream << "\n";
+        logStream->flush(); // not sure it is a good idea though
     }
     if(info.infoType==ListInfo::INFODEBUG)
         qDebug(info.infoMsg.toLatin1().data());
