@@ -415,5 +415,5 @@ SOURCES += ../Core/OptObjective.cpp \
     #../Core/ModPlusTherExeCtrl.cpp
 
 RESOURCES += \
-    ../../GUI/Resources/CERESGui.qrc
+    ../GUI/Resources/CERESGui.qrc
 
