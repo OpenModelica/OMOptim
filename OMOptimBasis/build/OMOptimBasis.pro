@@ -234,4 +234,5 @@ FORMS += \
     ../GUI/Dialogs/ConsoleDlg.ui
 
 RESOURCES += \
-    ../GUI/Resources/OMOptimBasis.qrc
+    ../GUI/Resources/OMOptimBasis.qrc \
+    ../../GUI/Resources/CERESGui.qrc
