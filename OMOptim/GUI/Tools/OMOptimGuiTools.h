@@ -75,7 +75,7 @@ class OMOptimGuiTools: public QObject
 public:
 
 
-    static ModItemsTree* ModItemToTreeView(ModLoader*,MOomc*,const ModItem &,QTreeView*,bool showComponent);
+    static ModItemsTree* ModItemToTreeView(Project* project,ModLoader*,MOomc*,const ModItem &,QTreeView*,bool showComponent);
 
     //ModItem popup menus
     static QMenu* newModItemPopupMenu(Project*,const QPoint &,ModItem*);

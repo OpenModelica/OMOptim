@@ -655,11 +655,16 @@ void OpenModelica::setInputParametersXml(QDomDocument &doc,MOParameters *paramet
 }
 
 
-void OpenModelica::start(QString exeFile,int maxnsec)
+bool OpenModelica::start(QString exeFile,QString &errMsg,int maxnsec)
 {
 
     QFileInfo exeFileInfo(exeFile);
     QString exeDir = exeFileInfo.absolutePath();
+    if(!QFile::exists(exeFile))
+    {
+        errMsg = "Cannot find model executable file : " + exeFile;
+        return false;
+    }
 
     QProcess simProcess;
     simProcess.setWorkingDirectory(exeDir);
@@ -694,13 +699,14 @@ void OpenModelica::start(QString exeFile,int maxnsec)
     bool ok = simProcess.waitForFinished(nmsec);
     if(!ok)
     {
-        QString msg("CreateProcess failed (%d).");
-        InfoSender::instance()->debug(msg);
-        return;
+        errMsg = "Simulation process failed or time limit reached";
+        simProcess.close();
+        return false;
     }
+
     QString output(simProcess.readAllStandardOutput());
     InfoSender::instance()->send(Info(output,ListInfo::OMCNORMAL2));
-    return;
+    return ok;
 }
 
 QString OpenModelica::sciNumRx()

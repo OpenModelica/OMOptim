@@ -87,6 +87,7 @@ private:
     // Models
     QFileInfoList _moFiles;
     QFileInfoList _mmoFiles;
+    bool _useOmc;
 //    QList<QFileInfo> _exeFileInfoList;
 //    QList<QFileInfo> _inputFileInfoList;
 //    QStringList _fileNameListForExec;
@@ -99,7 +100,7 @@ private:
     void setMoFiles(QFileInfoList moFiles);
 
  public:
-    explicit Project(bool startOMC=true);
+    explicit Project(bool useOMC=true);
     ~Project();
 
     virtual bool launchScript(QFileInfo scriptFile);
@@ -110,6 +111,8 @@ private:
     void clear();
     QString getFieldName(int iField,int role) const;
     unsigned getNbFields() const;
+
+    bool useOmc() const {return _useOmc;}
 
 
 

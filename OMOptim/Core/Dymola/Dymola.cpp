@@ -243,13 +243,17 @@ QString Dymola::getExecutablePath()
 }
 
 
-void Dymola::start(QDir folder,QProcess &simProcess,int maxNSec)
+bool Dymola::start(QDir folder,QProcess &simProcess,QString & errMsg,int maxNSec)
 {
 #ifdef WIN32
     simProcess.setWorkingDirectory(folder.absolutePath());
 
     QString appPath = folder.absoluteFilePath("Dymosim.exe");
-
+    if(!QFile::exists(appPath))
+    {
+        errMsg = "Cannot find Dymosim.exe in folder " + folder.absolutePath();
+        return false;
+    }
     simProcess.start(appPath, QStringList());
 
     int nmsec;
@@ -261,12 +265,13 @@ void Dymola::start(QDir folder,QProcess &simProcess,int maxNSec)
     bool ok = simProcess.waitForFinished(nmsec);
     if(!ok)
     {
-        QString msg("CreateProcess failed.");
-        InfoSender::instance()->debug(msg);
+        errMsg = "Simulation process failed or time limit reached";
         simProcess.close();
-        return;
     }
 
+    return ok;
+#else
+    return false;
 #endif
 }
 

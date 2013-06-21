@@ -305,9 +305,13 @@ bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,M
         return false; // compilation failed, useless to pursue
 
 
-
     // Create tempDir
-    LowTools::mkpath(tempDir.absolutePath(),true);
+    bool createTmpDirOk = LowTools::mkpath(tempDir.absolutePath(),true);
+    if(!createTmpDirOk)
+    {
+        InfoSender::instance()->sendWarning("Failed to create/clear temp directory : "+tempDir.absolutePath());
+        return false;
+    }
 
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QFileInfoList allFilesToCopy;
@@ -348,7 +352,14 @@ bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,M
 
     // Launching Dymosim
     int maxNSec=_parameters->value(DymolaParameters::str(DymolaParameters::MAXSIMTIME),-1).toInt();
-    Dymola::start(tempDir,_simProcess,maxNSec);
+    QString startErrMsg;
+    bool startOk = Dymola::start(tempDir,_simProcess,startErrMsg,maxNSec);
+
+    if(!startOk)
+    {
+        InfoSender::instance()->sendWarning("Simulation failed : "+startErrMsg);
+        return false;
+    }
 
     QString logFile = tempDir.absoluteFilePath("dslog.txt");
 

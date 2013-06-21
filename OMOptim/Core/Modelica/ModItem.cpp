@@ -258,6 +258,17 @@ ModItem* ModItem::recordChild(int nRow) const
         return NULL;
 }
 
+ModItem *ModItem::child(QString childName) const
+{
+    for(int i=0;i<childCount();i++)
+    {
+        if((child(i)->name(ModItem::FULL)==childName)
+                ||(child(i)->name(ModItem::SHORT)==childName))
+            return child(i);
+    }
+    return NULL;
+}
+
 
 ModItem* ModItem::modelChild(int nRow) const
 {

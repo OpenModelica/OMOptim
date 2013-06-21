@@ -43,9 +43,9 @@
 #include "SaveOMOptim.h"
 
 
-ModItemsTree* OMOptimGuiTools::ModItemToTreeView(ModLoader* modLoader ,MOomc* moomc,const ModItem & modClass,QTreeView* treeView,bool showComponent)
+ModItemsTree* OMOptimGuiTools::ModItemToTreeView(Project* project,ModLoader* modLoader ,MOomc* moomc,const ModItem & modClass,QTreeView* treeView,bool showComponent)
 {
-    ModItemsTree* newTree = new ModItemsTree(modLoader,moomc/*,treeView*/);
+    ModItemsTree* newTree = new ModItemsTree(project,modLoader,moomc/*,treeView*/);
     newTree->setShowComponent(showComponent);
     ModItem* root = modClass.clone();
     root->clearDescendants(); // reset root : useful if showcomponents changed.

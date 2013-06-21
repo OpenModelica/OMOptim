@@ -67,9 +67,10 @@
 #include "ModExePlus.h"
 #include "scriptparseromoptim.h"
 
-Project::Project(bool startOMC)
+Project::Project(bool useOMC)
 {
     _isdefined = false;
+    _useOmc = useOMC;
     //    _curProblem = -1;
 
 
@@ -78,9 +79,9 @@ Project::Project(bool startOMC)
     //    _curLaunchedProblem = NULL;
     setCurModItem(NULL);
 
-    _moomc = new MOomc("OMOptim",startOMC);
+    _moomc = new MOomc("OMOptim",_useOmc);
     _modLoader = new ModLoader(_moomc);
-    _modItemsTree = new ModItemsTree(_modLoader,_moomc);
+    _modItemsTree = new ModItemsTree(this,_modLoader,_moomc);
 
     // add interfaces for OneSimulation and Optimization
     addProblemInterface(new OneSimulationInterface());
@@ -91,10 +92,12 @@ Project::Project(bool startOMC)
 
 Project::~Project()
 {
-    terminateOms();
+    if(_useOmc)
+        terminateOms();
     terminateProblemsThreads(); // should be done before deleting modelPlus
 
-    _moomc->stopServer();
+    if(_useOmc)
+        _moomc->stopServer();
 
     if(_modItemsTree)
         delete _modItemsTree;
@@ -689,14 +692,14 @@ void Project::save(Result* result)
   */
 void Project::save(Problem* problem)
 {
-        // save project but not all omcases
-        SaveOMOptim::saveProject(this,false);
+    // save project but not all omcases
+    SaveOMOptim::saveProject(this,false);
 
-        // save problem
-        Save::saveProblem(this,problem);
+    // save problem
+    Save::saveProblem(this,problem);
 
-        emit projectChanged();
-        _saveLoadMutex.unlock();
+    emit projectChanged();
+    _saveLoadMutex.unlock();
 }
 
 /** @brief Load project from file given as parameter.
@@ -747,7 +750,7 @@ bool Project::checkConfiguration()
 {
     bool ok = true;
 
-    if(!_moomc->isStarted())
+    if(!_moomc->isStarted() && _useOmc)
         ok = ok && _moomc->startServer();
 
     return ok;

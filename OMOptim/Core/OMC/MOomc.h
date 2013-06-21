@@ -90,6 +90,7 @@ public :
 
     //Modelica functions
     QString getWholeText(bool includeMSL);
+    QString getText(QString className);
     QStringList getClassNames(QString parentClass = "");
     QStringList getPackages(QString parentClass);
     QStringList getClasses(QString parentClass);
@@ -187,6 +188,7 @@ public :
 
      bool initCommandLineOptions();
      bool clearCommandLineOptions();
+
 
 
 

@@ -298,11 +298,22 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
 
     // Specifying new Variables values in OM input file
     bool setInputFileOk = OpenModelica::setInputXml(tempInitFileXml,inputVars,_ModelPlus->modelName(),parameters());
+    if(!setInputFileOk)
+    {
+        InfoSender::instance()->sendWarning("Simulation failed : failed to set input file");
+        return false;
+    }
 
     // Launching openmodelica
     int maxNSec=_parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::MAXSIMTIME),-1).toInt();
 
-    OpenModelica::start(tempExeFile,maxNSec);
+    QString startErrMsg;
+    bool startOk = OpenModelica::start(tempExeFile,startErrMsg,maxNSec);
+    if(!startOk)
+    {
+        InfoSender::instance()->sendWarning("Simulation failed : "+startErrMsg);
+        return false;
+    }
 
     InfoSender::eraseCurrentTask();
 

@@ -39,17 +39,17 @@
 
   */
 #include "ModItemsTree.h"
+#include "Project.h"
 
 
 
-
-ModItemsTree::ModItemsTree(ModLoader* modLoader,MOomc* moomc,QObject *parent)
+ModItemsTree::ModItemsTree(Project* project,ModLoader* modLoader,MOomc* moomc,QObject *parent)
     : QAbstractItemModel(parent)
 {
     _modLoader = modLoader;
     _moomc = moomc;
     _rootElement = new ModItem(_moomc);
-
+    _project = project;
     _enabled = true;
 
     _showComponents = false;
@@ -90,11 +90,11 @@ void ModItemsTree::readFromOMCWThread(ModItem* parent,int depthMax,  QString dir
     // load the models icon
     ModItemsLoader modItemsLoader(this,parent,depthMax,direction,curDepth);
     modItemsLoader.run();
-// still not working properly on all platforms
-//    while (modItemsLoader->isRunning())
-//    {
-//        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
-//    }
+    // still not working properly on all platforms
+    //    while (modItemsLoader->isRunning())
+    //    {
+    //        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+    //    }
 
 }
 
@@ -133,7 +133,7 @@ void ModItemsTree::emitDataChanged()
 */
 void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,int curDepth)
 {
-    if(parent->_readMutex.tryLock())
+    if(parent->_readMutex.tryLock() && _project->useOmc())
     {
         if((curDepth<=depthMax)&&!parent->childrenReaden())
         {
@@ -237,7 +237,7 @@ void ModItemsTree::readFromOmc(ModItem* parent,int depthMax,QString direction,in
   */
 void ModItemsTree::readFromOmcV2(ModItem* parent,int depthMax,QString direction,int curDepth)
 {
-    if(parent->_readMutex.tryLock())
+     if(parent->_readMutex.tryLock() && _project->useOmc())
     {
         if((curDepth<=depthMax)&&!parent->childrenReaden())
         {
@@ -305,7 +305,7 @@ void ModItemsTree::readFromOmcV2(ModItem* parent,int depthMax,QString direction,
   */
 void ModItemsTree::readFromOmcV3(ModItem* parent,int depthMax,QString direction,int curDepth)
 {
-    if(parent->_readMutex.tryLock())
+     if(parent->_readMutex.tryLock() && _project->useOmc())
     {
         if((curDepth<=depthMax)&&!parent->childrenReaden())
         {
@@ -417,18 +417,18 @@ ModItem* ModItemsTree::findInDescendants(QString fullName,ModItem* parent)
     // A ajouter la une condition if not executable else childShortName = curFullName !!!!!!
     if(!fullName.endsWith(".exe"))
     {
-    childShortName.remove(QRegExp("^"+curFullName+"\\."));
-    // then take first section
-    childShortName = childShortName.section(".",0,0);
+        childShortName.remove(QRegExp("^"+curFullName+"\\."));
+        // then take first section
+        childShortName = childShortName.section(".",0,0);
 
 
-    // looking in children
-    for(int iChild=0;iChild<parent->childCount();iChild++)
-    {
-        curChild = parent->child(iChild);
-        if(curChild->name(ModItem::SHORT)==childShortName)
-            return findInDescendants(fullName,curChild);
-    }
+        // looking in children
+        for(int iChild=0;iChild<parent->childCount();iChild++)
+        {
+            curChild = parent->child(iChild);
+            if(curChild->name(ModItem::SHORT)==childShortName)
+                return findInDescendants(fullName,curChild);
+        }
     }
     else
     {
@@ -497,8 +497,6 @@ QList<ModItem*> ModItemsTree::findInDescendantsByInheritedClass(QString classNam
 
     int curDepth = parent->depth();
 
-
-
     // then check children are readen
     if(!parent->childrenReaden())
     {
@@ -519,8 +517,176 @@ QList<ModItem*> ModItemsTree::findInDescendantsByInheritedClass(QString classNam
     }
 
     return result;
-
 }
+
+
+/**
+  * Finding function : returns all components whom classname inherits argument className.
+  */
+QList<ModItem*> ModItemsTree::findCompOfInheritingClassInDescendants(QString className,ModItem* parent)
+{
+    if(parent==NULL)
+        parent = _rootElement;
+
+    ModItem* curComponent;
+    QList<ModItem*> curComponents;
+    int iChild;
+    QString curCompClass;
+
+    int curDepth = parent->depth();
+
+    // then check children are readen
+    if(!parent->childrenReaden())
+    {
+        // if not, check in its direction
+        readFromOMCWThread(parent,curDepth+1,QString(),curDepth);
+    }
+
+    int nbCompChild = parent->compChildCount();
+    int nbModelChild = parent->modelChildCount();
+    int nbPackageChild = parent->packageChildCount();
+
+    // looking if one child corresponds
+    for(iChild=0;iChild<nbCompChild;iChild++)
+    {
+        curComponent = parent->compChild(iChild);
+        curCompClass = curComponent->getModClassName();
+        if((curCompClass==className)||_moomc->inherits(curCompClass,className))
+            curComponents.push_back(curComponent);
+    }
+
+    //look deeper in components children
+    iChild=0;
+    while(iChild<nbCompChild)
+    {
+        curComponents <<  findCompOfInheritingClassInDescendants(className,parent->compChild(iChild));
+        iChild++;
+    }
+
+    //look deeper in models children
+    iChild=0;
+    while(iChild<nbModelChild)
+    {
+        curComponents <<   findCompOfInheritingClassInDescendants(className,parent->modelChild(iChild));
+        iChild++;
+    }
+
+    //look deeper in packages children
+    iChild=0;
+    while(iChild<nbPackageChild)
+    {
+        curComponents <<  findCompOfInheritingClassInDescendants(className,parent->packageChild(iChild));
+        iChild++;
+    }
+
+    return curComponents;
+}
+
+/**
+  * Finding function : returns all components whom classname inherits argument className.
+  * In a multimap since there are different classNames here.
+  * @param classFilter : stop seeking in parent class does not go through this filter
+  */
+void  ModItemsTree::findCompOfInheritingClassesInDescendants(QStringList classNames,ModItem* parent,QMultiMap<QString,ModItem*> &result,QRegExp classFilter)
+{
+    if(parent==NULL)
+        return;
+
+    ModItem* curComponent;
+
+    int iChild;
+    QString curCompClass;
+
+    QString parentClass = parent->getModClassName();
+    if(classFilter.isValid() && !parentClass.contains(classFilter))
+        return ;// no need to carry on
+
+    int curDepth = parent->depth();
+    // then check children are readen
+    if(!parent->childrenReaden())
+    {
+        // if not, check in its direction
+        readFromOMCWThread(parent,curDepth+1,QString(),curDepth);
+    }
+
+    int nbCompChild = parent->compChildCount();
+    int nbModelChild = parent->modelChildCount();
+    int nbPackageChild = parent->packageChildCount();
+
+    // looking if one child corresponds
+    for(iChild=0;iChild<nbCompChild;iChild++)
+    {
+        curComponent = parent->compChild(iChild);
+        curCompClass = curComponent->getModClassName();
+
+        foreach(QString  className, classNames)
+        {
+            if((curCompClass==className)||_moomc->inherits(curCompClass,className))
+                result.insert(className,curComponent);
+        }
+    }
+
+    //look deeper in components children
+    iChild=0;
+    while(iChild<nbCompChild)
+    {
+        findCompOfInheritingClassesInDescendants(classNames,parent->compChild(iChild),result);
+        iChild++;
+    }
+
+    //look deeper in models children
+    iChild=0;
+    while(iChild<nbModelChild)
+    {
+        findCompOfInheritingClassesInDescendants(classNames,parent->modelChild(iChild),result);
+        iChild++;
+    }
+
+    //look deeper in packages children
+    iChild=0;
+    while(iChild<nbPackageChild)
+    {
+        findCompOfInheritingClassesInDescendants(classNames,parent->packageChild(iChild),result);
+        iChild++;
+    }
+}
+
+void  ModItemsTree::findCompOfInheritingClassesInDescendants2(const QStringList & classNames,QString parentName,QString parentClass,QMultiMap<QString,QString> &result,QRegExp classFilter)
+{
+
+    if(classFilter.isValid() && !parentClass.contains(classFilter))
+        return ;// no need to carry on
+
+
+    QStringList compShortNames,compClasses;
+    QString childLongName;
+    // quick version but does not catch everything
+    _moomc->getContainedComponents(parentClass,compShortNames,compClasses,true);
+
+    foreach(QString className, classNames)
+    {
+        for(int i=0;i<compClasses.size();i++)
+        {
+            if(!classFilter.isValid() || parentClass.contains(classFilter))
+            {
+                if((compClasses.at(i)==className)||_moomc->inherits(compClasses.at(i),className))
+                {
+                    childLongName = parentClass.isEmpty() ? compShortNames.at(i) : parentName+"."+compShortNames.at(i);
+                    result.insert(className,childLongName);
+                }
+            }
+        }
+    }
+
+    ModItem* compItem;
+    for(int i=0;i<compClasses.size();i++)
+    {
+        childLongName = parentClass.isEmpty() ? compShortNames.at(i) : parentName+"."+compShortNames.at(i);
+        findCompOfInheritingClassesInDescendants2(classNames,childLongName,compClasses.at(i),result,classFilter);
+    }
+}
+
+
 
 /**
   * Finding function : returns all components whom classname equals argument className.
@@ -533,6 +699,14 @@ QList<ModItem*> ModItemsTree::findCompOfClassInDescendants(QString className,Mod
     ModItem* curComponent;
     QList<ModItem*> curComponents;
     int iChild;
+
+    int curDepth = parent->depth();
+    // then check children are readen
+    if(!parent->childrenReaden())
+    {
+        // if not, check in its direction
+        readFromOMCWThread(parent,curDepth+1,QString(),curDepth);
+    }
 
     int nbCompChild = parent->compChildCount();
     int nbModelChild = parent->modelChildCount();
@@ -657,8 +831,8 @@ QMimeData* ModItemsTree::mimeData(const QModelIndexList &indexes) const
     QList<ModItem*> uniqueItems;
     for(int i=0;i<items.size();i++)
     {
-    //    if(!items.contains(items.at(i)->parent()) || (items.at(i)->parent()==_rootElement))
-            uniqueItems.push_back(items.at(i));
+        //    if(!items.contains(items.at(i)->parent()) || (items.at(i)->parent()==_rootElement))
+        uniqueItems.push_back(items.at(i));
     }
 
     // create text data
@@ -720,9 +894,9 @@ const
         parentComponent = static_cast<ModItem*>(parent.internalPointer());
 
     // looking in children
-//    int nbPacks = parentComponent->packageChildCount();
-//    int nbModels = parentComponent->modelChildCount();
-//    int nbComps = parentComponent->compChildCount();
+    //    int nbPacks = parentComponent->packageChildCount();
+    //    int nbModels = parentComponent->modelChildCount();
+    //    int nbComps = parentComponent->compChildCount();
 
     if(row<0 || row>= parentComponent->childCount())
         return QModelIndex();
@@ -1061,8 +1235,8 @@ ModItemsLoader::ModItemsLoader(ModItemsTree* modItemsTree,ModItem* parent,int de
 
     connect(this, SIGNAL(readFromOmc(ModItem*,int,QString,int)),
             _modItemsTree, SLOT(readFromOmc(ModItem*,int, QString,int)));
-//    connect(this, SIGNAL(started()), this, SLOT(hasStarted()));
-//    connect(this, SIGNAL(finished()), this, SLOT(hasFinished()));
+    //    connect(this, SIGNAL(started()), this, SLOT(hasStarted()));
+    //    connect(this, SIGNAL(finished()), this, SLOT(hasFinished()));
 }
 
 

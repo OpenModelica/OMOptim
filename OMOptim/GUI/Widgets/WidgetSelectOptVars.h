@@ -43,84 +43,32 @@
 #include <QtGui/QDialog>
 #include <QtGui/QWidget>
 #include<QtGui/QFileDialog>
-#include "ui_WidgetSelectOptVars.h"
 #include "OptimResult.h"
 #include "MOTableView.h"
 #include "Tools/GuiTools.h"
 #include "MyDelegates.h"
-
-namespace Ui {
-class WidgetSelectOptVarsClass;
-}
-
+#include "Widgets/WidgetSelectEditVars.h"
+#include "Optimization.h"
 
 class QErrorMessage;
 
 
-class WidgetSelectOptVars : public QWidget {
+class WidgetSelectOptVars : public WidgetSelectEditVars {
     Q_OBJECT
 
 
 public:
     explicit WidgetSelectOptVars(Optimization *problem,bool isEditable,QWidget *parent);
-    WidgetSelectOptVars(QWidget* parent);
     virtual ~WidgetSelectOptVars();
 
-
-
-public:
-    Ui::WidgetSelectOptVarsClass *_ui;
-
-    void addPermanentVars(Variables*);
-    void addPermanentVar(const Variable &);
-    void removePermanentVars(QString model);
-    void setShownColumns();
-    void setDelegates();
-
-public slots :
-    void actualizeGui();
-    void addOptVariables();
-    void deleteOptVariables();
-    void addOptObjectives();
-    void deleteOptObjectives();
-    void addSamplingVariables();
-    void deleteSamplingVariables();
-    void addOverVariables();
-    void deleteOverVariables();
-    void readVariables();
-    void refreshAllModelsVars();
-
-
-protected:
-
-    void initToolBar();
+    virtual OptVariables* optimizedVariables() const {return _problem->optimizedVariables();}
+    virtual ScannedVariables* scannedVariables() const {return _problem->scannedVariables();}
+    virtual Variables* overwritedVariables() const {return _problem->overwritedVariables();}
+    virtual OptObjectives* objectives() const {return _problem->objectives();}
+    virtual QStringList models() const {return _problem->models();}
+    virtual ModPlusCtrl* ctrl(QString model) const {return _problem->ctrl(model);}
 
     Optimization* _problem;
-    Project* _project;
-    bool _isEditable;
-    Variables *_allModelsVars; /// Variables of optimization models
-    Variables *_permanentVars; /// Variables that do not come from models
-
-    QSortFilterProxyModel *_variableProxyModel;
-    QSortFilterProxyModel *_optVariableProxyModel;
-    QSortFilterProxyModel *_objectiveProxyModel;
-    QSortFilterProxyModel *_samplingProxyModel;
-    QSortFilterProxyModel *_overVarsProxyModel;
-
-    MOTableView *_tableVariables;
-    MOTableView *_tableOptimizedVars;
-    MOTableView *_tableSamplingVars;
-    MOTableView *_tableOverVars;
-    MOTableView *_tableObjectives;
-
-    QAction* _actionReadVariables;
-    QAction* _actionShowSampling;
-    QAction* _actionShowParameters;
-    QAction* _actionShowObjectives;
-    QAction* _actionShowOptimized;
-
-
-
 
 };
 

@@ -152,7 +152,7 @@ public:
     ModItem* packageChild(int row) const;
     ModItem* recordChild(int row) const;
 
-    
+    ModItem* child(QString childName) const;
 
     //******************************
     // GUI

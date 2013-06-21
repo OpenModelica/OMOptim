@@ -48,7 +48,7 @@
 #include "ModLoader.h"
 #include "MOomc.h"
 
-
+class Project;
 
 /**
   * \brief ModItemsTree is a container of Modelica models, packages, records...
@@ -67,7 +67,7 @@ class ModItemsTree : public QAbstractItemModel
 
 public:
 
-    ModItemsTree(ModLoader* modLoader,MOomc* moomc,QObject *parent = 0);
+    ModItemsTree(Project* project,ModLoader* modLoader,MOomc* moomc,QObject *parent = 0);
     virtual ~ModItemsTree();
     ModItem* rootElement()const {return _rootElement;}
 
@@ -77,11 +77,14 @@ public:
 
 
     // Find functions
-    bool isInDescendants(QString fullName,ModItem* parent=NULL);
-    ModItem* findInDescendants(QString fullName,ModItem* parent=NULL);
-    QList<ModItem*> findInDescendantsByClass(QString _className,ModItem* parent=NULL);
-    QList<ModItem*> findInDescendantsByInheritedClass(QString _className,ModItem* parent=NULL);
-    QList<ModItem*> findCompOfClassInDescendants(QString _className,ModItem* parent=NULL);
+    bool isInDescendants(QString fullName,ModItem* parent);
+    ModItem* findInDescendants(QString fullName,ModItem* parent = NULL);
+    QList<ModItem*> findInDescendantsByClass(QString _className,ModItem* parent = NULL);
+    QList<ModItem*> findInDescendantsByInheritedClass(QString _className,ModItem* parent = NULL);
+    QList<ModItem*> findCompOfClassInDescendants(QString _className,ModItem* parent = NULL);
+    QList<ModItem*> findCompOfInheritingClassInDescendants(QString _className,ModItem* parent = NULL);
+    void findCompOfInheritingClassesInDescendants(QStringList classNames, ModItem *parent, QMultiMap<QString, ModItem *> &result, QRegExp classFilter = QRegExp());
+    void  findCompOfInheritingClassesInDescendants2(const QStringList & classNames,QString parentName,QString parentClass,QMultiMap<QString,QString> &result,QRegExp classFilter = QRegExp());
 
     ModModel* modelOf(ModItem* item);
     ModItem* modelOf(QString itemName);
@@ -138,6 +141,7 @@ private:
     ModLoader* _modLoader;
     bool _enabled;
     MOomc* _moomc;
+    Project* _project;
 
     bool _showComponents;
 

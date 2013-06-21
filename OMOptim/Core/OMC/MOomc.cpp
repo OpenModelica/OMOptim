@@ -137,6 +137,14 @@ QStringList MOomc::getClassNames(QString parentClass)
     }
 }
 
+QString MOomc::getText(QString className)
+{
+    QString moTxt = evalCommand("list("+className+")");
+    moTxt.remove(QRegExp("^([\\s|\\\"]+)"));
+    moTxt.remove(QRegExp("([\\s|\\\"]+)$"));
+    return moTxt;
+}
+
 QString MOomc::getWholeText(bool includeMSL)
 {
     QString moTxt;
@@ -151,7 +159,7 @@ QString MOomc::getWholeText(bool includeMSL)
 
         for(int i=0;i<classLoaded.size();i++)
         {
-            moTxt += evalCommand("list("+classLoaded.at(i)+")");
+            moTxt += getText(classLoaded.at(i));
             moTxt +="\n \n";
         }
     }
@@ -287,9 +295,12 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
 
     QStringList inhNames, inhClasses;
 
-    getInheritedComponents(parentClass,inhNames,inhClasses);
-    compNames.append(inhNames);
-    compClasses.append(inhClasses);
+    if(includeInherited)
+    {
+        getInheritedComponents(parentClass,inhNames,inhClasses);
+        compNames.append(inhNames);
+        compClasses.append(inhClasses);
+    }
 }
 
 QString MOomc::getParameterValue(QString parentClass, QString parameterName)
@@ -571,7 +582,7 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
 
 
     // 1st format : Real sterilisateur.Sterilisateur.FactMin = 0.0;
-    QRegExp exp1(".*"+componentName+"."+modifierName+"[\\s]*=[\\s]*([\\S|\\\\|\"]+);");
+    QRegExp exp1(".*\\b"+componentName+"."+modifierName+"\\b[\\s]*=[\\s]*([\\S|\\\\|\"]+);");
 
     int i1 =  lines.indexOf(exp1);
 
@@ -583,14 +594,14 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
     }
 
     // 2nd format with unit
-    QRegExp exp2(".*"+componentName+"."+modifierName+"\\([.*]\\)[\\s]*=[\\s]*(  );");
+    QRegExp exp2(".*\\b"+componentName+"."+modifierName+"\\b\\([.*]\\)[\\s]*=[\\s]*(  );");
     int i2 = lines.indexOf(exp2);
 
     if((i2>-1)&&exp2.capturedTexts().size()==2)
         return exp2.capturedTexts().at(1);
 
     // 3rd format
-    QRegExp exp3(".*"+componentName+"\\(.*"+modifierName+"[\\s]*=[\\s]*([\\d|\\.]*).*;");
+    QRegExp exp3(".*\\b"+componentName+"\\b\\(.*\\b"+modifierName+"\\b[\\s]*=[\\s]*([\\d|\\.]*).*;");
     int i3 = lines.indexOf(exp3);
 
     if((i3>-1)&&exp3.capturedTexts().size()==2)
@@ -598,7 +609,7 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
 
     // 4th format : a vector
     // e.g.   eIFactMultEquation.groups = {\"group1\", \"group2\"};
-    QRegExp exp4(".*"+componentName+"."+modifierName+"[\\s]*=[\\s]\\{(.*)\\};");
+    QRegExp exp4(".*\\b"+componentName+"."+modifierName+"\\b[\\s]*=[\\s]\\{(.*)\\};");
     int i4 = lines.indexOf(exp4);
 
     if((i4>-1)&&exp4.capturedTexts().size()==2)
@@ -761,7 +772,7 @@ QString MOomc::getComment(QString modelName, QString compName)
 
     //  {{Modelica.SIunits.Temp_K,TorcH,"ORC hot temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}},{Modelica.SIunits.Temp_K,TorcC,"ORC cold temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}}}
 
-    QRegExp rexp(".*"+compName+","+"\"(.*)\"");
+    QRegExp rexp(".*\\b"+compName+"\\b,"+"\"(.*)\"");
     rexp.setMinimal(true);
     if(commandRes.contains(rexp)&&rexp.capturedTexts().size()>1)
     {

@@ -276,7 +276,8 @@ HEADERS += ../config.h \
     ../Core/ModPlusDymolaExeCtrl.h \
     ../Core/PlugInterface.h \
     ../Core/ModPlusBlackBoxExeCtrl.h \
-    ../scriptparseromoptim.h
+    ../scriptparseromoptim.h \
+    ../GUI/Widgets/WidgetSelectEditVars.h
     #../Core/ModPlusTherExeCtrl.h
 
 FORMS += ../GUI/MainWindow.ui \
@@ -293,7 +294,6 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Widgets/WidgetProgress.ui \
 #         ../GUI/Widgets/WidgetSelectComponents.ui \
          ../GUI/Widgets/WidgetSelectModModel.ui \
-         ../GUI/Widgets/WidgetSelectOptVars.ui \
          ../GUI/Widgets/WidgetSelPointScan.ui \
          ../GUI/Widgets/WidgetTableRecVar.ui \
          ../GUI/Widgets/WidgetToolBar.ui \
@@ -306,7 +306,8 @@ FORMS += ../GUI/MainWindow.ui \
     ../GUI/Tabs/TabOMC.ui \
     ../GUI/Widgets/WidgetResultInfos.ui \
     ../GUI/Widgets/WidgetModelsList.ui \
-    ../GUI/Widgets/widgetloadexemodel.ui
+    ../GUI/Widgets/widgetloadexemodel.ui \
+    ../GUI/Widgets/WidgetSelectEditVars.ui
 
 SOURCES += ../Core/OptObjective.cpp \
            ../Core/ParetoDominance.cpp \
@@ -409,6 +410,10 @@ SOURCES += ../Core/OptObjective.cpp \
     ../Core/Tools/ModPlusOMExeCtrl.cpp \
     ../Core/ModPlusDymolaExeCtrl.cpp \
     ../Core/ModPlusBlackBoxExeCtrl.cpp \
-    ../scriptparseromoptim.cpp
+    ../scriptparseromoptim.cpp \
+    ../GUI/Widgets/WidgetSelectEditVars.cpp
     #../Core/ModPlusTherExeCtrl.cpp
+
+RESOURCES += \
+    ../../GUI/Resources/CERESGui.qrc
 

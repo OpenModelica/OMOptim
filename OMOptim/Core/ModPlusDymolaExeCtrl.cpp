@@ -110,8 +110,14 @@ bool ModPlusDymolaExeCtrl::simulate(QDir tempDir, MOVector<Variable> *updatedVar
     Dymola::setVariablesToDsin(tempInit,_ModelPlus->modelName(),updatedVars,_parameters);
 
     // Launching Dymosim
+    QString startErrMsg;
     int maxNSec=_parameters->value(DymolaParameters::str(DymolaParameters::MAXSIMTIME),-1).toInt();
-    Dymola::start(tempDir,_simProcess,maxNSec);
+    bool startOk = Dymola::start(tempDir,_simProcess,startErrMsg,maxNSec);
+    if(!startOk)
+    {
+        InfoSender::instance()->sendWarning("Simulation failed : "+startErrMsg);
+        return false;
+    }
 
     QString logFile = tempDir.absoluteFilePath("dslog.txt");
 

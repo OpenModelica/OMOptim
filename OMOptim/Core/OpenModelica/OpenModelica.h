@@ -95,7 +95,7 @@ public:
 
     static void setInputVariablesTxt(QString, MOVector<Variable> *,QString modModelName,MOParameters *parameters=NULL);
     static bool setInputXml(QString, MOVector<Variable> *, QString modelName,MOParameters *parameters=NULL);
-    static void start(QString exeFile,int maxnsec);
+    static bool start(QString exeFile,QString &errMsg, int maxnsec);
     static QString sciNumRx();
     static QString home();
 

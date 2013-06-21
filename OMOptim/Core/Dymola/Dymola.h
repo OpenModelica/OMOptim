@@ -81,7 +81,7 @@ public:
                          QFileInfo logFilePath,const QFileInfoList & moDeps,QFileInfoList neededFiles);
     static bool createDsin(QFileInfo moPath,QString modelToConsider,QDir folder,const QFileInfoList & moDeps,
                            QFileInfoList neededFiles);
-    static void start(QDir folder,QProcess &,int maxNSec=-1);
+    static bool start(QDir folder,QProcess &, QString &errMsg,int maxNSec=-1);
     static void verifyInstallation();
     //static QString getPreambleFromDsin(QTextStream *);
     static bool getVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);
