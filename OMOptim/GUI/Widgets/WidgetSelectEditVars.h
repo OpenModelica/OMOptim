@@ -110,6 +110,10 @@ protected:
     virtual QStringList models() const {return QStringList();}
     virtual ModPlusCtrl* ctrl(QString model) const {return NULL;}
 
+    QMap<MOTableView*,QList<int> > _hiddenFields;
+    int iColumn(int iField, MOTableView *table) const;
+
+
 
     Project* _project;
     bool _showAllVariablesOnFront;
@@ -134,6 +138,9 @@ protected:
     QAction* _actionShowParameters;
     QAction* _actionShowObjectives;
     QAction* _actionShowOptimized;
+
+    void clearDelegates();
+    QList<QStyledItemDelegate*> _delegates;
 };
 
 #endif 

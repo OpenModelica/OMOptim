@@ -63,6 +63,7 @@
 #include "Tabs/MO2ColTab.h"
 #include "Widgets/WidgetTableVar.h"
 #include "Widgets/WidgetCtrlParameters.h"
+#include "Widgets/WidgetProblemActions.h"
 
 
 
@@ -83,7 +84,7 @@ private :
         WidgetOneSimVars *_widgetOneSimVars;
         WidgetFilesList *_widgetFilesList;
         WidgetCtrlParameters *_widgetCtrl;
-
+    WidgetProblemActions* _widgetActions;
 
 
 };

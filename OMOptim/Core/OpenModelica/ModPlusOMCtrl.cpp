@@ -268,22 +268,11 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     allFilesToCopy << mmoDir.filePath(_initFileXml);
 
     InfoSender::instance()->debug("Start copying in temp directory : "+tempFolder.absolutePath());
-    QFileInfo fileToCopyInfo;
+
     //QFile fileToCopy;
-    bool copyOk;
-    bool removeOk;
-    for(int i=0; i< allFilesToCopy.size();i++)
-    {
-        //fileToCopy.setFileName(allFilesToCopy.at(i));
-        fileToCopyInfo = allFilesToCopy.at(i);
-        removeOk = tempFolder.remove(fileToCopyInfo.fileName());
-        InfoSender::instance()->debug("Removing in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-        copyOk = QFile::copy(allFilesToCopy.at(i).absoluteFilePath(),tempFolder.filePath(fileToCopyInfo.fileName()));
-        //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
-        InfoSender::instance()->debug("Copying in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
-        if(!copyOk)
-            InfoSender::instance()->sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
-    }
+    bool copyOk = LowTools::copyFilesInFolder(allFilesToCopy,tempFolder);
+    if(!copyOk)
+        return false;
 
 
     // remove previous log / result files

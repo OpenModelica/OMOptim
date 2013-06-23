@@ -229,7 +229,7 @@ HEADERS += ../config.h \
            #../Core/Optim/EA/PSO/updateVelocity.h \
         ../GUI/Widgets/WidgetMooPointsList.h \
         ../GUI/Widgets/WidgetProjectInfos.h \
-    ../GUI/Widgets/WidgetOptimActions.h \
+    ../GUI/Widgets/WidgetProblemActions.h \
     ../version.h \
     ../Core/Optim/EA/NSGA2/NSGA2Parameters.h \
     ../Core/Optim/EA/SPEA2/SPEA2Parameters.h \
@@ -288,7 +288,6 @@ FORMS += ../GUI/MainWindow.ui \
       #   ../GUI/Widgets/WidgetBlocks.ui \
          ../GUI/Widgets/WidgetCalculateMooPoints.ui \
          ../GUI/Widgets/WidgetMooPlot.ui \
-         ../GUI/Widgets/WidgetOneSimVars.ui \
          ../GUI/Widgets/WidgetOptParameters.ui \
          ../GUI/Widgets/WidgetOptTable.ui \
          ../GUI/Widgets/WidgetProgress.ui \
@@ -299,7 +298,7 @@ FORMS += ../GUI/MainWindow.ui \
          ../GUI/Widgets/WidgetToolBar.ui \
          ../GUI/Widgets/WidgetMooPointsList.ui \
          ../GUI/Widgets/WidgetProjectInfos.ui \
-         ../GUI/Widgets/WidgetOptimActions.ui \
+         ../GUI/Widgets/WidgetProblemActions.ui \
          ../GUI/Tabs/TabResOptimization.ui \
          ../GUI/Tabs/TabProject.ui \
          ../GUI/Tabs/TabOptimization.ui \
@@ -387,7 +386,7 @@ SOURCES += ../Core/OptObjective.cpp \
             ../Core/OMC/StringHandler.cpp \
             ../GUI/Widgets/WidgetMooPointsList.cpp \
             ../GUI/Widgets/WidgetProjectInfos.cpp \
-            ../GUI/Widgets/WidgetOptimActions.cpp \
+            ../GUI/Widgets/WidgetProblemActions.cpp \
             ../Core/Optim/EA/SA1/SA1.cpp \
              ../Core/Optim/EA/PSO/PSO.cpp \
         ../Core/OptObjectives.cpp \

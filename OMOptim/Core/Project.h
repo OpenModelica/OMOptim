@@ -63,6 +63,7 @@ class ModModelPlus;
 class ModModel;
 class ModelPlus;
 class ExeModel;
+class ModExePlus;
 
 /**
  * \brief Main class managing problems, results, models,
@@ -125,6 +126,7 @@ private:
     void loadExeFiles(QStringList exeModelNames, QStringList exeFilePaths, QStringList inputFilePaths, bool forceLoad= true);
     bool loadModelicaLibrary(bool storePath=true, bool forceLoad = true);
     bool loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo inputFileInfo);
+    bool loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo inputFileInfo, ModExePlus* );
     void loadModelPlus(QString mmoFilePath, bool uncompile);
     ModelPlus *modelPlus(QString modelName);
     ModelPlus* newModelPlus(QString modelName);

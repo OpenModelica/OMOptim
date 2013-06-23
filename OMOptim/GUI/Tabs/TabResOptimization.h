@@ -66,7 +66,7 @@ class WidgetOptTable;
 class WidgetTableRecVar;
 class WidgetToolBar;
 class WidgetCalculateMooPoints;
-class WidgetOptimActions;
+class WidgetProblemActions;
 class WidgetResultInfos;
 class WidgetCtrlParameters;
 class WidgetOptParameters;
@@ -93,7 +93,7 @@ public:
 //    WidgetBlocks *_widgetBlocks;
 //#endif
     WidgetTableRecVar* _widgetTableRecVar;
-    WidgetOptimActions* _widgetOptimActions;
+    WidgetProblemActions* _widgetOptimActions;
     WidgetCtrlParameters *_widgetCtrl;
     WidgetOptParameters *_widgetOptParameters;
     WidgetResultInfos *_widgetInfos;

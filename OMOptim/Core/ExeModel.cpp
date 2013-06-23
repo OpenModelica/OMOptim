@@ -1,13 +1,13 @@
 #include "ExeModel.h"
 
 
-ExeModel::ExeModel(QString name,QString exeFilePath, QString inputFilePath)
+ExeModel::ExeModel(QString name,QFileInfo exeFilePath, QFileInfo inputFilePath)
     :ModItem(NULL)
 {
     _name = name;
-    _file = QFileInfo(exeFilePath);
-    _inputFile = QFileInfo(inputFilePath);
-    _exeFile = QFileInfo(exeFilePath);
+    _file = exeFilePath;
+    _inputFile = inputFilePath;
+    _exeFile = exeFilePath;
 }
 
 QString ExeModel::getStrToolTip()

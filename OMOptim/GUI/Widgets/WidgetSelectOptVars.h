@@ -68,6 +68,7 @@ public:
     virtual QStringList models() const {return _problem->models();}
     virtual ModPlusCtrl* ctrl(QString model) const {return _problem->ctrl(model);}
 
+protected:
     Optimization* _problem;
 
 };

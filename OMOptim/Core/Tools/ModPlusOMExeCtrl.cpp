@@ -23,8 +23,6 @@ ModPlusCtrl *ModPlusOMExeCtrl::clone()
 {
     ModPlusOMExeCtrl* cloned = new ModPlusOMExeCtrl(_project,_ModelPlus);
 
-    cloned->_initFile = _initFile;
-    cloned->_exeFile = _exeFile;
 
     delete cloned->_parameters;
     cloned->_parameters = _parameters->clone();
@@ -58,7 +56,7 @@ QString ModPlusOMExeCtrl::resFile()
 
 QString ModPlusOMExeCtrl::resMatFile()
 {
-    QString resFile = QFileInfo(_exeFile).fileName();
+    QString resFile = exeFile().fileName();
     resFile.truncate(resFile.size() -4);
     return resFile +"_res.mat";
 }
@@ -66,7 +64,7 @@ QString ModPlusOMExeCtrl::resMatFile()
 
 QString ModPlusOMExeCtrl::resCsvFile()
 {
-    QString resFile = QFileInfo(_exeFile).fileName();
+    QString resFile = exeFile().fileName();
     resFile.truncate(resFile.size() -4);
     return resFile +"_res.csv";
 }
@@ -116,32 +114,15 @@ bool ModPlusOMExeCtrl::simulate(QDir tempFolder, MOVector<Variable> *inputVars, 
 
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QFileInfoList allFilesToCopy;
-    allFilesToCopy << _exeFile;
+    allFilesToCopy << exeFile();
+    allFilesToCopy << initFile();
     allFilesToCopy.append(filesToCopy);
-    // choose init file (can take both)
-    bool initFile =(_initFile != "");
-
-    if(initFile)
-        allFilesToCopy << _initFile;
-    else
-        InfoSender::instance()->sendError("Unable to find an init file for model "+_ModelPlus->modelName());
 
     InfoSender::instance()->debug("Start copying in temp directory : "+tempFolder.absolutePath());
-    QFileInfo fileToCopyInfo;
     //QFile fileToCopy;
-    bool copyOk;
-    for(int i=0; i< allFilesToCopy.size();i++)
-    {
-        //fileToCopy.setFileName(allFilesToCopy.at(i));
-        fileToCopyInfo = allFilesToCopy.at(i);
-        tempFolder.remove(fileToCopyInfo.fileName());
-        copyOk = QFile::copy(allFilesToCopy.at(i).absoluteFilePath(),tempFolder.filePath(fileToCopyInfo.fileName()));
-        //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
-        InfoSender::instance()->debug("Copying in temp directory : "+tempFolder.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
-        if(!copyOk)
-            InfoSender::instance()->sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
-    }
-
+    bool copyOk = LowTools::copyFilesInFolder(allFilesToCopy,tempFolder);
+    if(!copyOk)
+        return false;
 
     // remove previous log files
     QStringList filesToRemove;
@@ -149,10 +130,10 @@ bool ModPlusOMExeCtrl::simulate(QDir tempFolder, MOVector<Variable> *inputVars, 
     for(int i=0;i<filesToRemove.size();i++)
         tempFolder.remove(filesToRemove.at(i));
 
-    QString tempInitFile = tempFolder.absoluteFilePath(QFileInfo(_initFile).fileName());
+    QString tempInitFile = tempFolder.absoluteFilePath(QFileInfo(initFile()).fileName());
     QString tempMatResFile = tempFolder.absoluteFilePath(resMatFile());
     QString tempCsvResFile = tempFolder.absoluteFilePath(resCsvFile());
-    QString tempExeFile = tempFolder.absoluteFilePath(QFileInfo(_exeFile).fileName());
+    QString tempExeFile = tempFolder.absoluteFilePath(QFileInfo(exeFile()).fileName());
 
     // Specifying new Variables values in OM input file
     OpenModelica::setInputXml(tempInitFile,inputVars,_ModelPlus->modelName(),parameters());

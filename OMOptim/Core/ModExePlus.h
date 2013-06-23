@@ -71,6 +71,7 @@ public slots :
     virtual bool readVariables(ModPlusCtrl*, bool forceRecompile = false);
     bool variablesRead() const;
 
+
 };
 
 

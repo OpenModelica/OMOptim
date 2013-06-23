@@ -56,7 +56,7 @@
 #include "Widgets/WidgetTableRecVar.h"
 #include "Widgets/WidgetToolBar.h"
 #include "Widgets/WidgetCalculateMooPoints.h"
-#include "Widgets/WidgetOptimActions.h"
+#include "Widgets/WidgetProblemActions.h"
 #include "Widgets/WidgetResultInfos.h"
 #include "Widgets/WidgetCtrlParameters.h"
 #include "Widgets/WidgetOptParameters.h"
@@ -87,7 +87,7 @@ MO2ColTab(result->project()->name(),result,false,parent)
         addFixedWidget("Points",_widgetMooPointsList,Qt::LeftDockWidgetArea,Qt::Horizontal,false);
     
 
-        _widgetOptimActions = new WidgetOptimActions(_project,_problem,true,_result,this);
+        _widgetOptimActions = new WidgetProblemActions(_project,_problem,true,_result,this);
         addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
 

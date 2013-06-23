@@ -361,6 +361,25 @@ bool Project::loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo 
     return true;
 }
 
+bool Project::loadExecutableModel(QString name, QFileInfo exeFileInfo, QFileInfo inputFileInfo, ModExePlus* modExePlus)
+{
+
+
+    _modItemsTree->addExeModel(_modItemsTree->rootElement(),name, inputFileInfo, exeFileInfo);
+    _modItemsTree->emitDataChanged();
+
+    // add modelplus
+    addModelPlus(modExePlus);
+
+    //Store the model
+    //    QDir modPlusdir(modModelPlusFolder()+QDir::separator()+name);
+    //    LowTools::mkpath(modPlusdir.absolutePath(),true);
+    //    QFile::copy(exeFileInfo.absoluteFilePath(), modPlusdir.absoluteFilePath(exeFileInfo.fileName()) );
+    //    QFile::copy(inputFileInfo.absoluteFilePath(), modPlusdir.absoluteFilePath(inputFileInfo.fileName()) );
+
+    return true;
+}
+
 /**
 * \brief load a ModModelPlus defined by a filePath. It will be loaded only if refers to an existing model in current workspace.
 * \param mmoFilePath full file path of .mmo

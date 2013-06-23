@@ -591,7 +591,7 @@ void OpenModelica::setInputVariablesXml(QDomDocument & doc, QString modelName, M
             if(!oldType.isNull())
             {
                 newType = oldType;
-                newType.setAttribute("start",variables->at(i)->value());
+                newType.setAttribute("start",variables->at(i)->value().toString());
                 newVar.replaceChild(newType,oldType);
                 xModelVars.replaceChild(newVar,oldVar);
             }

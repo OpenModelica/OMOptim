@@ -37,35 +37,35 @@
      @version 
 */
 
-#ifndef WidgetOptimActions_H
-#define WidgetOptimActions_H
+#ifndef WidgetProblemActions_H
+#define WidgetProblemActions_H
 
 #include <QtGui/QDialog>
 #include <QtGui/QWidget>
 #include <QDesktopServices>
 
 #include "Optimization.h"
-#include "ui_WidgetOptimActions.h"
+#include "ui_WidgetProblemActions.h"
 #include "Project.h"
 
 
 
 namespace Ui {
-    class WidgetOptimActionsClass;
+    class WidgetProblemActionsClass;
 }
 
 
-class WidgetOptimActions : public QWidget
+class WidgetProblemActions : public QWidget
 {
 
     Q_OBJECT
 public:
-    WidgetOptimActions(ProjectBase* project,Optimization* problem,bool isResult,Result* result,QWidget *parent);
-    virtual ~WidgetOptimActions();
+    WidgetProblemActions(ProjectBase* project,Problem* problem,bool isResult,Result* result,QWidget *parent);
+    virtual ~WidgetProblemActions();
 
 
-    Ui::WidgetOptimActionsClass *_ui;
-    Optimization* _problem;
+    Ui::WidgetProblemActionsClass *_ui;
+    Problem* _problem;
     Result* _result;
     ProjectBase* _project;
     bool _isResult;
@@ -81,8 +81,6 @@ public slots :
 
 signals:
         void showModclass(ModItem*);
-
-
 };
 
 #endif 

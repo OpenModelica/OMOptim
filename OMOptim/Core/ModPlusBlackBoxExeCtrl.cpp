@@ -26,8 +26,6 @@ ModPlusCtrl *ModPlusBlackBoxExeCtrl::clone()
     ModPlusBlackBoxExeCtrl* cloned = new ModPlusBlackBoxExeCtrl(_project, _ModelPlus);
     cloned->_plugInter = _plugInter;
 
-    cloned->_initFile = _initFile;
-    cloned->_exeFile = _exeFile;
 
     delete cloned->_parameters;
     cloned->_parameters = _parameters->clone();

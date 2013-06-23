@@ -51,7 +51,7 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
     _problem = problem;
 
     // Variables
-    _widgetOneSimVars = new WidgetOneSimVars(_project,_problem,this);
+    _widgetOneSimVars = new WidgetOneSimVars(_problem,true,this);
     addDockWidget("Variables",_widgetOneSimVars);
         
     _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
@@ -61,7 +61,11 @@ MO2ColTab(problem->project()->name(),problem,false,parent)
     _widgetCtrl = new WidgetCtrlParameters(_project,_problem->_filesToCopy,_problem->model(),_problem->ctrls(),false,this);
 
     addDockWidget("Simulator",_widgetCtrl,_widgetOneSimVars);
-        
+
+    _widgetActions = new WidgetProblemActions(_project,_problem,false,NULL,this);
+    addFixedWidget("Launch",_widgetActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
+
+
     mapDockWidgets.key(_widgetOneSimVars)->raise();
 }
 

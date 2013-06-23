@@ -42,41 +42,28 @@
 
 #include <QtGui/QWidget>
 #include "OneSimulation.h"
-#include "ui_WidgetOneSimVars.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include "Project.h"
 #include "Tabs/MOTab.h"
+#include "WidgetSelectEditVars.h"
 
-namespace Ui {
-    class WidgetOneSimVarsClass;
-}
-
-class WidgetOneSimVars : public QWidget {
+class WidgetOneSimVars : public WidgetSelectEditVars {
     Q_OBJECT
 
 public:
-    WidgetOneSimVars(ProjectBase *project, OneSimulation *problem, QWidget *parent);
-    virtual ~WidgetOneSimVars();
+    explicit WidgetOneSimVars(OneSimulation *problem,bool isEditable,QWidget *parent);
+    virtual ~WidgetOneSimVars(){};
 
-    Ui::WidgetOneSimVarsClass *_ui;
+    virtual ScannedVariables* scannedVariables() const {return _problem->scannedVariables();}
+    virtual Variables* overwritedVariables() const {return _problem->overwritedVariables();}
+    virtual QStringList models() const {return QStringList() << _problem->model();}
+    virtual ModPlusCtrl* ctrl(QString model) const {return _problem->ctrl();}
 
-    ProjectBase *_project;
+
+protected:
     OneSimulation *_problem;
-    MOVector<Variable> *_variables;
 
-
-    QSortFilterProxyModel *_variableProxyModel;
-    QSortFilterProxyModel *_overVariableProxyModel;
-    QSortFilterProxyModel *_scannedVariableProxyModel;
-
-public slots :
-    void addModVariables();
-    void deleteModVariables();
-    void addScannedVariables();
-    void deleteScannedVariables();
-    void simulate();
-    void readVariables();
 };
 
 #endif // WidgetOneSimVarsCLASS_H

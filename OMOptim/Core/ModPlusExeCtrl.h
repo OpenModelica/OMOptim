@@ -51,10 +51,10 @@ public:
     bool getFinalVariablesFromFile(QTextStream *text, MOVector<Variable> * variables,QString _modelName);
     virtual bool readOutputVariables(MOVector<Variable> *,QString outputfile=""){return true;}
 //    void readResultsFromXmlDoc(const QDomDocument & doc, MOVector<Variable> * variables, QString modelName);
-
+    QFileInfo initFile() const;
+    QFileInfo exeFile() const;
 protected :
-    QString _initFile;
-    QString _exeFile;
+
 
 };
 

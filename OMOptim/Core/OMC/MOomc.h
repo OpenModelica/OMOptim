@@ -100,7 +100,8 @@ public :
 
     QStringList getParameterNames(QString parentClass, bool includeInherited=false);
     QString getParameterValue(QString parentClass, QString parameterName);
-    double getParameterDoubleValue(QString parentClass, QString parameterName, double defaultValue=0);
+    QVariant getParameterValue(QString parentClass, QString parameterName,VariableType type, QVariant defaultValue = QVariant());
+
     QStringList getInheritedClasses(QString inheritingClass);
     QStringList getComponentModifierNames(QString componentName);
     QString getFlattenedModifierValue(const QString & modelName,const QString & shortComponentName,const QString & modifierName,QString & flattenedModel);

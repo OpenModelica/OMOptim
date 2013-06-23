@@ -127,7 +127,7 @@ public:
     void setShowComponent(bool);
     void emitDataChanged();
     void readFromOMCWThread(ModItem*,int depthMax = 1000,  QString direction ="", int curDepth = 0);    //Read data and children with OMC call
-    void addExeModel(ModItem* parent,QString name, QString inputFile, QString exeFile);
+    void addExeModel(ModItem* parent,QString name, QFileInfo inputFile, QFileInfo exeFile);
 
 public slots :
     // Read and fullfill functions

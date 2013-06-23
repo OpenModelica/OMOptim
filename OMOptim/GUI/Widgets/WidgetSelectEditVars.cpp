@@ -501,24 +501,28 @@ void WidgetSelectEditVars::readVariables()
 
             if(curModelPlus->modelType() == ModelPlus::MODELICA)
                 isCompiled = ((ModModelPlus *) curModelPlus)->isCompiled(modCtrl);
-            bool shouldForceRecompile = false;
-            if(isCompiled && curModelPlus->modelType() == ModelPlus::MODELICA)
+
+            if( curModelPlus->modelType() == ModelPlus::MODELICA)
             {
-                // already compiled, ask user if we should only read init file or recompile model
-                QMessageBox msgBox;
-                msgBox.setText("Model "+models().at(i)+" is already compiled.");
-                msgBox.setInformativeText("Would you like to compile it again ?");
-                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                msgBox.setDefaultButton(QMessageBox::Yes);
-                int ret = msgBox.exec();
-                switch (ret)
+                bool shouldForceRecompile = false;
+                if(isCompiled)
                 {
-                case QMessageBox::Yes:
-                    shouldForceRecompile = true;
-                    break;
-                case QMessageBox::No:
-                    shouldForceRecompile = false;
-                    break;
+                    // already compiled, ask user if we should only read init file or recompile model
+                    QMessageBox msgBox;
+                    msgBox.setText("Model "+models().at(i)+" is already compiled.");
+                    msgBox.setInformativeText("Would you like to compile it again ?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    int ret = msgBox.exec();
+                    switch (ret)
+                    {
+                    case QMessageBox::Yes:
+                        shouldForceRecompile = true;
+                        break;
+                    case QMessageBox::No:
+                        shouldForceRecompile = false;
+                        break;
+                    }
                 }
                 ((ModModelPlus *)curModelPlus)->readVariables(modCtrl,QFileInfoList(),shouldForceRecompile);
             }
@@ -559,15 +563,22 @@ void WidgetSelectEditVars::setShownColumns()
 {
     // Hide columns
     QList<int> varsColsToShow;
+
     //varsColsToHide;
     varsColsToShow << Variable::NAME << Variable::DESCRIPTION;
-
+    QList<int> colsHidden;
 
     if(_tableVariables)
     {
         for(int i=0;i<_tableVariables->horizontalHeader()->count();i++)
+        {
             _tableVariables->setColumnHidden(i,!varsColsToShow.contains(i));
+            if(!varsColsToShow.contains(i))
+                colsHidden.push_back(i);
+        }
+        _hiddenFields.insert(_tableVariables,colsHidden);
     }
+
     //    QList<int> optColsToHide;
     //    optColsToHide << OptVariable::DESCRIPTION;
     //    for(int i=0;i<optColsToHide.size();i++)
@@ -585,8 +596,19 @@ void WidgetSelectEditVars::setShownColumns()
 
 }
 
+void WidgetSelectEditVars::clearDelegates()
+{
+    for(int i=0;i<_delegates.size();i++)
+        delete _delegates.at(i);
+
+    _delegates.clear();
+}
+
+
 void WidgetSelectEditVars::setDelegates()
 {
+    clearDelegates();
+
     //tables' delegates
     QList<int> values;
     QStringList titles;
@@ -595,7 +617,14 @@ void WidgetSelectEditVars::setDelegates()
     GenericDelegate *directionDelegate = new GenericDelegate(values,titles,this);
 
     if(_tableObjectives)
-        _tableObjectives->setItemDelegateForColumn(OptObjective::DIRECTION,directionDelegate);
+        _tableObjectives->setItemDelegateForColumn(iColumn(OptObjective::DIRECTION,_tableObjectives),directionDelegate);
+
+    _delegates.push_back(directionDelegate);
+
+
+    VarValueDelegate* varValueDelegate = new VarValueDelegate(_overVarsProxyModel,this);
+    if(_tableOverVars)
+        _tableOverVars->setItemDelegateForColumn(iColumn(Variable::VALUE,_tableOverVars),varValueDelegate);
 
     values.clear();
     titles.clear();
@@ -615,8 +644,8 @@ void WidgetSelectEditVars::setDelegates()
 
     GenericDelegate *scanFunctionDelegate = new GenericDelegate(values,titles,this);
     if(_tableObjectives)
-        _tableObjectives->setItemDelegateForColumn(OptObjective::SAMPLINGFUNCTION,scanFunctionDelegate);
-
+        _tableObjectives->setItemDelegateForColumn(iColumn(OptObjective::SAMPLINGFUNCTION,_tableObjectives),scanFunctionDelegate);
+    _delegates.push_back(scanFunctionDelegate);
     if(_tableOptimizedVars)
     {
         values.clear();
@@ -624,21 +653,26 @@ void WidgetSelectEditVars::setDelegates()
         values << OMREAL << OMINTEGER << OMBOOLEAN << OMSTRING ;
         titles << "Real" << "Integer" << "Boolean" << "String";
         GenericDelegate *dataTypeDelegate = new GenericDelegate(values,titles,this);
-        _tableOptimizedVars->setItemDelegateForColumn(OptVariable::DATATYPE,dataTypeDelegate);
+        _tableOptimizedVars->setItemDelegateForColumn(iColumn(OptVariable::DATATYPE,_tableOptimizedVars),dataTypeDelegate);
+        _delegates.push_back(dataTypeDelegate);
 
 
         DoubleSpinBoxDelegate* minDelegate = new DoubleSpinBoxDelegate(this,30);
         DoubleSpinBoxDelegate* maxDelegate = new DoubleSpinBoxDelegate(this,30);
-        _tableOptimizedVars->setItemDelegateForColumn(OptVariable::OPTMIN,minDelegate);
-        _tableOptimizedVars->setItemDelegateForColumn(OptVariable::OPTMAX,maxDelegate);
+        _tableOptimizedVars->setItemDelegateForColumn(iColumn(OptVariable::OPTMIN,_tableOptimizedVars),minDelegate);
+        _tableOptimizedVars->setItemDelegateForColumn(iColumn(OptVariable::OPTMAX,_tableOptimizedVars),maxDelegate);
+        _delegates.push_back(minDelegate);
+        _delegates.push_back(maxDelegate);
     }
 
     if(_tableObjectives)
     {
         DoubleSpinBoxDelegate* minObjDelegate = new DoubleSpinBoxDelegate(this,30);
         DoubleSpinBoxDelegate* maxObjDelegate = new DoubleSpinBoxDelegate(this,30);
-        _tableObjectives->setItemDelegateForColumn(OptObjective::MIN,minObjDelegate);
-        _tableObjectives->setItemDelegateForColumn(OptObjective::MAX,maxObjDelegate);
+        _tableObjectives->setItemDelegateForColumn(iColumn(OptObjective::MIN,_tableObjectives),minObjDelegate);
+        _tableObjectives->setItemDelegateForColumn(iColumn(OptObjective::MAX,_tableObjectives),maxObjDelegate);
+        _delegates.push_back(minObjDelegate);
+        _delegates.push_back(maxObjDelegate);
     }
     if(_tableSamplingVars)
     {
@@ -646,9 +680,30 @@ void WidgetSelectEditVars::setDelegates()
         DoubleSpinBoxDelegate* maxScanDelegate = new DoubleSpinBoxDelegate(this,30);
         DoubleSpinBoxDelegate* valueScanDelegate = new DoubleSpinBoxDelegate(this,30);
         DoubleSpinBoxDelegate* stepScanDelegate = new DoubleSpinBoxDelegate(this,30);
-        _tableSamplingVars->setItemDelegateForColumn(ScannedVariable::SCANMIN,minScanDelegate);
-        _tableSamplingVars->setItemDelegateForColumn(ScannedVariable::SCANMAX,maxScanDelegate);
-        _tableSamplingVars->setItemDelegateForColumn(ScannedVariable::VALUE,valueScanDelegate);
-        _tableSamplingVars->setItemDelegateForColumn(ScannedVariable::SCANSTEP,stepScanDelegate);
+        _tableSamplingVars->setItemDelegateForColumn(iColumn(ScannedVariable::SCANMIN,_tableSamplingVars),minScanDelegate);
+        _tableSamplingVars->setItemDelegateForColumn(iColumn(ScannedVariable::SCANMAX,_tableSamplingVars),maxScanDelegate);
+        _tableSamplingVars->setItemDelegateForColumn(iColumn(ScannedVariable::VALUE,_tableSamplingVars),valueScanDelegate);
+        _tableSamplingVars->setItemDelegateForColumn(iColumn(ScannedVariable::SCANSTEP,_tableSamplingVars),stepScanDelegate);
+        _delegates.push_back(minScanDelegate);
+        _delegates.push_back(maxScanDelegate);
+        _delegates.push_back(valueScanDelegate);
+        _delegates.push_back(stepScanDelegate);
     }
+
+}
+
+int WidgetSelectEditVars::iColumn(int iField,MOTableView* table) const
+{
+    QList<int> hiddenFields = _hiddenFields.value(table);
+
+    if(hiddenFields.contains(iField))
+        return -1;
+
+    int iRow = 0;
+    for(int i=0;i<iField;i++)
+    {
+        if(!hiddenFields.contains(i))
+            iRow++;
+    }
+    return iRow;
 }

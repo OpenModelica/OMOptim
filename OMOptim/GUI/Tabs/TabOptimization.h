@@ -49,7 +49,7 @@ class WidgetOptParameters;
 class WidgetSelectOptVars;
 //class WidgetSelectComponents;
 class WidgetFilesList;
-class WidgetOptimActions;
+class WidgetProblemActions;
 class WidgetCtrlParameters;
 class WidgetModelsList;
 
@@ -69,7 +69,7 @@ public:
     WidgetSelectOptVars *_widgetSelectOptVars;
   //  WidgetSelectComponents *_widgetSelectComponents;
     WidgetFilesList *_widgetFilesList;
-    WidgetOptimActions *_widgetOptimActions;
+    WidgetProblemActions *_widgetOptimActions;
     WidgetCtrlParameters *_widgetCtrl;
     WidgetModelsList* _widgetModels;
 

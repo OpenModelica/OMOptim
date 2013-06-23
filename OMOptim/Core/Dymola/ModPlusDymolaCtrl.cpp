@@ -319,25 +319,9 @@ bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,M
     allFilesToCopy << mmoDir.filePath("dsin.txt") << mmoDir.filePath("dymosim.exe");
     allFilesToCopy.append(filesToCopy);
 
-    QFileInfo fileToCopyInfo;
-    QFile fileToCopy;
-    bool removeOk;
-    for(int i=0; i< allFilesToCopy.size();i++)
-    {
-        fileToCopy.setFileName(allFilesToCopy.at(i).absoluteFilePath());
-        fileToCopyInfo.setFile(fileToCopy);
-
-        removeOk = tempDir.remove(fileToCopyInfo.fileName());
-        InfoSender::instance()->debug("Removing in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-//        if(!removeOk)
-//        {
-//            QFile::setPermissions(fileToCopyInfo.absoluteFilePath(),fileToCopyInfo.permissions() | QFile::WriteUser);
-//            removeOk = tempDir.remove(fileToCopyInfo.fileName());
-//            InfoSender::instance()->debug("Removing in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(removeOk).toString());
-//        }
-
-        fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
-    }
+    bool copyOk = LowTools::copyFilesInFolder(allFilesToCopy,tempDir);
+    if(!copyOk)
+        return false;
 
     // remove previous dymola log files
     QStringList filesToRemove;

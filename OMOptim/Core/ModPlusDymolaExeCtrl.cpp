@@ -27,8 +27,6 @@ ModPlusCtrl *ModPlusDymolaExeCtrl::clone()
 
     cloned->_dsfinalFile = _dsfinalFile;
     cloned->_dsresFile = _dsresFile;
-    cloned->_initFile = _initFile;
-    cloned->_exeFile = _exeFile;
 
     delete cloned->_parameters;
     cloned->_parameters = _parameters->clone();
@@ -69,32 +67,16 @@ bool ModPlusDymolaExeCtrl::simulate(QDir tempDir, MOVector<Variable> *updatedVar
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QFileInfoList allFilesToCopy;
 //    QDir mmoDir = QDir(_ModelPlus->mmoFolder());
-    allFilesToCopy << _exeFile;
+    allFilesToCopy << exeFile();
+    allFilesToCopy << initFile();
     allFilesToCopy.append(filesToCopy);
-    // choose init file (can take both)
-    bool initFile =(_initFile != "");
-
-    if(initFile)
-        allFilesToCopy << _initFile;
-    else
-        InfoSender::instance()->sendError("Unable to find an init file for model "+_ModelPlus->modelName());
 
     InfoSender::instance()->debug("Start copying in temp directory : "+tempDir.absolutePath());
-    QFileInfo fileToCopyInfo;
-    //QFile fileToCopy;
-    bool copyOk;
-    for(int i=0; i< allFilesToCopy.size();i++)
-    {
-        //fileToCopy.setFileName(allFilesToCopy.at(i));
-        fileToCopyInfo = allFilesToCopy.at(i);
-        tempDir.remove(fileToCopyInfo.fileName());
-        copyOk = QFile::copy(allFilesToCopy.at(i).absoluteFilePath(),tempDir.filePath(fileToCopyInfo.fileName()));
-        //= fileToCopy.copy(tempDir.filePath(fileToCopyInfo.fileName()));
-        InfoSender::instance()->debug("Copying in temp directory : "+tempDir.filePath(fileToCopyInfo.fileName())+" : "+QVariant(copyOk).toString());
-        if(!copyOk)
-            InfoSender::instance()->sendWarning("Unable to copy file in temp directory : "+fileToCopyInfo.fileName()/*+" ("+QFile::errorString()+")"*/);
-    }
 
+    //QFile fileToCopy;
+    bool copyOk = LowTools::copyFilesInFolder(allFilesToCopy,tempDir);
+    if(!copyOk)
+        return false;
 
     // remove previous dymola log files
     QStringList filesToRemove;
@@ -102,7 +84,7 @@ bool ModPlusDymolaExeCtrl::simulate(QDir tempDir, MOVector<Variable> *updatedVar
     for(int i=0;i<filesToRemove.size();i++)
         tempDir.remove(filesToRemove.at(i));
 
-    QString tempInit = tempDir.absoluteFilePath(QFileInfo(_initFile).fileName());
+    QString tempInit = tempDir.absoluteFilePath(initFile().fileName());
     QString tempDsres = tempDir.absoluteFilePath("dsres.txt");
 
 
@@ -214,7 +196,7 @@ bool ModPlusDymolaExeCtrl::readInitialVariables(MOVector<Variable> *initVariable
 
     InfoSender::eraseCurrentTask();
 
-    if(!QFile::exists(_initFile))
+    if(!initFile().exists())
     {
         QString msg = "Unable to find the initial file";
         InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
@@ -222,7 +204,7 @@ bool ModPlusDymolaExeCtrl::readInitialVariables(MOVector<Variable> *initVariable
     }
     else
     {
-        Dymola::getVariablesFromDsFile(_initFile,initVariables,_ModelPlus->modelName());
+        Dymola::getVariablesFromDsFile(initFile().absoluteFilePath(),initVariables,_ModelPlus->modelName());
         InfoSender::instance()->send(Info(ListInfo::READVARIABLESSUCCESS));
         return true;
     }

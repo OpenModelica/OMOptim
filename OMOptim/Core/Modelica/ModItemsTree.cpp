@@ -98,7 +98,7 @@ void ModItemsTree::readFromOMCWThread(ModItem* parent,int depthMax,  QString dir
 
 }
 
-void ModItemsTree::addExeModel(ModItem* parent, QString name, QString inputFile, QString exeFile)
+void ModItemsTree::addExeModel(ModItem* parent, QString name, QFileInfo inputFile, QFileInfo exeFile)
 {
     ModItem* newExeElement = new ExeModel(name,exeFile,inputFile);
     addChild(parent, newExeElement);

@@ -13,7 +13,7 @@ private:
     QFileInfo _exeFile;
 
 public:
-    ExeModel(QString name,QString exeFilePath, QString inputFilePath);
+    ExeModel(QString name,QFileInfo exeFile, QFileInfo inputFilePath);
     Modelica::ClassRestr getClassRestr(){return Modelica::EXECUTABLE;}
     virtual QString getClassName() const {return "ExeModel";}
     virtual QString getStrToolTip();

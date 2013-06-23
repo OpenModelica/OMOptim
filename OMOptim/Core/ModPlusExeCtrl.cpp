@@ -7,25 +7,12 @@
 #include "PlugInterface.h"
 #include <QDebug>
 #include "LowTools.h"
+#include "ModExePlus.h"
 
 ModPlusExeCtrl::ModPlusExeCtrl(Project* project,ModelPlus *modExePlus)
                :ModPlusCtrl(project,modExePlus,project->moomc())
 {
-
-    ExeModel* exeModel =dynamic_cast<ExeModel*> (project->modItemsTree()->findInDescendants(modExePlus->modelName()));
-    if(exeModel)
-    {
-        _initFile = exeModel->inputFile().absoluteFilePath();
-        _exeFile  = exeModel->exeFile().absoluteFilePath();
-    }
-    else
-    {
-        _initFile = "";
-        _exeFile  = "";
-    }
-
     _copyAllMoOfFolder = true;
-
 }
 
 ModPlusExeCtrl::~ModPlusExeCtrl(void)
@@ -282,7 +269,27 @@ bool ModPlusExeCtrl::getFinalVariablesFromFile(QTextStream *text, MOVector<Varia
     return true;
 }
 
+QFileInfo ModPlusExeCtrl::initFile() const
+{
+    ModExePlus* modExePlus =dynamic_cast<ModExePlus*> (_ModelPlus);
+    if(modExePlus)
+    {
+        return modExePlus->inputFile();
+    }
+    else
+        return QFileInfo();
+}
 
+QFileInfo ModPlusExeCtrl::exeFile() const
+{
+    ModExePlus* modExePlus =dynamic_cast<ModExePlus*> (_ModelPlus);
+    if(modExePlus)
+    {
+        return modExePlus->exeFile();
+    }
+    else
+        return QFileInfo();
+}
 
 
 
@@ -343,7 +350,7 @@ void ModPlusExeCtrl::setInputVariablesXml(QDomDocument & doc, QString modelName,
             if(!oldType.isNull())
             {
                 newType = oldType;
-                newType.setAttribute("start",variables->at(i)->value());
+                newType.setAttribute("start",variables->at(i)->value().toString());
                 newVar.replaceChild(newType,oldType);
                 xModelVars.replaceChild(newVar,oldVar);
             }

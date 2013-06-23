@@ -82,8 +82,13 @@ ModExePlus::ModExePlus(Project * project, const QDomElement & domRoot)
     QString exeFile = cFiles.attribute("exeFile");
     QString inputFile = cFiles.attribute( "inputFile");
 
+    QDir::setCurrent(project->folder().absolutePath());
+
+    QFileInfo exeFileInfo(exeFile);
+    QFileInfo inputFileInfo(inputFile);
+
     // load/create exeModel
-    project->loadExecutableModel(_modelName,exeFile,inputFile);
+    project->loadExecutableModel(_modelName,exeFileInfo,inputFileInfo,this);
 }
 
 ModExePlus::~ModExePlus()
@@ -175,10 +180,27 @@ QDomElement ModExePlus::toXmlData(QDomDocument &doc)
 
     // add input file and exe file
     QDomElement cFiles = doc.createElement( "Files" );
-    cFiles.setAttribute( "exeFile", this->exeFile().absoluteFilePath());
-    cFiles.setAttribute( "inputFile", this->inputFile().absoluteFilePath());
-    root.appendChild(cFiles);
 
+    // Mo files
+    bool useRelativePath;
+
+    QDir projectDir = _project->folder();
+
+    // if file is in project folder, use relative path
+    useRelativePath = (exeFile().absoluteFilePath().indexOf(projectDir.absolutePath())==0);
+    if(useRelativePath)
+        cFiles.setAttribute( "exeFile", projectDir.relativeFilePath(exeFile().absoluteFilePath()));
+    else
+        cFiles.setAttribute( "exeFile", this->exeFile().absoluteFilePath());
+
+
+    useRelativePath = (inputFile().absoluteFilePath().indexOf(projectDir.absolutePath())==0);
+    if(useRelativePath)
+        cFiles.setAttribute( "inputFile", projectDir.relativeFilePath(inputFile().absoluteFilePath()));
+    else
+        cFiles.setAttribute( "inputFile", this->inputFile().absoluteFilePath());
+
+    root.appendChild(cFiles);
     return root;
 }
 
@@ -194,12 +216,30 @@ bool ModExePlus::compile(ModPlusCtrl* ctrl,QFileInfoList filesToCopy)
 
 QFileInfo ModExePlus::exeFile()
 {
-    return this->modModel()->exeFile();
+    if(!modModel())
+        return QFileInfo();
+
+    QFileInfo exeFileInfo = modModel()->exeFile();
+    qDebug(exeFileInfo.absoluteFilePath().toLatin1().data());
+    if(exeFileInfo.isRelative())
+        exeFileInfo = QFileInfo(_project->folder(),exeFileInfo.filePath());
+    qDebug(exeFileInfo.absoluteFilePath().toLatin1().data());
+
+    return exeFileInfo;
 }
 
 QFileInfo ModExePlus::inputFile()
 {
-    return this->modModel()->inputFile();
+    if(!modModel())
+        return QFileInfo();
+
+    QFileInfo inputFileInfo = modModel()->inputFile();
+    qDebug(inputFileInfo.absoluteFilePath().toLatin1().data());
+    if(inputFileInfo.isRelative())
+        inputFileInfo = QFileInfo(_project->folder(),inputFileInfo.filePath());
+    qDebug(inputFileInfo.absoluteFilePath().toLatin1().data());
+
+    return inputFileInfo;
 }
 
 

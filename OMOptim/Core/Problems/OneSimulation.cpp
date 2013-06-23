@@ -246,7 +246,7 @@ Result* OneSimulation::launch(ProblemConfig config)
                     curVar = curVariables.findItem(result->finalVariables()->at(i)->name());
                     if(curVar)
                     {
-                        curValue = curVar->value();
+                        curValue = curVar->doubleValue();
                         result->finalVariables()->at(i)->setFinalValue(iScan,0,curValue,true);
                     }
                     else

@@ -52,7 +52,7 @@
 #include "Widgets/WidgetSelectOptVars.h"
 //#include "Widgets/WidgetSelectComponents.h"
 #include "Widgets/WidgetFilesList.h"
-#include "Widgets/WidgetOptimActions.h"
+#include "Widgets/WidgetProblemActions.h"
 #include "Widgets/WidgetCtrlParameters.h"
 #include "Widgets/WidgetModelsList.h"
 //#include "BlockSubstituteConnDlg.h"
@@ -88,7 +88,7 @@ TabOptimization::TabOptimization(Optimization *problem, QWidget *parent) :
     _widgetModels = new WidgetModelsList(_project,_problem,this);
     addDockWidget("Models",_widgetModels,_widgetSelectOptVars);
 
-    _widgetOptimActions = new WidgetOptimActions(_project,_problem,false,NULL,this);
+    _widgetOptimActions = new WidgetProblemActions(_project,_problem,false,NULL,this);
     addFixedWidget("Launch",_widgetOptimActions,Qt::BottomDockWidgetArea,Qt::Vertical,false);
 
 

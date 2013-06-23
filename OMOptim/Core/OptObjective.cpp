@@ -465,7 +465,7 @@ void OptObjectiveResult::setFinalValues(const std::vector<double> & finalValues)
     }
 }
 
-void OptObjectiveResult::setFinalValueAtPoint(double value,int index)
+void OptObjectiveResult::setFinalValueAtPoint(double newvalue,int index)
 {
     if(index>=_finalValues.size())
     {
@@ -473,7 +473,7 @@ void OptObjectiveResult::setFinalValueAtPoint(double value,int index)
         _finalValues.resize(index+1,-1);
     }
 
-    _finalValues.at(index)=_value;
+    _finalValues.at(index)=newvalue;
     _computedPoints.at(index)=true;
 }
 

@@ -312,32 +312,55 @@ QString MOomc::getParameterValue(QString parentClass, QString parameterName)
         return commandRes;
 }
 
-double MOomc::getParameterDoubleValue(QString parentClass, QString parameterName,double defaultValue)
+/** This function will try to find value of parameter corresponding to its type.
+  * Sometimes, a parameter value is a reference to another one. This functions will recursively
+  * seek through references until it finds one corresponding to the type specified.
+  */
+QVariant MOomc::getParameterValue(QString parentClass, QString parameterName,VariableType type, QVariant defaultValue)
 {
     QString commandRes= evalCommand("getParameterValue(" + parentClass +","+ parameterName+")");
     if(commandRes=="Error" || commandRes.isEmpty())
         return defaultValue;
 
-    bool isDouble;
+
+    QVariant::Type variantType;
+    switch(type)
+    {
+     case OMREAL:
+        variantType = QVariant::Double;
+        break;
+    case OMBOOLEAN :
+        variantType = QVariant::Bool;
+        break;
+    case OMINTEGER :
+        variantType = QVariant::Int;
+        break;
+    case OMSTRING :
+        variantType = QVariant::String;
+        break;
+    default:
+        variantType = QVariant::String;
+        break;
+    }
+
     int i=0; // to avoid infinite loop (if for whatever reason, incorrect case is catched by error boolean)
+    QVariant result = commandRes;
 
-    double result = commandRes.toDouble(&isDouble);
-    bool error;
+    bool error = false;
 
-    while(!isDouble && (i<100) &&!error)
+    while(!result.convert(variantType)  && (i<100) &&!error)
     {
         parentClass = commandRes.section(".",0,-2);
         parameterName= commandRes.section(".",-1,-1);
         commandRes = evalCommand("getParameterValue(" + parentClass +","+ parameterName+")");
         error = (commandRes=="Error" || commandRes.isEmpty());
-        result = commandRes.toDouble(&isDouble);
+        result = commandRes;
         i++;
     }
-    if(isDouble)
+    if(result.convert(variantType) && result.convert(variantType))
         return result;
     else
         return defaultValue;
-
 }
 
 QStringList MOomc::getParameterNames(QString parentClass,bool includeInherited)

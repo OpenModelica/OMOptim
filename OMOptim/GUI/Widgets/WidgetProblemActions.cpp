@@ -30,7 +30,7 @@
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-        @file WidgetOptimActions.cpp
+        @file WidgetProblemActions.cpp
     @brief Comments for file documentation.
     @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
     Company : CEP - ARMINES (France)
@@ -39,17 +39,17 @@
 */
 
 
-#include "Widgets/WidgetOptimActions.h"
+#include "Widgets/WidgetProblemActions.h"
 #include "Tools/GuiTools.h"
 #include "Tools/MOStyleSheet.h"
 
 namespace Ui
 {
-class WidgetOptimActionsClass;
+class WidgetProblemActionsClass;
 }
 
-WidgetOptimActions::WidgetOptimActions(ProjectBase* project,Optimization *problem,bool isResult,Result* result,QWidget *parent)
-    : QWidget(parent), _ui(new Ui::WidgetOptimActionsClass)
+WidgetProblemActions::WidgetProblemActions(ProjectBase* project,Problem *problem,bool isResult,Result* result,QWidget *parent)
+    : QWidget(parent), _ui(new Ui::WidgetProblemActionsClass)
 {
     _ui->setupUi(this);
     _ui->frame->setStyleSheet(MOStyleSheet::launchBarStyleSheet());
@@ -66,18 +66,18 @@ WidgetOptimActions::WidgetOptimActions(ProjectBase* project,Optimization *proble
     actualizeGui();
 }
 
-WidgetOptimActions::~WidgetOptimActions()
+WidgetProblemActions::~WidgetProblemActions()
 {
     delete _ui;
 }
 
-void WidgetOptimActions::launch()
+void WidgetProblemActions::launch()
 {
     _project->launchProblem(_problem);
 }
 
 
-void WidgetOptimActions::actualizeGui()
+void WidgetProblemActions::actualizeGui()
 {
 
     // list of widgets to hide when problem is solved
@@ -107,18 +107,18 @@ void WidgetOptimActions::actualizeGui()
     }
 }
 
-void WidgetOptimActions::restoreProblem()
+void WidgetProblemActions::restoreProblem()
 {
     if(_isResult)
         _project->restoreProblemFromResult(_result);
 }
 
-void WidgetOptimActions::onShowModelAsked()
+void WidgetProblemActions::onShowModelAsked()
 {
 
 }
 
-QPushButton*  WidgetOptimActions::addButton(QString text,bool before)
+QPushButton*  WidgetProblemActions::addButton(QString text,bool before)
 {
     QPushButton* pushButton = new QPushButton(text,this);
     pushButton->setMinimumHeight(_ui->pushLaunch->minimumHeight());
