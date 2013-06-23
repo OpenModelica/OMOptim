@@ -180,7 +180,7 @@ void LowTools::copyDirContents(QString org,QString dest)
             QString orgFilePath = orgDir.absoluteFilePath(files[indf]);
             QString destFilePath = destDir.absoluteFilePath(files[indf]);
 
-            QFile::copy(orgFilePath,destFilePath);
+            QFile::copy("\""+orgFilePath+"\"","\""+destFilePath+"\"");
         }
     }
 }
@@ -191,19 +191,40 @@ bool LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
     bool tmpBool;
     if(!folder.exists())
     {
-        LowTools::mkpath(folder.absolutePath(),false);
+        LowTools::mkpath("\""+folder.absolutePath()+"\"",false);
     }
+
+    QString orgPath;
+    QString destPath;
+    QFile orgFile;
 
     for(int i=0;i<files.size();i++)
     {
         QFileInfo fileInfo(files.at(i));
         if(folder.exists(fileInfo.fileName()))
             folder.remove(fileInfo.fileName());
-        tmpBool = QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
-        if(!tmpBool)
+
+        orgPath = fileInfo.absoluteFilePath();
+        destPath = folder.filePath(fileInfo.fileName());
+
+
+        orgFile.setFileName(orgPath);
+        if(!orgFile.exists())
         {
-            SleeperThread::msleep(1000);
-            tmpBool = QFile::copy(fileInfo.absoluteFilePath(),folder.filePath(fileInfo.fileName()));
+            tmpBool = false;
+            InfoSender::instance()->sendWarning("Unable to copy file in " + folder.path() + ": "+fileInfo.fileName() + " [ File does not exist ]");
+        }
+        else
+        {
+            tmpBool = orgFile.copy(destPath);
+
+            if(!tmpBool)
+            {
+                SleeperThread::msleep(1000);
+                tmpBool = orgFile.copy(destPath);
+            }
+            if(!tmpBool)
+                InfoSender::instance()->sendWarning("Unable to copy file in " + folder.path() + ": "+fileInfo.fileName() + " ["+orgFile.errorString()+"]");
         }
         allCopyOk = allCopyOk && tmpBool;
     }

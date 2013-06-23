@@ -135,16 +135,19 @@ public :
     //Specific functions
     void setDescription(QString);
     void setValue(double);
-    double value() const;
+    void setValue(QVariant);
+    double doubleValue(bool *ok= NULL) const;
+    QVariant value() const;
     void setDataType(VariableType);
+    VariableType getDataType()const{return _dataType;}
     void setCausality(VariableCausality causality);
     VariableCausality causality();
     QString description();
     virtual QString name(Variable::NameFormat = Variable::FULL) const;
     virtual QString getStrToolTip();
+    bool isBoolean() const;
 
     virtual bool valueDefined(){return _filledFields.contains(Variable::VALUE);}
-
 
 
 protected :
@@ -156,12 +159,8 @@ protected :
     //int category;
     VariableType _dataType;
     VariableCausality _causality;
-    double _value;
-
-    //double min;
-    //double max;
+    QVariant _value;
 };
-
 
 
 

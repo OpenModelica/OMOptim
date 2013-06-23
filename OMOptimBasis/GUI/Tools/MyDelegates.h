@@ -50,6 +50,7 @@
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QProgressBar>
 #include <limits>
+#include <QSortFilterProxyModel>
 
 #include "qsciencespinbox.h"
 
@@ -76,6 +77,26 @@ private slots:
 private:
     QList<int> values;
     QStringList titles;
+};
+
+class VarValueDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+public:
+    VarValueDelegate(QSortFilterProxyModel* proxyModel = NULL, QObject *parent = 0);
+
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                          const QModelIndex &index) const;
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model,
+                      const QModelIndex &index) const;
+protected :
+    QSortFilterProxyModel* _proxyModel;
+
+private slots:
+    void emitCommitData();
 };
 
 class VarCompleterDelegate : public QStyledItemDelegate

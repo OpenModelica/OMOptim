@@ -124,7 +124,19 @@ void Variable::setValue(double value)
     _value = value;
 }
 
-double Variable::value() const
+void Variable::setValue(QVariant value)
+{
+    if(!_filledFields.contains(Variable::VALUE))
+        _filledFields.push_back(Variable::VALUE);
+    _value = value;
+}
+
+double Variable::doubleValue(bool *ok) const
+{
+    return _value.toDouble(ok);
+}
+
+QVariant Variable::value() const
 {
     return _value;
 }
@@ -181,7 +193,10 @@ QVariant Variable::getFieldValue(int ifield, int role) const
         case MODEL :
             return _model;
         case VALUE :
-            return _value;
+//            if(isBoolean())
+//                return QVariant((bool)_value);
+//            else
+                return _value;
         case DESCRIPTION :
             return _description;
             /*case MIN :
@@ -291,7 +306,11 @@ bool Variable::setFieldValue(int ifield,QVariant value)
             _name=value.toString();
             break;
         case VALUE :
-            _value=value.toDouble();
+            _value = value;
+//            if(isBoolean())
+//                _value = value.toBool();
+//            else
+//                _value=value.toDouble();
             break;
         case MODEL :
             _model = value.toString();
@@ -343,6 +362,13 @@ QString Variable::getStrToolTip()
 
 }
 
+bool Variable::isBoolean() const
+{
+    return _dataType == OMBOOLEAN;
+}
+
+
+
 void Variable::setModel(QString model)
 {
     _model = model;
@@ -373,7 +399,7 @@ VariableResult::VariableResult(const VariableResult& var):Variable(var)
 
 VariableResult::VariableResult(const Variable& var):Variable(var)
 {
-    setFinalValue(0,0,_value);
+    setFinalValue(0,0,doubleValue());
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
