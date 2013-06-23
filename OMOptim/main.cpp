@@ -50,7 +50,7 @@
 #include <cstdio>    // fileno()
 #include <unistd.h>  // isatty()
 #include "GuiTools.h"
-#include "Dialogs/ConsoleDlg.h"
+#include "ConsoleWindow.h"
 
 #define HAVE_QAPPLICATION_H
 #define HAVE_QSOCKETNOTIFIER_H
@@ -100,7 +100,12 @@ int main(int argc, char *argv[])
     OMOptimSettings::initialize();
 
     // Message handler
-    QString logFilePath = app->applicationDirPath()+QDir::separator()+"MOLog.txt";
+    QString logFilePath = app->applicationDirPath()+QDir::separator()+"OMLog.txt";
+    if(filePaths.size()==1)
+    {
+        // put MOLog in same directory
+        logFilePath = QFileInfo(filePaths.at(0)).absoluteDir().absoluteFilePath("OMLog.txt");
+    }
     QFile logFile(logFilePath);
     logFile.open(QIODevice::WriteOnly);
 
@@ -112,13 +117,16 @@ int main(int argc, char *argv[])
     MOStyleSheet::initialize(qApp);
 
 
+    QList<QTextStream*> logStreams;
     //#ifdef _DEBUG
-    QTextStream logStream(&logFile);
-    InfoSender::instance()->setLogStream(&logStream);
+    QTextStream *logStream = new QTextStream(&logFile);
+    InfoSender::instance()->addLogStream(logStream);
+    logStreams.push_back(logStream);
     //#endif
 
 
     bool showGUI = true;
+    bool showConsole = false;
 
     // if script file to parse
     bool launchScript = false;
@@ -131,10 +139,22 @@ int main(int argc, char *argv[])
         bool scriptResult = ScriptParser::parseFile(QFileInfo(filePaths.at(0)),scriptCommands,definitions);
 
         // show gui ?
-        if(options.contains("nogui"))
+        QString displayMode = definitions.value("displaymode",QString());
+        if(displayMode=="console")
+        {
             showGUI = false;
-        if(definitions.value("usegui",QString()).contains(QRegExp("^[false|0]+$")))
+            showConsole = true;
+        }
+        if(displayMode=="nogui")
+        {
             showGUI = false;
+            showConsole = false;
+        }
+        if(displayMode=="gui")
+        {
+            showGUI = true;
+            showConsole = false;
+        }
 
         if(!showGUI && !scriptResult)
             return -1;
@@ -151,6 +171,7 @@ int main(int argc, char *argv[])
 
     Project* project = new Project(startOMC);
     project->setScriptParser(new ScriptParserOMOptim(project));
+    app->connect( app, SIGNAL( lastWindowClosed() ), project->scriptParser(),SLOT(stop()));
 
     // create GUI
     MainWindow *w = NULL;
@@ -166,35 +187,44 @@ int main(int argc, char *argv[])
 
 
 
-    QList<QTextStream*> logStreams;
 
     // launchScript
+    ConsoleWindow* console = NULL;
     if(launchScript)
     {
 
-        bool launchFromCmdLine = false;
-        if (isatty(fileno(stdin)))
-            launchFromCmdLine = true;
+        //        bool launchFromCmdLine = false;
+        //        if (isatty(fileno(stdin)))
+        //            launchFromCmdLine = true;
 
+        // add a script logfile
+        QString scriptLogFilePath = QFileInfo(filePaths.at(0)).absoluteDir().absoluteFilePath("OMScriptLog.txt");
+        QFile scriptLogFile(scriptLogFilePath);
+        scriptLogFile.open(QIODevice::WriteOnly);
+        QTextStream *scriptLogStream = new QTextStream(&scriptLogFile);
+        InfoSender::instance()->addLogStream(scriptLogStream,QList<ListInfo::InfoType>() << ListInfo::SCRIPT);
+        logStreams.push_back(scriptLogStream);
 
-        ConsoleDlg* console = NULL;
         int result = 0;
-        if(!launchFromCmdLine)
+        if(showConsole)
         {
             // create a window
-            console = new ConsoleDlg(app,project,scriptCommands);
+            console = new ConsoleWindow(project,scriptCommands);
+            app->connect( app, SIGNAL( lastWindowClosed() ), app, SLOT( quit() ) );
             console->show();
-            console->launch();
-            result = console->exec();
+            result = console->launch();
+            //result = console->exec();
         }
         else
         {
             // set output to terminal
             QTextStream* stdStream = new QTextStream(stdout, QIODevice::WriteOnly);
+
+
             QList<ListInfo::InfoType> logInfoTypes;
             logInfoTypes  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
                              ListInfo::ERROR2<< ListInfo::TASK << ListInfo::SCRIPT;
-            InfoSender::instance()->setLogStream(stdStream,logInfoTypes);
+            InfoSender::instance()->addLogStream(stdStream,logInfoTypes);
 
             logStreams.push_back(stdStream);
 
@@ -204,38 +234,42 @@ int main(int argc, char *argv[])
             else
                 result = -1;
         }
-
-
-
-
-
-        for(int i=0;i<logStreams.size();i++)
-            logStreams.at(i)->flush();
-
-
-        return result;
+        scriptLogStream->flush();
+        scriptLogFile.flush();
+        scriptLogFile.close();
     }
 
     try
     {
-        app->exec();
+        if(!launchScript)
+            app->exec();
     }
     catch(std::exception &e)
     {
         QString msg(e.what());
         InfoSender::instance()->debug(msg);
         //#ifdef _DEBUG
-        logStream.flush();
-        logFile.close();
         //#endif
     }
 
-    logFile.close();
 
+    logFile.close();
 
     // delete project
     delete project;
-    return 0;
+
+    // delete logstreams
+    for(int i=0;i<logStreams.size();i++)
+    {
+        logStreams.at(i)->flush();
+        delete logStreams.at(i);
+    }
+
+
+    if(console)
+        return console->_result;
+    else
+        return 0;
 }
 
 

@@ -89,7 +89,13 @@ bool ModPlusDymolaExeCtrl::simulate(QDir tempDir, MOVector<Variable> *updatedVar
 
 
     // Specifying new Variables values in dymosim input file
-    Dymola::setVariablesToDsin(tempInit,_ModelPlus->modelName(),updatedVars,_parameters);
+    QString errMsg;
+    bool setDsinOk = Dymola::setVariablesToDsin(tempInit,_ModelPlus->modelName(),updatedVars,_parameters,errMsg);
+    if(!setDsinOk)
+    {
+        InfoSender::instance()->sendWarning("Simulation failed : "+errMsg);
+        return false;
+    }
 
     // Launching Dymosim
     QString startErrMsg;

@@ -212,7 +212,6 @@ bool ModPlusDymolaCtrl::compile(const QFileInfoList & moDependencies, const QFil
 {
     InfoSender::sendCurrentTask("Dymola : Compiling model "+_ModelPlus->modelName());
 
-
     //QString logFilePath = _mmoFolder+QDir::separator()+"log.html";
     QString logFilePath = _ModelPlus->mmoFolder().absoluteFilePath("buildlog.txt");
 
@@ -332,8 +331,13 @@ bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,M
     QString tempDsin = tempDir.absoluteFilePath("dsin.txt");
 
     // Specifying new Variables values in dymosim input file
-    Dymola::setVariablesToDsin(tempDsin,_ModelPlus->modelName(),updatedVars,_parameters);
-
+    QString errMsg;
+    bool setDsinOk = Dymola::setVariablesToDsin(tempDsin,_ModelPlus->modelName(),updatedVars,_parameters,errMsg);
+    if(!setDsinOk)
+    {
+        InfoSender::instance()->sendWarning("Simulation failed : "+errMsg);
+        return false;
+    }
     // Launching Dymosim
     int maxNSec=_parameters->value(DymolaParameters::str(DymolaParameters::MAXSIMTIME),-1).toInt();
     QString startErrMsg;

@@ -138,6 +138,8 @@ Project *Optimization::omProject()
   */
 MOOptVector *Optimization::evaluate(QList<ModelPlus*> models, Variables *optimVariables, ScannedVariables *scannedVariables, bool &ok)
 {
+    checkStopFile(); // since QFileSystemWatcher doesn't work here, manually test for every evaluation
+
     ok = true;
     bool useScan = (scannedVariables->size()>0);
     bool usePoints = false;
@@ -469,7 +471,7 @@ Result* Optimization::launch(ProblemConfig config)
     //add a file watcher : if a file called stop is created in temp fol
     QString stopPath = _project->tempPath();//+QDir::separator()+"stop";
     QFileSystemWatcher stopWatcher(QStringList() << stopPath);
-    connect(&stopWatcher,SIGNAL(fileChanged(QString)),this,SLOT(stopFileChanged()));
+    connect(&stopWatcher,SIGNAL(fileChanged(QString)),this,SLOT(checkStopFile()));
 
 
 
@@ -887,7 +889,7 @@ void Optimization::stop()
     getCurAlgo()->stop();
 }
 
-void Optimization::stopFileChanged()
+void Optimization::checkStopFile()
 {
     if(QDir(_project->tempPath()).exists("stop"))
     {

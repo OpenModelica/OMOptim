@@ -165,6 +165,7 @@ MainWindow::MainWindow(Project* project,QWidget *parent)
     connect( _ui->actionLaunchScript2,SIGNAL(triggered()),this,SLOT(launchScript()));
     connect( _ui->actionDispScriptFunctions,SIGNAL(triggered()),this,SLOT(dispScriptFunctions()));
     connect( _ui->actionLaunchScriptText,SIGNAL(triggered()),this,SLOT(launchScriptText()));
+    connect( _ui->actionExportProject,SIGNAL(triggered()),this,SLOT(exportFolder()));
 
     //*********************************
     // Signals for informations
@@ -462,6 +463,35 @@ void MainWindow::launchScriptText()
     dlg.exec();
 }
 
+void MainWindow::exportFolder()
+{
+    QString folderPath = QFileDialog::getExistingDirectory(
+                this,
+                "OMOptim - Export project folder",
+                _project->folder().absolutePath());
+
+    if(!folderPath.isEmpty())
+    {
+        QDir folder(folderPath);
+        if(!folder.entryList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files).isEmpty())
+        {
+            QMessageBox msgbox(QMessageBox::Warning,"Consolidate folder","Please select an empty folder",
+                               QMessageBox::Cancel|QMessageBox::Retry,this);
+
+            int ret = msgbox.exec();
+            if(ret == QMessageBox::Retry)
+                this->exportFolder();
+            return;
+        }
+        bool includeMSL;
+        if(QMessageBox::Yes == QMessageBox::question(this,"Export folder","Includes Modelica Standard Library within .mo file ?",QMessageBox::Yes | QMessageBox::No,QMessageBox::No))
+            includeMSL = true;
+        else
+            includeMSL = false;
+        _project->exportProjectFolder(folder,includeMSL);
+    }
+}
+
 
 void MainWindow::loadPlugins()
 {
@@ -652,7 +682,7 @@ void MainWindow::quit()
     // if the slot is activated by the File->Quit menuitem.
     QAction *pActionQuit = qobject_cast<QAction*>(const_cast<QObject*>(sender()));
     if (pActionQuit)
-      qApp->quit();
+        qApp->quit();
 }
 void MainWindow::onProjectAboutToBeReset()
 {
@@ -1097,7 +1127,7 @@ void MainWindow::refreshModelTree()
 
 void MainWindow::refreshModelTreeView()
 {
-     _ui->treeModItem->setModel(NULL);
+    _ui->treeModItem->setModel(NULL);
     _ui->treeModItem->setModel(_project->modItemsTree());
 }
 
@@ -1189,6 +1219,7 @@ void MainWindow::onSelectedModItem(QModelIndex index)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+     _project->scriptParser()->stop();
     QSettings settings("MO", "GUI_");
     settings.setValue(QApplication::applicationName()+"/geometry", saveGeometry());
     settings.setValue(QApplication::applicationName()+"/windowState", saveState());

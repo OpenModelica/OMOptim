@@ -222,6 +222,7 @@
     <addaction name="actionSettings"/>
     <addaction name="actionLoadCases"/>
     <addaction name="menuLaunchSCript"/>
+    <addaction name="actionExportProject"/>
    </widget>
    <widget class="QMenu" name="menuModels">
     <property name="title">
@@ -548,6 +549,11 @@ color:white;
   <action name="actionLaunchScriptText">
    <property name="text">
     <string>Launch script text...</string>
+   </property>
+  </action>
+  <action name="actionExportProject">
+   <property name="text">
+    <string>Export project...</string>
    </property>
   </action>
  </widget>

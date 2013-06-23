@@ -1564,6 +1564,7 @@ void MOomc::stopServer()
     if(isStarted())
         //  if( delegate_ )
     {
+        qDebug("Stoping moomc...");
         QString quit = "quit()";
         mOMC->sendExpression( quit.toLatin1() );
         InfoSender::instance()->send( Info("Quiting OMC...",ListInfo::NORMAL2));

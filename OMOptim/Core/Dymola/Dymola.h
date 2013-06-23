@@ -90,7 +90,7 @@ public:
     static bool getFinalVariablesFromDsFile(QString, MOVector<Variable> *,QString _modelName);
     static bool getFinalVariablesFromDsFile(QTextStream *, MOVector<Variable> *,QString _modelName);
 
-    static void setVariablesToDsin(QString fileName,QString modelName, MOVector<Variable> *,MOParameters *parameters);
+    static bool setVariablesToDsin(QString fileName,QString modelName, MOVector<Variable> *,MOParameters *parameters,QString & errMsg);
     static void writeParameters(QString &allDsinText,MOParameters *parameters);
 
 

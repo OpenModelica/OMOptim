@@ -147,7 +147,7 @@ public:
 public slots :
     void quickEnd();
     virtual void stop();
-    void stopFileChanged();
+    void checkStopFile();
 
 signals :
     void addedModel(QString);

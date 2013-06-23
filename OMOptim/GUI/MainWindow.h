@@ -100,6 +100,7 @@ public slots :
     void launchScript();
     void dispScriptFunctions();
     void launchScriptText();
+    void exportFolder();
 
     void loadProject(QString);
     void loadCases();

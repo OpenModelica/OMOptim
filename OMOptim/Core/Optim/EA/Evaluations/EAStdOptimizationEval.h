@@ -48,6 +48,7 @@
 #include "Optimization.h"
 #include "moeo"
 #include "LowTools.h"
+#include "InfoSender.h"
 
 /** \class EAStdOptimizationEval is a function for evaluating fitness of an individual.
           * For each individual, it :
@@ -230,6 +231,7 @@ public:
 
             if (!evaluationOk || !readingObjOk)
             {
+                InfoSender::instance()->sendNormal("Evaluation has failed : considering worst objective vector for this point");
                 // Penalty
                 objVec = worstObjVec();
             }

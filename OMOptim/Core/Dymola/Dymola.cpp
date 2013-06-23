@@ -661,15 +661,19 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
 }
 
 
-void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Variable> *variables,MOParameters *parameters)
+bool Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Variable> *variables,MOParameters *parameters,QString & errMsg)
 {
 
     //Reading Preamble
     QFileInfo fileinfo = QFileInfo(fileName);
-    if (fileinfo.exists())
+    QFile file(fileinfo.filePath());
+    if(!file.open(QIODevice::ReadOnly))
     {
-        QFile file(fileinfo.filePath());
-        file.open(QIODevice::ReadOnly);
+        errMsg = "Failed to open "+fileName;
+        return false;
+    }
+    else
+    {     
         QTextStream textRead(&file);
         QString allText = textRead.readAll();
         file.close();
@@ -747,7 +751,10 @@ void Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         file.setFileName(fileinfo.filePath());
         bool ok = file.open(QIODevice::WriteOnly);
         if(!ok)
-            InfoSender::instance()->send(Info("Unable to open file for writing :"+fileinfo.filePath(),ListInfo::ERROR2));
+        {
+           errMsg = "Unable to open file for writing :" + fileinfo.absoluteFilePath();
+           return false;
+        }
 
         QTextStream textWrite(&file);
         textWrite<<allText;

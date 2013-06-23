@@ -218,6 +218,7 @@ bool OptimAlgos::setCurrentAlgo(QString curAlgoName)
         emit modified();
         emit algoChanged(_curAlgoName);
     }
+    return true;
 }
 
 void OptimAlgos::setFromOtherAlgos(const OptimAlgos &newAlgos)
