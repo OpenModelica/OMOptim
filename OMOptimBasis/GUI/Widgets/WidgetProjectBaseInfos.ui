@@ -34,7 +34,7 @@
          <string>New project</string>
         </property>
         <property name="icon">
-         <iconset resource="../Resources/OMOptim.qrc">
+         <iconset resource="../Resources/OMOptimBasis.qrc">
           <normaloff>:/Add</normaloff>:/Add</iconset>
         </property>
        </widget>
@@ -51,7 +51,7 @@
          <string>Load project</string>
         </property>
         <property name="icon">
-         <iconset resource="../Resources/OMOptim.qrc">
+         <iconset resource="../Resources/OMOptimBasis.qrc">
           <normaloff>:/Folder</normaloff>:/Folder</iconset>
         </property>
        </widget>
@@ -91,7 +91,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../Resources/OMOptim.qrc"/>
+  <include location="../Resources/OMOptimBasis.qrc"/>
  </resources>
  <connections/>
 </ui>

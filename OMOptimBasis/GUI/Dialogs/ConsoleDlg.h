@@ -46,6 +46,7 @@
 #include "scriptparser.h"
 #include "ProjectBase.h"
 #include <QtGui/QTextEdit>
+#include <QMainWindow>
 
 namespace Ui {
     class ConsoleDlg;
@@ -55,7 +56,7 @@ namespace Ui {
 class QErrorMessage;
 
 
-class ConsoleDlg : public QDialog {
+class ConsoleDlg : public QMainWindow {
     Q_OBJECT
 
 

@@ -55,7 +55,7 @@
 
 
 ConsoleDlg::ConsoleDlg(QApplication* application, ProjectBase* project,QStringList commands,QWidget *parent):
-    QDialog(parent),
+    QMainWindow(parent),
     ui(new Ui::ConsoleDlgClass)
 {
     ui->setupUi(this);
@@ -116,7 +116,7 @@ void ConsoleDlg::initLogStreams()
 
 void ConsoleDlg::onQuitAsked()
 {
-    this->done(_result);
+    //this->done(_result);
 }
 
 

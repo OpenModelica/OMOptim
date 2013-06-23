@@ -237,6 +237,7 @@ signals:
     void newProblemProgress(float);
     void newProblemProgress(float,int,int);
     void problemFinished(Problem*,Result*);
+    void forgetProblems();// for script event loop, not to be blocked once application should be terminated
 
     void interfacesModified();
 

@@ -158,7 +158,7 @@ OMCase* OMCases::findItem(QString itemName)
     while((!found)&&(i<nbItems))
     {
         itemName2=items.at(i)->name();
-        found=(itemName==itemName2);
+        found=!(itemName.compare(itemName2,Qt::CaseInsensitive));
         i++;
     }
     if(!found)

@@ -23,16 +23,20 @@ public:
 };
 
 
-class ScriptParser
+class ScriptParser : public QObject
 {
+    Q_OBJECT
 public:
-
+    ScriptParser(){_continue = true;}
     static bool parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QString,QString> &options);
     static bool parseFile(const QString & text,QStringList &commands,QMap<QString,QString> &options);
 
     bool executeCommand(QString command);
     bool executeCommands( QStringList commands);
     virtual QString helpText(){return QString();}
+
+public slots:
+    void stop(){_continue = false;}
 protected :
 
 
@@ -43,10 +47,13 @@ protected :
     virtual void initFunctions() = 0;
      virtual QStringList functionsList();
     QMap<QString,ScriptFunction> _functions;
+
+    bool _continue;
 };
 
 class ScriptParserOMOptimBasis : public ScriptParser
 {
+    Q_OBJECT
 public:
     ScriptParserOMOptimBasis(ProjectBase* project);
 
@@ -54,12 +61,15 @@ public:
 
     QString annexHelpText();
 
+public slots:
+    void onProblemFinished();
 protected :
     virtual bool launchFunction(QString function, QStringList args, bool & foundFunction);
     virtual void initFunctions();
 
 
     ProjectBase* _projectBase;
+    bool _problemThreadFinished;
 };
 
 

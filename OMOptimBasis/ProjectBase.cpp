@@ -118,6 +118,8 @@ void ProjectBase::clear()
     // delete GUI tabs...
     emit projectAboutToBeReset();
 
+    terminateProblemsThreads();
+
     _problems->clear();
     _results->clear();
 
@@ -271,7 +273,6 @@ bool ProjectBase::unloadPlugins()
 
 void ProjectBase::terminateProblemsThreads()
 {
-
     QList<MOThreads::ProblemThread *> allLaunchedThreads = _problemsThreads.values();
 
     for(int i=0;i<allLaunchedThreads.size();i++)
@@ -286,6 +287,8 @@ void ProjectBase::terminateProblemsThreads()
         qDebug("finished Thread");
         InfoSender::instance()->eraseCurrentTask();
     }
+
+    emit forgetProblems();
 }
 
 

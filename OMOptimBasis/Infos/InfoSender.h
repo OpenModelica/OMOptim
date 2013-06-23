@@ -110,6 +110,7 @@ public:
     static void destroy();
 
     void setLogStream(QTextStream* logStream,QList<ListInfo::InfoType> types = QList<ListInfo::InfoType>());
+    void addLogStream(QTextStream* logStream,QList<ListInfo::InfoType> types = QList<ListInfo::InfoType>());
     ~InfoSender(void);
 
     static void eraseCurrentTask();
@@ -130,6 +131,7 @@ public slots :
     Infos* infosNormal(){return _infosNormal;}
     Infos* infosOM(){return _infosOM;}
     Infos* infosDebug(){return _infosDebug;}
+    Infos* infosScript(){return _infosScript;}
 
 signals :
     void receivedInfo(const Info&);
@@ -139,13 +141,14 @@ signals :
     void noCurrentTask();
 
 private :
-    QMap<ListInfo::InfoType,QTextStream*> _logStreams;
+    QMultiMap<ListInfo::InfoType,QTextStream*> _logStreams;
     //QTextStream* _logStream;
     InfoSender();
     static InfoSender* _instance;
     Infos* _infosNormal;
     Infos* _infosOM;
     Infos* _infosDebug;
+    Infos* _infosScript;
 
     QList<ListInfo::InfoType> _logStreamInfoTypes;
 };

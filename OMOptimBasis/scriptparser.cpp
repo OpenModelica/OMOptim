@@ -3,6 +3,7 @@
 #include "InfoSender.h"
 #include "MOSettings.h"
 #include "MOThreads.h"
+#include <QApplication>
 
 bool ScriptParser::parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QString,QString> & definitions)
 {
@@ -45,7 +46,7 @@ bool ScriptParser::parseFile(const QString & text,QStringList &commands,QMap<QSt
         if(line.contains(commandRegExp))
             commands.push_back(commandRegExp.cap(1));
         else if(line.contains(definitionRegExp))
-            definitions.insert(definitionRegExp.cap(1),definitionRegExp.cap(2));
+            definitions.insert(definitionRegExp.cap(1).toLower(),definitionRegExp.cap(2).toLower()); // keep in lower cases
         else InfoSender::instance()->sendWarning("Unknown command: "+line);
     }
     return true;
@@ -151,6 +152,7 @@ QString ScriptFunction::toTxt() const
 }
 
 ScriptParserOMOptimBasis::ScriptParserOMOptimBasis(ProjectBase* projectBase)
+    :ScriptParser()
 {
     _projectBase = projectBase;
     initFunctions();
@@ -164,6 +166,8 @@ bool ScriptParserOMOptimBasis::launchFunction(QString functionName, QStringList 
     if(!foundFunction)
         return false;
 
+    if(!_continue)
+        return false;
 
     if(!function.name.compare("loadProject",Qt::CaseInsensitive))
     {
@@ -186,14 +190,18 @@ bool ScriptParserOMOptimBasis::launchFunction(QString functionName, QStringList 
 
     if(!function.name.compare("launchProblem",Qt::CaseInsensitive))
     {
+        _problemThreadFinished = false;
         // launch in multi threading but wait until it is finished
         MOThreads::ProblemThread* thread = _projectBase->launchProblem(args.at(0),true);
         if(!thread)
             return false;
 
-        while(thread->isAlive())
+        connect(thread,SIGNAL(finished(Problem*,Result*)),this,SLOT(onProblemFinished()));
+        connect(_projectBase,SIGNAL(forgetProblems()),this,SLOT(onProblemFinished()));
+
+        while(!_problemThreadFinished && _continue)
         {
-            QCoreApplication::processEvents();
+            QApplication::processEvents();
         }
         return true;
     }
@@ -268,8 +276,11 @@ QString ScriptParserOMOptimBasis::helpText()
 
 QString ScriptParserOMOptimBasis::annexHelpText()
 {
-    QString text = "#List of options \n \n";
-    text += "nogui   #do not display gui\n";
+    QString text = "#Set display \n \n";
+    text += "displayMode = console\n";
+    text += "#nogui  = do not display gui\n";
+    text += "#console = display console\n";
+    text += "#gui = display normal gui\n";
 
     return text;
 }
@@ -279,4 +290,9 @@ ScriptFunction::ScriptFunction(QString functionName, QStringList argsNames, QStr
     name = functionName;
     args = argsNames;
     description = functionDescription;
+}
+
+void ScriptParserOMOptimBasis::onProblemFinished()
+{
+    _problemThreadFinished = true;
 }

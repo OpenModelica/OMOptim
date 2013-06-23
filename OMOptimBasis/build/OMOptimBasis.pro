@@ -143,7 +143,7 @@ HEADERS += \
     ../scriptparser.h \
     ../GUI/Dialogs/ScriptTextDlg.h \
     ../GUI/Dialogs/HelpDlg.h \
-    ../GUI/Dialogs/ConsoleDlg.h
+    ../GUI/ConsoleWindow.h
 
 SOURCES += \
     ../Variables.cpp \
@@ -218,7 +218,7 @@ SOURCES += \
     ../scriptparser.cpp \
     ../GUI/Dialogs/ScriptTextDlg.cpp \
     ../GUI/Dialogs/HelpDlg.cpp \
-    ../GUI/Dialogs/ConsoleDlg.cpp
+    ../GUI/ConsoleWindow.cpp
 
 FORMS += \
     ../GUI/Widgets/WidgetFilesList.ui \
@@ -231,7 +231,7 @@ FORMS += \
     ../GUI/Widgets/WidgetMOItemsList.ui \
     ../GUI/Dialogs/ScriptTextDlg.ui \
     ../GUI/Dialogs/HelpDlg.ui \
-    ../GUI/Dialogs/ConsoleDlg.ui
+    ../GUI/ConsoleWindow.ui
 
 RESOURCES += \
     ../GUI/Resources/OMOptimBasis.qrc 

@@ -52,36 +52,57 @@ InfoSender::InfoSender()
     _infosNormal = new Infos(this);
     _infosOM = new Infos(this);
     _infosDebug = new Infos(this);
+    _infosScript = new Infos(this);
 
     connect(this, SIGNAL(receivedInfo(const Info&)),this, SLOT(onReceivedInfo(const Info&)));
 }
 
 void InfoSender::setLogStream(QTextStream* logStream,QList<ListInfo::InfoType> types )
 {
-    for(int i=0;i<types.size();i++)
-        _logStreams.insert(types.at(i),logStream);
-//    _logStream = logStream;
-
-    _logStreamInfoTypes = types;
-
-    if(_logStreamInfoTypes.isEmpty())
+    if(types.isEmpty())
     {
-        _logStreamInfoTypes  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
+        types  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
                 ListInfo::ERROR2<<
                 ListInfo::OMCNORMAL2<<
                 ListInfo::OMCWARNING2<<
                 ListInfo::OMCERROR2<<
                 ListInfo::INFODEBUG<<
-                ListInfo::TASK;
+                ListInfo::TASK <<
+                ListInfo::SCRIPT;
     }
+
+    _logStreamInfoTypes = types;
+
+    for(int i=0;i<types.size();i++)
+        _logStreams.replace(types.at(i),logStream);
 }
 
+void InfoSender::addLogStream(QTextStream* logStream,QList<ListInfo::InfoType> types )
+{
+    if(types.isEmpty())
+    {
+        types  << ListInfo::NORMAL2 << ListInfo::WARNING2<<
+                ListInfo::ERROR2<<
+                ListInfo::OMCNORMAL2<<
+                ListInfo::OMCWARNING2<<
+                ListInfo::OMCERROR2<<
+                ListInfo::INFODEBUG<<
+                ListInfo::TASK<<
+                ListInfo::SCRIPT;
+    }
+
+    _logStreamInfoTypes = types;
+
+    for(int i=0;i<types.size();i++)
+        _logStreams.insertMulti(types.at(i),logStream);
+}
 
 InfoSender::~InfoSender(void)
 {
     delete _infosNormal;
     delete _infosOM;
     delete _infosDebug;
+    delete _infosScript;
 }
 
 InfoSender* InfoSender::instance()
@@ -119,16 +140,16 @@ void InfoSender::destroy()
 void InfoSender::send(const Info &info)
 {
     ListInfo::InfoType type = info.infoType;
-    QTextStream* logStream = _logStreams.value(type,NULL);
+    QList<QTextStream*> logStreams = _logStreams.values(type);
 
-    if(logStream)
+    for(int i=0;i<logStreams.size();i++)
     //if(_logStream && _logStreamInfoTypes.contains(info.infoType))
     {
-        *logStream << QTime::currentTime().toString().toAscii().data();
-        *logStream << "\t";
-        *logStream << info.infoMsg;
-        *logStream << "\n";
-        logStream->flush(); // not sure it is a good idea though
+        *logStreams.at(i) << QTime::currentTime().toString().toAscii().data();
+        *logStreams.at(i) << "\t";
+        *logStreams.at(i) << info.infoMsg;
+        *logStreams.at(i) << "\n";
+        logStreams.at(i)->flush(); // not sure it is a good idea though
     }
     if(info.infoType==ListInfo::INFODEBUG)
         qDebug(info.infoMsg.toLatin1().data());
@@ -163,6 +184,9 @@ void InfoSender::onReceivedInfo(const Info &info)
         break;
     case ListInfo::INFODEBUG:
         _infosDebug->addInfo(info.infoMsg,Infos::INFO,Infos::DESTDEBUG);
+        break;
+    case ListInfo::SCRIPT:
+        _infosScript->addInfo(info.infoMsg,Infos::INFO,Infos::DESTNORMAL);
         break;
     }
 
