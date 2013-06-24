@@ -533,7 +533,8 @@ void WidgetSelectEditVars::readVariables()
 
     refreshAllModelsVars();
 
-    _tableVariables->resizeColumnsToContents();
+    if(_tableVariables)
+        _tableVariables->resizeColumnsToContents();
 }
 
 
