@@ -225,6 +225,7 @@ private:
 
     QList<QThread*> threads;
     QStringList threadsNames;
+    QMutex evalMutex; /// used to prevent eval command while quitting moommc
 
 
 };

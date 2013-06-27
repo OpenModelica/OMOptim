@@ -326,7 +326,7 @@ QVariant MOomc::getParameterValue(QString parentClass, QString parameterName,Var
     QVariant::Type variantType;
     switch(type)
     {
-     case OMREAL:
+    case OMREAL:
         variantType = QVariant::Double;
         break;
     case OMBOOLEAN :
@@ -1034,67 +1034,69 @@ QString MOomc::evalCommand(QString command)
 
 QString MOomc::evalCommand(QString command,QString &errorString)
 {
-    errorString.clear();
-
-    QString msg;
-    InfoSender::instance()->send( Info(msg.sprintf("OMC : %s",command.toLatin1().data()),ListInfo::OMCNORMAL2));
-    nbCalls++;
-
-    if (!mHasInitialized)
+    if(!evalMutex.tryLock())
     {
-        InfoSender::instance()->send(Info(QString("OMC not started. Please start it again (menu OMC->restart)"),ListInfo::WARNING2));
+        errorString = "Could not launch OMC command";
         return QString();
     }
-
-    //        if(!startServer())
-    //        {
-    //            InfoSender::instance()->send(Info(QString("Unable to communicate with OMC ")));
-    //            return QString();
-    //        }
-    //    }
-
-    // Send command to server
-    try
+    else
     {
-        //mResult = mOMC->sendExpression(command.toLatin1());
-        mResult = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
-        // logOMCMessages(command);
-        InfoSender::instance()->send(Info(getResult(),ListInfo::OMCNORMAL2));
+        errorString.clear();
+        QString result;
 
-        // display errors
-        command = "getErrorString()";
-        errorString = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
-        errorString.remove("\"");
-        if((!errorString.isEmpty())&&(errorString!="\n"))
-            InfoSender::instance()->send(Info(errorString,ListInfo::OMCWARNING2));
-    }
-    catch(CORBA::Exception&)
-    {
-        // if the command is quit() and we get exception just simply quit
-        if (command == "quit()")
-            return QString();
+        QString msg;
+        InfoSender::instance()->send( Info(msg.sprintf("OMC : %s",command.toLatin1().data()),ListInfo::OMCNORMAL2));
+        nbCalls++;
 
-        QFile::remove(mObjectRefFile);
-        InfoSender::instance()->send(Info(QString("Communication with OMC server has lost ")));
-        return QString();
-    }
-    catch( omniORB::fatalException & ex)
-    {
-        InfoSender::instance()->debug("Caught omniORB2 fatalException. This is a bug in omniORB");
-        return QString();
-    }
-    catch( CORBA::COMM_FAILURE &ex)
-    {
-        InfoSender::instance()->debug("Caught CORBA::COMM_FAILURE");
-        return QString();
-    }
-    catch (...)
-    {
-        InfoSender::instance()->debug("Caught exception");
-        return QString();
+        if (!mHasInitialized)
+        {
+            InfoSender::instance()->send(Info(QString("OMC not started. Please start it again (menu OMC->restart)"),ListInfo::WARNING2));
+            result = QString();
+        }
+        else
+        {
+            // Send command to server
+            try
+            {
+                //mResult = mOMC->sendExpression(command.toLatin1());
+                mResult = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
+                // logOMCMessages(command);
+                InfoSender::instance()->send(Info(getResult(),ListInfo::OMCNORMAL2));
+
+                // display errors
+                command = "getErrorString()";
+                errorString = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
+                errorString.remove("\"");
+                if((!errorString.isEmpty())&&(errorString!="\n"))
+                    InfoSender::instance()->send(Info(errorString,ListInfo::OMCWARNING2));
+
+                result = getResult();
+            }
+            catch(CORBA::Exception&)
+            {
+                QFile::remove(mObjectRefFile);
+                InfoSender::instance()->send(Info(QString("Communication with OMC server has lost ")));
+            }
+            catch( omniORB::fatalException & ex)
+            {
+                InfoSender::instance()->debug("Caught omniORB2 fatalException. This is a bug in omniORB");
+            }
+            catch( CORBA::COMM_FAILURE &ex)
+            {
+                InfoSender::instance()->debug("Caught CORBA::COMM_FAILURE");
+            }
+            catch (...)
+            {
+                InfoSender::instance()->debug("Caught exception");
+            }
+        }
+
+
+        evalMutex.unlock();
+        return result;
     }
 
-    return getResult();
+
 
     //if(!delegate_)
     //    startServer();
@@ -1440,6 +1442,7 @@ bool MOomc::startServer()
 {
     try
     {
+        evalMutex.unlock();
         QString msg;
         const char *omhome = getenv("OPENMODELICAHOME");
         QString omcPath;
@@ -1566,8 +1569,9 @@ void MOomc::stopServer()
     {
         qDebug("Stoping moomc...");
         QString quit = "quit()";
-        mOMC->sendExpression( quit.toLatin1() );
+        evalCommand(quit);
         InfoSender::instance()->send( Info("Quiting OMC...",ListInfo::NORMAL2));
+        evalMutex.lock();
     }
     mHasInitialized = false;
 }
