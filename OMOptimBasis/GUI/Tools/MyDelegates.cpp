@@ -299,6 +299,8 @@ void VarValueDelegate::setEditorData(QWidget *editor,
     QComboBox *comboBox = dynamic_cast<QComboBox*>(editor);
     if(comboBox)
         comboBox->setCurrentIndex(comboBox->findData(curValue));
+    else
+        QStyledItemDelegate::setEditorData(editor,index);
 }
 
 void VarValueDelegate::emitCommitData()

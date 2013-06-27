@@ -137,7 +137,7 @@ bool LowTools::removeDir(QString folder)
     {
         LowTools::removeDirContents(folder);
 
-        bool temp = dir.cdUp();
+        dir.cdUp();
         dir.refresh();
         removed = dir.rmdir(folder);
         if (!removed)
@@ -197,6 +197,7 @@ bool LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
     QString orgPath;
     QString destPath;
     QFile orgFile;
+    QFile destDirFile(folder.absolutePath());
 
     for(int i=0;i<files.size();i++)
     {
@@ -218,9 +219,14 @@ bool LowTools::copyFilesInFolder(QFileInfoList files, QDir folder)
         {
             tmpBool = orgFile.copy(destPath);
 
+
             if(!tmpBool)
             {
-                SleeperThread::msleep(1000);
+                folder.refresh();
+                QFile newFile(destPath);
+                newFile.setPermissions(destPath,newFile.permissions() | QFile::WriteUser);
+                destDirFile.setPermissions(destDirFile.permissions() | QFile::WriteUser);
+
                 tmpBool = orgFile.copy(destPath);
             }
             if(!tmpBool)
@@ -286,8 +292,15 @@ bool LowTools::mkpath(QString dirPath,bool eraseExisting)
         LowTools::removeDir(dirPath);
 
     bool mkOk = QDir().mkpath(dirPath);
+
+    if(!mkOk)
+    {
+        tempDir.refresh();
+        tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
+        QDir().mkpath(dirPath);
+    }
+
     tempDir.refresh();
-    tempDirFile.setPermissions(tempDirFile.permissions() | QFile::WriteUser);
     ok = tempDir.exists();
     ok = ok && (tempDir.entryList(QDir::NoDotAndDotDot).isEmpty() || !eraseExisting);
 
@@ -527,3 +540,10 @@ QString LowTools::commonSections(const QStringList &names)
     return commonText;
 }
 
+bool LowTools::isLocked(QMutex & m)
+{
+    bool b(m.tryLock());
+    if (b)
+        m.unlock();
+    return b;
+}

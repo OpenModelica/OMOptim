@@ -43,7 +43,7 @@
 
 // Constructor and destructor
 MOItem::MOItem(QObject* parent)
-   // :QObject(parent) // creates a lot of problems cause of threads. To fix...
+// :QObject(parent) // creates a lot of problems cause of threads. To fix...
 {
 }
 
@@ -160,7 +160,7 @@ bool MOItem::setFieldValue(int iField, QVariant value)
     switch (iField)
     {
     case NAME :
-        _name=value.toString();
+        setName(value.toString());
         return true;
     default :
         return false;

@@ -45,6 +45,7 @@
 #include <vector>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QMutex>
 
 #include <math.h>
 
@@ -108,6 +109,7 @@ public:
 
     static QList<QList<int> > getAllCombinations(const QList<int> &indexes, int combSize);
 
+    static bool isLocked(QMutex &m);
 private :
      static void getAllCombinations(const QList<int> &indexes, int combSize, int offset, QList<int> &curCombination, QList<QList<int> > &allCombinations);
 };
