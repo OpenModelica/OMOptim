@@ -1478,7 +1478,7 @@ bool MOomc::startServer()
 
         // Start the omc.exe
         QStringList parameters;
-        parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba");
+        parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba") << QString("+corbaObjectReferenceFilePath=").append(QDir::tempPath());
         QProcess *omcProcess = new QProcess();
         QFile omcOutputFile;
 #ifdef WIN32 // Win32
