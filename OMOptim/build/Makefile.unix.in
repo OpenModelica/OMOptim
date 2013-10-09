@@ -4,11 +4,12 @@ top_dir=../../
 NAME=OMOptim
 LIBNAME=OMOptimLib
 DEST=../bin
+APP=@APP@
 EXE=@EXE@
 QMAKE=@QMAKE@
 
 install: build
-	if [ "$(EXE)" = ".app" ]; then cp -rp $(DEST)/$(NAME).app $(top_dir)/build/Applications/ ; else cp -p $(DEST)/$(NAME) $(top_dir)/build/bin/$(NAME); fi
+	if [ "$(APP)" = ".app" ]; then cp -rp $(DEST)/$(NAME).app $(top_dir)/build/Applications/ ; else cp -p $(DEST)/$(NAME) $(top_dir)/build/bin/$(NAME); fi
 
 always:
 
