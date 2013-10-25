@@ -674,7 +674,7 @@ void MOVector<ItemClass>::setItems(QDomElement & domList)
         if( !domItem.isNull() )
         {
             newItem = new ItemClass(domItem);
-            addItem(newItem);
+            this->MOAVector<ItemClass>::addItem(newItem);
         }
         n = n.nextSibling();
     }
@@ -705,7 +705,7 @@ MOVector<ItemClass>::MOVector(QDomElement & domList, bool owner)
     :MOAVector<ItemClass>(owner)
 {
     setItems(domList);
-    connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
+    this->QObject::connect(this,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SIGNAL(modified()));
 }
 
 
@@ -738,7 +738,7 @@ bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
         qDebug(QString("droped vector size :"+QString::number(dropedVector.size())).toLatin1().data());
         for(int i=0;i<dropedVector.size();i++)
         {
-            somethingDone = insertItem(dropedVector.at(i),row) || somethingDone;
+            somethingDone = this->MOAVector<ItemClass>::insertItem(dropedVector.at(i),row) || somethingDone;
         }
     }
     return somethingDone;
