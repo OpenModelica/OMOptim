@@ -143,4 +143,4 @@ protected:
     QList<QStyledItemDelegate*> _delegates;
 };
 
-#endif 
+#endif

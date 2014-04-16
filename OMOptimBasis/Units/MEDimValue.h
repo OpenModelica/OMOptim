@@ -68,7 +68,7 @@ public:
     double value() const;
     QString strValue(int iUnit) const;
     QString strValue() const;
-    
+
     virtual QString toString() const {return QString::number(value(_unit))+" "+unit();}
 
     virtual MEDimValue & operator=(const MEDimValue &);

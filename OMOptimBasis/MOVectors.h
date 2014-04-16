@@ -49,7 +49,7 @@
 */
 
 template<class ItemClass>
-class MOVectors : public QAbstractTableModel 
+class MOVectors : public QAbstractTableModel
 {
 
 public :
@@ -156,7 +156,7 @@ MOVectors<ItemClass>::MOVectors(QDomElement & domList)
 
 
 template<class ItemClass>
-MOVectors<ItemClass>::~MOVectors() 
+MOVectors<ItemClass>::~MOVectors()
 {
         //delete contents
         clear();

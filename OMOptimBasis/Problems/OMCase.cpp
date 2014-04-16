@@ -66,7 +66,7 @@ OMCase::OMCase(const OMCase &omCase)
 }
 
 OMCase::~OMCase(void)
-{  
+{
 
 }
 

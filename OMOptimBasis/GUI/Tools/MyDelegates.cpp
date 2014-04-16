@@ -49,7 +49,7 @@ GenericDelegate::GenericDelegate(QList<int> _values ,QStringList _titles,QObject
 {
     values = _values;
     titles = _titles;
-} 
+}
 
 QWidget *GenericDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/* option */,
@@ -57,7 +57,7 @@ QWidget *GenericDelegate::createEditor(QWidget *parent,
 {
     QComboBox *editor = new QComboBox(parent);
     //editor->setAutoCompletion(true);
-    
+
     editor->addItems(titles);
 
     connect(editor, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
@@ -104,7 +104,7 @@ void GenericDelegate::emitCommitData()
 //FuzzyStatusDelegate::FuzzyStatusDelegate(QObject *parent)
 //: QStyledItemDelegate(parent)
 //{
-//} 
+//}
 //
 //QWidget *FuzzyStatusDelegate::createEditor(QWidget *parent,
 //                                         const QStyleOptionViewItem &/* option */,
@@ -164,7 +164,7 @@ void GenericDelegate::emitCommitData()
 //FuzzyPrecStatusDelegate::FuzzyPrecStatusDelegate(QObject *parent)
 //: QStyledItemDelegate(parent)
 //{
-//} 
+//}
 //
 //QWidget *FuzzyPrecStatusDelegate::createEditor(QWidget *parent,
 //                                         const QStyleOptionViewItem &/* option */,
@@ -177,7 +177,7 @@ void GenericDelegate::emitCommitData()
 //    editor->addItem("Fixed",FuzzyVariable::FIXED);
 //    editor->addItem("Relative prec.",FuzzyVariable::PRECREL);
 //    editor->addItem("Absolute prec.",FuzzyVariable::PRECABS);
-//    
+//
 //    connect(editor, SIGNAL(activated(int)), this, SLOT(emitCommitData()));
 //
 //    return editor;
@@ -189,7 +189,7 @@ void GenericDelegate::emitCommitData()
 //    int precStatus = index.model()->data(index,Qt::UserRole).toInt();
 //    QComboBox *comboBox = static_cast<QComboBox*>(editor);
 //    comboBox->setCurrentIndex(comboBox->findData(precStatus));
-//    
+//
 //}
 //
 //void FuzzyPrecStatusDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,

@@ -46,7 +46,7 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtCore/QMutex>
-#include "MOomc.h" 
+#include "MOomc.h"
 #include "Project.h"
 #include "TabProject.h"
 #include "Tabs/MOMainTab.h"

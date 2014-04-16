@@ -129,8 +129,8 @@ TabResOneSim::~TabResOneSim()
 //        {
 //            tabVariables->hide();
 //            variablesToolBar->hide();
-//            
-//            tabComposites->show();        
+//
+//            tabComposites->show();
 //            compositesToolBar->show();
 //
 //            tabProblem->hide();

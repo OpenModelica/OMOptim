@@ -779,7 +779,7 @@ bool ProjectBase::renameProblem(Problem* problem,QString newName)
     problem->rename(newName,true);
     save(problem);
     return true;
-}    
+}
 
 bool ProjectBase::renameResult(Result* result,QString newName)
 {

@@ -81,7 +81,7 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
 
     //dockWidget->setStyleSheet("border-width: 1px;\n     border-style: solid;\n     border-color: gray;");
     QMainWindow::addDockWidget(dockWidgetArea,dockWidget);
-    
+
 
     // Tabify
     if(tabifiedOn && mapDockWidgets.key(tabifiedOn,NULL))
@@ -89,7 +89,7 @@ void MO2ColTab::addDockWidget(QString title,QWidget* widget,QWidget *tabifiedOn,
 
 
     dockWidget->show();
-    
+
     // QAction
     if(closable)
     {
@@ -110,7 +110,7 @@ void MO2ColTab::addFixedWidget(QString title,QWidget* widget,Qt::DockWidgetArea 
     dockWidget->setLayout(new QGridLayout());
     dockWidget->setWidget(widget);
     dockWidget->setSizePolicy(widget->sizePolicy());
-    
+
     if(!showTitle)
     {
         // to hide the title bar completely must replace the default widget with a generic one

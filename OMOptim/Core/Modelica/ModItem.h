@@ -74,7 +74,7 @@ protected:
     QFileInfo _file;
     ModItem *_parent;
     QList<ModItem*> _children;
-    
+
 public :
     QMutex _readMutex;
     //***********************
@@ -89,7 +89,7 @@ public:
     //virtual ModItem* cloneStructure(QString newName); // clone all fields excepted connections and variables
     virtual ~ModItem(void);
     virtual Modelica::ClassRestr getClassRestr(){return Modelica::GENERIC;};
-    
+
     // Data fields and management
     enum Field
     {
@@ -103,10 +103,10 @@ public:
         WITHOUTROOT,
         FULL
     };
-    
+
     static const int nbFields = 2;
     virtual unsigned getNbFields( ) const {return nbFields;};
-    
+
     // General functions
     virtual QVariant getFieldValue(int iField, int role = Qt::UserRole) const;
     virtual bool setFieldValue(int iField, QVariant value);
@@ -123,7 +123,7 @@ public:
     // Local information
     QString name(ModItem::NameFormat = ModItem::FULL);
     virtual QString filePath();
-    
+
     // Tree functions
     int depth();
 

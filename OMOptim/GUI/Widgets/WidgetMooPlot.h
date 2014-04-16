@@ -86,4 +86,4 @@ public:
     MOOptPlot *_plot1;
 };
 
-#endif 
+#endif

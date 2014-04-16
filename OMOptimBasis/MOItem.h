@@ -98,9 +98,9 @@ public:
     virtual void update(QDomElement & domEl);
     // Constructor from saved string
     MOItem(QString,ProjectBase*);
-    
+
     virtual QString getClassName() const =0;
-    
+
     //Name
     virtual void setName(QString);
     virtual QString name() const;
@@ -144,7 +144,7 @@ protected:
     QString _name;
     QList<int> _filledFields; /// list of fields index that have been set
     QList<int> _protectedFields; /// list of fields that are protected from editing by the user (e.g. through GUI)
-    
+
 };
 
 

@@ -224,7 +224,7 @@ QString Dymola::getExecutablePath()
 
 
     QString subkey("SOFTWARE\\Classes\\Applications\\Dymola.exe\\shell\\Run\\command");
-    
+
     if( RegOpenKey(HKEY_LOCAL_MACHINE,VQTConvert::QString_To_LPCTSTR(subkey),&hKey) == ERROR_SUCCESS)
     {
         dwType = REG_SZ;
@@ -673,7 +673,7 @@ bool Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         return false;
     }
     else
-    {     
+    {
         QTextStream textRead(&file);
         QString allText = textRead.readAll();
         file.close();

@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 0.9 
+     @version 0.9
 
   */
 #ifndef _EOADAPT1_H
@@ -80,7 +80,7 @@ public:
         //moeoVector<EOAdapt1ObjectiveVector,double>::printOn(_os);
     //    _os << ' ';
 
-        // START Code of default output 
+        // START Code of default output
         _os << doubleVars.size() << ' ' ;
         for (unsigned i=0; i<doubleVars.size(); i++)
             _os << doubleVars[i] << ' ' ;
@@ -92,7 +92,7 @@ public:
         _os << boolVars.size() << ' ' ;
         for (unsigned i=0; i<boolVars.size(); i++)
             _os << boolVars[i] << ' ' ;
-        
+
 
         _os << dblStdDev.size() << ' ' ;
         for (unsigned i=0; i<dblStdDev.size(); i++)
@@ -103,7 +103,7 @@ public:
         _os << savedVars.size() << ' ' ;
         for (unsigned i=0; i<savedVars.size(); i++)
             _os << savedVars[i] << ' ' ;
-        
+
     }
 
     void readFrom(std::istream& _is)
@@ -121,17 +121,17 @@ public:
 
         // read and store  obj values
         //moeoVector<EOAdapt1ObjectiveVector,double>::readFrom(_is);
-        
+
         EOAdapt1ObjectiveVector newObjVector;
-        
+
         for (unsigned i=0; i<nbObj; i++)
         {
             _is >> tmpDouble;
             newObjVector.at(i)=tmpDouble;
-        }            
+        }
         objectiveVector(newObjVector);
 
-            
+
 
         _is >> doubleSize;
         doubleVars.resize(doubleSize);
@@ -139,7 +139,7 @@ public:
         {
             _is >> tmpDouble;
             doubleVars[i]=tmpDouble;
-        }            
+        }
 
         _is >> intSize;
         intVars.resize(intSize);
@@ -166,7 +166,7 @@ public:
         }
 
         _is >> intProbMut;
-        
+
         _is >> savedVarsSize;
         savedVars.resize(savedVarsSize);
         for (unsigned i=0; i<savedVarsSize; i++)
@@ -186,10 +186,10 @@ public:
     std::vector<bool> boolVars;
     std::vector<double> savedVars; // vars that are neither optVariables nor optObjectives,
                                     // but which we want to keep information of.
-    
+
     std::vector<double> dblStdDev; //sigma, see adaptive mutation articles
-    double intProbMut; //probability for int mutation (see Evolution Strategies for MIOpt...) Back & Schutz 
-    
+    double intProbMut; //probability for int mutation (see Evolution Strategies for MIOpt...) Back & Schutz
+
 };
 
 #endif

@@ -6,8 +6,8 @@
 #ifdef WIN32
 #include "windows.h"
 #endif
-#undef min  
-#undef max 
+#undef min
+#undef max
 
 //Convert a QString To LPCTSTR
 LPCTSTR VQTConvert::QString_To_LPCTSTR(QString mQTData)

@@ -61,7 +61,7 @@ It allows multi-objectives but only real variables (no integer)
 **********************************************************/
 class SPEA2 : public EABase
 {
-public : 
+public :
     SPEA2();
     SPEA2(Project*,Problem*);
     SPEA2(Project*,Problem*,MOParameters*);

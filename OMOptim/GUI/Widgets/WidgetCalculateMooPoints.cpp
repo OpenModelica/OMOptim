@@ -49,7 +49,7 @@ WidgetCalculateMooPoints::WidgetCalculateMooPoints(OptimResult* result,WidgetMoo
     _ui(new Ui::WidgetCalculateMooPointsClass)
 {
     _ui->setupUi(this);
-    
+
 
     _result = result;
     _widgetMooPointsList = widgetMooPointsList;

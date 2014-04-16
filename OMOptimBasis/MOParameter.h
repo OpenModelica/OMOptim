@@ -69,7 +69,7 @@ public:
         PANEL   // used to display parameter in separated panel
     };
 
-    
+
     enum Type
     {
         FOLDERPATH,

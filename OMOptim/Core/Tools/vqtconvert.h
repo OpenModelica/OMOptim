@@ -16,8 +16,8 @@ Bryan Cairns - August 2009
     #include "windows.h"
 #endif
 
-#undef min  
-#undef max 
+#undef min
+#undef max
 
 class VQTConvert
 {

@@ -1,10 +1,10 @@
 #if defined(WIN32)
- 
+
 #include <string.h>
 #ifdef _MSC_VER
 #include "crtdbg.h"
 #endif
- 
+
 #define FALSE   0
 #define TRUE    1
 
@@ -21,7 +21,7 @@ int reportingHook(int reportType, char* userMessage, int* retVal)
   const int numFollowupDebugMsgParts = 2;
   static bool ignoreMessage = false;
   static int debugMsgPartsCount = 0;
- 
+
   // check if the memory leak reporting starts
   if ((strncmp(userMessage,"Detected memory leaks!\n", 10) == 0)
     || ignoreMessage)
@@ -35,7 +35,7 @@ int reportingHook(int reportType, char* userMessage, int* retVal)
       ignoreMessage = false;
     } else
       ignoreMessage = true;
- 
+
     // something from our own code?
     if(strstr(userMessage, ".cpp") == NULL)
     {
@@ -54,7 +54,7 @@ int reportingHook(int reportType, char* userMessage, int* retVal)
     // give it back to _CrtDbgReport() to be printed to the console
     return FALSE;
 };
- 
+
 void setFilterDebugHook(void)
 {
   //change the report function to only report memory leaks from program code
@@ -62,5 +62,5 @@ void setFilterDebugHook(void)
   prevHook = _CrtSetReportHook(reportingHook);
   #endif
 }
- 
+
 #endif

@@ -28,7 +28,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
- * For more information about the Qt-library visit TrollTech's webpage 
+ * For more information about the Qt-library visit TrollTech's webpage
  * regarding the Qt licence: http://www.trolltech.com/products/qt/licensing.html
  */
 

@@ -26,7 +26,7 @@
 *
 * See the full OSMC Public License conditions for more details.
 *
-* For more information about the Qt-library visit TrollTech's webpage 
+* For more information about the Qt-library visit TrollTech's webpage
 * regarding the Qt licence: http://www.trolltech.com/products/qt/licensing.html
 */
 
@@ -54,7 +54,7 @@ namespace IAEX
     if(!comm_.isConnected())
     {
       if(!comm_.establishConnection())
-      {          
+      {
           throw std::runtime_error("OmcInteractiveEnvironment(): No connection to Omc established");
       }
     }
@@ -93,7 +93,7 @@ namespace IAEX
   {
     //Communicate with Omc.
     if(!comm_.isConnected())
-    {      
+    {
       if(!comm_.establishConnection())
       {
         throw std::runtime_error("OmcInteractiveEnvironment(): No connection to Omc established");
@@ -122,7 +122,7 @@ namespace IAEX
       // 2006-02-28 AF, use environment varable to find omc.exe
       std::string OMCPath( getenv( "OPENMODELICAHOME" ) );
       if( OMCPath.empty() )
-      {          
+      {
         throw std::runtime_error( "Could not find environment variable OPENMODELICAHOME" );
       }
 

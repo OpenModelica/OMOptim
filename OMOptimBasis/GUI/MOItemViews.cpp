@@ -48,7 +48,7 @@
 #include "Tools/GuiTools.h"
 
 MOItemTreeView::MOItemTreeView(QWidget* parent):QTreeView(parent)
-{    
+{
     //editable ?
     setEditable(true);
     setAlternatingRowColors(true);

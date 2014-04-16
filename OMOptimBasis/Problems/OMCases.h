@@ -58,7 +58,7 @@ public:
 
     QVector<OMCase*> items;
 
-    
+
     void clear();
 
     QVariant data(const QModelIndex &index, int role) const;

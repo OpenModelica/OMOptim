@@ -66,7 +66,7 @@ class ModPlusOMCtrl :public ModPlusCtrl
 
         // compatible models
         virtual QList<ModelPlus::ModelType> compatibleModels();
-        
+
 
         // Compile function
         bool isCompiled();

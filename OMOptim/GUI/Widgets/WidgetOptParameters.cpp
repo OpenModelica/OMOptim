@@ -83,7 +83,7 @@ WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,
     //    onAlgosConfigChanged();
 
 
-    
+
 }
 
 WidgetOptParameters::~WidgetOptParameters()
@@ -151,7 +151,7 @@ void WidgetOptParameters::openAlgoParameters()
 
 void WidgetOptParameters::actualizeGui()
 {
-    
+
     // list of widgets to hide when problem is solved
     QWidgetList unsolvedWidgets;
     // unsolvedWidgets <<  _ui->pushSelectStartFile;

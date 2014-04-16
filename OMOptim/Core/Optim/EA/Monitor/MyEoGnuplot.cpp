@@ -88,7 +88,7 @@ void MyEoGnuplot::gnuplotCommand(const QString & _command)
 void MyEoGnuplot::initGnuPlot()
 {
     bool useGnuplot = MOSettings::value("useGnuplot",true).toBool();
-    
+
     if(!useGnuplot)
     {
         pipeOpen=false;

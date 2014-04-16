@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 0.9 
+     @version 0.9
 
   */
 #ifndef SBCROSSOVER_H
@@ -64,7 +64,7 @@ public:
 
 
 virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
-    
+
         // for double, int and bool, both eos are modified, new values are taken between two old values
     // !! need to be studied and adapted to specific problems
     bool oneHasChanged = false;
@@ -74,9 +74,9 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     double beta;
     double eta=1;
     double u;
-        
+
     //********************************
-    // Crossover on double variables 
+    // Crossover on double variables
     //********************************
     for(int iVar=0;iVar<_eoA.doubleVars.size();iVar++)
     {
@@ -97,9 +97,9 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 
         oneHasChanged = true;
     }
-    
+
     //********************************
-    // Crossover on int variables 
+    // Crossover on int variables
     //********************************
     for(int iVar=0;iVar<_eoA.intVars.size();iVar++)
     {
@@ -114,7 +114,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 
         childValueA = 0.5*((1+beta)*parValueA + (1-beta)*parValueB);
         childValueB = 0.5*((1-beta)*parValueA + (1+beta)*parValueB);
-        
+
         _eoA.intVars.at(iVar) = LowTools::round(childValueA);
         _eoB.intVars.at(iVar) = LowTools::round(childValueB);
 
@@ -122,7 +122,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     }
 
     //********************************
-    // Crossover on bool variables 
+    // Crossover on bool variables
     //********************************
     for(int iVar=0;iVar<_eoA.boolVars.size();iVar++)
     {
@@ -135,7 +135,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 
         oneHasChanged = true;
     }
-    
+
     return oneHasChanged;
 }
 private :

@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -53,7 +53,7 @@ public:
   EA2Crossover(MOParameters* _parameters):eoQuadOp<EOT>() {parameters = _parameters;}
   virtual std::string className() const {return "EA2Crossover";}
 virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
-    
+
     // for double, int and bool, both eos are modified, new values are taken between two old values)
     // !! need to be studied and adapted to specific problems
 
@@ -61,9 +61,9 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 
     int iVar1,iVar2;
     double newValue1, newValue2;
-    
+
     //********************************
-    // Crossover on double variables 
+    // Crossover on double variables
     //********************************
         if(rng.flip(parameters->value("doublePCross",0.25).toDouble()) && (_eoA.doubleVars.size()>0))
     {
@@ -83,9 +83,9 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 
         oneHasChanged = true;
     }
-    
+
     //********************************
-    // Crossover on int variables 
+    // Crossover on int variables
     //********************************
         if(rng.flip(parameters->value("intPCross",0.25).toDouble()) && (_eoA.intVars.size()>0))
     {
@@ -99,7 +99,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
         //newValue = random value between eoA and eoB var values
         newValue2 = std::min<double>(_eoA.intVars.at(iVar2),_eoB.intVars.at(iVar2)) //min
             + rng.random(abs((_eoA.intVars.at(iVar2)-_eoB.intVars.at(iVar2))));
-        // modifying eos    
+        // modifying eos
         _eoA.intVars.at(iVar1) = LowTools::round(newValue1);
         _eoB.intVars.at(iVar2) = LowTools::round(newValue2);
 
@@ -107,7 +107,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
     }
 
     //********************************
-    // Crossover on bool variables 
+    // Crossover on bool variables
     //********************************
         if(rng.flip(parameters->value("boolPCross",0.25).toDouble()) && (_eoA.boolVars.size()>0))
     {
@@ -123,7 +123,7 @@ virtual bool operator()(EOT& _eoA, EOT& _eoB ) {
 
         oneHasChanged = true;
     }
-    
+
     return oneHasChanged;
 }
 private :

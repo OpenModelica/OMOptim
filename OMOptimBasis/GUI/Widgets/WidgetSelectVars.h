@@ -88,4 +88,4 @@ public slots:
     void removeVariables();
 };
 
-#endif 
+#endif

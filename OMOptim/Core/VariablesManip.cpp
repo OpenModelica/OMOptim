@@ -87,7 +87,7 @@ int VariablesManip::nbScans(ScannedVariables *scannedVars)
     int nbScans = 1;
     for(int i=0;i<scannedVars->size();i++)
         nbScans = nbScans*scannedVars->at(i)->nbScans();
-    
+
     return nbScans;
 }
 
@@ -146,7 +146,7 @@ double VariablesManip::calculateScanSum(VariableResult *var,bool &ok, int iPoint
         ok=false;
         return 0;
     }
-    
+
     double sum = 0;
     for(int iScan=0;iScan<nbScans;iScan++)
     {

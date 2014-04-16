@@ -47,12 +47,12 @@
 
 MOTableView::MOTableView(QWidget* parent):QTableView(parent)
 {
-    
+
     //_view->installEventFilter(this);
     installEventFilter(this);
     horizontalHeader()->setResizeMode(QHeaderView::Interactive);
     verticalHeader()->hide();
-    
+
     //editable ?
     setEditable(true);
 

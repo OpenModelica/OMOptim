@@ -76,7 +76,7 @@ class Project: public ProjectBase
     //****************************
     // Attributes
     //****************************
-public : 
+public :
 
     //Threads management
     QFileSystemWatcher _mofilesWatcher;

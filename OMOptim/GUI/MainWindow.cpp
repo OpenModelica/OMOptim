@@ -906,10 +906,10 @@ void MainWindow::updateRecentFilesList(QString fileName)
 {
     QSettings settings("MO", "Settings");
     QStringList files = settings.value("MO/recentFileList").toStringList();
-    
+
     files.removeAll(fileName);
     files.prepend(fileName);
-    
+
     while (files.size() > MaxRecentFiles)
     {
         files.removeLast();

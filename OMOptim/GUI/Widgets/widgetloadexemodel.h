@@ -15,7 +15,7 @@ class WidgetLoadExeModel;
 class WidgetLoadExeModel : public QDialog
 {
     Q_OBJECT
-    
+
 public:
     explicit WidgetLoadExeModel(Project *project, QWidget *parent);
     ~WidgetLoadExeModel();

@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 0.9 
+     @version 0.9
 
   */
 #ifndef _EOStd_H
@@ -79,7 +79,7 @@ public:
     //    moeoVector<EOStdObjectiveVector,double>::printOn(_os);
     //    _os << ' ';
 
-        // START Code of default output 
+        // START Code of default output
         _os << doubleVars.size() << ' ' ;
         for (unsigned i=0; i<doubleVars.size(); i++)
             _os << doubleVars[i] << ' ' ;
@@ -115,19 +115,19 @@ public:
 
         // read and store  obj values
         EOStdObjectiveVector newObjVector;
-        
+
         for (unsigned i=0; i<nbObj; i++)
         {
             _is >> tmpDouble;
             newObjVector.at(i)=tmpDouble;
-        }            
+        }
         objectiveVector(newObjVector);
 
-        
+
         // of course you should read the fitness first!
         //moeoVector<EOStdObjectiveVector,double>::readFrom(_is);
 
-    
+
 
         _is >> doubleSize;
         doubleVars.resize(doubleSize);
@@ -135,7 +135,7 @@ public:
         {
             _is >> tmpDouble;
             doubleVars[i]=tmpDouble;
-        }            
+        }
 
         _is >> intSize;
         intVars.resize(intSize);

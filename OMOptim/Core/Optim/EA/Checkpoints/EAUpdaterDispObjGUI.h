@@ -16,7 +16,7 @@
 template < class MOEOT >
 class EAUpdaterDispObjGUI : public eoUpdater, public QObject
   {
-     
+
   public:
 
     /**

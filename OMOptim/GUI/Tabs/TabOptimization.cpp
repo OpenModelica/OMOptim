@@ -64,7 +64,7 @@ TabOptimization::TabOptimization(Optimization *problem, QWidget *parent) :
 {
     _project = dynamic_cast<Project*>(problem->project());
     _problem = problem;
-    
+
     _widgetSelectOptVars = new WidgetSelectOptVars(_problem,true,this);
     addDockWidget("Variables",_widgetSelectOptVars);
 
@@ -75,7 +75,7 @@ TabOptimization::TabOptimization(Optimization *problem, QWidget *parent) :
 
     _widgetOptParameters = new WidgetOptParameters(_project,_problem,false,this);
     addDockWidget("Parameters",_widgetOptParameters,_widgetSelectOptVars);
-    
+
     _widgetFilesList = new WidgetFilesList(_problem->_filesToCopy,this);
     _widgetFilesList->setInfos("Select here files needed for simulation to perform. \nThose would be copied in temporary directory along with simulation executable.");
     addDockWidget("Files",_widgetFilesList,_widgetSelectOptVars);

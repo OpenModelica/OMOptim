@@ -29,7 +29,7 @@ Variables* Variables::clone() const
     {
         newItem = new Variable(*this->at(i));
         newVector->addItem(newItem);
-    }  
+    }
 
     return newVector;
 }

@@ -80,12 +80,12 @@ public:
 
     inline void clear();
 
-    
+
 
 
 protected:
-    
-    
+
+
         QFont _axisFont;
     double selectedX;
     double selectedY;
@@ -99,7 +99,7 @@ protected:
 
     inline virtual void drawItems (QPainter *painter, const QRect &rect,
                                    const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
-    
+
 
 
 
@@ -146,7 +146,7 @@ MOPlot::MOPlot()
     this->canvas()->setFont(_axisFont);
     this->setAxisFont(QwtPlot::xBottom,_axisFont);
     this->setAxisFont(QwtPlot::yLeft,_axisFont);
-    
+
 
     QFont font;
     font.setPointSize(8);
@@ -157,7 +157,7 @@ MOPlot::MOPlot()
     this->setCanvasBackground(QColor(Qt::white));
     this->setMargin(5);
     this->setContentsMargins(5,5,5,5);
-    
+
     // grid
     QwtPlotGrid *grid = new QwtPlotGrid;
     grid->enableXMin(false);
@@ -165,7 +165,7 @@ MOPlot::MOPlot()
     grid->setMajPen(QPen(Qt::lightGray, 0, Qt::SolidLine));
     grid->setMinPen(QPen(Qt::lightGray, 0 , Qt::SolidLine));
     grid->attach(this);
-    
+
     //zoom
      _zoomer = new QwtPlotZoomer(canvas());
      _zoomer->setMousePattern(QwtEventPattern::MouseSelect1, Qt::MidButton);
@@ -212,7 +212,7 @@ void MOPlot::setCurves(QList<QwtPlotCurve*>& _curves)
 {
 
     clear();
-    
+
     for(int i =0;i<_curves.size();i++)
     {
         addCurve(_curves.at(i));
@@ -234,7 +234,7 @@ void MOPlot::clear()
 
 
     QwtPlot::clear();
-    
+
     curves.clear();
 }
 
@@ -242,7 +242,7 @@ void MOPlot::addCurve(QwtPlotCurve *_curve)
 {
     if(!curves.contains(_curve))
         curves.push_back(_curve);
-    
+
     _curve->attach(this);
 }
 
@@ -275,7 +275,7 @@ int MOPlot::getNearestPointIndex(QwtPlotCurve * curve,const QwtDoublePoint & poi
 
 void MOPlot::onClicked(const QwtDoublePoint & pos)
 {
-    
+
     /*int selectedPoint = getNearestPointIndex(curveHot,pos);
 
     MOVector<EIStream> *clickedStreams;

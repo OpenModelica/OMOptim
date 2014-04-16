@@ -87,14 +87,14 @@ const char* OmcCommunication::_PD_repoId = "IDL:OmcCommunication:1.0";
 
 
 _objref_OmcCommunication::~_objref_OmcCommunication() {
-  
+
 }
 
 
 _objref_OmcCommunication::_objref_OmcCommunication(omniIOR* ior, omniIdentity* id) :
    omniObjRef(::OmcCommunication::_PD_repoId, ior, id, 1)
-   
-   
+
+
 {
   _PR_setobj(this);
 }
@@ -104,13 +104,13 @@ _objref_OmcCommunication::_ptrToObjRef(const char* id)
 {
   if( id == ::OmcCommunication::_PD_repoId )
     return (::OmcCommunication_ptr) this;
-  
+
   if( id == ::CORBA::Object::_PD_repoId )
     return (::CORBA::Object_ptr) this;
 
   if( omni::strMatch(id, ::OmcCommunication::_PD_repoId) )
     return (::OmcCommunication_ptr) this;
-  
+
   if( omni::strMatch(id, ::CORBA::Object::_PD_repoId) )
     return (::CORBA::Object_ptr) this;
 
@@ -126,16 +126,16 @@ public:
   inline _0RL_cd_54189747B6CAE889_00000000(LocalCallFn lcfn,const char* op_,size_t oplen,_CORBA_Boolean upcall=0):
      omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
   {
-    
+
   }
-  
+
   void marshalArguments(cdrStream&);
   void unmarshalArguments(cdrStream&);
 
   void unmarshalReturnedValues(cdrStream&);
   void marshalReturnedValues(cdrStream&);
-  
-  
+
+
   static const char* const _user_exns[];
 
   ::CORBA::String_var arg_0_;
@@ -229,7 +229,7 @@ _pof_OmcCommunication::is_a(const char* id) const
 {
   if( omni::ptrStrMatch(id, ::OmcCommunication::_PD_repoId) )
     return 1;
-  
+
   return 0;
 }
 
@@ -246,7 +246,7 @@ _impl_OmcCommunication::_dispatch(omniCallHandle& _handle)
   if( omni::strMatch(op, "sendExpression") ) {
 
     _0RL_cd_54189747B6CAE889_00000000 _call_desc(_0RL_lcfn_54189747B6CAE889_10000000, "sendExpression", 15, 1);
-    
+
     _handle.upcall(this,_call_desc);
     return 1;
   }
@@ -254,7 +254,7 @@ _impl_OmcCommunication::_dispatch(omniCallHandle& _handle)
   if( omni::strMatch(op, "sendClass") ) {
 
     _0RL_cd_54189747B6CAE889_00000000 _call_desc(_0RL_lcfn_54189747B6CAE889_20000000, "sendClass", 10, 1);
-    
+
     _handle.upcall(this,_call_desc);
     return 1;
   }
@@ -268,13 +268,13 @@ _impl_OmcCommunication::_ptrToInterface(const char* id)
 {
   if( id == ::OmcCommunication::_PD_repoId )
     return (::_impl_OmcCommunication*) this;
-  
+
   if( id == ::CORBA::Object::_PD_repoId )
     return (void*) 1;
 
   if( omni::strMatch(id, ::OmcCommunication::_PD_repoId) )
     return (::_impl_OmcCommunication*) this;
-  
+
   if( omni::strMatch(id, ::CORBA::Object::_PD_repoId) )
     return (void*) 1;
   return 0;

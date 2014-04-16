@@ -23,7 +23,7 @@ public:
  //   QMimeData* mimeData(const QModelIndexList &indexes) const;
     Qt::DropActions supportedDropActions() const;
 
-    Variable* findVariable(QString model,QString shortVarName); 
+    Variable* findVariable(QString model,QString shortVarName);
     int findVariable(QString model, QRegExp &shortVarName, int from=0);
 
 private :

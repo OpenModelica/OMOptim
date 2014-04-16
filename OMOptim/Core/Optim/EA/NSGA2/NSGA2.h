@@ -76,7 +76,7 @@ It allows multi-objectives but only real variables (no integer)
 
 class NSGA2 : public EABase
 {
-public : 
+public :
     NSGA2();
     NSGA2(Project*,Problem*);
     NSGA2(Project*,Problem*,MOParameters*);

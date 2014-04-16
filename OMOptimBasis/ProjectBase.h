@@ -84,7 +84,7 @@ class ProjectBase: public MOItem
     //****************************
     // Attributes
     //****************************
-public : 
+public :
 
     //Threads management
     QMutex _componentMutex;

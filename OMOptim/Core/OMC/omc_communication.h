@@ -91,7 +91,7 @@ public:
   static _ptr_type _duplicate(_ptr_type);
   static _ptr_type _narrow(::CORBA::Object_ptr);
   static _ptr_type _unchecked_narrow(::CORBA::Object_ptr);
-  
+
   static _ptr_type _nil();
 
   static inline void _marshalObjRef(_ptr_type, cdrStream&);
@@ -107,7 +107,7 @@ public:
   static _core_attr const char* _PD_repoId;
 
   // Other IDL defined within this scope.
-  
+
 };
 
 class _objref_OmcCommunication :
@@ -124,7 +124,7 @@ public:
 protected:
   virtual ~_objref_OmcCommunication();
 
-  
+
 private:
   virtual void* _ptrToObjRef(const char*);
 
@@ -152,14 +152,14 @@ public:
 
   virtual char* sendExpression(const char* expr) = 0;
   virtual char* sendClass(const char* model) = 0;
-  
+
 public:  // Really protected, workaround for xlC
   virtual _CORBA_Boolean _dispatch(omniCallHandle&);
 
 private:
   virtual void* _ptrToInterface(const char*);
   virtual const char* _mostDerivedRepoId();
-  
+
 };
 
 

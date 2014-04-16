@@ -79,4 +79,4 @@ public slots:
     void removeFiles();
 };
 
-#endif 
+#endif

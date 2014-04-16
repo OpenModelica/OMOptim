@@ -68,7 +68,7 @@ public:
     explicit WidgetOptParameters(Project* project,Optimization* problem,bool isResult,QWidget *parent = NULL);
     virtual ~WidgetOptParameters();
 
-    
+
 
 public:
     Ui::WidgetOptParametersClass *_ui;
@@ -92,4 +92,4 @@ private :
 
 };
 
-#endif 
+#endif

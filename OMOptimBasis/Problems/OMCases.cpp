@@ -112,7 +112,7 @@ QModelIndex OMCases::parent(const QModelIndex &index) const
 
 int OMCases::rowCount(const QModelIndex &parent) const
 {
-    
+
     if (!parent.isValid())
         return items.size();
     else

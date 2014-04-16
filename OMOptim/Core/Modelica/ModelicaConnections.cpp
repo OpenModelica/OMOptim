@@ -8,16 +8,16 @@
  *
  * All rights reserved.
  *
- * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR 
- * THIS OSMC PUBLIC LICENSE (OSMC-PL). 
+ * THIS PROGRAM IS PROVIDED UNDER THE TERMS OF GPL VERSION 3 LICENSE OR
+ * THIS OSMC PUBLIC LICENSE (OSMC-PL).
  * ANY USE, REPRODUCTION OR DISTRIBUTION OF THIS PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE
- * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE. 
+ * OF THE OSMC PUBLIC LICENSE OR THE GPL VERSION 3, ACCORDING TO RECIPIENTS CHOICE.
  *
  * The OpenModelica software and the Open Source Modelica
  * Consortium (OSMC) Public License (OSMC-PL) are obtained
  * from OSMC, either from the above address,
- * from the URLs: http://www.ida.liu.se/projects/OpenModelica or  
- * http://www.openmodelica.org, and in the OpenModelica distribution. 
+ * from the URLs: http://www.ida.liu.se/projects/OpenModelica or
+ * http://www.openmodelica.org, and in the OpenModelica distribution.
  * GNU version 3 is obtained from: http://www.gnu.org/copyleft/gpl.html.
  *
  * This program is distributed WITHOUT ANY WARRANTY; without
@@ -135,7 +135,7 @@ ModelicaConnections::~ModelicaConnections(void)
 // }
 //
 // int ModelicaConnections::rowCount(const QModelIndex &parent) const
-// {  
+// {
 //         return items.size();
 // }
 //
@@ -194,10 +194,10 @@ ModelicaConnections* ModelicaConnections::filter(ModItem* element,bool includeCh
 //    {
 //        aName = elConn->at(i)->getA();
 //        aModItem = modLoader->findInDescendants(element,aName);
-//        
+//
 //        bName = elConn->at(i)->getB();
 //        bModItem = modLoader->findInDescendants(element,bName);
-//        
+//
 //
 //        if(aModItem)
 //        {

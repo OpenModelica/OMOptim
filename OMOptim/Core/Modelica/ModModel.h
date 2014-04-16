@@ -59,7 +59,7 @@ public:
     virtual QString getClassName() const {return "ModModel";}
     virtual Modelica::ClassRestr getClassRestr(){return Modelica::MODEL;}
 
-    
+
 };
 
 #endif

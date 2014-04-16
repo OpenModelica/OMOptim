@@ -202,7 +202,7 @@ void BlockSubsScene::refresh()
 //    double maxSubWidth;
 //
 //    QGraphicsGridLayout *layout = new QGraphicsGridLayout;
-//    
+//
 //
 //    if(blockSubs!=NULL)
 //    {
@@ -227,7 +227,7 @@ void BlockSubsScene::refresh()
 //                BlockDrawItem* _curOrgBlock = addOrgBlock(_orgEl, QPoint());
 //                layout->addItem(_curOrgBlock,_curRow,0,2,1);
 //                maxOrgWidth = max(_curOrgBlock->boundingRect().width(),maxOrgWidth);
-//                
+//
 //                // Subs block
 //                for(int j=0;j<nbSubs;j++)
 //                {
@@ -260,7 +260,7 @@ void BlockSubsScene::refresh()
 //
 //        QRectF _rect = layout->geometry();
 //        QRectF _rect1 = layout->contentsRect();
-//        
+//
 //        // zoom
 //        zoomFit();
 //    }

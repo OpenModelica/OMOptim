@@ -56,7 +56,7 @@
     FOR A PARTICULAR PURPOSE, EXCEPT AS EXPRESSLY SET FORTH
     IN THE BY RECIPIENT SELECTED SUBSIDIARY LICENSE CONDITIONS
     OF OSMC-PL.
-    
+
     See the full OSMC Public License conditions for more details.
 
     For more information about the Qt-library visit TrollTech's webpage

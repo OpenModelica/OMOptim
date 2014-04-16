@@ -53,8 +53,8 @@ public:
 
 
     virtual Modelica::ClassRestr getClassRestr(){return Modelica::RECORD;};
-    
-    
+
+
 protected :
 
 };
