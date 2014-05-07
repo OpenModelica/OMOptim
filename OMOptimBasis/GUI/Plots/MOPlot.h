@@ -51,6 +51,10 @@
 #include "qwt_scale_draw.h"
 #include "qwt_math.h"
 #include "qwt_dial.h"
+#if QWT_VERSION >= 0x060000
+#include "qwt_plot_renderer.h"
+#endif
+
 #include "qpaintengine.h"
 #include "MOVector.h"
 
@@ -76,7 +80,6 @@ public:
     inline ~MOPlot(void);
     inline void addCurve(QwtPlotCurve *curve);
     inline void setCurves(QList<QwtPlotCurve*> & _curves);
-    inline int getNearestPointIndex(QwtPlotCurve *,const QwtDoublePoint &);
 
     inline void clear();
 
@@ -96,9 +99,10 @@ protected:
     QList<QwtPlotCurve*> curves;
     QAction* _actionCopy;
     QAction* _actionRefresh;
-
+#if QWT_VERSION < 0x060000
     inline virtual void drawItems (QPainter *painter, const QRect &rect,
                                    const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
+#endif
 
 
 
@@ -107,8 +111,6 @@ protected:
 
 
 
-public slots:
-    inline void onClicked(const QwtDoublePoint & pos);
 public slots :
     inline void popUpMenu(const QPoint &pos);
     inline void onCopyAsked();
@@ -140,7 +142,8 @@ MOPlot::MOPlot()
 //    myPalette.setColor(QPalette::Background,QColor(Qt::white));
 //    myPalette.setColor(QPalette::Window,QColor(Qt::white));
 
-    this->canvas()->setFrameStyle(QFrame::NoFrame);
+    QwtPlotCanvas *pPlotCanvas = static_cast<QwtPlotCanvas*>(this->canvas());
+    pPlotCanvas->setFrameStyle(QFrame::NoFrame);
     _axisFont = QFont(QApplication::font().family(),8,QFont::Normal);
     _axisFont.setStyleStrategy(QFont::PreferAntialias);
     this->canvas()->setFont(_axisFont);
@@ -155,15 +158,19 @@ MOPlot::MOPlot()
 
 
     this->setCanvasBackground(QColor(Qt::white));
-    this->setMargin(5);
     this->setContentsMargins(5,5,5,5);
 
     // grid
     QwtPlotGrid *grid = new QwtPlotGrid;
     grid->enableXMin(false);
     grid->enableYMin(false);
+#if QWT_VERSION >= 0x060100
+    grid->setMajorPen(QPen(Qt::lightGray, 0, Qt::SolidLine));
+    grid->setMinorPen(QPen(Qt::lightGray, 0 , Qt::SolidLine));
+#else
     grid->setMajPen(QPen(Qt::lightGray, 0, Qt::SolidLine));
     grid->setMinPen(QPen(Qt::lightGray, 0 , Qt::SolidLine));
+#endif
     grid->attach(this);
 
     //zoom
@@ -232,8 +239,12 @@ void MOPlot::clear()
         curves.at(i)->detach();
     }
 
-
+#if QWT_VERSION >= 0x060000
+    detachItems(QwtPlotItem::Rtti_PlotCurve);
+    detachItems(QwtPlotItem::Rtti_PlotMarker);
+#else
     QwtPlot::clear();
+#endif
 
     curves.clear();
 }
@@ -247,41 +258,7 @@ void MOPlot::addCurve(QwtPlotCurve *_curve)
 }
 
 
-int MOPlot::getNearestPointIndex(QwtPlotCurve * curve,const QwtDoublePoint & point)
-{
-
-    //    double minDist=0;
-    //    double curDist=0;
-
-    //    int xPos = transform(QwtPlot::xBottom,point.x());
-    //    int yPos = transform(QwtPlot::yLeft,point.y());
-
-    int indexMin = -1;
-
-    /*for(int iPoint=0;iPoint<xData.size();iPoint++)
-    {
-        xPointPos = transform(QwtPlot::xBottom,xData.at(iPoint));
-        yPointPos = transform(QwtPlot::yLeft,yData.at(iPoint));
-
-        curDist = sqrt(pow((double)(yPointPos-yPos),2)+pow((double)(xPointPos-xPos),2));
-        if((curDist<minDist)|| (iPoint==0))
-        {
-            indexMin = iPoint;
-            minDist = curDist;
-        }
-    }*/
-    return indexMin;
-}
-
-void MOPlot::onClicked(const QwtDoublePoint & pos)
-{
-
-    /*int selectedPoint = getNearestPointIndex(curveHot,pos);
-
-    MOVector<EIStream> *clickedStreams;
-    emit clickedOnCurves(clickedStreams);*/
-}
-
+#if QWT_VERSION < 0x060000
 void MOPlot::drawItems (QPainter *painter, const QRect &rect,
                         const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
 {
@@ -312,6 +289,7 @@ void MOPlot::drawItems (QPainter *painter, const QRect &rect,
 
     painter->restore();
 }
+#endif
 
 
 
@@ -339,7 +317,12 @@ void MOPlot::onCopyAsked()
 {
     QImage image;
     // Print the plot to an image
+#if QWT_VERSION < 0x060000
     print( image );
+#else
+    QwtPlotRenderer plotRenderer;
+    plotRenderer.renderTo(this, image);
+#endif
 
     // Set the clilpboard image
     QClipboard * clipboard =
@@ -357,13 +340,19 @@ void MOPlot::onCopyAsked()
         QString yTitle = this->axisTitle(QwtPlot::yLeft).text();
         QString xTitle = this->axisTitle(QwtPlot::xBottom).text();
         csv+= xTitle + separator + yTitle + "\n";
+#if QWT_VERSION >= 0x060000
+        for(unsigned int j=0;j<curve->data()->size();j++)
+        {
+          csv+= QString::number(curve->sample(j).x()) + separator + QString::number(curve->sample(j).y()) + "\n";
+          csv+= "\n \n";
+        }
+#else
         for(unsigned int j=0;j<curve->data().size();j++)
         {
-            curve->data().size();
-            csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
+          csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
+          csv+= "\n \n";
         }
-
-        csv+= "\n \n";
+#endif
     }
     clipboard->setText(csv);
 }

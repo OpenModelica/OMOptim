@@ -24,7 +24,7 @@ win32 {
                                $${QMAKE_LIBDIR_QT}/QtXml4.dll \
                                $${QMAKE_LIBDIR_QT}/../bin/mingwm10.dll \
                                 $${QMAKE_LIBDIR_QT}/../bin/libgcc_s_dw2-1.dll \
-                                $$(OMDEV)/lib/qwt-5.2.1-mingw/lib/qwt5.dll \
+                                $$(OMDEV)/lib/qwt-6.1.0-mingw/lib/qwt.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniORB416_rt.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omnithread34_rt.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniDynamic416_rt.dll
@@ -35,7 +35,7 @@ win32 {
                                $${QMAKE_LIBDIR_QT}/QtXmld4.dll \
                                $${QMAKE_LIBDIR_QT}/../bin/mingwm10.dll \
                                 $${QMAKE_LIBDIR_QT}/../bin/libgcc_s_dw2-1.dll \
-                                $$(OMDEV)/lib/qwt-5.2.1-mingw/lib/qwtd5.dll \
+                                $$(OMDEV)/lib/qwt-6.1.0-mingw/lib/qwtd.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniORB416_rtd.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omnithread34_rtd.dll \
                                 $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniDynamic416_rtd.dll

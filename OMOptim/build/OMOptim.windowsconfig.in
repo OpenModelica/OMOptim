@@ -36,7 +36,7 @@ CONFIG(debug, debug|release){
 }
 
 INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.6-mingw/include \
-               $$(OMDEV)/lib/qwt-5.2.1-mingw/include \
+               $$(OMDEV)/lib/qwt-6.1.0-mingw/include \
                $$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/src \
                $$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/src/utils \
                $$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/src \
@@ -48,8 +48,8 @@ CONFIG(debug, debug|release){
     -lomniORB416_rtd \
     -lomnithread34_rtd \
     -lomniDynamic416_rtd \
-    -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
-    -lqwtd5 \
+    -L$$(OMDEV)/lib/qwt-6.1.0-mingw/lib \
+    -lqwtd \
     -L../bin \
     -L../../OMOptimBasis/bin \
     -lOMOptimBasisd
@@ -61,8 +61,8 @@ CONFIG(debug, debug|release){
     -lomniORB416_rt \
     -lomnithread34_rt \
     -lomniDynamic416_rt \
-    -L$$(OMDEV)/lib/qwt-5.2.1-mingw/lib \
-    -lqwt5 \
+    -L$$(OMDEV)/lib/qwt-6.1.0-mingw/lib \
+    -lqwt \
     -L../bin \
     -L../../OMOptimBasis/bin \
     -lOMOptimBasis

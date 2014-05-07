@@ -55,6 +55,10 @@
 #include <qwt_dial.h>
 #include <qpaintengine.h>
 #include <qwt_plot_grid.h>
+#if QWT_VERSION >= 0x060000
+#include "qwt_plot_renderer.h"
+#endif
+
 #include <QPainter>
 #include <QEvent>
 #include <QApplication>
@@ -70,9 +74,13 @@ class MOOptPlot :  public QwtPlot
     Q_OBJECT
 public:
     inline MOOptPlot(void);
-    ~MOOptPlot(void){};
+    ~MOOptPlot(void){}
     inline void refresh(int);
+#if QWT_VERSION >= 0x060000
+    inline int getNearestPointIndex(QwtPlotCurve *,const QPointF &);
+#else
     inline int getNearestPointIndex(QwtPlotCurve *,const QwtDoublePoint &);
+#endif
     inline void setSelectionPoint(int,bool _add);
     inline void setSelectionPoints(QList<int>);
     inline QList<int> getSelectedPoints();
@@ -85,9 +93,10 @@ public:
     void setXYVar(OptVarObjResultX*,OptVarObjResultY*);
 
 
-
+#if QWT_VERSION < 0x060000
     inline virtual void drawItems (QPainter *painter, const QRect &rect,
                                    const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const;
+#endif
     inline void drawFrame(QPainter *p, const QRect& rect);
     inline virtual void paintEvent(QPaintEvent *e);
 
@@ -109,9 +118,8 @@ private:
     QAction* _actionRefresh;
 
 public slots:
-    inline void onClicked(const QwtDoublePoint & pos);
+    inline void onClicked(const QPointF & pos);
     inline void onExtSelectionChanged(QList<int> &);
-    inline void onPickerSelected(const QwtDoubleRect &rect);
     inline void onPickerAppended (const QPoint &pos);
     inline void popUpMenu(const QPoint &pos);
     inline void onCopyAsked();
@@ -131,7 +139,11 @@ MOOptPlot::MOOptPlot()
     sym1.setSize(6);
     sym1.setPen(QPen(Qt::red));
     sym1.setBrush(QBrush(Qt::red));
+#if QWT_VERSION >= 0x060000
+    _curve1->setSymbol(&sym1);
+#else
     _curve1->setSymbol(sym1);
+#endif
     _curve1->setStyle(QwtPlotCurve::NoCurve);
     _curve1->setItemAttribute(QwtPlotItem::AutoScale,true);
     _curve1->attach(this);
@@ -143,7 +155,11 @@ MOOptPlot::MOOptPlot()
     sym2.setSize(15);
     sym2.setPen(QPen(Qt::blue));
     sym2.setBrush(QBrush(Qt::blue));
+#if QWT_VERSION >= 0x060000
+    _curve2->setSymbol(&sym2);
+#else
     _curve2->setSymbol(sym2);
+#endif
     _curve2->setStyle(QwtPlotCurve::NoCurve);
     _curve2->setItemAttribute(QwtPlotItem::AutoScale,true);
     _curve2->attach(this);
@@ -160,7 +176,8 @@ MOOptPlot::MOOptPlot()
     this->setAxisFont(QwtPlot::yLeft,axisFont);
 
     // box
-    this->canvas()->setFrameStyle(QFrame::NoFrame);
+    QwtPlotCanvas *pPlotCanvas = static_cast<QwtPlotCanvas*>(this->canvas());
+    pPlotCanvas->setFrameStyle(QFrame::NoFrame);
     this->setFrameStyle(QFrame::StyledPanel);
 
     // Colors
@@ -181,8 +198,14 @@ MOOptPlot::MOOptPlot()
     // Picker
     _picker1 = new MyQwtPlotPicker(canvas());
     _picker1->setTrackerMode(QwtPicker::AlwaysOff);
+#if QWT_VERSION >= 0x060000
+    /*! @todo Subclass QwtPickerMachine and provide a transition function to enable selection flags.
+      */
+    connect(_picker1, SIGNAL(selected(QPointF)),this, SLOT(onClicked(QPointF)));
+#else
     _picker1->setSelectionFlags(QwtPicker::PointSelection | QwtPicker::RectSelection );
-    connect(_picker1, SIGNAL(selected(const QwtDoublePoint &)),this, SLOT(onClicked(const QwtDoublePoint &)));
+    connect(_picker1, SIGNAL(selected(const QwtDoublePoint &)),this, SLOT(onClicked(const QPointF &)));
+#endif
     //    connect(_picker1, SIGNAL(selected(const QwtDoubleRect &rect)),this, SLOT(onPickerSelected(const QwtDoubleRect &rect)));
     //    connect(_picker1, SIGNAL(appended (const QPoint &pos)),this, SLOT(onPickerAppended(const QPoint &pos)));
 
@@ -219,8 +242,13 @@ MOOptPlot::MOOptPlot()
     QwtPlotGrid *grid = new QwtPlotGrid;
     grid->enableXMin(false);
     grid->enableYMin(false);
+#if QWT_VERSION >= 0x060100
+    grid->setMajorPen(QPen(Qt::lightGray, 0, Qt::SolidLine));
+    grid->setMinorPen(QPen(Qt::lightGray, 0 , Qt::SolidLine));
+#else
     grid->setMajPen(QPen(Qt::lightGray, 0, Qt::SolidLine));
     grid->setMinPen(QPen(Qt::lightGray, 0 , Qt::SolidLine));
+#endif
     grid->attach(this);
 
     // margins
@@ -342,7 +370,11 @@ void MOOptPlot::refresh(int iCurve = 0)
                 InfoSender::instance()->debug(msg);
             }
         }
+#if QWT_VERSION >= 0x060000
+        _curve1->setSamples(dataX,dataY,nbPoints);
+#else
         _curve1->setData(dataX,dataY,nbPoints);
+#endif
         _curve1->setItemAttribute(QwtPlotItem::AutoScale,true);
         delete[] dataX;
         delete[] dataY;
@@ -371,7 +403,11 @@ void MOOptPlot::refresh(int iCurve = 0)
                     InfoSender::instance()->debug(msg);
                 }
             }
+#if QWT_VERSION >= 0x060000
+            _curve2->setSamples(dataX,dataY,_selectedPoints.size());
+#else
             _curve2->setData(dataX,dataY,_selectedPoints.size());
+#endif
             _curve2->setItemAttribute(QwtPlotItem::AutoScale,true);
             _curve2->show();
             delete[] dataX;
@@ -422,7 +458,11 @@ void MOOptPlot::setXYVar(OptVarObjResultX* varX,OptVarObjResultY* varY)
     refresh();
 }
 
+#if QWT_VERSION >= 0x060000
+int MOOptPlot::getNearestPointIndex(QwtPlotCurve * curve,const QPointF & point)
+#else
 int MOOptPlot::getNearestPointIndex(QwtPlotCurve * curve,const QwtDoublePoint & point)
+#endif
 {
 
     double minDist=0;
@@ -451,7 +491,7 @@ int MOOptPlot::getNearestPointIndex(QwtPlotCurve * curve,const QwtDoublePoint & 
     return indexMin;
 }
 
-void MOOptPlot::onClicked(const QwtDoublePoint & pos)
+void MOOptPlot::onClicked(const QPointF & pos)
 {
 
     QwtPlotPicker *picker = qobject_cast<QwtPlotPicker *>(sender());
@@ -464,6 +504,8 @@ void MOOptPlot::onClicked(const QwtDoublePoint & pos)
     QList<int> list = getSelectedPoints();
     emit selectionChanged(list);
 }
+
+#if QWT_VERSION < 0x060000
 void MOOptPlot::drawItems (QPainter *painter, const QRect &rect,
                            const QwtScaleMap map[axisCnt], const QwtPlotPrintFilter &pfilter) const
 {
@@ -495,6 +537,7 @@ void MOOptPlot::drawItems (QPainter *painter, const QRect &rect,
 
     painter->restore();
 }
+#endif
 
 void MOOptPlot::drawFrame(QPainter *p, const QRect& rect)
 {
@@ -529,11 +572,6 @@ void MOOptPlot::onExtSelectionChanged(QList<int> & newSel)
 //*********************
 //    Picker
 //*********************
-void MOOptPlot::onPickerSelected(const QwtDoubleRect &rect)
-{
-    bool ctrlPressed = _picker1->ctrlPressed;
-}
-
 void MOOptPlot::onPickerAppended (const QPoint &pos)
 {
     bool ctrlPressed = _picker1->ctrlPressed;
@@ -563,7 +601,12 @@ void MOOptPlot::onCopyAsked()
 {
     QImage image;
     // Print the plot to an image
+#if QWT_VERSION < 0x060000
     print( image );
+#else
+    QwtPlotRenderer plotRenderer;
+    plotRenderer.renderTo(this, image);
+#endif
 
     // Set the clilpboard image
     QClipboard * clipboard =
@@ -583,13 +626,19 @@ void MOOptPlot::onCopyAsked()
         QString yTitle = this->axisTitle(QwtPlot::yLeft).text();
         QString xTitle = this->axisTitle(QwtPlot::xBottom).text();
         csv+= xTitle + separator + yTitle + "\n";
+#if QWT_VERSION >= 0x060000
+        for(unsigned int j=0;j<curve->data()->size();j++)
+        {
+          csv+= QString::number(curve->sample(j).x()) + separator + QString::number(curve->sample(j).y()) + "\n";
+          csv+= "\n \n";
+        }
+#else
         for(unsigned int j=0;j<curve->data().size();j++)
         {
-            curve->data().size();
-            csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
+          csv+= QString::number(curve->x(j)) + separator + QString::number(curve->y(j)) + "\n";
+          csv+= "\n \n";
         }
-
-        csv+= "\n \n";
+#endif
     }
     clipboard->setText(csv);
 }

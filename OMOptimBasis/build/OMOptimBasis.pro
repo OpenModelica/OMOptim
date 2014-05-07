@@ -8,7 +8,7 @@ QT +=  core gui xml
 
 CONFIG(debug, debug|release){
     LIBS += -L$$(QWTHOME)/lib \
-    -lqwtd5
+    -lqwtd
 
     DESTDIR = ../bin
     UI_DIR = debug/generatedfiles/ui
@@ -19,7 +19,7 @@ CONFIG(debug, debug|release){
 
 }else {
     LIBS += -L$$(QWTHOME)/lib \
-                        -lqwt5
+                        -lqwt
     DESTDIR = ../bin
     UI_DIR = release/generatedfiles/ui
     OBJECTS_DIR = release/generatedfiles
