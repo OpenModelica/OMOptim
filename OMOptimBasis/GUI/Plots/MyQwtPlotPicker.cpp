@@ -40,11 +40,7 @@
 
 #include "MyQwtPlotPicker.h"
 
-#if QWT_VERSION >= 0x060000
-MyQwtPlotPicker::MyQwtPlotPicker(QWidget * _canvas):QwtPlotPicker(_canvas)
-#else
 MyQwtPlotPicker::MyQwtPlotPicker(QwtPlotCanvas * _canvas):QwtPlotPicker(_canvas)
-#endif
 {
     ctrlPressed = false;
 }

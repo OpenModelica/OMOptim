@@ -49,11 +49,7 @@ class MyQwtPlotPicker :
     public QwtPlotPicker
 {
 public:
-#if QWT_VERSION >= 0x060000
-    MyQwtPlotPicker(QWidget *);
-#else
     MyQwtPlotPicker(QwtPlotCanvas *);
-#endif
     ~MyQwtPlotPicker(void);
 
     bool ctrlPressed;
