@@ -41,7 +41,8 @@
 #ifndef _MYQWTPLOTPICKER_H
 #define _MYQWTPLOTPICKER_H
 
-#include "qwt_plot_picker.h"
+#include <qwt_plot_picker.h>
+#include <qwt_plot_canvas.h>
 #include <QEvent>
 #include <QKeyEvent>
 
