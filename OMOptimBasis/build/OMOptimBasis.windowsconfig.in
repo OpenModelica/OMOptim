@@ -1,6 +1,6 @@
 
 ## defines qwthome
-QWTHOME = "$$(OMDEV)/lib/qwt-6.1.0-mingw"
+QWTHOME = "../../3rdParty/qwt/build"
 
 
 
