@@ -2,8 +2,8 @@ QMAKE_CC  = @OMOPTIM_CC@
 QMAKE_CXX = @OMOPTIM_CXX@
 QMAKE_LINK = @OMOPTIM_CXX@
 
-LIBS += @CORBALIBS@ -lqwt@with_qwt_suffix@ -lmoeo -leo -leoutils -L../../OMOptimBasis/bin -lOMOptimBasis
-INCLUDEPATH += @with_qwt@ @CORBA_QMAKE_INCLUDES@ @with_paradiseo_include@
+LIBS += @CORBALIBS@ -lmoeo -leo -leoutils -L../../OMOptimBasis/bin -lOMOptimBasis -L../../3rdParty/qwt/build/lib -lqwt
+INCLUDEPATH += ../../3rdParty/qwt/build/include @CORBA_QMAKE_INCLUDES@ @with_paradiseo_include@
 
 ### FOLDERS, INCLUDES
 
