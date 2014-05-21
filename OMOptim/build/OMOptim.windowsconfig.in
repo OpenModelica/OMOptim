@@ -52,7 +52,7 @@ CONFIG(debug, debug|release){
     -L../../OMOptimBasis/bin \
     -lOMOptimBasisd \
     -L../../3rdParty/qwt/build/lib \
-    -lqwtd
+    -lomqwtd
 
     #PRE_TARGETDEPS += ../OMOptimBasis/bin/libOMOptimBasisd.a
 
@@ -65,7 +65,7 @@ CONFIG(debug, debug|release){
     -L../../OMOptimBasis/bin \
     -lOMOptimBasis \
     -L../../3rdParty/qwt/build/lib \
-    -lqwt
+    -lomqwt
 
     #PRE_TARGETDEPS += ../OMOptimBasis/bin/libOMOptimBasis.a
 }

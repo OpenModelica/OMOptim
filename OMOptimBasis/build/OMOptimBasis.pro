@@ -8,7 +8,7 @@ QT +=  core gui xml
 
 CONFIG(debug, debug|release){
     LIBS += -L$$(QWTHOME)/lib \
-    -lqwtd
+    -lomqwtd
 
     DESTDIR = ../bin
     UI_DIR = debug/generatedfiles/ui
@@ -19,7 +19,7 @@ CONFIG(debug, debug|release){
 
 }else {
     LIBS += -L$$(QWTHOME)/lib \
-                        -lqwt
+                        -lomqwt
     DESTDIR = ../bin
     UI_DIR = release/generatedfiles/ui
     OBJECTS_DIR = release/generatedfiles
@@ -234,4 +234,4 @@ FORMS += \
     ../GUI/ConsoleWindow.ui
 
 RESOURCES += \
-    ../GUI/Resources/OMOptimBasis.qrc 
+    ../GUI/Resources/OMOptimBasis.qrc
