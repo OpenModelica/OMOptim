@@ -2,7 +2,7 @@ QMAKE_CC  = @OMOPTIM_CC@
 QMAKE_CXX = @OMOPTIM_CXX@
 QMAKE_LINK = @OMOPTIM_CXX@
 
-LIBS += -L../../3rdParty/qwt/build/lib -lqwt
-INCLUDEPATH += ../../3rdParty/qwt/build/include
+LIBS += -L../../build/lib/omc -lqwt
+INCLUDEPATH += ../../3rdParty/qwt/src
 
-QMAKE_LFLAGS += @LDFLAGS@ 
+QMAKE_LFLAGS += @LDFLAGS@
