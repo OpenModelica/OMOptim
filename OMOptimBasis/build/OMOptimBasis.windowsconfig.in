@@ -16,8 +16,7 @@ DEFINES += __x86__ \
     _USRDLL \
     _CRT_SECURE_NO_DEPRECATE \
     _WIN32_WINNT=0x0400 \
-    _MBCS \
-    QWT_DLL
+    _MBCS
 
 
 

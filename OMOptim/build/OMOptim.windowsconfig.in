@@ -11,8 +11,7 @@ DEFINES += __x86__ \
     _USRDLL \
     _CRT_SECURE_NO_DEPRECATE \
     _WIN32_WINNT=0x0400 \
-    _MBCS \
-    QWT_DLL
+    _MBCS
 
 ### FOLDERS, INCLUDES
 
@@ -44,35 +43,17 @@ INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.6-mingw/include \
 
 ### LIBRARIES (order has an impact !!)
 CONFIG(debug, debug|release){
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 \
-    -lomniORB416_rtd \
-    -lomnithread34_rtd \
-    -lomniDynamic416_rtd \
-    -L../bin \
-    -L../../OMOptimBasis/bin \
-    -lOMOptimBasisd \
-    -L../../build/lib/omc \
-    -lomqwtd
+    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 -lomniORB416_rtd -lomnithread34_rtd -lomniDynamic416_rtd \
+    -L../../build/lib/omc -lOMOptimBasisd -lomqwtd
 
     #PRE_TARGETDEPS += ../OMOptimBasis/bin/libOMOptimBasisd.a
 
 }else {
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 \
-    -lomniORB416_rt \
-    -lomnithread34_rt \
-    -lomniDynamic416_rt \
-    -L../bin \
-    -L../../OMOptimBasis/bin \
-    -lOMOptimBasis \
-    -L../../build/lib/omc \
-    -lomqwt
+    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 -lomniORB416_rt -lomnithread34_rt -lomniDynamic416_rt \
+    -L../../build/lib/omc -lOMOptimBasis -lomqwt
 
     #PRE_TARGETDEPS += ../OMOptimBasis/bin/libOMOptimBasis.a
 }
 
-LIBS += \
-    -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/lib \
-    -leo \
-    -leoutils \
-    -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/lib \
-    -lmoeo
+LIBS += -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-eo/lib -leo -leoutils \
+    -L$$(OMDEV)/lib/paradiseo-mingw/paradiseo-moeo/lib -lmoeo
