@@ -33,4 +33,4 @@ $(NAME).config: $(NAME).config.in
 clean:
 	test ! -f Makefile || $(MAKE) -f Makefile clean
 	test ! -f MakefileLib || $(MAKE) -f MakefileLib clean
-	rm -rf *.o *.a moc_* OMOptim release/ Makefile MakefileLib
+	rm -rf *.o *.a moc_* OMOptim release/ Makefile MakefileLib  omc_communication.*
