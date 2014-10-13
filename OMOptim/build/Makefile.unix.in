@@ -26,7 +26,7 @@ build: $(LIBNAME) $(NAME)
 	ln -s omc_communication.cc $@
 ../Core/OMC/omc_communication.cc: $(runtimedir)/omc_communication.idl
 	@IDLCMD@ $<
-	mv omc_communication.cc $@
+	mv omc_communication.cc omc_communication.h ../Core/OMC/
 ../Core/OMC/omc_communication.h: ../Core/OMC/omc_communication.cc
 
 Makefile: $(NAME).pro $(NAME).config ../Core/OMC/omc_communication.cpp
