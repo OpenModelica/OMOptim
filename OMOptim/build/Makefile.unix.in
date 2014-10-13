@@ -22,16 +22,17 @@ $(LIBNAME): MakefileLib
 
 build: $(LIBNAME) $(NAME)
 
-../Core/OMC/omc_communication.cpp: ../Core/OMC/omc_communication.cc
-	ln -s omc_communication.cc $@
-../Core/OMC/omc_communication.cc: $(runtimedir)/omc_communication.idl
+../Core/OMC/omc_communication.cpp: omc_communication.cc
+	ln -s ../../build/omc_communication.cc $@
+../Core/OMC/omc_communication.h: omc_communication.h
+	ln -s ../../build/omc_communication.h $@
+omc_communication.cc: $(runtimedir)/omc_communication.idl
 	@IDLCMD@ $<
-	mv omc_communication.cc omc_communication.h ../Core/OMC/
-../Core/OMC/omc_communication.h: ../Core/OMC/omc_communication.cc
+omc_communication.h: omc_communication.cc
 
-Makefile: $(NAME).pro $(NAME).config ../Core/OMC/omc_communication.cpp
+Makefile: $(NAME).pro $(NAME).config ../Core/OMC/omc_communication.cpp ../Core/OMC/omc_communication.h
 	$(QMAKE) $< -o $@
-MakefileLib: $(LIBNAME).pro $(NAME).config ../Core/OMC/omc_communication.cpp
+MakefileLib: $(LIBNAME).pro $(NAME).config ../Core/OMC/omc_communication.cpp ../Core/OMC/omc_communication.h
 	$(QMAKE) $< -o $@
 Makefile.unix: Makefile.unix.in
 	(cd $(top_dir); ./config.status)
@@ -41,4 +42,4 @@ $(NAME).config: $(NAME).config.in
 clean:
 	test ! -f Makefile || $(MAKE) -f Makefile clean
 	test ! -f MakefileLib || $(MAKE) -f MakefileLib clean
-	rm -rf *.o *.a moc_* OMOptim release/ Makefile MakefileLib  omc_communication.*
+	rm -rf *.o *.a moc_* OMOptim release/ Makefile MakefileLib  omc_communication.* ../Core/OMC/omc_communication.*
