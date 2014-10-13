@@ -1,6 +1,7 @@
 .PHONY: install build $(NAME) always
 
 top_dir=../../
+runtimedir=$(top_dir)/Compiler/runtime/
 NAME=OMOptim
 LIBNAME=OMOptimLib
 DEST=../bin
@@ -21,9 +22,16 @@ $(LIBNAME): MakefileLib
 
 build: $(LIBNAME) $(NAME)
 
-Makefile: $(NAME).pro $(NAME).config
+../Core/OMC/omc_communication.cpp: ../Core/OMC/omc_communication.cc
+	ln -s omc_communication.cc $@
+../Core/OMC/omc_communication.cc: $(runtimedir)/omc_communication.idl
+	@IDLCMD@ $<
+	mv omc_communication.cc $@
+../Core/OMC/omc_communication.h: ../Core/OMC/omc_communication.cc
+
+Makefile: $(NAME).pro $(NAME).config ../Core/OMC/omc_communication.cpp
 	$(QMAKE) $< -o $@
-MakefileLib: $(LIBNAME).pro $(NAME).config
+MakefileLib: $(LIBNAME).pro $(NAME).config ../Core/OMC/omc_communication.cpp
 	$(QMAKE) $< -o $@
 Makefile.unix: Makefile.unix.in
 	(cd $(top_dir); ./config.status)
