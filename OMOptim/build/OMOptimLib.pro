@@ -121,7 +121,7 @@ DEPENDPATH += . \
                 ../../OMOptimBasis/Tools \
                 ../../OMOptimBasis/Problems
 
-HEADERS += ../config.h \
+HEADERS += ../omc_config.h \
            ../Core/OptObjective.h \
            ../Core/ParetoDominance.h \
            ../Core/Project.h \
