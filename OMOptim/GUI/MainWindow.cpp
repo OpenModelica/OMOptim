@@ -1248,8 +1248,8 @@ void MainWindow::openUserManual()
 {
     QStringList pathTries;
 
-    pathTries << QApplication::applicationDirPath().replace("\\", "/")+QDir::separator()+"../share/doc/omoptim/OMOptimUsersGuide.pdf";
-    pathTries << OpenModelica::home().replace("\\", "/").append("/share/doc/omoptim/OMOptimUsersGuide.pdf");
+    pathTries << QApplication::applicationDirPath().replace("\\", "/")+QDir::separator()+"../share/doc/omc/OpenModelicaUsersGuide.pdf";
+    pathTries << OpenModelica::home().replace("\\", "/").append("/share/doc/omc/OpenModelicaUsersGuide.pdf");
 
     int iTry=0;
     bool openOk=false;
