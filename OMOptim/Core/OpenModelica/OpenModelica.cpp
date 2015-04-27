@@ -48,9 +48,12 @@ http://www-cep.ensmp.fr/english/
 #include "LowTools.h"
 #include "OpenModelicaParameters.h"
 // for .mat reading
-#include "../../SimulationRuntime/c/util/read_matlab4.h"
+#include "omc_config.h"
 
-
+extern "C" {
+#include "read_matlab4.h"
+#include "read_matlab4.c"
+}
 
 OpenModelica::OpenModelica()
 {

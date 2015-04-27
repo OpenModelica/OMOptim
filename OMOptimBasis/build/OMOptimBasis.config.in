@@ -1,8 +1,8 @@
-QMAKE_CC  = @OMOPTIM_CC@
-QMAKE_CXX = @OMOPTIM_CXX@
-QMAKE_LINK = @OMOPTIM_CXX@
+QMAKE_CC  = @CC@
+QMAKE_CXX = @CXX@
+QMAKE_LINK = @CXX@
 
-LIBS += -L../../build/lib/omc -lomqwt @RPATH_QMAKE@
-INCLUDEPATH += ../../3rdParty/qwt/src
+LIBS += -L@prefix@/lib/omc -lomqwt @RPATH_QMAKE@
+INCLUDEPATH += @prefix@/include/omc/qwt
 
 QMAKE_LFLAGS += @LDFLAGS@

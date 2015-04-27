@@ -1,7 +1,7 @@
 .PHONY: install build $(NAME) always
 
 top_dir=../../
-runtimedir=$(top_dir)/Compiler/runtime/
+runtimedir=@prefix@/share/omc/
 NAME=OMOptim
 LIBNAME=OMOptimLib
 DEST=../bin
@@ -9,8 +9,7 @@ APP=@APP@
 EXE=@EXE@
 QMAKE=@QMAKE@
 
-install: build
-	if [ "$(APP)" = ".app" ]; then cp -rp $(DEST)/$(NAME).app $(top_dir)/build/Applications/ ; else cp -p $(DEST)/$(NAME) $(top_dir)/build/bin/$(NAME); fi
+default: build
 
 always:
 

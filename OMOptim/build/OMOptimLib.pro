@@ -258,7 +258,8 @@ HEADERS += ../omc_config.h \
     ../Core/Problems/optimizationinterface.h \
     ../Core/Problems/onesimulationinterface.h \
     ../GUI/Widgets/WidgetResultInfos.h \
-    ../../SimulationRuntime/c/util/read_matlab4.h \
+    $${OMHOME}/include/omc/c/util/read_matlab4.h \
+    $${OMHOME}/include/omc/c/util/read_matlab4.c \
     ../Core/OMC/OMCThreads.h \
     ../GUI/Tools/OMOptimGuiTools.h \
     ../GUI/Widgets/WidgetModelsList.h \
@@ -395,10 +396,9 @@ SOURCES += ../Core/OptObjective.cpp \
     ../Core/OMC/OMCThreads.cpp \
     ../Core/VariablesManip.cpp \
     ../GUI/Tools/OMOptimGuiTools.cpp \
-     ../../SimulationRuntime/c/util/read_matlab4.c \
     ../Core/OMOptimSettings.cpp \
-     ../GUI/Widgets/WidgetModelsList.cpp \
-         ../Core/Optim/EA/OptimAlgosList.cpp \
+    ../GUI/Widgets/WidgetModelsList.cpp \
+    ../Core/Optim/EA/OptimAlgosList.cpp \
     ../Core/ModPlusExeCtrl.cpp \
     ../Core/ModExePlus.cpp \
     ../Core/ModelPlus.cpp \

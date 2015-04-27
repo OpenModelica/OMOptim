@@ -6,8 +6,7 @@ DEST=.
 EXE=@EXE@
 QMAKE=@QMAKE@
 
-install: build
-	cp ../bin/libOMOptimBasis.a $(top_dir)/build/lib/omc
+default: build
 
 always:
 

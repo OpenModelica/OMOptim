@@ -1,0 +1,16 @@
+/Makefile
+Makefile.unix
+OMOptim*/bin/
+OMOptim*/build/release/
+OMOptim/Core/OMC/omc_communication.cpp
+OMOptim/Core/OMC/omc_communication.h
+OMOptim/Core/OMC/omc_config.h
+OMOptim/build/MakefileLib
+OMOptim/build/omc_communication.cc
+OMOptim/build/omc_communication.h
+OMOptim*/build/Makefile
+autom4te.cache/
+config.log
+config.status
+configure
+*.config

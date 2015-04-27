@@ -64,7 +64,7 @@
 #include "MOThreads.h"
 #include "LowTools.h"
 #include "SleeperThread.h"
-#include "../../../Compiler/runtime/omc_config.h" // for branch, should add file manually !!
+#include "omc_config.h"
 
 class Project;
 

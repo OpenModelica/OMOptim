@@ -1,0 +1,23 @@
+all: omoptim
+
+ifeq (@APP@,"")
+install:
+	cp -a OMOptim/bin/OMOptim@EXE@ ${DESTDIR}@bindir@/bin/
+else
+install:
+	cp -a OMOptim/bin/OMOptim@APP@ ${DESTDIR}Applications/
+endif
+
+omoptim: omoptimbasis
+	$(MAKE) -C OMOptim/build -f Makefile.unix
+omoptimbasis:
+	$(MAKE) -C OMOptimBasis/build -f Makefile.unix
+clean:
+	$(MAKE) -C OMOptimBasis/build -f Makefile.unix clean
+	$(MAKE) -C OMOptim/build -f Makefile.unix clean
+Makefile: Makefile.in config.status
+	./config.status
+config.status: configure
+	./config.status -recheck
+configure: configure.ac corba.m4
+	autoconf
