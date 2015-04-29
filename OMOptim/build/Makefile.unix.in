@@ -1,6 +1,6 @@
 .PHONY: install build $(NAME) always
 
-top_dir=../../
+top_dir=@top_builddir@
 runtimedir=@prefix@/share/omc/
 NAME=OMOptim
 LIBNAME=OMOptimLib
@@ -34,9 +34,9 @@ Makefile: $(NAME).pro $(NAME).config ../Core/OMC/omc_communication.cpp ../Core/O
 MakefileLib: $(LIBNAME).pro $(NAME).config ../Core/OMC/omc_communication.cpp ../Core/OMC/omc_communication.h
 	$(QMAKE) $< -o $@
 Makefile.unix: Makefile.unix.in
-	(cd $(top_dir); ./config.status)
+	(cd $(top_dir) && ./config.status)
 $(NAME).config: $(NAME).config.in
-	(cd $(top_dir); ./config.status)
+	(cd $(top_dir) && ./config.status)
 
 clean:
 	test ! -f Makefile || $(MAKE) -f Makefile clean

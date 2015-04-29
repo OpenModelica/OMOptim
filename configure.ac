@@ -3,8 +3,6 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.63])
 AC_INIT([OMOptim],[dev],[https://trac.openmodelica.org/OpenModelica],[openmodelica],[https://openmodelica.org])
 
-AC_SUBST(with_paradiseo_include)
-AC_SUBST(with_paradiseo_lib)
 AC_SUBST(IDLCMD)
 AC_SUBST(RPATH_QMAKE)
 
@@ -44,48 +42,6 @@ else
   EXE=""
   SHREXT=".so"
   RPATH_QMAKE="-Wl,-z,origin -Wl,-rpath,\\'\\\$\$ORIGIN/../lib/omc\\' -Wl,-rpath,\\'\\\$\$ORIGIN\\'"
-fi
-
-AC_MSG_CHECKING([for paradisEO])
-AC_ARG_WITH(paradiseo, [  --with-paradiseo                 Required for OMOptim. Default searches {PREFIX,/usr,/opt} for {include,lib}/paradiseo], [], [with_paradiseo=yes])
-
-if test -f "$with_paradiseo/paradiseo-eo/src/eo"; then
-  # User used a local paradiseo installation
-  with_paradiseo_include="$with_paradiseo/paradiseo-eo/src $with_paradiseo/paradiseo-mo/src $with_paradiseo/paradiseo-moeo/src $with_paradiseo/paradiseo-eo/src/utils $with_paradiseo/paradiseo-mo/src/utils $with_paradiseo/paradiseo-moeo/src/utils"
-  if test -d "$with_paradiseo/paradiseo-eo/build/lib"; then
-    paradiseo_build="build"
-  else
-    paradiseo_build=""
-  fi
-  with_paradiseo_lib="-L$with_paradiseo/paradiseo-eo/$paradiseo_build/lib -L$with_paradiseo/paradiseo-moeo/$paradiseo_build/lib"
-  AC_MSG_RESULT(stock version in: $with_paradiseo)
-else
-  if test x"$with_paradiseo" = "xyes"; then
-    with_paradiseo_checked=""
-    for f in /{usr,opt,$PREFIX}; do
-      if test -d "$f/include/paradiseo/" -a -d "$f"/lib/paradiseo/; then
-        with_paradiseo_include="$f/include/paradiseo/ $f/include/paradiseo/utils/"
-        with_paradiseo_lib="-L$f"/lib/paradiseo/
-        with_paradiseo="$f"
-      elif test -d "$f/include/paradiseo/" -a -f "$f"/lib*/libeo.a ; then
-        with_paradiseo_include=`for inc in $f/include/paradiseo/*; do echo -n " $inc"; done`
-        with_paradiseo_lib="-L"`dirname "$f"/lib*/libeo.a`
-        with_paradiseo="$f"
-      else
-        with_paradiseo_checked="$with_paradiseo_checked $f"
-      fi
-    done
-  fi
-
-  if test x"$with_paradiseo" = "xno"; then
-    with_paradiseo=""
-    AC_MSG_RESULT([disabled])
-  elif test x"$with_paradiseo" = "xyes"; then
-    AC_MSG_ERROR([not found (searched $with_paradiseo_checked)])
-  else
-    AC_MSG_RESULT($with_paradiseo)
-  fi
-
 fi
 
 AC_OUTPUT(Makefile OMOptim/build/Makefile.unix OMOptim/build/OMOptim.config OMOptimBasis/build/Makefile.unix OMOptimBasis/build/OMOptimBasis.config OMOptim/Core/OMC/omc_config.h)

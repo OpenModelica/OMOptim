@@ -8,13 +8,20 @@ install:
 	cp -a OMOptim/bin/OMOptim@APP@ ${DESTDIR}Applications/
 endif
 
-omoptim: omoptimbasis
+PARADISEO=ParadisEO-2.0.1/build
+
+paradiseo:
+	mkdir -p $(PARADISEO)
+	(cd $(PARADISEO) && cmake ..)
+	$(MAKE) -C $(PARADISEO)
+omoptim: omoptimbasis paradiseo
 	$(MAKE) -C OMOptim/build -f Makefile.unix
 omoptimbasis:
 	$(MAKE) -C OMOptimBasis/build -f Makefile.unix
 clean:
 	$(MAKE) -C OMOptimBasis/build -f Makefile.unix clean
 	$(MAKE) -C OMOptim/build -f Makefile.unix clean
+	test ! -d $(PARADISEO) || rm -r $(PARADISEO)
 distclean: clean
 	rm -f config.status configure Makefile OMOptim/build/Makefile.unix OMOptim/build/OMOptim.config OMOptimBasis/build/Makefile.unix OMOptimBasis/build/OMOptimBasis.config OMOptim/Core/OMC/omc_config.h
 Makefile: Makefile.in config.status

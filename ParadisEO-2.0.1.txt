@@ -1,0 +1,5 @@
+mv ParadisEO-2.0 ParadisEO-2.0.1
+rm -r ParadisEO-2.0.1/eo/tutorial/ ParadisEO-2.0.1/moeo/doc ParadisEO-2.0.1/mo/doc ParadisEO-2.0.1/smp/doc ParadisEO-2.0.1/eo/doc
+rm -r ParadisEO-2.0.1/moeo/test ParadisEO-2.0.1/mo/test ParadisEO-2.0.1/smp/test ParadisEO-2.0.1/eo/contrib/mathsym/test ParadisEO-2.0.1/eo/test ParadisEO-2.0.1/eo/src/pyeo/test
+rm -r ParadisEO-2.0.1/problems/
+sed -i "/ADD_SUBDIRECTORY.doc/Id" ParadisEO-2.0.1/*/CMakeLists.txt
