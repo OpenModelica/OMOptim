@@ -1,11 +1,17 @@
 all: omoptim
 
-ifeq (@APP@,"")
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+
+ifeq (@APP@,)
 install:
-	cp -a OMOptim/bin/OMOptim@EXE@ ${DESTDIR}@bindir@/bin/
+	mkdir -p ${DESTDIR}/@bindir@
+	cp -a OMOptim/bin/OMOptim@EXE@ ${DESTDIR}/@bindir@
 else
 install:
-	cp -a OMOptim/bin/OMOptim@APP@ ${DESTDIR}Applications/
+	mkdir -p ${DESTDIR}/Applications/
+	cp -a OMOptim/bin/OMOptim@APP@ ${DESTDIR}/Applications/
 endif
 
 PARADISEO=ParadisEO-2.0.1/build

@@ -3,29 +3,30 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.63])
 AC_INIT([OMOptim],[dev],[https://trac.openmodelica.org/OpenModelica],[openmodelica],[https://openmodelica.org])
 
+AC_SUBST(APP)
+AC_SUBST(EXE)
 AC_SUBST(IDLCMD)
 AC_SUBST(RPATH_QMAKE)
 AC_SUBST(host_short)
+
+touch install-sh
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
+rm install-sh
+
 dnl Checks for programs.
 AC_LANG([C++])
 AC_PROG_CXX
 
-touch install-sh
-chmod +x install-sh
-
 host_short=$host_cpu-$host_os
 
-AC_CHECK_PROGS(QMAKE,qmake-qt4 qmake-mac qmake,"")
-
-# AC_CHECK_HEADER(qwt_global.h, [], [AC_MSG_ERROR([Failed to find qwt])])
+m4_include([qmake.m4])
 
 SAVED_LDFLAGS=$LDFLAGS
-LDFLAGS="$LDFLAGS -L$prefix/lib/omc -lomqwt"
+LDFLAGS="$LDFLAGS -L$prefix/lib/$host_short/omc -lomqwt"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([],[])], [], [AC_MSG_ERROR([OpenModelica version of qwt not found.])])
 LDFLAGS=$SAVED_LDFLAGS
 
@@ -36,7 +37,7 @@ if test -z "$USE_CORBA"; then
   AC_MSG_ERROR([OMOptim requires using the OMC CORBA interface. Configure using --with-omniORB.])
 fi
 
-if test "$DARWIN" = "1"; then
+if echo $host | grep -iq darwin; then
   APP=".app"
   EXE=".app"
   SHREXT=".dylib"
