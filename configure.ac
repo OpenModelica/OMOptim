@@ -5,10 +5,20 @@ AC_INIT([OMOptim],[dev],[https://trac.openmodelica.org/OpenModelica],[openmodeli
 
 AC_SUBST(IDLCMD)
 AC_SUBST(RPATH_QMAKE)
+AC_SUBST(host_short)
+
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
 
 dnl Checks for programs.
 AC_LANG([C++])
 AC_PROG_CXX
+
+touch install-sh
+chmod +x install-sh
+
+host_short=$host_cpu-$host_os
 
 AC_CHECK_PROGS(QMAKE,qmake-qt4 qmake-mac qmake,"")
 
@@ -30,18 +40,18 @@ if test "$DARWIN" = "1"; then
   APP=".app"
   EXE=".app"
   SHREXT=".dylib"
-  RPATH_QMAKE="-Wl,-rpath,'@loader_path/../../../../lib/omc',-rpath,'@loader_path/../../../../lib/',-rpath,'$PREFIX/lib/omc',-rpath,'$PREFIX/lib/'"
+  RPATH_QMAKE="-Wl,-rpath,'@loader_path/../../../../lib/$host_short/omc',-rpath,'@loader_path/../../../../lib/',-rpath,'$PREFIX/lib/$host_short/omc',-rpath,'$PREFIX/lib/'"
 elif test "$host" = "i586-pc-mingw32msvc"; then
   APP=".exe"
   EXE=".exe"
   # Yes, we build static libs on Windows, so the "shared" extension is .a
   SHREXT=".a"
-  RPATH_QMAKE="-Wl,-z,origin -Wl,-rpath,\\'\\\$\$ORIGIN/../lib/omc\\' -Wl,-rpath,\\'\\\$\$ORIGIN\\'"
+  RPATH_QMAKE="-Wl,-z,origin -Wl,-rpath,\\'\\\$\$ORIGIN/../lib/$host_short/omc\\' -Wl,-rpath,\\'\\\$\$ORIGIN\\'"
 else
   APP=""
   EXE=""
   SHREXT=".so"
-  RPATH_QMAKE="-Wl,-z,origin -Wl,-rpath,\\'\\\$\$ORIGIN/../lib/omc\\' -Wl,-rpath,\\'\\\$\$ORIGIN\\'"
+  RPATH_QMAKE="-Wl,-z,origin -Wl,-rpath,\\'\\\$\$ORIGIN/../lib/$host_short/omc\\' -Wl,-rpath,\\'\\\$\$ORIGIN\\'"
 fi
 
 AC_OUTPUT(Makefile OMOptim/build/Makefile.unix OMOptim/build/OMOptim.config OMOptimBasis/build/Makefile.unix OMOptimBasis/build/OMOptimBasis.config OMOptim/Core/OMC/omc_config.h)
