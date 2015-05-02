@@ -11,6 +11,8 @@ OMOptim/build/omc_communication.h
 OMOptim*/build/Makefile
 ParadisEO-2.0.1/build/
 autom4te.cache/
+config.guess
+config.sub
 config.log
 config.status
 configure
