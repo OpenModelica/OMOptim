@@ -5,7 +5,7 @@ OMHOME = @prefix@
 PARADISEO = @top_builddir@/ParadisEO-2.0.1
 
 LIBS += @CORBALIBS@ -L$${PARADISEO}/build/eo/lib -L$${PARADISEO}/build/moeo/lib -lmoeo -leo -leoutils -L@top_builddir@/OMOptimBasis/bin -lOMOptimBasis -L@prefix@/lib/@host_short@/omc -lomqwt @RPATH_QMAKE@
-INCLUDEPATH += $${OMHOME}/include/omc/qwt $${OMHOME}/include/omc/c/util @CORBA_QMAKE_INCLUDES@ $${PARADISEO}/eo/src $${PARADISEO}/mo/src $${PARADISEO}/moeo/src
+INCLUDEPATH += $${OMHOME}/include/omplot/qwt $${OMHOME}/include/omc/c/util @CORBA_QMAKE_INCLUDES@ $${PARADISEO}/eo/src $${PARADISEO}/mo/src $${PARADISEO}/moeo/src
 
 ### FOLDERS, INCLUDES
 
