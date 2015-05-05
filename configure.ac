@@ -37,13 +37,16 @@ AC_PROG_CC
 host_short=$host_cpu-$host_os
 
 m4_include([common/m4/qmake.m4])
-
 m4_include([common/m4/omhome.m4])
 
+FIND_OPENMODELICAHOME()
+
+if test ! -z "$USINGPRESETBUILDDIR"; then
 SAVED_LDFLAGS=$LDFLAGS
 LDFLAGS="$LDFLAGS -L$prefix/lib/$host_short/omc -lomqwt"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([],[])], [], [AC_MSG_ERROR([OpenModelica version of qwt not found.])])
 LDFLAGS=$SAVED_LDFLAGS
+fi
 
 OMNIORB_DEFAULT=yes
 m4_include([common/m4/corba.m4])
