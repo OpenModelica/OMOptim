@@ -6,7 +6,7 @@ bindir = @bindir@
 
 ifeq (@APP@,)
 install:
-	mkdir -p ${DESTDIR}/@bindir@
+	mkdir -p ${DESTDIR}/bin
 	cp -a OMOptim/bin/OMOptim@EXE@ ${DESTDIR}/@bindir@
 else
 install:
@@ -30,7 +30,7 @@ paradiseo:
 omoptim: omoptimbasis paradiseo mkbuilddirs
 	$(MAKE) -C OMOptim/build -f Makefile.unix
 ifeq (@APP@,)
-	cp -a OMOptim/bin/OMOptim@EXE@ @OMBUILDDIR@/@bindir@
+	cp -a OMOptim/bin/OMOptim@EXE@ @OMBUILDDIR@/bin
 else
 	cp -a OMOptim/bin/OMOptim@APP@ @OMBUILDDIR@/Applications/
 endif
