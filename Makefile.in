@@ -14,14 +14,27 @@ install:
 	cp -a OMOptim/bin/OMOptim@APP@ ${DESTDIR}/Applications/
 endif
 
+mkbuilddirs:
+ifeq (@APP@,)
+	mkdir -p @OMBUILDDIR@/@bindir@
+else
+	mkdir -p @OMBUILDDIR@/Applications
+endif
+
 PARADISEO=ParadisEO-2.0.1/build
 
 paradiseo:
 	mkdir -p $(PARADISEO)
 	(cd $(PARADISEO) && cmake ..)
 	$(MAKE) -C $(PARADISEO)
-omoptim: omoptimbasis paradiseo
+omoptim: omoptimbasis paradiseo mkbuilddirs
 	$(MAKE) -C OMOptim/build -f Makefile.unix
+ifeq (@APP@,)
+	cp -a OMOptim/bin/OMOptim@EXE@ @OMBUILDDIR@/@bindir@
+else
+	cp -a OMOptim/bin/OMOptim@APP@ @OMBUILDDIR@/Applications/
+endif
+
 omoptimbasis:
 	$(MAKE) -C OMOptimBasis/build -f Makefile.unix
 clean:

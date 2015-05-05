@@ -1,11 +1,11 @@
 QMAKE_CC  = @CC@
 QMAKE_CXX = @CXX@
 QMAKE_LINK = @CXX@
-OMHOME = @prefix@
+OPENMODELICAHOME = @OPENMODELICAHOME@
 PARADISEO = @top_builddir@/ParadisEO-2.0.1
 
-LIBS += @CORBALIBS@ -L$${PARADISEO}/build/eo/lib -L$${PARADISEO}/build/moeo/lib -lmoeo -leo -leoutils -L@top_builddir@/OMOptimBasis/bin -lOMOptimBasis -L@prefix@/lib/@host_short@/omc -lomqwt @RPATH_QMAKE@
-INCLUDEPATH += $${OMHOME}/include/omplot/qwt $${OMHOME}/include/omc/c/util @CORBA_QMAKE_INCLUDES@ $${PARADISEO}/eo/src $${PARADISEO}/mo/src $${PARADISEO}/moeo/src
+LIBS += @CORBALIBS@ -L$${PARADISEO}/build/eo/lib -L$${PARADISEO}/build/moeo/lib -lmoeo -leo -leoutils -L@top_builddir@/OMOptimBasis/bin -lOMOptimBasis -L@OPENMODELICAHOME@/lib/@host_short@/omc -lomqwt @RPATH_QMAKE@
+INCLUDEPATH += $${OPENMODELICAHOME}/include/omplot/qwt $${OPENMODELICAHOME}/include/omc/c/util @CORBA_QMAKE_INCLUDES@ $${PARADISEO}/eo/src $${PARADISEO}/mo/src $${PARADISEO}/moeo/src
 
 ### FOLDERS, INCLUDES
 
