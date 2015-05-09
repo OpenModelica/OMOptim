@@ -2,7 +2,7 @@
 #define EXEMODEL_H
 
 #include "ModItem.h"
-#include "Modelica.h"
+#include "OMOptimModelica.h"
 #include <QFileInfo>
 #include <QString>
 

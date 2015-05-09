@@ -7,7 +7,7 @@ include(../vars.pri)
 QT +=  core gui xml
 
 CONFIG(debug, debug|release){
-    LIBS += -L../../build/lib/omc -lomqwtd
+    LIBS += -L$$(OMBUILDDIR)/lib/omc -lomqwtd
     DESTDIR = ../bin
     UI_DIR = debug/generatedfiles/ui
     OBJECTS_DIR = debug/generatedfiles
@@ -16,7 +16,7 @@ CONFIG(debug, debug|release){
     INCLUDEPATH  += debug/generatedfiles/ui
 
 }else {
-    LIBS += -L../../build/lib/omc -lomqwt
+    LIBS += -L$$(OMBUILDDIR)/lib/omc -lomqwt
     DESTDIR = ../bin
     UI_DIR = release/generatedfiles/ui
     OBJECTS_DIR = release/generatedfiles

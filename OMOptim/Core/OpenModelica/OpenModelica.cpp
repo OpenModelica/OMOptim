@@ -48,7 +48,9 @@ http://www-cep.ensmp.fr/english/
 #include "LowTools.h"
 #include "OpenModelicaParameters.h"
 // for .mat reading
+#ifndef WIN32
 #include "omc_config.h"
+#endif
 
 extern "C" {
 #include "read_matlab4.h"

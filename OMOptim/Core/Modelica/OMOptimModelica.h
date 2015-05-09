@@ -29,7 +29,7 @@
  *
  * Main contributor 2010, Hubert Thierot, CEP - ARMINES (France)
 
-     @file Modelica.h
+     @file OMOptimModelica.h
      @brief Comments for file documentation.
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
@@ -37,8 +37,8 @@
      @version
 
   */
-#ifndef _MODELICA_H
-#define _MODELICA_H
+#ifndef _OMOptimModelica_H
+#define _OMOptimModelica_H
 
 
 namespace Modelica
@@ -61,5 +61,5 @@ namespace Modelica
 
 
 
-};
+}
 #endif

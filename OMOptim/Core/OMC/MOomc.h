@@ -50,7 +50,7 @@
 #include "omc_communication.h"
 #include "OMCHelper.h"
 #include "StringHandler.h"
-#include "Modelica.h"
+#include "OMOptimModelica.h"
 #include "omc_communicator.h"
 #include "VariableType.h"
 

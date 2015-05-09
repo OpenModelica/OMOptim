@@ -45,7 +45,7 @@
 
 #include "MOItem.h"
 #include "MOVector.h"
-#include "Modelica.h"
+#include "OMOptimModelica.h"
 #include "ModelicaConnection.h"
 #include "Variable.h"
 

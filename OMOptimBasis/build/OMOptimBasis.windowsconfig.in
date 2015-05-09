@@ -1,8 +1,5 @@
 
 ## defines qwthome
-QWTHOME = "../../3rdParty/qwt/build"
-
-
 
 QMAKE_LFLAGS += -enable-auto-import
 QMAKE_CXXFLAGS_WARN_OFF += -Wunused-parameter
@@ -20,4 +17,4 @@ DEFINES += __x86__ \
 
 
 
-INCLUDEPATH += $$QWTHOME/include
+INCLUDEPATH += $$(OMBUILDDIR)/include/omplot/qwt

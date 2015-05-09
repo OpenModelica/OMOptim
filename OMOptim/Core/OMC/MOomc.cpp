@@ -64,7 +64,9 @@
 #include "MOThreads.h"
 #include "LowTools.h"
 #include "SleeperThread.h"
+#ifndef WIN32
 #include "omc_config.h"
+#endif
 
 class Project;
 

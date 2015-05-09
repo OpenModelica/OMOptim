@@ -1,5 +1,6 @@
 /Makefile
 Makefile.unix
+OMOptim/buildOMOptim.pro.*
 OMOptim*/bin/
 OMOptim*/build/release/
 OMOptim/Core/OMC/omc_communication.cpp
@@ -7,8 +8,14 @@ OMOptim/Core/OMC/omc_communication.h
 OMOptim/Core/OMC/omc_config.h
 OMOptim/build/MakefileLib
 OMOptim/build/omc_communication.cc
+OMOptim/build/omc_communication.cpp
 OMOptim/build/omc_communication.h
 OMOptim*/build/Makefile
+OMOptim*/build/Makefile.Debug
+OMOptim*/build/Makefile.Release
+OMOptim*/build/MakefileLib.Debug
+OMOptim*/build/MakefileLib.Release
+OMOptim*/build/object_script.*
 ParadisEO-2.0.1/build/
 autom4te.cache/
 config.guess

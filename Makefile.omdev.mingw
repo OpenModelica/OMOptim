@@ -1,0 +1,21 @@
+CMAKE=$(OMDEV)/bin/cmake/bin/cmake
+CMAKE_TARGET="MSYS Makefiles"
+PARADISEO=ParadisEO-2.0.1/build
+
+.PHONY: omoptim omoptimbasis paradiseo
+
+omoptim: omoptimbasis paradiseo
+	$(MAKE) -C OMOptim/build -f Makefile.omdev.mingw
+
+omoptimbasis:
+	$(MAKE) -C OMOptimBasis/build -f Makefile.omdev.mingw
+
+paradiseo:
+	mkdir -p $(PARADISEO)
+	(cd $(PARADISEO) && $(CMAKE) .. -G $(CMAKE_TARGET))
+	$(MAKE) -C $(PARADISEO)
+
+clean:
+	$(MAKE) -C OMOptimBasis/build -f Makefile.omdev.mingw clean
+	$(MAKE) -C OMOptim/build -f Makefile.omdev.mingw clean
+	test ! -d $(PARADISEO) || rm -r $(PARADISEO)

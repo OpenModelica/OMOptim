@@ -1,0 +1,58 @@
+ifeq ($(OMBUILDDIR),)
+$(error OMBUILDDIR variable is not set.)
+endif
+
+builddir_bin=$(OMBUILDDIR)/bin
+builddir_lib=$(OMBUILDDIR)/lib
+builddir_share=$(OMBUILDDIR)/share/
+
+.PHONY: install build $(NAME)
+
+NAME=OMOptim
+EXE=.exe
+LIBNAME=OMOptimLib
+LIB=libOMOptim
+LIBEXE=.a
+DEST=../bin
+EXE=.exe
+QMAKE=qmake
+
+install: build
+	cp -p $(DEST)/$(NAME)$(EXE) $(builddir_bin)
+	cp -p $(DEST)/$(LIB)$(LIBEXE) $(builddir_lib)/omc
+	cp -puf $(OMDEV)/tools/OMTools/dll/mingwm10.dll $(builddir_bin)
+	cp -puf $(OMDEV)/tools/OMTools/dll/libgcc_s_dw2-1.dll $(builddir_bin)
+	cp -puf $(OMDEV)/tools/mingw/bin/libintl-8.dll $(builddir_bin)
+	cp -puf $(OMDEV)/tools/mingw/bin/libiconv-2.dll $(builddir_bin)
+	cp -puf $(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniORB416_rt.dll $(builddir_bin)
+	cp -puf $(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omnithread34_rt.dll $(builddir_bin)
+	cp -puf $(OMDEV)/lib/pthread/pthreadGC2.dll $(builddir_bin)
+	cp -puf $(OMDEV)/tools/OMTools/dll/QtCore4.dll $(builddir_bin)
+	cp -puf $(OMDEV)/tools/OMTools/dll/QtGui4.dll $(builddir_bin)
+	cp -puf $(OMDEV)/tools/OMTools/dll/QtSvg4.dll $(builddir_bin)
+	cp -puf $(OMDEV)/tools/OMTools/dll/QtXml4.dll $(builddir_bin)
+	mkdir -p $(builddir_bin)/iconengines/
+	cp -puf $(OMDEV)/tools/OMTools/dll/qsvgicon4.dll $(builddir_bin)/iconengines/
+
+omc_communication.cpp: $(builddir_share)/omc/omc_communication.idl
+	$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniidl -bcxx -Wbh=.h -Wbs=.cpp $<
+	cp -puf omc_communication.* ../Core/OMC/
+omc_communication.h: omc_communication.cpp
+
+$(NAME): Makefile $(LIBNAME)
+	$(MAKE) -f Makefile
+
+$(LIBNAME): omc_communication.cpp MakefileLib
+	$(MAKE) -f MakefileLib
+
+build: $(LIBNAME) $(NAME)
+
+Makefile: $(NAME).pro
+	$(QMAKE) "CONFIG+=release" $< -o $@
+MakefileLib: $(LIBNAME).pro
+	$(QMAKE) "CONFIG+=release" $< -o $@
+
+clean: Makefile MakefileLib
+	test ! -f Makefile || $(MAKE) -f Makefile clean
+	test ! -f MakefileLib || $(MAKE) -f MakefileLib clean
+	rm -rf ../bin/$(LIB)$(LIBEXE) ../bin/$(NAME)$(EXE) omc_communication.* Makefile Makefile.Debug Makefile.Release MakefileLib MakefileLib.Debug MakefileLib.Release object_script.* debug/ release/

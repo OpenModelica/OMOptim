@@ -121,8 +121,7 @@ DEPENDPATH += . \
                 ../../OMOptimBasis/Tools \
                 ../../OMOptimBasis/Problems
 
-HEADERS += ../omc_config.h \
-           ../Core/OptObjective.h \
+HEADERS += ../Core/OptObjective.h \
            ../Core/ParetoDominance.h \
            ../Core/Project.h \
            ../Core/VariablesManip.h \
@@ -135,7 +134,7 @@ HEADERS += ../omc_config.h \
            ../Core/Modelica/ModItem.h \
            ../Core/Modelica/ModItemsTree.h \
            ../Core/Modelica/ModComponent.h \
-           ../Core/Modelica/Modelica.h \
+           ../Core/Modelica/OMOptimModelica.h \
            ../Core/Modelica/ModelicaConnection.h \
         #   ../Core/Modelica/ModelicaConnections.h \
            ../Core/Modelica/ModelicaModifier.h \

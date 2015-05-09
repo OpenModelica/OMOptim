@@ -40,7 +40,7 @@
 #ifndef _ModLoader_H
 #define _ModLoader_H
 
-#include "Modelica.h"
+#include "OMOptimModelica.h"
 #include "ModItem.h"
 #include "ModPackage.h"
 #include "ModModel.h"

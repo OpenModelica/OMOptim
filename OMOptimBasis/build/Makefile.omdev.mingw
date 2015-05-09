@@ -1,0 +1,30 @@
+ifeq ($(OMBUILDDIR),)
+$(error OMBUILDDIR variable is not set.)
+endif
+
+builddir_lib=$(OMBUILDDIR)/lib
+
+.PHONY: install build $(NAME) always
+
+NAME=OMOptimBasis
+LIB=libOMOptimBasis
+LIBEXE=.a
+QMAKE=qmake
+
+install: build
+	cp ../bin/$(LIB)$(LIBEXE) $(builddir_lib)/omc
+
+always:
+
+$(NAME): Makefile
+	$(MAKE) -f Makefile
+
+build: $(NAME)
+	cp -p ../bin/$(LIB)$(LIBEXE) $(builddir_lib)/omc
+
+Makefile: $(NAME).pro
+	$(QMAKE) "CONFIG+=release" $<
+
+clean: Makefile
+	test ! -f Makefile || $(MAKE) -f Makefile clean
+	rm -rf ../bin/$(LIB)$(LIBEXE) Makefile Makefile.Debug Makefile.Release object_script.* debug/ release/
