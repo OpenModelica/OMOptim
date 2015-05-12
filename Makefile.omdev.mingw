@@ -6,6 +6,7 @@ PARADISEO=ParadisEO-2.0.1/build
 
 omoptim: omoptimbasis paradiseo
 	$(MAKE) -C OMOptim/build -f Makefile.omdev.mingw
+	cp -puf common/pre-commit.sh $(shell git rev-parse --git-dir)/hooks/pre-commit
 
 omoptimbasis:
 	$(MAKE) -C OMOptimBasis/build -f Makefile.omdev.mingw
