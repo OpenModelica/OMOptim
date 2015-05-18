@@ -22,8 +22,8 @@
 Authors :
     todos@geneura.ugr.es
     Marc Schoenauer
-    Ramón Casero Cañas
-    Johann Dréo
+    RamÃ³n Casero CaÃ±as
+    Johann DrÃ©o
  */
 //-----------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ Authors :
              to be consistent with other Combined constructs
              and allow to easily handle more than 2 continuators
 
-02/2003 Ramón Casero Cañas - added the removeLast() method
+02/2003 RamÃ³n Casero CaÃ±as - added the removeLast() method
 
 @ingroup Combination
 */

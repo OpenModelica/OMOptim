@@ -1,4 +1,4 @@
-// Copyright (C) 2005 Jochen Küpper <jochen@fhi-berlin.mpg.de>
+// Copyright (C) 2005 Jochen KÃ¼pper <jochen@fhi-berlin.mpg.de>
 
 
 #include "eoData.h"

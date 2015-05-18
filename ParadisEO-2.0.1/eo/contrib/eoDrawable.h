@@ -54,7 +54,7 @@ class eoDrawable
   virtual ~eoDrawable() {};
 
 
-  /**Draws the object. It must be redefined in any subclass, it´s impossible
+  /**Draws the object. It must be redefined in any subclass, itÂ´s impossible
   to have a general drawing method
   @param _x, _y coorinates */
   virtual void draw( unsigned _x, unsigned _y) = 0;

@@ -97,9 +97,9 @@ class eoAged: public Object
  private:
 
 	 /** Default Constructor. \\
-	 It´s private so that it is not used anywhere; the right way of using this object
+	 ItÂ´s private so that it is not used anywhere; the right way of using this object
 	 is to create an Object and passing it to an aged by means of the copy ctor; that way
-	 it´s turned into an Aged object*/
+	 itÂ´s turned into an Aged object*/
 	 eoAged(): Object(), age(0) {};
 
 	 unsigned long age;

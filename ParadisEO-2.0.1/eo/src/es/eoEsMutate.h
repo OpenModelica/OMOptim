@@ -158,7 +158,7 @@ public:
       Diploma Thesis, University of Dortmund, 1990.
     */
     virtual bool operator()( eoEsFull<FitT> & _eo )
-    // Code originally from Thomas Bäck
+    // Code originally from Thomas BÃ¤ck
         {
             // First: mutate standard deviations (as for eoEsStdev<FitT>).
             double global = TauGlb * rng.normal();
@@ -268,7 +268,7 @@ public:
     lower bound. The actual value used is somewhat arbitrary and the is no
     theoretical reasoning known for it (Sep 2005).
 
-    The code that we have in EO is a port from a C code that Thomas Bäck kindly
+    The code that we have in EO is a port from a C code that Thomas BÃ¤ck kindly
     donated to the community some years ago. It has been modified by Marc
     Schoenauer for inclusion in EvolC, than by Maarten Keijzer into EO. The
     exact value was adjusted based on practice.
