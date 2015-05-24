@@ -25,8 +25,8 @@ PARADISEO=ParadisEO-2.0.1/build
 
 paradiseo:
 	mkdir -p $(PARADISEO)
-	(cd $(PARADISEO) && cmake ..)
-	$(MAKE) -C $(PARADISEO)
+	(cd $(PARADISEO) && CC="@CC@" CXX="@CXX@" CFLAGS="@CFLAGS@" CPPFLAGS="@CPPFLAGS@" CXXFLAGS="@CXXFLAGS@" cmake ..)
+	$(MAKE) -C $(PARADISEO) VERBOSE=1
 omoptim: omoptimbasis paradiseo mkbuilddirs
 	$(MAKE) -C OMOptim/build -f Makefile.unix
 ifeq (@APP@,)
