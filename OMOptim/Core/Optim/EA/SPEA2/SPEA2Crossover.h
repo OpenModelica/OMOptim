@@ -34,7 +34,7 @@
      @author Hubert Thieriot, hubert.thieriot@mines-paristech.fr
      Company : CEP - ARMINES (France)
      http://www-cep.ensmp.fr/english/
-     @version 0.9 
+     @version 0.9
 
   */
 #ifndef EA2CROSSOVER_H
