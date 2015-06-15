@@ -24,3 +24,4 @@ config.log
 config.status
 configure
 *.config
+install-sh
