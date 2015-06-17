@@ -1,7 +1,6 @@
 .PHONY: install build $(NAME) always
 
 top_dir=@top_builddir@
-runtimedir=@prefix@/share/omc/
 NAME=OMOptim
 LIBNAME=OMOptimLib
 DEST=../bin
@@ -25,7 +24,7 @@ build: $(LIBNAME) $(NAME)
 	ln -s ../../build/omc_communication.cc $@
 ../Core/OMC/omc_communication.h: omc_communication.h
 	ln -s ../../build/omc_communication.h $@
-omc_communication.cc: $(runtimedir)/omc_communication.idl
+omc_communication.cc: @OPENMODELICAHOME@/share/omc/omc_communication.idl
 	@IDLCMD@ $<
 omc_communication.h: omc_communication.cc
 
