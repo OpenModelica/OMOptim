@@ -23,8 +23,11 @@ rm install-sh
 dnl Checks for programs.
 
 AC_MSG_CHECKING([if clang++ is used (OMOptim breaks clang++)])
-if echo "$CXX" | grep -q "clang++"; then
-  AC_MSG_RESULT([yes; resetting CXX to default autoconf compiler (sorry)])
+if test ! -z "$GNUCXX"; then
+  AC_MSG_RESULT([found explicit GNUCXX; using that])
+  CXX="$GNUCXX"
+elif echo "$CXX" | grep -q "clang++"; then
+  AC_MSG_RESULT([yes; resetting CXX to default autoconf compiler (sorry). Use ./configure GNUCXX=g++ to use clang++ for some projects and g++ only for paradiseo])
   unset CXX
 else
   AC_MSG_RESULT([no])
