@@ -1,5 +1,7 @@
 all: omoptim
 
+.PHONY: omoptim omoptimbasis paradiseo
+
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 bindir = @bindir@
@@ -23,9 +25,11 @@ endif
 
 PARADISEO=ParadisEO-2.0.1/build
 
-paradiseo:
+$(PARADISEO)/Makefile: Makefile
 	mkdir -p $(PARADISEO)
 	(cd $(PARADISEO) && CC="@CC@" CXX="@CXX@" CFLAGS="@CFLAGS@" CPPFLAGS="@CPPFLAGS@" CXXFLAGS="@CXXFLAGS@" cmake ..)
+
+paradiseo: $(PARADISEO)/Makefile
 	$(MAKE) -C $(PARADISEO) VERBOSE=1
 omoptim: omoptimbasis paradiseo mkbuilddirs
 	$(MAKE) -C OMOptim/build -f Makefile.unix
