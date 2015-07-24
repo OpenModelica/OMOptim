@@ -41,12 +41,20 @@
 #define SAVEOMOPTIM_H
 
 #include <stdio.h>
+
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QObject>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QTextStream>
 #include <QtXml/QDomDocument>
+#endif
+
 #include "Result.h"
 #include "OneSimResult.h"
 #include "OptimResult.h"

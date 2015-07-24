@@ -40,10 +40,18 @@
 #ifndef TABRESONESIM_H
 #define TABRESONESIM_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QWidget>
 #include "OptimResult.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
+#include <QtGui/QSortFilterProxyModel>
+#endif
+
 #include "Project.h"
 #include "Plots/MOOptPlot.h"
 

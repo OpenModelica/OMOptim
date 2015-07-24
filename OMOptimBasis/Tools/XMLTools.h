@@ -40,8 +40,12 @@
 #ifndef _XMLTOOLS_H
 #define _XMLTOOLS_H
 
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QDomDocument>
+#else
 #include <QtXml/QDomDocument>
-
+#endif
 
 class XMLTools
 {

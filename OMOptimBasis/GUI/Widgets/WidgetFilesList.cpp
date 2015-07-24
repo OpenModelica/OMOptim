@@ -40,7 +40,6 @@
 
 #include "Widgets/WidgetFilesList.h"
 #include "ui_WidgetFilesList.h"
-#include <QtGui/QErrorMessage>
 
 
 WidgetFilesList::WidgetFilesList(QFileInfoList & filesList,QWidget *parent,QString filter,QString infos,bool editable):

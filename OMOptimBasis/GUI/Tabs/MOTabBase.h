@@ -40,12 +40,19 @@
 #ifndef MOTABBASE_H
 #define MOTABBASE_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QWidget>
 #include <QtGui/QVBoxLayout>
 #include <QtCore/QMap>
 #include <QtGui/QPushButton>
 #include <QtGui/QMainWindow>
 #include <QtXml/QDomDocument>
+#endif
+
 #include "MOItem.h"
 
 

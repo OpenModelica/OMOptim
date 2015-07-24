@@ -40,9 +40,18 @@
 #ifndef WidgetSelectOptVars_H
 #define WidgetSelectOptVars_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QDialog>
 #include <QtGui/QWidget>
-#include<QtGui/QFileDialog>
+#include <QtGui/QFileDialog>
+#include <QtGui/QErrorMessage>
+#include <QToolBar>
+#endif
+
 #include "OptimResult.h"
 #include "MOTableView.h"
 #include "Tools/GuiTools.h"

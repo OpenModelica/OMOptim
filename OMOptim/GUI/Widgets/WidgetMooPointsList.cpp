@@ -40,7 +40,6 @@
 
 #include "Widgets/WidgetMooPointsList.h"
 #include "ui_WidgetMooPointsList.h"
-#include <QtGui/QErrorMessage>
 #include "MOParametersDlg.h"
 #include "WidgetSelectVars.h"
 #include "DlgSelectVars.h"

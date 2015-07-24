@@ -40,8 +40,6 @@
 
 #include "Widgets/WidgetMooPlot.h"
 #include "ui_WidgetMooPlot.h"
-#include <QtGui/QErrorMessage>
-
 
 
 WidgetMooPlot::WidgetMooPlot(OptimResult* result,QWidget *parent) :

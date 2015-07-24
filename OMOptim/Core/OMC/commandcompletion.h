@@ -42,12 +42,17 @@
 #ifndef COMMANDCOMPLETION_H
 #define COMMANDCOMPLETION_H
 
-
-//QT Headers
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QHash>
 #include <QtCore/QStringList>
 #include <QtGui/QTextCursor>
 #include <QtXml/QDomDocument>
+#include <QtCore/QFile>
+#endif
 
 //IAEX Headers
 #include "commandunit.h"

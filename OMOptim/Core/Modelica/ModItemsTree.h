@@ -71,7 +71,12 @@ public:
     virtual ~ModItemsTree();
     ModItem* rootElement()const {return _rootElement;}
 
-
+    #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    Qt::DropActions supportedDropActions() const
+    {
+      return Qt::CopyAction | Qt::MoveAction;
+    }
+    #endif
 
     bool addChild(ModItem* parent,ModItem* child);
 

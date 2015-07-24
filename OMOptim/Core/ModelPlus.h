@@ -1,10 +1,16 @@
 #ifndef MODELPLUS_H
 #define MODELPLUS_H
 
-
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QString>
 #include <QDomElement>
 #include <QFileInfoList>
+#endif
+
 #include "MOItem.h"
 
 

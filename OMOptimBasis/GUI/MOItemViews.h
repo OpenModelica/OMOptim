@@ -41,6 +41,12 @@
 #define _MOITEMVIEWS_H
 
 #include <vector>
+
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QObject>
 #include <QtGui/QTreeView>
 #include <QtGui/QHeaderView>
@@ -49,6 +55,7 @@
 #include <QMenu>
 #include <QApplication>
 #include <QClipboard>
+#endif
 
 #include "MOItem.h"
 

@@ -1,13 +1,18 @@
 #ifndef __QScienceSpinBox_H__
 #define __QScienceSpinBox_H__
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QDoubleValidator>
 #include <QtGui/QLineEdit>
 #include <QtCore/QVariant>
 #include <QtCore/QDebug>
 #include <QtCore/QString>
-
+#endif
 
 class QScienceSpinBox : public QDoubleSpinBox
 {

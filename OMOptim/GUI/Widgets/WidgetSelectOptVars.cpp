@@ -39,13 +39,11 @@
 */
 
 #include "Widgets/WidgetSelectOptVars.h"
-#include <QtGui/QErrorMessage>
 #include "Optimization.h"
 #include "Project.h"
 #include "MOStyleSheet.h"
 #include "ModExePlus.h"
 #include "ModModelPlus.h"
-#include <QToolBar>
 
 WidgetSelectOptVars::WidgetSelectOptVars(Optimization* problem,bool isEditable,QWidget *parent):
     _problem(problem),WidgetSelectEditVars(dynamic_cast<Project*>(problem->project()),isEditable,true,parent)

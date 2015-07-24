@@ -1,7 +1,3 @@
-#include <QInputDialog>
-#include <QHeaderView>
-#include <QMenu>
-#include <QMessageBox>
 
 #include "MyTreeView.h"
 #include "OMCases.h"
@@ -59,7 +55,11 @@ OMCasesTreeView::OMCasesTreeView(ProjectBase* project,OMCasesCombiner* model,QWi
     this->setSelectionMode(QAbstractItemView::ExtendedSelection);
     this->setHeaderHidden(true);
     this->setContextMenuPolicy(Qt::CustomContextMenu);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    this->header()->setSectionResizeMode(QHeaderView::Stretch);
+#else
     this->header()->setResizeMode(QHeaderView::Stretch);
+#endif
     this->expandAll();
     connect (this,SIGNAL(customContextMenuRequested(const QPoint &)),
              this,SLOT(onRightClicked(const QPoint &)));

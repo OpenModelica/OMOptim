@@ -40,16 +40,8 @@
 
 #include "MOParametersDlg.h"
 #include "MOTableView.h"
-#include <QtGui/QScrollBar>
 #include "qsciencespinbox.h"
-#include <QGroupBox>
-#include <QCheckBox>
 #include "LowTools.h"
-
-#include <QFileDialog>
-#include <QSettings>
-#include <QApplication>
-
 
 void WidgetParameters::onSelectFileClicked()
 {

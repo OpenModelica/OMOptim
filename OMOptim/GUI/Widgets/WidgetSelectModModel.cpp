@@ -40,8 +40,6 @@
 
 #include "Widgets/WidgetSelectModModel.h"
 #include "ui_WidgetSelectModModel.h"
-#include <QtGui/QErrorMessage>
-
 
 WidgetSelectModModel::WidgetSelectModModel(ModItemsTree* modItemsTree,ProblemInterface::ModelNeeds needs,QWidget *parent ):
     QDialog(parent),

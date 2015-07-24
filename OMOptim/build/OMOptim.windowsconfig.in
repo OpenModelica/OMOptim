@@ -1,5 +1,5 @@
 ### PREPROCESSOR and FLAGS
-QMAKE_LFLAGS += -enable-auto-import
+QMAKE_LFLAGS += -Wl,--enable-auto-import
 QMAKE_CXXFLAGS_WARN_OFF += -Wunused-parameter
 
 DEFINES += __x86__ \
@@ -34,7 +34,32 @@ CONFIG(debug, debug|release){
     INCLUDEPATH  += release/generatedfiles/ui
 }
 
-INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.6-mingw/include \
+  # win32 vs. win64
+  UNAME = $$system(uname)
+  isEmpty(UNAME): UNAME = MINGW32
+  ISMINGW32 = $$find(UNAME, MINGW32)
+  message(uname: $$UNAME)
+  count( ISMINGW32, 1 ) {
+    CORBAINC = $$(OMDEV)/lib/omniORB-4.1.6-mingw/include
+    CORBALIBS = -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 -lomniORB416_rt -lomnithread34_rt -lomniDynamic416_rt
+    DEFINES += __x86__ \
+               __NT__ \
+               __OSVERSION__=4 \
+               __WIN32__
+  } else {
+    CORBAINC = $$(OMDEV)/lib/omniORB-4.2.0-mingw64/include
+    CORBALIBS = -L$$(OMDEV)/lib/omniORB-4.2.0-mingw64/lib/x86_win32 -lomniORB420_rt -lomnithread40_rt -lomniDynamic420_rt
+    DEFINES += __x86__ \
+	           __x86_64__ \
+	           __NT__ \
+               __OSVERSION__=4 \
+			   __WIN32__ \
+			   _WIN64 \
+			   MS_WIN64
+  }
+
+
+INCLUDEPATH += $${CORBAINC} \
                $$(OMBUILDDIR)/include/omplot/qwt \
                $$(OMBUILDDIR)/include/omc/c/util \
                ../../ParadisEO-2.0.1/eo/src \
@@ -44,11 +69,9 @@ INCLUDEPATH += $$(OMDEV)/lib/omniORB-4.1.6-mingw/include \
 
 ### LIBRARIES (order has an impact !!)
 CONFIG(debug, debug|release){
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 -lomniORB416_rtd -lomnithread34_rtd -lomniDynamic416_rtd \
-    -L$$(OMBUILDDIR)/lib/omc -lOMOptimBasisd -lomqwtd
+    LIBS += $${CORBALIBS} -L$$(OMBUILDDIR)/lib/omc -lOMOptimBasisd -lomqwtd
 }else {
-    LIBS += -L$$(OMDEV)/lib/omniORB-4.1.6-mingw/lib/x86_win32 -lomniORB416_rt -lomnithread34_rt -lomniDynamic416_rt \
-    -L$$(OMBUILDDIR)/lib/omc -lOMOptimBasis -lomqwt
+    LIBS += $${CORBALIBS} -L$$(OMBUILDDIR)/lib/omc -lOMOptimBasis -lomqwt
 }
 
 LIBS += -L../../ParadisEO-2.0.1/build/eo/lib -leo -leoutils \

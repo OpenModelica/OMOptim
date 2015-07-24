@@ -13,8 +13,8 @@ class ProblemInterfaces :  public QMap<QString,ProblemInterface*>
 {
 
 public :
-    bool addProblemInterface(ProblemInterface* interface);
-    bool addProblemInterfaces(QList<ProblemInterface*> interfaces);
+    bool addProblemInterface(ProblemInterface* itf);
+    bool addProblemInterfaces(QList<ProblemInterface*> itfs);
     bool removeProblemInterface(QString problemInterfaceName);
 
     ProblemInterface* interfaceOf(Problem* problem);

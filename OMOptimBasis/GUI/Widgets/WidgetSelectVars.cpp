@@ -40,8 +40,6 @@
 
 #include "Widgets/WidgetSelectVars.h"
 #include "ui_WidgetSelectVars.h"
-#include <QtGui/QErrorMessage>
-#include <QDebug>
 
 WidgetSelectVars::WidgetSelectVars(MOVector<Variable> *allVariables,QWidget *parent,MOVector<Variable> *selectedVariables):
     QWidget(parent),

@@ -199,16 +199,16 @@ OMCase* Load::newOMCase(QString filePath,ProjectBase* project)
     if(!domProblem.isNull())
         problemType = domProblem.firstChildElement().tagName();
 
-    // look for corresponding problem interface
-    ProblemInterface* interface = project->problemsInterfaces().interfaceOf(problemType);
+    // look for corresponding problem itf
+    ProblemInterface* itf = project->problemsInterfaces().interfaceOf(problemType);
 
     // load
-    if(interface)
+    if(itf)
     {
         if(isAResult)
-            omCase = interface->loadResult(QFileInfo(file),domCase,project);
+            omCase = itf->loadResult(QFileInfo(file),domCase,project);
         else
-            omCase = interface->loadProblem(QFileInfo(file),domCase,project);
+            omCase = itf->loadProblem(QFileInfo(file),domCase,project);
     }
     else
     {

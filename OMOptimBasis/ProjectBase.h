@@ -132,7 +132,7 @@ protected:
     ProblemInterfaces problemsInterfaces(){return _problemsInterfaces;}
     void addProblemInterface(ProblemInterface* problemInterface);
     void removeProblemInterface(QString interfaceName);
-    void addNewProblem(ProblemInterface* interface, QStringList modelsList,QString problemType);
+    void addNewProblem(ProblemInterface* itf, QStringList modelsList,QString problemType);
     void addResult(Result *);
     void addProblem(Problem *);
     bool addOMCase(QString filePath);

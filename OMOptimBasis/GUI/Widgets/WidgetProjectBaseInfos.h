@@ -40,11 +40,17 @@
 #ifndef WidgetProjectBaseInfos_H
 #define WidgetProjectBaseInfos_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QWidget>
-#include "ui_WidgetProjectBaseInfos.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
+#endif
 
+#include "ui_WidgetProjectBaseInfos.h"
 
 #include <qwt_plot.h>
 #include <qwt_painter.h>

@@ -40,7 +40,13 @@
 #ifndef OPTOBJECTIVE_H
 #define OPTOBJECTIVE_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QObject>
+#endif
 
 #include "Variable.h"
 

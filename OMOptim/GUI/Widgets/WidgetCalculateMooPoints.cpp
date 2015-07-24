@@ -40,9 +40,6 @@
 
 #include "Widgets/WidgetCalculateMooPoints.h"
 #include "ui_WidgetCalculateMooPoints.h"
-#include <QtGui/QErrorMessage>
-#include "QtGui/QListWidget"
-
 
 WidgetCalculateMooPoints::WidgetCalculateMooPoints(OptimResult* result,WidgetMooPointsList* widgetMooPointsList, QWidget *parent) :
     QDialog(parent),

@@ -40,10 +40,16 @@
 #ifndef  WidgetMooPointsList_H
 #define WidgetMooPointsList_H
 
-
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QDialog>
 #include <QtGui/QWidget>
-#include<QtGui/QFileDialog>
+#include <QtGui/QFileDialog>
+#include <QtGui/QErrorMessage>
+#endif
 
 #include "Widgets/WidgetList.h"
 #include "ParetoDominance.h"

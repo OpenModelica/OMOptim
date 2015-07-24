@@ -40,12 +40,19 @@
 #ifndef OMOPTIMSETTINGS_H
 #define OMOPTIMSETTINGS_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 #include <QtCore/QStringList>
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
 #include <QtCore/QVector>
+#include <QApplication>
+#endif
 
 #include "MOParameter.h"
 #include "MOSettings.h"

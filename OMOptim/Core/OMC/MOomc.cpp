@@ -47,14 +47,6 @@
 #include <iostream>
 #include <stdexcept>
 
-//QT Headers
-#include <QtCore/QStringList>
-#include <QtCore/QThread>
-#include <QtCore/QTextStream>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-
-
 #include "MOomc.h"
 #include "OMCThreads.h"
 #include "MOSettings.h"
@@ -1435,16 +1427,11 @@ void MOomc::exit()
     //emit emitQuit();
 }
 
-
-
-
-
-
 bool MOomc::startServer()
 {
     try
     {
-        evalMutex.unlock();
+        // evalMutex.unlock();
         QString msg;
         const char *omhome = getenv("OPENMODELICAHOME");
         QString omcPath;
@@ -1573,7 +1560,7 @@ void MOomc::stopServer()
         QString quit = "quit()";
         evalCommand(quit);
         InfoSender::instance()->send( Info("Quiting OMC...",ListInfo::NORMAL2));
-        evalMutex.lock();
+        // evalMutex.lock();
     }
     mHasInitialized = false;
 }

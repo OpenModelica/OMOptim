@@ -40,7 +40,6 @@
 
 #include "Widgets/WidgetMOItemsList.h"
 #include "ui_WidgetMOItemsList.h"
-#include <QtGui/QErrorMessage>
 
 
 WidgetMOItemsList::WidgetMOItemsList(QAbstractItemModel *itemsList, QWidget *parent, bool showDescription,bool editable):

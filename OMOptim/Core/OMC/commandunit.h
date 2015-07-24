@@ -41,10 +41,14 @@
 #ifndef COMMANDUNIT_H
 #define COMMANDUNIT_H
 
-//QT Headers
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QHash>
 #include <QtCore/QString>
-
+#endif
 
 namespace IAEX
 {

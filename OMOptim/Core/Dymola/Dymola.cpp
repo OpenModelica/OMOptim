@@ -791,10 +791,10 @@ VariableType Dymola::convertVariableType(int dymDataType)
 VariableCausality Dymola::convertToCausality(int dymValueType, int dymCategory)
 {
     if((dymValueType==-1)||(dymCategory==1)||(dymCategory==5))
-        return INPUT;
+        return OMINPUT;
 
     if((dymValueType==-2)||(dymValueType==-0))
-        return OUTPUT;
+        return OMOUTPUT;
 
-    return UNKNOWN;
+    return OMUNKNOWN;
 }

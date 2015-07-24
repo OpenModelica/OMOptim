@@ -44,10 +44,6 @@
 
 #include "ScriptTextDlg.h"
 #include "ui_ScriptTextDlg.h"
-#include <QtGui/QErrorMessage>
-
-
-#include <QtGui/QListWidget>
 #include "Dialogs/HelpDlg.h"
 #include "ProjectBase.h"
 

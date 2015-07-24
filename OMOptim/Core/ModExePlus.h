@@ -1,9 +1,21 @@
 #ifndef MODEXEPLUS_H
 #define MODEXEPLUS_H
 
-#include "ModelPlus.h"
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
+#include <QtCore/QObject>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QTextStream>
+#include <QtCore/QStringList>
 #include <QFileInfoList>
+#endif
 
+#include "ModelPlus.h"
 
 class ExeModel;
 

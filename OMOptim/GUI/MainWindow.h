@@ -40,12 +40,28 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QMainWindow>
 #include <QtGui/QProgressBar>
 #include <QtGui/QWidget>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtCore/QMutex>
+#include <QtXml/QDomDocument>
+#include <QtGui/QMessageBox>
+#include <QtGui/QTreeWidgetItem>
+#include <QtGui/QInputDialog>
+#include <QtGui/QTabBar>
+#include <QtGui/QDockWidget>
+#include <QSettings>
+#include <QFileSystemWatcher>
+#include <QDebug>
+#endif
+
 #include "MOomc.h"
 #include "Project.h"
 #include "TabProject.h"
@@ -55,7 +71,6 @@
 #include "DlgSettings.h"
 #include "ui_MainWindow.h"
 #include "Widgets/WidgetProgress.h"
-#include <QtXml/QDomDocument>
 #include "Widgets/WidgetSelectModModel.h"
 #include "AboutOMOptim.h"
 #include "OpenModelica.h"

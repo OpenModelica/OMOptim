@@ -41,6 +41,14 @@
 #ifndef EAStdCheckPoint_H
 #define EAStdCheckPoint_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
+#include <QtCore/QObject>
+#endif
+
 #include <limits.h>
 #include <stdlib.h>
 #include <sstream>
@@ -61,7 +69,6 @@
 
 
 #include "Project.h"
-#include <QtCore/QObject>
 #include "EAUpdaterDispObjGUI.h"
 #include "MOParameter.h"
 #include "MyEoGnuplot1DMonitor.h"

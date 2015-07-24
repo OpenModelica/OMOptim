@@ -40,8 +40,15 @@
 #if !defined(_EABASE_H)
 #define _EABASE_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QObject>
 #include <QVector>
+#endif
+
 #include <time.h> //needed in paradiseo (not included otherwhere!!)
 
 #include "OptimAlgo.h"

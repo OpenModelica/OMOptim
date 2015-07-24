@@ -38,10 +38,11 @@
         @version
 
   */
+
 #include "OMOptimSettings.h"
 #include "Dymola.h"
-#include <QApplication>
 #include "OpenModelica.h"
+
 void OMOptimSettings::initialize()
 {
     QStringList names;

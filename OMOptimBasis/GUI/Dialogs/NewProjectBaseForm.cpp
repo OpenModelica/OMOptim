@@ -40,7 +40,6 @@
 
 #include "NewProjectBaseForm.h"
 #include "ui_NewProjectBaseForm.h"
-#include <QtGui/QErrorMessage>
 
 
 NewProjectBaseForm::NewProjectBaseForm(QWidget *parent) :

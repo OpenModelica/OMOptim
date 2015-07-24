@@ -40,7 +40,6 @@
 
 #include "Widgets/WidgetModelsList.h"
 #include "ui_WidgetModelsList.h"
-#include <QtGui/QErrorMessage>
 
 #include "WidgetSelectModModel.h"
 #include "Project.h"

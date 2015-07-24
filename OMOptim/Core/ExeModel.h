@@ -1,10 +1,17 @@
 #ifndef EXEMODEL_H
 #define EXEMODEL_H
 
-#include "ModItem.h"
-#include "OMOptimModelica.h"
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QFileInfo>
 #include <QString>
+#endif
+
+#include "ModItem.h"
+#include "OMOptimModelica.h"
 
 class ExeModel : public ModItem
 {

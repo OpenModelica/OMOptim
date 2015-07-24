@@ -50,9 +50,9 @@ enum VariableType
 
 enum VariableCausality
 {
-    UNKNOWN,
-    INPUT,
-    OUTPUT
+    OMUNKNOWN,
+    OMINPUT,
+    OMOUTPUT
 };
 
 

@@ -35,7 +35,11 @@ install: build
 	cp -puf $(OMDEV)/tools/OMTools/dll/qsvgicon4.dll $(builddir_bin)/iconengines/
 
 omc_communication.cpp: $(builddir_share)/omc/omc_communication.idl
+ifeq (MINGW32,$(findstring MINGW32,$(shell uname)))
 	$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniidl -bcxx -Wbh=.h -Wbs=.cpp $<
+else
+	$(OMDEV)/lib/omniORB-4.2.0-mingw64/bin/x86_win32/omniidl -T -bcxx -Wbh=.h -Wbs=.cpp -p../../lib/python -Wbdebug $<
+endif
 	cp -puf omc_communication.* ../Core/OMC/
 omc_communication.h: omc_communication.cpp
 

@@ -40,7 +40,18 @@
 #if !defined(_ONESIMULATION_H)
 #define _ONESIMULATION_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QDomElement>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#endif
+
 #include "Problem.h"
 #include "ModPlusCtrl.h"
 #include "ModelPlus.h"

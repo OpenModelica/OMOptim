@@ -8,23 +8,16 @@
   @version
 */
 
+#include <iostream>
+
 #include "MainWindow.h"
-#include <QtGui/QMessageBox>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QInputDialog>
-#include <QtGui/QTabBar>
-#include <QtGui/QDockWidget>
-#include <QSettings>
-#include <QFileSystemWatcher>
 #include "MOThreads.h"
 #include "newprojectform.h"
 #include "ListInfo.h"
-#include <iostream>
 #include "MOVector.h"
 #include "Variable.h"
 #include "TabOMC.h"
 #include "Tabs/MOTab.h"
-#include <QDebug>
 #include "OMOptimGuiTools.h"
 #include "GuiTools.h"
 #include "Problems.h"
@@ -701,13 +694,13 @@ void MainWindow::onProjectAboutToBeReset()
 void MainWindow::onAddedProblem(Problem* newProblem)
 {
     // Creating problem tab
-    ProblemInterface* interface = (_project->problemsInterfaces()).interfaceOf(newProblem);
+    ProblemInterface* itf = (_project->problemsInterfaces()).interfaceOf(newProblem);
 
     QTime elapsed;
-    if(interface)
+    if(itf)
     {
         elapsed.restart();
-        _tabMain->addProblemTab(newProblem,interface->createProblemTab(newProblem,this));
+        _tabMain->addProblemTab(newProblem,itf->createProblemTab(newProblem,this));
     }
 
     _tabMain->enableCaseTab(newProblem);
@@ -716,13 +709,13 @@ void MainWindow::onAddedProblem(Problem* newProblem)
 void MainWindow::onAddedResult(Result* newResult)
 {
     // Creating problem tab
-    ProblemInterface* interface = _project->problemsInterfaces().interfaceOf(newResult);
+    ProblemInterface* itf = _project->problemsInterfaces().interfaceOf(newResult);
 
     QTime elapsed;
-    if(interface)
+    if(itf)
     {
         elapsed.restart();
-        _tabMain->addResultTab(newResult,interface->createResultTab(newResult,this));
+        _tabMain->addResultTab(newResult,itf->createResultTab(newResult,this));
     }
 
     _tabMain->enableCaseTab(newResult);
@@ -1134,27 +1127,27 @@ void MainWindow::refreshModelTreeView()
 void MainWindow::updateProblemsMenu()
 {
     _ui->menuProblems->clear();
-    ProblemInterface* interface;
+    ProblemInterface* itf;
     QStringList problemTypes;
     QMenu* curMenu;
 
     for(int i=0;i<_project->problemsInterfaces().uniqueInterfaces().size();i++)
     {
-        interface = _project->problemsInterfaces().uniqueInterfaces().at(i);
-        problemTypes = interface->problemTypes();
+        itf = _project->problemsInterfaces().uniqueInterfaces().at(i);
+        problemTypes = itf->problemTypes();
 
         if(problemTypes.size()>1)
         {
-            curMenu = new QMenu(interface->name(),_ui->menuProblems);
+            curMenu = new QMenu(itf->name(),_ui->menuProblems);
             _ui->menuProblems->addMenu(curMenu);
         }
         else
             curMenu = _ui->menuProblems;
 
-        for(int j=0;j<interface->problemTypes().size();j++)
+        for(int j=0;j<itf->problemTypes().size();j++)
         {
-            QAction *action = new QAction(interface->problemTypes().at(j),this);
-            action->setData(interface->problemTypes().at(j));
+            QAction *action = new QAction(itf->problemTypes().at(j),this);
+            action->setData(itf->problemTypes().at(j));
             connect(action,SIGNAL(triggered()),this,SLOT(onPushedNewProblem()));
 
             curMenu->addAction(action);
@@ -1166,8 +1159,8 @@ void MainWindow::onPushedNewProblem()
 {
     QAction *action = qobject_cast<QAction *>(sender());
     QString problemType = action->data().toString();
-    ProblemInterface *interface = _project->problemsInterfaces().value(problemType,NULL);
-    if(interface)
+    ProblemInterface *itf = _project->problemsInterfaces().value(problemType,NULL);
+    if(itf)
     {
         bool pursue = true;
 
@@ -1175,15 +1168,15 @@ void MainWindow::onPushedNewProblem()
 
         QStringList modelsList;
 
-        if(interface)
+        if(itf)
         {
-            switch(interface->modelNeeds(problemType))
+            switch(itf->modelNeeds(problemType))
             {
             case ProblemInterface::NOMODEL:
                 break;
             case ProblemInterface::ONEMODEL:
             case ProblemInterface::SEVERALMODELS:
-                widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),interface->modelNeeds(problemType),this);
+                widgetSelect = new WidgetSelectModModel(_project->modItemsTree(),itf->modelNeeds(problemType),this);
                 if(widgetSelect->exec()==QDialog::Accepted)
                 {
 
@@ -1198,7 +1191,7 @@ void MainWindow::onPushedNewProblem()
                 break;
             }
             if(pursue)
-                _project->addNewProblem(interface,modelsList,problemType);
+                _project->addNewProblem(itf,modelsList,problemType);
         }
 
     }

@@ -44,12 +44,6 @@
 
 #include <iostream>
 #include <vector>
-#include <QtCore/QObject>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QTextStream>
-#include <QtCore/QStringList>
 
 #include "MOomc.h"
 #include "LowTools.h"
@@ -63,7 +57,6 @@
 #include "ModItemsTree.h"
 #include "Variable.h"
 #include "Variables.h"
-
 
 ModExePlus::ModExePlus( Project* project,QString modelName)
     :ModelPlus(project,modelName)

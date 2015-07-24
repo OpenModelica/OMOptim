@@ -50,7 +50,11 @@ MOTableView::MOTableView(QWidget* parent):QTableView(parent)
 
     //_view->installEventFilter(this);
     installEventFilter(this);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#else
     horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+#endif
     verticalHeader()->hide();
 
     //editable ?

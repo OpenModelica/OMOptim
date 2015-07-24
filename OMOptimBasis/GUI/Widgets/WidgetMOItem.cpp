@@ -40,8 +40,6 @@
 
 #include "Widgets/WidgetMOItem.h"
 #include "ui_WidgetMOItem.h"
-#include <QtGui/QErrorMessage>
-#include <QtGui/QListWidget>
 #include "qsciencespinbox.h"
 
 WidgetMOItem::WidgetMOItem(MOItem *_item,QWidget *parent,bool editable):

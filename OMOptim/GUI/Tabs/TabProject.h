@@ -41,9 +41,16 @@
 #ifndef TABPROJECT_CLASS_H
 #define TABPROJECT_CLASS_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#define toAscii toLatin1
+#else
 #include <QtGui/QWidget>
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
+#endif
 
 #include "ui_TabProject.h"
 #include "Tabs/MOTab.h"

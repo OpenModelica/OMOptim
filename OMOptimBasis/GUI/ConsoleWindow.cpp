@@ -8,18 +8,11 @@
   @version
 */
 
+#include <iostream>
+
 #include "ConsoleWindow.h"
-#include <QtGui/QMessageBox>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QInputDialog>
-#include <QtGui/QTabBar>
-#include <QtGui/QDockWidget>
-#include <QSettings>
-#include <QFileSystemWatcher>
 #include "MOThreads.h"
 #include "ListInfo.h"
-#include <iostream>
-#include <QDebug>
 #include "GuiTools.h"
 #include "scriptparser.h"
 #include "Dialogs/HelpDlg.h"

@@ -40,6 +40,11 @@
 #if !defined(_DlgSelectFiles_H)
 #define _DlgSelectFiles_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QWidget>
 #include <QtGui/QDialog>
 #include <QtGui/QSortFilterProxyModel>
@@ -50,7 +55,8 @@
 #include <QtGui/QPushButton>
 #include <QtCore/QObject>
 #include <QtCore/QObjectList>
-
+#include <QtGui/QScrollBar>
+#endif
 
 #include "MOVector.h"
 #include "Variable.h"

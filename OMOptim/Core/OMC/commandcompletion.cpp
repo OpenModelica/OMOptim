@@ -47,9 +47,6 @@
 #include <cstdlib>
 #include <stdexcept>
 
-//QT Headers
-#include <QtCore/QFile>
-
 //IAEX Headers
 #include "commandcompletion.h"
 

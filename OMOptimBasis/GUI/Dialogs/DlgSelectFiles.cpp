@@ -40,8 +40,6 @@
 #include "DlgSelectFiles.h"
 #include "MOTableView.h"
 
-#include <QtGui/QScrollBar>
-
 DlgSelectFiles::DlgSelectFiles(QFileInfoList &filesList,QWidget* parent,QString filter,bool editable)
     :_files(filesList),QDialog(parent)
 {

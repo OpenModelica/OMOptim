@@ -40,8 +40,17 @@
 #ifndef AboutOMOptim_H
 #define AboutOMOptim_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QDialog>
 #include <QtGui/QWidget>
+#include <QtGui/QErrorMessage>
+#include <QtGui/QListWidget>
+#endif
+
 #include "ui_AboutOMOptim.h"
 #include "version.h"
 

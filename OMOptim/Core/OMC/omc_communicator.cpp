@@ -46,11 +46,16 @@
 #include "windows.h"
 #endif
 
-// QT includes
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
+#endif
 
 //#include "MOQtmico.h"
 using namespace std;

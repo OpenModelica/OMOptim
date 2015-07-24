@@ -40,8 +40,17 @@
 #ifndef MYTREEVIEW_H
 #define MYTREEVIEW_H
 
-
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QTreeView>
+#include <QInputDialog>
+#include <QHeaderView>
+#include <QMenu>
+#include <QMessageBox>
+#endif
 
 class ProjectBase;
 class OMCasesCombiner;

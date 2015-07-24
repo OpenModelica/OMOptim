@@ -40,6 +40,17 @@
 #if !defined(_MOParametersDlg_H)
 #define _MOParametersDlg_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
+#include <QtGui/QScrollBar>
+#include <QGroupBox>
+#include <QCheckBox>
+#include <QFileDialog>
+#include <QSettings>
+#include <QApplication>
 #include <QtGui/QWidget>
 #include <QtGui/QDialog>
 #include <QtGui/QSortFilterProxyModel>
@@ -55,6 +66,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
 #include <QtGui/QTabWidget>
+#endif
 
 #include "MOParameter.h"
 #include "MOVector.h"

@@ -41,10 +41,20 @@
 #define OMS_H
 
 #include <exception>
+
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QObject>
 #include <QtCore/QThread>
 #include <QtCore/QProcess>
 #include <QtCore/QStringList>
+#include <QtCore/QTextStream>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
+#endif
 
 
 #include "omc_communication.h"
@@ -53,8 +63,6 @@
 #include "OMOptimModelica.h"
 #include "omc_communicator.h"
 #include "VariableType.h"
-
-
 
 class Project;
 class Variable;

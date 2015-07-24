@@ -41,6 +41,11 @@
 #if !defined(_DLGSETTINGS_H)
 #define _DLGSETTINGS_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QWidget>
 #include <QtGui/QDialog>
 #include <QtGui/QSortFilterProxyModel>
@@ -51,11 +56,13 @@
 #include <QtGui/QPushButton>
 #include <QtCore/QObject>
 #include <QtCore/QObjectList>
+#include <QtGui/QGroupBox>
+#include <QtGui/QCheckBox>
+#endif
 
 #include "ProjectBase.h"
 #include "MOSettings.h"
 #include "MOParametersDlg.h"
-
 
 
 class DlgSettings : public MOParametersDlg

@@ -39,9 +39,6 @@
 */
 
 #include "TabProjectBase.h"
-#include <QtGui/QSortFilterProxyModel>
-
-
 
 namespace Ui
 {

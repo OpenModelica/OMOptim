@@ -40,12 +40,23 @@
 #ifndef TABOMC_CLASS_H
 #define TABOMC_CLASS_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QWidget>
-#include "OptimResult.h"
-#include "ui_TabOMC.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
 #include <QtGui/QTextEdit>
+#include <QtGui/QSortFilterProxyModel>
+#include <QtGui/QtGui>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QTextBlock>
+#endif
+
+#include "OptimResult.h"
+#include "ui_TabOMC.h"
 #include "MOomc.h"
 #include "Plots/MOOptPlot.h"
 #include "Project.h"

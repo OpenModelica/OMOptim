@@ -43,7 +43,6 @@
 #include "MyTreeView.h"
 #include "ProjectBase.h"
 #include "Result.h"
-#include <QFrame>
 #include "Variable.h"
 
 
@@ -366,7 +365,7 @@ void GuiTools::resizeTableViewColumns(QTableView* tableView)
 VariableSortFilter::VariableSortFilter(QObject *parent)
     :QSortFilterProxyModel(parent)
 {
-    _causalities << UNKNOWN << INPUT << OUTPUT;
+    _causalities << OMUNKNOWN << OMINPUT << OMOUTPUT;
 }
 
 VariableSortFilter::VariableSortFilter(QList<VariableCausality> causalities, QObject *parent)

@@ -39,7 +39,6 @@
 */
 
 #include "TabResOneSim.h"
-#include <QtGui/QSortFilterProxyModel>
 #include "Plots/MOOptPlot.h"
 
 

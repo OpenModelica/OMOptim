@@ -44,14 +44,14 @@
 
 Variable::Variable(void)
 {
-    _causality = UNKNOWN;
+    _causality = OMUNKNOWN;
     _protectedFields << Variable::NAME << Variable::DESCRIPTION << Variable::MODEL << DATATYPE ;
     // qDebug(QString("New "+getClassName()).toLatin1().data());
 }
 
 Variable::Variable(QString name)
 {
-    _causality = UNKNOWN;
+    _causality = OMUNKNOWN;
     _protectedFields << Variable::NAME << Variable::DESCRIPTION << Variable::MODEL << DATATYPE ;
     setName(name);
     // qDebug(QString("New "+getClassName()).toLatin1().data());
@@ -229,11 +229,11 @@ QVariant Variable::getFieldValue(int ifield, int role) const
             {
                 switch(_causality)
                 {
-                case INPUT :
+                case OMINPUT :
                     return "Input";
-                case OUTPUT :
+                case OMOUTPUT :
                     return "Output";
-                case UNKNOWN:
+                case OMUNKNOWN:
                     return "-";
                 default :
                     return "-";
@@ -887,11 +887,11 @@ QVariant OptVariable::getFieldValue(int ifield, int role) const
             {
                 switch(_causality)
                 {
-                case INPUT :
+                case OMINPUT :
                     return "Input";
-                case OUTPUT :
+                case OMOUTPUT :
                     return "Output";
-                case UNKNOWN:
+                case OMUNKNOWN:
                     return "-";
                 default :
                     return "-";
@@ -1164,11 +1164,11 @@ QVariant ScannedVariable::getFieldValue(int ifield, int role) const
             {
                 switch(_causality)
                 {
-                case INPUT :
+                case OMINPUT :
                     return "Input";
-                case OUTPUT :
+                case OMOUTPUT :
                     return "Output";
-                case UNKNOWN :
+                case OMUNKNOWN :
                     return "-";
                 default :
                     return "-";

@@ -40,9 +40,6 @@
 
 #include "Widgets/WidgetToolBar.h"
 #include "ui_WidgetToolBar.h"
-#include <QtGui/QErrorMessage>
-
-
 
 WidgetToolBar::WidgetToolBar(QWidget *parent) :
     QDialog(parent),

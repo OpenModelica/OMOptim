@@ -42,8 +42,8 @@
 #include "DlgSettings.h"
 #include "MOTableView.h"
 #include "LowTools.h"
-#include <QtGui/QGroupBox>
-#include <QtGui/QCheckBox>
+
+
 DlgSettings::DlgSettings(bool editable)
     :MOParametersDlg(MOSettings::instance(),editable)
 {

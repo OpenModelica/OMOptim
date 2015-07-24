@@ -54,7 +54,11 @@ ModItemsTree::ModItemsTree(Project* project,ModLoader* modLoader,MOomc* moomc,QO
 
     _showComponents = false;
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    // no more setSupportedDragActions in Qt5, override supportedDropActions instead
+#else
     setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
+#endif
 
 
 }

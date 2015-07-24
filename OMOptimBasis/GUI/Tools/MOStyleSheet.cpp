@@ -40,7 +40,6 @@
 
 #include "Tools/MOStyleSheet.h"
 
-
 MOStyleSheet::MOStyleSheet(void)
 {
 }

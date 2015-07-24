@@ -38,8 +38,16 @@
   @version
 */
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#define toAscii toLatin1
+#else
 #include <QtGui/QApplication>
 #include <QtCore/QSettings>
+#endif
+
 #include "MainWindow.h"
 #include "OMOptimSettings.h"
 #include "MOStyleSheet.h"

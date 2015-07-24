@@ -44,11 +44,6 @@
 
 #include "HelpDlg.h"
 #include "ui_HelpDlg.h"
-#include <QtGui/QErrorMessage>
-#include <QtGui/QTextBrowser>
-#include <QtGui/QSpacerItem>
-
-#include <QtGui/QListWidget>
 
 HelpDlg::HelpDlg( QWidget *parent) :
     QDialog(parent),

@@ -40,7 +40,6 @@
 
 #include "Widgets/WidgetOptTable.h"
 #include "ui_WidgetOptTable.h"
-#include <QtGui/QErrorMessage>
 #include "Tools/GuiTools.h"
 
 

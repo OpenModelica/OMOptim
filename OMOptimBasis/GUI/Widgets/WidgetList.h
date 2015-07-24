@@ -40,9 +40,14 @@
 #ifndef  WIDGETLIST_H
 #define WIDGETLIST_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QListWidget>
 #include <QApplication>
-
+#endif
 
 class WidgetList :
     public QListWidget

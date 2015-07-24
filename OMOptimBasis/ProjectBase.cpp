@@ -406,9 +406,9 @@ void ProjectBase::removeProblemInterface(QString interfaceName)
     }
 }
 
-void ProjectBase::addNewProblem(ProblemInterface* interface, QStringList modelsList,QString problemType)
+void ProjectBase::addNewProblem(ProblemInterface* itf, QStringList modelsList,QString problemType)
 {
-    Problem* newProblem = interface->createNewProblem(this,modelsList,problemType);
+    Problem* newProblem = itf->createNewProblem(this,modelsList,problemType);
     if(newProblem)
     {
         HighTools::checkUniqueProblemName(this,newProblem,_problems);

@@ -39,8 +39,6 @@
 */
 
 #include "Widgets/WidgetCtrlParameters.h"
-#include <QtGui/QErrorMessage>
-
 #include "ModModelPlus.h"
 
 

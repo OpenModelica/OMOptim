@@ -41,12 +41,17 @@
 #define _INFOSENDER_H
 
 #include "Info.h"
+
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#include <QTextStream>
+#else
 #include <QTextStream>
 #include <QTime>
 #include <QAbstractItemModel>
 #include <QStringList>
-
-
+#endif
 
 class Infos : public QAbstractTableModel
 {

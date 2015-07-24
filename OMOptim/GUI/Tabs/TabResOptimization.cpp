@@ -41,8 +41,6 @@
 #include "TabResOptimization.h"
 #include "TabOptimization.h"
 
-#include <QtGui/QSortFilterProxyModel>
-
 #include "ui_TabResOptimization.h"
 
 #include "Project.h"

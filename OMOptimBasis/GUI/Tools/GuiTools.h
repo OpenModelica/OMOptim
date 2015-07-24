@@ -40,6 +40,11 @@
 #ifndef GUITOOLS_H
 #define GUITOOLS_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QMessageBox>
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QTableView>
@@ -62,6 +67,8 @@
 #include <QSortFilterProxyModel>
 #include <QGroupBox>
 #include <QPointer>
+#include <QFrame>
+#endif
 
 #include "VariableType.h"
 

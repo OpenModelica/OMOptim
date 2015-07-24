@@ -39,10 +39,6 @@
 */
 
 #include "TabOMC.h"
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QtGui>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QTextBlock>
 #include "Plots/MOOptPlot.h"
 
 

@@ -2,6 +2,9 @@ TEMPLATE = app
 TARGET = OMOptim
 
 QT +=  core gui svg xml
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT *= printsupport widgets webkitwidgets
+}
 
 CONFIG += warn_off
 
@@ -21,7 +24,7 @@ win32 {
     # Version numbering (independent from OpenModelica)
     VERSION_HEADER = "../version.h"
     versiontarget.target = $$VERSION_HEADER
-    versiontarget.commands = UpdateRevision.bat
+    versiontarget.commands = cmd /c UpdateRevision.bat
     versiontarget.depends += FORCE
     PRE_TARGETDEPS += $$VERSION_HEADER
     QMAKE_EXTRA_TARGETS += versiontarget

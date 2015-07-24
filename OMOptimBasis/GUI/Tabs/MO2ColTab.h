@@ -40,6 +40,11 @@
 #ifndef MO2ColTab_H
 #define MO2ColTab_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QWidget>
 #include <QtGui/QVBoxLayout>
 #include <QtCore/QMap>
@@ -47,6 +52,8 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QDockWidget>
 #include <QtGui/QMainWindow>
+#endif
+
 #include "MOTab.h"
 
 class MO2ColTab : public MOTabCplx

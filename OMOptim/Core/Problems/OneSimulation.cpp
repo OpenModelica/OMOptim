@@ -40,10 +40,6 @@
   */
 #include "OneSimulation.h"
 #include "Problem.h"
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
 #include "Variable.h"
 #include "LowTools.h"
 #include "CSV.h"

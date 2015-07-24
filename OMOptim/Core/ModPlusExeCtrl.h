@@ -1,9 +1,17 @@
 #ifndef MODPLUSEXECTRL_H
 #define MODPLUSEXECTRL_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
+#include <QDir>
+#endif
+
 #include "ModPlusCtrl.h"
 #include "ModExePlus.h"
-#include <QDir>
+
 class PlugInterface;
 
 class ModPlusExeCtrl : public ModPlusCtrl

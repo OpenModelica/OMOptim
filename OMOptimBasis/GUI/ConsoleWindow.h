@@ -40,17 +40,32 @@
 #ifndef ConsoleWindow_H
 #define ConsoleWindow_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QMainWindow>
 #include <QtGui/QProgressBar>
 #include <QtGui/QWidget>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtCore/QMutex>
+#include <QtXml/QDomDocument>
+#include <QSortFilterProxyModel>
+#include <QtGui/QMessageBox>
+#include <QtGui/QTreeWidgetItem>
+#include <QtGui/QInputDialog>
+#include <QtGui/QTabBar>
+#include <QtGui/QDockWidget>
+#include <QSettings>
+#include <QFileSystemWatcher>
+#include <QDebug>
+#endif
+
 #include "ProjectBase.h"
 #include "ListInfo.h"
 #include "ui_ConsoleWindow.h"
-#include <QtXml/QDomDocument>
-#include <QSortFilterProxyModel>
 
 namespace Ui
 {

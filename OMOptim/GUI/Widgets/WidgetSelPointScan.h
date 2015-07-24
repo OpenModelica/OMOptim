@@ -40,11 +40,19 @@
 #ifndef WidgetSelPointScan_H
 #define WidgetSelPointScan_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QWidget>
-#include "OneSimulation.h"
-#include "ui_WidgetSelPointScan.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
+#include <QtGui/QSortFilterProxyModel>
+#endif
+
+#include "OneSimulation.h"
+#include "ui_WidgetSelPointScan.h"
 #include "Project.h"
 #include "Tabs/MOTab.h"
 

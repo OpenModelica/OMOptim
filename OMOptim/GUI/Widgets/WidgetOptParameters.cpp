@@ -40,7 +40,6 @@
 
 #include "Widgets/WidgetOptParameters.h"
 #include "ui_WidgetOptParameters.h"
-#include <QtGui/QErrorMessage>
 
 
 WidgetOptParameters::WidgetOptParameters(Project* project,Optimization* problem,bool isResult,QWidget *parent):

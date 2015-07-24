@@ -40,7 +40,6 @@
 
 #include "Widgets/WidgetSelectEditVars.h"
 #include "ui_WidgetSelectEditVars.h"
-#include <QtGui/QErrorMessage>
 #include "Optimization.h"
 #include "Project.h"
 #include "MOStyleSheet.h"

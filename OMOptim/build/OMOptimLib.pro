@@ -3,6 +3,9 @@ TARGET = OMOptim
 CONFIG += staticlib warn_off
 
 QT +=  core gui svg xml
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT *= printsupport widgets webkitwidgets
+}
 
 CONFIG(debug, debug|release){
     DEFINES+=DEBUG
@@ -342,7 +345,7 @@ SOURCES += ../Core/OptObjective.cpp \
            ../GUI/Dialogs/AboutOMOptim.cpp \
           # ../GUI/Dialogs/BlockSubstituteConnDlg.cpp \
            ../GUI/Dialogs/newprojectform.cpp \
-           ../GUI/Plots/MOPlot.cpp \
+           #../GUI/Plots/MOPlot.cpp \
            ../GUI/Scene/arrow.cpp \
          #  ../GUI/Scene/BlockDrawItem.cpp \
           # ../GUI/Scene/BlockSubsScene.cpp \

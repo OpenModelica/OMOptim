@@ -41,6 +41,13 @@
 #define _MOTABLE_H
 
 #include <vector>
+
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#define toAscii toLatin1
+#else
 #include <QtCore/QObject>
 #include <QtGui/QTableView>
 #include <QtGui/QHeaderView>
@@ -49,7 +56,7 @@
 #include <QMenu>
 #include <QApplication>
 #include <QClipboard>
-
+#endif
 
 class MOTableView : public QTableView
 {

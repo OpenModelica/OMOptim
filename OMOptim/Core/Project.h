@@ -41,6 +41,12 @@
 #define _PROJECT_H
 
 #include <stdio.h>
+
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QThread>
 #include <QtCore/QMap>
 #include <QtCore/QMutex>
@@ -52,6 +58,7 @@
 #include <QtXml/QDomDocument>
 #include <QtCore/QSettings>
 #include <QObject>
+#endif
 
 #include "ProjectBase.h"
 

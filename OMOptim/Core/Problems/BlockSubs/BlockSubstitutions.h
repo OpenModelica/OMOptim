@@ -40,13 +40,18 @@
 #if !defined(_BLOCKSUBSTITUTIONS_H)
 #define _BLOCKSUBSTITUTIONS_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
+#include <QtCore/QStringList>
+#include <QtXml/QDomDocument>
+#endif
 
 #include "Problem.h"
 #include "ModItemsTree.h"
 #include "ModModelPlus.h"
-#include <QtCore/QStringList>
-#include <QtXml/QDomDocument>
-
 #include "BlockSubstitution.h"
 
 

@@ -10,7 +10,13 @@ Tested on: Windows XP SP3
 Bryan Cairns - August 2009
 */
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QString>
+#endif
 
 #ifdef WIN32
     #include "windows.h"

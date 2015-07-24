@@ -34,8 +34,13 @@
 #ifndef OMC_COMMUNICATOR_H
 #define OMC_COMMUNICATOR_H
 
-// QT includes
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QObject>
+#endif
 
 // Omc communication interface
 #include "omc_communication.h"

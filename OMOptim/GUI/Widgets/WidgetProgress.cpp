@@ -40,9 +40,6 @@
 
 #include "Widgets/WidgetProgress.h"
 #include "ui_WidgetProgress.h"
-#include <QtGui/QErrorMessage>
-
-
 
 WidgetProgress::WidgetProgress(QWidget *parent) :
     QWidget(parent),

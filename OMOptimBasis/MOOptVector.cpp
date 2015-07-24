@@ -264,7 +264,11 @@ void MOOptVector::setCurPoint(int curPoint)
     {
         _curPoint = curPoint;
         emit curScanChanged();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+        // no idea how to use reset() in qt5 TODO! FIXME!
+#else
         reset();
+#endif
     }
 }
 
@@ -275,7 +279,11 @@ void MOOptVector::setCurScan(int curScan)
     {
         _curScan = curScan;
         emit curScanChanged();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+        // no idea how to use reset() in qt5 TODO! FIXME!
+#else
         reset();
+#endif
     }
 }
 

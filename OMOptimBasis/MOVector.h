@@ -41,6 +41,14 @@
 #define _MOVECTOR_H
 
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#include <QAbstractTableModel>
+#include <QTextStream>
+#define toAscii toLatin1
+#else
 #include <QtCore/QObject>
 #include <QtCore/QVector>
 #include <QtCore/QAbstractTableModel>
@@ -48,6 +56,7 @@
 #include <QtXml/QDomDocument>
 #include <QtCore/QStringList>
 #include <QMimeData>
+#endif
 
 #include "XMLTools.h"
 #include "InfoSender.h"

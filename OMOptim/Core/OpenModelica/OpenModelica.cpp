@@ -272,9 +272,9 @@ VariableCausality OpenModelica::varCausality(const QDomElement & el)
     QString causality = el.attribute("causality");
 
     if(!variability.compare("parameter") || !causality.compare("input") )
-        return INPUT;
+        return OMINPUT;
     else
-        return OUTPUT;
+        return OMOUTPUT;
 }
 
 bool OpenModelica::getFinalVariablesFromFile(QString fileName_, MOVector<Variable> *variables,QString _modelName)

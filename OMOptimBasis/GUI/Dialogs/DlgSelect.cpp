@@ -40,8 +40,6 @@
 #include "DlgSelect.h"
 #include "MOTableView.h"
 
-#include <QtGui/QScrollBar>
-
 DlgSelect::DlgSelect(QAbstractItemModel *vector,QWidget* parent)
     :QDialog(parent)
 {

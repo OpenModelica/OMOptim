@@ -39,7 +39,7 @@
 */
 
 #include "MyTextLog.h"
-#include <QDesktopServices>
+
 MyTextLog::MyTextLog(QWidget* parent):QTextBrowser(parent)
 {
 

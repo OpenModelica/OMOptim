@@ -40,14 +40,20 @@
 #ifndef TABGENERIC_H
 #define TABGENERIC_H
 
-#include "MOTab.h"
-#include "MOItem.h"
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QWidget>
-#include "ui_TabGeneric.h"
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHeaderView>
-#include "ProjectBase.h"
+#endif
 
+#include "MOTab.h"
+#include "MOItem.h"
+#include "ui_TabGeneric.h"
+#include "ProjectBase.h"
 
 namespace Ui {
 class TabGenericClass;

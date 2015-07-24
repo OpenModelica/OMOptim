@@ -40,11 +40,18 @@
 #if !defined(_ALGOPARAMETER_H)
 #define _ALGOPARAMETER_H
 
-#include "MOItem.h"
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QObject>
 #include <QtCore/QAbstractTableModel>
 #include <QtCore/QTextStream>
 #include <QtCore/QStringList>
+#endif
+
+#include "MOItem.h"
 #include "MOVector.h"
 
 class AlgoParameter : public MOItem

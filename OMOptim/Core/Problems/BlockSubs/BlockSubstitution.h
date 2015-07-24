@@ -11,9 +11,14 @@
 #if !defined(_BLOCKSUBSTITUTION_H)
 #define _BLOCKSUBSTITUTION_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtCore/QStringList>
 #include <QtXml/QDomDocument>
-
+#endif
 
 
 class Project;

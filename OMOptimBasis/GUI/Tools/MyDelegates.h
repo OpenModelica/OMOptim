@@ -40,6 +40,13 @@
 #if !defined(_MYDELEGATES_H)
 #define _MYDELEGATES_H
 
+#include <limits>
+
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QStyledItemDelegate>
 #include <QtGui/QCompleter>
 #include <QtCore/QModelIndex>
@@ -49,8 +56,10 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QProgressBar>
-#include <limits>
 #include <QSortFilterProxyModel>
+#include <QtGui/QLineEdit>
+#include <QCheckBox>
+#endif
 
 #include "qsciencespinbox.h"
 

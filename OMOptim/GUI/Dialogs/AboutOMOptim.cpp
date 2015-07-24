@@ -44,10 +44,7 @@
 
 #include "AboutOMOptim.h"
 #include "ui_AboutOMOptim.h"
-#include <QtGui/QErrorMessage>
 #include "ModModel.h"
-
-#include <QtGui/QListWidget>
 
 AboutOMOptim::AboutOMOptim( QWidget *parent) :
     QDialog(parent),

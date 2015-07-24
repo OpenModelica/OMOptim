@@ -160,15 +160,15 @@ void Save::saveProject(ProjectBase* project,bool saveAllCases)
 
 void Save::saveProblem(ProjectBase* project,Problem* problem)
 {
-    ProblemInterface* interface = project->problemsInterfaces().interfaceOf(problem);
-    if(interface)
-        interface->saveProblem(problem);
+    ProblemInterface* itf = project->problemsInterfaces().interfaceOf(problem);
+    if(itf)
+        itf->saveProblem(problem);
 }
 
 void Save::saveResult(ProjectBase* project,Result* result)
 {
-    ProblemInterface* interface = project->problemsInterfaces().interfaceOf(result);
-    if(interface)
-        interface->saveResult(result);
+    ProblemInterface* itf = project->problemsInterfaces().interfaceOf(result);
+    if(itf)
+        itf->saveResult(result);
 }
 

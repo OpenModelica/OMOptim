@@ -3,26 +3,26 @@
 #include "Result.h"
 #include "ProblemInterface.h"
 
-bool ProblemInterfaces::addProblemInterface(ProblemInterface* interface)
+bool ProblemInterfaces::addProblemInterface(ProblemInterface* itf)
 {
-    QStringList problemNames = interface->problemTypes();
+    QStringList problemNames = itf->problemTypes();
     bool oneAdded = false;
     for(int i=0;i<problemNames.size();i++)
     {
         if(!this->contains(problemNames.at(i)))
         {
-            insert(problemNames.at(i),interface);
+            insert(problemNames.at(i),itf);
             //emit modified();
             oneAdded = true;
         }
     }
 
-    QStringList resultNames = interface->resultTypes();
+    QStringList resultNames = itf->resultTypes();
     for(int i=0;i<resultNames.size();i++)
     {
         if(!this->contains(resultNames.at(i)))
         {
-            insert(resultNames.at(i),interface);
+            insert(resultNames.at(i),itf);
             //emit modified();
             oneAdded = true;
         }
@@ -30,14 +30,14 @@ bool ProblemInterfaces::addProblemInterface(ProblemInterface* interface)
     return oneAdded;
 }
 
-bool ProblemInterfaces::addProblemInterfaces(QList<ProblemInterface*> interfaces)
+bool ProblemInterfaces::addProblemInterfaces(QList<ProblemInterface*> itfs)
 {
     bool addedSome = false;
     bool allOk = true;
 
-    for(int i=0;i<interfaces.size();i++)
+    for(int i=0;i<itfs.size();i++)
     {
-        QStringList problemNames = interfaces.at(i)->problemTypes();
+        QStringList problemNames = itfs.at(i)->problemTypes();
 
         for(int j=0;j<problemNames.size();j++)
         {
@@ -48,7 +48,7 @@ bool ProblemInterfaces::addProblemInterfaces(QList<ProblemInterface*> interfaces
             }
             else
             {
-                insert(problemNames.at(j),interfaces.at(i));
+                insert(problemNames.at(j),itfs.at(i));
                 //emit modified();
                 addedSome=true;
             }

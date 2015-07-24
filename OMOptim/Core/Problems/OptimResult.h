@@ -40,13 +40,20 @@
 #if !defined(_OPTIMRESULT_H)
 #define _OPTIMRESULT_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
+#include <QtXml/QDomDocument>
+#endif
+
 #include "Result.h"
 #include "MOOptVector.h"
 #include "Variable.h"
 #include "OptObjective.h"
 #include "OneSimulation.h"
 #include "OneSimResult.h"
-#include <QtXml/QDomDocument>
 //#include "BlockSubs/BlockSubstitutions.h"
 #include "CSV.h"
 #include "ProblemConfig.h"
@@ -57,7 +64,6 @@
 
 class Save;
 class Optimization;
-
 
 
 class OptimResult : public Result

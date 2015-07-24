@@ -10,9 +10,6 @@ class ModelPlus;
 class PlugInterface;
 
 
-
-
-
 class ModPlusBlackBoxExeCtrl : public ModPlusExeCtrl
 {
 public:

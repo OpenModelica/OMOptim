@@ -41,9 +41,6 @@
 #include "MyDelegates.h"
 #include "Variable.h"
 
-#include <QtGui/QLineEdit>
-#include <QCheckBox>
-
 GenericDelegate::GenericDelegate(QList<int> _values ,QStringList _titles,QObject *parent)
     : QStyledItemDelegate(parent)
 {

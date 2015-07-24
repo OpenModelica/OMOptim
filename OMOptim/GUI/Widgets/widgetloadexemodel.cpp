@@ -1,7 +1,6 @@
+
 #include "widgetloadexemodel.h"
 #include "ui_widgetloadexemodel.h"
-#include<QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
 
 WidgetLoadExeModel::WidgetLoadExeModel(Project* project,QWidget *parent) :
     QDialog(parent),

@@ -40,7 +40,6 @@
 
 #include "Widgets/WidgetTableRecVar.h"
 #include "ui_WidgetTableRecVar.h"
-#include <QtGui/QErrorMessage>
 #include "Optimization.h"
 
 

@@ -40,15 +40,24 @@
 #ifndef WIDGETMOITEM_H
 #define WIDGETMOITEM_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QDialog>
 #include <QtGui/QWidget>
 #include <QtGui/QComboBox>
 #include <QtGui/QLineEdit>
 #include <QtGui/QSpinBox>
 #include <QtGui/QCheckBox>
+#include <QtGui/QLabel>
+#include <QtGui/QErrorMessage>
+#include <QtGui/QListWidget>
+#endif
+
 #include "MOItem.h"
 #include "ui_WidgetMOItem.h"
-#include <QtGui/QLabel>
 #include "Tools/qsciencespinbox.h"
 
 namespace Ui {

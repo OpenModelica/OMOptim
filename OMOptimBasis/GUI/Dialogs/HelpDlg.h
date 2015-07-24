@@ -40,8 +40,19 @@
 #ifndef HelpDlg_H
 #define HelpDlg_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
 #include <QtGui/QDialog>
 #include <QtGui/QWidget>
+#include <QtGui/QErrorMessage>
+#include <QtGui/QTextBrowser>
+#include <QtGui/QSpacerItem>
+#include <QtGui/QListWidget>
+#endif
+
 #include "ui_HelpDlg.h"
 
 

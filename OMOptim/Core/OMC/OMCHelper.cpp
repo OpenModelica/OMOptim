@@ -32,7 +32,6 @@
  */
 
 #include "OMCHelper.h"
-#include <QDir>
 
 QString OMCHelper::applicationName = "OMOptim";
 QString OMCHelper::applicationVersion = "Version: 0.9";

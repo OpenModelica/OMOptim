@@ -66,13 +66,20 @@
 #ifndef MYMyEoGnuplot_H
 #define MYMyEoGnuplot_H
 
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
+#include <QProcess>
+#endif
+
 #include <string>
 #include <stdio.h>
 #include <errno.h>
 
 #include "MOSettings.h"
 #include "InfoSender.h"
-#include <QProcess>
 
 /** Base class for calls to gnuplot
 

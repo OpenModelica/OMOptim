@@ -78,45 +78,54 @@
  **
  ****************************************************************************/
 
- #include <QtGui>
+// QT Headers
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#include <QtWidgets>
+#else
+#include <QtGui>
+#endif
 
- #include "diagramitem.h"
- #include "arrow.h"
+#include "diagramitem.h"
+#include "arrow.h"
 
- DiagramItem::DiagramItem(DiagramType diagramType, QMenu *contextMenu,
-              QGraphicsItem *parent, QGraphicsScene *scene)
+DiagramItem::DiagramItem(DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent, QGraphicsScene *scene)
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+     : QGraphicsPolygonItem(parent)
+#else
      : QGraphicsPolygonItem(parent, scene)
- {
-     myDiagramType = diagramType;
-     myContextMenu = contextMenu;
+#endif
+{
+    myDiagramType = diagramType;
+    myContextMenu = contextMenu;
 
-     QPainterPath path;
-     switch (myDiagramType) {
-         case StartEnd:
-             path.moveTo(200, 50);
-             path.arcTo(150, 0, 50, 50, 0, 90);
-             path.arcTo(50, 0, 50, 50, 90, 90);
-             path.arcTo(50, 50, 50, 50, 180, 90);
-             path.arcTo(150, 50, 50, 50, 270, 90);
-             path.lineTo(200, 25);
-             myPolygon = path.toFillPolygon();
-             break;
+    QPainterPath path;
+    switch (myDiagramType) {
+        case StartEnd:
+            path.moveTo(200, 50);
+            path.arcTo(150, 0, 50, 50, 0, 90);
+            path.arcTo(50, 0, 50, 50, 90, 90);
+            path.arcTo(50, 50, 50, 50, 180, 90);
+            path.arcTo(150, 50, 50, 50, 270, 90);
+            path.lineTo(200, 25);
+            myPolygon = path.toFillPolygon();
+            break;
 
-         case Rectangle:
-             myPolygon << QPointF(0, 0) << QPointF(100, 0)
-                       << QPointF(100, 100) << QPointF(0, 100)
-                       << QPointF(0, 0);
-             break;
-         default:
-             myPolygon << QPointF(-120, -80) << QPointF(-70, 80)
-                       << QPointF(120, 80) << QPointF(70, -80)
-                       << QPointF(-120, -80);
-             break;
-     }
-     setPolygon(myPolygon);
-     setFlag(QGraphicsItem::ItemIsMovable, true);
-     setFlag(QGraphicsItem::ItemIsSelectable, true);
- }
+        case Rectangle:
+            myPolygon << QPointF(0, 0) << QPointF(100, 0)
+                      << QPointF(100, 100) << QPointF(0, 100)
+                      << QPointF(0, 0);
+            break;
+        default:
+            myPolygon << QPointF(-120, -80) << QPointF(-70, 80)
+                      << QPointF(120, 80) << QPointF(70, -80)
+                      << QPointF(-120, -80);
+            break;
+    }
+    setPolygon(myPolygon);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
+    setFlag(QGraphicsItem::ItemIsSelectable, true);
+}
 
  void DiagramItem::setWidth(double _newWidth)
  {
@@ -134,74 +143,74 @@
      setPolygon(_newPolygon);
  }
 
- void DiagramItem::setHeight(double _newHeight)
- {
-     double _oldHeight =  myPolygon.boundingRect().height();
-     myPolygon = polygon();
+void DiagramItem::setHeight(double _newHeight)
+{
+    double _oldHeight =  myPolygon.boundingRect().height();
+    myPolygon = polygon();
 
-     QPolygonF _newPolygon;
-     for(int i=0;i<myPolygon.size();i++)
-     {
-         QPointF _newPoint = myPolygon.at(i);
-         _newPoint.setY(myPolygon.at(i).y()*_newHeight/_oldHeight);
-        _newPolygon << _newPoint;
-     }
+    QPolygonF _newPolygon;
+    for(int i=0;i<myPolygon.size();i++)
+    {
+        QPointF _newPoint = myPolygon.at(i);
+        _newPoint.setY(myPolygon.at(i).y()*_newHeight/_oldHeight);
+       _newPolygon << _newPoint;
+    }
 
-     setPolygon(_newPolygon);
- }
+    setPolygon(_newPolygon);
+}
 
 
- void DiagramItem::removeArrow(Arrow *arrow)
- {
-     int index = arrows.indexOf(arrow);
+void DiagramItem::removeArrow(Arrow *arrow)
+{
+    int index = arrows.indexOf(arrow);
 
-     if (index != -1)
-         arrows.removeAt(index);
- }
+    if (index != -1)
+        arrows.removeAt(index);
+}
 
- void DiagramItem::removeArrows()
- {
-     foreach (Arrow *arrow, arrows) {
-         arrow->startItem()->removeArrow(arrow);
-         arrow->endItem()->removeArrow(arrow);
-         scene()->removeItem(arrow);
-         delete arrow;
-     }
- }
+void DiagramItem::removeArrows()
+{
+    foreach (Arrow *arrow, arrows) {
+        arrow->startItem()->removeArrow(arrow);
+        arrow->endItem()->removeArrow(arrow);
+        scene()->removeItem(arrow);
+        delete arrow;
+    }
+}
 
- void DiagramItem::addArrow(Arrow *arrow)
- {
-     arrows.append(arrow);
- }
+void DiagramItem::addArrow(Arrow *arrow)
+{
+    arrows.append(arrow);
+}
 
- QPixmap DiagramItem::image() const
- {
-     QPixmap pixmap(250, 250);
-     pixmap.fill(Qt::transparent);
-     QPainter painter(&pixmap);
-     painter.setPen(QPen(Qt::black, 8));
-     painter.translate(125, 125);
-     painter.drawPolyline(myPolygon);
+QPixmap DiagramItem::image() const
+{
+    QPixmap pixmap(250, 250);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    painter.setPen(QPen(Qt::black, 8));
+    painter.translate(125, 125);
+    painter.drawPolyline(myPolygon);
 
-     return pixmap;
- }
+    return pixmap;
+}
 
- void DiagramItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
- {
-     scene()->clearSelection();
-     setSelected(true);
-     if(myContextMenu)
-        myContextMenu->exec(event->screenPos());
- }
+void DiagramItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    scene()->clearSelection();
+    setSelected(true);
+    if(myContextMenu)
+       myContextMenu->exec(event->screenPos());
+}
 
- QVariant DiagramItem::itemChange(GraphicsItemChange change,
-                      const QVariant &value)
- {
-     if (change == QGraphicsItem::ItemPositionChange) {
-         foreach (Arrow *arrow, arrows) {
-             arrow->updatePosition();
-         }
-     }
+QVariant DiagramItem::itemChange(GraphicsItemChange change,
+                     const QVariant &value)
+{
+    if (change == QGraphicsItem::ItemPositionChange) {
+        foreach (Arrow *arrow, arrows) {
+            arrow->updatePosition();
+        }
+    }
 
-     return value;
- }
+    return value;
+}

@@ -41,8 +41,6 @@
 #include "DlgSelectVars.h"
 #include "MOTableView.h"
 
-#include <QtGui/QScrollBar>
-
 DlgSelectVars::DlgSelectVars(MOVector<Variable>* variables,MOVector<Variable>* alreadySelected)
 {
     _useOpt = false;

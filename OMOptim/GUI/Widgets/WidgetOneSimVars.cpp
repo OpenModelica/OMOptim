@@ -40,7 +40,6 @@
 
 #include "Widgets/WidgetOneSimVars.h"
 
-#include <QtGui/QSortFilterProxyModel>
 #include "Tools/GuiTools.h"
 #include "MyDelegates.h"
 #include "ModModelPlus.h"
