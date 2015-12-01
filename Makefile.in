@@ -8,7 +8,7 @@ bindir = @bindir@
 
 ifeq (@APP@,)
 install:
-	mkdir -p ${DESTDIR}/bin
+	mkdir -p ${DESTDIR}/@bindir@
 	cp -a OMOptim/bin/OMOptim@EXE@ ${DESTDIR}/@bindir@
 else
 install:
