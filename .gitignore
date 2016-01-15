@@ -25,3 +25,4 @@ config.status
 configure
 *.config
 install-sh
+qmake.sh
