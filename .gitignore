@@ -3,6 +3,7 @@ Makefile.unix
 OMOptim/buildOMOptim.pro.*
 OMOptim*/bin/
 OMOptim*/build/release/
+OMOptim*/build/debug/
 OMOptim/Core/OMC/omc_communication.cpp
 OMOptim/Core/OMC/omc_communication.h
 OMOptim/Core/OMC/omc_config.h

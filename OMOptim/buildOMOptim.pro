@@ -19,24 +19,10 @@ OMOptim.depends = OMOptimLib
 
 ## copy dependent files after compiling
 win32 {
-        release_libs.files = $${QMAKE_LIBDIR_QT}/QtCore4.dll \
-                              $${QMAKE_LIBDIR_QT}/QtGui4.dll \
-                               $${QMAKE_LIBDIR_QT}/QtXml4.dll \
-                               $${QMAKE_LIBDIR_QT}/../bin/mingwm10.dll \
-                                $${QMAKE_LIBDIR_QT}/../bin/libgcc_s_dw2-1.dll \
-                                $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniORB416_rt.dll \
-                                $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omnithread34_rt.dll \
-                                $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniDynamic416_rt.dll
+        release_libs.files =
         release_libs.path = ./bin
 
-        debug_libs.files = $${QMAKE_LIBDIR_QT}/QtCored4.dll \
-                              $${QMAKE_LIBDIR_QT}/QtGuid4.dll \
-                               $${QMAKE_LIBDIR_QT}/QtXmld4.dll \
-                               $${QMAKE_LIBDIR_QT}/../bin/mingwm10.dll \
-                                $${QMAKE_LIBDIR_QT}/../bin/libgcc_s_dw2-1.dll \
-                                $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniORB416_rtd.dll \
-                                $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omnithread34_rtd.dll \
-                                $$(OMDEV)/lib/omniORB-4.1.6-mingw/bin/x86_win32/omniDynamic416_rtd.dll
+        debug_libs.files =
         debug_libs.path = ./bin
 
 
