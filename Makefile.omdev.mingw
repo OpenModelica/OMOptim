@@ -1,4 +1,5 @@
-CMAKE=$(OMDEV)/bin/cmake/bin/cmake
+OMDEVMSYS=$(shell cygpath $$OMDEV)
+CMAKE=$(OMDEVMSYS)/bin/cmake/bin/cmake
 CMAKE_TARGET="MSYS Makefiles"
 PARADISEO=ParadisEO-2.0.1/build
 
