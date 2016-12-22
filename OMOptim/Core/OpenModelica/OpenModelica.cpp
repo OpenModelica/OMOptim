@@ -47,11 +47,10 @@ http://www-cep.ensmp.fr/english/
 #include "VariableType.h"
 #include "LowTools.h"
 #include "OpenModelicaParameters.h"
-// for .mat reading
-#ifndef WIN32
 #include "omc_config.h"
-#endif
+#include "Utilities.h"
 
+// for .mat reading
 extern "C" {
 #include "read_matlab4.h"
 #include "read_matlab4.c"
@@ -679,11 +678,9 @@ bool OpenModelica::start(QString exeFile,QString &errMsg,int maxnsec)
     QString appPath = "\""+exeFile+"\"";
     // add OM path in PATH
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString omHome = env.value("OpenModelicaHome");
-    omHome = omHome+QDir::separator()+"bin";
-    QString mingw = env.value("OpenModelicaHome");
-    mingw = mingw+QDir::separator()+"MinGW"+QDir::separator()+"bin";
-    env.insert("PATH", env.value("Path") + ";"+omHome+";"+mingw);
+    QString mingw = Utilities::getMinGWBinPath();
+    QString om = Utilities::getOMBinPath();
+    env.insert("PATH", env.value("PATH") + ";"+om+";"+mingw);
 
     simProcess.setProcessEnvironment(env);
 
@@ -724,7 +721,7 @@ QString OpenModelica::sciNumRx()
 QString OpenModelica::home()
 {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString omHome = env.value("OpenModelicaHome");
+    QString omHome = env.value("OPENMODELICAHOME");
     return omHome;
 }
 

@@ -53,7 +53,7 @@ AboutOMOptim::AboutOMOptim( QWidget *parent) :
     ui->setupUi(this);
 
     //Version
-    QString version = QString::number(Version::MAJOR)+"."+QString::number(Version::MINOR)+"."+QString::number(Version::REVISION);
+    QString version = Version::version();
     ui->labelVersion->setText("Version : "+version);
 }
 

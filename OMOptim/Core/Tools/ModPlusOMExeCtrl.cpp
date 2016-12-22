@@ -8,6 +8,7 @@
 #include "ModItemsTree.h"
 #include "ExeModel.h"
 #include "OpenModelicaParameters.h"
+#include "Utilities.h"
 
 ModPlusOMExeCtrl::ModPlusOMExeCtrl(Project* project,ModelPlus* model)
     :ModPlusExeCtrl(project, model)
@@ -199,11 +200,9 @@ bool ModPlusOMExeCtrl::start(QString exeFile,int maxnsec)
     QString appPath = "\""+exeFile+"\"";
     // add OM path in PATH
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString omHome = env.value("OpenModelicaHome");
-    omHome = omHome+QDir::separator()+"bin";
-    QString mingw = env.value("OpenModelicaHome");
-    mingw = mingw+QDir::separator()+"MinGW"+QDir::separator()+"bin";
-    env.insert("PATH", env.value("Path") + ";"+omHome+";"+mingw);
+    QString mingw = Utilities::getMinGWBinPath();
+    QString om = Utilities::getOMBinPath();
+    env.insert("PATH", env.value("PATH") + ";"+om+";"+mingw);
 
     simProcess.setProcessEnvironment(env);
 

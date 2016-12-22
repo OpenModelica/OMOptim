@@ -36,6 +36,7 @@ INCLUDEPATH += . \
               ../Core/OpenModelica \
               ../Core/Problems \
               ../Core/Tools \
+              ../Core/Util \
               ../Core/Units \
               ../GUI/Dialogs \
               ../GUI/Plots \
@@ -277,7 +278,13 @@ HEADERS += ../Core/OptObjective.h \
     ../Core/PlugInterface.h \
     ../Core/ModPlusBlackBoxExeCtrl.h \
     ../scriptparseromoptim.h \
-    ../GUI/Widgets/WidgetSelectEditVars.h
+    ../GUI/Widgets/WidgetSelectEditVars.h \
+    ../Core/Tools/StringHandler.h \
+    ../Core/Tools/Helper.h \
+    ../Core/OMC/ComponentInfo.h \
+    ../Core/Util/Helper.h \
+    ../Core/Util/StringHandler.h \
+    ../Core/Util/Utilities.h
     #../Core/ModPlusTherExeCtrl.h
 
 FORMS += ../GUI/MainWindow.ui \
@@ -383,7 +390,6 @@ SOURCES += ../Core/OptObjective.cpp \
            ../Core/Optim/EA/SPEA2/SPEA2.cpp \
            ../Core/Optim/EA/SPEA2Adaptative/SPEA2Adapt.cpp \
             ../Core/OMC/OMCHelper.cpp \
-            ../Core/OMC/StringHandler.cpp \
             ../GUI/Widgets/WidgetMooPointsList.cpp \
             ../GUI/Widgets/WidgetProjectInfos.cpp \
             ../GUI/Widgets/WidgetProblemActions.cpp \
@@ -409,6 +415,10 @@ SOURCES += ../Core/OptObjective.cpp \
     ../Core/ModPlusDymolaExeCtrl.cpp \
     ../Core/ModPlusBlackBoxExeCtrl.cpp \
     ../scriptparseromoptim.cpp \
-    ../GUI/Widgets/WidgetSelectEditVars.cpp
+    ../GUI/Widgets/WidgetSelectEditVars.cpp \
+    ../Core/OMC/ComponentInfo.cpp \
+    ../Core/Util/Helper.cpp \
+    ../Core/Util/StringHandler.cpp \
+    ../Core/Util/Utilities.cpp
     #../Core/ModPlusTherExeCtrl.cpp
 

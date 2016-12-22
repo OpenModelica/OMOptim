@@ -9,6 +9,9 @@ AC_SUBST(EXE)
 AC_SUBST(IDLCMD)
 AC_SUBST(RPATH_QMAKE)
 AC_SUBST(host_short)
+AC_SUBST(SOURCE_REVISION)
+AC_SUBST(LSB_RELEASE)
+
 
 m4_include([common/m4/pre-commit.m4])
 cp common/install-sh common/config.guess common/config.sub ./
@@ -49,9 +52,21 @@ FIND_LIBOMQWT()
 OMNIORB_DEFAULT=yes
 m4_include([common/m4/corba.m4])
 
+AC_MSG_CHECKING([for LSB description])
+LSB_RELEASE="`lsb_release -ds | tr -d '\"'`"
+if test ! -z "$LSB_RELEASE"; then
+  AC_MSG_RESULT([$LSB_RELEASE])
+  LSB_RELEASE="#define LSB_RELEASE \"$LSB_RELEASE\""
+else
+  AC_MSG_RESULT([no])
+fi
+
+m4_include([common/m4/semver.m4])
+SOURCE_REVISION="$SOURCE_REVISION$NON_FREE_VERSION"
+
 if test -z "$USE_CORBA"; then
   AC_MSG_ERROR([OMOptim requires using the OMC CORBA interface. Configure using --with-omniORB.])
 fi
 
-AC_OUTPUT(Makefile OMOptim/build/Makefile.unix OMOptim/build/OMOptim.config OMOptimBasis/build/Makefile.unix OMOptimBasis/build/OMOptimBasis.config OMOptim/Core/OMC/omc_config.h)
+AC_OUTPUT(Makefile OMOptim/build/Makefile.unix OMOptim/build/OMOptim.config OMOptimBasis/build/Makefile.unix OMOptimBasis/build/OMOptimBasis.config OMOptim/omc_config.h)
 # AC_CONFIG_COMMANDS([Clean qmake stuff],[make clean])

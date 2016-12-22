@@ -1,42 +1,36 @@
 Libraries and software to install
 *************************************
 
-Best solution is to download OMDev and set OMDEV environment variable (cf. www.openmodelica.org).
-It will provide you needed libraries and tools (e.g. mingw).
+Best solution is to download OMDev:
+https://openmodelica.org/svn/OpenModelicaExternal/trunk/tools/windows/OMDev
+then read INSTALL.txt in the OMDev directory
+It will provide you *all* the needed libraries and tools
 
 - Install OpenModelica
-	: http://www.openmodelica.org/index.php/download
-- Download Qt Libraries (version used : 4.7)
-	: Qt SDK for windows from http://qt.nokia.com/downloads.
-	: You can download mingw prebuild version
-	
-If you don't have OMDEV
-****************************
-- Download and install Omniorb (if you don't have OMDEV)
-	: http://omniorb.sourceforge.net/
-	:  you can download prebuild libraries for mingw
-- Download Paradiseo
-	: http://paradiseo.gforge.inria.fr/
-- Build Paradiseo (Windows, using MinGW in the installer)	
+	https://openmodelica.org/download/download-windows
+	or compile it from scratch
+	https://github.com/OpenModelica/
+
 
 Define the environment
 *************************
-Define environment variables as below :
-
-QTHOME  e.g. C:\Qt\4.7.2
-PARADISEOHOME e.g. C:\ParadisEO
-OPENMODELICAHOME e.g. C:\OpenModelica1.5.0\
-OMNIORBINCLUDE e.g. C:\omniORB-4.1.4\include\
-OMNIORBLIB e.g. C:\omniORB-4.1.4\lib\x86_win32
-
+GIT clone OpenModelica from:
+https://github.com/OpenModelica/
+to path/to/OpenModelica
+Set OpenModelica home:
+OPENMODELICAHOME e.g. path/to/OpenModelica/build
 
 Compilation using qmake
 ********************
-cd build\
-qmake "CONFIG+=release" (or qmake "CONFIG+=debug")
-nmake release (or nmake debug)
+Start:
+- OMDev\tools\msys\mingw64_shell.bat for 64bit compilation
+- OMDev\tools\msys\mingw64_shell.bat for 32bit compilation
 
-You can also open .pro file with QtCreator
+> cd path/to/OpenModelica
+> make -f Makefile.omdev.mingw -j8 omoptim
+
+You can also compile with QtCreator from OMDev
+by opening the OpenModelica/OMOptim/OMOptim/build/OMOptim.pro
 
 
 Dymola
@@ -45,15 +39,17 @@ To use Dymola as simulator, be sure to set Dymola executable path in Settings pa
 
 Execution
 **********
-To be launched, OMOptim.exe needs in its folder some dlls (add letter 'd' at the end for debug version). These libraries can be found in OMDev folder.
-- QtCore4.dll, QtGui4.dll, QtXml4.dll from Qt directory
-- omniDynamic414_rt.dll omniDynamic414_rt.dll omnithread34_rt.dll from Omniorb directory
+To be launched, OMOptim.exe needs in its folder some dlls (add letter 'd' at the end for debug version).
+These libraries can be found in OpenModelica\build\bin\ folder.
+- Qt*.dll
+- omni*.dll
 - Qwt5.dll library
-- libgcc_s_dw2-1.dll
-- libstdc++-6.dll
-- mingwm10.dll
+- libgcc_s*.dll
+- libstdc++*.dll
+- ming*.dll
 
 
 Class Documentation
 ********************
 A class documentation is available (while incomplete). It should be built using doxygen. File to compile with doxygen is Doc/Doxyfile
+
