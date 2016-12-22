@@ -42,6 +42,7 @@
 #include "LoadOMOptim.h"
 #include "SaveOMOptim.h"
 
+#include <QFileDialog>
 
 ModItemsTree* OMOptimGuiTools::ModItemToTreeView(Project* project,ModLoader* modLoader ,MOomc* moomc,const ModItem & modClass,QTreeView* treeView,bool showComponent)
 {

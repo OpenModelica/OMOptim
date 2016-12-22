@@ -43,6 +43,7 @@
 #include <QFileDialog>
 #include <QTextCodec>
 #include <QTextStream>
+#include <QUrl>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
 #define toAscii toLatin1

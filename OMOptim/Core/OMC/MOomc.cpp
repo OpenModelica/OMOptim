@@ -61,6 +61,8 @@
 #include "StringHandler.h"
 #include "ComponentInfo.h"
 
+#include <QApplication>
+
 class Project;
 
 using namespace std;

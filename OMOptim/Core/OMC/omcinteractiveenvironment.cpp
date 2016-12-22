@@ -41,6 +41,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QProcess>
 #include <QtGui/QMessageBox>
+#include <QApplication>
 #endif
 
 #include "omcinteractiveenvironment.h"

@@ -54,6 +54,7 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
+#include <QMutex>
 #endif
 
 
