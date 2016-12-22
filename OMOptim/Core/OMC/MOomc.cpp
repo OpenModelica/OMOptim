@@ -1458,6 +1458,8 @@ bool MOomc::startServer()
 #ifdef WIN32 // Win32
         omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
 #else // UNIX environment
+        char *u = getenv("USER");
+        QString user = u ? u : "nobody";
         omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.").append(( QString(user))).append(".omc.output.").append(mName));
 #endif
 
