@@ -58,6 +58,7 @@
 #include <QtXml/QDomDocument>
 #include <QtCore/QSettings>
 #include <QObject>
+#include <QAction>
 #endif
 
 #include "ProjectBase.h"
