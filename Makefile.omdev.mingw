@@ -2,10 +2,22 @@ OMDEVMSYS=$(shell cygpath $$OMDEV)
 CMAKE=$(OMDEVMSYS)/bin/cmake/bin/cmake
 CMAKE_TARGET="MSYS Makefiles"
 PARADISEO=ParadisEO-2.0.1/build
+OMC_CONFIG=OMOptim/omc_config.h
+CONFIG_DEFAULT_OPENMODELICAHOME = "$(OMBUILDDIR)/"
+GIT_SHA = $(shell git describe --match "v*.*" --always)
+LSB_RELEASE = $(shell cmd /c "ver")
 
-.PHONY: omoptim omoptimbasis paradiseo
+ifeq (MINGW32,$(findstring MINGW32,$(shell uname)))
+PLATFORM_ARCH = (32-bit)
+else # mingw64
+PLATFORM_ARCH = (64-bit)
+endif
 
-omoptim: omoptimbasis paradiseo
+
+
+.PHONY: omoptim omoptimbasis paradiseo $(OMC_CONFIG)
+
+omoptim: $(OMC_CONFIG) omoptimbasis paradiseo
 	$(MAKE) -C OMOptim/build -f Makefile.omdev.mingw
 	cp -puf common/pre-commit.sh $(shell git rev-parse --git-dir)/hooks/pre-commit
 
@@ -21,3 +33,37 @@ clean:
 	$(MAKE) -C OMOptimBasis/build -f Makefile.omdev.mingw clean
 	$(MAKE) -C OMOptim/build -f Makefile.omdev.mingw clean
 	test ! -d $(PARADISEO) || rm -r $(PARADISEO)
+
+gitclean:
+	git clean -fdx -e *.user -e omc_communication.* -e omc_config.h
+
+
+$(OMC_CONFIG):
+	@echo Current version: "$(GIT_SHA) $(PLATFORM_ARCH)"
+	@echo Current omhome: "$(CONFIG_DEFAULT_OPENMODELICAHOME)"
+	@echo Current lsb_release: "$(LSB_RELEASE)"
+ifeq ($(GIT_SHA),)
+	@if test -f $(OMC_CONFIG); \
+	then echo Could not retrieve version number. $(OMC_CONFIG) not updated; \
+	else \
+		echo "#define CONFIG_DEFAULT_OPENMODELICAHOME \"$(CONFIG_DEFAULT_OPENMODELICAHOME)\"" > $(OMC_CONFIG); \
+		echo "#define GIT_SHA \"OMOptim unknown $(PLATFORM_ARCH)\""; >> $(OMC_CONFIG); \
+		echo "#define LSB_RELEASE \"$(LSB_RELEASE)\"" >> $(OMC_CONFIG); \
+	fi;
+else # version is not empty, update it if it changed
+	@if test -f $(OMC_CONFIG); \
+	then \
+		echo "#define CONFIG_DEFAULT_OPENMODELICAHOME \"$(CONFIG_DEFAULT_OPENMODELICAHOME)\"" > $(OMC_CONFIG).tmp; \
+		echo "#define GIT_SHA \"OMOptim $(GIT_SHA) $(PLATFORM_ARCH)\"" >> $(OMC_CONFIG).tmp; \
+		echo "#define LSB_RELEASE \"$(LSB_RELEASE)\"" >> $(OMC_CONFIG).tmp; \
+		diff $(OMC_CONFIG) $(OMC_CONFIG).tmp > /dev/null; \
+		if [ $$? -eq 0 ]; then echo No change in version; rm $(OMC_CONFIG).tmp; \
+		else echo version has changed. updating $(OMC_CONFIG); \mv $(OMC_CONFIG).tmp $(OMC_CONFIG); \
+		fi; \
+	else \
+		echo "#define CONFIG_DEFAULT_OPENMODELICAHOME \"$(CONFIG_DEFAULT_OPENMODELICAHOME)\"" > $(OMC_CONFIG); \
+		echo "#define GIT_SHA \"OMOptim $(GIT_SHA) $(PLATFORM_ARCH)\"" >> $(OMC_CONFIG); \
+		echo "#define LSB_RELEASE \"$(LSB_RELEASE)\"" >> $(OMC_CONFIG); \
+	fi;
+endif
+

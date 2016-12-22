@@ -1110,10 +1110,21 @@ void ScannedVariable::initScanExtremum()
 int ScannedVariable::nbScans()
 {
     //#TOCHECK
+    int i = 0;
     if(_scanStep>0)
-        return (int)(_scanMax-_scanMin)/_scanStep + 1;
+    {
+        double d = _scanMax - _scanMin;
+        double s = d / _scanStep;
+        // fprintf(stderr, "%g - %g = %g", _scanMax, _scanMin, d);
+        // fprintf(stderr, "%g / %g = %g", d, _scanStep, s);
+        i = s + 1;
+        if (i < 0)
+          return 0;
+        else
+          return i;
+    }
     else
-        return 0;
+        return i;
 }
 
 

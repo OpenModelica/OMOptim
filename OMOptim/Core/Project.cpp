@@ -624,7 +624,8 @@ void Project::save(bool saveAllOMCases)
         setSaved(true);
         emit projectChanged();
         InfoSender::instance()->eraseCurrentTask();
-        _saveLoadMutex.unlock();
+        if (_saveLoadMutex.tryLock())
+          _saveLoadMutex.unlock();
     }
 }
 
@@ -718,7 +719,8 @@ void Project::save(Problem* problem)
     Save::saveProblem(this,problem);
 
     emit projectChanged();
-    _saveLoadMutex.unlock();
+    if (_saveLoadMutex.tryLock())
+      _saveLoadMutex.unlock();
 }
 
 /** @brief Load project from file given as parameter.
@@ -746,7 +748,8 @@ bool Project::load(QString loadPath)
         }
         setSaved(true);
         emit projectChanged();
-        _saveLoadMutex.unlock();
+        if (_saveLoadMutex.tryLock())
+          _saveLoadMutex.unlock();
         return loaded;
     }
     else

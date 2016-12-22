@@ -40,14 +40,14 @@
 #ifndef BLOCKSUBSTITUTECONNDLG_H
 #define BLOCKSUBSTITUTECONNDLG_H
 
-#include <QtGui/QDialog>
-#include <QtGui/QWidget>
-#include <QtGui/QComboBox>
-#include<QtGui/QFileDialog>
+#include <QDialog>
+#include <QWidget>
+#include <QComboBox>
+#include <QFileDialog>
 #include "Project.h"
 #include "ui_BlockSubstituteConnDlg.h"
 #include "BlockSubs/BlockSubstitution.h"
-#include <QtGui/QLabel>
+#include <QLabel>
 
 namespace Ui {
     class BlockSubstituteConnDlg;

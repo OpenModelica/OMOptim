@@ -67,7 +67,6 @@
 class Project;
 class Variable;
 
-
 /**
   * MOomc is dedicated to communication with OpenModelica through CORBA.
   * Its main functions are to start OMC and call OMC API functions :
@@ -195,10 +194,8 @@ public :
     QString loadFileWThread(QString filePath);
 
 
-     bool initCommandLineOptions();
-     bool clearCommandLineOptions();
-
-
+    bool initCommandLineOptions();
+    bool clearCommandLineOptions();
 
 
 public slots :

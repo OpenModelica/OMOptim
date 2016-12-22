@@ -27,6 +27,7 @@
 #include "scriptparseromoptim.h"
 #include "Dialogs/HelpDlg.h"
 #include "ScriptTextDlg.h"
+#include "OpenModelica.h"
 
 namespace Ui
 {

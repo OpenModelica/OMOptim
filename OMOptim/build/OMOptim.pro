@@ -11,24 +11,16 @@ CONFIG += warn_off
 CONFIG(debug, debug|release){
     DEFINES+=DEBUG
     # ADD LINK TO OMOPTIM LIB
-    LIBS += -L../bin -lOMOptimd
+    LIBS += -L../bin -L../../OMOptimBasis/bin -lOMOptimd
 
     TARGET = $$join(TARGET,,,d)
 }else{
-    LIBS += -L../bin -lOMOptim
+    LIBS += -L../bin -L../../OMOptimBasis/bin -lOMOptim
 }
 
 
 
 win32 {
-    # Version numbering (independent from OpenModelica)
-    VERSION_HEADER = "../version.h"
-    versiontarget.target = $$VERSION_HEADER
-    versiontarget.commands = cmd /c UpdateRevision.bat
-    versiontarget.depends += FORCE
-    PRE_TARGETDEPS += $$VERSION_HEADER
-    QMAKE_EXTRA_TARGETS += versiontarget
-
     include(OMOptim.windowsconfig.in)
 }else {
     include(OMOptim.config)
@@ -55,6 +47,7 @@ INCLUDEPATH += . \
               ../Core/OpenModelica \
               ../Core/Problems \
               ../Core/Tools \
+              ../Core/Util \
               ../Core/Units \
               ../GUI/Dialogs \
               ../GUI/Plots \

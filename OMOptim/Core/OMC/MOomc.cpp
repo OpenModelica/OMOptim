@@ -56,9 +56,10 @@
 #include "MOThreads.h"
 #include "LowTools.h"
 #include "SleeperThread.h"
-#ifndef WIN32
 #include "omc_config.h"
-#endif
+#include "Utilities.h"
+#include "StringHandler.h"
+#include "ComponentInfo.h"
 
 class Project;
 
@@ -74,6 +75,8 @@ MOomc::MOomc(QString appName,bool start)
     // isStarted = false;
     omc_version_ = "(version)";
 
+    InfoSender::instance()->send( Info("OMC: attempt to start",ListInfo::OMCNORMAL2));
+
     if (start)
     {
         startServer();
@@ -86,7 +89,6 @@ MOomc::~MOomc()
     stopServer();
     //delete delegate_;
 }
-
 
 // threads managment
 void MOomc::addUsingThread(QThread* _thread,QString _threadName)
@@ -237,6 +239,7 @@ QStringList MOomc::getModels(QString parentClass)
     }
     return models;
 }
+
 void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,QStringList & compClasses,bool includeInherited)
 {
 
@@ -244,9 +247,7 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
     compClasses.clear();
 
     QString commandRes;
-
-    if(parentClass.contains("Modelica.Media.Interfaces")) //bug of open modelica
-        return;
+    QList<ComponentInfo*> componentInfoList;
 
     if(!parentClass.isEmpty())
     {
@@ -254,36 +255,25 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
         msg.sprintf("Reading components of class %s ",parentClass.toLatin1().data());
         InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
 
-        commandRes= evalCommand("getComponents(" + parentClass +")");
+        commandRes = evalCommand("getComponents(" + parentClass +", useQuotes = true)");
+        commandRes.trimmed();
 
-        if(commandRes.contains("error",Qt::CaseInsensitive))
-        {
-            if(!isPrimitive(parentClass))
-            {
-                InfoSender::instance()->send( Info(ListInfo::OMSGETCOMPERROR,parentClass));
-            }
-            return;
+        QStringList list = StringHandler::unparseArrays(commandRes);
+
+        for (int i = 0 ; i < list.size() ; i++) {
+          if (list.at(i) == "Error") {
+            continue;
+          }
+          ComponentInfo *pComponentInfo = new ComponentInfo();
+          pComponentInfo->parseComponentInfoString(list.at(i));
+          componentInfoList.append(pComponentInfo);
         }
-        commandRes.remove("{}");
-        commandRes.remove("{{");
-        commandRes.remove("}}");
 
-        QStringList list = commandRes.split("},{",QString::SkipEmptyParts);
-
-        QStringList strComponent;
-
-        for(int nc = 0; nc < list.size(); nc++)
+        for(int i = 0; i < componentInfoList.size(); i++)
         {
-            strComponent = list.at(nc).split(",");
-            if(strComponent.size()>1)
-            {
-                compNames.push_back(strComponent.at(1));
-                compClasses.push_back(strComponent.at(0));
-            }
-            else
-            {
-                //ERROR
-            }
+          ComponentInfo *pComponentInfo = componentInfoList.at(i);
+          compNames.push_back(pComponentInfo->mName);
+          compClasses.push_back(pComponentInfo->mClassName);
         }
     }
 
@@ -1039,7 +1029,7 @@ QString MOomc::evalCommand(QString command,QString &errorString)
         QString result;
 
         QString msg;
-        InfoSender::instance()->send( Info(msg.sprintf("OMC : %s",command.toLatin1().data()),ListInfo::OMCNORMAL2));
+        InfoSender::instance()->send( Info(msg.sprintf("OMC: %s",command.toLatin1().data()),ListInfo::OMCNORMAL2));
         nbCalls++;
 
         if (!mHasInitialized)
@@ -1441,9 +1431,9 @@ bool MOomc::startServer()
             InfoSender::instance()->send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
             return false;
         }
-        omcPath = QString( omhome ) + "bin/omc.exe";
+        omcPath = QString( omhome ) + "/bin/omc.exe";
 #else /* unix */
-        omcPath = (omhome ? QString(omhome)+"bin/omc" : QString(CONFIG_DEFAULT_OPENMODELICAHOME) + "/bin/omc");
+        omcPath = (omhome ? QString(omhome)+"/bin/omc" : QString(CONFIG_DEFAULT_OPENMODELICAHOME) + "/bin/omc");
 #endif
 
         // Check the IOR file created by omc.exe
@@ -1451,13 +1441,7 @@ bool MOomc::startServer()
         QString fileIdentifier;
         fileIdentifier = qApp->sessionId().append(QTime::currentTime().toString(tr("hh:mm:ss:zzz")).remove(":"));
 
-#ifdef WIN32 // Win32
-        objectRefFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.objid.").append(this->mName).append(fileIdentifier));
-#else // UNIX environment
-        char *user = getenv("USER");
-        if (!user) { user = "nobody"; }
-        objectRefFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(QString(user)).append(".objid.").append(this->mName).append(fileIdentifier));
-#endif
+        objectRefFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.objid.").append(this->mName).append(fileIdentifier));
 
         if (objectRefFile.exists())
             objectRefFile.remove();
@@ -1467,14 +1451,19 @@ bool MOomc::startServer()
 
         // Start the omc.exe
         QStringList parameters;
-        parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba") << QString("+corbaObjectReferenceFilePath=").append(QDir::tempPath());
+        QString str;
+        parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba") << QString("+corbaObjectReferenceFilePath=").append(Utilities::tempDirectory());
         QProcess *omcProcess = new QProcess();
         QFile omcOutputFile;
 #ifdef WIN32 // Win32
-        omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
+        omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
 #else // UNIX environment
-        omcOutputFile.setFileName(QString(QDir::tempPath()).append(QDir::separator()).append("openmodelica.").append(( QString(user))).append(".omc.output.").append(mName));
+        omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.").append(( QString(user))).append(".omc.output.").append(mName));
 #endif
+
+        InfoSender::instance()->send( Info(str.sprintf("OMC: running command: %s %s",
+            omcPath.toLatin1().data(),
+        parameters.join(" ").toLatin1().data()),ListInfo::OMCNORMAL2));
         omcProcess->setProcessChannelMode(QProcess::MergedChannels);
         omcProcess->setStandardOutputFile(omcOutputFile.fileName());
         omcProcess->start(omcPath, parameters);
@@ -1486,7 +1475,7 @@ bool MOomc::startServer()
             ticks++;
             if (ticks > 20)
             {
-                msg = "Unable to find " + OMCHelper::applicationName + " server, Object reference file " + mObjectRefFile + " not created.";
+                msg = "OMC: unable to find OMC server, Object reference file " + mObjectRefFile + " not created.";
                 throw std::runtime_error(msg.toStdString());
             }
         }
@@ -1538,9 +1527,7 @@ bool MOomc::startServer()
 void MOomc::initTempDirectory()
 {
     // set the temp directory.
-    QString tmpPath = evalCommand("getTempDirectoryPath()");
-    tmpPath += "/OpenModelica/OMOptim/";
-    tmpPath.remove("\"");
+    QString tmpPath = Utilities::tempDirectory();
     QString cdResult;
     if (!QDir().exists(tmpPath))
     {
