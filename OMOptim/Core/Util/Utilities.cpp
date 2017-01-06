@@ -99,9 +99,9 @@ QString& Utilities::getMinGWBinPath()
       mingw = omdev + QDir::separator() + mingw64msys2;
     }
 #elif defined(__MINGW32__)
-    if (QDir(om + QDir::separator() + mingw32msysw).exists())
+    if (QDir(om + QDir::separator() + mingw32msys2).exists())
     {
-      mingw = om + QDir::separator() + mingw32msysw;
+      mingw = om + QDir::separator() + mingw32msys2;
     }
     else if (QDir(omdev + QDir::separator() + mingw32msys2).exists())
     {
