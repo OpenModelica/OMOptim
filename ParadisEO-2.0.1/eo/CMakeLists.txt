@@ -53,7 +53,17 @@ ENDIF()
 
 INCLUDE(CMakeBackwardCompatibilityCXX)
 
+if (POLICY CMP0057)
+ cmake_policy(PUSH)
+ cmake_policy(SET CMP0057 NEW) # fix cmake 3.9 doxygen find script
+endif()
+
 INCLUDE(FindDoxygen)
+
+if (POLICY CMP0057)
+ cmake_policy(POP)
+endif()
+
 
 INCLUDE(FindGnuplot)
 
