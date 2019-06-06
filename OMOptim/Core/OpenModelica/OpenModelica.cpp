@@ -52,6 +52,7 @@ http://www-cep.ensmp.fr/english/
 
 // for .mat reading
 extern "C" {
+#include "omc_file.c"
 #include "read_matlab4.h"
 #include "read_matlab4.c"
 }
