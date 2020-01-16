@@ -54,7 +54,7 @@ class moeoRouletteSelect:public moeoSelectOne < MOEOT >
      * Ctor.
      * @param _tSize the number of individuals in the tournament (default: 2)	 
      */
-    moeoRouletteSelect (unsigned int _tSize = 2) : tSize (_tSize)
+    moeoRouletteSelect (double _tSize = 2) : tSize (_tSize)
     {
       // consistency check
       if (tSize < 2)
