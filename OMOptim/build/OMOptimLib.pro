@@ -7,18 +7,6 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     QT *= printsupport widgets webkitwidgets
 }
 
-CONFIG(debug, debug|release){
-    DEFINES+=DEBUG
-    TARGET = $$join(TARGET,,,d)
-    message("OMOptimLibDebug")
-}
-
-win32 {
-    include(OMOptim.windowsconfig.in)
-}else {
-    include(OMOptim.config)
-}
-
 DESTDIR = ../bin
 DEPENDPATH += ../bin
 
@@ -33,7 +21,6 @@ INCLUDEPATH += . \
               ../Core/Infos \
               ../Core/Modelica \
               ../Core/OMC \
-              ../Core/OpenModelica \
               ../Core/Problems \
               ../Core/Tools \
               ../Core/Util \
@@ -421,3 +408,14 @@ SOURCES += ../Core/OptObjective.cpp \
     ../Core/Util/Utilities.cpp
     #../Core/ModPlusTherExeCtrl.cpp
 
+CONFIG(debug, debug|release){
+    DEFINES+=DEBUG
+    TARGET = $$join(TARGET,,,d)
+    message("OMOptimLibDebug")
+}
+
+win32 {
+    include(OMOptim.windowsconfig.in)
+}else {
+    include(OMOptim.config)
+}

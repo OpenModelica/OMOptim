@@ -73,7 +73,7 @@
 #include "Widgets/WidgetProgress.h"
 #include "Widgets/WidgetSelectModModel.h"
 #include "AboutOMOptim.h"
-#include "OpenModelica.h"
+#include "OpenModelica/OpenModelica.h"
 #include "OMCases.h"
 #include "ProblemInterface.h"
 #include "MyTreeView.h"

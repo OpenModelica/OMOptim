@@ -5,7 +5,7 @@
 #include "MOParameter.h"
 #include "Variable.h"
 #include "ModItemsTree.h"
-#include "ModPlusOMCtrl.h"
+#include "OpenModelica/ModPlusOMCtrl.h"
 #include "PlugInterface.h"
 #include <QDebug>
 #include "LowTools.h"
