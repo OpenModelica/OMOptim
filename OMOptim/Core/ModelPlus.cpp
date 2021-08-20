@@ -74,7 +74,7 @@
 #include "Load.h"
 #include "Save.h"
 #include "ModPlusCtrl.h"
-//#include "ModPlusOMCtrl.h"
+//#include "OpenModelica/ModPlusOMCtrl.h"
 //#include "ModPlusDymolaCtrl.h"
 #include "MOParametersDlg.h"
 #include "Project.h"

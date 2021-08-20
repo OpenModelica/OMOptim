@@ -38,13 +38,13 @@ http://www-cep.ensmp.fr/english/
 
 
 */
-#include "ModPlusOMCtrl.h"
+#include "OpenModelica/ModPlusOMCtrl.h"
 #include "ModModelPlus.h"
 #include "ModModel.h"
 #include "MOParameter.h"
 #include "Project.h"
 #include "LowTools.h"
-#include "OpenModelicaParameters.h"
+#include "OpenModelica/OpenModelicaParameters.h"
 
 ModPlusOMCtrl::ModPlusOMCtrl(Project* project,ModModelPlus* modModelPlus,MOomc* moomc)
     :ModPlusCtrl(project,modModelPlus,moomc)

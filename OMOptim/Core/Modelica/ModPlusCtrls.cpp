@@ -1,6 +1,6 @@
 #include "ModPlusCtrls.h"
 
-#include "ModPlusOMCtrl.h"
+#include "OpenModelica/ModPlusOMCtrl.h"
 #include "ModPlusDymolaCtrl.h"
 #include "ModPlusOMExeCtrl.h"
 #include "ModPlusDymolaExeCtrl.h"

@@ -1,13 +1,13 @@
 
 
-#include "ModPlusOMCtrl.h"
+#include "OpenModelica/ModPlusOMCtrl.h"
 #include "ModPlusOMExeCtrl.h"
-#include "OpenModelica.h"
+#include "OpenModelica/OpenModelica.h"
 #include "LowTools.h"
 #include "Project.h"
 #include "ModItemsTree.h"
 #include "ExeModel.h"
-#include "OpenModelicaParameters.h"
+#include "OpenModelica/OpenModelicaParameters.h"
 #include "Utilities.h"
 
 ModPlusOMExeCtrl::ModPlusOMExeCtrl(Project* project,ModelPlus* model)

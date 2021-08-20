@@ -42,11 +42,11 @@ http://www-cep.ensmp.fr/english/
 
 
 
-#include "OpenModelica.h"
-#include "ModPlusOMCtrl.h"
+#include "OpenModelica/OpenModelica.h"
+#include "OpenModelica/ModPlusOMCtrl.h"
 #include "VariableType.h"
 #include "LowTools.h"
-#include "OpenModelicaParameters.h"
+#include "OpenModelica/OpenModelicaParameters.h"
 #include "omc_config.h"
 #include "Utilities.h"
 

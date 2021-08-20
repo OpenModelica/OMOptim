@@ -41,7 +41,7 @@
 
 #include "OMOptimSettings.h"
 #include "Dymola.h"
-#include "OpenModelica.h"
+#include "OpenModelica/OpenModelica.h"
 
 void OMOptimSettings::initialize()
 {
