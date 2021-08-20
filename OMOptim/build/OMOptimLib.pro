@@ -261,10 +261,7 @@ HEADERS += ../Core/OptObjective.h \
     ../Core/Problems/optimizationinterface.h \
     ../Core/Problems/onesimulationinterface.h \
     ../GUI/Widgets/WidgetResultInfos.h \
-    $${OPENMODELICAHOME}/include/omc/c/util/omc_file.h \
-    $${OPENMODELICAHOME}/include/omc/c/util/omc_file.c \
     $${OPENMODELICAHOME}/include/omc/c/util/read_matlab4.h \
-    $${OPENMODELICAHOME}/include/omc/c/util/read_matlab4.c \
     ../Core/OMC/OMCThreads.h \
     ../GUI/Tools/OMOptimGuiTools.h \
     ../GUI/Widgets/WidgetModelsList.h \

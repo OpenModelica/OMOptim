@@ -68,7 +68,7 @@ CONFIG(debug, debug|release){
 
 INCLUDEPATH += $${CORBAINC} \
                $$(OMBUILDDIR)/include/omplot/qwt \
-               $$(OMBUILDDIR)/include/omc/c/util \
+               $$(OMBUILDDIR)/include/omc/c/ \
                ../../ParadisEO-2.0.1/eo/src \
                ../../ParadisEO-2.0.1/eo/src/utils \
                ../../ParadisEO-2.0.1/moeo/src \
@@ -81,5 +81,6 @@ CONFIG(debug, debug|release){
     LIBS += $${CORBALIBS} -L$$(OMBUILDDIR)/lib/omc -lOMOptimBasis -lomqwt
 }
 
-LIBS += -L../../ParadisEO-2.0.1/build/eo/lib -leo -leoutils \
+LIBS += -lOpenModelicaRuntimeC -lomcgc \
+    -L../../ParadisEO-2.0.1/build/eo/lib -leo -leoutils \
     -L../../ParadisEO-2.0.1/build/moeo/lib -lmoeo
