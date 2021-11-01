@@ -68,8 +68,6 @@
 #include <omniORB4/CORBA.h>
 
 #include "util/omc_error.h"
-void (*omc_assert)(threadData_t*,FILE_INFO info,const char *msg,...) __attribute__((noreturn)) = omc_assert_function;
-void (*omc_assert_warning)(FILE_INFO info,const char *msg,...) = omc_assert_warning_function;
 
 CORBA::ORB_var orb;
 
