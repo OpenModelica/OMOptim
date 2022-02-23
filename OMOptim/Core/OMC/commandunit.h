@@ -86,7 +86,7 @@ namespace IAEX
             if( datafields_.contains( fieldID ))
                 return datafields_[fieldID];
             else
-                return QString::null;
+                return QString();
         }
         void addDataField( QString fieldID, QString data )
         {

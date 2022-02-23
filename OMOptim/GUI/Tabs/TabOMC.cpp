@@ -377,7 +377,7 @@ void TabOMC::returnPressed()
     currentCommand_ = -1;
 
     // remove any newline
-    commandText.simplified();
+    commandText = commandText.simplified();
 
     // if 'quit()' exit WinMosh
     if( commandText == "quit()" )

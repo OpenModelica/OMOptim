@@ -216,7 +216,7 @@ void WidgetMooPointsList::exportSelectedPoints()
         QString csvPath = QFileDialog::getSaveFileName(
                     this,
                     "MO - Export optimum points",
-                    QString::null,
+                    QString(),
                     "CSV file (*.csv)" );
 
         if(!csvPath.isNull())
