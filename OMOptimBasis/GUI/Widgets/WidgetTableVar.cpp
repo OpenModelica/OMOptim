@@ -119,7 +119,7 @@ void WidgetTableOptVar::exportCSV()
     QString csvPath = QFileDialog::getSaveFileName(
                 this,
                 "MO - Export variables",
-                QString::null,
+                QString(),
                 "CSV file (*.csv)" );
 
     if(!csvPath.isNull())
