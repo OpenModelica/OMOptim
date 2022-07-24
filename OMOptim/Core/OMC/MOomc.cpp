@@ -1425,25 +1425,29 @@ bool MOomc::startServer()
     {
         // evalMutex.unlock();
         QString msg;
-        const char *omhome = getenv("OPENMODELICAHOME");
         QString omcPath;
+        const char *omhome = getenv("OPENMODELICAHOME");
 #ifdef WIN32
         if (!omhome)
         {
             InfoSender::instance()->send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
             return false;
         }
-        omcPath = QString( omhome ) + "/bin/omc.exe";
+        omcPath = QString(omhome) + "/bin/omc.exe";
 #else /* unix */
-        omcPath = (omhome ? QString(omhome)+"/bin/omc" : QString(CONFIG_DEFAULT_OPENMODELICAHOME) + "/bin/omc");
+        omcPath = (omhome ? QString(omhome) : QString(CONFIG_DEFAULT_OPENMODELICAHOME)) + "/bin/omc";
+        const char *u = getenv("USER");
+        QString user = u ? u : "nobody";
 #endif
 
         // Check the IOR file created by omc.exe
+        QString fileIdentifier = qApp->sessionId().append(QTime::currentTime().toString(tr("hh:mm:ss:zzz")).remove(":"));
         QFile objectRefFile;
-        QString fileIdentifier;
-        fileIdentifier = qApp->sessionId().append(QTime::currentTime().toString(tr("hh:mm:ss:zzz")).remove(":"));
-
+#ifdef WIN32 // Win32
         objectRefFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.objid.").append(this->mName).append(fileIdentifier));
+#else // UNIX environment
+        objectRefFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.").append(QString(user)).append(".objid.").append(this->mName).append(fileIdentifier));
+#endif
 
         if (objectRefFile.exists())
             objectRefFile.remove();
@@ -1452,17 +1456,15 @@ bool MOomc::startServer()
 
 
         // Start the omc.exe
-        QStringList parameters;
         QString str;
+        QStringList parameters;
         parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba") << QString("+corbaObjectReferenceFilePath=").append(Utilities::tempDirectory());
         QProcess *omcProcess = new QProcess();
         QFile omcOutputFile;
 #ifdef WIN32 // Win32
         omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
 #else // UNIX environment
-        char *u = getenv("USER");
-        QString user = u ? u : "nobody";
-        omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.").append(( QString(user))).append(".omc.output.").append(mName));
+        omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.").append(QString(user)).append(".omc.output.").append(mName));
 #endif
 
         InfoSender::instance()->send( Info(str.sprintf("OMC: running command: %s %s",
