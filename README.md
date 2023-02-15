@@ -3,7 +3,7 @@ OMOptim is an optimization software for Modelica models.
 
 ## Dependencies
 
-  - [OpenModelica Compiler](../OMCompiler), compiled with CORBA support
+  - [OpenModelica](https://github.com/OpenModelica/OpenModelica), compiled with CORBA support
   - g++ (clang++ does not work)
   - CORBA implementation (omniORB, or possibly MICO)
 
@@ -11,8 +11,8 @@ OMOptim is an optimization software for Modelica models.
 
 Follow the instructions matching your OS:
 
-  - [OMCompiler/README.Linux.md](../OMCompiler/README.Linux.md)
-  - [OMCompiler/README.Windows.md](../OMCompiler/README.Windows.md)
+  - [OMCompiler/README.Linux.md](https://github.com/OpenModelica/OpenModelica/blob/master/OMCompiler/README.Linux.md)
+  - [OMCompiler/README.Windows.md](https://github.com/OpenModelica/OpenModelica/blob/master/OMCompiler/README.Windows.md)
 
 ### Windows MSYS Makefiles
 
