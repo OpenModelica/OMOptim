@@ -2,9 +2,7 @@ TEMPLATE = app
 TARGET = OMOptim
 
 QT +=  core gui svg xml
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT *= printsupport widgets webkitwidgets
-}
+QT *= printsupport widgets
 
 CONFIG += warn_off
 

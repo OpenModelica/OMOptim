@@ -3,9 +3,7 @@ TARGET = OMOptim
 CONFIG += staticlib warn_off
 
 QT +=  core gui svg xml
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT *= printsupport widgets webkitwidgets
-}
+QT *= printsupport widgets
 
 DESTDIR = ../bin
 DEPENDPATH += ../bin
