@@ -4,10 +4,7 @@ CONFIG += staticlib warn_off
 
 include(../vars.pri)
 
-QT +=  core gui xml
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT *= printsupport widgets webkitwidgets
-}
+QT += core gui xml printsupport widgets
 
 CONFIG(debug, debug|release){
     LIBS += -L$$(OMBUILDDIR)/lib/omc -lomqwtd
