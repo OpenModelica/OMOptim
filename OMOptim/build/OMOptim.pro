@@ -1,8 +1,7 @@
 TEMPLATE = app
 TARGET = OMOptim
 
-QT +=  core gui svg xml
-QT *= printsupport widgets
+QT += core gui svg xml printsupport widgets
 
 CONFIG += warn_off
 
