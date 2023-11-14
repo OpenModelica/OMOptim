@@ -2,8 +2,7 @@ TEMPLATE = lib
 TARGET = OMOptim
 CONFIG += staticlib warn_off
 
-QT +=  core gui svg xml
-QT *= printsupport widgets
+QT += core gui svg xml printsupport widgets
 
 DESTDIR = ../bin
 DEPENDPATH += ../bin
