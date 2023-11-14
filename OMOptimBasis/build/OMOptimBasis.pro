@@ -4,8 +4,7 @@ CONFIG += staticlib warn_off
 
 include(../vars.pri)
 
-QT +=  core gui xml
-QT *= printsupport widgets
+QT += core gui xml printsupport widgets
 
 CONFIG(debug, debug|release){
     LIBS += -L$$(OMBUILDDIR)/lib/omc -lomqwtd
