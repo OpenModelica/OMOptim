@@ -22,11 +22,7 @@ install: build
 	cp -p $(DEST)/$(LIB)$(LIBEXE) $(builddir_lib)/omc
 
 omc_communication.cpp: $(builddir_share)/omc/omc_communication.idl
-ifeq (MINGW32,$(findstring MINGW32,$(shell uname)))
-	$(OMDEV)/lib/omniORB-4.2.0-mingw32/bin/x86_win32/omniidl -T -bcxx -Wbh=.h -Wbs=.cpp -p../../lib/python -Wbdebug $<
-else
 	$(OMDEV)/lib/omniORB-4.2.0-mingw64/bin/x86_win32/omniidl -T -bcxx -Wbh=.h -Wbs=.cpp -p../../lib/python -Wbdebug $<
-endif
 	cp -puf omc_communication.* ../Core/OMC/
 omc_communication.h: omc_communication.cpp
 
