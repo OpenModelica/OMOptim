@@ -55,14 +55,14 @@ Variable *Variables::findVariable(QString model, QString shortVarName)
         return NULL;
 }
 
-int Variables::findVariable(QString model, QRegExp & shortVarName, int from)
+int Variables::findVariable(QString model, QRegularExpression &shortVarName, int from)
 {
 
     int iVar=from;
     bool found = 0;
     while((!found) && (iVar<this->size()))
     {
-        found = (shortVarName.exactMatch(this->at(iVar)->name(Variable::SHORT)) && (this->at(iVar)->model()==model));
+        found = (shortVarName.match(this->at(iVar)->name(Variable::SHORT)).hasMatch() && (this->at(iVar)->model()==model));
         if(!found)
             iVar++;
     }

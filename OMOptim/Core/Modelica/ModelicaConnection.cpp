@@ -138,7 +138,7 @@ bool ModelicaConnection::setFieldValue(int ifield,QVariant value_)
             _name=value_.toString();
             break;
         case A :
-            _a=value_.toDouble();
+            _a = QString::number(value_.toDouble());
             break;
         case B :
             _b = value_.toString();

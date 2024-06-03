@@ -5,6 +5,9 @@ CONFIG += staticlib warn_off
 include(../vars.pri)
 
 QT += core gui xml printsupport widgets
+equals(QT_MAJOR_VERSION, 6) {
+  QT += core5compat
+}
 
 CONFIG(debug, debug|release){
     LIBS += -L$$(OMBUILDDIR)/lib/omc -lomqwtd

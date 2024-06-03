@@ -41,6 +41,7 @@
 #include "Info.h"
 #include "ListInfo.h"
 #include <QRegExp>
+#include <QRegularExpression>
 
 using  namespace ListInfo;
 
@@ -119,7 +120,7 @@ Info::Info(ListInfo::InfoNum infoNum_, QString strSupp)
     else
     {
         infoMsg.clear();
-        infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp.toLatin1().data());
+        infoMsg.asprintf(strInfos[i].msg.toLatin1().data(),strSupp.toLatin1().data());
         infoType=strInfos[i].type;
     }
     }
@@ -156,7 +157,7 @@ Info::Info(ListInfo::InfoNum infoNum_, QString strSupp1, QString strSupp2)
     else
     {
         infoMsg.clear();
-        infoMsg.sprintf(strInfos[i].msg.toLatin1().data(),strSupp1.toLatin1().data(),strSupp2.toLatin1().data());
+        infoMsg.asprintf(strInfos[i].msg.toLatin1().data(),strSupp1.toLatin1().data(),strSupp2.toLatin1().data());
         infoType=strInfos[i].type;
     }
     }
@@ -170,7 +171,7 @@ Info::Info(ListInfo::InfoNum infoNum_, QString strSupp1, QString strSupp2)
 
 Info::Info(QString _msg, ListInfo::InfoType _msgType)
 {
-    _msg.remove(QRegExp("\\n$"));
+    _msg.remove(QRegularExpression("\\n$"));
     infoMsg = _msg;
     infoType = _msgType;
 }

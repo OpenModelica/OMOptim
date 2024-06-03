@@ -101,7 +101,7 @@ private:
     QTimer * _timer;
     QList<double> _lastSpeeds;
     int _timeLeft;
-    QTime _lastTime;
+    QElapsedTimer _lastTime;
     int _nbSpeeds;
     int _period;
 

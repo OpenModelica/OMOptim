@@ -162,7 +162,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
         if(iCorrRecompVar<0)
         {
             QString msg;
-            msg.sprintf("Unable to find variable %s for filling result",curOptVar->name().utf16());
+            msg.asprintf("Unable to find variable %s for filling result",curOptVar->name().utf16());
             InfoSender::instance()->debug(msg);
         }
         else
@@ -242,7 +242,7 @@ OptimResult* EAStdResult<EOT>::buildOptimResult(Project* project,Optimization* p
         if(iCorrRecompVar<0)
         {
             QString msg;
-            msg.sprintf("Unable to find objective %s in in recomputed variables",curObjResult->name().utf16());
+            msg.asprintf("Unable to find objective %s in in recomputed variables",curObjResult->name().utf16());
             InfoSender::instance()->debug(msg);
         }
         else

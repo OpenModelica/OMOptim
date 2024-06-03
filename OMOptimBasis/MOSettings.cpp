@@ -67,7 +67,7 @@ MOSettings* MOSettings::instance()
         else
         {
             _instance = new MOSettings();
-            qApp->setProperty("MOSettings",qVariantFromValue(qobject_cast<QObject*>(_instance)));
+            qApp->setProperty("MOSettings", QVariant::fromValue(qobject_cast<QObject*>(_instance)));
         }
     }
     return _instance;

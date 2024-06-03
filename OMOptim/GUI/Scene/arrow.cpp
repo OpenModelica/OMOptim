@@ -148,8 +148,11 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     for (int i = 1; i < endPolygon.count(); ++i) {
     p2 = endPolygon.at(i) + myEndItem->pos();
     polyLine = QLineF(p1, p2);
-    QLineF::IntersectType intersectType =
-        polyLine.intersect(centerLine, &intersectPoint);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QLineF::IntersectType intersectType = polyLine.intersects(centerLine, &intersectPoint);
+#else // #if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QLineF::IntersectType intersectType = polyLine.intersect(centerLine, &intersectPoint);
+#endif // #if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     if (intersectType == QLineF::BoundedIntersection)
         break;
         p1 = p2;

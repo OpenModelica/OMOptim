@@ -76,7 +76,11 @@ _description(description),_defaultValue(defaultValue),_type(type),_min(minValue)
 
 AlgoParameter::AlgoParameter(QString savedString)
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList fields = savedString.split(" ",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     QStringList fields = savedString.split(" ",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     if(fields.size()!=nbFields)
     {
         emit sendInfo(Info(ListInfo::PROBLEMREADINGLINE,savedString));

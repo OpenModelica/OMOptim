@@ -175,7 +175,7 @@ MOPlot::MOPlot()
 
     //zoom
      _zoomer = new QwtPlotZoomer(canvas());
-     _zoomer->setMousePattern(QwtEventPattern::MouseSelect1, Qt::MidButton);
+     _zoomer->setMousePattern(QwtEventPattern::MouseSelect1, Qt::MiddleButton);
      _zoomer->setMousePattern(QwtEventPattern::MouseSelect2, Qt::NoButton);
      _zoomer->setMousePattern(QwtEventPattern::MouseSelect3, Qt::NoButton);
 

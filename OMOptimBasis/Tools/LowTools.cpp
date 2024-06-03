@@ -256,7 +256,7 @@ QFileInfoList LowTools::findFiles(QDir folder, QString extension)
         result.push_back(QFileInfo(folder,more.at(i)));
 
     // reg exp in next line excludes . and .. dirs (and .* actually)
-    more = folder.entryList( QDir::Dirs ).filter(QRegExp( "[^.]" ) );
+    more = folder.entryList( QDir::Dirs ).filter(QRegularExpression( "[^.]" ) );
     QString subDirPath;
     for ( int i=0;i<more.size();i++)
     {
@@ -347,11 +347,11 @@ void LowTools::removeDuplicates(QFileInfoList &list)
 void LowTools::removeWhiteSpaceStrings(QStringList &list)
 {
     // remove empty strings
-    int iEmpty=list.indexOf(QRegExp("\\s*"));
+    int iEmpty=list.indexOf(QRegularExpression("\\s*"));
     while(iEmpty>-1)
     {
         list.removeAt(iEmpty);
-        iEmpty=list.indexOf(QRegExp("\\s*"));
+        iEmpty=list.indexOf(QRegularExpression("\\s*"));
     }
 }
 

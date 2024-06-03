@@ -3,6 +3,9 @@ TARGET = OMOptim
 CONFIG += staticlib warn_off
 
 QT += core gui svg xml printsupport widgets
+equals(QT_MAJOR_VERSION, 6) {
+  QT += core5compat
+}
 
 DESTDIR = ../bin
 DEPENDPATH += ../bin

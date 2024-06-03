@@ -586,7 +586,7 @@ void VariableResult::setFinalValue(int iScan,int iPoint,double value,bool comput
 //    if(iScan>=_finalValues.size())
 //    {
 //        QString msg;
-//        msg.sprintf("appdendFinalValue with iScan > finalValues.nbScans (variable : %s",name().utf16());
+//        msg.asprintf("appdendFinalValue with iScan > finalValues.nbScans (variable : %s",name().utf16());
 //        InfoSender::instance()->send(Info(msg,ListInfo::INFODEBUG));
 //    }
 
@@ -677,7 +677,11 @@ QDomElement VariableResult::toXmlData(QDomDocument & doc)
 
 void VariableResult::updateValuesFromCsv(QString text)
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList  scanLines = text.split("\n",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     QStringList  scanLines = text.split("\n",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     QStringList curLine;
     int iPoint=0;
     bool ok;
@@ -685,8 +689,11 @@ void VariableResult::updateValuesFromCsv(QString text)
 
     for (int iScan = 0; iScan<scanLines.size(); iScan++)
     {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        curLine = scanLines[iScan].split("\t",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
         curLine = scanLines[iScan].split("\t",QString::SkipEmptyParts);
-
+#endif // QT_VERSION_CHECK
         for (int iCol = 0; iCol < curLine.size(); iCol++)
         {
             value = curLine[iCol].toDouble(&ok);
@@ -785,13 +792,13 @@ bool OptVariable::check(QString &error)
     error.clear();
     if(_optMin>=_optMax)
     {
-        error.sprintf("Opt min value >= max value (%f>%f)",_optMin,_optMax);
+        error.asprintf("Opt min value >= max value (%f>%f)",_optMin,_optMax);
         ok=false;
     }
 
     //if(type!=FIXED)
     //{
-    //    error.sprintf("Variable is not considered as a model input. Its value probably won't affect simulation");
+    //    error.asprintf("Variable is not considered as a model input. Its value probably won't affect simulation");
     //    ok = false;
     //}
 
@@ -1077,13 +1084,13 @@ bool ScannedVariable::check(QString &error)
 
     if(_scanMin>_scanMax)
     {
-        error.sprintf("Scan min value > max value (%f>%f)",_scanMin,_scanMax);
+        error.asprintf("Scan min value > max value (%f>%f)",_scanMin,_scanMax);
         return false;
     }
 
     //if(type!=FIXED)
     //{
-    //    error.sprintf("Variable is not considered as a model input. Its value probably won't affect simulation");
+    //    error.asprintf("Variable is not considered as a model input. Its value probably won't affect simulation");
     //    ok = false;
     //}
     return ok;

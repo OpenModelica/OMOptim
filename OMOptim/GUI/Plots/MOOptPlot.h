@@ -191,7 +191,7 @@ MOOptPlot::MOOptPlot()
 
     // Zommer
     _zoomer = new QwtPlotZoomer(canvas());
-    _zoomer->setMousePattern(QwtEventPattern::MouseSelect1, Qt::MidButton);
+    _zoomer->setMousePattern(QwtEventPattern::MouseSelect1, Qt::MiddleButton);
     _zoomer->setMousePattern(QwtEventPattern::MouseSelect2, Qt::NoButton);
     _zoomer->setMousePattern(QwtEventPattern::MouseSelect3, Qt::NoButton);
 
@@ -365,7 +365,7 @@ void MOOptPlot::refresh(int iCurve = 0)
             else
             {
                 QString msg;
-                msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
+                msg.asprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
                             iPoint,std::min(_xData.size(),_yData.size()));
                 InfoSender::instance()->debug(msg);
             }
@@ -398,7 +398,7 @@ void MOOptPlot::refresh(int iCurve = 0)
                 else
                 {
                     QString msg;
-                    msg.sprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
+                    msg.asprintf("MOOptPlot : tried to reach point number %d but data.length = %d",
                                 iPoint,std::min(_xData.size(),_yData.size()));
                     InfoSender::instance()->debug(msg);
                 }
@@ -430,9 +430,10 @@ void MOOptPlot::setXYVar(OptVarObjResultX* varX,OptVarObjResultY* varY)
     _xVarName = varX->name();
     _yVarName = varY->name();
 
-    _xData = varX->finalValuesAtScan(0).toStdVector();
-    _yData = varY->finalValuesAtScan(0).toStdVector();
-
+    std::vector<double> x(varX->finalValuesAtScan(0).constBegin(), varX->finalValuesAtScan(0).constEnd());
+    _xData = x;
+    std::vector<double> y(varY->finalValuesAtScan(0).constBegin(), varY->finalValuesAtScan(0).constEnd());
+    _yData = y;
 
     // check that selected and shown points index are compatible with new values
     int index=0;

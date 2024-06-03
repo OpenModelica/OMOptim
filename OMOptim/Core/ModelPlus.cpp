@@ -173,7 +173,7 @@ ModModel* ModelPlus::modModel()
 
 QFileInfo ModelPlus::mmoFilePath()
 {
-    return _project->folder().absoluteFilePath(_relMmoFilePath);
+    return QFileInfo(_project->folder().absoluteFilePath(_relMmoFilePath));
 }
 
 

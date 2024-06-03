@@ -53,7 +53,7 @@ WidgetProjectInfos::WidgetProjectInfos(Project *project,QList<QAction*> recentPr
 
     _myTextBrowser = new MyTextLog(this);
     QPalette p = _myTextBrowser->palette();
-    p.setColor(QPalette::Base,this->palette().color(QPalette::Background));
+    p.setColor(QPalette::Base,this->palette().color(QPalette::Window));
     _myTextBrowser->setPalette(p);
 
     _ui->widgetInfos->layout()->addWidget(_myTextBrowser);

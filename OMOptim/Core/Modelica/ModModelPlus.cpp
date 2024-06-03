@@ -73,7 +73,12 @@ ModModelPlus::ModModelPlus(Project *project, const QDomElement &domRoot)
 {
     // .mo dependencies
     QDomElement cMoDeps = domRoot.firstChildElement("moDependencies");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList strMoDeps  = cMoDeps.attribute("list").split(";",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     QStringList strMoDeps  = cMoDeps.attribute("list").split(";",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
+
     for (int nof=0;nof<strMoDeps.size();nof++)
     {
         this->addMoDependency(QFileInfo(strMoDeps.at(nof)));
@@ -403,7 +408,7 @@ void ModModelPlus::openNeededFilesDlg()
 //    if(!orgClass)
 //    {
 //        QString msg;
-//        msg.sprintf("Could not apply component substitution : component %s not found",
+//        msg.asprintf("Could not apply component substitution : component %s not found",
 //                    blockSub->_orgComponent.utf16());
 //        InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
 //        return false;

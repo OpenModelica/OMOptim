@@ -185,7 +185,7 @@ bool ModPlusOMCtrl::compile(const QFileInfoList & moDeps, const QFileInfoList fi
     // compile
 
     QString logFile = _ModelPlus->mmoFolder().absolutePath()+_ModelPlus->modelName()+".log";
-    bool success = OpenModelica::compile(_moomc,_modModelPlus->moFilePath(),_ModelPlus->modelName(),_ModelPlus->mmoFolder(),
+    bool success = OpenModelica::compile(_moomc,QFileInfo(_modModelPlus->moFilePath()),_ModelPlus->modelName(),_ModelPlus->mmoFolder(),
                                          moDeps,QFileInfoList() << _ModelPlus->neededFiles() << filesToCopy,
                                          _ModelPlus->neededFolders());
 
@@ -262,10 +262,10 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QFileInfoList allFilesToCopy;
     QDir mmoDir = QDir(_ModelPlus->mmoFolder());
-    allFilesToCopy << mmoDir.filePath(_exeFile);
+    allFilesToCopy << QFileInfo(mmoDir.filePath(_exeFile));
     allFilesToCopy.append(filesToCopy);
     bool xml=mmoDir.exists(_initFileXml);
-    allFilesToCopy << mmoDir.filePath(_initFileXml);
+    allFilesToCopy << QFileInfo(mmoDir.filePath(_initFileXml));
 
     InfoSender::instance()->debug("Start copying in temp directory : "+tempFolder.absolutePath());
 

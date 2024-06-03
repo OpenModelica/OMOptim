@@ -156,13 +156,13 @@ bool OptObjective::check(QString &error)
     error.clear();
     if(_min>=_max)
     {
-        error.sprintf("Objective min value >= max value (%f >= %f)",_min,_max);
+        error.asprintf("Objective min value >= max value (%f >= %f)",_min,_max);
         ok=false;
     }
 
     //if(type==FIXED)
     //{
-    //  error.sprintf("Objective value is considered as a model input. Its value probably won't be affected by variables modification");
+    //  error.asprintf("Objective value is considered as a model input. Its value probably won't be affected by variables modification");
     //  ok = false;
     //}
 

@@ -91,10 +91,10 @@ void WidgetFilesList::addFiles  (QStringList list)
 {
     for(int i=0;i<list.size();i++)
     {
-        if(!_filesList.contains(list.at(i)))
+        if(!_filesList.contains(QFileInfo(list.at(i))))
         {
             _ui->filesList->addItem(list.at(i));
-            _filesList.push_back(list.at(i));
+            _filesList.push_back(QFileInfo(list.at(i)));
         }
     }
 }
@@ -114,7 +114,7 @@ void WidgetFilesList::removeFiles()
         int iFile;
         for(int i=0;i<itemsList.size();i++)
     {
-                iFile = _filesList.indexOf(itemsList.at(i)->text());
+                iFile = _filesList.indexOf(QFileInfo(itemsList.at(i)->text()));
                 if(iFile>-1)
                 {
                     _filesList.removeAt(iFile);

@@ -88,8 +88,8 @@ public:
     QList<ModItem*> findInDescendantsByInheritedClass(QString _className,ModItem* parent = NULL);
     QList<ModItem*> findCompOfClassInDescendants(QString _className,ModItem* parent = NULL);
     QList<ModItem*> findCompOfInheritingClassInDescendants(QString _className,ModItem* parent = NULL);
-    void findCompOfInheritingClassesInDescendants(QStringList classNames, ModItem *parent, QMultiMap<QString, ModItem *> &result, QRegExp classFilter = QRegExp());
-    void  findCompOfInheritingClassesInDescendants2(const QStringList & classNames,QString parentName,QString parentClass,QMultiMap<QString,QString> &result,QRegExp classFilter = QRegExp());
+    void findCompOfInheritingClassesInDescendants(QStringList classNames, ModItem *parent, QMultiMap<QString, ModItem *> &result, QRegularExpression classFilter = QRegularExpression());
+    void findCompOfInheritingClassesInDescendants2(const QStringList & classNames,QString parentName,QString parentClass,QMultiMap<QString,QString> &result,QRegularExpression classFilter = QRegularExpression());
 
     ModModel* modelOf(ModItem* item);
     ModItem* modelOf(QString itemName);

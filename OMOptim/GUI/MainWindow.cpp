@@ -312,19 +312,19 @@ void MainWindow::displayInfo(Info i)
 void MainWindow::onStartedOMCThread(QString _name)
 {
     QString msg;
-    msg.sprintf("%s started",_name.toLatin1().data());
+    msg.asprintf("%s started",_name.toLatin1().data());
     _ui->textOMC->append(msg);
 }
 void MainWindow::onFinishedOMCThread(QString _name)
 {
     QString msg;
-    msg.sprintf("%s finished",_name.utf16());
+    msg.asprintf("%s finished",_name.utf16());
     _ui->textOMC->append(msg);
 }
 void MainWindow::onTerminatingOMCThread(QString _name)
 {
     QString msg;
-    msg.sprintf("%s terminated",_name.utf16());
+    msg.asprintf("%s terminated",_name.utf16());
     _ui->textOMC->append(msg);
 }
 
@@ -697,7 +697,7 @@ void MainWindow::onAddedProblem(Problem* newProblem)
     // Creating problem tab
     ProblemInterface* itf = (_project->problemsInterfaces()).interfaceOf(newProblem);
 
-    QTime elapsed;
+    QElapsedTimer elapsed;
     if(itf)
     {
         elapsed.restart();
@@ -712,7 +712,7 @@ void MainWindow::onAddedResult(Result* newResult)
     // Creating problem tab
     ProblemInterface* itf = _project->problemsInterfaces().interfaceOf(newResult);
 
-    QTime elapsed;
+    QElapsedTimer elapsed;
     if(itf)
     {
         elapsed.restart();
@@ -740,7 +740,7 @@ void MainWindow::removeResult(Result* result)
     QMessageBox msgBox;
     msgBox.setText("Removing solved problem cannot be undone.");
     QString msg;
-    msg.sprintf("Are you sure you want to remove %s ?",result->name().toLatin1().data());
+    msg.asprintf("Are you sure you want to remove %s ?",result->name().toLatin1().data());
     msgBox.setInformativeText(msg);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Yes);
@@ -776,7 +776,7 @@ void MainWindow::removeProblem(Problem* problem)
     QMessageBox msgBox;
     msgBox.setText("Removing problem cannot be undone.");
     QString msg;
-    msg.sprintf("Are you sure you want to remove %s ?",problem->name().toLatin1().data());
+    msg.asprintf("Are you sure you want to remove %s ?",problem->name().toLatin1().data());
     msgBox.setInformativeText(msg);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Yes);

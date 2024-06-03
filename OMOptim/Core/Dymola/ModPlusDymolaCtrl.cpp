@@ -230,8 +230,8 @@ bool ModPlusDymolaCtrl::compile(const QFileInfoList & moDependencies, const QFil
     moDeps.removeAll(_project->moomc()->getFileOfClass("Modelica"));
 
     // compile
-    bool success = Dymola::compile(_modModelPlus->moFilePath(),_modModelPlus->modelName(),
-                                    _ModelPlus->mmoFolder(),logFilePath,moDeps,
+    bool success = Dymola::compile(QFileInfo(_modModelPlus->moFilePath()),_modModelPlus->modelName(),
+                                   _ModelPlus->mmoFolder(),QFileInfo(logFilePath),moDeps,
                                    QFileInfoList() << _modModelPlus->neededFiles() << filesToCopy);
 
     // Inform
@@ -315,7 +315,7 @@ bool ModPlusDymolaCtrl::simulate(QDir tempDir,MOVector<Variable> * updatedVars,M
     /// copy files in temp dir (\todo : optimize with a config.updateTempDir in case of several consecutive launches)
     QFileInfoList allFilesToCopy;
     QDir mmoDir = QDir(_ModelPlus->mmoFolder());
-    allFilesToCopy << mmoDir.filePath("dsin.txt") << mmoDir.filePath("dymosim.exe");
+    allFilesToCopy << QFileInfo(mmoDir.filePath("dsin.txt")) << QFileInfo(mmoDir.filePath("dymosim.exe"));
     allFilesToCopy.append(filesToCopy);
 
     bool copyOk = LowTools::copyFilesInFolder(allFilesToCopy,tempDir);
@@ -395,7 +395,7 @@ bool ModPlusDymolaCtrl::createDsin(QFileInfoList moDeps,QFileInfoList filesToCop
 
     // copy dependencies
 
-    QFileInfo moFilePath = _modModelPlus->moFilePath();
+    QFileInfo moFilePath(_modModelPlus->moFilePath());
 
     QStringList depFileNames = _moomc->getDependenciesPaths(moFilePath.absoluteFilePath(),false);
     for(int i=0;i<depFileNames.size();i++)
@@ -418,7 +418,7 @@ bool ModPlusDymolaCtrl::createDsin(QFileInfoList moDeps,QFileInfoList filesToCop
     }
 
     // compile
-    bool success = Dymola::createDsin(_modModelPlus->moFilePath(),_ModelPlus->modelName(),_ModelPlus->mmoFolder(),
+    bool success = Dymola::createDsin(QFileInfo(_modModelPlus->moFilePath()),_ModelPlus->modelName(),_ModelPlus->mmoFolder(),
                                       moDeps,QFileInfoList() << _ModelPlus->neededFiles() << filesToCopy);
 
 

@@ -301,7 +301,11 @@ Optimization::Optimization(QDomElement domProblem,Project* project,bool &ok)
     // Files to copy
     QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
     QString text = cFilesToCopy.text();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList strList = text.split("\n",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     QStringList strList = text.split("\n",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     for(int i=0;i<strList.size();i++)
         this->_filesToCopy.push_back(QFileInfo(strList.at(i)));
 
@@ -357,7 +361,7 @@ bool Optimization::checkBeforeComp(QString & error)
         if(!_scannedVariables->at(i)->check(curError))
         {
             ok = false;
-            curError.sprintf("Error concerning scan variable %s : %s",
+            curError.asprintf("Error concerning scan variable %s : %s",
                              _scannedVariables->at(i)->name().toLatin1().data(),
                              curError.toLatin1().data());
             error += curError + "\n";
@@ -371,7 +375,7 @@ bool Optimization::checkBeforeComp(QString & error)
         if(!_optimizedVariables->at(i)->check(curError))
         {
             ok = false;
-            curError.sprintf("Error concerning optimized variable %s : %s",
+            curError.asprintf("Error concerning optimized variable %s : %s",
                              _optimizedVariables->at(i)->name().toLatin1().data(),
                              curError.toLatin1().data());
             error += curError + "\n";
@@ -385,7 +389,7 @@ bool Optimization::checkBeforeComp(QString & error)
         if(!_objectives->at(i)->check(curError))
         {
             ok = false;
-            curError.sprintf("Error concerning objective %s : %s",
+            curError.asprintf("Error concerning objective %s : %s",
                              _objectives->at(i)->name().toLatin1().data(),
                              curError.toLatin1().data());
             error += curError + "\n";
@@ -428,7 +432,7 @@ bool Optimization::checkBeforeComp(QString & error)
             if(_objectives->at(i)->scanFunction()==OptObjective::NONE)
             {
                 ok = false;
-                curError.sprintf("Objective %s should have a scanFunction defined",
+                curError.asprintf("Objective %s should have a scanFunction defined",
                                  _objectives->at(i)->name().toLatin1().data());
                 error += curError + "\n";
                 nbErrors++;

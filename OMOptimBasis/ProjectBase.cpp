@@ -818,10 +818,10 @@ QFileInfoList ProjectBase::casesFiles()
     QFileInfoList result;
 
     for(int i=0;i<_problems->size();i++)
-        result.push_back(_problems->at(i)->entireSavePath());
+        result.push_back(QFileInfo(_problems->at(i)->entireSavePath()));
 
     for(int i=0;i<_results->size();i++)
-        result.push_back(_results->at(i)->entireSavePath());
+        result.push_back(QFileInfo(_results->at(i)->entireSavePath()));
 
     return result;
 }

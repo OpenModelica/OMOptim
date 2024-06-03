@@ -90,8 +90,13 @@ void MOOptVector::setFromCsv(QString text)
 
 void MOOptVector::updateFromCsv(QString text)
 {
-    QStringList lines = text.split("\n",QString::KeepEmptyParts);
-    QStringList firstLine = lines[0].split("\t",QString::SkipEmptyParts);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  QStringList lines = text.split("\n",Qt::KeepEmptyParts);
+  QStringList firstLine = lines[0].split("\t",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
+  QStringList lines = text.split("\n",QString::KeepEmptyParts);
+  QStringList firstLine = lines[0].split("\t",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     int nbCols = firstLine.size();
     QStringList curLine;
     int iPoint=0;
@@ -100,7 +105,7 @@ void MOOptVector::updateFromCsv(QString text)
     QString colName;
     QString modelName;
     QString varName;
-    QRegExp varExp("^(\\S*)#(\\S*)");
+    QRegularExpression varExp("^(\\S*)#(\\S*)");
     QList<int> indexes;
     VariableResult* curVar;
 
@@ -108,10 +113,11 @@ void MOOptVector::updateFromCsv(QString text)
     {
         // get var and model names
         colName = firstLine.at(i);
-        if(colName.indexOf(varExp)==0)
+        QRegularExpressionMatch varExpMatch;
+        if(colName.indexOf(varExp, 0, &varExpMatch)==0)
         {
-            modelName =  varExp.capturedTexts().at(1);
-            varName = varExp.capturedTexts().at(2);
+            modelName = varExpMatch.capturedTexts().at(1);
+            varName = varExpMatch.capturedTexts().at(2);
         }
         else
         {
@@ -136,7 +142,11 @@ void MOOptVector::updateFromCsv(QString text)
     int iScan=0;
     for (int iLine = 1; iLine<lines.size(); iLine++)
     {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        curLine = lines[iLine].split("\t",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
         curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
         if(curLine.isEmpty())
         {
             // start a new scan
@@ -164,8 +174,13 @@ void MOOptVector::updateFromCsv(QString text, int iPoint)
     //Clear variables at iPoint
     this->clearAtiPoint(iPoint);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList lines = text.split("\n",Qt::KeepEmptyParts);
+    QStringList firstLine = lines[0].split("\t",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     QStringList lines = text.split("\n",QString::KeepEmptyParts);
     QStringList firstLine = lines[0].split("\t",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     int nbCols = firstLine.size();
     QStringList curLine;
 
@@ -173,7 +188,7 @@ void MOOptVector::updateFromCsv(QString text, int iPoint)
     QString colName;
     QString modelName;
     QString varName;
-    QRegExp varExp("^(\\S*)#(\\S*)");
+    QRegularExpression varExp("^(\\S*)#(\\S*)");
     QList<int> indexes;
     VariableResult* curVar;
 
@@ -181,10 +196,11 @@ void MOOptVector::updateFromCsv(QString text, int iPoint)
     {
         // get var and model names
         colName = firstLine.at(i);
-        if(colName.indexOf(varExp)==0)
+        QRegularExpressionMatch varExpMatch;
+        if(colName.indexOf(varExp, 0, &varExpMatch)==0)
         {
-            modelName =  varExp.capturedTexts().at(1);
-            varName = varExp.capturedTexts().at(2);
+            modelName = varExpMatch.capturedTexts().at(1);
+            varName = varExpMatch.capturedTexts().at(2);
         }
         else
         {
@@ -209,7 +225,11 @@ void MOOptVector::updateFromCsv(QString text, int iPoint)
     bool ok;
     for (int iLine = 1; iLine<lines.size(); iLine++)
     {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        curLine = lines[iLine].split("\t",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
         curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
         iScan = iLine-1;
         if(curLine.size()==nbCols)
         {

@@ -144,7 +144,7 @@ bool Load::loadProject(QString filePath,ProjectBase* _project)
     //**************************************
     // Reading problems
     //**************************************
-    QTime loadTime;
+    QElapsedTimer loadTime;
     QString msg;
     for(int i=0;i<problemsPaths.size();i++)
     {

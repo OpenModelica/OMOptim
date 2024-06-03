@@ -39,13 +39,17 @@ QStringList OptimAlgosList::getCommonParametersNames()
         curNames = newAlgo->parameters()->getItemNames();
         if(i==0)
         {
-            names = curNames.toSet();
+            QSet<QString> set(curNames.begin(), curNames.end());
+            names = set;
         }
         else
-            names = names.intersect(curNames.toSet());
+        {
+            QSet<QString> set(curNames.begin(), curNames.end());
+            names = names.intersect(set);
+        }
         delete newAlgo;
     }
-    return names.toList();
+    return names.values();
 }
 
 QMap<QString,QStringList> OptimAlgosList::getAlgosParametersNames()
