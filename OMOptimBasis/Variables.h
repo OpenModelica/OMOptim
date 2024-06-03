@@ -24,7 +24,7 @@ public:
     Qt::DropActions supportedDropActions() const;
 
     Variable* findVariable(QString model,QString shortVarName);
-    int findVariable(QString model, QRegExp &shortVarName, int from=0);
+    int findVariable(QString model, QRegularExpression &shortVarName, int from=0);
 
 private :
 };

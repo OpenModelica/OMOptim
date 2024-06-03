@@ -100,7 +100,7 @@ bool ModComponent::setFieldValue(int iField, QVariant value)
                 case CLASSNAME:
             _modClassName = value.toString();
         case FILEPATH:
-            _file = value.toString();
+            _file = QFileInfo(value.toString());
             break;
         }
         return true;

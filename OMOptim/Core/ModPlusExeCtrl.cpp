@@ -250,12 +250,20 @@ bool ModPlusExeCtrl::getFinalVariablesFromFile(QTextStream *text, MOVector<Varia
     QString str = text->readLine();
 
     str.remove("\"");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    varNames = str.split(",",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     varNames = str.split(",",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
 
     while(!text->atEnd())
         line=text->readLine();
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    varValues = line.split(",",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     varValues = line.split(",",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
 
     if(varValues.size()!=varNames.size())
         return false;

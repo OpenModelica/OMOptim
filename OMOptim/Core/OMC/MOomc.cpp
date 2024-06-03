@@ -131,15 +131,19 @@ QStringList MOomc::getClassNames(QString parentClass)
     {
         commandRes.remove("{");
         commandRes.remove("}");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        return commandRes.split(",",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
         return commandRes.split(",",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     }
 }
 
 QString MOomc::getText(QString className)
 {
     QString moTxt = evalCommand("list("+className+")");
-    moTxt.remove(QRegExp("^([\\s|\\\"]+)"));
-    moTxt.remove(QRegExp("([\\s|\\\"]+)$"));
+    moTxt.remove(QRegularExpression("^([\\s|\\\"]+)"));
+    moTxt.remove(QRegularExpression("([\\s|\\\"]+)$"));
     return moTxt;
 }
 
@@ -164,8 +168,8 @@ QString MOomc::getWholeText(bool includeMSL)
 
     moTxt.replace("\\\\","\\");
     moTxt.replace("\\\"","\"");
-    moTxt.remove(QRegExp("^([\\s|\\\"]+)"));
-    moTxt.remove(QRegExp("([\\s|\\\"]+)$"));
+    moTxt.remove(QRegularExpression("^([\\s|\\\"]+)"));
+    moTxt.remove(QRegularExpression("([\\s|\\\"]+)$"));
 
     return moTxt;
 
@@ -254,7 +258,7 @@ void MOomc::getContainedComponents(QString parentClass,QStringList & compNames,Q
     if(!parentClass.isEmpty())
     {
         QString msg;
-        msg.sprintf("Reading components of class %s ",parentClass.toLatin1().data());
+        msg.asprintf("Reading components of class %s ",parentClass.toLatin1().data());
         InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
 
         commandRes = evalCommand("getComponents(" + parentClass +", useQuotes = true)");
@@ -563,14 +567,15 @@ QString MOomc::getFlattenedModifierUnit(const QString & modelName,const QString 
     if(flattenedModel.isEmpty())
         flattenedModel = getFlattenedModel(modelName);
 
-    QRegExp exp1(componentName+"."+modifierName+".*unit[\\s|=]*\\\\\\\"(.*)\\\\\\\"");
-    exp1.setMinimal(true);
+    QRegularExpression exp1(componentName+"."+modifierName+".*unit[\\s|=]*\\\\\\\"(.*)\\\\\\\"");
+    exp1.setPatternOptions(exp1.patternOptions() | QRegularExpression::InvertedGreedinessOption);
+    QRegularExpressionMatch exp1Match;
 
-    int i1 = flattenedModel.indexOf(exp1);
+    int i1 = flattenedModel.indexOf(exp1, 0, &exp1Match);
 
-    if((i1>-1)&&exp1.capturedTexts().size()==2)
+    if((i1>-1)&&exp1Match.capturedTexts().size()==2)
     {
-        QString result = exp1.capturedTexts().at(1);
+        QString result = exp1Match.capturedTexts().at(1);
         return result;
     }
     return QString();
@@ -591,39 +596,52 @@ QString MOomc::getFlattenedModifierValue(const QString & modelName,const QString
 
 
     // 1st format : Real sterilisateur.Sterilisateur.FactMin = 0.0;
-    QRegExp exp1(".*\\b"+componentName+"."+modifierName+"\\b[\\s]*=[\\s]*([\\S|\\\\|\"]+);");
+    QRegularExpression exp1(".*\\b"+componentName+"."+modifierName+"\\b[\\s]*=[\\s]*([\\S|\\\\|\"]+);");
 
     int i1 =  lines.indexOf(exp1);
 
-    if((i1>-1)&&exp1.capturedTexts().size()==2)
+    if(i1>-1)
     {
-        QString result = exp1.capturedTexts().at(1);
-        result = result.remove(QRegExp("[\\\\|\"]*"));
-        return result;
+        QRegularExpressionMatch exp1Match = exp1.match(lines.join(""));
+        if (exp1Match.capturedTexts().size()==2) {
+          QString result = exp1Match.capturedTexts().at(1);
+          result = result.remove(QRegularExpression("[\\\\|\"]*"));
+          return result;
+        }
     }
 
     // 2nd format with unit
-    QRegExp exp2(".*\\b"+componentName+"."+modifierName+"\\b\\([.*]\\)[\\s]*=[\\s]*(  );");
+    QRegularExpression exp2(".*\\b"+componentName+"."+modifierName+"\\b\\([.*]\\)[\\s]*=[\\s]*(  );");
     int i2 = lines.indexOf(exp2);
 
-    if((i2>-1)&&exp2.capturedTexts().size()==2)
-        return exp2.capturedTexts().at(1);
+    if (i2>-1) {
+      QRegularExpressionMatch exp2Match = exp2.match(lines.join(""));
+      if (exp2Match.capturedTexts().size()==2) {
+        return exp2Match.capturedTexts().at(1);
+      }
+    }
 
     // 3rd format
-    QRegExp exp3(".*\\b"+componentName+"\\b\\(.*\\b"+modifierName+"\\b[\\s]*=[\\s]*([\\d|\\.]*).*;");
+    QRegularExpression exp3(".*\\b"+componentName+"\\b\\(.*\\b"+modifierName+"\\b[\\s]*=[\\s]*([\\d|\\.]*).*;");
     int i3 = lines.indexOf(exp3);
 
-    if((i3>-1)&&exp3.capturedTexts().size()==2)
-        return exp3.capturedTexts().at(1);
+    if (i3>-1) {
+      QRegularExpressionMatch exp3Match = exp3.match(lines.join(""));
+      if (exp3Match.capturedTexts().size()==2) {
+        return exp3Match.capturedTexts().at(1);
+      }
+    }
 
     // 4th format : a vector
     // e.g.   eIFactMultEquation.groups = {\"group1\", \"group2\"};
-    QRegExp exp4(".*\\b"+componentName+"."+modifierName+"\\b[\\s]*=[\\s]\\{(.*)\\};");
+    QRegularExpression exp4(".*\\b"+componentName+"."+modifierName+"\\b[\\s]*=[\\s]\\{(.*)\\};");
     int i4 = lines.indexOf(exp4);
 
-    if((i4>-1)&&exp4.capturedTexts().size()==2)
-    {
-        return exp4.capturedTexts().at(1);
+    if (i4>-1) {
+      QRegularExpressionMatch exp4Match = exp4.match(lines.join(""));
+      if (exp4Match.capturedTexts().size()==2) {
+        return exp4Match.capturedTexts().at(1);
+      }
     }
 
     return QString();
@@ -781,11 +799,12 @@ QString MOomc::getComment(QString modelName, QString compName)
 
     //  {{Modelica.SIunits.Temp_K,TorcH,"ORC hot temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}},{Modelica.SIunits.Temp_K,TorcC,"ORC cold temperature (K)", "public", false, false, false, false, "parameter", "none", "unspecified",{}}}
 
-    QRegExp rexp(".*\\b"+compName+"\\b,"+"\"(.*)\"");
-    rexp.setMinimal(true);
-    if(commandRes.contains(rexp)&&rexp.capturedTexts().size()>1)
+    QRegularExpression rexp(".*\\b"+compName+"\\b,"+"\"(.*)\"");
+    rexp.setPatternOptions(rexp.patternOptions() | QRegularExpression::InvertedGreedinessOption);
+    QRegularExpressionMatch rexpMatch;
+    if(commandRes.contains(rexp, &rexpMatch) && rexpMatch.capturedTexts().size()>1)
     {
-        QStringList captured = rexp.capturedTexts();
+        QStringList captured = rexpMatch.capturedTexts();
         return captured.at(1);
     }
     else
@@ -828,7 +847,7 @@ bool MOomc::buildModel(QString model,QString & exeFile,QString & initFile)
     initCommandLineOptions();
     QString commandText = "buildModel("+model+")";
     QString commandRes= evalCommand(commandText);
-    commandRes.remove(QRegExp("[{|}|\"]"));
+    commandRes.remove(QRegularExpression("[{|}|\"]"));
 
     exeFile = commandRes.section(",",0,0);
     bool success = !exeFile.isEmpty();
@@ -873,9 +892,9 @@ bool MOomc::deleteConnection(const QString & org,const QString & dest, const QSt
 {
     // getting short names
     QString shortOrg = org;
-    shortOrg.remove(QRegExp("^"+model+"."));
+    shortOrg.remove(QRegularExpression("^"+model+"."));
     QString shortDest = dest;
-    shortDest.remove(QRegExp("^"+model+"."));
+    shortDest.remove(QRegularExpression("^"+model+"."));
 
     QString commandText = "deleteConnection(" + shortOrg +"," + shortDest +"," + model +")";
     QString commandRes= evalCommand(commandText);
@@ -1031,7 +1050,7 @@ QString MOomc::evalCommand(QString command,QString &errorString)
         QString result;
 
         QString msg;
-        InfoSender::instance()->send( Info(msg.sprintf("OMC: %s",command.toLatin1().data()),ListInfo::OMCNORMAL2));
+        InfoSender::instance()->send( Info(msg.asprintf("OMC: %s",command.toLatin1().data()),ListInfo::OMCNORMAL2));
         nbCalls++;
 
         if (!mHasInitialized)
@@ -1089,7 +1108,7 @@ QString MOomc::evalCommand(QString command,QString &errorString)
 
 
     //QString msg;
-    //InfoSender::instance()->send( Info(msg.sprintf("OMC : %s",_command.toLatin1().data()),ListInfo::OMCNORMAL2));
+    //InfoSender::instance()->send( Info(msg.asprintf("OMC : %s",_command.toLatin1().data()),ListInfo::OMCNORMAL2));
     //delegate_->evalExpression( _command );
     //QString result = delegate_->result();
     //InfoSender::instance()->send(Info(result,ListInfo::OMCNORMAL2));
@@ -1213,7 +1232,7 @@ QStringList MOomc::getDependenciesPaths(QString fileName,bool commentImportPaths
     QStringList lines = text.split("\n");
     QString tmpDep;
 
-    QRegExp regExp("[\\s]*import.*\".*\"[\\s]*;[\\s]*");
+    QRegularExpression regExp("[\\s]*import.*\".*\"[\\s]*;[\\s]*");
 
     int index0=0;
     int index=lines.indexOf(regExp,index0);
@@ -1221,8 +1240,8 @@ QStringList MOomc::getDependenciesPaths(QString fileName,bool commentImportPaths
     while(index>-1)
     {
         tmpDep = lines.at(index);
-        tmpDep.remove(QRegExp("[\\s]*import[\\s]*\""));
-        tmpDep.remove(QRegExp("\".*"));
+        tmpDep.remove(QRegularExpression("[\\s]*import[\\s]*\""));
+        tmpDep.remove(QRegularExpression("\".*"));
         importFiles.push_back(tmpDep);
 
         if(commentImportPaths)
@@ -1467,7 +1486,7 @@ bool MOomc::startServer()
         omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.").append(QString(user)).append(".omc.output.").append(mName));
 #endif
 
-        InfoSender::instance()->send( Info(str.sprintf("OMC: running command: %s %s",
+        InfoSender::instance()->send( Info(str.asprintf("OMC: running command: %s %s",
             omcPath.toLatin1().data(),
         parameters.join(" ").toLatin1().data()),ListInfo::OMCNORMAL2));
         omcProcess->setProcessChannelMode(QProcess::MergedChannels);
@@ -1678,7 +1697,11 @@ QStringList MOomc::getElementInfos(QString parentClass)
         res.remove("{");
         res.remove("}");
         res.remove(")");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        list = res.split("rec(",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
         list = res.split("rec(",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
 
         LowTools::removeWhiteSpaceStrings(list);
     }
@@ -1689,7 +1712,7 @@ QStringList MOomc::getElementInfos(QString parentClass)
 void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QStringList &modelsClasses,QStringList &recordNames,QStringList &compsNames,QStringList &compsClasses)
 {
     QString msg;
-    msg.sprintf("Reading class infos : %s",parentClass.toLatin1().data());
+    msg.asprintf("Reading class infos : %s",parentClass.toLatin1().data());
     InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
 
     packagesClasses.clear();
@@ -1729,21 +1752,21 @@ void MOomc::readElementInfos(QString parentClass,QStringList &packagesClasses,QS
             {
                 modelsClasses.push_back(className);
                 QString msg;
-                msg.sprintf("Adding model: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
+                msg.asprintf("Adding model: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
                 InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
             }
             if(restr.contains("PACKAGE"))
             {
                 packagesClasses.push_back(className);
                 QString msg;
-                msg.sprintf("Adding package: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
+                msg.asprintf("Adding package: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
                 InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
             }
             if(restr.contains("RECORD"))
             {
                 recordNames.push_back(className);
                 QString msg;
-                msg.sprintf("Adding record: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
+                msg.asprintf("Adding record: %s, Type : %s",className.toLatin1().data(),restr.toLatin1().data());
                 InfoSender::instance()->send(Info(msg,ListInfo::OMCNORMAL2));
             }
 
@@ -1773,7 +1796,7 @@ QString MOomc::getValueFromElementInfo(QString elementInfoLine,QString fieldName
 {
 
     QStringList fields = elementInfoLine.split(",");
-    QRegExp regExp(".*"+fieldName+"=.*");
+    QRegularExpression regExp(".*"+fieldName+"=.*");
 
     int iField=fields.indexOf(regExp);
     if(iField>-1)

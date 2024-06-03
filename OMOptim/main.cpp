@@ -96,11 +96,12 @@ int main(int argc, char *argv[])
     for(int i=1;i<args.size();i++) //arg0 is the executable path
     {
         // if start with -, it's an option
-        QRegExp regExpOption("^[\\-]([\\S]*)$");
+        QRegularExpression regExpOption("^[\\-]([\\S]*)$");
+        QRegularExpressionMatch regExpOptionMatch;
 
-        if(args.at(i).contains(regExpOption))
+        if(args.at(i).contains(regExpOption, &regExpOptionMatch))
         {
-            options.push_back(regExpOption.cap(1));
+            options.push_back(regExpOptionMatch.captured(1));
         }
         else
             filePaths.push_back(args.at(i));
@@ -173,7 +174,7 @@ int main(int argc, char *argv[])
     bool startOMC = true;
     if(options.contains("noomc"))
         startOMC = false;
-    if(definitions.value("useomc",QString()).contains(QRegExp("^[false|0]+$")))
+    if(definitions.value("useomc",QString()).contains(QRegularExpression("^[false|0]+$")))
         startOMC = false;
 
     Project* project = new Project(startOMC);

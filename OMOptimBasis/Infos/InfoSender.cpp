@@ -119,7 +119,7 @@ InfoSender* InfoSender::instance()
         else
         {
             _instance = new InfoSender();
-            qApp->setProperty("InfoSender",qVariantFromValue(qobject_cast<QObject*>(_instance)));
+            qApp->setProperty("InfoSender", QVariant::fromValue(qobject_cast<QObject*>(_instance)));
         }
     }
     return _instance;
@@ -331,7 +331,7 @@ QVariant Infos::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if(role == Qt::BackgroundColorRole)
+    if(role == Qt::BackgroundRole)
     {
         switch (_type.at(index.row()))
         {

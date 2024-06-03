@@ -137,7 +137,11 @@ OneSimulation::OneSimulation(QDomElement domProblem,Project* project,bool &ok)
 
         // Files to copy
         QDomElement cFilesToCopy = domProblem.firstChildElement("FilesToCopy");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        QStringList strList = cFilesToCopy.text().split("\n",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
         QStringList strList = cFilesToCopy.text().split("\n",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
         for(int i=0;i<strList.size();i++)
             this->_filesToCopy.push_back(QFileInfo(strList.at(i)));
 

@@ -96,7 +96,11 @@ MOItem::MOItem(QString savedString,ProjectBase *project)
 {
     connect(this,SIGNAL(sendInfo(Info)),(QObject*)project,SIGNAL(sent(Info*)));
 
-    QStringList fields = savedString.split(" ",QString::SkipEmptyParts);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  QStringList fields = savedString.split(" ",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
+  QStringList fields = savedString.split(" ",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     if(fields.size()!=nbFields)
     {
         emit sendInfo( Info(ListInfo::PROBLEMREADINGLINE,savedString));
@@ -342,7 +346,7 @@ void MOItem::checkUniqueItemName( QStringList & list)
             if (title==list.at(i))
             {
                 titleIsFound=true;
-                strSuffix.sprintf(expr.toLatin1().data(),iSuffix);
+                strSuffix.asprintf(expr.toLatin1().data(),iSuffix);
                 title=defaultTitle+strSuffix;
                 iSuffix++;
             }

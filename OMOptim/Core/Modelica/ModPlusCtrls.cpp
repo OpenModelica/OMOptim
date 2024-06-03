@@ -219,7 +219,7 @@ QList<ModPlusCtrl *> ModPlusCtrls::getCompatibleCtrls(Project* project, ModelPlu
         else
             delete newCtrl;
     }
-    result.removeAll(NULL);
+    result.removeAll(nullptr);
     return result;
 }
 

@@ -26,9 +26,13 @@ bool ScriptParser::parseFile(QFileInfo fileInfo,QStringList &commands,QMap<QStri
 
 bool ScriptParser::parseFile(const QString & text,QStringList &commands,QMap<QString,QString> & definitions)
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList lines = text.split(QRegularExpression("[\\n|;]"),Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     QStringList lines = text.split(QRegExp("[\\n|;]"),QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     // remove commented lines
-    QRegExp commentRegExp("^[#|\\s]+[\\s|\\S]*$");
+    QRegularExpression commentRegExp("^[#|\\s]+[\\s|\\S]*$");
     int iC = lines.indexOf(commentRegExp);
     while(iC!=-1)
     {
@@ -37,16 +41,18 @@ bool ScriptParser::parseFile(const QString & text,QStringList &commands,QMap<QSt
     }
 
     QString line;
-    QRegExp commandRegExp("^[\\s]*([\\S]*\\(.*\\)).*$");
-    QRegExp definitionRegExp("^[\\s]*([\\S]+)[\\s]*=[\\s]*([\\S]*).*$");
+    QRegularExpression commandRegExp("^[\\s]*([\\S]*\\(.*\\)).*$");
+    QRegularExpression definitionRegExp("^[\\s]*([\\S]+)[\\s]*=[\\s]*([\\S]*).*$");
     for(int i=0;i<lines.size();i++)
     {
         line = lines.at(i);
         // if line is a command
-        if(line.contains(commandRegExp))
-            commands.push_back(commandRegExp.cap(1));
-        else if(line.contains(definitionRegExp))
-            definitions.insert(definitionRegExp.cap(1).toLower(),definitionRegExp.cap(2).toLower()); // keep in lower cases
+        QRegularExpressionMatch commandRegExpMatch;
+        QRegularExpressionMatch definitionRegExpMatch;
+        if(line.contains(commandRegExp, &commandRegExpMatch))
+            commands.push_back(commandRegExpMatch.captured(1));
+        else if(line.contains(definitionRegExp, &definitionRegExpMatch))
+            definitions.insert(definitionRegExpMatch.captured(1).toLower(),definitionRegExpMatch.captured(2).toLower()); // keep in lower cases
         else InfoSender::instance()->sendWarning("Unknown command: "+line);
     }
     return true;
@@ -59,23 +65,32 @@ bool ScriptParser::executeCommand(QString command)
         return true;
 
     // if several commands
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList commands = command.split(";",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     QStringList commands = command.split(";",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     if(commands.size()>1)
         return executeCommands(commands);
 
     // apply one command
-    QRegExp regExp("([\\S]+)\\((.*)\\)");
-    command.indexOf(regExp);
+    QRegularExpression regExp("([\\S]+)\\((.*)\\)");
+    QRegularExpressionMatch regExpMatch;
+    command.indexOf(regExp, 0, &regExpMatch);
 
-    if(regExp.capturedTexts().size()!=3)
+    if(regExpMatch.capturedTexts().size()!=3)
     {
         InfoSender::instance()->sendWarning("Unable to parse command: "+command);
         return false;
     }
 
-    QString function = regExp.cap(1);
-    QString arg = regExp.cap(2);
+    QString function = regExpMatch.captured(1);
+    QString arg = regExpMatch.captured(2);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList args = arg.split(",",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     QStringList args = arg.split(",",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
 
     bool foundFunction;
 
@@ -144,7 +159,7 @@ QString ScriptFunction::toTxt() const
     {
         result+=args.at(i)+",";
     }
-    result.remove(QRegExp("[,]$"));
+    result.remove(QRegularExpression("[,]$"));
     result +=")";
     if(includesDescription && !description.isEmpty())
         result +="\t#"+description;

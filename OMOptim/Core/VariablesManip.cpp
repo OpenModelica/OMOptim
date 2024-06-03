@@ -76,7 +76,7 @@ void VariablesManip::updateScanValues(Variables *vars, ScannedVariables *scanned
         else
         {
             QString msg;
-            msg.sprintf("in updateScanValues(), unable to find variable %s",curName.utf16());
+            msg.asprintf("in updateScanValues(), unable to find variable %s",curName.utf16());
             InfoSender::instance()->debug(msg);
         }
     }

@@ -264,7 +264,7 @@ bool ModExePlus::variablesRead() const
 //    if(!orgClass)
 //    {
 //        QString msg;
-//        msg.sprintf("Could not apply component substitution : component %s not found",
+//        msg.asprintf("Could not apply component substitution : component %s not found",
 //                    blockSub->_orgComponent.utf16());
 //        InfoSender::instance()->send(Info(msg,ListInfo::WARNING2));
 //        return false;

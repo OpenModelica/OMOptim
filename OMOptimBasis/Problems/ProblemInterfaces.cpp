@@ -86,7 +86,7 @@ ProblemInterface* ProblemInterfaces::interfaceOf(QString caseType)
 
 QList<ProblemInterface*> ProblemInterfaces::uniqueInterfaces()
 {
-    QList<ProblemInterface*> res = QSet<ProblemInterface*>::fromList(values()).toList();
+    QList<ProblemInterface*> res = values();
 
     return res;
 }

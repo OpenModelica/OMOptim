@@ -5,7 +5,7 @@ PARADISEO=ParadisEO-2.0.1/build
 OMC_CONFIG=OMOptim/omc_config.h
 CONFIG_DEFAULT_OPENMODELICAHOME = "$(OMBUILDDIR)/"
 GIT_SHA = $(shell git describe --match "v*.*" --always)
-LSB_RELEASE = $(shell cmd /c "ver")
+LSB_RELEASE = $(shell MSYS2_ARG_CONV_EXCL=/c cmd "/c ver")
 
 ifeq (MINGW32,$(findstring MINGW32,$(shell uname)))
 PLATFORM_ARCH = (32-bit)
@@ -18,11 +18,11 @@ endif
 .PHONY: omoptim omoptimbasis paradiseo $(OMC_CONFIG)
 
 omoptim: $(OMC_CONFIG) omoptimbasis paradiseo
-	$(MAKE) -C OMOptim/build -f Makefile.omdev.mingw
+	$(MAKE) -C OMOptim/build -f Makefile.omdev.mingw OM_QT_MAJOR_VERSION=$(OM_QT_MAJOR_VERSION)
 	cp -puf common/pre-commit.sh $(shell git rev-parse --git-dir)/hooks/pre-commit
 
 omoptimbasis:
-	$(MAKE) -C OMOptimBasis/build -f Makefile.omdev.mingw
+	$(MAKE) -C OMOptimBasis/build -f Makefile.omdev.mingw OM_QT_MAJOR_VERSION=$(OM_QT_MAJOR_VERSION)
 
 paradiseo:
 	mkdir -p $(PARADISEO)

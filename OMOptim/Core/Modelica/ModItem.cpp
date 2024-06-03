@@ -407,7 +407,7 @@ void ModItem::clear()
 
     _parent = NULL;
     _name = QString();
-    _file = QString();
+    _file = QFileInfo();
     _childrenReaden = false;
 
     emit cleared();

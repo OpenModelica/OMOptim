@@ -395,7 +395,7 @@ qint64 TextEditIoDevice::writeData(const char *data, qint64 maxSize)
     if(textBrowser)
     {
         QString msg(data);
-        msg.remove(QRegExp("\\n$"));
+        msg.remove(QRegularExpression("\\n$"));
         if(!msg.isEmpty())
             textBrowser->append(msg);
     }

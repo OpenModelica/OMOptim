@@ -55,6 +55,8 @@ extern "C" {
 #include "util/read_matlab4.h"
 }
 
+#include <QRegExp>
+
 OpenModelica::OpenModelica()
 {
 
@@ -391,12 +393,20 @@ bool OpenModelica::getFinalVariablesFromFile(QTextStream *text, MOVector<Variabl
     QString str = text->readLine();
 
     str.remove("\"");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    varNames = str.split(",",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     varNames = str.split(",",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
 
     while(!text->atEnd())
         line=text->readLine();
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    varValues = line.split(",",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     varValues = line.split(",",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
 
     if(varValues.size()!=varNames.size())
         return false;
@@ -735,7 +745,7 @@ QString OpenModelica::getLibraryPath(QString version)
 
     QDir omLibDir(omlibrary);
     QStringList omLibDirs = omLibDir.entryList(QDir::AllDirs| QDir::NoDotAndDotDot);
-    omLibDirs = omLibDirs.filter(QRegExp("^Modelica .*"));
+    omLibDirs = omLibDirs.filter(QRegularExpression("^Modelica .*"));
     if(omLibDirs.isEmpty())
         return QString();
     else

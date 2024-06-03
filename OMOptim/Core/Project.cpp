@@ -226,7 +226,7 @@ void Project::loadMoFile(QString moFilePath, bool storePath, bool forceLoad)
     }
 
     // add to mofileloadedlist
-    if(storePath && !_moFiles.contains(moFilePath))
+    if(storePath && !_moFiles.contains(QFileInfo(moFilePath)))
         _moFiles.push_back(QFileInfo(moFilePath));
 
     // load moFile ...
@@ -257,8 +257,8 @@ void Project::loadMoFiles(QStringList moFilePaths, bool storePath, bool forceLoa
     for(int i=0;i<moFilePaths.size();i++)
     {
         moFilePath = moFilePaths.at(i);
-        if(storePath && !_moFiles.contains(moFilePath))
-            _moFiles.push_back(moFilePath);
+        if(storePath && !_moFiles.contains(QFileInfo(moFilePath)))
+            _moFiles.push_back(QFileInfo(moFilePath));
     }
 
     // load _moFiles and read them
@@ -298,7 +298,7 @@ void Project::unloadMoFile(QString moFilePath, bool removePath)
 
     // remove from mofileloadedlist
     if(removePath)
-        _moFiles.removeAll(moFilePath);
+        _moFiles.removeAll(QFileInfo(moFilePath));
 
     // unload moFile ...
     _modLoader->unloadMoFile(modItemsTree(),moFilePath);
@@ -346,7 +346,7 @@ bool Project::loadExecutableModel(QString name,QFileInfo exeFileInfo, QFileInfo 
     //    bool copyExeFileOk = QFile::copy(exeFileInfo.absoluteFilePath(), exeFile );
     //    bool copyInputFileOk = QFile::copy(inputFileInfo.absoluteFilePath(), inputFile);
 
-    _modItemsTree->addExeModel(_modItemsTree->rootElement(),name, inputFile, exeFile);
+    _modItemsTree->addExeModel(_modItemsTree->rootElement(),name, QFileInfo(inputFile), QFileInfo(exeFile));
     _modItemsTree->emitDataChanged();
 
     // add modelplus
@@ -407,9 +407,9 @@ void Project::storeMmoFilePath(QString mmoFilePath)
 {
     QString path = this->folder().relativeFilePath(mmoFilePath);
 
-    if(!_mmoFiles.contains(path))
+    if(!_mmoFiles.contains(QFileInfo(path)))
     {
-        _mmoFiles.push_back(path);
+        _mmoFiles.push_back(QFileInfo(path));
     }
 
     emit projectChanged();
@@ -678,8 +678,8 @@ void Project::exportProjectFolder(QDir externalFolder,bool includeMSL)
 
         file.open(QIODevice::WriteOnly);
 
-        moTxt.remove(QRegExp("^\""));
-        moTxt.remove(QRegExp("\"$"));
+        moTxt.remove(QRegularExpression("^\""));
+        moTxt.remove(QRegularExpression("\"$"));
         QTextStream ts( &file );
         ts << moTxt.toLocal8Bit();
         file.close();

@@ -284,7 +284,7 @@ bool MOAVector<ItemClass>::removeRows(QList<int> indexes)
 {
     if(indexes.size())
     {
-        qSort(indexes.begin(),indexes.end());
+        std::sort(indexes.begin(),indexes.end());
 
         // start by the end in order not to be affected
         for(int i=indexes.size()-1;i>=0;i--)
@@ -425,7 +425,7 @@ void MOAVector<ItemClass>::replaceIn(MOAVector<ItemClass> *overVector)
         else
         {
             QString msg;
-            msg.sprintf("Variable %s not found in vector. Could not replace.",curName.utf16());
+            msg.asprintf("Variable %s not found in vector. Could not replace.",curName.utf16());
             InfoSender::instance()->debug(msg);
         }
     }
@@ -726,7 +726,7 @@ bool MOVector<ItemClass>::dropMimeData(const QMimeData *data,
     if(text.indexOf("XML::")==0)
     {
          // look for item
-        QString xmlContent = text.remove(QRegExp("^XML::"));
+        QString xmlContent = text.remove(QRegularExpression("^XML::"));
         qDebug(QString("Drop :"+xmlContent).toLatin1().data());
         QDomDocument doc;
         if(!doc.setContent(xmlContent))

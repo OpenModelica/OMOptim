@@ -454,7 +454,7 @@ void WidgetSelectEditVars::actualizeGui()
 
     QList<QTableView*> tables;
     tables << _tableObjectives << _tableOptimizedVars << _tableVariables ;
-    tables.removeAll(NULL);
+    tables.removeAll(nullptr);
 
     // if problem is solved
     if(!_isEditable)

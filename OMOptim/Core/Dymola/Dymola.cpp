@@ -26,6 +26,8 @@ http://www-cep.ensmp.fr/english/
 #include "LowTools.h"
 #include "DymolaParameters.h"
 
+#include <QRegExp>
+
 Dymola::Dymola(void)
 {
 }
@@ -280,7 +282,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     QString newLine;
 
     QStringList lines = allDsinText.split("\n");
-    int iLForm = lines.indexOf(QRegExp(".* # lform .*"));
+    int iLForm = lines.indexOf(QRegularExpression(".* # lform .*"));
     if(iLForm>-1)
     {
         newLine =  " 0                         # lform    0/1 ASCII/Matlab-binary storage format of results";
@@ -289,7 +291,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
 
 
     MOParameter* pStopTime = parameters->findItem(DymolaParameters::str(DymolaParameters::STOPTIME));
-    int iLStopTime = lines.indexOf(QRegExp(".* # StopTime .*"));
+    int iLStopTime = lines.indexOf(QRegularExpression(".* # StopTime .*"));
     if((iLStopTime>-1) && pStopTime)
     {
         newLine =  "       "
@@ -299,7 +301,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     }
 
     MOParameter* pTolerance = parameters->findItem(DymolaParameters::str(DymolaParameters::TOLERANCE));
-    int iLTolerance = lines.indexOf(QRegExp(".*  # Tolerance .*"));
+    int iLTolerance = lines.indexOf(QRegularExpression(".*  # Tolerance .*"));
     if((iLTolerance>-1) && pTolerance)
     {
         newLine =  "       "
@@ -309,7 +311,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     }
 
     MOParameter* pnInterval = parameters->findItem(DymolaParameters::str(DymolaParameters::NINTERVAL));
-    int iLnInterval = lines.indexOf(QRegExp(".*  # nInterval .*"));
+    int iLnInterval = lines.indexOf(QRegularExpression(".*  # nInterval .*"));
     if((iLnInterval>-1) && pnInterval)
     {
         newLine =  "       "
@@ -319,7 +321,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     }
 
     MOParameter* pSolver = parameters->findItem(DymolaParameters::str(DymolaParameters::SOLVER));
-    int iLSolver = lines.indexOf(QRegExp(".*  # Algorithm .*"));
+    int iLSolver = lines.indexOf(QRegularExpression(".*  # Algorithm .*"));
     if((iLSolver>-1) && pSolver)
     {
         newLine =  "       "
@@ -329,7 +331,7 @@ void Dymola::writeParameters(QString &allDsinText,MOParameters *parameters)
     }
 
     MOParameter* pFinalFile = parameters->findItem(DymolaParameters::str(DymolaParameters::FINALFILE));
-    int iLineLRes = lines.indexOf(QRegExp(".*  # lres     0/1 do not/store results .*"));
+    int iLineLRes = lines.indexOf(QRegularExpression(".*  # lres     0/1 do not/store results .*"));
     if((iLineLRes>-1) && pFinalFile)
     {
         int lRes;
@@ -395,12 +397,20 @@ bool Dymola::getVariablesFromDsFile(QTextStream *text, MOVector<Variable> *varia
     line = text->readLine();
     while (!line.isEmpty())
     {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        linefields = line.split(" ", Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
         linefields = line.split(" ", QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
         if(linefields.size()<8)
         {
             // data has been stored on two lines
             line = text->readLine();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+            linefields << line.split(" ", Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
             linefields << line.split(" ", QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
         }
         if(nv>=variables->size())
         {
@@ -546,7 +556,11 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
     QStringList curDataInfos;
     nv=0;
     while (!line.isEmpty() && nv<nbv){
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        curDataInfos = line.split(" ",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
         curDataInfos = line.split(" ",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
         dataInfo1.push_back(curDataInfos.at(0).toInt());
         dataInfo2.push_back(curDataInfos.at(1).toInt());
         dataInfo3.push_back(curDataInfos.at(2).toInt());
@@ -576,7 +590,11 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
         data.append(line);
         line = text->readLine();
     }
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    curDataInfos = data.split(" ",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     curDataInfos = data.split(" ",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
 
 
     // fill data1 matrix
@@ -608,7 +626,11 @@ bool Dymola::getFinalVariablesFromDsFile(QTextStream *text, MOVector<Variable> *
         data.append(line);
         line = text->readLine();
     }
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    curDataInfos = data.split(" ",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     curDataInfos = data.split(" ",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
 
 
     // fill data2 matrix
@@ -722,12 +744,16 @@ bool Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
 
                 value = QString::number(curVar->getFieldValue(Variable::VALUE).toDouble(),format,prec);
                 fields = rxLine.capturedTexts();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+                capLines = rxLine.cap(0).split("\n",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
                 capLines = rxLine.cap(0).split("\n",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
                 newLine1 = fields.at(1)+"\t"+ value +"\t";
                 newLine1 += fields.at(3)+"\t"+fields.at(4);
                 newLine2 = fields.at(5)+"\t"+fields.at(6)+"\t"+" # "+fields.at(7);
                 // if variable def were on two lines
-                if((capLines.size()>1)&& capLines.at(1).contains(QRegExp("\\S")))
+                if((capLines.size()>1)&& capLines.at(1).contains(QRegularExpression("\\S")))
                 {
                     InfoSender::instance()->debug("found variable. 2 lines. Total text captured:  "+rxLine.cap(0));
                     allText = allText.replace(rxLine.cap(0),newLine1+"\n"+newLine2+"\n");

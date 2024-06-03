@@ -421,7 +421,7 @@ ModItem* ModItemsTree::findInDescendants(QString fullName,ModItem* parent)
     // A ajouter la une condition if not executable else childShortName = curFullName !!!!!!
     if(!fullName.endsWith(".exe"))
     {
-        childShortName.remove(QRegExp("^"+curFullName+"\\."));
+        childShortName.remove(QRegularExpression("^"+curFullName+"\\."));
         // then take first section
         childShortName = childShortName.section(".",0,0);
 
@@ -591,7 +591,7 @@ QList<ModItem*> ModItemsTree::findCompOfInheritingClassInDescendants(QString cla
   * In a multimap since there are different classNames here.
   * @param classFilter : stop seeking in parent class does not go through this filter
   */
-void  ModItemsTree::findCompOfInheritingClassesInDescendants(QStringList classNames,ModItem* parent,QMultiMap<QString,ModItem*> &result,QRegExp classFilter)
+void  ModItemsTree::findCompOfInheritingClassesInDescendants(QStringList classNames,ModItem* parent,QMultiMap<QString,ModItem*> &result,QRegularExpression classFilter)
 {
     if(parent==NULL)
         return;
@@ -655,7 +655,7 @@ void  ModItemsTree::findCompOfInheritingClassesInDescendants(QStringList classNa
     }
 }
 
-void  ModItemsTree::findCompOfInheritingClassesInDescendants2(const QStringList & classNames,QString parentName,QString parentClass,QMultiMap<QString,QString> &result,QRegExp classFilter)
+void  ModItemsTree::findCompOfInheritingClassesInDescendants2(const QStringList & classNames, QString parentName, QString parentClass, QMultiMap<QString,QString> &result, QRegularExpression classFilter)
 {
 
     if(classFilter.isValid() && !parentClass.contains(classFilter))

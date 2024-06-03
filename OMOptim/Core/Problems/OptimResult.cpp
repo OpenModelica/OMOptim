@@ -309,9 +309,13 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
         this->recomputedVariables()->at(i)->clearFinalValues();
     }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QStringList lines = text.split("\n",Qt::KeepEmptyParts);
+    QStringList firstLine = lines[0].split("\t",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
     QStringList lines = text.split("\n",QString::KeepEmptyParts);
-
     QStringList firstLine = lines[0].split("\t",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
     int nbCols = firstLine.size();
 
     QList<VariableResult *> objs;
@@ -338,7 +342,11 @@ void OptimResult::updateOptimValuesFromFrontFile(QString fileName)
     int curIndex = 0; // to skip empty, partial or comment lines
     for (int iLine = 1; iLine<lines.size(); iLine++)
     {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        curLine = lines[iLine].split("\t",Qt::SkipEmptyParts);
+#else // QT_VERSION_CHECK
         curLine = lines[iLine].split("\t",QString::SkipEmptyParts);
+#endif // QT_VERSION_CHECK
 
         if(curLine.size()==nbCols)
         {
