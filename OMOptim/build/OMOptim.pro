@@ -2,6 +2,9 @@ TEMPLATE = app
 TARGET = OMOptim
 
 QT += core gui svg xml printsupport widgets
+equals(QT_MAJOR_VERSION, 6) {
+  QT += core5compat
+}
 
 CONFIG += warn_off
 
