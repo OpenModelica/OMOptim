@@ -48,7 +48,7 @@ build: $(LIBNAME) $(NAME)
 
 Makefile: $(NAME).pro
 	$(QMAKE) "CONFIG+=release" $< -o $@
-MakefileLib: $(LIBNAME).pro
+MakefileLib: $(LIBNAME).pro Makefile
 	$(QMAKE) "CONFIG+=release" $< -o $@
 
 clean: Makefile MakefileLib
