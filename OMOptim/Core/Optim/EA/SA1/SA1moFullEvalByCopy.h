@@ -1,6 +1,3 @@
-#ifndef SA1MOFULLEVALBYCOPY_H
-#define SA1MOFULLEVALBYCOPY_H
-
 /*
 <moFullEvalByCopy.h>
 Copyright (C) DOLPHIN Project-Team, INRIA Lille - Nord Europe, 2006-2010
@@ -35,6 +32,8 @@ ParadisEO WebSite : http://paradiseo.gforge.inria.fr
 Contact: paradiseo-help@lists.gforge.inria.fr
 */
 
+#ifndef SA1MOFULLEVALBYCOPY_H
+#define SA1MOFULLEVALBYCOPY_H
 
 #include <eoEvalFunc.h>
 #include <eval/moEval.h>
