@@ -675,7 +675,77 @@ void OpenModelica::setInputParametersXml(QDomDocument &doc,MOParameters *paramet
 }
 
 
-bool OpenModelica::start(QString exeFile,QString &errMsg,int maxnsec)
+bool OpenModelica::writeOverrideFile(QString fileName, MOVector<Variable> *variables)
+{
+    // The override file contains one "name=value" line per variable.
+    // The simulation runtime reads it with -overrideFile and overrides the
+    // start values stored in the generated Model_init.xml (see #14506).
+    QFile file(fileName);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
+    {
+        InfoSender::instance()->debug("Could not write override file : "+fileName);
+        return false;
+    }
+
+    QTextStream ts(&file);
+    if(variables)
+    {
+        for(int i=0;i<variables->size();i++)
+        {
+            // local name (name in init file does not contain the model name)
+            QString localVarName = variables->at(i)->name(Variable::SHORT);
+            ts << localVarName << "=" << variables->at(i)->value().toString() << "\n";
+        }
+    }
+    file.close();
+    return true;
+}
+
+QStringList OpenModelica::simulationFlags(MOParameters *parameters)
+{
+    // Experiment settings are passed as dedicated simulation-executable flags
+    // (not through -overrideFile) so that they cannot clash with model variable names.
+    QStringList flags;
+    if(!parameters)
+        return flags;
+
+    double starttime = parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::STARTTIME),0).toDouble();
+    double stoptime = parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::STOPTIME),1).toDouble();
+    int nbIntervals = parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::NBINTERVALS),2).toInt();
+    if(nbIntervals<=0)
+        nbIntervals = 1;
+    double stepSize = (stoptime-starttime)/nbIntervals;
+
+    flags << "-startTime="+QString::number(starttime,'g',16);
+    flags << "-stopTime="+QString::number(stoptime,'g',16);
+    flags << "-stepSize="+QString::number(stepSize,'g',16);
+
+    for(int i=0;i<parameters->size();i++)
+    {
+        MOParameter *curParam = parameters->at(i);
+        const QString name = curParam->name();
+
+        if(name==OpenModelicaParameters::str(OpenModelicaParameters::TOLERANCE))
+        {
+            flags << "-tolerance="+curParam->value().toString();
+        }
+        else if(name==OpenModelicaParameters::str(OpenModelicaParameters::SOLVER))
+        {
+            MOParameterListed* listed = dynamic_cast<MOParameterListed*>(curParam);
+            if(listed)
+                flags << "-s="+listed->strValue();
+        }
+        else if(name==OpenModelicaParameters::str(OpenModelicaParameters::OUTPUT))
+        {
+            MOParameterListed* listed = dynamic_cast<MOParameterListed*>(curParam);
+            if(listed)
+                flags << "-outputFormat="+listed->strValue();
+        }
+    }
+    return flags;
+}
+
+bool OpenModelica::start(QString exeFile,QString &errMsg,int maxnsec,const QStringList &extraArgs)
 {
 
     QFileInfo exeFileInfo(exeFile);
@@ -701,11 +771,16 @@ bool OpenModelica::start(QString exeFile,QString &errMsg,int maxnsec)
     simProcess.setProcessEnvironment(env);
 
     //start process
-    simProcess.start(appPath, QStringList());
+    simProcess.start(appPath, extraArgs);
 #else
+    QString cmd = "./"+exeFileInfo.fileName();
+    for(int i=0;i<extraArgs.size();i++)
+        cmd += " " + extraArgs.at(i);
+    cmd += " > log.txt";
+
     QStringList arguments;
     arguments << "-c";
-    arguments << "./"+exeFileInfo.fileName() << " > log.txt";
+    arguments << cmd;
     simProcess.start("sh", arguments);
 #endif
 

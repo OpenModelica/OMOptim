@@ -65,7 +65,7 @@ public:
     virtual bool readInitialVariables(MOVector<Variable> *, QFileInfoList filesToCopy,bool forcerecompile, QString initFile="");
 
     bool simulate(QDir tempFolder, MOVector<Variable> *inputVars, MOVector<Variable> *outputVars, QFileInfoList filesToCopy, QFileInfoList moDependencies);
-    bool start(QString exeFile,int maxnsec);
+    bool start(QString exeFile,int maxnsec,const QStringList &extraArgs = QStringList());
     bool readOutputVariables(MOVector<Variable> *,QString resFile="");
 
     bool setStopTime(double time);

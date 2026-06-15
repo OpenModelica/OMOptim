@@ -168,19 +168,27 @@ bool ModPlusOMExeCtrl::simulate(QDir tempFolder, MOVector<Variable> *inputVars, 
     for(int i=0;i<filesToRemove.size();i++)
         tempFolder.remove(filesToRemove.at(i));
 
-    QString tempInitFile = tempFolder.absoluteFilePath(QFileInfo(initFile()).fileName());
     QString tempMatResFile = tempFolder.absoluteFilePath(resMatFile());
     QString tempCsvResFile = tempFolder.absoluteFilePath(resCsvFile());
     QString tempExeFile = tempFolder.absoluteFilePath(QFileInfo(exeFile()).fileName());
 
-    // Specifying new Variables values in OM input file
-    OpenModelica::setInputXml(tempInitFile,inputVars,_ModelPlus->modelName(),parameters());
+    // Specify the new variable values through an override file passed to the
+    // simulation executable with -overrideFile, instead of rewriting the init
+    // xml file (issue #14506).
+    QString tempOverrideFile = tempFolder.absoluteFilePath(_ModelPlus->modelName()+"_override.txt");
+    if(!OpenModelica::writeOverrideFile(tempOverrideFile,inputVars))
+    {
+        InfoSender::instance()->sendWarning("Simulation failed : failed to write override file");
+        return false;
+    }
 
+    QStringList simArgs = OpenModelica::simulationFlags(parameters());
+    simArgs << "-overrideFile="+tempOverrideFile;
 
     // Launching openmodelica
     int maxNSec=_parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::MAXSIMTIME),-1).toInt();
 
-    ModPlusOMExeCtrl::start(tempExeFile,maxNSec);
+    ModPlusOMExeCtrl::start(tempExeFile,maxNSec,simArgs);
 
     InfoSender::eraseCurrentTask();
 
@@ -221,7 +229,7 @@ bool ModPlusOMExeCtrl::setStopTime(double time)
     _parameters->setValue(OpenModelicaParameters::str(OpenModelicaParameters::STOPTIME),time);
     return true;
 }
-bool ModPlusOMExeCtrl::start(QString exeFile,int maxnsec)
+bool ModPlusOMExeCtrl::start(QString exeFile,int maxnsec,const QStringList &extraArgs)
 {
 
     QFileInfo exeFileInfo(exeFile);
@@ -242,11 +250,16 @@ bool ModPlusOMExeCtrl::start(QString exeFile,int maxnsec)
     simProcess.setProcessEnvironment(env);
 
     //start process
-    simProcess.start(appPath, QStringList());
+    simProcess.start(appPath, extraArgs);
 #else
+    QString cmd = "./"+exeFileInfo.fileName();
+    for(int i=0;i<extraArgs.size();i++)
+        cmd += " " + extraArgs.at(i);
+    cmd += " > log.txt";
+
     QStringList arguments;
     arguments << "-c";
-    arguments << "./"+exeFileInfo.fileName() << " > log.txt";
+    arguments << cmd;
     simProcess.start("sh", arguments);
 #endif
 

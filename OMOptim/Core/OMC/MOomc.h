@@ -67,18 +67,17 @@
 #endif
 
 
-#include "omc_communication.h"
 #include "OMCHelper.h"
 #include "StringHandler.h"
 #include "OMOptimModelica.h"
-#include "omc_communicator.h"
 #include "VariableType.h"
 
 class Project;
 class Variable;
 
 /**
-  * MOomc is dedicated to communication with OpenModelica through CORBA.
+  * MOomc is dedicated to communication with OpenModelica through the
+  * in-process libOpenModelicaCompiler (the same way OMEdit talks to OMC).
   * Its main functions are to start OMC and call OMC API functions :
   *     - load models
   *     - simulate a model
@@ -93,7 +92,9 @@ class MOomc : public QObject
     Q_OBJECT
 
 public:
-    MOomc(QString appName,bool start = true);
+    // threadData is the MetaModelica thread-data created in main() (see OMEdit main.cpp).
+    // It is passed down so OMC can be initialized in-process (libOpenModelicaCompiler).
+    MOomc(QString appName,void *threadData,bool start = true);
     ~MOomc();
 
 
@@ -235,8 +236,9 @@ private:
     bool mHasInitialized;
     QString mName;
     QString mResult;
-    QString mObjectRefFile;
-    OmcCommunication_var mOMC;
+    /// MetaModelica thread data (threadData_t*) used to call the in-process OMC.
+    /// Stored as void* so this header does not need to pull in the C runtime headers.
+    void *mThreadData;
 
     QList<QThread*> threads;
     QStringList threadsNames;

@@ -101,6 +101,7 @@ bool ProblemInterfaces::removeProblemInterface(QString interfaceName)
     {
         return true;
     }
+    return false;
 }
 
 
@@ -121,7 +122,15 @@ ProblemInterface* ProblemInterfaces::interfaceOf(QString caseType)
 
 QList<ProblemInterface*> ProblemInterfaces::uniqueInterfaces()
 {
-    QList<ProblemInterface*> res = values();
-
+    // The map stores each interface under several keys (one per problem type and
+    // per result type), so values() contains the same interface pointer multiple
+    // times. Deduplicate so callers (e.g. the Problems menu) see each interface once.
+    QList<ProblemInterface*> res;
+    const QList<ProblemInterface*> all = values();
+    for(int i=0;i<all.size();i++)
+    {
+        if(!res.contains(all.at(i)))
+            res.append(all.at(i));
+    }
     return res;
 }

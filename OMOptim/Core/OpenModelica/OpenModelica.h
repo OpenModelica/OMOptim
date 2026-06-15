@@ -104,7 +104,16 @@ public:
 
     static void setInputVariablesTxt(QString, MOVector<Variable> *,QString modModelName,MOParameters *parameters=NULL);
     static bool setInputXml(QString, MOVector<Variable> *, QString modelName,MOParameters *parameters=NULL);
-    static bool start(QString exeFile,QString &errMsg, int maxnsec);
+
+    //! Write an override file (one "name=value" line per variable) to be passed to the
+    //! simulation executable with -overrideFile, instead of rewriting Model_init.xml.
+    static bool writeOverrideFile(QString fileName, MOVector<Variable> *variables);
+    //! Build the simulation-executable command-line flags (startTime, stopTime, stepSize,
+    //! tolerance, solver, outputFormat). These are passed as dedicated flags so they do not
+    //! clash with model variable names in the override file.
+    static QStringList simulationFlags(MOParameters *parameters);
+
+    static bool start(QString exeFile,QString &errMsg, int maxnsec, const QStringList &extraArgs = QStringList());
     static QString sciNumRx();
     static QString home();
 

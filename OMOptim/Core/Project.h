@@ -106,6 +106,7 @@ private:
     QFileInfoList _moFiles;
     QFileInfoList _mmoFiles;
     bool _useOmc;
+    void *_threadData; //!< MetaModelica thread data (threadData_t*) for the in-process OMC
 //    QList<QFileInfo> _exeFileInfoList;
 //    QList<QFileInfo> _inputFileInfoList;
 //    QStringList _fileNameListForExec;
@@ -118,7 +119,7 @@ private:
     void setMoFiles(QFileInfoList moFiles);
 
  public:
-    explicit Project(bool useOMC=true);
+    explicit Project(bool useOMC=true, void *threadData=NULL);
     ~Project();
 
     virtual bool launchScript(QFileInfo scriptFile);

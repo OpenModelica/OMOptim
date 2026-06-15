@@ -75,10 +75,11 @@
 #include "ModExePlus.h"
 #include "scriptparseromoptim.h"
 
-Project::Project(bool useOMC)
+Project::Project(bool useOMC, void *threadData)
 {
     _isdefined = false;
     _useOmc = useOMC;
+    _threadData = threadData;
     //    _curProblem = -1;
 
 
@@ -87,7 +88,7 @@ Project::Project(bool useOMC)
     //    _curLaunchedProblem = NULL;
     setCurModItem(NULL);
 
-    _moomc = new MOomc("OMOptim",_useOmc);
+    _moomc = new MOomc("OMOptim",_threadData,_useOmc);
     _modLoader = new ModLoader(_moomc);
     _modItemsTree = new ModItemsTree(this,_modLoader,_moomc);
 
@@ -113,9 +114,14 @@ Project::~Project()
     delete _moomc;
     delete _modLoader;
 
-    for(int i=0;i<_problemsInterfaces.uniqueInterfaces().size();i++)
+    // Snapshot the unique interfaces before deleting: the map stores each interface
+    // under several keys, so we must delete each pointer exactly once (and then drop
+    // the now-dangling map entries) to avoid a double free.
+    QList<ProblemInterface*> uniqueItfs = _problemsInterfaces.uniqueInterfaces();
+    _problemsInterfaces.clear();
+    for(int i=0;i<uniqueItfs.size();i++)
     {
-        delete _problemsInterfaces.uniqueInterfaces().at(i);
+        delete uniqueItfs.at(i);
     }
 
     QList<ModelPlus*> allModelPlus = _mapModelPlus.values();

@@ -171,9 +171,6 @@ HEADERS += ../Core/OptObjective.h \
            ../Core/OMC/commandunit.h \
            ../Core/OMC/inputcelldelegate.h \
            ../Core/OMC/MOomc.h \
-           ../Core/OMC/omc_communication.h \
-           ../Core/OMC/omc_communicator.h \
-           ../Core/OMC/omcinteractiveenvironment.h \
            ../Core/OpenModelica/ModPlusOMCtrl.h \
            ../Core/OpenModelica/OpenModelica.h \
            ../Core/Problems/OneSimResult.h \
@@ -356,9 +353,6 @@ SOURCES += ../Core/OptObjective.cpp \
            ../Core/Modelica/ModLoader.cpp \
             ../Core/Modelica/ModRecord.cpp \
            ../Core/OMC/MOomc.cpp \
-           ../Core/OMC/omc_communication.cpp \
-           ../Core/OMC/omc_communicator.cpp \
-           ../Core/OMC/omcinteractiveenvironment.cpp \
            ../Core/OpenModelica/ModPlusOMCtrl.cpp \
            ../Core/OpenModelica/OpenModelica.cpp \
            ../Core/Problems/OneSimResult.cpp \

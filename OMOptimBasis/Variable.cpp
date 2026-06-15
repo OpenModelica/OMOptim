@@ -111,6 +111,7 @@ Variable &Variable::operator =(const Variable & var)
     }
     _filledFields = var._filledFields;
     _protectedFields = var._protectedFields;
+    return *this;
 }
 
 Variable* Variable::clone() const

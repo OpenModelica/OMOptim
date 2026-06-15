@@ -289,23 +289,31 @@ bool ModPlusOMCtrl::simulate(QDir tempFolder,MOVector<Variable> * inputVars,MOVe
     for(int i=0;i<filesToRemove.size();i++)
         tempFolder.remove(filesToRemove.at(i));
 
-    QString tempInitFileXml = tempFolder.absoluteFilePath(_initFileXml);
     QString tempResFile = tempFolder.absoluteFilePath(resFile());
     QString tempExeFile = tempFolder.absoluteFilePath(_exeFile);
 
-    // Specifying new Variables values in OM input file
-    bool setInputFileOk = OpenModelica::setInputXml(tempInitFileXml,inputVars,_ModelPlus->modelName(),parameters());
+    // Specify the new variable values through an override file passed to the
+    // simulation executable with -overrideFile, instead of rewriting
+    // Model_init.xml (issue #14506). The init xml is still copied next to the
+    // executable; the override file only overrides the start values.
+    QString tempOverrideFile = tempFolder.absoluteFilePath(_ModelPlus->modelName()+"_override.txt");
+    bool setInputFileOk = OpenModelica::writeOverrideFile(tempOverrideFile,inputVars);
     if(!setInputFileOk)
     {
-        InfoSender::instance()->sendWarning("Simulation failed : failed to set input file");
+        InfoSender::instance()->sendWarning("Simulation failed : failed to write override file");
         return false;
     }
+
+    // Experiment settings are passed as dedicated flags, the decision variables
+    // through -overrideFile (so they cannot clash with model variable names).
+    QStringList simArgs = OpenModelica::simulationFlags(parameters());
+    simArgs << "-overrideFile="+tempOverrideFile;
 
     // Launching openmodelica
     int maxNSec=_parameters->value(OpenModelicaParameters::str(OpenModelicaParameters::MAXSIMTIME),-1).toInt();
 
     QString startErrMsg;
-    bool startOk = OpenModelica::start(tempExeFile,startErrMsg,maxNSec);
+    bool startOk = OpenModelica::start(tempExeFile,startErrMsg,maxNSec,simArgs);
     if(!startOk)
     {
         InfoSender::instance()->sendWarning("Simulation failed : "+startErrMsg);

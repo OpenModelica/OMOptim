@@ -86,41 +86,7 @@ public:
     static qreal shapesStrokeWidth;
 };
 
-class GUIMessages
-{
-public:
-    enum MessagesTypes
-    {
-        SAME_COMPONENT_NAME,
-        SAME_PORT_CONNECT,
-        NO_OPEN_MODEL,
-        NO_SIMULATION_STARTTIME,
-        NO_SIMULATION_STOPTIME,
-        SIMULATION_STARTTIME_LESSTHAN_STOPTIME,
-        ENTER_NAME,
-        MODEL_ALREADY_EXISTS,
-        ITEM_ALREADY_EXISTS,
-        OPEN_MODELICA_HOME_NOT_FOUND,
-        ERROR_OCCURRED,
-        ERROR_IN_MODELICA_TEXT,
-        UNDO_OR_FIX_ERRORS,
-        NO_OPEN_MODELICA_KEYWORDS,
-        INCOMPATIBLE_CONNECTORS,
-        SAVE_CHANGES,
-        DELETE_FAIL,
-        ONLY_MODEL_ALLOWED,
-        UNABLE_TO_LOAD_FILE,
-        DELETE_AND_LOAD,
-        REDEFING_EXISTING_MODELS,
-        INVALID_COMPONENT_ANNOTATIONS,
-        SAVED_MODEL,
-        COMMENT_SAVE_ERROR,
-        ATTRIBUTES_SAVE_ERROR,
-        CHILD_MODEL_SAVE,
-        SEARCH_STRING_NOT_FOUND
-    };
+// NOTE: the GUIMessages class used to be duplicated here; it lives in
+// Core/Util/Helper.h now to avoid a duplicate definition (issue #14506).
 
-    static QString getMessage(int type);
-};
-
-#endif // HELPER_H
+#endif // OMCHELPER_H

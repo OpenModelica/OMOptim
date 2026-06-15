@@ -182,6 +182,7 @@ METimes &METimes::operator =(const QList<METime> & times)
     this->clear();
     for(int i=0;i<times.size();i++)
         this->push_back(times.at(i));
+    return *this;
 }
 
 
@@ -236,6 +237,7 @@ MEDurations &MEDurations::operator =(const QList<METime> & durations)
     this->clear();
     for(int i=0;i<durations.size();i++)
         this->push_back(durations.at(i));
+    return *this;
 }
 
 METimes MEDurations::allTimes() const
