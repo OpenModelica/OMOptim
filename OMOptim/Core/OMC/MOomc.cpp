@@ -59,8 +59,18 @@
 #include "OMCThreads.h"
 #include "MOSettings.h"
 
-//IAEX Headers
-#include "omcinteractiveenvironment.h"
+// MetaModelica / in-process OMC (libOpenModelicaCompiler), as used by OMEdit.
+#include "meta/meta_modelica.h"
+
+extern "C" {
+int omc_Main_handleCommand(void *threadData, void *imsg, void **omsg);
+void* omc_Main_init(void *threadData, void *args);
+void omc_System_initGarbageCollector(void *threadData);
+#if defined(_WIN32)
+void omc_Main_setWindowsPaths(threadData_t *threadData, void* _inOMHome);
+#endif
+}
+
 #include "MOThreads.h"
 #include "LowTools.h"
 #include "SleeperThread.h"
@@ -76,12 +86,13 @@ class Project;
 using namespace std;
 
 
-MOomc::MOomc(QString appName,bool start)
+MOomc::MOomc(QString appName,void *threadData,bool start)
 {
     nbCalls = 0;
     mName = appName;
     //delegate_ = 0;
     mHasInitialized= false;
+    mThreadData = threadData;
     // isStarted = false;
     omc_version_ = "(version)";
 
@@ -1068,40 +1079,42 @@ QString MOomc::evalCommand(QString command,QString &errorString)
         }
         else
         {
-            // Send command to server
-            try
+            // Send command to the in-process OMC (libOpenModelicaCompiler).
+            // This mirrors OMEdit's OMCProxy::sendCommand().
+            threadData_t *threadData = (threadData_t*)mThreadData;
+            void *reply_str = NULL;
+
+            MMC_TRY_TOP_INTERNAL()
+            MMC_TRY_STACK()
+
+            if (omc_Main_handleCommand(threadData, mmc_mk_scon(command.toUtf8().constData()), &reply_str))
             {
-                //mResult = mOMC->sendExpression(command.toLatin1());
-                mResult = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
-                // logOMCMessages(command);
+                mResult = QString::fromUtf8(MMC_STRINGDATA(reply_str));
                 InfoSender::instance()->send(Info(getResult(),ListInfo::OMCNORMAL2));
 
                 // display errors
-                command = "getErrorString()";
-                errorString = QString::fromLocal8Bit(mOMC->sendExpression(command.toLocal8Bit()));
-                errorString.remove("\"");
-                if((!errorString.isEmpty())&&(errorString!="\n"))
-                    InfoSender::instance()->send(Info(errorString,ListInfo::OMCWARNING2));
+                void *error_str = NULL;
+                if (omc_Main_handleCommand(threadData, mmc_mk_scon("getErrorString()"), &error_str))
+                {
+                    errorString = QString::fromUtf8(MMC_STRINGDATA(error_str));
+                    errorString.remove("\"");
+                    if((!errorString.isEmpty())&&(errorString!="\n"))
+                        InfoSender::instance()->send(Info(errorString,ListInfo::OMCWARNING2));
+                }
 
                 result = getResult();
             }
-            catch(CORBA::Exception&)
+            else if(command != "quit()" && command != "quit();")
             {
-                QFile::remove(mObjectRefFile);
-                InfoSender::instance()->send(Info(QString("Communication with OMC server has lost ")));
+                InfoSender::instance()->send(Info(QString("Communication with OMC failed for command: ")+command,ListInfo::ERROR2));
             }
-            catch( omniORB::fatalException & ex)
-            {
-                InfoSender::instance()->debug("Caught omniORB2 fatalException. This is a bug in omniORB");
-            }
-            catch( CORBA::COMM_FAILURE &ex)
-            {
-                InfoSender::instance()->debug("Caught CORBA::COMM_FAILURE");
-            }
-            catch (...)
-            {
-                InfoSender::instance()->debug("Caught exception");
-            }
+
+            MMC_ELSE()
+                mResult = "";
+                InfoSender::instance()->debug("OMC stack overflow detected while evaluating command");
+            MMC_CATCH_STACK()
+
+            MMC_CATCH_TOP(InfoSender::instance()->debug("Caught exception while evaluating OMC command"));
         }
 
 
@@ -1448,101 +1461,48 @@ void MOomc::exit()
 
 bool MOomc::startServer()
 {
-    try
+    // Start OMC in-process using libOpenModelicaCompiler, exactly the way OMEdit
+    // does in OMCProxy::initializeOMC(). No CORBA server / external omc process.
+    if (mHasInitialized)
+        return true;
+
+    if (mThreadData == NULL)
     {
-        // evalMutex.unlock();
-        QString msg;
-        QString omcPath;
+        InfoSender::instance()->send(Info(QString("OMC: no MetaModelica thread data provided, cannot start OMC."),ListInfo::ERROR2));
+        return false;
+    }
+
+    threadData_t *threadData = (threadData_t*)mThreadData;
+
+    // build the argument list for omc_Main_init (locale, like OMEdit)
+    void *args = mmc_mk_nil();
+    QString locale = "+locale=" + QLocale().name();
+    args = mmc_mk_cons(mmc_mk_scon(locale.toUtf8().constData()), args);
+
+    // initialize the garbage collector (idempotent)
+    omc_System_initGarbageCollector(NULL);
+
+    MMC_TRY_TOP_INTERNAL()
+    omc_Main_init(threadData, args);
+    MMC_CATCH_TOP(
+        InfoSender::instance()->send(Info(QString("OMC: failed to initialize the OpenModelica compiler."),ListInfo::ERROR2));
+        mHasInitialized = false;
+        return false;
+    )
+
+    mHasInitialized = true;
+
+#if defined(_WIN32)
+    {
         const char *omhome = getenv("OPENMODELICAHOME");
-#ifdef WIN32
-        if (!omhome)
+        if (omhome)
         {
-            InfoSender::instance()->send(Info("OPEN_MODELICA_HOME_NOT_FOUND"));
-            return false;
+            MMC_TRY_TOP_INTERNAL()
+            omc_Main_setWindowsPaths(threadData, mmc_mk_scon(QString(omhome).replace("\\","/").toUtf8().constData()));
+            MMC_CATCH_TOP()
         }
-        omcPath = QString(omhome) + "/bin/omc.exe";
-#else /* unix */
-        omcPath = (omhome ? QString(omhome) : QString(CONFIG_DEFAULT_OPENMODELICAHOME)) + "/bin/omc";
-        const char *u = getenv("USER");
-        QString user = u ? u : "nobody";
-#endif
-
-        // Check the IOR file created by omc.exe
-        QString fileIdentifier = qApp->sessionId().append(QTime::currentTime().toString(tr("hh:mm:ss:zzz")).remove(":"));
-        QFile objectRefFile;
-#ifdef WIN32 // Win32
-        objectRefFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.objid.").append(this->mName).append(fileIdentifier));
-#else // UNIX environment
-        objectRefFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.").append(QString(user)).append(".objid.").append(this->mName).append(fileIdentifier));
-#endif
-
-        if (objectRefFile.exists())
-            objectRefFile.remove();
-
-        mObjectRefFile = objectRefFile.fileName();
-
-
-        // Start the omc.exe
-        QString str;
-        QStringList parameters;
-        parameters << QString("+c=").append(mName).append(fileIdentifier) << QString("+d=interactiveCorba") << QString("+corbaObjectReferenceFilePath=").append(Utilities::tempDirectory());
-        QProcess *omcProcess = new QProcess();
-        QFile omcOutputFile;
-#ifdef WIN32 // Win32
-        omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.omc.output.").append(mName));
-#else // UNIX environment
-        omcOutputFile.setFileName(QString(Utilities::tempDirectory()).append(QDir::separator()).append("openmodelica.").append(QString(user)).append(".omc.output.").append(mName));
-#endif
-
-        InfoSender::instance()->send( Info(str.asprintf("OMC: running command: %s %s",
-            omcPath.toLatin1().data(),
-        parameters.join(" ").toLatin1().data()),ListInfo::OMCNORMAL2));
-        omcProcess->setProcessChannelMode(QProcess::MergedChannels);
-        omcProcess->setStandardOutputFile(omcOutputFile.fileName());
-        omcProcess->start(omcPath, parameters);
-        // wait for the server to start.
-        int ticks = 0;
-        while (!objectRefFile.exists())
-        {
-            SleeperThread::msleep(1000);
-            ticks++;
-            if (ticks > 20)
-            {
-                msg = "OMC: unable to find OMC server, Object reference file " + mObjectRefFile + " not created.";
-                throw std::runtime_error(msg.toStdString());
-            }
-        }
-
-        // ORB initialization.
-        int argc = 2;
-        static const char *argv[] = { "-ORBgiopMaxMsgSize", "10485760" };
-        CORBA::ORB_var orb = CORBA::ORB_init(argc, (char **)argv);
-
-        objectRefFile.open(QIODevice::ReadOnly);
-
-        char buf[1024];
-        objectRefFile.readLine( buf, sizeof(buf) );
-        QString uri( (const char*)buf );
-
-        CORBA::Object_var obj = orb->string_to_object(uri.trimmed().toLatin1());
-
-        mOMC = OmcCommunication::_narrow(obj);
-        mHasInitialized = true;
     }
-    catch(std::exception &e)
-    {
-        QString msg = e.what();
-        InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
-        mHasInitialized = false;
-        return false;
-    }
-    catch (CORBA::Exception&)
-    {
-        QString msg = "Unable to communicate with OMC";
-        InfoSender::instance()->send(Info(msg,ListInfo::ERROR2));
-        mHasInitialized = false;
-        return false;
-    }
+#endif
 
     evalCommand("getInstallationDirectoryPath()");
     OMCHelper::OpenModelicaHome = StringHandler::removeFirstLastQuotes(getResult());

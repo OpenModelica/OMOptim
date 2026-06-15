@@ -49,8 +49,9 @@ FIND_OPENMODELICAHOME()
 
 FIND_LIBOMQWT()
 
-OMNIORB_DEFAULT=yes
-m4_include([common/m4/corba.m4])
+dnl OMOptim now talks to OMC in-process through libOpenModelicaCompiler (the same
+dnl way OMEdit does), so the old CORBA / omniORB interface is no longer required
+dnl (issue #14506).
 
 AC_MSG_CHECKING([for LSB description])
 LSB_RELEASE="`lsb_release -ds | tr -d '\"'`"
@@ -63,10 +64,6 @@ fi
 
 m4_include([common/m4/semver.m4])
 SOURCE_REVISION="$SOURCE_REVISION$NON_FREE_VERSION"
-
-if test -z "$USE_CORBA"; then
-  AC_MSG_ERROR([OMOptim requires using the OMC CORBA interface. Configure using --with-omniORB.])
-fi
 
 AC_OUTPUT(Makefile OMOptim/build/Makefile.unix OMOptim/build/OMOptim.config OMOptimBasis/build/Makefile.unix OMOptimBasis/build/OMOptimBasis.config OMOptim/omc_config.h)
 # AC_CONFIG_COMMANDS([Clean qmake stuff],[make clean])

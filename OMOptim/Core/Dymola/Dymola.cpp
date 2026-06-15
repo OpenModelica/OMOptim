@@ -821,6 +821,7 @@ bool Dymola::setVariablesToDsin(QString fileName, QString modelName,MOVector<Var
         textWrite<<allText;
         file.close();
     }
+    return true;
 }
 
 QString Dymola::sciNumRx()

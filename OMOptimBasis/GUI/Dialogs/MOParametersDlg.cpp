@@ -361,6 +361,8 @@ QVariant WidgetParameters::getValue(QWidget* curWidget)
     QComboBox* combo = dynamic_cast<QComboBox*>(curWidget);
     if(combo)
         return combo->itemData(combo->currentIndex());
+
+    return QVariant();
 }
 
 void WidgetParameters::setValue(QWidget* curWidget,QVariant value)

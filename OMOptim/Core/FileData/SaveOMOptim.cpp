@@ -363,6 +363,7 @@ bool SaveOMOptim::setModelsPath(QString projectFilePath, QStringList modelsPaths
     QTextStream ts( &file );
     ts << doc.toString();
     file.close();
+    return true;
 }
 
 

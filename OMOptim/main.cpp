@@ -74,14 +74,18 @@
 #define HAVE_QSOCKETNOTIFIER_H
 
 
-#include <omniORB4/CORBA.h>
-
+// In-process OpenModelica compiler (libOpenModelicaCompiler), as used by OMEdit.
+// See OMEdit/OMEditGUI/main.cpp for the MetaModelica initialization pattern.
+#include "meta/meta_modelica.h"
 #include "util/omc_error.h"
-
-CORBA::ORB_var orb;
 
 int main(int argc, char *argv[])
 {
+    // Initialize the MetaModelica runtime and create the top-level thread data
+    // used to talk to the in-process OMC (mirrors OMEdit's main.cpp).
+    MMC_INIT(0);
+    MMC_TRY_TOP()
+
     // Register Info as a metaType
     // Needed for Info communication between threads
     // register meta types for connect signals/slots
@@ -186,7 +190,7 @@ int main(int argc, char *argv[])
     if(definitions.value("useomc",QString()).contains(QRegularExpression("^[false|0]+$")))
         startOMC = false;
 
-    Project* project = new Project(startOMC);
+    Project* project = new Project(startOMC, threadData);
     project->setScriptParser(new ScriptParserOMOptim(project));
     app->connect( app, SIGNAL( lastWindowClosed() ), project->scriptParser(),SLOT(stop()));
 
@@ -287,6 +291,8 @@ int main(int argc, char *argv[])
         return console->_result;
     else
         return 0;
+
+    MMC_CATCH_TOP(return 1;)
 }
 
 

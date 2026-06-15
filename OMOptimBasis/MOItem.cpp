@@ -257,6 +257,7 @@ bool MOItem::protectAllFields()
     for(int i=0;i<getNbFields();i++)
         if(!_protectedFields.contains(i))
             _protectedFields.push_back(i);
+    return true;
 }
 
 

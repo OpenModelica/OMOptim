@@ -557,4 +557,5 @@ bool MOParameters::operator==(const MOParameters& b)const
   */
 QVariant MOParameters::value(int, QVariant defaultValue) const
 {
+    return defaultValue;
 }

@@ -368,6 +368,7 @@ bool ProjectBase::load(QString loadPath)
         _saveLoadMutex.unlock();
         return loaded;
     }
+    return false;
 }
 
 

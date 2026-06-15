@@ -697,12 +697,15 @@ bool Optimization::addModel(QString modelName,ModPlusCtrls* ctrls)
         emit addedModel(modelName);
         return true;
     }
+    return false;
 }
 
 bool Optimization::addModels(QStringList models)
 {
+    bool ok = true;
     for(int i=0;i<models.size();i++)
-        addModel(models.at(i));
+        ok = addModel(models.at(i)) && ok;
+    return ok;
 }
 
 

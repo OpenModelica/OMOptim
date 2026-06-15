@@ -114,6 +114,7 @@ bool ModPlusBlackBoxExeCtrl::readInitialVariables(MOVector<Variable> *initVariab
 //            return false;
 //        }
 //    }
+    return false;
 }
 
 
@@ -240,6 +241,7 @@ bool ModPlusBlackBoxExeCtrl::simulate(QDir tempDir, MOVector<Variable> * inputVa
 //     else
 //        return false;
 
+    return false;
 }
 
 
@@ -256,6 +258,7 @@ bool ModPlusBlackBoxExeCtrl::getOutputVarsUsingPluginFunc(QString fileName, MOVe
     variables->clear();
     readResultsFromXmlDoc(doc, variables, modelName);
 
+    return true;
 }
 
 void ModPlusBlackBoxExeCtrl::readResultsFromXmlDoc(const QDomDocument &doc, MOVector<Variable> * variables, QString modelName)
