@@ -445,3 +445,9 @@ win32 {
 }else {
     include(OMOptim.config)
 }
+
+# OMOptim drives the OpenModelica compiler in-process and uses the
+# MMC_TRY_TOP/threadData macros, which reference threadData->parentMutex.
+# That member only exists when OM_HAVE_PTHREADS is defined (as OMEdit does),
+# so define it here for all platforms.
+DEFINES += OM_HAVE_PTHREADS
