@@ -20,17 +20,11 @@ to path/to/OpenModelica
 Set OpenModelica home:
 OPENMODELICAHOME e.g. path/to/OpenModelica/build
 
-Compilation using qmake
+Compilation
 ********************
-Start:
-- OMDev\tools\msys\mingw64_shell.bat for 64bit compilation
-- OMDev\tools\msys\mingw64_shell.bat for 32bit compilation
-
-> cd path/to/OpenModelica
-> make -f Makefile.omdev.mingw -j8 omoptim
-
-You can also compile with QtCreator from OMDev
-by opening the OpenModelica/OMOptim/OMOptim/build/OMOptim.pro
+On Windows, OMOptim is built with the rest of OpenModelica via CMake; see
+OMCompiler/README.Windows.md and README.cmake.md in the OpenModelica superproject
+for instructions. There is no standalone qmake/Makefile build for OMOptim anymore.
 
 
 Dymola
