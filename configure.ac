@@ -49,10 +49,6 @@ FIND_OPENMODELICAHOME()
 
 FIND_LIBOMQWT()
 
-dnl OMOptim now talks to OMC in-process through libOpenModelicaCompiler (the same
-dnl way OMEdit does), so the old CORBA / omniORB interface is no longer required
-dnl (issue #14506).
-
 AC_MSG_CHECKING([for LSB description])
 LSB_RELEASE="`lsb_release -ds | tr -d '\"'`"
 if test ! -z "$LSB_RELEASE"; then

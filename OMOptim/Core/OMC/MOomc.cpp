@@ -1462,7 +1462,7 @@ void MOomc::exit()
 bool MOomc::startServer()
 {
     // Start OMC in-process using libOpenModelicaCompiler, exactly the way OMEdit
-    // does in OMCProxy::initializeOMC(). No CORBA server / external omc process.
+    // does in OMCProxy::initializeOMC().
     if (mHasInitialized)
         return true;
 
@@ -1554,11 +1554,6 @@ QString MOomc::getResult()
 {
     return mResult.trimmed();
 }
-
-//OmcCommunicator* MOomc::getCommunicator()
-//{
-//    //return mCommunicator;
-//}
 
 QString MOomc::changeDirectory(QString directory)
 {

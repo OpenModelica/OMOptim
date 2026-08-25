@@ -228,9 +228,6 @@ private:
     //    QString command;
     int nbCalls;
 
-    //OmcCommunicator* mCommunicator;
-
-
     QString omc_version_;
 
     bool mHasInitialized;
