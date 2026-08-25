@@ -25,14 +25,14 @@ list(APPEND OMOPTIMLIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/scriptparseromoptim.c
 list(APPEND OMOPTIMLIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/scriptparseromoptim.h)
 
 # Compile exactly the same set of sources as the qmake build (OMOptimLib.pro).
-# These files exist on disk but are NOT part of the qmake build: the obsolete CORBA
-# layer (replaced by in-process OMC, #14506), the disabled "BlockSubs" feature
-# (USEBLOCKSUB undefined), and a few stale sources that reference missing headers
-# (e.g. Modelica.h) or use Qt4-only includes. The headers are listed as target
-# sources as well so that AUTOMOC processes the header-only Q_OBJECT classes
-# (e.g. OMEAProgress, MOOptPlot); the disabled headers are excluded for the same reason.
+# These files exist on disk but are NOT part of the qmake build: the disabled
+# "BlockSubs" feature (USEBLOCKSUB undefined) and a few stale sources that
+# reference missing headers (e.g. Modelica.h) or use Qt4-only includes. The
+# headers are listed as target sources as well so that AUTOMOC processes the
+# header-only Q_OBJECT classes (e.g. OMEAProgress, MOOptPlot); the disabled
+# headers are excluded for the same reason.
 set(OMOPTIM_EXCLUDE_REGEX
-    ".*/(omc_communication|omc_communicator|omcinteractiveenvironment|BlockDrawItem|BlockSubsScene|BlockSubstituteConnDlg|BlockSubstitution|BlockSubstitutions|ModelicaConnections|ModelicaHENImplementer|WidgetBlocks|WidgetSelectComponents|commandcompletion|sa1moshiftneighbor)\\.(cpp|h)$")
+    ".*/(BlockDrawItem|BlockSubsScene|BlockSubstituteConnDlg|BlockSubstitution|BlockSubstitutions|ModelicaConnections|ModelicaHENImplementer|WidgetBlocks|WidgetSelectComponents|commandcompletion|sa1moshiftneighbor)\\.(cpp|h)$")
 list(FILTER OMOPTIMLIB_SOURCES EXCLUDE REGEX ${OMOPTIM_EXCLUDE_REGEX})
 list(FILTER OMOPTIMLIB_HEADERS EXCLUDE REGEX ${OMOPTIM_EXCLUDE_REGEX})
 list(FILTER OMOPTIMLIB_UIS EXCLUDE REGEX

@@ -2,8 +2,7 @@
 #
 # OMOptim is gated behind the OM_OMOPTIM_ENABLE option (OFF by default), set in
 # the top-level OpenModelica CMakeLists.txt. It talks to OMC in-process through
-# libOpenModelicaCompiler (the same way OMEdit does) instead of the old CORBA
-# interface, see issue #14506.
+# libOpenModelicaCompiler, the same way OMEdit does.
 
 cmake_minimum_required(VERSION 3.14)
 
