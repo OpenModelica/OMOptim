@@ -6,7 +6,6 @@ AC_INIT([OMOptim],[dev],[https://trac.openmodelica.org/OpenModelica],[openmodeli
 AC_SUBST(OMOPTIMCXX)
 AC_SUBST(APP)
 AC_SUBST(EXE)
-AC_SUBST(IDLCMD)
 AC_SUBST(RPATH_QMAKE)
 AC_SUBST(host_short)
 AC_SUBST(SOURCE_REVISION)
