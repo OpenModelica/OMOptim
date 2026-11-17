@@ -41,7 +41,34 @@
 
 
 #include "Utilities.h"
+#include <QCoreApplication>
+#include <QFileInfo>
 #include <QProcessEnvironment>
+
+/*!
+ * \brief Utilities::getOMHome
+ * Returns the OpenModelica installation this executable is part of, i.e. the directory above the
+ * bin directory it is in. Several OpenModelica versions can be installed on Windows and the
+ * environment variable OPENMODELICAHOME points to the one selected as the default, which is not
+ * necessarily this one. OPENMODELICAHOME is only used when the executable is not in an installation,
+ * e.g. when it is started from a build directory.
+ * \return
+ */
+QString& Utilities::getOMHome()
+{
+  static int init = 0;
+  static QString omHome;
+  if (!init) {
+    init = 1;
+    QDir dir(QCoreApplication::applicationDirPath());
+    if (dir.dirName().compare("bin", Qt::CaseInsensitive) == 0 && dir.cdUp() && QFileInfo(dir.absoluteFilePath("share/omc")).isDir()) {
+      omHome = dir.absolutePath();
+    } else {
+      omHome = QProcessEnvironment::systemEnvironment().value("OPENMODELICAHOME");
+    }
+  }
+  return omHome;
+}
 
 /*!
  * \brief Utilities::tempDirectory
@@ -85,8 +112,7 @@ QString& Utilities::getMinGWBinPath()
     static QString mingw;
 #ifdef WIN32
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString om = env.value("OPENMODELICAHOME");
-    QString omHome = om + QString("/bin");
+    QString om = Utilities::getOMHome();
     QString omdev = env.value("OMDEV");
     // adrpo: oh the horror :)
     QString mingw32msysOM = "mingw/bin";
@@ -137,7 +163,6 @@ QString& Utilities::getMinGWBinPath()
 
 QString& Utilities::getOMBinPath()
 {
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    static QString om = env.value("OPENMODELICAHOME") + QDir::separator() + "bin";
+    static QString om = Utilities::getOMHome() + QDir::separator() + "bin";
     return om;
 }

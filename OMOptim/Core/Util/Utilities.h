@@ -58,6 +58,8 @@ namespace Utilities {
 
   QString& getOMScriptLog();
 
+  QString& getOMHome();
+
   QString& getMinGWBinPath();
 
   QString& getOMBinPath();

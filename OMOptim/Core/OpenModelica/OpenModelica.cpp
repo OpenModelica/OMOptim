@@ -811,9 +811,8 @@ QString OpenModelica::sciNumRx()
 
 QString OpenModelica::home()
 {
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString omHome = env.value("OPENMODELICAHOME");
-    return omHome;
+    // the installation OMOptim is part of, not the one OPENMODELICAHOME points to
+    return Utilities::getOMHome();
 }
 
 /**
