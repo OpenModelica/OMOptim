@@ -48,6 +48,7 @@
 
 
 #include "TabOMC.h"
+#include "Utilities.h"
 #include "Plots/MOOptPlot.h"
 
 
@@ -74,9 +75,9 @@ TabOMC::TabOMC(Project *project_,QWidget *parent) :
 
 
     // create command compleation instance
-    QString openmodelica( getenv( "OPENMODELICAHOME" ) );
+    QString openmodelica( Utilities::getOMHome() );
     if( openmodelica.isEmpty() )
-        QMessageBox::critical( 0, "OMShell Error", "Could not find environment variable OPENMODELICAHOME, command compleation will not work" );
+        QMessageBox::critical( 0, "OMShell Error", "Could not find the OpenModelica installation, command compleation will not work" );
 
     try
     {

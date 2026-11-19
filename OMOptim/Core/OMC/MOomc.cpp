@@ -1492,20 +1492,19 @@ bool MOomc::startServer()
 
     mHasInitialized = true;
 
-#if defined(_WIN32)
-    {
-        const char *omhome = getenv("OPENMODELICAHOME");
-        if (omhome)
-        {
-            MMC_TRY_TOP_INTERNAL()
-            omc_Main_setWindowsPaths(threadData, mmc_mk_scon(QString(omhome).replace("\\","/").toUtf8().constData()));
-            MMC_CATCH_TOP()
-        }
-    }
-#endif
-
     evalCommand("getInstallationDirectoryPath()");
     OMCHelper::OpenModelicaHome = StringHandler::removeFirstLastQuotes(getResult());
+
+#if defined(_WIN32)
+    // The paths of the installation the compiler is loaded from. The environment variable
+    // OPENMODELICAHOME is the default installation, which is another one if several are installed.
+    if (!OMCHelper::OpenModelicaHome.isEmpty())
+    {
+        MMC_TRY_TOP_INTERNAL()
+        omc_Main_setWindowsPaths(threadData, mmc_mk_scon(QString(OMCHelper::OpenModelicaHome).replace("\\","/").toUtf8().constData()));
+        MMC_CATCH_TOP()
+    }
+#endif
 
     initTempDirectory();
 
