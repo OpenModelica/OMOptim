@@ -37,9 +37,6 @@ add_library(omoptim_eo STATIC
 add_library(omoptim_eoutils STATIC
   ${PARADISEO}/eo/src/utils/eoData.cpp
   ${PARADISEO}/eo/src/utils/eoFileMonitor.cpp
-  ${PARADISEO}/eo/src/utils/eoGnuplot.cpp
-  ${PARADISEO}/eo/src/utils/eoGnuplot1DMonitor.cpp
-  ${PARADISEO}/eo/src/utils/eoGnuplot1DSnapshot.cpp
   ${PARADISEO}/eo/src/utils/eoIntBounds.cpp
   ${PARADISEO}/eo/src/utils/eoParser.cpp
   ${PARADISEO}/eo/src/utils/eoRealBounds.cpp
@@ -48,11 +45,21 @@ add_library(omoptim_eoutils STATIC
   ${PARADISEO}/eo/src/utils/eoOStreamMonitor.cpp
   ${PARADISEO}/eo/src/utils/eoUpdater.cpp
   ${PARADISEO}/eo/src/utils/make_help.cpp
-  ${PARADISEO}/eo/src/utils/pipecom.cpp
   ${PARADISEO}/eo/src/utils/eoLogger.cpp
   ${PARADISEO}/eo/src/utils/eoParallel.cpp
   ${PARADISEO}/eo/src/utils/eoSignal.cpp
 )
+
+# The gnuplot monitors talk to gnuplot through pipecom.cpp, which needs kill, pipe and
+# vfork: they cannot be built on Windows.
+if(NOT WIN32)
+  target_sources(omoptim_eoutils PRIVATE
+    ${PARADISEO}/eo/src/utils/eoGnuplot.cpp
+    ${PARADISEO}/eo/src/utils/eoGnuplot1DMonitor.cpp
+    ${PARADISEO}/eo/src/utils/eoGnuplot1DSnapshot.cpp
+    ${PARADISEO}/eo/src/utils/pipecom.cpp
+  )
+endif()
 
 add_library(omoptim_moeo STATIC
   ${PARADISEO}/moeo/src/core/moeoObjectiveVectorTraits.cpp
